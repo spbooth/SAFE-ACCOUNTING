@@ -1,0 +1,127 @@
+// Copyright - The University of Edinburgh 2011
+/*******************************************************************************
+ * Copyright (c) - The University of Edinburgh 2010
+ *******************************************************************************/
+package uk.ac.ed.epcc.safe.accounting.reports;
+
+import java.util.Arrays;
+import java.util.Date;
+
+import uk.ac.ed.epcc.safe.accounting.AccountingService;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
+import uk.ac.ed.epcc.safe.accounting.UsageProducer;
+import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.webapp.time.Period;
+
+/** RecordSet combines a combination of {@link UsageProducer} and {@link RecordSelector}
+ * and time bounds (Array of {@link PropExpression}s) it represents a set of UsageRecords.
+ * The time bounds are used to generate {@link PeriodOverlapRecordSelector}s. These are not stored directly in
+ * the {@link RecordSelector} as they wil depend on the time period under consideration.
+ * 
+ * This is required where reports need a combination of informations from
+ * incompatible {@link UsageProducer}s. For example Data usage and allocations. 
+ * 
+ * @author spb
+ *
+ */
+@uk.ac.ed.epcc.webapp.Version("$Id: RecordSet.java,v 1.16 2015/01/13 15:27:06 spb Exp $")
+
+public class RecordSet extends ObjectSet<UsageProducer>{
+  
+private final AccountingService serv;
+  private PropExpression<Date> bounds[];
+ 
+  public RecordSet(AccountingService serv){
+	  super();
+	  this.serv=serv;
+	  bounds = new PropExpression[1];
+	  bounds[0]=StandardProperties.ENDED_PROP;
+  }
+  public RecordSet(RecordSet orig){
+	  super(orig);
+	  this.serv=orig.serv;
+	  this.bounds=orig.bounds.clone();
+  }
+  public UsageProducer getUsageProducer(){
+	  return getGenerator();
+  }
+  public void setBounds(PropExpression<Date> bounds[]){
+		this.bounds=bounds;
+	}
+	public PropExpression<Date>[] getBounds(){
+		return bounds;
+	}
+	/** Returns a {@link RecordSelector} including a selector based on the 
+	 * time bounds and the specified {@link Period}.
+	 * 
+	 * @param period
+	 * @return
+	 */
+	public AndRecordSelector getPeriodSelector(Period period){
+		AndRecordSelector sel = new AndRecordSelector(getRecordSelector());
+		ExpressionTargetGenerator<?> up = getGenerator();
+		if( bounds.length == 1 && up.compatible(bounds[0])){
+			sel.add(new PeriodOverlapRecordSelector(period, bounds[0]));
+		}else if( useOverlap()){
+			sel.add(new PeriodOverlapRecordSelector(period, bounds[0], bounds[1]));
+		}
+		return sel;
+	}
+	/** Are overlap calculations requested
+	 * @param up
+	 * @return
+	 */
+	public boolean useOverlap() {
+		ExpressionTargetGenerator<?> up = getGenerator();
+		return bounds.length == 2 && up.compatible(bounds[0]) && up.compatible(bounds[1]);
+	}
+  public void setUsageProducer(String name){
+	  setUsageProducer(serv.getUsageProducer(name));
+  }
+  public void setUsageProducer(UsageProducer up){
+	  // Note that setting a usage producer clear all existing selectors.
+	  setGenerator(up);
+	  clearSelection();
+	  
+  }
+@Override
+public UsageProducer getGenerator() {
+	UsageProducer up = super.getGenerator();
+	  if( up == null ){
+		  // Use default
+		  up=serv.getUsageProducer();
+		  setGenerator(up);
+	  }
+	  return up;
+}
+@Override
+public int hashCode() {
+	final int prime = 31;
+	int result = super.hashCode();
+	result = prime * result + Arrays.hashCode(bounds);
+	result = prime * result + ((serv == null) ? 0 : serv.hashCode());
+	return result;
+}
+@Override
+public boolean equals(Object obj) {
+	if (this == obj)
+		return true;
+	if (!super.equals(obj))
+		return false;
+	if (getClass() != obj.getClass())
+		return false;
+	RecordSet other = (RecordSet) obj;
+	if (!Arrays.equals(bounds, other.bounds))
+		return false;
+	if (serv == null) {
+		if (other.serv != null)
+			return false;
+	} else if (!serv.equals(other.serv))
+		return false;
+	return true;
+}
+}

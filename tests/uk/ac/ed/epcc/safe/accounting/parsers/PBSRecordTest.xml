@@ -1,0 +1,119 @@
+<dataset><TableSpecification name='PBSRecord'>
+<account type='String' nullable='false' max='32'/>
+<accounting_id type='String' nullable='true' max='32'/>
+<alt_id type='String' nullable='true' max='32'/>
+<ctime type='Long' nullable='false'/>
+<end type='Long' nullable='false'/>
+<etime type='Long' nullable='true'/>
+<exec_host type='String' nullable='true' max='65535'/>
+<Exit_status type='Integer' nullable='true'/>
+<group type='String' nullable='true' max='128'/>
+<jobname type='String' nullable='false' max='128'/>
+<id_string type='String' nullable='false' max='32'/>
+<qtime type='Long' nullable='false'/>
+<queue type='String' nullable='true' max='32'/>
+<record_type type='String' nullable='false' max='1'/>
+<resvname type='String' nullable='true' max='128'/>
+<resvID type='String' nullable='true' max='128'/>
+<session type='Integer' nullable='true'/>
+<start type='Long' nullable='false'/>
+<user type='String' nullable='false' max='32'/>
+</TableSpecification>
+<PBSRecord id='24'>
+<account>y06</account>
+<alt_id>2872</alt_id>
+<ctime>1218495664</ctime>
+<end>1218495694</end>
+<etime>1218495664</etime>
+<exec_host>nid00007/24</exec_host>
+<Exit_status>0</Exit_status>
+<group>-default-</group>
+<jobname>STDIN</jobname>
+<id_string>100559.sdb</id_string>
+<qtime>1218495664</qtime>
+<queue>par:n8c2_20m</queue>
+<record_type>E</record_type>
+<session>19384</session>
+<start>1218495693</start>
+<user>shiv</user>
+</PBSRecord>
+<PBSRecord id='25'>
+<account>e71-DQ</account>
+<alt_id>2501</alt_id>
+<ctime>1218451557</ctime>
+<end>1218495854</end>
+<etime>1218451557</etime>
+<exec_host>nid00007/17</exec_host>
+<Exit_status>0</Exit_status>
+<group>-default-</group>
+<jobname>fnp_equil.pbs</jobname>
+<id_string>100083.sdb</id_string>
+<qtime>1218451557</qtime>
+<queue>par:n32c2_12h</queue>
+<record_type>E</record_type>
+<session>26609</session>
+<start>1218454455</start>
+<user>msseay</user>
+</PBSRecord>
+<PBSRecord id='26'>
+<account>n02-chem</account>
+<alt_id>1065</alt_id>
+<ctime>1219438652</ctime>
+<end>1219438865</end>
+<etime>1219438652</etime>
+<exec_host>nid00004/13</exec_host>
+<Exit_status>0</Exit_status>
+<group>-default-</group>
+<jobname>xdggj000</jobname>
+<id_string>106636.sdb</id_string>
+<qtime>1219438652</qtime>
+<queue>par:n32c2_20m</queue>
+<record_type>E</record_type>
+<session>11260</session>
+<start>1219438684</start>
+<user>ptelford</user>
+</PBSRecord>
+<PBSRecord id='27'>
+<account>z02</account>
+<ctime>1199439548</ctime>
+<end>1199439729</end>
+<etime>1199439548</etime>
+<exec_host>nid00004/0</exec_host>
+<Exit_status>0</Exit_status>
+<group>-default-</group>
+<jobname>report16n2c</jobname>
+<id_string>4188.sdb</id_string>
+<qtime>1199439548</qtime>
+<queue>par:n16c2_20m</queue>
+<record_type>E</record_type>
+<session>21187</session>
+<start>1199439548</start>
+<user>expc01</user>
+</PBSRecord>
+<PBSRecord id='28'>
+<account>c01-mat</account>
+<alt_id>2873</alt_id>
+<ctime>1218495709</ctime>
+<end>1218495728</end>
+<etime>1218495709</etime>
+<exec_host>nid00004/16</exec_host>
+<Exit_status>1</Exit_status>
+<group>-default-</group>
+<jobname>al3x3-64</jobname>
+<id_string>100560.sdb</id_string>
+<qtime>1218495709</qtime>
+<queue>par:n32c2_3h</queue>
+<record_type>E</record_type>
+<session>13852</session>
+<start>1218495725</start>
+<user>pjh503</user>
+</PBSRecord>
+<TableSpecification name='Machine'>
+<Name type='String' nullable='false' max='32'/>
+<Table type='String' nullable='true' max='32'/>
+</TableSpecification>
+<Machine id='1'>
+<Name>PBSMachine</Name>
+<Table>PBSRecord</Table>
+</Machine>
+</dataset>

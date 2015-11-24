@@ -1,0 +1,99 @@
+<dataset><TableSpecification name='Machine'>
+<Name type='String' nullable='false' max='32'/>
+<Table type='String' nullable='true' max='32'/>
+</TableSpecification>
+<Machine id='1'>
+<Name>OGFURMachine</Name>
+<Table>ogfurRecord</Table>
+</Machine>
+<TableSpecification name='OGFURecord'>
+<recordId type='String' nullable='true' max='16777215'/>
+<GlobalJobId type='String' nullable='true' max='32'/>
+<LocalJobId type='String' nullable='true' max='32'/>
+<GlobalUsername type='String' nullable='true' max='32'/>
+<LocalUserId type='String' nullable='true' max='32'/>
+<EndTime type='Long' nullable='true'/>
+<JobName type='String' nullable='true' max='32'/>
+<Queue type='String' nullable='true' max='32'/>
+<StartTime type='Long' nullable='true'/>
+<Status type='String' nullable='true' max='32'/>
+<NodeCount type='Integer' nullable='true'/>
+<Processors type='Integer' nullable='true'/>
+</TableSpecification>
+<OGFURecord id='1'>
+<recordId>http://www.emsl.pnl.gov/mscf/colony/PBS.1234.0</recordId>
+<LocalJobId>PBS.1234.0</LocalJobId>
+<LocalUserId>scottmo</LocalUserId>
+<EndTime>1060799858</EndTime>
+<Queue>batch</Queue>
+<StartTime>1060796090</StartTime>
+<Status>completed</Status>
+<NodeCount>2</NodeCount>
+<Processors>4</Processors>
+</OGFURecord>
+<OGFURecord id='2'>
+<recordId>urn:nasa:arc:usage:82125.lomax.nas.nasa.gov:0</recordId>
+<LocalJobId>82125.lomax.nas.nasa.gov</LocalJobId>
+<LocalUserId>foobar</LocalUserId>
+<EndTime>1055751872</EndTime>
+<Queue>lomax</Queue>
+<StartTime>1055750492</StartTime>
+<Status>0</Status>
+<Processors>32</Processors>
+</OGFURecord>
+<OGFURecord id='3'>
+<recordId>l1f403.119213.03167609168</recordId>
+<LocalJobId>l1f403.119213.03167609168</LocalJobId>
+<LocalUserId>luttkw2</LocalUserId>
+<EndTime>1172880347</EndTime>
+<JobName>pre_run</JobName>
+<Queue>par32_6</Queue>
+<StartTime>1199145168</StartTime>
+<Status>completed</Status>
+<Processors>32</Processors>
+</OGFURecord>
+<OGFURecord id='4'>
+<recordId>l1f403.119038.71167594341</recordId>
+<LocalJobId>l1f403.119038.71167594341</LocalJobId>
+<LocalUserId>user123</LocalUserId>
+<EndTime>1172880958</EndTime>
+<JobName>xbxdx000</JobName>
+<Queue>par64_6</Queue>
+<StartTime>1199130363</StartTime>
+<Status>completed</Status>
+<Processors>64</Processors>
+</OGFURecord>
+<OGFURecord id='5'>
+<recordId>l1f406.119310.03167597651</recordId>
+<LocalJobId>l1f406.119310.03167597651</LocalJobId>
+<LocalUserId>user123</LocalUserId>
+<EndTime>1172881160</EndTime>
+<JobName>run</JobName>
+<Queue>par64_6</Queue>
+<StartTime>1199133651</StartTime>
+<Status>completed</Status>
+<Processors>64</Processors>
+</OGFURecord>
+<OGFURecord id='6'>
+<recordId>l1f406.119303.03167592164</recordId>
+<LocalJobId>l1f406.119303.03167592164</LocalJobId>
+<LocalUserId>vika71</LocalUserId>
+<EndTime>1172881160</EndTime>
+<JobName>mytest</JobName>
+<Queue>par32_6</Queue>
+<StartTime>1199128564</StartTime>
+<Status>completed</Status>
+<Processors>16</Processors>
+</OGFURecord>
+<OGFURecord id='7'>
+<recordId>l1f403.119168.03167594054</recordId>
+<LocalJobId>l1f403.119168.03167594054</LocalJobId>
+<LocalUserId>ascote</LocalUserId>
+<EndTime>1172881313</EndTime>
+<JobName>test1</JobName>
+<Queue>par216_12</Queue>
+<StartTime>1199130054</StartTime>
+<Status>completed</Status>
+<Processors>160</Processors>
+</OGFURecord>
+</dataset>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+	<rep:Title>Service Usage</rep:Title>
+  
+  	<par:ParameterDef label="Report period" name="Period" type="CalendarPeriod" />	
+	<par:Parameter name="Period"/>
+	
+	
+	
+	<rep:Section>
+	<rep:Heading>Service Usage</rep:Heading>
+	
+	<rep:Text>This report was generated at 
+	<par:Parameter name="CurrentTime" format="Date"/> by 
+	<par:Parameter name="AuthenticatedUser" format="WebName"/>.</rep:Text>
+	
+	<rep:SubSection>
+	<rep:Title>Service Usage</rep:Title>
+		<rep:Text>This is the overall service usage information. A total of 
+			<ato:Sum>Time</ato:Sum> seconds were expended 
+			during this time period.
+		</rep:Text>
+			
+		<cha:TimeChart>
+			<cha:NumberOfTimeBlocks>5</cha:NumberOfTimeBlocks>
+			<cha:Plot>Residency</cha:Plot>
+		</cha:TimeChart>	
+	
+	</rep:SubSection>
+</rep:Section>
+	
+</rep:Report>

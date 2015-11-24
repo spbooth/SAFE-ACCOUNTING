@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../../../WEB-INF/schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:acc="http://safe.epcc.ed.ac.uk/restrict"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<Title>Project Usage</Title>
+<par:ParameterDef label="Report period" name="Period" type="CalendarPeriod" />	
+	<par:Parameter name="Period"/>
+	
+<acc:RestrictedSection>
+<acc:Roles><acc:Required>SupportStaff</acc:Required></acc:Roles>
+<acc:Content>	
+    <par:Text>As a member of the support staff you can select any project. 
+    Normal users may only select
+    projects where they are designated as managers</par:Text>
+	<par:ParameterDef name="Project" type="Project" />
+</acc:Content>
+<acc:Fallback>
+     <par:Text>You may only select projects where you are a designated manager</par:Text>
+     <par:ParameterDef name="Project" type="ProjectManager" role="Manager" />
+</acc:Fallback>
+</acc:RestrictedSection> 
+	
+	<fil:Filter>
+		<fil:EQ>
+			<fil:Property>Project</fil:Property>
+			<fil:Value><par:Parameter name="Project"/></fil:Value>
+		</fil:EQ>
+	</fil:Filter>
+	
+	
+	
+	<Heading><par:Parameter name="Project"/> from <per:StartDate format="dd-MM-yyyy"/> to <per:EndDate format="dd-MM-yyyy"/></Heading>
+	
+	<Text>This report was generated at 
+	<par:Parameter name="CurrentTime" format="Date"/> by 
+	<par:Parameter name="AuthenticatedUser" format="expression:{FullName,WebName}"/>.</Text>
+	
+	<Section><Title>Total Usage</Title>
+	
+	<Text>This is the overall service usage information for project 
+	<par:Parameter name="Project"/>. A total of 
+	<ato:Sum>SpecFPHour</ato:Sum> specFP hours were expended by this project 
+	during this time period. </Text>	
+	</Section>
+	
+	<Section><Title>Usage by user</Title>	
+	
+		<Text>This figure shows the breakdown of 
+		<par:Parameter name="Project"/> usage by user.</Text>
+		
+		<cha:PieTimeChart>
+			<cha:Plot>SpecFPHour</cha:Plot>
+			<cha:GroupBy>PersonName</cha:GroupBy>
+		</cha:PieTimeChart>
+		
+		<Text>This table shows the breakdown of 
+		<par:Parameter name="Project"/> usage by user.</Text>
+		
+		<tab:SummaryTable>
+			<tab:Index>
+				<tab:Name>UserID</tab:Name>
+				<tab:Property>UserName</tab:Property>
+			</tab:Index>
+			<tab:Index>
+				<tab:Name>User Name</tab:Name>
+				<tab:Property>FullName</tab:Property>
+			</tab:Index>
+			<tab:SumColumn>
+			<tab:Name>Jobs</tab:Name>
+			<tab:Property>JobCount</tab:Property>
+			</tab:SumColumn>
+			<tab:SumColumn>
+				<tab:Name>Core2007</tab:Name>
+				<tab:Property>Core2007</tab:Property>
+			</tab:SumColumn>
+			<tab:SumColumn>
+				<tab:Name>SpecFP hours</tab:Name>
+				<tab:Property>SpecFPHour</tab:Property>
+			</tab:SumColumn>	
+			<tab:SortBy>
+			<tab:Columns>SpecFP hours</tab:Columns>
+			</tab:SortBy>	
+			<tab:TotalColumn>				
+				<tab:Name>Total</tab:Name>			
+				<tab:Column>Jobs</tab:Column>				
+			</tab:TotalColumn>
+			<tab:TotalColumn>				
+				<tab:Name>Total</tab:Name>			
+				<tab:Column>Core2007</tab:Column>				
+			</tab:TotalColumn>
+			<tab:TotalColumn>				
+				<tab:Name>Total</tab:Name>			
+				<tab:Column>SpecFP hours</tab:Column>				
+			</tab:TotalColumn>
+		</tab:SummaryTable>
+		
+	</Section>
+	
+	<Section><Title>Usage by time</Title>	
+	
+		<Text>This chart shows the Time used by 
+		<par:Parameter name="Project"/>  between
+		<per:StartDate format="dd-MM-yyyy"/> and <per:EndDate format="dd-MM-yyyy"/>
+		broken down by user.</Text>
+		
+		<cha:TimeChart>
+			<cha:Plot>SpecFPHour</cha:Plot>
+			<cha:GroupBy>PersonName</cha:GroupBy>
+		</cha:TimeChart>
+		
+	</Section>
+
+</Report>

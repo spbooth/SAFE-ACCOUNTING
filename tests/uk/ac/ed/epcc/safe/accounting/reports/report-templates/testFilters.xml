@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+
+<per:Period>
+	<per:StartTime>29-09-2008</per:StartTime>
+	<per:EndTime>29-10-2008</per:EndTime>
+	<per:NumberOfSplits>4</per:NumberOfSplits>
+</per:Period>
+	
+<Heading>The EQ Filter</Heading>
+
+<cha:TimeChart>
+	<fil:Filter>
+		<fil:EQ>
+			<fil:Property>Project</fil:Property>
+			<fil:Value>ecdf_baseline</fil:Value>
+		</fil:EQ>
+	</fil:Filter>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:TimeChart>
+
+<Heading>The NE Filter</Heading>
+
+<cha:TimeChart>
+	<fil:Filter>
+		<fil:NE>
+			<fil:Property>Project</fil:Property>
+			<fil:Value>ecdf_baseline</fil:Value>
+		</fil:NE>
+	</fil:Filter>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:TimeChart>
+
+<Heading>The GT Filter</Heading>
+
+<cha:TimeChart>
+	<fil:Filter>
+		<fil:GT>
+			<fil:Property>Wall</fil:Property>
+			<fil:Value>24</fil:Value>
+		</fil:GT>
+	</fil:Filter>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:TimeChart>
+
+<Heading>The GE Filter</Heading>
+
+<cha:TimeChart>
+	<fil:Filter>
+		<fil:GE>
+			<fil:Property>Wall</fil:Property>
+			<fil:Value>24</fil:Value>
+		</fil:GE>
+	</fil:Filter>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:TimeChart>
+
+<Heading>The LT Filter</Heading>
+
+<cha:TimeChart>
+	<fil:Filter>
+		<fil:LT>
+			<fil:Property>Wall</fil:Property>
+			<fil:Value>24</fil:Value>
+		</fil:LT>
+	</fil:Filter>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:TimeChart>
+
+<Heading>The LE Filter</Heading>
+
+<cha:TimeChart>
+	<fil:Filter>
+		<fil:LE>
+			<fil:Property>Wall</fil:Property>
+			<fil:Value>24</fil:Value>
+		</fil:LE>
+	</fil:Filter>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:TimeChart>
+
+
+<Heading>The And Filter</Heading>
+
+<cha:TimeChart>
+	<fil:Filter>
+		<fil:And>
+			<fil:EQ>
+				<fil:Property>Project</fil:Property>
+				<fil:Value>ecdf_baseline</fil:Value>
+			</fil:EQ>
+			<fil:LE>
+				<fil:Property>Wall</fil:Property>
+				<fil:Value>1000</fil:Value>
+			</fil:LE>
+		</fil:And>
+	</fil:Filter>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:TimeChart>
+
+<Heading>The Or Filter</Heading>
+
+<cha:TimeChart>
+	<fil:Filter>
+		<fil:Or>
+			<fil:EQ>
+				<fil:Property>Project</fil:Property>
+				<fil:Value>ecdf_baseline</fil:Value>
+			</fil:EQ>
+			<fil:LE>
+				<fil:Property>Wall</fil:Property>
+				<fil:Value>1000</fil:Value>
+			</fil:LE>
+		</fil:Or>
+	</fil:Filter>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:TimeChart>
+
+<Heading>Derived Porperty Filter</Heading>
+
+<tab:SummaryTable>
+  	<fil:Filter>
+		<fil:EQ>
+			<fil:Property>Institute</fil:Property>
+			<fil:Value>Digital Communications</fil:Value>
+		</fil:EQ>
+	</fil:Filter>
+	<tab:Index>
+		<tab:Name>Project</tab:Name>
+		<tab:Property>Project</tab:Property>
+	</tab:Index>
+	<tab:SumColumn>
+		<tab:Name>Wall</tab:Name>
+		<tab:Property>Wall</tab:Property>
+	</tab:SumColumn>
+</tab:SummaryTable>
+<!-- 
+mysql> SELECT Project.Name, SUM(Wall)  FROM SGERecord JOIN (Project,Institute) ON (SGERecord.ProjectID=Project.Id AND Project.InstituteID=Institute.Id) WHERE Institute.Name="Digital Communications" GROUP BY ProjectID\G
+*************************** 1. row ***************************
+     Name: inf_hcrc_cstr_emime
+SUM(Wall): 140360
+1 row in set (0.01 sec)
+-->
+
+<Heading>Double Derived Porperty Filter</Heading>
+
+<tab:SummaryTable>
+  	<fil:Filter>
+		<fil:EQ>
+			<fil:Property>School</fil:Property>
+			<fil:Value>Informatics</fil:Value>
+		</fil:EQ>
+	</fil:Filter>
+	<tab:Column>
+		<tab:Name>Institute</tab:Name>
+		<tab:Property>Institute</tab:Property>
+	</tab:Column>
+	<tab:SumColumn>
+		<tab:Name>Time</tab:Name>
+		<tab:Property>Wall</tab:Property>
+	</tab:SumColumn>						
+	<tab:SortBy>
+		<tab:Columns>Time</tab:Columns>
+	</tab:SortBy>
+</tab:SummaryTable>
+<!-- 
+mysql> SELECT Institute.Name, SUM(Wall) FROM SGERecord JOIN (Project,Institute,School) ON (SGERecord.ProjectID=Project.Id AND Project.InstituteID=Institute.Id AND Institute.SchoolID=School.ID) WHERE School.Name="Informatics" GROUP BY Institute.Name\G
+*************************** 1. row ***************************
+     Name: Computing Systems Architecture
+SUM(Wall): 49854
+*************************** 2. row ***************************
+     Name: Digital Communications
+SUM(Wall): 140360
+2 rows in set (0.00 sec)
+-->
+<!--  
+<Heading>Allocation table</Heading>
+
+<tab:Table>
+  	<fil:Filter>
+		<fil:Producer>allocation</fil:Producer>
+	</fil:Filter>
+	<tab:Column>
+		<tab:Name>Allocated CPU Hours</tab:Name>
+		<tab:Property>CPUHours</tab:Property>
+	</tab:Column>
+	<tab:Column>
+		<tab:Name>Project</tab:Name>
+		<tab:Property>Project</tab:Property>
+	</tab:Column>
+	<tab:Column>
+		<tab:Name>Start</tab:Name>
+		<tab:Property>StartedTimestamp</tab:Property>
+	</tab:Column>
+	<tab:Column>
+		<tab:Name>End</tab:Name>
+		<tab:Property>CompletedTimestamp</tab:Property>
+	</tab:Column>
+</tab:Table>
+-->
+<Heading>Name Ref parse</Heading>
+
+<cha:TimeChart>
+	<fil:Filter>
+		<fil:EQ>
+			<fil:Property>table:Project</fil:Property>
+			<fil:Value>ecdf_baseline</fil:Value>
+		</fil:EQ>
+	</fil:Filter>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:TimeChart>
+
+<Heading>Id Ref parse</Heading>
+
+<cha:TimeChart>
+	<fil:Filter>
+		<fil:EQ>
+			<fil:Property>table:Project</fil:Property>
+			<fil:Value>1</fil:Value>
+		</fil:EQ>
+	</fil:Filter>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:TimeChart>
+</Report>

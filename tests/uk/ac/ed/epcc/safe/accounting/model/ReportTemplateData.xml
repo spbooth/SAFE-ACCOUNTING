@@ -1,0 +1,51 @@
+<dataset><TableSpecification name='ReportTemplate'>
+<ReportName type='String' nullable='false' max='255'/>
+<ReportDesription type='String' nullable='false' max='255'/>
+<TemplateName type='String' nullable='false' max='255'/>
+</TableSpecification>
+<ReportTemplate id='9'>
+<ReportName>Aggregate Time Chart</ReportName>
+<ReportDesription></ReportDesription>
+<TemplateName>AggregateTimeChart.xml</TemplateName>
+</ReportTemplate>
+<ReportTemplate id='8'>
+<ReportName>Bar Time Chart</ReportName>
+<ReportDesription></ReportDesription>
+<TemplateName>BarTimeChart.xml</TemplateName>
+</ReportTemplate>
+<ReportTemplate id='7'>
+<ReportName>Pie Time Chart</ReportName>
+<ReportDesription></ReportDesription>
+<TemplateName>PieTimeChart.xml</TemplateName>
+</ReportTemplate>
+<ReportTemplate id='4'>
+<ReportName>Project Jobs</ReportName>
+<ReportDesription>Your project jobs</ReportDesription>
+<TemplateName>ProjectJobs.xml</TemplateName>
+</ReportTemplate>
+<ReportTemplate id='3'>
+<ReportName>Project Usage</ReportName>
+<ReportDesription>Your project usage</ReportDesription>
+<TemplateName>ProjectUsage.xml</TemplateName>
+</ReportTemplate>
+<ReportTemplate id='5'>
+<ReportName>Service Usage</ReportName>
+<ReportDesription>The service usage</ReportDesription>
+<TemplateName>ServiceUsage.xml</TemplateName>
+</ReportTemplate>
+<ReportTemplate id='6'>
+<ReportName>Time Chart</ReportName>
+<ReportDesription></ReportDesription>
+<TemplateName>TimeChart.xml</TemplateName>
+</ReportTemplate>
+<ReportTemplate id='2'>
+<ReportName>User Jobs</ReportName>
+<ReportDesription>Your job details</ReportDesription>
+<TemplateName>UserJobs.xml</TemplateName>
+</ReportTemplate>
+<ReportTemplate id='1'>
+<ReportName>User Usage</ReportName>
+<ReportDesription>Your usage details</ReportDesription>
+<TemplateName>UserUsage.xml</TemplateName>
+</ReportTemplate>
+</dataset>

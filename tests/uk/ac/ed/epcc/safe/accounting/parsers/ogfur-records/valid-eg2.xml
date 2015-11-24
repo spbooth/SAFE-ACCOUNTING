@@ -1,0 +1,27 @@
+<!--
+    Copyright (c) - The Univeristy of Edinburgh 2010
+ -->
+<UsageRecord xmlns="http://schema.ogf.org/urf/2003/09/urf"
+      xmlns:urf="http://schema.ogf.org/urf/2003/09/urf"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://schema.ogf.org/urf/2003/09/urf file:/Users/bekah/Documents/GGF/URWG/urwg-schema.09.02.xsd">
+      <RecordIdentity urf:createTime="2003-08-15T14:25:56Z"
+      urf:recordId="urn:nasa:arc:usage:82125.lomax.nas.nasa.gov:0"/>
+      <urf:JobIdentity>
+            <urf:LocalJobId>82125.lomax.nas.nasa.gov</urf:LocalJobId>
+      </urf:JobIdentity>
+      <urf:UserIdentity>
+            <urf:LocalUserId>foobar</urf:LocalUserId>
+      </urf:UserIdentity>
+      <Status urf:description="pbs exit status">0</Status>
+      <urf:Memory urf:metric="total" urf:storageUnit="KB">1060991</urf:Memory>
+      <urf:Processors>32</urf:Processors>
+      <urf:StartTime>2003-06-16T08:01:32Z</urf:StartTime>
+      <urf:EndTime>2003-06-16T08:24:32Z</urf:EndTime>
+      <urf:ProjectName urf:description="local charge group">g13563</urf:ProjectName>
+      <urf:Host urf:primary="true">lomax.nas.nasa.gov</urf:Host>
+      <urf:Queue>lomax</urf:Queue>
+      <urf:WallDuration>PT45M48S</urf:WallDuration>
+      <urf:CpuDuration>PT15S</urf:CpuDuration>
+      <urf:Resource urf:description="pbs-jobname">m0.20a-7.0b0.0v</urf:Resource>
+</UsageRecord>

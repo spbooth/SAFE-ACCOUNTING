@@ -1,0 +1,15 @@
+<!--
+    Copyright (c) - The Univeristy of Edinburgh 2010
+ -->
+<UsageRecord xmlns="http://schema.ogf.org/urf/2003/09/urf"
+  xmlns:urf="http://schema.ogf.org/urf/2003/09/urf">
+  <RecordIdentity urf:createTime="2003-08-15T14:25:56Z"
+    urf:recordId="Grid-SAFE.webacct.test:default-values" />
+  <Status urf:description="pbs exit status">0</Status>
+  <Disk>1</Disk>
+  <Memory>2</Memory>
+  <Network>3</Network>
+  <Swap>4</Swap>
+  <NodeCount>5</NodeCount>
+  <Host>6</Host>
+</UsageRecord>

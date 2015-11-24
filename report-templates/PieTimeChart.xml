@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+
+   <rep:Title>Pie Chart generator</rep:Title>
+   
+   <par:Text>This report generates pie charts of usage data over a specified time period. 
+   </par:Text>
+	<!-- Chart -->
+	<par:ParameterDef label="Quantity to Plot" name="Plot" type="Plot"/>
+	<par:ParameterDef label="Quantity to Group by" name="Group" type="Group"/>
+	
+	<!--  Period -->
+	<par:ParameterDef label="Report period" name="Period" type="CalendarPeriod" />	
+	<par:Parameter name="Period"/>
+	
+
+	
+	<rep:Text>This is a pie-chart of <par:Parameter name="Plot"/> grouped by <par:Parameter name="Group"/>
+	</rep:Text>
+	 <rep:Text>The reporting period is <per:StartDate format="dd-MM-yyyy"/> to <per:EndDate format="dd-MM-yyyy"/></rep:Text>
+	<cha:PieTimeChart>
+		<cha:Plot><par:Parameter name="Plot"/></cha:Plot>
+		<cha:GroupBy><par:Parameter name="Group"/></cha:GroupBy>
+	</cha:PieTimeChart>
+
+</rep:Report>

@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<rep:Report
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:acc="http://safe.epcc.ed.ac.uk/restrict"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:fmt="http://safe.epcc.ed.ac.uk/format"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+
+<rep:Title>QCG general accounting report</rep:Title>
+
+<acc:RequireRole>QCGManager</acc:RequireRole>
+<acc:SufficientRole>QCGManager</acc:SufficientRole>
+
+<!-- Chart -->
+<!--par:ParameterDef label="Plot" name="Plot" type="Plot" />
+<par:ParameterDef label="Group" name="Group" type="Group" optional="false" /-->
+
+
+<!--  Period -->
+<par:ParameterDef label="Start Date" name="StartDate" type="Date"
+value="Now-1m"/>
+<par:ParameterDef label="End Date" name="EndDate" type="Date"
+value="Now-0m"/>  
+
+<par:ParameterDef label="Display single jobs" name="DisplayAllJobs" type="Boolean"/>
+<!--par:ParameterDef label="Number of last jobs to display" name="Count" type="Integer" value="10"/-->
+<par:ParameterDef label="Ignore virtual users" name="IgnoreUsers" type="Boolean"/>
+
+<per:Period>
+<per:StartTime><par:Parameter name="StartDate"/></per:StartTime>
+<per:EndTime><par:Parameter name="EndDate"/></per:EndTime>
+<per:NumberOfSplits>10</per:NumberOfSplits>
+</per:Period>
+
+<par:IfSet name="IgnoreUsers">
+<par:Content>
+<fil:Filter>
+<fil:And>
+  <fil:NE>
+    <fil:Property>ogfur:GlobalUsername</fil:Property>
+    <fil:Value>/C=PL/O=GRID/O=PSNC/CN=Pawel Wolniewicz - nagios</fil:Value>
+  </fil:NE>
+</fil:And>
+</fil:Filter>
+</par:Content>
+</par:IfSet>
+
+<rep:Section>
+<rep:Text>Selected period: <par:Parameter name="StartDate"/> - <par:Parameter name="EndDate"/></rep:Text>
+<rep:Text>Num of jobs within the period: <ato:Count/>.</rep:Text>
+<rep:Text>Used WallClockTime (s): <ato:Sum>time:Elapsed</ato:Sum></rep:Text>
+<rep:Text>Used CPUTime (s): <ato:Sum>base:CPUTime</ato:Sum></rep:Text>
+</rep:Section>
+
+   <rep:Section>
+        <rep:Title>Accounting charts</rep:Title>
+        <rep:Heading>Chart 1. CPUTime per User</rep:Heading>
+                <cha:TimeChart>
+                        <cha:Plot>CPUTime</cha:Plot>
+                        <cha:GroupBy>UserName</cha:GroupBy>
+                </cha:TimeChart>
+
+        <rep:Heading>Chart 2. CPUTime per User</rep:Heading>
+                <cha:PieTimeChart>
+                        <cha:Plot>CPUTime</cha:Plot>
+                        <cha:GroupBy>UserName</cha:GroupBy>
+                </cha:PieTimeChart>
+
+        <rep:Heading>Chart 3. JobCount per User</rep:Heading>
+                <cha:PieTimeChart>
+                        <cha:Plot>JobCount</cha:Plot>
+                        <cha:GroupBy>UserName</cha:GroupBy>
+                </cha:PieTimeChart>
+
+        <rep:Heading>Chart 4. CPUTime per SubmitHost</rep:Heading>
+                <cha:PieTimeChart>
+                        <cha:Plot>CPUTime</cha:Plot>
+                        <cha:GroupBy>ogfur:SubmitHost</cha:GroupBy>
+                </cha:PieTimeChart>
+    </rep:Section>
+
+<rep:Section>
+<rep:Title>Summary table for active users</rep:Title>
+
+
+
+<tab:CompoundTable>
+
+<tab:SummaryTable>
+  <tab:Index>
+    <tab:Name>User</tab:Name>
+    <tab:Property>ogfur:GlobalUsername</tab:Property>
+  </tab:Index>
+  <tab:SumColumn>
+    <tab:Name>Num of jobs</tab:Name>
+    <tab:Property>time:JobCount</tab:Property>
+  </tab:SumColumn>
+</tab:SummaryTable>
+
+<tab:SummaryTable>
+  <tab:Index>
+    <tab:Name>User</tab:Name>
+    <tab:Property>ogfur:GlobalUsername</tab:Property>
+  </tab:Index>
+  <tab:SumColumn>
+    <tab:Name>CPUTime</tab:Name>
+    <tab:Property>CPUTime</tab:Property>
+  </tab:SumColumn>
+  <tab:SortBy>
+    <tab:Columns>CPUTime</tab:Columns>
+    <tab:Reverse>true</tab:Reverse>
+  </tab:SortBy>
+</tab:SummaryTable>
+
+<par:For var="submitHost" source="QCGSubmitHosts">
+  <!--fil:EQ>
+    <fil:Property>ogfur:SubmitHost</fil:Property>
+    <fil:Value><par:Parameter name="submitHost"/></fil:Value>
+  </fil:EQ-->
+<par:Content>
+
+<tab:SummaryTable>
+  <fil:Filter>
+  <fil:EQ>
+    <fil:Property>ogfur:SubmitHost</fil:Property>
+    <fil:Value><par:Parameter name="submitHost"/></fil:Value>
+  </fil:EQ>
+  </fil:Filter>
+  <tab:Index>
+    <tab:Name>User</tab:Name>
+    <tab:Property>ogfur:GlobalUsername</tab:Property>
+  </tab:Index>
+  <tab:SumColumn>
+    <tab:Name><par:Parameter name="submitHost"/> (CPUTime)</tab:Name>
+    <tab:Property>CPUTime</tab:Property>
+  </tab:SumColumn>
+</tab:SummaryTable>
+
+</par:Content>
+</par:For>
+
+</tab:CompoundTable>
+</rep:Section>
+
+<par:IfSet name="DisplayAllJobs">
+  <par:Content>
+  <rep:Section>
+   <rep:Title>List of elementary jobs</rep:Title>
+     <tab:Table>
+      <tab:Column>
+       <tab:Name>Global Job ID</tab:Name>
+       <tab:Property>ogfur:GlobalJobId</tab:Property>
+     </tab:Column>
+     <tab:Column>
+       <tab:Name>User</tab:Name>
+       <tab:Property>ogfur:GlobalUsername</tab:Property>
+     </tab:Column>
+     <tab:Column>
+       <tab:Name>Submit Host</tab:Name>
+       <tab:Property>ogfur:SubmitHost</tab:Property>
+     </tab:Column>
+     <tab:Column>
+       <tab:Name>Start Time</tab:Name>
+       <tab:Property>time:StartedTimestamp</tab:Property>
+     </tab:Column>
+     <tab:Column>
+       <tab:Name>End Time</tab:Name>
+       <tab:Property>time:CompletedTimestamp</tab:Property>
+     </tab:Column>
+     <tab:Column>
+       <tab:Name>CPUTime</tab:Name>
+       <tab:Property>CPUTime</tab:Property>
+      </tab:Column>
+      <tab:SortBy>
+        <tab:Columns>End Time</tab:Columns>
+        <tab:Reverse>true</tab:Reverse>
+      </tab:SortBy>
+      <!--tab:MaxRows><par:Parameter name="Count"/></tab:MaxRows-->
+    </tab:Table>
+  </rep:Section>
+  </par:Content>
+</par:IfSet>
+</rep:Report>
+

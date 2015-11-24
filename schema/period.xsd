@@ -1,0 +1,81 @@
+<xsd:schema elementFormDefault="qualified"
+	targetNamespace="http://safe.epcc.ed.ac.uk/period"
+	xmlns="http://safe.epcc.ed.ac.uk/period"
+	xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<!-- Note that we need the period element to perform any queries
+	     So we can only use parameter here not substitute -->
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/parameter"
+		schemaLocation="parameter.xsd" />
+
+	<xsd:group name="EndTimeType">
+		<xsd:sequence>
+			<xsd:element name="EndTime" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:group>
+
+	<xsd:group name="SplitUnitType">
+		<xsd:sequence>
+			<xsd:element name="SplitUnit" minOccurs="1" maxOccurs="1">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="Second" />
+						<xsd:enumeration value="Minute" />
+						<xsd:enumeration value="Hour" />
+						<xsd:enumeration value="Day" />
+						<xsd:enumeration value="Week" />
+						<xsd:enumeration value="Month" />
+						<xsd:enumeration value="Year" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="NumberOfSplitUnits"
+				type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:group>
+
+	<!-- Periods -->
+	<xsd:complexType name="PeriodType">
+		<xsd:annotation><xsd:documentation>
+		Define the time period to query (optionally split into sub-periods). This can be expressed either as
+		a simple start and end time or a start and a number of calendar units per sub-period.
+		In both cases
+		</xsd:documentation></xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="StartTime" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:choice>
+				<xsd:group ref="EndTimeType" minOccurs="0"
+					maxOccurs="1" />
+				<xsd:group ref="SplitUnitType" minOccurs="0"
+					maxOccurs="1" />
+			</xsd:choice>
+			<xsd:element name="NumberOfSplits"
+				type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="Period" type="PeriodType" />
+
+
+	<xsd:element name="StartDate" type="BoundaryDateComplexType" />
+
+	<xsd:element name="EndDate" type="BoundaryDateComplexType"/>
+	
+	<xsd:group name="Substitution">
+	<xsd:annotation><xsd:documentation>
+	Elements that insert text representation of period boundaries
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:element ref="StartDate"/>
+		<xsd:element ref="EndDate" />
+	</xsd:choice>
+	</xsd:group>
+
+
+
+	<xsd:complexType name="BoundaryDateComplexType">
+		<xsd:attribute use="optional" name="format" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+</xsd:schema>

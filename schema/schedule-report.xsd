@@ -1,0 +1,33 @@
+<xsd:schema xmlns="http://safe.epcc.ed.ac.uk/report"
+	targetNamespace="http://safe.epcc.ed.ac.uk/report"
+	elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+	xmlns:mac="http://safe.epcc.ed.ac.uk/macro"
+	xmlns:sub="http://safe.epcc.ed.ac.uk/substitute"
+	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+	xmlns:per="http://safe.epcc.ed.ac.uk/period"
+	xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+	xmlns:acc="http://safe.epcc.ed.ac.uk/restrict"
+	xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+	xmlns:ato="http://safe.epcc.ed.ac.uk/atom"
+	xmlns:sched="http://safe.epcc.ed.ac.uk/schedule">
+
+<xsd:annotation>
+<xsd:documentation>
+Report Schema extended to allow Schedule elements in Content.
+</xsd:documentation>
+</xsd:annotation>
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/schedule"
+		schemaLocation="schedule.xsd" />
+
+	<xsd:redefine schemaLocation="report.xsd">
+	
+	<xsd:group name="Content">
+	<xsd:choice>
+	<xsd:group ref="Content"/>
+	<xsd:element ref="sched:Schedule"/>
+	</xsd:choice>
+	</xsd:group>
+	</xsd:redefine>
+</xsd:schema>

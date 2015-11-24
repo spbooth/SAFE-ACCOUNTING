@@ -1,0 +1,5201 @@
+<?xml version="1.0"?>
+<dataset>
+<TableSpecification name='DailyAggregate'>
+<MachineID reference='Machine'/>
+<ProjectID reference='Project'/>
+<GroupID reference='UnixGroup'/>
+<PersonID reference='Person'/>
+<QueueID reference='Queue'/>
+<PeID reference='Pe'/> 
+<StartedTimestamp type='Long' nullable='false'/>
+<CompletedTimestamp type='Long' nullable='false'/>
+<Residency type='Long' nullable='true'/>
+<Wall type='Integer' nullable='true'/>
+<CPUTime type='Double' nullable='true'/>
+<JobCount type='Integer' nullable='true'/>
+</TableSpecification>
+<TableSpecification name='Pe'>
+<Name type='String' nullable='false' max='64'/>
+</TableSpecification>
+<Pe id='2'>
+<Name>memory</Name>
+</Pe>
+<Pe id='1'>
+<Name>NONE</Name>
+</Pe>
+<TableSpecification name='Machine'>
+<Name type='String' nullable='false' max='32'/>
+<Table type='String' nullable='true' max='32'/>
+</TableSpecification>
+<Machine id='1'>
+<Name>Eddie</Name>
+<Table>SGERecord</Table>
+</Machine>
+<TableSpecification name='Account'>
+<Name type='String' nullable='false' max='64'/>
+</TableSpecification>
+<Account id='1'>
+<Name>sge</Name>
+</Account>
+<TableSpecification name='SGERecord'>
+<MachineID reference='Machine'/>
+<ProjectID reference='Project'/>
+<GroupID reference='UnixGroup'/>
+<SubmittedTimestamp type='Long' nullable='false'/>
+<StartedTimestamp type='Long' nullable='false'/>
+<CompletedTimestamp type='Long' nullable='false'/>
+<JobID type='String' nullable='false' max='32'/>
+<JobName type='String' nullable='true' max='128'/>
+<CPUs type='Integer' nullable='true'/>
+<Failed type='Integer' nullable='true'/>
+<Exit type='Integer' nullable='true'/>
+<Wall type='Integer' nullable='true'/>
+<Category type='String' nullable='true' max='255'/>
+<CPUTime type='Double' nullable='true'/>
+<Task type='Integer' nullable='true'/>
+<PeTaskId type='String' nullable='true' max='32'/>
+<Vmem type='Double' nullable='true'/>
+<Mem type='Double' nullable='true'/>
+<PersonID reference='Person'/>
+<QueueID reference='Queue'/>
+<AccountID reference='Account'/>
+<PeID reference='Pe'/>
+</TableSpecification>
+<TableSpecification name='Project'>
+<Name type='String' nullable='false' max='64'/>
+<InstituteID reference='Institute'/>
+</TableSpecification>
+<Project id='5'>
+<Name>prdatlas</Name>
+</Project>
+<TableSpecification name='UnixGroup'>
+<Name type='String' nullable='false' max='64'/>
+</TableSpecification>
+<UnixGroup id='5'>
+<Name>prdatlas</Name>
+</UnixGroup>
+<TableSpecification name='Person'>
+<WebName type='String' nullable='false' max='64'/>
+<Email type='String' nullable='true' max='128'/>
+<InstituteID reference='Institute'/>
+</TableSpecification>
+<Person id='6'>
+<WebName>prdatlas014</WebName>
+</Person>
+<TableSpecification name='Queue'>
+<Name type='String' nullable='false' max='64'/>
+</TableSpecification>
+<Queue id='1'>
+<Name>ecdf</Name>
+</Queue>
+<SGERecord id='7232239'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>5</GroupID>
+<SubmittedTimestamp>1222832374</SubmittedTimestamp>
+<StartedTimestamp>1222833555</StartedTimestamp>
+<CompletedTimestamp>1222851675</CompletedTimestamp>
+<JobID>1153891</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>18120</Wall>
+<Category>-u prdatlas014 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=6140M,s_vmem=5560M -P prdatlas</Category>
+<CPUTime>18120.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.508995072E9</Vmem>
+<Mem>98385.9375</Mem>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<TableSpecification name='Institute'>
+<Name type='String' nullable='false' max='64'/>
+<SchoolID reference='School'/>
+</TableSpecification>
+<TableSpecification name='School'>
+<Name type='String' nullable='false' max='64'/>
+</TableSpecification>
+<School id='4'>
+<Name>Informatics</Name>
+</School>
+<Institute id='8'>
+<Name>Computing Systems Architecture</Name>
+<SchoolID>4</SchoolID>
+</Institute>
+<Project id='19'>
+<Name>inf_iccs_smt</Name>
+<InstituteID>8</InstituteID>
+</Project>
+<UnixGroup id='30'>
+<Name>inf_iccs_smt</Name>
+</UnixGroup>
+<Person id='353'>
+<WebName>jschroe1</WebName>
+</Person>
+<SGERecord id='7229725'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833342</SubmittedTimestamp>
+<StartedTimestamp>1222833530</StartedTimestamp>
+<CompletedTimestamp>1222835205</CompletedTimestamp>
+<JobID>1153952</JobID>
+<JobName>mert6-ap</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1675</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1675.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.170348032E9</Vmem>
+<Mem>3351.635742</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229678'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833342</SubmittedTimestamp>
+<StartedTimestamp>1222833530</StartedTimestamp>
+<CompletedTimestamp>1222834944</CompletedTimestamp>
+<JobID>1153951</JobID>
+<JobName>mert6-ao</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1414</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1414.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.644946944E9</Vmem>
+<Mem>2829.380859</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229610'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833342</SubmittedTimestamp>
+<StartedTimestamp>1222833530</StartedTimestamp>
+<CompletedTimestamp>1222834740</CompletedTimestamp>
+<JobID>1153953</JobID>
+<JobName>mert6-aq</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1210</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1210.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>4.142637056E9</Vmem>
+<Mem>2421.181641</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229601'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833342</SubmittedTimestamp>
+<StartedTimestamp>1222833530</StartedTimestamp>
+<CompletedTimestamp>1222834676</CompletedTimestamp>
+<JobID>1153954</JobID>
+<JobName>mert6-ar</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1146</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1146.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.809639424E9</Vmem>
+<Mem>2293.119141</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229523'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830771</SubmittedTimestamp>
+<StartedTimestamp>1222833530</StartedTimestamp>
+<CompletedTimestamp>1222833530</CompletedTimestamp>
+<JobID>1153732</JobID>
+<JobName>mert8.W</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>0</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.148532224E9</Vmem>
+<Mem>2.000977</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<Project id='1'>
+<Name>ecdf_baseline</Name>
+</Project>
+<UnixGroup id='2'>
+<Name>informatics</Name>
+</UnixGroup>
+<Person id='133'>
+<WebName>bhaddow</WebName>
+</Person>
+<SGERecord id='7229522'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>2</GroupID>
+<SubmittedTimestamp>1222833484</SubmittedTimestamp>
+<StartedTimestamp>1222833530</StartedTimestamp>
+<CompletedTimestamp>1222833531</CompletedTimestamp>
+<JobID>1153978</JobID>
+<JobName>EVALUATION_nc-devtest2007_wrap.32</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1</Wall>
+<Category>-u bhaddow -l h_rt=14400 -P ecdf_baseline</Category>
+<CPUTime>1.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.16523008E8</Vmem>
+<Mem>2.000977</Mem>
+<PersonID>133</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<UnixGroup id='82'>
+<Name>roslin</Name>
+</UnixGroup>
+<Person id='254'>
+<WebName>wwei1</WebName>
+</Person>
+<SGERecord id='7229762'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833471</SubmittedTimestamp>
+<StartedTimestamp>1222833506</StartedTimestamp>
+<CompletedTimestamp>1222835411</CompletedTimestamp>
+<JobID>1153977</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1905</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1905.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9507456E7</Vmem>
+<Mem>3811.860352</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229739'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833447</SubmittedTimestamp>
+<StartedTimestamp>1222833481</StartedTimestamp>
+<CompletedTimestamp>1222835299</CompletedTimestamp>
+<JobID>1153976</JobID>
+<JobName>subdir507.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1818</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1818.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9532032E7</Vmem>
+<Mem>3637.775391</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<Project id='13'>
+<Name>lhcb</Name>
+</Project>
+<UnixGroup id='20'>
+<Name>lhcb</Name>
+</UnixGroup>
+<Person id='588'>
+<WebName>lhcb003</WebName>
+</Person>
+<SGERecord id='7229526'>
+<MachineID>1</MachineID>
+<ProjectID>13</ProjectID>
+<GroupID>20</GroupID>
+<SubmittedTimestamp>1222833204</SubmittedTimestamp>
+<StartedTimestamp>1222833506</StartedTimestamp>
+<CompletedTimestamp>1222833579</CompletedTimestamp>
+<JobID>1153926</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>73</Wall>
+<Category>-u lhcb003 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=3000M -P lhcb</Category>
+<CPUTime>73.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.00444416E8</Vmem>
+<Mem>213.867188</Mem>
+<PersonID>588</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229514'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>2</GroupID>
+<SubmittedTimestamp>1222833445</SubmittedTimestamp>
+<StartedTimestamp>1222833481</StartedTimestamp>
+<CompletedTimestamp>1222833482</CompletedTimestamp>
+<JobID>1153975</JobID>
+<JobName>EVALUATION_nc-devtest2007_detokenize.32</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1</Wall>
+<Category>-u bhaddow -l h_rt=14400 -P ecdf_baseline</Category>
+<CPUTime>1.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.4276096E7</Vmem>
+<Mem>2.000977</Mem>
+<PersonID>133</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229891'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833437</SubmittedTimestamp>
+<StartedTimestamp>1222833480</StartedTimestamp>
+<CompletedTimestamp>1222836958</CompletedTimestamp>
+<JobID>1153973</JobID>
+<JobName>subdir008.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>3478</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>3478.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.2471296E7</Vmem>
+<Mem>6959.396484</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229708'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833342</SubmittedTimestamp>
+<StartedTimestamp>1222833456</StartedTimestamp>
+<CompletedTimestamp>1222835053</CompletedTimestamp>
+<JobID>1153949</JobID>
+<JobName>mert6-am</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1597</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1597.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>4.141350912E9</Vmem>
+<Mem>3195.55957</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229756'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833342</SubmittedTimestamp>
+<StartedTimestamp>1222833456</StartedTimestamp>
+<CompletedTimestamp>1222835374</CompletedTimestamp>
+<JobID>1153948</JobID>
+<JobName>mert6-al</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1918</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1918.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>4.410425344E9</Vmem>
+<Mem>3837.873047</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229651'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833342</SubmittedTimestamp>
+<StartedTimestamp>1222833456</StartedTimestamp>
+<CompletedTimestamp>1222834884</CompletedTimestamp>
+<JobID>1153950</JobID>
+<JobName>mert6-an</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1428</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1428.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>3.462258688E9</Vmem>
+<Mem>2857.394531</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229612'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833342</SubmittedTimestamp>
+<StartedTimestamp>1222833456</StartedTimestamp>
+<CompletedTimestamp>1222834743</CompletedTimestamp>
+<JobID>1153947</JobID>
+<JobName>mert6-ak</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1287</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1287.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.082107904E9</Vmem>
+<Mem>2575.256836</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229600'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833341</SubmittedTimestamp>
+<StartedTimestamp>1222833456</StartedTimestamp>
+<CompletedTimestamp>1222834672</CompletedTimestamp>
+<JobID>1153946</JobID>
+<JobName>mert6-aj</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1216</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1216.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>3.742244864E9</Vmem>
+<Mem>2433.1875</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229590'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833341</SubmittedTimestamp>
+<StartedTimestamp>1222833456</StartedTimestamp>
+<CompletedTimestamp>1222834518</CompletedTimestamp>
+<JobID>1153945</JobID>
+<JobName>mert6-ai</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1062</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1062.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>3.00357632E9</Vmem>
+<Mem>2125.037109</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229704'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833418</SubmittedTimestamp>
+<StartedTimestamp>1222833455</StartedTimestamp>
+<CompletedTimestamp>1222835044</CompletedTimestamp>
+<JobID>1153972</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1589</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1589.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9917056E7</Vmem>
+<Mem>3179.551758</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229693'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833341</SubmittedTimestamp>
+<StartedTimestamp>1222833431</StartedTimestamp>
+<CompletedTimestamp>1222835013</CompletedTimestamp>
+<JobID>1153940</JobID>
+<JobName>mert6-ad</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1582</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1582.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>4.488331264E9</Vmem>
+<Mem>3165.544922</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229649'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833341</SubmittedTimestamp>
+<StartedTimestamp>1222833431</StartedTimestamp>
+<CompletedTimestamp>1222834881</CompletedTimestamp>
+<JobID>1153942</JobID>
+<JobName>mert6-af</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1450</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1450.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.085134848E9</Vmem>
+<Mem>2901.416016</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229666'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833341</SubmittedTimestamp>
+<StartedTimestamp>1222833430</StartedTimestamp>
+<CompletedTimestamp>1222834924</CompletedTimestamp>
+<JobID>1153943</JobID>
+<JobName>mert6-ag</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1494</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1494.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>6.987329536E9</Vmem>
+<Mem>2989.458984</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229626'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833341</SubmittedTimestamp>
+<StartedTimestamp>1222833430</StartedTimestamp>
+<CompletedTimestamp>1222834838</CompletedTimestamp>
+<JobID>1153941</JobID>
+<JobName>mert6-ae</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1408</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1408.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.39437056E9</Vmem>
+<Mem>2817.375</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229656'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833341</SubmittedTimestamp>
+<StartedTimestamp>1222833430</StartedTimestamp>
+<CompletedTimestamp>1222834892</CompletedTimestamp>
+<JobID>1153939</JobID>
+<JobName>mert6-ac</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1462</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1462.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>4.409081856E9</Vmem>
+<Mem>2925.427734</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229599'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833341</SubmittedTimestamp>
+<StartedTimestamp>1222833430</StartedTimestamp>
+<CompletedTimestamp>1222834664</CompletedTimestamp>
+<JobID>1153944</JobID>
+<JobName>mert6-ah</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1234</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1234.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>3.320246272E9</Vmem>
+<Mem>2469.205078</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229520'>
+<MachineID>1</MachineID>
+<ProjectID>13</ProjectID>
+<GroupID>20</GroupID>
+<SubmittedTimestamp>1222833085</SubmittedTimestamp>
+<StartedTimestamp>1222833430</StartedTimestamp>
+<CompletedTimestamp>1222833510</CompletedTimestamp>
+<JobID>1153921</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>80</Wall>
+<Category>-u lhcb003 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=3000M -P lhcb</Category>
+<CPUTime>80.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.86894848E8</Vmem>
+<Mem>234.375</Mem>
+<PersonID>588</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<Person id='562'>
+<WebName>lhcb022</WebName>
+</Person>
+<SGERecord id='7229511'>
+<MachineID>1</MachineID>
+<ProjectID>13</ProjectID>
+<GroupID>20</GroupID>
+<SubmittedTimestamp>1222833361</SubmittedTimestamp>
+<StartedTimestamp>1222833405</StartedTimestamp>
+<CompletedTimestamp>1222833470</CompletedTimestamp>
+<JobID>1153970</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>65</Wall>
+<Category>-u lhcb022 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=3000M -P lhcb</Category>
+<CPUTime>65.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.0007168E8</Vmem>
+<Mem>190.429688</Mem>
+<PersonID>562</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229509'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>2</GroupID>
+<SubmittedTimestamp>1222833396</SubmittedTimestamp>
+<StartedTimestamp>1222833430</StartedTimestamp>
+<CompletedTimestamp>1222833444</CompletedTimestamp>
+<JobID>1153971</JobID>
+<JobName>EVALUATION_nc-devtest2007_recase.32</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>14</Wall>
+<Category>-u bhaddow -l h_rt=14400 -P ecdf_baseline</Category>
+<CPUTime>14.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>4.38009856E8</Vmem>
+<Mem>28.013672</Mem>
+<PersonID>133</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229596'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833341</SubmittedTimestamp>
+<StartedTimestamp>1222833380</StartedTimestamp>
+<CompletedTimestamp>1222834621</CompletedTimestamp>
+<JobID>1153937</JobID>
+<JobName>mert6-aa</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1241</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1241.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>4.119416832E9</Vmem>
+<Mem>2483.211914</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229594'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833351</SubmittedTimestamp>
+<StartedTimestamp>1222833380</StartedTimestamp>
+<CompletedTimestamp>1222834601</CompletedTimestamp>
+<JobID>1153968</JobID>
+<JobName>subdir107.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1221</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1221.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.991296E7</Vmem>
+<Mem>2443.192383</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229593'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833341</SubmittedTimestamp>
+<StartedTimestamp>1222833380</StartedTimestamp>
+<CompletedTimestamp>1222834598</CompletedTimestamp>
+<JobID>1153938</JobID>
+<JobName>mert6-ab</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1218</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1218.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>6.50752E9</Vmem>
+<Mem>2437.189453</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229510'>
+<MachineID>1</MachineID>
+<ProjectID>13</ProjectID>
+<GroupID>20</GroupID>
+<SubmittedTimestamp>1222833352</SubmittedTimestamp>
+<StartedTimestamp>1222833380</StartedTimestamp>
+<CompletedTimestamp>1222833453</CompletedTimestamp>
+<JobID>1153969</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>73</Wall>
+<Category>-u lhcb022 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=3000M -P lhcb</Category>
+<CPUTime>73.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.0007168E8</Vmem>
+<Mem>213.867188</Mem>
+<PersonID>562</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<School id='6'>
+<Name>Physics</Name>
+</School>
+<Institute id='11'>
+<Name>Physics</Name>
+<SchoolID>6</SchoolID>
+</Institute>
+<Project id='7'>
+<Name>atlas</Name>
+<InstituteID>11</InstituteID>
+</Project>
+<UnixGroup id='8'>
+<Name>atlas</Name>
+</UnixGroup>
+<Person id='9'>
+<WebName>atlas015</WebName>
+</Person>
+<SGERecord id='7229501'>
+<MachineID>1</MachineID>
+<ProjectID>7</ProjectID>
+<GroupID>8</GroupID>
+<SubmittedTimestamp>1222833326</SubmittedTimestamp>
+<StartedTimestamp>1222833380</StartedTimestamp>
+<CompletedTimestamp>1222833404</CompletedTimestamp>
+<JobID>1153936</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>24</Wall>
+<Category>-u atlas015 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=3000M -P atlas</Category>
+<CPUTime>24.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>6.53717504E8</Vmem>
+<Mem>70.3125</Mem>
+<PersonID>9</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229806'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222833353</StartedTimestamp>
+<CompletedTimestamp>1222835790</CompletedTimestamp>
+<JobID>1150442</JobID>
+<JobName>mert13-ay</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2437</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2437.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.917730816E9</Vmem>
+<Mem>4876.379883</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7230024'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>2</GroupID>
+<SubmittedTimestamp>1222780086</SubmittedTimestamp>
+<StartedTimestamp>1222833353</StartedTimestamp>
+<CompletedTimestamp>1222838008</CompletedTimestamp>
+<JobID>1145240</JobID>
+<JobName>MOSES-ae</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>4655</Wall>
+<Category>-u bhaddow -l h_rt=86400 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>4655.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.770735104E9</Vmem>
+<Mem>9314.545898</Mem>
+<PersonID>133</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229798'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222833353</StartedTimestamp>
+<CompletedTimestamp>1222835719</CompletedTimestamp>
+<JobID>1150441</JobID>
+<JobName>mert13-ax</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2366</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2366.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.66914048E9</Vmem>
+<Mem>4734.310547</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<Institute id='3'>
+<Name>Digital Communications</Name>
+<SchoolID>4</SchoolID>
+</Institute>
+<Project id='4'>
+<Name>inf_hcrc_cstr_emime</Name>
+<InstituteID>3</InstituteID>
+</Project>
+<UnixGroup id='36'>
+<Name>inf_cstr</Name>
+</UnixGroup>
+<Person id='472'>
+<WebName>v1busaba</WebName>
+</Person>
+<SGERecord id='7229506'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222798216</SubmittedTimestamp>
+<StartedTimestamp>1222833353</StartedTimestamp>
+<CompletedTimestamp>1222833414</CompletedTimestamp>
+<JobID>1149005</JobID>
+<JobName>a001.2000.smal-csmaplr2-2</JobName>
+<CPUs>5</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>61</Wall>
+<Category>-u v1busaba -l h_rt=21600 -pe memory 5 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>61.0</CPUTime>
+<Task>13</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>4.16468992E8</Vmem>
+<Mem>122.05957</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229965'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>2</GroupID>
+<SubmittedTimestamp>1222780086</SubmittedTimestamp>
+<StartedTimestamp>1222833329</StartedTimestamp>
+<CompletedTimestamp>1222837464</CompletedTimestamp>
+<JobID>1145239</JobID>
+<JobName>MOSES-ad</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>4135</Wall>
+<Category>-u bhaddow -l h_rt=86400 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>4135.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.95899392E9</Vmem>
+<Mem>8274.038086</Mem>
+<PersonID>133</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229504'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833353</StartedTimestamp>
+<CompletedTimestamp>1222833412</CompletedTimestamp>
+<JobID>1149200</JobID>
+<JobName>a001.1000.male-map2up-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>59</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>59.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.79187456E8</Vmem>
+<Mem>118.057617</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7230309'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222686839</SubmittedTimestamp>
+<StartedTimestamp>1222833328</StartedTimestamp>
+<CompletedTimestamp>1222840021</CompletedTimestamp>
+<JobID>1127325</JobID>
+<JobName>a001.2000.male-map-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>6693</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>6693.0</CPUTime>
+<Task>34</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.027919872E9</Vmem>
+<Mem>13392.536133</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229591'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833298</SubmittedTimestamp>
+<StartedTimestamp>1222833328</StartedTimestamp>
+<CompletedTimestamp>1222834520</CompletedTimestamp>
+<JobID>1153935</JobID>
+<JobName>subdir107.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1192</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1192.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9101952E7</Vmem>
+<Mem>2385.164062</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229486'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>2</GroupID>
+<SubmittedTimestamp>1222780085</SubmittedTimestamp>
+<StartedTimestamp>1222833328</StartedTimestamp>
+<CompletedTimestamp>1222833329</CompletedTimestamp>
+<JobID>1145235</JobID>
+<JobName>MOSES.W</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1</Wall>
+<Category>-u bhaddow -l h_rt=86400 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>1.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>0.0</Vmem>
+<Mem>2.000977</Mem>
+<PersonID>133</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7231563'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222686839</SubmittedTimestamp>
+<StartedTimestamp>1222833303</StartedTimestamp>
+<CompletedTimestamp>1222848694</CompletedTimestamp>
+<JobID>1127325</JobID>
+<JobName>a001.2000.male-map-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>15391</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>15391.0</CPUTime>
+<Task>33</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.018425344E9</Vmem>
+<Mem>30797.030273</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229967'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833267</SubmittedTimestamp>
+<StartedTimestamp>1222833302</StartedTimestamp>
+<CompletedTimestamp>1222837490</CompletedTimestamp>
+<JobID>1153934</JobID>
+<JobName>subdir506.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>4188</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>4188.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.0351232E7</Vmem>
+<Mem>8380.089844</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7231088'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222686839</SubmittedTimestamp>
+<StartedTimestamp>1222833303</StartedTimestamp>
+<CompletedTimestamp>1222846050</CompletedTimestamp>
+<JobID>1127325</JobID>
+<JobName>a001.2000.male-map-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>12747</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>12750.0</CPUTime>
+<Task>32</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.148532224E9</Vmem>
+<Mem>25512.451172</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229881'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833257</SubmittedTimestamp>
+<StartedTimestamp>1222833302</StartedTimestamp>
+<CompletedTimestamp>1222836829</CompletedTimestamp>
+<JobID>1153933</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>3527</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>3527.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.08027904E8</Vmem>
+<Mem>7057.444336</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7231277'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222686839</SubmittedTimestamp>
+<StartedTimestamp>1222833276</StartedTimestamp>
+<CompletedTimestamp>1222847371</CompletedTimestamp>
+<JobID>1127325</JobID>
+<JobName>a001.2000.male-map-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>14095</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>14095.0</CPUTime>
+<Task>31</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.038524416E9</Vmem>
+<Mem>28203.764648</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229830'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222833276</StartedTimestamp>
+<CompletedTimestamp>1222836040</CompletedTimestamp>
+<JobID>1150440</JobID>
+<JobName>mert13-aw</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2764</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2764.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.79087104E9</Vmem>
+<Mem>5530.699219</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229489'>
+<MachineID>1</MachineID>
+<ProjectID>13</ProjectID>
+<GroupID>20</GroupID>
+<SubmittedTimestamp>1222833107</SubmittedTimestamp>
+<StartedTimestamp>1222833252</StartedTimestamp>
+<CompletedTimestamp>1222833338</CompletedTimestamp>
+<JobID>1153923</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>86</Wall>
+<Category>-u lhcb022 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=3000M -P lhcb</Category>
+<CPUTime>86.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.86747392E8</Vmem>
+<Mem>251.953125</Mem>
+<PersonID>562</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229775'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833231</SubmittedTimestamp>
+<StartedTimestamp>1222833276</StartedTimestamp>
+<CompletedTimestamp>1222835485</CompletedTimestamp>
+<JobID>1153932</JobID>
+<JobName>subdir207.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2209</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>2209.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9765504E7</Vmem>
+<Mem>4420.157227</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229482'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222798216</SubmittedTimestamp>
+<StartedTimestamp>1222833252</StartedTimestamp>
+<CompletedTimestamp>1222833314</CompletedTimestamp>
+<JobID>1149005</JobID>
+<JobName>a001.2000.smal-csmaplr2-2</JobName>
+<CPUs>5</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>62</Wall>
+<Category>-u v1busaba -l h_rt=21600 -pe memory 5 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>62.0</CPUTime>
+<Task>12</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>4.16739328E8</Vmem>
+<Mem>124.060547</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229481'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833252</StartedTimestamp>
+<CompletedTimestamp>1222833310</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>58</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>58.0</CPUTime>
+<Task>17</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.79552E8</Vmem>
+<Mem>116.056641</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229791'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222833228</StartedTimestamp>
+<CompletedTimestamp>1222835652</CompletedTimestamp>
+<JobID>1150439</JobID>
+<JobName>mert13-av</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2424</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2424.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.623220224E9</Vmem>
+<Mem>4850.367188</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229478'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833228</StartedTimestamp>
+<CompletedTimestamp>1222833286</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>58</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>58.0</CPUTime>
+<Task>16</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.78990848E8</Vmem>
+<Mem>116.056641</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229710'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833178</SubmittedTimestamp>
+<StartedTimestamp>1222833227</StartedTimestamp>
+<CompletedTimestamp>1222835064</CompletedTimestamp>
+<JobID>1153925</JobID>
+<JobName>subdir207.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1837</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1837.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9908864E7</Vmem>
+<Mem>3675.793945</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229477'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833227</StartedTimestamp>
+<CompletedTimestamp>1222833284</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>57</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>57.0</CPUTime>
+<Task>15</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.78347776E8</Vmem>
+<Mem>114.055664</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7230008'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222797396</SubmittedTimestamp>
+<StartedTimestamp>1222833203</StartedTimestamp>
+<CompletedTimestamp>1222837845</CompletedTimestamp>
+<JobID>1148843</JobID>
+<JobName>a001.100.bmal-csmaplr-1</JobName>
+<CPUs>6</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>4642</Wall>
+<Category>-u v1busaba -l h_rt=21600,mem_free=1G -pe memory 6 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>4642.0</CPUTime>
+<Task>4</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.74123264E8</Vmem>
+<Mem>9288.533203</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229821'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222833203</StartedTimestamp>
+<CompletedTimestamp>1222835929</CompletedTimestamp>
+<JobID>1150438</JobID>
+<JobName>mert13-au</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2726</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2726.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.735991296E9</Vmem>
+<Mem>5454.662109</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229473'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833202</StartedTimestamp>
+<CompletedTimestamp>1222833257</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>55</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>55.0</CPUTime>
+<Task>14</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.79552E8</Vmem>
+<Mem>110.053711</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229532'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222712680</SubmittedTimestamp>
+<StartedTimestamp>1222833177</StartedTimestamp>
+<CompletedTimestamp>1222833661</CompletedTimestamp>
+<JobID>1131589</JobID>
+<JobName>bfem-cmllr2-3</JobName>
+<CPUs>8</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>484</Wall>
+<Category>-u v1busaba -l h_rt=86400,mem_free=1G -pe memory 8 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>484.0</CPUTime>
+<Task>15</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.68654848E8</Vmem>
+<Mem>968.472656</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229608'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833111</SubmittedTimestamp>
+<StartedTimestamp>1222833152</StartedTimestamp>
+<CompletedTimestamp>1222834716</CompletedTimestamp>
+<JobID>1153924</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1564</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1564.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.08027904E8</Vmem>
+<Mem>3129.527344</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229470'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833177</StartedTimestamp>
+<CompletedTimestamp>1222833233</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>56</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>56.0</CPUTime>
+<Task>13</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.79834624E8</Vmem>
+<Mem>112.054688</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229465'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833152</StartedTimestamp>
+<CompletedTimestamp>1222833210</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>58</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>58.0</CPUTime>
+<Task>12</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.7848704E8</Vmem>
+<Mem>116.056641</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229825'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222833126</StartedTimestamp>
+<CompletedTimestamp>1222835955</CompletedTimestamp>
+<JobID>1150437</JobID>
+<JobName>mert13-at</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2829</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2829.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.352898048E9</Vmem>
+<Mem>5660.762695</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229813'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833087</SubmittedTimestamp>
+<StartedTimestamp>1222833125</StartedTimestamp>
+<CompletedTimestamp>1222835847</CompletedTimestamp>
+<JobID>1153922</JobID>
+<JobName>subdir510.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2722</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>2722.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.0244736E7</Vmem>
+<Mem>5446.658203</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229982'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833077</SubmittedTimestamp>
+<StartedTimestamp>1222833125</StartedTimestamp>
+<CompletedTimestamp>1222837614</CompletedTimestamp>
+<JobID>1153919</JobID>
+<JobName>subdir006.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>4489</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>4489.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.1938816E7</Vmem>
+<Mem>8982.383789</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229467'>
+<MachineID>1</MachineID>
+<ProjectID>13</ProjectID>
+<GroupID>20</GroupID>
+<SubmittedTimestamp>1222833084</SubmittedTimestamp>
+<StartedTimestamp>1222833125</StartedTimestamp>
+<CompletedTimestamp>1222833214</CompletedTimestamp>
+<JobID>1153920</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>89</Wall>
+<Category>-u lhcb003 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=3000M -P lhcb</Category>
+<CPUTime>89.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.0021504E8</Vmem>
+<Mem>260.742188</Mem>
+<PersonID>588</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229461'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833125</StartedTimestamp>
+<CompletedTimestamp>1222833183</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>58</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>58.0</CPUTime>
+<Task>11</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.799616E8</Vmem>
+<Mem>116.056641</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229459'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833125</StartedTimestamp>
+<CompletedTimestamp>1222833180</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>55</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>55.0</CPUTime>
+<Task>10</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.79412736E8</Vmem>
+<Mem>110.053711</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7231129'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>5</GroupID>
+<SubmittedTimestamp>1222832374</SubmittedTimestamp>
+<StartedTimestamp>1222833100</StartedTimestamp>
+<CompletedTimestamp>1222846402</CompletedTimestamp>
+<JobID>1153890</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>13302</Wall>
+<Category>-u prdatlas014 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=6140M,s_vmem=5560M -P prdatlas</Category>
+<CPUTime>13302.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.50607872E9</Vmem>
+<Mem>72225.703125</Mem>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7230851'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222797396</SubmittedTimestamp>
+<StartedTimestamp>1222833100</StartedTimestamp>
+<CompletedTimestamp>1222844142</CompletedTimestamp>
+<JobID>1148843</JobID>
+<JobName>a001.100.bmal-csmaplr-1</JobName>
+<CPUs>6</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>11042</Wall>
+<Category>-u v1busaba -l h_rt=21600,mem_free=1G -pe memory 6 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>11042.0</CPUTime>
+<Task>3</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.99231744E8</Vmem>
+<Mem>22094.783203</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229456'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833100</StartedTimestamp>
+<CompletedTimestamp>1222833156</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>56</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>56.0</CPUTime>
+<Task>9</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.80338432E8</Vmem>
+<Mem>112.054688</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229694'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833058</SubmittedTimestamp>
+<StartedTimestamp>1222833099</StartedTimestamp>
+<CompletedTimestamp>1222835017</CompletedTimestamp>
+<JobID>1153918</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1918</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1918.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.003584E7</Vmem>
+<Mem>3837.873047</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229570'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222833058</SubmittedTimestamp>
+<StartedTimestamp>1222833099</StartedTimestamp>
+<CompletedTimestamp>1222834164</CompletedTimestamp>
+<JobID>1153917</JobID>
+<JobName>WR21137</JobName>
+<CPUs>2</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1065</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 2 -P inf_iccs_smt</Category>
+<CPUTime>1065.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>4.00011264E8</Vmem>
+<Mem>2131.040039</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7232152'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>5</GroupID>
+<SubmittedTimestamp>1222832373</SubmittedTimestamp>
+<StartedTimestamp>1222833074</StartedTimestamp>
+<CompletedTimestamp>1222851255</CompletedTimestamp>
+<JobID>1153889</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>18181</Wall>
+<Category>-u prdatlas014 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=6140M,s_vmem=5560M -P prdatlas</Category>
+<CPUTime>18181.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.483390976E9</Vmem>
+<Mem>98717.148438</Mem>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229452'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833074</StartedTimestamp>
+<CompletedTimestamp>1222833130</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>56</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>56.0</CPUTime>
+<Task>8</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.79691264E8</Vmem>
+<Mem>112.054688</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229769'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222833074</StartedTimestamp>
+<CompletedTimestamp>1222835433</CompletedTimestamp>
+<JobID>1150436</JobID>
+<JobName>mert13-as</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2359</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2359.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.6187392E9</Vmem>
+<Mem>4720.303711</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229451'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833049</StartedTimestamp>
+<CompletedTimestamp>1222833108</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>59</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>59.0</CPUTime>
+<Task>7</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.799616E8</Vmem>
+<Mem>118.057617</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<Project id='3'>
+<Name>ngsadmin</Name>
+</Project>
+<UnixGroup id='4'>
+<Name>ngsadmin</Name>
+</UnixGroup>
+<Person id='4'>
+<WebName>ngsadminuser</WebName>
+</Person>
+<Queue id='2'>
+<Name>ngs</Name>
+</Queue>
+<SGERecord id='7229439'>
+<MachineID>1</MachineID>
+<ProjectID>3</ProjectID>
+<GroupID>4</GroupID>
+<SubmittedTimestamp>1222833004</SubmittedTimestamp>
+<StartedTimestamp>1222833048</StartedTimestamp>
+<CompletedTimestamp>1222833049</CompletedTimestamp>
+<JobID>1153916</JobID>
+<JobName>data</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1</Wall>
+<Category>-u ngsadminuser -l h_cpu=120,h_rt=120 -P ngsadmin</Category>
+<CPUTime>1.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>0.0</Vmem>
+<Mem>0.0</Mem>
+<PersonID>4</PersonID>
+<QueueID>2</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7231245'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222795573</SubmittedTimestamp>
+<StartedTimestamp>1222833022</StartedTimestamp>
+<CompletedTimestamp>1222847177</CompletedTimestamp>
+<JobID>1148173</JobID>
+<JobName>a001.2000.bmal-unseen</JobName>
+<CPUs>6</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>14155</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 6 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>14155.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.008041984E9</Vmem>
+<Mem>28323.823242</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229785'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222833022</StartedTimestamp>
+<CompletedTimestamp>1222835579</CompletedTimestamp>
+<JobID>1150434</JobID>
+<JobName>mert13-aq</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2557</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2557.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.72244992E9</Vmem>
+<Mem>5116.49707</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229577'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832991</SubmittedTimestamp>
+<StartedTimestamp>1222833022</StartedTimestamp>
+<CompletedTimestamp>1222834256</CompletedTimestamp>
+<JobID>1153915</JobID>
+<JobName>subdir107.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1234</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1234.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9396864E7</Vmem>
+<Mem>2469.205078</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229770'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222833022</StartedTimestamp>
+<CompletedTimestamp>1222835448</CompletedTimestamp>
+<JobID>1150435</JobID>
+<JobName>mert13-ar</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2426</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2426.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.444791808E9</Vmem>
+<Mem>4854.369141</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229445'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222799303</SubmittedTimestamp>
+<StartedTimestamp>1222833022</StartedTimestamp>
+<CompletedTimestamp>1222833081</CompletedTimestamp>
+<JobID>1149199</JobID>
+<JobName>a001.1000.male-map2-2</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>9</Exit>
+<Wall>59</Wall>
+<Category>-u v1busaba -l h_rt=36000 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>59.0</CPUTime>
+<Task>6</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.79691264E8</Vmem>
+<Mem>118.057617</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229974'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222681705</SubmittedTimestamp>
+<StartedTimestamp>1222832995</StartedTimestamp>
+<CompletedTimestamp>1222837559</CompletedTimestamp>
+<JobID>1126753</JobID>
+<JobName>a001.2000.smal-csmaplr2-3</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>4564</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>4564.0</CPUTime>
+<Task>34</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.28625664E8</Vmem>
+<Mem>9132.457031</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229837'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832995</StartedTimestamp>
+<CompletedTimestamp>1222836102</CompletedTimestamp>
+<JobID>1150433</JobID>
+<JobName>mert13-ap</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>3107</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>3107.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.607665152E9</Vmem>
+<Mem>6217.03418</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7230718'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222681705</SubmittedTimestamp>
+<StartedTimestamp>1222832969</StartedTimestamp>
+<CompletedTimestamp>1222843435</CompletedTimestamp>
+<JobID>1126753</JobID>
+<JobName>a001.2000.smal-csmaplr2-3</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>10466</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>10466.0</CPUTime>
+<Task>33</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.20822784E8</Vmem>
+<Mem>20942.220703</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229574'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832938</SubmittedTimestamp>
+<StartedTimestamp>1222832968</StartedTimestamp>
+<CompletedTimestamp>1222834201</CompletedTimestamp>
+<JobID>1153914</JobID>
+<JobName>subdir107.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1233</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1233.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9507456E7</Vmem>
+<Mem>2467.204102</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7230480'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222681705</SubmittedTimestamp>
+<StartedTimestamp>1222832941</StartedTimestamp>
+<CompletedTimestamp>1222841693</CompletedTimestamp>
+<JobID>1126753</JobID>
+<JobName>a001.2000.smal-csmaplr2-3</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>8752</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>8752.0</CPUTime>
+<Task>32</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.27302656E8</Vmem>
+<Mem>17512.546875</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229805'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832907</SubmittedTimestamp>
+<StartedTimestamp>1222832941</StartedTimestamp>
+<CompletedTimestamp>1222835773</CompletedTimestamp>
+<JobID>1153913</JobID>
+<JobName>subdir509.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2832</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>2832.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9921152E7</Vmem>
+<Mem>5666.765625</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7230060'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832897</SubmittedTimestamp>
+<StartedTimestamp>1222832941</StartedTimestamp>
+<CompletedTimestamp>1222838507</CompletedTimestamp>
+<JobID>1153912</JobID>
+<JobName>subdir010.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>5566</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>5566.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.3044736E7</Vmem>
+<Mem>11137.435547</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7231317'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>5</GroupID>
+<SubmittedTimestamp>1222832372</SubmittedTimestamp>
+<StartedTimestamp>1222832915</StartedTimestamp>
+<CompletedTimestamp>1222847681</CompletedTimestamp>
+<JobID>1153888</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>14766</Wall>
+<Category>-u prdatlas014 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=6140M,s_vmem=5560M -P prdatlas</Category>
+<CPUTime>14766.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.509511168E9</Vmem>
+<Mem>80174.765625</Mem>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7230613'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222681705</SubmittedTimestamp>
+<StartedTimestamp>1222832916</StartedTimestamp>
+<CompletedTimestamp>1222842582</CompletedTimestamp>
+<JobID>1126753</JobID>
+<JobName>a001.2000.smal-csmaplr2-3</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>9666</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>9666.0</CPUTime>
+<Task>31</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.40188672E8</Vmem>
+<Mem>19341.439453</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229801'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832915</StartedTimestamp>
+<CompletedTimestamp>1222835748</CompletedTimestamp>
+<JobID>1150431</JobID>
+<JobName>mert13-an</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2833</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2833.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.655250944E9</Vmem>
+<Mem>5668.766602</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229746'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832915</StartedTimestamp>
+<CompletedTimestamp>1222835322</CompletedTimestamp>
+<JobID>1150432</JobID>
+<JobName>mert13-ao</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2407</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2407.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.322622976E9</Vmem>
+<Mem>4816.350586</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229619'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832871</SubmittedTimestamp>
+<StartedTimestamp>1222832915</StartedTimestamp>
+<CompletedTimestamp>1222834801</CompletedTimestamp>
+<JobID>1153910</JobID>
+<JobName>subdir207.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1886</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1886.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9511552E7</Vmem>
+<Mem>3773.841797</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229484'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222832876</SubmittedTimestamp>
+<StartedTimestamp>1222832915</StartedTimestamp>
+<CompletedTimestamp>1222833323</CompletedTimestamp>
+<JobID>1153911</JobID>
+<JobName>WR5991</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>408</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>408.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.65621504E8</Vmem>
+<Mem>816.398438</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229794'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832890</StartedTimestamp>
+<CompletedTimestamp>1222835694</CompletedTimestamp>
+<JobID>1150430</JobID>
+<JobName>mert13-am</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2804</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2804.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.719128064E9</Vmem>
+<Mem>5610.738281</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7230598'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222681705</SubmittedTimestamp>
+<StartedTimestamp>1222832890</StartedTimestamp>
+<CompletedTimestamp>1222842509</CompletedTimestamp>
+<JobID>1126753</JobID>
+<JobName>a001.2000.smal-csmaplr2-3</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>9619</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>9619.0</CPUTime>
+<Task>30</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.4800384E8</Vmem>
+<Mem>19247.393555</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229413'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832818</SubmittedTimestamp>
+<StartedTimestamp>1222832860</StartedTimestamp>
+<CompletedTimestamp>1222832865</CompletedTimestamp>
+<JobID>1153909</JobID>
+<JobName>subdir207.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>5</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>5.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.2077312E7</Vmem>
+<Mem>10.004883</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7231324'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>5</GroupID>
+<SubmittedTimestamp>1222832073</SubmittedTimestamp>
+<StartedTimestamp>1222832831</StartedTimestamp>
+<CompletedTimestamp>1222847711</CompletedTimestamp>
+<JobID>1153877</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>14880</Wall>
+<Category>-u prdatlas014 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=6140M,s_vmem=5560M -P prdatlas</Category>
+<CPUTime>14880.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.508896768E9</Vmem>
+<Mem>80793.75</Mem>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7230621'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222681705</SubmittedTimestamp>
+<StartedTimestamp>1222832831</StartedTimestamp>
+<CompletedTimestamp>1222842638</CompletedTimestamp>
+<JobID>1126753</JobID>
+<JobName>a001.2000.smal-csmaplr2-3</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>9807</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>9807.0</CPUTime>
+<Task>29</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.52185856E8</Vmem>
+<Mem>19623.577148</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229817'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832831</StartedTimestamp>
+<CompletedTimestamp>1222835893</CompletedTimestamp>
+<JobID>1150429</JobID>
+<JobName>mert13-al</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>3062</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>3062.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.914191872E9</Vmem>
+<Mem>6126.990234</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229789'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832802</StartedTimestamp>
+<CompletedTimestamp>1222835622</CompletedTimestamp>
+<JobID>1150427</JobID>
+<JobName>mert13-aj</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2820</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2820.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.03782144E9</Vmem>
+<Mem>5642.753906</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7230733'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222681705</SubmittedTimestamp>
+<StartedTimestamp>1222832802</StartedTimestamp>
+<CompletedTimestamp>1222843512</CompletedTimestamp>
+<JobID>1126753</JobID>
+<JobName>a001.2000.smal-csmaplr2-3</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>10710</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>10710.0</CPUTime>
+<Task>27</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.48212736E8</Vmem>
+<Mem>21430.458984</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229764'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832802</StartedTimestamp>
+<CompletedTimestamp>1222835413</CompletedTimestamp>
+<JobID>1150428</JobID>
+<JobName>mert13-ak</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2611</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2611.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.07632384E9</Vmem>
+<Mem>5224.549805</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229737'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832802</StartedTimestamp>
+<CompletedTimestamp>1222835285</CompletedTimestamp>
+<JobID>1150426</JobID>
+<JobName>mert13-ai</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2483</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2483.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.070720512E9</Vmem>
+<Mem>4968.424805</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229417'>
+<MachineID>1</MachineID>
+<ProjectID>13</ProjectID>
+<GroupID>20</GroupID>
+<SubmittedTimestamp>1222832686</SubmittedTimestamp>
+<StartedTimestamp>1222832802</StartedTimestamp>
+<CompletedTimestamp>1222832882</CompletedTimestamp>
+<JobID>1153904</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>80</Wall>
+<Category>-u lhcb022 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=3000M -P lhcb</Category>
+<CPUTime>80.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.82204928E8</Vmem>
+<Mem>234.375</Mem>
+<PersonID>562</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7230852'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222681705</SubmittedTimestamp>
+<StartedTimestamp>1222832801</StartedTimestamp>
+<CompletedTimestamp>1222844144</CompletedTimestamp>
+<JobID>1126753</JobID>
+<JobName>a001.2000.smal-csmaplr2-3</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>11343</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>11343.0</CPUTime>
+<Task>28</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.4071296E8</Vmem>
+<Mem>22697.077148</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229583'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832751</SubmittedTimestamp>
+<StartedTimestamp>1222832801</StartedTimestamp>
+<CompletedTimestamp>1222834364</CompletedTimestamp>
+<JobID>1153908</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1563</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1563.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9921152E7</Vmem>
+<Mem>3127.526367</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229877'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832717</SubmittedTimestamp>
+<StartedTimestamp>1222832772</StartedTimestamp>
+<CompletedTimestamp>1222836780</CompletedTimestamp>
+<JobID>1153906</JobID>
+<JobName>subdir009.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>4008</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>4008.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.2164096E7</Vmem>
+<Mem>8019.914062</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229765'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832772</StartedTimestamp>
+<CompletedTimestamp>1222835413</CompletedTimestamp>
+<JobID>1150425</JobID>
+<JobName>mert13-ah</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2641</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2641.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.702776832E9</Vmem>
+<Mem>5284.579102</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229782'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832772</StartedTimestamp>
+<CompletedTimestamp>1222835547</CompletedTimestamp>
+<JobID>1150424</JobID>
+<JobName>mert13-ag</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2775</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2775.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.605928448E9</Vmem>
+<Mem>5552.709961</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229736'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832727</SubmittedTimestamp>
+<StartedTimestamp>1222832772</StartedTimestamp>
+<CompletedTimestamp>1222835284</CompletedTimestamp>
+<JobID>1153907</JobID>
+<JobName>subdir508.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2512</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>2512.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.0351232E7</Vmem>
+<Mem>5026.453125</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229787'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832742</StartedTimestamp>
+<CompletedTimestamp>1222835597</CompletedTimestamp>
+<JobID>1150423</JobID>
+<JobName>mert13-af</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2855</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2855.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.271637504E9</Vmem>
+<Mem>5712.788086</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229667'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832698</SubmittedTimestamp>
+<StartedTimestamp>1222832741</StartedTimestamp>
+<CompletedTimestamp>1222834924</CompletedTimestamp>
+<JobID>1153905</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2183</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>2183.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9634432E7</Vmem>
+<Mem>4368.131836</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7231640'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>5</GroupID>
+<SubmittedTimestamp>1222832073</SubmittedTimestamp>
+<StartedTimestamp>1222832710</StartedTimestamp>
+<CompletedTimestamp>1222849114</CompletedTimestamp>
+<JobID>1153876</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>16404</Wall>
+<Category>-u prdatlas014 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=6140M,s_vmem=5560M -P prdatlas</Category>
+<CPUTime>16404.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.510371328E9</Vmem>
+<Mem>89068.59375</Mem>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7231096'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>5</GroupID>
+<SubmittedTimestamp>1222832072</SubmittedTimestamp>
+<StartedTimestamp>1222832710</StartedTimestamp>
+<CompletedTimestamp>1222846123</CompletedTimestamp>
+<JobID>1153875</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>13413</Wall>
+<Category>-u prdatlas014 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=6140M,s_vmem=5560M -P prdatlas</Category>
+<CPUTime>13413.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.457401856E9</Vmem>
+<Mem>72828.398438</Mem>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229796'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832710</StartedTimestamp>
+<CompletedTimestamp>1222835712</CompletedTimestamp>
+<JobID>1150422</JobID>
+<JobName>mert13-ae</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>3002</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>3002.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.432524288E9</Vmem>
+<Mem>6006.931641</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<Person id='45'>
+<WebName>s0565741</WebName>
+</Person>
+<SGERecord id='7229558'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222832669</SubmittedTimestamp>
+<StartedTimestamp>1222832710</StartedTimestamp>
+<CompletedTimestamp>1222833963</CompletedTimestamp>
+<JobID>1153902</JobID>
+<JobName>WR3498</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1253</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>1253.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.79216128E8</Vmem>
+<Mem>2507.223633</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229404'>
+<MachineID>1</MachineID>
+<ProjectID>13</ProjectID>
+<GroupID>20</GroupID>
+<SubmittedTimestamp>1222832679</SubmittedTimestamp>
+<StartedTimestamp>1222832710</StartedTimestamp>
+<CompletedTimestamp>1222832779</CompletedTimestamp>
+<JobID>1153903</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>69</Wall>
+<Category>-u lhcb022 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=3000M -P lhcb</Category>
+<CPUTime>69.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.867392E8</Vmem>
+<Mem>202.148438</Mem>
+<PersonID>562</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229595'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832631</SubmittedTimestamp>
+<StartedTimestamp>1222832680</StartedTimestamp>
+<CompletedTimestamp>1222834611</CompletedTimestamp>
+<JobID>1153901</JobID>
+<JobName>subdir107.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1931</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1931.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9527936E7</Vmem>
+<Mem>3863.885742</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7230634'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222681705</SubmittedTimestamp>
+<StartedTimestamp>1222832651</StartedTimestamp>
+<CompletedTimestamp>1222842782</CompletedTimestamp>
+<JobID>1126753</JobID>
+<JobName>a001.2000.smal-csmaplr2-3</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>10131</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>10131.0</CPUTime>
+<Task>25</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.51563264E8</Vmem>
+<Mem>20271.893555</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7230553'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222681705</SubmittedTimestamp>
+<StartedTimestamp>1222832651</StartedTimestamp>
+<CompletedTimestamp>1222842296</CompletedTimestamp>
+<JobID>1126753</JobID>
+<JobName>a001.2000.smal-csmaplr2-3</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>9645</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>9645.0</CPUTime>
+<Task>26</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.341184E8</Vmem>
+<Mem>19299.418945</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229385'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831926</SubmittedTimestamp>
+<StartedTimestamp>1222832651</StartedTimestamp>
+<CompletedTimestamp>1222832651</CompletedTimestamp>
+<JobID>1153868</JobID>
+<JobName>mert8.W</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>0</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>1.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.148532224E9</Vmem>
+<Mem>2.000977</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229547'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832578</SubmittedTimestamp>
+<StartedTimestamp>1222832622</StartedTimestamp>
+<CompletedTimestamp>1222833826</CompletedTimestamp>
+<JobID>1153900</JobID>
+<JobName>subdir107.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1204</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1204.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9663104E7</Vmem>
+<Mem>2409.175781</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7230681'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222681705</SubmittedTimestamp>
+<StartedTimestamp>1222832593</StartedTimestamp>
+<CompletedTimestamp>1222843103</CompletedTimestamp>
+<JobID>1126753</JobID>
+<JobName>a001.2000.smal-csmaplr2-3</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>10510</Wall>
+<Category>-u v1busaba -l h_rt=86400 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>10510.0</CPUTime>
+<Task>24</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>5.2770816E8</Vmem>
+<Mem>21030.263672</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229853'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832546</SubmittedTimestamp>
+<StartedTimestamp>1222832593</StartedTimestamp>
+<CompletedTimestamp>1222836420</CompletedTimestamp>
+<JobID>1153899</JobID>
+<JobName>subdir507.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>3827</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>3827.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.0191488E7</Vmem>
+<Mem>7657.737305</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229831'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832537</SubmittedTimestamp>
+<StartedTimestamp>1222832593</StartedTimestamp>
+<CompletedTimestamp>1222836057</CompletedTimestamp>
+<JobID>1153898</JobID>
+<JobName>subdir008.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>3464</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>3464.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.2196864E7</Vmem>
+<Mem>6931.382812</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229812'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832593</StartedTimestamp>
+<CompletedTimestamp>1222835838</CompletedTimestamp>
+<JobID>1150420</JobID>
+<JobName>mert13-ac</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>3245</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>3245.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>3.246194688E9</Vmem>
+<Mem>6493.168945</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229804'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832593</StartedTimestamp>
+<CompletedTimestamp>1222835772</CompletedTimestamp>
+<JobID>1150421</JobID>
+<JobName>mert13-ad</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>3179</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>3179.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.973334016E9</Vmem>
+<Mem>6361.104492</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229564'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832511</SubmittedTimestamp>
+<StartedTimestamp>1222832564</StartedTimestamp>
+<CompletedTimestamp>1222834118</CompletedTimestamp>
+<JobID>1153897</JobID>
+<JobName>subdir207.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1554</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1554.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9781888E7</Vmem>
+<Mem>3109.517578</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7231036'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>5</GroupID>
+<SubmittedTimestamp>1222832072</SubmittedTimestamp>
+<StartedTimestamp>1222832535</StartedTimestamp>
+<CompletedTimestamp>1222845710</CompletedTimestamp>
+<JobID>1153874</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>13175</Wall>
+<Category>-u prdatlas014 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=6140M,s_vmem=5560M -P prdatlas</Category>
+<CPUTime>13175.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.465114624E9</Vmem>
+<Mem>71536.132812</Mem>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229701'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222807303</SubmittedTimestamp>
+<StartedTimestamp>1222832535</StartedTimestamp>
+<CompletedTimestamp>1222835033</CompletedTimestamp>
+<JobID>1150419</JobID>
+<JobName>mert13-ab</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2498</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P ecdf_baseline</Category>
+<CPUTime>2498.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>3.421908992E9</Vmem>
+<Mem>4998.439453</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229389'>
+<MachineID>1</MachineID>
+<ProjectID>7</ProjectID>
+<GroupID>8</GroupID>
+<SubmittedTimestamp>1222832137</SubmittedTimestamp>
+<StartedTimestamp>1222832535</StartedTimestamp>
+<CompletedTimestamp>1222832675</CompletedTimestamp>
+<JobID>1153879</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>140</Wall>
+<Category>-u atlas015 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=3000M -P atlas</Category>
+<CPUTime>140.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.36968192E9</Vmem>
+<Mem>410.15625</Mem>
+<PersonID>9</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229517'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832458</SubmittedTimestamp>
+<StartedTimestamp>1222832506</StartedTimestamp>
+<CompletedTimestamp>1222833495</CompletedTimestamp>
+<JobID>1153894</JobID>
+<JobName>subdir207.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>989</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>989.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9511552E7</Vmem>
+<Mem>1978.96582</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229856'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>36</GroupID>
+<SubmittedTimestamp>1222644151</SubmittedTimestamp>
+<StartedTimestamp>1222832506</StartedTimestamp>
+<CompletedTimestamp>1222836463</CompletedTimestamp>
+<JobID>1123996</JobID>
+<JobName>a001.100.male-map2up-5</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>3957</Wall>
+<Category>-u v1busaba -l h_rt=21600 -pe memory 4 -P inf_hcrc_cstr_emime</Category>
+<CPUTime>3957.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.57231104E8</Vmem>
+<Mem>7917.864258</Mem>
+<PersonID>472</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229491'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832477</StartedTimestamp>
+<CompletedTimestamp>1222833352</CompletedTimestamp>
+<JobID>1153731</JobID>
+<JobName>mert8-bd</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>875</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>875.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.091219456E9</Vmem>
+<Mem>1750.854492</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229537'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832391</SubmittedTimestamp>
+<StartedTimestamp>1222832445</StartedTimestamp>
+<CompletedTimestamp>1222833698</CompletedTimestamp>
+<JobID>1153893</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1253</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1253.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.003584E7</Vmem>
+<Mem>2507.223633</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229860'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832366</SubmittedTimestamp>
+<StartedTimestamp>1222832415</StartedTimestamp>
+<CompletedTimestamp>1222836499</CompletedTimestamp>
+<JobID>1153887</JobID>
+<JobName>subdir506.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>4084</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>4084.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.0429056E7</Vmem>
+<Mem>8171.988281</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229742'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832356</SubmittedTimestamp>
+<StartedTimestamp>1222832415</StartedTimestamp>
+<CompletedTimestamp>1222835309</CompletedTimestamp>
+<JobID>1153886</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2894</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>2894.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.08429312E8</Vmem>
+<Mem>5790.826172</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229536'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832338</SubmittedTimestamp>
+<StartedTimestamp>1222832384</StartedTimestamp>
+<CompletedTimestamp>1222833679</CompletedTimestamp>
+<JobID>1153885</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1295</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1295.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.0044032E7</Vmem>
+<Mem>2591.264648</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229515'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832383</StartedTimestamp>
+<CompletedTimestamp>1222833485</CompletedTimestamp>
+<JobID>1153730</JobID>
+<JobName>mert8-bc</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1102</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1102.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.732399104E9</Vmem>
+<Mem>2205.076172</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229500'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832383</StartedTimestamp>
+<CompletedTimestamp>1222833402</CompletedTimestamp>
+<JobID>1153729</JobID>
+<JobName>mert8-bb</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1019</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1019.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.011101696E9</Vmem>
+<Mem>2038.995117</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229521'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832271</SubmittedTimestamp>
+<StartedTimestamp>1222832319</StartedTimestamp>
+<CompletedTimestamp>1222833524</CompletedTimestamp>
+<JobID>1153884</JobID>
+<JobName>subdir107.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1205</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1205.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9765504E7</Vmem>
+<Mem>2411.176758</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229485'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832351</StartedTimestamp>
+<CompletedTimestamp>1222833328</CompletedTimestamp>
+<JobID>1153728</JobID>
+<JobName>mert8-ba</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>977</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>977.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.436028928E9</Vmem>
+<Mem>1954.954102</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229513'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832288</StartedTimestamp>
+<CompletedTimestamp>1222833479</CompletedTimestamp>
+<JobID>1153724</JobID>
+<JobName>mert8-aw</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1191</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1191.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.118541312E9</Vmem>
+<Mem>2383.163086</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229494'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832288</StartedTimestamp>
+<CompletedTimestamp>1222833380</CompletedTimestamp>
+<JobID>1153726</JobID>
+<JobName>mert8-ay</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1092</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1092.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.33902336E9</Vmem>
+<Mem>2185.066406</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229483'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832288</StartedTimestamp>
+<CompletedTimestamp>1222833316</CompletedTimestamp>
+<JobID>1153727</JobID>
+<JobName>mert8-az</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1028</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1028.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.069142016E9</Vmem>
+<Mem>2057.003906</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229471'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832288</StartedTimestamp>
+<CompletedTimestamp>1222833241</CompletedTimestamp>
+<JobID>1153725</JobID>
+<JobName>mert8-ax</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>953</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>953.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.533526016E9</Vmem>
+<Mem>1906.930664</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229505'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832218</SubmittedTimestamp>
+<StartedTimestamp>1222832257</StartedTimestamp>
+<CompletedTimestamp>1222833412</CompletedTimestamp>
+<JobID>1153883</JobID>
+<JobName>subdir107.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1155</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1155.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9384576E7</Vmem>
+<Mem>2311.12793</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229487'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832258</StartedTimestamp>
+<CompletedTimestamp>1222833335</CompletedTimestamp>
+<JobID>1153723</JobID>
+<JobName>mert8-av</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1077</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1077.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.496797184E9</Vmem>
+<Mem>2155.051758</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229503'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832257</StartedTimestamp>
+<CompletedTimestamp>1222833411</CompletedTimestamp>
+<JobID>1153722</JobID>
+<JobName>mert8-au</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1154</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1154.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.39020288E9</Vmem>
+<Mem>2309.126953</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7230030'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832176</SubmittedTimestamp>
+<StartedTimestamp>1222832227</StartedTimestamp>
+<CompletedTimestamp>1222838073</CompletedTimestamp>
+<JobID>1153881</JobID>
+<JobName>subdir006.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>5846</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>5846.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.1906048E7</Vmem>
+<Mem>11697.708984</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229670'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832186</SubmittedTimestamp>
+<StartedTimestamp>1222832227</StartedTimestamp>
+<CompletedTimestamp>1222834928</CompletedTimestamp>
+<JobID>1153882</JobID>
+<JobName>subdir510.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2701</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>2702.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.148532224E9</Vmem>
+<Mem>5406.638672</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229542'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832151</SubmittedTimestamp>
+<StartedTimestamp>1222832197</StartedTimestamp>
+<CompletedTimestamp>1222833731</CompletedTimestamp>
+<JobID>1153880</JobID>
+<JobName>subdir207.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1534</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1534.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.97696E7</Vmem>
+<Mem>3069.498047</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229475'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832197</StartedTimestamp>
+<CompletedTimestamp>1222833271</CompletedTimestamp>
+<JobID>1153721</JobID>
+<JobName>mert8-at</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1074</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1074.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.96534272E9</Vmem>
+<Mem>2149.048828</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229458'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832197</StartedTimestamp>
+<CompletedTimestamp>1222833174</CompletedTimestamp>
+<JobID>1153720</JobID>
+<JobName>mert8-as</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>977</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>977.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.205927936E9</Vmem>
+<Mem>1954.954102</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229446'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832166</StartedTimestamp>
+<CompletedTimestamp>1222833086</CompletedTimestamp>
+<JobID>1153719</JobID>
+<JobName>mert8-ar</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>920</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>920.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.005393408E9</Vmem>
+<Mem>1840.898438</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7231045'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>5</GroupID>
+<SubmittedTimestamp>1222832072</SubmittedTimestamp>
+<StartedTimestamp>1222832136</StartedTimestamp>
+<CompletedTimestamp>1222845799</CompletedTimestamp>
+<JobID>1153873</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>13663</Wall>
+<Category>-u prdatlas014 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=6140M,s_vmem=5560M -P prdatlas</Category>
+<CPUTime>13663.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.310459392E9</Vmem>
+<Mem>74185.820312</Mem>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229455'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832136</StartedTimestamp>
+<CompletedTimestamp>1222833140</CompletedTimestamp>
+<JobID>1153718</JobID>
+<JobName>mert8-aq</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1004</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1004.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.413066752E9</Vmem>
+<Mem>2008.980469</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229540'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832098</SubmittedTimestamp>
+<StartedTimestamp>1222832135</StartedTimestamp>
+<CompletedTimestamp>1222833721</CompletedTimestamp>
+<JobID>1153878</JobID>
+<JobName>subdir207.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1586</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1586.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9802368E7</Vmem>
+<Mem>3173.548828</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229415'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222829980</SubmittedTimestamp>
+<StartedTimestamp>1222832105</StartedTimestamp>
+<CompletedTimestamp>1222832874</CompletedTimestamp>
+<JobID>1153658</JobID>
+<JobName>WR2141</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>769</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>769.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.7979776E8</Vmem>
+<Mem>1538.750977</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229479'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832104</StartedTimestamp>
+<CompletedTimestamp>1222833300</CompletedTimestamp>
+<JobID>1153717</JobID>
+<JobName>mert8-ap</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1196</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1196.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.660137472E9</Vmem>
+<Mem>2393.167969</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229468'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832031</SubmittedTimestamp>
+<StartedTimestamp>1222832074</StartedTimestamp>
+<CompletedTimestamp>1222833220</CompletedTimestamp>
+<JobID>1153872</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1146</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1146.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.08027904E8</Vmem>
+<Mem>2293.119141</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7231774'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>5</GroupID>
+<SubmittedTimestamp>1222831366</SubmittedTimestamp>
+<StartedTimestamp>1222832043</StartedTimestamp>
+<CompletedTimestamp>1222849916</CompletedTimestamp>
+<JobID>1153801</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>17873</Wall>
+<Category>-u prdatlas014 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=6140M,s_vmem=5560M -P prdatlas</Category>
+<CPUTime>17873.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.513177088E9</Vmem>
+<Mem>97044.804688</Mem>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229835'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222831996</SubmittedTimestamp>
+<StartedTimestamp>1222832043</StartedTimestamp>
+<CompletedTimestamp>1222836081</CompletedTimestamp>
+<JobID>1153870</JobID>
+<JobName>subdir010.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>4038</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>4038.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.2196864E7</Vmem>
+<Mem>8079.943359</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229588'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222832006</SubmittedTimestamp>
+<StartedTimestamp>1222832043</StartedTimestamp>
+<CompletedTimestamp>1222834474</CompletedTimestamp>
+<JobID>1153871</JobID>
+<JobName>subdir509.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2431</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>2431.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.0027648E7</Vmem>
+<Mem>4864.374023</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229449'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222830770</SubmittedTimestamp>
+<StartedTimestamp>1222832043</StartedTimestamp>
+<CompletedTimestamp>1222833103</CompletedTimestamp>
+<JobID>1153716</JobID>
+<JobName>mert8-ao</JobName>
+<CPUs>3</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1060</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 3 -P inf_iccs_smt</Category>
+<CPUTime>1060.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.156337664E9</Vmem>
+<Mem>2121.035156</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229374'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832569</CompletedTimestamp>
+<JobID>1153853</JobID>
+<JobName>mert8-ap</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>557</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>557.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.882624E8</Vmem>
+<Mem>1114.543945</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229373'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831925</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832564</CompletedTimestamp>
+<JobID>1153858</JobID>
+<JobName>mert8-au</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>552</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>552.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.24889088E8</Vmem>
+<Mem>1104.539062</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229371'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832562</CompletedTimestamp>
+<JobID>1153844</JobID>
+<JobName>mert8-ag</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>550</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>550.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.63661824E8</Vmem>
+<Mem>1100.537109</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229365'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831925</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832550</CompletedTimestamp>
+<JobID>1153861</JobID>
+<JobName>mert8-ax</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>538</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>538.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.17291008E8</Vmem>
+<Mem>1076.525391</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229370'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832561</CompletedTimestamp>
+<JobID>1153851</JobID>
+<JobName>mert8-an</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>549</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>549.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.22902528E8</Vmem>
+<Mem>1098.536133</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229363'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831925</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832545</CompletedTimestamp>
+<JobID>1153862</JobID>
+<JobName>mert8-ay</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>533</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>533.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.31352576E8</Vmem>
+<Mem>1066.520508</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229362'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831925</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832540</CompletedTimestamp>
+<JobID>1153860</JobID>
+<JobName>mert8-aw</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>528</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>528.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.004609536E9</Vmem>
+<Mem>1056.515625</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229359'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832535</CompletedTimestamp>
+<JobID>1153848</JobID>
+<JobName>mert8-ak</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>523</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>523.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.57046784E8</Vmem>
+<Mem>1046.510742</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229357'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832532</CompletedTimestamp>
+<JobID>1153850</JobID>
+<JobName>mert8-am</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>520</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>520.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.39794432E8</Vmem>
+<Mem>1040.507812</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229355'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832517</CompletedTimestamp>
+<JobID>1153847</JobID>
+<JobName>mert8-aj</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>505</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>505.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.27776768E8</Vmem>
+<Mem>1010.493164</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229354'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831925</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832515</CompletedTimestamp>
+<JobID>1153859</JobID>
+<JobName>mert8-av</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>503</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>503.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.64714496E8</Vmem>
+<Mem>1006.491211</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229353'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832012</StartedTimestamp>
+<CompletedTimestamp>1222832514</CompletedTimestamp>
+<JobID>1153845</JobID>
+<JobName>mert8-ah</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>502</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>502.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.11122432E8</Vmem>
+<Mem>1004.490234</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229566'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222829851</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222834140</CompletedTimestamp>
+<JobID>1153653</JobID>
+<JobName>mert5-bc</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2129</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>2129.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>2.059776E9</Vmem>
+<Mem>4260.079102</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229561'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222829851</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222834045</CompletedTimestamp>
+<JobID>1153652</JobID>
+<JobName>mert5-bb</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>2034</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>2034.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.404137472E9</Vmem>
+<Mem>4069.986328</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229539'>
+<MachineID>1</MachineID>
+<ProjectID>19</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222829851</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222833719</CompletedTimestamp>
+<JobID>1153654</JobID>
+<JobName>mert5-bd</JobName>
+<CPUs>4</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1708</Wall>
+<Category>-u jschroe1 -l h_rt=21600 -pe memory 4 -P inf_iccs_smt</Category>
+<CPUTime>1708.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.126387712E9</Vmem>
+<Mem>3417.667969</Mem>
+<PersonID>353</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+</SGERecord>
+<SGERecord id='7229476'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222831978</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222833283</CompletedTimestamp>
+<JobID>1153869</JobID>
+<JobName>subdir007.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1272</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1272.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9650816E7</Vmem>
+<Mem>2545.242188</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229380'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222832618</CompletedTimestamp>
+<JobID>1153840</JobID>
+<JobName>mert8-ac</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>607</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>607.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.71087872E8</Vmem>
+<Mem>1214.592773</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229378'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222832600</CompletedTimestamp>
+<JobID>1153849</JobID>
+<JobName>mert8-al</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>589</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>589.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.47974144E8</Vmem>
+<Mem>1178.575195</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229377'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222832579</CompletedTimestamp>
+<JobID>1153841</JobID>
+<JobName>mert8-ad</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>568</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>568.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.48768768E8</Vmem>
+<Mem>1136.554688</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229376'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222832573</CompletedTimestamp>
+<JobID>1153842</JobID>
+<JobName>mert8-ae</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>562</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>562.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.77317888E8</Vmem>
+<Mem>1124.548828</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229369'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831925</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222832559</CompletedTimestamp>
+<JobID>1153857</JobID>
+<JobName>mert8-at</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>548</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>548.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.025069056E9</Vmem>
+<Mem>1096.535156</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229367'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222832552</CompletedTimestamp>
+<JobID>1153843</JobID>
+<JobName>mert8-af</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>541</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>541.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.8125824E8</Vmem>
+<Mem>1082.52832</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229361'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222832536</CompletedTimestamp>
+<JobID>1153852</JobID>
+<JobName>mert8-ao</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>525</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>525.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.04327168E8</Vmem>
+<Mem>1050.512695</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229358'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831924</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222832535</CompletedTimestamp>
+<JobID>1153838</JobID>
+<JobName>mert8-aa</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>524</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>524.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.6364544E8</Vmem>
+<Mem>1048.511719</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229351'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831925</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222832511</CompletedTimestamp>
+<JobID>1153855</JobID>
+<JobName>mert8-ar</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>500</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>500.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.89405184E8</Vmem>
+<Mem>1000.488281</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229350'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831925</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222832510</CompletedTimestamp>
+<JobID>1153863</JobID>
+<JobName>mert8-az</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>499</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>499.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>8.99149824E8</Vmem>
+<Mem>998.487305</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229348'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>30</GroupID>
+<SubmittedTimestamp>1222831925</SubmittedTimestamp>
+<StartedTimestamp>1222832011</StartedTimestamp>
+<CompletedTimestamp>1222832509</CompletedTimestamp>
+<JobID>1153856</JobID>
+<JobName>mert8-as</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>498</Wall>
+<Category>-u s0565741 -l mem_free=0.5G -P ecdf_baseline</Category>
+<CPUTime>498.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>9.1856896E8</Vmem>
+<Mem>996.486328</Mem>
+<PersonID>45</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229462'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222831910</SubmittedTimestamp>
+<StartedTimestamp>1222831978</StartedTimestamp>
+<CompletedTimestamp>1222833190</CompletedTimestamp>
+<JobID>1153836</JobID>
+<JobName>subdir107.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1212</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1212.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.9638528E7</Vmem>
+<Mem>2425.183594</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7231539'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>5</GroupID>
+<SubmittedTimestamp>1222831366</SubmittedTimestamp>
+<StartedTimestamp>1222831977</StartedTimestamp>
+<CompletedTimestamp>1222848504</CompletedTimestamp>
+<JobID>1153799</JobID>
+<JobName>STDIN</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>16527</Wall>
+<Category>-u prdatlas014 -q ecdf -l h_fsize=5G,h_rt=172799,h_vmem=6140M,s_vmem=5560M -P prdatlas</Category>
+<CPUTime>16527.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.513283584E9</Vmem>
+<Mem>89736.445312</Mem>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229527'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>2</GroupID>
+<SubmittedTimestamp>1222833533</SubmittedTimestamp>
+<StartedTimestamp>1222833580</StartedTimestamp>
+<CompletedTimestamp>1222833587</CompletedTimestamp>
+<JobID>1153979</JobID>
+<JobName>EVALUATION_nc-devtest2007_nist-bleu.32</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>7</Wall>
+<Category>-u bhaddow -l h_rt=14400 -P ecdf_baseline</Category>
+<CPUTime>7.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>1.89882368E8</Vmem>
+<Mem>14.006836</Mem>
+<PersonID>133</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<SGERecord id='7229776'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>82</GroupID>
+<SubmittedTimestamp>1222833539</SubmittedTimestamp>
+<StartedTimestamp>1222833580</StartedTimestamp>
+<CompletedTimestamp>1222835486</CompletedTimestamp>
+<JobID>1153980</JobID>
+<JobName>subdir207.sh</JobName>
+<CPUs>1</CPUs>
+<Failed>0</Failed>
+<Exit>0</Exit>
+<Wall>1906</Wall>
+<Category>-u wwei1 -l h_rt=10800 -P ecdf_baseline</Category>
+<CPUTime>1906.0</CPUTime>
+<Task>0</Task>
+<PeTaskId>NONE</PeTaskId>
+<Vmem>7.991296E7</Vmem>
+<Mem>3813.861328</Mem>
+<PersonID>254</PersonID>
+<QueueID>1</QueueID>
+<AccountID>1</AccountID>
+<PeID>1</PeID>
+</SGERecord>
+<Queue id='3'>
+<Name>gridpp</Name>
+</Queue>
+<Queue id='4'>
+<Name>test</Name>
+</Queue>
+<UnixGroup id='10'>
+<Name>atlas7</Name>
+</UnixGroup>
+<UnixGroup id='57'>
+<Name>biology_cell_wtcc</Name>
+</UnixGroup>
+<UnixGroup id='3'>
+<Name>biology_ieb</Name>
+</UnixGroup>
+<UnixGroup id='31'>
+<Name>biology_ieb_barton</Name>
+</UnixGroup>
+<UnixGroup id='23'>
+<Name>biology_ieb_brotherstone</Name>
+</UnixGroup>
+<UnixGroup id='46'>
+<Name>biology_ieb_knott</Name>
+</UnixGroup>
+<UnixGroup id='73'>
+<Name>biology_ieb_mblaxter</Name>
+</UnixGroup>
+<UnixGroup id='64'>
+<Name>biology_ieb_meg</Name>
+</UnixGroup>
+<UnixGroup id='80'>
+<Name>biology_iiir_nsavill_01</Name>
+</UnixGroup>
+<UnixGroup id='38'>
+<Name>biology_imbs</Name>
+</UnixGroup>
+<UnixGroup id='61'>
+<Name>bioss</Name>
+</UnixGroup>
+<UnixGroup id='65'>
+<Name>chemistry_pccp_camp</Name>
+</UnixGroup>
+<UnixGroup id='33'>
+<Name>chemistry_pccp_palmer</Name>
+</UnixGroup>
+<UnixGroup id='76'>
+<Name>chemistry_rcf</Name>
+</UnixGroup>
+<UnixGroup id='40'>
+<Name>csch_chs_mckeigue</Name>
+</UnixGroup>
+<UnixGroup id='24'>
+<Name>dteam</Name>
+</UnixGroup>
+<UnixGroup id='54'>
+<Name>epcc_msc</Name>
+</UnixGroup>
+<UnixGroup id='75'>
+<Name>geos_cecs</Name>
+</UnixGroup>
+<UnixGroup id='13'>
+<Name>geos_ess</Name>
+</UnixGroup>
+<UnixGroup id='79'>
+<Name>geos_gc</Name>
+</UnixGroup>
+<UnixGroup id='84'>
+<Name>geos_gc_hulton</Name>
+</UnixGroup>
+<UnixGroup id='91'>
+<Name>geos_gits</Name>
+</UnixGroup>
+<UnixGroup id='41'>
+<Name>geos_iaes</Name>
+</UnixGroup>
+<UnixGroup id='42'>
+<Name>geos_sages</Name>
+</UnixGroup>
+<UnixGroup id='53'>
+<Name>igmm_mg</Name>
+</UnixGroup>
+<UnixGroup id='67'>
+<Name>igmm_mrchgu</Name>
+</UnixGroup>
+<UnixGroup id='11'>
+<Name>ilc</Name>
+</UnixGroup>
+<UnixGroup id='71'>
+<Name>inf_hcrc</Name>
+</UnixGroup>
+<UnixGroup id='14'>
+<Name>inf_ianc</Name>
+</UnixGroup>
+<UnixGroup id='26'>
+<Name>inf_iccs</Name>
+</UnixGroup>
+<UnixGroup id='90'>
+<Name>inf_iccs_dsg</Name>
+</UnixGroup>
+<UnixGroup id='35'>
+<Name>inf_icsa</Name>
+</UnixGroup>
+<UnixGroup id='1'>
+<Name>inf_icsa_card</Name>
+</UnixGroup>
+<UnixGroup id='89'>
+<Name>inf_lfcs</Name>
+</UnixGroup>
+<UnixGroup id='85'>
+<Name>inf_sysbio</Name>
+</UnixGroup>
+<UnixGroup id='25'>
+<Name>is_iti_ug</Name>
+</UnixGroup>
+<UnixGroup id='21'>
+<Name>lhcb8</Name>
+</UnixGroup>
+<UnixGroup id='94'>
+<Name>maths_admin</Name>
+</UnixGroup>
+<UnixGroup id='60'>
+<Name>maths_ant</Name>
+</UnixGroup>
+<UnixGroup id='18'>
+<Name>maths_applied</Name>
+</UnixGroup>
+<UnixGroup id='88'>
+<Name>maths_mp</Name>
+</UnixGroup>
+<UnixGroup id='78'>
+<Name>maths_oro</Name>
+</UnixGroup>
+<UnixGroup id='83'>
+<Name>maths_ruffert</Name>
+</UnixGroup>
+<UnixGroup id='74'>
+<Name>mcm_dcn</Name>
+</UnixGroup>
+<UnixGroup id='7'>
+<Name>mcm_dcn_bic</Name>
+</UnixGroup>
+<UnixGroup id='66'>
+<Name>mcm_dcn_bic_srg</Name>
+</UnixGroup>
+<UnixGroup id='47'>
+<Name>mcm_ecrc_bioinf</Name>
+</UnixGroup>
+<UnixGroup id='55'>
+<Name>mcm_pst</Name>
+</UnixGroup>
+<UnixGroup id='28'>
+<Name>mcm_wtcrf</Name>
+</UnixGroup>
+<UnixGroup id='72'>
+<Name>middleware</Name>
+</UnixGroup>
+<UnixGroup id='86'>
+<Name>ngsusers</Name>
+</UnixGroup>
+<UnixGroup id='12'>
+<Name>ops</Name>
+</UnixGroup>
+<UnixGroup id='43'>
+<Name>physics_epcc</Name>
+</UnixGroup>
+<UnixGroup id='87'>
+<Name>physics_epcc_dpm</Name>
+</UnixGroup>
+<UnixGroup id='49'>
+<Name>physics_epcc_msc</Name>
+</UnixGroup>
+<UnixGroup id='69'>
+<Name>physics_epcc_ukqcd</Name>
+</UnixGroup>
+<UnixGroup id='48'>
+<Name>physics_ifa</Name>
+</UnixGroup>
+<UnixGroup id='81'>
+<Name>physics_ifa_weaklens</Name>
+</UnixGroup>
+<UnixGroup id='19'>
+<Name>physics_ifp</Name>
+</UnixGroup>
+<UnixGroup id='34'>
+<Name>physics_ifp_cm</Name>
+</UnixGroup>
+<UnixGroup id='29'>
+<Name>physics_ifp_ppe</Name>
+</UnixGroup>
+<UnixGroup id='16'>
+<Name>physics_ifp_ppt</Name>
+</UnixGroup>
+<UnixGroup id='56'>
+<Name>physics_nesc</Name>
+</UnixGroup>
+<UnixGroup id='70'>
+<Name>physics_nesc_firegrid</Name>
+</UnixGroup>
+<UnixGroup id='68'>
+<Name>ppls_psychology_diff</Name>
+</UnixGroup>
+<UnixGroup id='39'>
+<Name>ppls_psychology_lcc</Name>
+</UnixGroup>
+<UnixGroup id='32'>
+<Name>roe</Name>
+</UnixGroup>
+<UnixGroup id='92'>
+<Name>roslin_aviangen</Name>
+</UnixGroup>
+<UnixGroup id='45'>
+<Name>roslin_gg</Name>
+</UnixGroup>
+<UnixGroup id='37'>
+<Name>roslin_gridqtl</Name>
+</UnixGroup>
+<UnixGroup id='27'>
+<Name>sbms_dpm</Name>
+</UnixGroup>
+<UnixGroup id='62'>
+<Name>scisup</Name>
+</UnixGroup>
+<UnixGroup id='51'>
+<Name>see_idcom</Name>
+</UnixGroup>
+<UnixGroup id='52'>
+<Name>see_iie</Name>
+</UnixGroup>
+<UnixGroup id='77'>
+<Name>see_imns</Name>
+</UnixGroup>
+<UnixGroup id='22'>
+<Name>see_imp</Name>
+</UnixGroup>
+<UnixGroup id='15'>
+<Name>sgmatlas</Name>
+</UnixGroup>
+<UnixGroup id='44'>
+<Name>vet_roslin</Name>
+</UnixGroup>
+<UnixGroup id='50'>
+<Name>vo_biomed</Name>
+</UnixGroup>
+<UnixGroup id='6'>
+<Name>vo_cms</Name>
+</UnixGroup>
+<UnixGroup id='93'>
+<Name>vo_gridpp</Name>
+</UnixGroup>
+<UnixGroup id='17'>
+<Name>vo_gridqtl</Name>
+</UnixGroup>
+<UnixGroup id='9'>
+<Name>vo_hone</Name>
+</UnixGroup>
+<UnixGroup id='58'>
+<Name>vo_ncmos</Name>
+</UnixGroup>
+<UnixGroup id='59'>
+<Name>vo_pheno</Name>
+</UnixGroup>
+<UnixGroup id='63'>
+<Name>vo_scotgrid</Name>
+</UnixGroup>
+<School id='5'>
+<Name>Mathematics</Name>
+</School>
+<Institute id='9'>
+<Name>Applied and Computational Mathematics</Name>
+<SchoolID>5</SchoolID>
+</Institute>
+<Institute id='10'>
+<Name>Astronomy</Name>
+<SchoolID>6</SchoolID>
+</Institute>
+<School id='1'>
+<Name>Biological Sciences</Name>
+</School>
+<Institute id='5'>
+<Name>Evolutionary Biology</Name>
+<SchoolID>1</SchoolID>
+</Institute>
+<Institute id='12'>
+<Name>GridPP</Name>
+<SchoolID>6</SchoolID>
+</Institute>
+<Institute id='7'>
+<Name>Human Communications Research Centre</Name>
+<SchoolID>4</SchoolID>
+</Institute>
+<Institute id='4'>
+<Name>Immunology and Infection Research</Name>
+<SchoolID>1</SchoolID>
+</Institute>
+<School id='3'>
+<Name>Engineering and Electronics</Name>
+</School>
+<Institute id='1'>
+<Name>Infrastructure and Environment</Name>
+<SchoolID>3</SchoolID>
+</Institute>
+<Institute id='2'>
+<Name>Materials and Processes</Name>
+<SchoolID>3</SchoolID>
+</Institute>
+<School id='2'>
+<Name>GeoSciences</Name>
+</School>
+<Institute id='6'>
+<Name>SAGES</Name>
+<SchoolID>2</SchoolID>
+</Institute>
+<Person id='1'>
+<WebName>sbooth</WebName>
+<Email>spb@epcc.ed.ac.uk</Email>
+</Person>
+</dataset>

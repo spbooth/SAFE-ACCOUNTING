@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema elementFormDefault="qualified"
+	targetNamespace="http://safe.epcc.ed.ac.uk/table"
+	xmlns="http://safe.epcc.ed.ac.uk/table"
+	xmlns:par="http://safe.epcc.ed.ac.uk/substitute"
+	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+	xmlns:per="http://safe.epcc.ed.ac.uk/period"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:Q1="http://safe.epcc.ed.ac.uk/atom"
+	xmlns:Q2="http://safe.epcc.ed.ac.uk/parameter" 
+	xmlns:prop="http://safe.epcc.ed.ac.uk/propexpression">
+
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/substitute"
+		schemaLocation="substitute.xsd" />
+
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/period"
+		schemaLocation="period.xsd" />
+
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/filter"
+		schemaLocation="filter.xsd" />
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/parameter"
+		schemaLocation="parameter.xsd" />
+
+	<xsd:import schemaLocation="propexpression.xsd" namespace="http://safe.epcc.ed.ac.uk/propexpression"></xsd:import>
+	<xsd:complexType name="ColumnType">
+		<xsd:sequence>
+			<xsd:element name="Name" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Property" type="prop:PropExpressionType"
+				minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:group name="TableColumns">
+		<xsd:choice>
+			<xsd:element name="Column" type="ColumnType" />
+		</xsd:choice>
+	</xsd:group>
+
+	<xsd:group name="SummaryTableColumns">
+		<xsd:choice>
+			<xsd:element name="Index" type="IndexType" />
+			<xsd:element name="Column" type="ColumnType" />
+			<xsd:element name="SumColumn" type="ColumnType" />
+			<xsd:element name="AverageColumn" type="ColumnType" />
+			<xsd:element name="MinColumn" type="ColumnType" />
+			<xsd:element name="MaxColumn" type="ColumnType" />
+		</xsd:choice>
+	</xsd:group>
+
+	<xsd:complexType name="PercentColumnType">
+		<xsd:all>
+			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Name" type="par:TextOrParameterType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Column" type="par:TextOrParameterType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="MaximumFractionDigits"
+				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="MinimumFractionDigits"
+				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="TotalOver"
+				type="par:NumberOrParameterType" minOccurs="0" maxOccurs="1" />
+		</xsd:all>
+	</xsd:complexType>
+
+	<xsd:complexType name="TotalColumnType">
+		<xsd:all>
+			<xsd:element name="Name" type="par:TextOrParameterType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Column" type="par:TextOrParameterType"
+				minOccurs="1" maxOccurs="1" />
+		</xsd:all>
+	</xsd:complexType>
+
+	<xsd:complexType name="CategoryTotalsType">
+		<xsd:all>
+			<xsd:element name="Category" type="par:TextOrParameterType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Column" type="par:TextOrParameterType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Label" type="par:TextOrParameterType"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="Highlight" type="xsd:boolean"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="KeyTransform" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1"/>
+		</xsd:all>
+	</xsd:complexType>
+
+<xsd:complexType name="CategorySetType">
+		<xsd:all>
+			<xsd:element name="Category" type="par:TextOrParameterType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Column" type="par:TextOrParameterType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="KeyTransform" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="ValueTransform" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1"/>
+		</xsd:all>
+	</xsd:complexType>
+
+	<xsd:group name="FormattingInstructions">
+		<xsd:choice>
+			<xsd:element name="TableFormat" type="xsd:string"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="SkipRows" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="MaxRows" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Warning" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="SortBy" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Columns"
+							type="par:TextOrParameterType" minOccurs="1" maxOccurs="1" />
+						<xsd:element name="Comparators"
+							type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="Reverse"
+							type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Set">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element name="Column"
+							type="par:TextOrParameterType" />
+						<xsd:element name="Row"
+							type="par:TextOrParameterType" />
+						<xsd:element name="Value"
+							type="par:TextOrParameterType" />
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="SetColumnAt">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element name="Column"
+							type="par:TextOrParameterType" />
+						<xsd:element name="At"
+							type="par:TextOrParameterType" />
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="SetColumnAfter">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element name="Column"
+							type="par:TextOrParameterType" />
+						<xsd:element name="After"
+							type="par:TextOrParameterType" />
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="SetColumnLast">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Column"
+							type="par:TextOrParameterType" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="SetRowAt">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element name="Row"
+							type="par:TextOrParameterType" />
+						<xsd:element name="At"
+							type="par:TextOrParameterType" />
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="SetRowAfter">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element name="Row"
+							type="par:TextOrParameterType" />
+						<xsd:element name="After"
+							type="par:TextOrParameterType" />
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="SetRowLast">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Row"
+							type="par:TextOrParameterType" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Remove" type="RemoveType"></xsd:element>
+			<xsd:element name="Format" type="FormatType"></xsd:element>
+			<xsd:element name="Transform" type="FormatType"></xsd:element>
+			<xsd:element name="TransformKeys" type="FormatType"></xsd:element>
+			<xsd:element name="NumberFormat" type="NumberFormatType"></xsd:element>
+			<xsd:element name="PercentFormat" type="PercentFormatType"></xsd:element>
+			<xsd:element name="DateFormat" type="DateFormatType"></xsd:element>
+			<xsd:element name="PercentColumn" type="PercentColumnType" />
+			<xsd:element name="TotalColumn" type="TotalColumnType" />
+			<xsd:element name="CategoryTotals"
+				type="CategoryTotalsType" />
+			<xsd:element name="CategorySet"
+				type="CategorySetType" />
+			<xsd:element name="CombineColumn" type="CombineType"></xsd:element>
+			<xsd:element name="KeyName" type="KeyNameType"></xsd:element>
+			<xsd:element name="PrintHeadings"
+				type="PrintHeadingsType">
+			</xsd:element>
+		</xsd:choice>
+	</xsd:group>
+
+	<xsd:complexType name="DateType">
+		<xsd:choice>
+			<xsd:sequence>
+				<xsd:element name="Property"
+					type="prop:PropExpressionType" minOccurs="1" maxOccurs="1" />
+			</xsd:sequence>
+			<xsd:sequence>
+				<xsd:element name="StartProperty"
+					type="prop:PropExpressionType" minOccurs="1" maxOccurs="1" />
+				<xsd:element name="EndProperty"
+					type="prop:PropExpressionType" minOccurs="1" maxOccurs="1" />
+			</xsd:sequence>
+			<xsd:sequence>
+				<xsd:element name="AllTimes">
+					<xsd:complexType></xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:choice>
+	</xsd:complexType>
+
+	<xsd:group name="AnyTable">
+	<xsd:choice>
+	<xsd:element ref="Table"/>
+	<xsd:element ref="SummaryTable"/>
+	<xsd:element ref="CompoundTable"/>
+	<xsd:element ref="ObjectTable"/>
+	<xsd:element ref="SummaryObjectTable"/>
+	</xsd:choice>
+	</xsd:group>
+	<xsd:element name="Table">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="per:Period" minOccurs="0"
+					maxOccurs="1" />
+				<xsd:element name="DefaultPropertyList" maxOccurs="1" minOccurs="0">
+				<xsd:annotation><xsd:documentation>Take the property list from configuration parameters</xsd:documentation></xsd:annotation>
+				<xsd:complexType><xsd:sequence></xsd:sequence></xsd:complexType></xsd:element>
+				<xsd:group ref="TableContent" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ObjectTable">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="fil:ObjectSet" minOccurs="1"
+					maxOccurs="1" />
+				<xsd:group ref="ObjectTableContent" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:group name="TableContent">
+		<xsd:choice>
+			<xsd:element ref="fil:Filter" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:group ref="TableColumns" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:group ref="FormattingInstructions" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:choice>
+	</xsd:group>
+	<xsd:group name="ObjectTableContent">
+		<xsd:choice>
+			<xsd:group ref="TableColumns" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:group ref="FormattingInstructions" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:choice>
+	</xsd:group>
+	<xsd:element name="SummaryTable">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="per:Period" minOccurs="0"
+					maxOccurs="1" />
+				<xsd:element name="Date" type="DateType" minOccurs="0"
+					maxOccurs="1" />
+				<xsd:group ref="SummaryContent" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="SummaryObjectTable">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="fil:ObjectSet" minOccurs="1"
+					maxOccurs="1" />
+				<xsd:group ref="SummaryContent" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:group name="SummaryContent">
+		<xsd:choice>
+			<!--  Parameter might expand to period or filter -->
+			<xsd:group ref="par:Content" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="fil:Filter" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:group ref="SummaryTableColumns" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:group ref="FormattingInstructions" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:choice>
+	</xsd:group>
+	<xsd:group name="CompoundContent">
+		<xsd:choice>
+			<xsd:element ref="CompoundTable" />
+			<xsd:element ref="Table" />
+			<xsd:element ref="SummaryTable" />
+			<xsd:element ref="ObjectTable" />
+			<xsd:element ref="SummaryObjectTable" />
+			<!--  Actually this could be other repeated table content -->
+			<xsd:group ref="par:Content" />
+			<xsd:element ref="fil:Filter" />
+			<xsd:group ref="FormattingInstructions" />
+		</xsd:choice>
+	</xsd:group>
+
+	<xsd:element name="CompoundTable">
+		<xsd:complexType>
+			<xsd:sequence>
+
+				<xsd:group ref="CompoundContent" minOccurs="0"
+					maxOccurs="unbounded" />
+
+
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+
+	<xsd:complexType name="RemoveType">
+		<xsd:choice>
+			<xsd:element name="Column" type="par:TextOrParameterType"></xsd:element>
+			<xsd:element name="Row" type="par:TextOrParameterType"></xsd:element>
+		</xsd:choice>
+	</xsd:complexType>
+
+	<xsd:complexType name="FormatType">
+		<xsd:all>
+			<xsd:element name="Column" type="par:TextOrParameterType"></xsd:element>
+			<xsd:element name="Type" type="par:TextOrParameterType"></xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="NumberFormatType">
+		<xsd:all>
+			<xsd:element name="Column" type="par:TextOrParameterType"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="MaximumIntegerDigits"
+				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="MinimumIntegerDigits"
+				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="MaximumFractionDigits"
+				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="MinimumFractionDigits"
+				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+			</xsd:element>
+
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="PercentFormatType">
+		<xsd:all>
+			<xsd:element name="Column" type="par:TextOrParameterType"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="MaximumFractionDigits"
+				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="MinimumFractionDigits"
+				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+			</xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="CombineType">
+		<xsd:all>
+			<xsd:element name="Dest" type="par:TextOrParameterType"></xsd:element>
+			<xsd:element name="Arg1" type="par:TextOrParameterType"></xsd:element>
+			<xsd:element name="Arg2" type="par:TextOrParameterType"></xsd:element>
+			<xsd:element name="Operator"
+				type="par:TextOrParameterType">
+			</xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+
+	<xsd:complexType name="DateFormatType">
+		<xsd:all>
+			<xsd:element name="Column" type="par:TextOrParameterType"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="Format" type="par:TextOrParameterType"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+
+			<xsd:element name="Timezone" type="par:TextOrParameterType"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+
+	<xsd:complexType name="KeyNameType">
+		<xsd:sequence>
+			<xsd:element name="Name" type="par:TextOrParameterType"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="PrintHeadingsType">
+		<xsd:sequence>
+			<xsd:element name="Value" type="par:TextOrParameterType"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="IndexType">
+		<xsd:complexContent>
+			<xsd:extension base="ColumnType">
+				<xsd:attribute name="labeller" type="xsd:string" use="optional"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>

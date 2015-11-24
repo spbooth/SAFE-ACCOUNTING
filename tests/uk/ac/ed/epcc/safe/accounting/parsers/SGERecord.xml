@@ -1,0 +1,448 @@
+<dataset><TableSpecification name='SGERecord'>
+<Queue type='String' nullable='true' max='32'/>
+<GroupName type='String' nullable='true' max='32'/>
+<UserName type='String' nullable='true' max='32'/>
+<JobName type='String' nullable='true' max='128'/>
+<Account type='String' nullable='true' max='32'/>
+<PE type='String' nullable='true' max='32'/>
+<SubmittedTimestamp type='Long' nullable='true'/>
+<StartedTimestamp type='Long' nullable='true'/>
+<CompletedTimestamp type='Long' nullable='true'/>
+<SgeId type='Integer' nullable='true'/>
+<Task type='Integer' nullable='true'/>
+<Wall type='Double' nullable='true'/>
+<Slots type='Integer' nullable='true'/>
+<Project type='String' nullable='true' max='32'/>
+<CPUTime type='Double' nullable='true'/>
+<Department type='String' nullable='true' max='32'/>
+<AccountID reference='Account'/>
+<MachineID reference='Machine'/>
+<QueueID reference='Queue'/>
+<UnixGroupID reference='UnixGroup'/>
+<ProjectID reference='Project'/>
+<PeID reference='Pe'/>
+<PersonID reference='Person'/>
+</TableSpecification>
+<TableSpecification name='Account'>
+<Name type='String' nullable='false' max='32'/>
+<Description type='String' nullable='true' max='255'/>
+</TableSpecification>
+<Account id='1'>
+<Name>sge</Name>
+</Account>
+<TableSpecification name='Machine'>
+<Name type='String' nullable='false' max='32'/>
+<Description type='String' nullable='true' max='255'/>
+</TableSpecification>
+<Machine id='1'>
+<Name>Eddie</Name>
+</Machine>
+<TableSpecification name='Queue'>
+<Name type='String' nullable='false' max='32'/>
+<Description type='String' nullable='true' max='255'/>
+</TableSpecification>
+<Queue id='1'>
+<Name>ecdf</Name>
+</Queue>
+<TableSpecification name='UnixGroup'>
+<Name type='String' nullable='false' max='32'/>
+<Description type='String' nullable='true' max='255'/>
+</TableSpecification>
+<UnixGroup id='1'>
+<Name>physics_ifp_ppe</Name>
+</UnixGroup>
+<TableSpecification name='Project'>
+<Name type='String' nullable='false' max='32'/>
+<Description type='String' nullable='true' max='255'/>
+</TableSpecification>
+<Project id='1'>
+<Name>ecdf_baseline</Name>
+</Project>
+<TableSpecification name='Pe'>
+<Name type='String' nullable='false' max='32'/>
+<Description type='String' nullable='true' max='255'/>
+</TableSpecification>
+<Pe id='1'>
+<Name>NONE</Name>
+</Pe>
+<TableSpecification name='Person'>
+<Email type='String' nullable='true' max='128'/>
+<WebName type='String' nullable='true' max='128'/>
+</TableSpecification>
+<Person id='1'>
+<WebName>s0571079</WebName>
+</Person>
+<SGERecord id='1'>
+<Queue>ecdf</Queue>
+<GroupName>physics_ifp_ppe</GroupName>
+<UserName>s0571079</UserName>
+<JobName>afs_toy_so</JobName>
+<Account>sge</Account>
+<PE>NONE</PE>
+<SubmittedTimestamp>1222847031</SubmittedTimestamp>
+<StartedTimestamp>1222848422</StartedTimestamp>
+<CompletedTimestamp>1222851714</CompletedTimestamp>
+<SgeId>1155664</SgeId>
+<Task>0</Task>
+<Wall>3292.0</Wall>
+<Slots>1</Slots>
+<Project>ecdf_baseline</Project>
+<CPUTime>3292.0</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>1</QueueID>
+<UnixGroupID>1</UnixGroupID>
+<ProjectID>1</ProjectID>
+<PeID>1</PeID>
+<PersonID>1</PersonID>
+</SGERecord>
+<UnixGroup id='2'>
+<Name>dteam</Name>
+</UnixGroup>
+<Project id='2'>
+<Name>dteam</Name>
+</Project>
+<Person id='2'>
+<WebName>dteam020</WebName>
+</Person>
+<SGERecord id='2'>
+<Queue>ecdf</Queue>
+<GroupName>dteam</GroupName>
+<UserName>dteam020</UserName>
+<JobName>STDIN</JobName>
+<Account>sge</Account>
+<PE>NONE</PE>
+<SubmittedTimestamp>1222851611</SubmittedTimestamp>
+<StartedTimestamp>1222851645</StartedTimestamp>
+<CompletedTimestamp>1222851720</CompletedTimestamp>
+<SgeId>1156411</SgeId>
+<Task>0</Task>
+<Wall>75.0</Wall>
+<Slots>1</Slots>
+<Project>dteam</Project>
+<CPUTime>75.0</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>1</QueueID>
+<UnixGroupID>2</UnixGroupID>
+<ProjectID>2</ProjectID>
+<PeID>1</PeID>
+<PersonID>2</PersonID>
+</SGERecord>
+<SGERecord id='3'>
+<Queue>ecdf</Queue>
+<GroupName>physics_ifp_ppe</GroupName>
+<UserName>s0571079</UserName>
+<JobName>afs_toy_so</JobName>
+<Account>sge</Account>
+<PE>NONE</PE>
+<SubmittedTimestamp>1222846926</SubmittedTimestamp>
+<StartedTimestamp>1222848246</StartedTimestamp>
+<CompletedTimestamp>1222851720</CompletedTimestamp>
+<SgeId>1155565</SgeId>
+<Task>0</Task>
+<Wall>3474.0</Wall>
+<Slots>1</Slots>
+<Project>ecdf_baseline</Project>
+<CPUTime>3474.0</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>1</QueueID>
+<UnixGroupID>1</UnixGroupID>
+<ProjectID>1</ProjectID>
+<PeID>1</PeID>
+<PersonID>1</PersonID>
+</SGERecord>
+<UnixGroup id='3'>
+<Name>inf_iccs_smt</Name>
+</UnixGroup>
+<Person id='3'>
+<WebName>s0565741</WebName>
+</Person>
+<SGERecord id='4'>
+<Queue>ecdf</Queue>
+<GroupName>inf_iccs_smt</GroupName>
+<UserName>s0565741</UserName>
+<JobName>mert15-ab</JobName>
+<Account>sge</Account>
+<PE>NONE</PE>
+<SubmittedTimestamp>1222851209</SubmittedTimestamp>
+<StartedTimestamp>1222851254</StartedTimestamp>
+<CompletedTimestamp>1222851728</CompletedTimestamp>
+<SgeId>1156260</SgeId>
+<Task>0</Task>
+<Wall>474.0</Wall>
+<Slots>1</Slots>
+<Project>ecdf_baseline</Project>
+<CPUTime>474.0</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>1</QueueID>
+<UnixGroupID>3</UnixGroupID>
+<ProjectID>1</ProjectID>
+<PeID>1</PeID>
+<PersonID>3</PersonID>
+</SGERecord>
+<SGERecord id='5'>
+<Queue>ecdf</Queue>
+<GroupName>inf_iccs_smt</GroupName>
+<UserName>s0565741</UserName>
+<JobName>mert15-bb</JobName>
+<Account>sge</Account>
+<PE>NONE</PE>
+<SubmittedTimestamp>1222851210</SubmittedTimestamp>
+<StartedTimestamp>1222851255</StartedTimestamp>
+<CompletedTimestamp>1222851735</CompletedTimestamp>
+<SgeId>1156286</SgeId>
+<Task>0</Task>
+<Wall>480.0</Wall>
+<Slots>1</Slots>
+<Project>ecdf_baseline</Project>
+<CPUTime>480.0</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>1</QueueID>
+<UnixGroupID>3</UnixGroupID>
+<ProjectID>1</ProjectID>
+<PeID>1</PeID>
+<PersonID>3</PersonID>
+</SGERecord>
+<SGERecord id='6'>
+<Queue>ecdf</Queue>
+<GroupName>inf_iccs_smt</GroupName>
+<UserName>s0565741</UserName>
+<JobName>mert15-av</JobName>
+<Account>sge</Account>
+<PE>NONE</PE>
+<SubmittedTimestamp>1222851210</SubmittedTimestamp>
+<StartedTimestamp>1222851255</StartedTimestamp>
+<CompletedTimestamp>1222851746</CompletedTimestamp>
+<SgeId>1156280</SgeId>
+<Task>0</Task>
+<Wall>491.0</Wall>
+<Slots>1</Slots>
+<Project>ecdf_baseline</Project>
+<CPUTime>491.0</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>1</QueueID>
+<UnixGroupID>3</UnixGroupID>
+<ProjectID>1</ProjectID>
+<PeID>1</PeID>
+<PersonID>3</PersonID>
+</SGERecord>
+<UnixGroup id='4'>
+<Name>informatics</Name>
+</UnixGroup>
+<Pe id='2'>
+<Name>memory</Name>
+</Pe>
+<Person id='4'>
+<WebName>bhaddow</WebName>
+</Person>
+<SGERecord id='7'>
+<Queue>ecdf</Queue>
+<GroupName>informatics</GroupName>
+<UserName>bhaddow</UserName>
+<JobName>MOSES-as</JobName>
+<Account>sge</Account>
+<PE>memory</PE>
+<SubmittedTimestamp>1222780168</SubmittedTimestamp>
+<StartedTimestamp>1222843899</StartedTimestamp>
+<CompletedTimestamp>1222851753</CompletedTimestamp>
+<SgeId>1145341</SgeId>
+<Task>0</Task>
+<Wall>7854.0</Wall>
+<Slots>4</Slots>
+<Project>ecdf_baseline</Project>
+<CPUTime>7854.0</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>1</QueueID>
+<UnixGroupID>4</UnixGroupID>
+<ProjectID>1</ProjectID>
+<PeID>2</PeID>
+<PersonID>4</PersonID>
+</SGERecord>
+<SGERecord id='8'>
+<Queue>ecdf</Queue>
+<GroupName>inf_iccs_smt</GroupName>
+<UserName>s0565741</UserName>
+<JobName>mert15-ai</JobName>
+<Account>sge</Account>
+<PE>NONE</PE>
+<SubmittedTimestamp>1222851210</SubmittedTimestamp>
+<StartedTimestamp>1222851254</StartedTimestamp>
+<CompletedTimestamp>1222851760</CompletedTimestamp>
+<SgeId>1156267</SgeId>
+<Task>0</Task>
+<Wall>506.0</Wall>
+<Slots>1</Slots>
+<Project>ecdf_baseline</Project>
+<CPUTime>506.0</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>1</QueueID>
+<UnixGroupID>3</UnixGroupID>
+<ProjectID>1</ProjectID>
+<PeID>1</PeID>
+<PersonID>3</PersonID>
+</SGERecord>
+<SGERecord id='9'>
+<Queue>ecdf</Queue>
+<GroupName>inf_iccs_smt</GroupName>
+<UserName>s0565741</UserName>
+<JobName>mert15-aq</JobName>
+<Account>sge</Account>
+<PE>NONE</PE>
+<SubmittedTimestamp>1222851210</SubmittedTimestamp>
+<StartedTimestamp>1222851254</StartedTimestamp>
+<CompletedTimestamp>1222851764</CompletedTimestamp>
+<SgeId>1156275</SgeId>
+<Task>0</Task>
+<Wall>510.0</Wall>
+<Slots>1</Slots>
+<Project>ecdf_baseline</Project>
+<CPUTime>510.0</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>1</QueueID>
+<UnixGroupID>3</UnixGroupID>
+<ProjectID>1</ProjectID>
+<PeID>1</PeID>
+<PersonID>3</PersonID>
+</SGERecord>
+<SGERecord id='10'>
+<Queue>ecdf</Queue>
+<GroupName>informatics</GroupName>
+<UserName>bhaddow</UserName>
+<JobName>MOSES-ad</JobName>
+<Account>sge</Account>
+<PE>memory</PE>
+<SubmittedTimestamp>1222780106</SubmittedTimestamp>
+<StartedTimestamp>1222842962</StartedTimestamp>
+<CompletedTimestamp>1222851766</CompletedTimestamp>
+<SgeId>1145282</SgeId>
+<Task>0</Task>
+<Wall>8804.0</Wall>
+<Slots>4</Slots>
+<Project>ecdf_baseline</Project>
+<CPUTime>8804.0</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>1</QueueID>
+<UnixGroupID>4</UnixGroupID>
+<ProjectID>1</ProjectID>
+<PeID>2</PeID>
+<PersonID>4</PersonID>
+</SGERecord>
+<Queue id='2'>
+<Name>parallel.q</Name>
+</Queue>
+<UnixGroup id='5'>
+<Name>MACE</Name>
+</UnixGroup>
+<Project id='3'>
+<Name>NONE</Name>
+</Project>
+<Pe id='3'>
+<Name>openmpi</Name>
+</Pe>
+<Person id='5'>
+<WebName>mcsxr</WebName>
+</Person>
+<SGERecord id='11'>
+<Queue>parallel.q</Queue>
+<GroupName>MACE</GroupName>
+<UserName>mcsxr</UserName>
+<JobName>SFR19_10k</JobName>
+<Account>sge</Account>
+<PE>openmpi</PE>
+<SubmittedTimestamp>1258821869</SubmittedTimestamp>
+<StartedTimestamp>1258821871</StartedTimestamp>
+<CompletedTimestamp>1258971533</CompletedTimestamp>
+<SgeId>2211</SgeId>
+<Task>0</Task>
+<Wall>149662.0</Wall>
+<Slots>16</Slots>
+<Project>NONE</Project>
+<CPUTime>9555112.43</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>2</QueueID>
+<UnixGroupID>5</UnixGroupID>
+<ProjectID>3</ProjectID>
+<PeID>3</PeID>
+<PersonID>5</PersonID>
+</SGERecord>
+<Queue id='3'>
+<Name>all.q</Name>
+</Queue>
+<UnixGroup id='6'>
+<Name>ecdf_isiti</Name>
+</UnixGroup>
+<Person id='6'>
+<WebName>ywan</WebName>
+</Person>
+<SGERecord id='12'>
+<Queue>all.q</Queue>
+<GroupName>ecdf_isiti</GroupName>
+<UserName>ywan</UserName>
+<JobName>rotating.sh</JobName>
+<Account>sge</Account>
+<PE>openmpi</PE>
+<SubmittedTimestamp>1273571643</SubmittedTimestamp>
+<StartedTimestamp>1273571650</StartedTimestamp>
+<CompletedTimestamp>1273571651</CompletedTimestamp>
+<SgeId>40</SgeId>
+<Task>0</Task>
+<Wall>1.0</Wall>
+<Slots>8</Slots>
+<Project>NONE</Project>
+<CPUTime>0.107982</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>3</QueueID>
+<UnixGroupID>6</UnixGroupID>
+<ProjectID>3</ProjectID>
+<PeID>3</PeID>
+<PersonID>6</PersonID>
+</SGERecord>
+<SGERecord id='13'>
+<Queue>all.q</Queue>
+<GroupName>ecdf_isiti</GroupName>
+<UserName>ywan</UserName>
+<JobName>rotating.sh</JobName>
+<Account>sge</Account>
+<PE>openmpi</PE>
+<SubmittedTimestamp>1273571527</SubmittedTimestamp>
+<StartedTimestamp>1273571530</StartedTimestamp>
+<CompletedTimestamp>1273571531</CompletedTimestamp>
+<SgeId>39</SgeId>
+<Task>0</Task>
+<Wall>1.0</Wall>
+<Slots>8</Slots>
+<Project>NONE</Project>
+<CPUTime>0.232962</CPUTime>
+<Department>defaultdepartment</Department>
+<AccountID>1</AccountID>
+<MachineID>1</MachineID>
+<QueueID>3</QueueID>
+<UnixGroupID>6</UnixGroupID>
+<ProjectID>3</ProjectID>
+<PeID>3</PeID>
+<PersonID>6</PersonID>
+</SGERecord>
+</dataset>

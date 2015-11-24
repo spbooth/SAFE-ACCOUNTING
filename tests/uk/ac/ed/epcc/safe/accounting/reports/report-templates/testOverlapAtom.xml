@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+	<Title>Test Atoms</Title>	
+	<per:Period>
+		<per:StartTime>2008-10-01 04:30:00</per:StartTime>
+		<per:EndTime>2008-10-01 04:40:00</per:EndTime>
+	</per:Period>
+	
+	<fil:Filter>
+		<fil:EQ>
+			<fil:Property>UserName</fil:Property>
+			<fil:Value>s0565741</fil:Value>
+		</fil:EQ>
+	</fil:Filter>
+	
+
+	
+	<Text>This report show some of the feature of report tables.</Text>
+	
+	<Section> <Title>"Atom Examples"</Title>	
+		<fil:Filter>
+		<fil:TimeBounds>
+		<fil:StartProperty>StartedTimestamp</fil:StartProperty><fil:EndProperty>CompletedTimestamp</fil:EndProperty>
+		</fil:TimeBounds>
+		</fil:Filter>
+		
+		<Text>The user 's0565741' used <ato:Sum>Wall</ato:Sum> seconds between 2008-10-01 04:30:00 and 2008-10-01 04:40:00.</Text>	
+		
+		
+	</Section>
+
+</Report>

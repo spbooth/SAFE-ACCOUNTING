@@ -1,0 +1,145 @@
+// Copyright - The University of Edinburgh 2011
+/*******************************************************************************
+ * Copyright (c) - The University of Edinburgh 2010
+ *******************************************************************************/
+package uk.ac.ed.epcc.safe.accounting.update;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
+import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
+import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
+import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
+import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
+import uk.ac.ed.epcc.webapp.session.SessionService;
+/** Base class for implementing {@link PlugInOwner}
+ * 
+ * @author spb
+ *
+ * @param <T>
+ */
+public abstract class AbstractPlugInOwner<T extends PlugInOwner & TableTransitionTarget> implements Contexed, PlugInOwner, SummaryProvider, TransitionSource<T> {
+  
+	private final AppContext c;
+    private final String tag;
+    private final PropertyFinder prev;
+	private PropertyContainerParser parser=null;
+	private Set<PropertyContainerPolicy> policies=null;
+	private PropertyFinder finder=null;
+	private PropExpressionMap derived=null;
+	
+	public AbstractPlugInOwner(AppContext c,PropertyFinder prev, String tag){
+		this.prev=prev;
+		this.c=c;
+		this.tag=tag;
+	}
+	public final PropertyContainerParser getParser() {
+		if( parser == null){
+			parser = makeParser();
+		}
+		
+		return parser;
+	}
+
+	protected abstract PropertyContainerParser makeParser();
+
+	public final Set<PropertyContainerPolicy> getPolicies() {
+		if( policies == null){
+			policies = makePolicies();
+		}
+		return policies;
+	}
+
+	protected abstract Set<PropertyContainerPolicy> makePolicies();
+	protected PropertyFinder makeFinder() {
+		MultiFinder multi = new MultiFinder();
+		multi.addFinder(prev);
+		PropertyContainerParser par = getParser();
+		if( par != null ){
+			multi.addFinder(par.initFinder(c, prev, tag));
+		}
+		for(PropertyContainerPolicy pol : getPolicies()){
+			multi.addFinder(pol.initFinder(c, multi, tag));
+		}
+		return multi;
+	}
+	public final PropertyFinder getFinder() {
+		if( finder == null ){
+			finder = makeFinder();
+		}
+		return finder;
+	}
+	public <X> boolean hasProperty(PropertyTag<X> tag){
+		return getFinder().hasProperty(tag);
+	}
+	protected PropExpressionMap makeDerived() {
+		PropExpressionMap map = new PropExpressionMap();
+		PropertyContainerParser par = getParser();
+		if( par != null ){
+			map=par.getDerivedProperties(map);
+		}
+		for(PropertyContainerPolicy pol : getPolicies()){
+			map=pol.getDerivedProperties(map);
+		}
+		return map;
+	}
+	public final PropExpressionMap getDerivedProperties() {
+		if( derived == null){
+			derived = makeDerived();
+		}
+		return derived;
+	}
+	
+	public final AppContext getContext(){
+		return c;
+	}
+    public final String getTag(){
+    	return tag;
+    }
+    public void getTableTransitionSummary(ContentBuilder hb,
+			SessionService operator) {
+		hb.addHeading(3,"Parser");
+		PropertyContainerParser parser = getParser();
+		if( parser != null ){
+			hb.addText(parser.getClass().getSimpleName());
+			if( parser instanceof SummaryProvider){
+				((SummaryProvider)parser).getTableTransitionSummary(hb, operator);
+			}
+		}else{
+			hb.addText("No parser");
+		}
+		hb.addHeading(3,"Policies");
+		
+		for(PropertyContainerPolicy pol : getPolicies()){
+			hb.addHeading(4,pol.getClass().getSimpleName());
+			if( pol instanceof SummaryProvider){
+				((SummaryProvider)pol).getTableTransitionSummary(hb, operator);
+			}
+		}
+	}
+
+@SuppressWarnings("unchecked")
+public Map<TransitionKey<T>, Transition<T>> getTransitions() {
+	Map<TransitionKey<T>, Transition<T>> res = new HashMap<TransitionKey<T>, Transition<T>>();
+	PropertyContainerParser parser = getParser();
+	if( parser != null && parser instanceof TransitionSource){
+		res.putAll(((TransitionSource) parser).getTransitions());
+	}
+	for(PropertyContainerPolicy pol : getPolicies()){
+		if( pol instanceof TransitionSource){
+			res.putAll(((TransitionSource) pol).getTransitions());
+		}
+	}
+	return res;
+}
+
+}

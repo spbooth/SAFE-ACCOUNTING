@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://www.example.org/schedule/"
+	targetNamespace="http://safe.epcc.ed.ac.uk/schedule">
+	<annotation>
+		<documentation>
+			Schedule for special syntax of the planning tool.
+		</documentation>
+	</annotation>
+
+	<element name="Schedule">
+		<complexType></complexType>
+	</element>
+</schema>

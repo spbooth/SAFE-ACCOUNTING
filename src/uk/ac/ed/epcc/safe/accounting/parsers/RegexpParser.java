@@ -1,0 +1,104 @@
+// Copyright - The University of Edinburgh 2011
+/*******************************************************************************
+ * Copyright (c) - The University of Edinburgh 2010
+ *******************************************************************************/
+package uk.ac.ed.epcc.safe.accounting.parsers;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
+import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
+import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
+import uk.ac.ed.epcc.webapp.AppContext;
+/** PropertyContainerParser based on regular expressions.
+ * 
+ * This class should be sub-classed to make a working parser. Any {@link PropertyTag}
+ * fields that are marked with the {@link Regexp} annotation will be parsed using the
+ * defined regular expression and the {@link ValueParserPolicy}
+ * 
+ * @author spb
+ *
+ */
+public abstract class RegexpParser extends AbstractPropertyContainerParser {
+   
+	Map<PropertyTag,Pattern> targets;
+    Map<PropertyTag,ValueParser> parsers;
+    
+    public abstract AppContext getContext();
+    
+	@SuppressWarnings("unchecked")
+	public boolean parse(PropertyMap map, String record)
+			throws AccountingParseException {
+		boolean match=false;
+		for(PropertyTag t : targets.keySet()){
+			//System.out.println("Tag "+t.getFullName()+" "+targets.get(t).pattern());
+			Matcher m = targets.get(t).matcher(record);
+			if( m.find()){
+				match=true;
+				ValueParser v=parsers.get(t);
+				String val = m.group(1);
+				//System.out.println("Value is ["+val+"]");
+				try{
+				
+					map.setProperty(t, v.parse(val));
+				
+				}catch(Exception e){
+					throw new AccountingParseException("Bad value for "+t.getName(), e);
+				}
+			}
+		}
+		return match;
+	}
+
+	@Override
+	public Iterator<String> splitRecords(String update)
+			throws AccountingParseException {
+		return new UnixFileSplitter(update);
+	}
+
+	
+	
+
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void startParse(PropertyContainer staticProps) throws Exception {
+		targets=new HashMap<PropertyTag,Pattern>();
+		parsers=new HashMap<PropertyTag,ValueParser>();
+		Class myclass=getClass();
+		// Set default targets for field tags.
+		ValueParserPolicy vis = new ValueParserPolicy(getContext());
+		for( Field f : myclass.getFields()){
+			try{
+				if( PropertyTag.class.isAssignableFrom(f.getType()) && f.isAnnotationPresent(Regexp.class)){
+					PropertyTag tag = (PropertyTag) f.get(this);
+					String patt = f.getAnnotation(Regexp.class).value();
+					Pattern p = Pattern.compile(patt); 
+					targets.put(tag, p);
+					parsers.put(tag, (ValueParser) tag.accept(vis));
+				}
+			}catch(Exception e){
+				getContext().error(e,"Error making targets for property fields "+f.toGenericString());
+			}
+		}
+	}
+	@Override
+	public String endParse() {
+		targets.clear();
+		targets=null;
+		parsers.clear();
+		parsers=null;
+		return super.endParse();
+	}
+
+}

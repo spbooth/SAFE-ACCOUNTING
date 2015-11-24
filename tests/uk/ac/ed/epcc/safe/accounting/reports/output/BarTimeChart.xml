@@ -1,0 +1,11 @@
+<Heading>Bar Time Chart Plot</Heading>
+<table class="auto" cols="3" rows="7">
+<tr count="0"><th class="key" count="0">Project</th><th class="main" count="1">Number of Jobs</th><th class="main" count="2">Percentage</th></tr>
+<tr count="1"><td class="key" count="0">ecdf_baseline</td><td class="main" count="1" numeric="true">106</td><td class="main" count="2" numeric="true">53%</td></tr>
+<tr count="2"><td class="key" count="0">inf_iccs_smt</td><td class="main" count="1" numeric="true">41</td><td class="main" count="2" numeric="true">20.5%</td></tr>
+<tr count="3"><td class="key" count="0">inf_hcrc_cstr_emime</td><td class="main" count="1" numeric="true">31</td><td class="main" count="2" numeric="true">15.5%</td></tr>
+<tr count="4"><td class="key" count="0">prdatlas</td><td class="main" count="1" numeric="true">11</td><td class="main" count="2" numeric="true">5.5%</td></tr>
+<tr count="5"><td class="key" count="0">lhcb</td><td class="main" count="1" numeric="true">8</td><td class="main" count="2" numeric="true">4%</td></tr>
+<tr count="6"><td class="key" count="0">atlas</td><td class="main" count="1" numeric="true">2</td><td class="main" count="2" numeric="true">1%</td></tr>
+<tr count="7"><td class="key" count="0">ngsadmin</td><td class="main" count="1" numeric="true">1</td><td class="main" count="2" numeric="true">0.5%</td></tr>
+</table>

@@ -1,0 +1,71 @@
+<dataset><TableSpecification name='Person'>
+<WebName type='String' nullable='false' max='64'/>
+<Email type='String' nullable='true' max='128'/>
+<InstituteID reference='Institute'/>
+</TableSpecification>
+<Person id='9'>
+<WebName>atlas015</WebName>
+</Person>
+<Person id='133'>
+<WebName>bhaddow</WebName>
+</Person>
+<Person id='353'>
+<WebName>jschroe1</WebName>
+</Person>
+<Person id='588'>
+<WebName>lhcb003</WebName>
+</Person>
+<Person id='562'>
+<WebName>lhcb022</WebName>
+</Person>
+<Person id='4'>
+<WebName>ngsadminuser</WebName>
+</Person>
+<Person id='6'>
+<WebName>prdatlas014</WebName>
+</Person>
+<Person id='45'>
+<WebName>s0565741</WebName>
+</Person>
+<Person id='1'>
+<WebName>sbooth</WebName>
+<Email>spb@epcc.ed.ac.uk</Email>
+</Person>
+<Person id='472'>
+<WebName>v1busaba</WebName>
+</Person>
+<Person id='254'>
+<WebName>wwei1</WebName>
+</Person>
+<Person id='300'>
+<WebName>boris</WebName>
+</Person>
+<TableSpecification name='role_table'>
+<Role type='String' nullable='false' max='64'/>
+<PersonID reference="Person"/>
+</TableSpecification>
+<role_table id='1'>
+<PersonID>4</PersonID>
+<Role>frog</Role>
+</role_table>
+<role_table id='2'>
+<PersonID>9</PersonID>
+<Role>earwig</Role>
+</role_table>
+<TableSpecification name='Project'>
+<Name type='String' nullable='false' max='64'/>
+</TableSpecification>
+<Project id='1'>
+<Name>Example</Name>
+</Project>
+<TableSpecification name='ProjectRelationship'>
+<PersonID reference='Person'/>
+<TargetID reference='Project'/>
+<Tadpole type='Boolean' default='false'/>
+</TableSpecification>
+<ProjectRelationship id='1'>
+<PersonID>300</PersonID>
+<TargetID>1</TargetID>
+<Tadpole>true</Tadpole>
+</ProjectRelationship>
+</dataset>

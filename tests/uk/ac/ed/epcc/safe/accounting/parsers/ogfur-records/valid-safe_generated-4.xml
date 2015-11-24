@@ -1,0 +1,25 @@
+<!--
+    Copyright (c) - The Univeristy of Edinburgh 2010
+ -->
+<ur:UsageRecord xmlns:ur="http://schema.ogf.org/urf/2003/09/urf">
+  <ur:RecordIdentity ur:createTime="2007-12-31T19:16:04.000Z"
+    ur:recordId="l1f406.119303.03167592164" />
+  <ur:JobIdentity>
+    <ur:LocalJobId>l1f406.119303.03167592164</ur:LocalJobId>
+  </ur:JobIdentity>
+  <ur:UserIdentity>
+    <ur:LocalUserId>vika71</ur:LocalUserId>
+  </ur:UserIdentity>
+  <ur:JobName>mytest</ur:JobName>
+  <ur:Charge>389.3499</ur:Charge>
+  <ur:Status>completed</ur:Status>
+  <ur:StartTime>2007-12-31T19:16:04.000Z</ur:StartTime>
+  <ur:EndTime>2007-03-03T00:19:20.000Z</ur:EndTime>
+  <ur:WallDuration>PT5H3M16S</ur:WallDuration>
+  <ur:CpuDuration>P3DT8H30M20.37S</ur:CpuDuration>
+  <ur:MachineName>login.machine1.ac.uk</ur:MachineName>
+  <ur:ProjectName>e03-wp5</ur:ProjectName>
+  <ur:Queue>par32_6</ur:Queue>
+  <ur:Processors>16</ur:Processors>
+</ur:UsageRecord>
+

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	
+<xsd:schema
+	elementFormDefault="qualified"
+    targetNamespace="http://safe.epcc.ed.ac.uk/macro"
+    xmlns="http://safe.epcc.ed.ac.uk/macro"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">	
+    			
+    <xsd:annotation><xsd:documentation>
+    This defines simple macro operations to copy repeated content into multiple
+    places in the report. Typically run after parameter expansion but before other processing.
+    </xsd:documentation></xsd:annotation>
+	<xsd:element name="MacroDef">
+		<xsd:annotation><xsd:documentation>
+		Define a named section of content that can be duplicated later in the report.
+		</xsd:documentation></xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent mixed="true">
+				<xsd:restriction base="xsd:anyType">
+					<xsd:sequence>
+						<xsd:any processContents="lax" minOccurs="0"
+							maxOccurs="unbounded" />
+					</xsd:sequence>
+					<xsd:attribute name="name" type="xsd:string" use="required"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="Macro">
+	<xsd:annotation><xsd:documentation>
+	Insert a previously defined macro.
+	</xsd:documentation></xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>	
+		</xsd:complexType>
+	</xsd:element>
+
+
+	<xsd:element name="Switch" type="SwitchType"></xsd:element>
+    <xsd:complexType name="SwitchType">
+		<xsd:sequence>
+			<xsd:element name="Case" type="CaseType"
+				maxOccurs="unbounded" minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CaseType">
+		<xsd:sequence>
+			<xsd:element name="Value" type="BodyType" maxOccurs="1"
+				minOccurs="1">
+			</xsd:element>
+			<xsd:element name="Body" type="BodyType" maxOccurs="1"
+				minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="Key" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+
+    <xsd:complexType name="BodyType">
+    <xsd:complexContent mixed="true">
+    						<xsd:restriction base="xsd:anyType">
+    							<xsd:sequence>
+    								<xsd:any processContents="lax"
+    									minOccurs="0" maxOccurs="unbounded" />
+    							</xsd:sequence>
+    						</xsd:restriction>
+    					</xsd:complexContent>
+    </xsd:complexType>
+</xsd:schema>

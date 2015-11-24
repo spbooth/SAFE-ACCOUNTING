@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+	<rep:Title>User Jobs</rep:Title>
+  	
+  	<par:ParameterDef label="Report period" name="Period" type="CalendarPeriod" />	
+	<par:Parameter name="Period"/>
+	
+	<par:ParameterDef label="User" name="User" type="Person"/>
+	<par:ParameterDef label="Maximum Number of Jobs" name="MaxJobs" type="Integer" value="100"/>
+    
+    <fil:Filter>
+       	<fil:EQ>
+			<fil:Property>UserName</fil:Property>
+		   	<fil:Value><par:Parameter name="User" format="WebName"/></fil:Value>
+		</fil:EQ>
+      	</fil:Filter>	
+      	
+	
+	
+	<rep:Section>
+	
+	<rep:Heading><par:Parameter name="User" format="WebName"/> from <par:Parameter name="StartDate"/> to <par:Parameter name="EndDate"/></rep:Heading>
+	
+	<rep:Text>This report was generated at 
+	<par:Parameter name="CurrentTime" format="Date"/> by 
+	<par:Parameter name="AuthenticatedUser" format="WebName"/>.</rep:Text>
+	
+	<rep:SubSection><rep:Title>User Jobs</rep:Title>
+		
+		<rep:Text>This is the overall service usage information for user 
+			<par:Parameter name="User" format="WebName"/>. 
+			A total of <ato:Sum>Time</ato:Sum> seconds were expended by this 
+			user during this time period. The first 
+			<par:Parameter name="MaxJobs"/>	are shown below.
+		</rep:Text>
+	
+		<tab:Table>		
+			<tab:Column>
+				<tab:Name>Job ID</tab:Name>
+				<tab:Property>JobID</tab:Property>
+			</tab:Column>	 
+			<tab:Column>
+				<tab:Name>Submitted Time</tab:Name>
+				<tab:Property>SubmittedTimestamp</tab:Property>
+			</tab:Column>	  
+			<tab:Column>
+				<tab:Name>Start Time</tab:Name>
+				<tab:Property>SubmittedTimestamp</tab:Property>
+			</tab:Column>	
+			<tab:Column>
+				<tab:Name>End Time</tab:Name>
+				<tab:Property>CompletedTimestamp</tab:Property>
+			</tab:Column>			
+			<tab:Column>
+				<tab:Name>Budget</tab:Name>
+				<tab:Property>Project</tab:Property>
+			</tab:Column>		
+			<tab:Column>
+				<tab:Name>Machine</tab:Name>
+				<tab:Property>MachineName</tab:Property>
+			</tab:Column>	
+			<tab:Column>
+				<tab:Name>Job Name</tab:Name>
+				<tab:Property>JobName</tab:Property>
+			</tab:Column>	
+			<tab:Column>
+				<tab:Name>CPUs</tab:Name>
+				<tab:Property>CPUs</tab:Property>
+			</tab:Column>	
+			<tab:Column>
+				<tab:Name>Queue</tab:Name>
+				<tab:Property>Queue</tab:Property>
+			</tab:Column>	
+			<tab:Column>
+				<tab:Name>Time</tab:Name>
+				<tab:Property>Time</tab:Property>
+			</tab:Column>		
+		    <tab:MaxRows><par:Parameter name="MaxJobs"/></tab:MaxRows>
+		</tab:Table>		
+	</rep:SubSection>
+	</rep:Section>	
+</rep:Report>

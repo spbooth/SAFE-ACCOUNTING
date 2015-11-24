@@ -1,0 +1,340 @@
+<dataset><TableSpecification name='DailyAggregate'>
+<MachineID reference='Machine'/>
+<ProjectID reference='Project'/>
+<GroupID reference='UnixGroup'/>
+<PersonID reference='Person'/>
+<QueueID reference='Queue'/>
+<PeID reference='Pe'/>
+<StartedTimestamp type='Long' nullable='false'/>
+<CompletedTimestamp type='Long' nullable='false'/>
+<Residency type='Long' nullable='false'/>
+<Wall type='Integer' nullable='false'/>
+<CPUTime type='Double' nullable='false'/>
+<JobCount type='Integer' nullable='false'/>
+</TableSpecification>
+<TableSpecification name='Machine'>
+<Name type='String' nullable='false' max='32'/>
+<Table type='String' nullable='false' max='32'/>
+</TableSpecification>
+<Machine id='1'>
+<Name>Eddie</Name>
+<Table>SGERecord</Table>
+</Machine>
+<TableSpecification name='Project'>
+<Name type='String' nullable='false' max='64'/>
+<InstituteID reference='Institute'/>
+</TableSpecification>
+<Project id='1'>
+<Name>prdatlas</Name>
+</Project>
+<TableSpecification name='UnixGroup'>
+<Name type='String' nullable='false' max='64'/>
+</TableSpecification>
+<UnixGroup id='1'>
+<Name>prdatlas</Name>
+</UnixGroup>
+<TableSpecification name='Person'>
+<WebName type='String' nullable='false' max='64'/>
+<Email type='String' nullable='false' max='128'/>
+<InstituteID reference='Institute'/>
+</TableSpecification>
+<Person id='1'>
+<WebName>prdatlas014</WebName>
+<Email></Email>
+</Person>
+<TableSpecification name='Queue'>
+<Name type='String' nullable='false' max='64'/>
+</TableSpecification>
+<Queue id='1'>
+<Name>ecdf</Name>
+</Queue>
+<TableSpecification name='Pe'>
+<Name type='String' nullable='false' max='64'/>
+</TableSpecification>
+<Pe id='2'>
+<Name>NONE</Name>
+</Pe>
+<DailyAggregate id='1'>
+<MachineID>1</MachineID>
+<ProjectID>1</ProjectID>
+<GroupID>1</GroupID>
+<PersonID>1</PersonID>
+<QueueID>1</QueueID>
+<PeID>2</PeID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>170304000</Residency>
+<Wall>170304</Wall>
+<CPUTime>170304.0</CPUTime>
+<JobCount>11</JobCount>
+</DailyAggregate>
+<TableSpecification name='Institute'>
+<Name type='String' nullable='false' max='64'/>
+<SchoolID reference='School'/>
+</TableSpecification>
+<TableSpecification name='School'>
+<Name type='String' nullable='false' max='64'/>
+</TableSpecification>
+<School id='1'>
+<Name>Informatics</Name>
+</School>
+<Institute id='1'>
+<Name>Computing Systems Architecture</Name>
+<SchoolID>1</SchoolID>
+</Institute>
+<Project id='2'>
+<Name>inf_iccs_smt</Name>
+<InstituteID>1</InstituteID>
+</Project>
+<UnixGroup id='2'>
+<Name>inf_iccs_smt</Name>
+</UnixGroup>
+<Person id='2'>
+<WebName>jschroe1</WebName>
+<Email></Email>
+</Person>
+<DailyAggregate id='2'>
+<MachineID>1</MachineID>
+<ProjectID>2</ProjectID>
+<GroupID>2</GroupID>
+<PersonID>2</PersonID>
+<QueueID>1</QueueID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>180587000</Residency>
+<Wall>49854</Wall>
+<CPUTime>49855.0</CPUTime>
+<JobCount>41</JobCount>
+</DailyAggregate>
+<Project id='3'>
+<Name>ecdf_baseline</Name>
+</Project>
+<UnixGroup id='3'>
+<Name>informatics</Name>
+</UnixGroup>
+<Person id='3'>
+<WebName>bhaddow</WebName>
+<Email></Email>
+</Person>
+<DailyAggregate id='3'>
+<MachineID>1</MachineID>
+<ProjectID>3</ProjectID>
+<GroupID>3</GroupID>
+<PersonID>3</PersonID>
+<QueueID>1</QueueID>
+<PeID>2</PeID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>23000</Residency>
+<Wall>23</Wall>
+<CPUTime>23.0</CPUTime>
+<JobCount>4</JobCount>
+</DailyAggregate>
+<UnixGroup id='4'>
+<Name>roslin</Name>
+</UnixGroup>
+<Person id='4'>
+<WebName>wwei1</WebName>
+<Email></Email>
+</Person>
+<DailyAggregate id='4'>
+<MachineID>1</MachineID>
+<ProjectID>3</ProjectID>
+<GroupID>4</GroupID>
+<PersonID>4</PersonID>
+<QueueID>1</QueueID>
+<PeID>2</PeID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>105206000</Residency>
+<Wall>105206</Wall>
+<CPUTime>105207.0</CPUTime>
+<JobCount>46</JobCount>
+</DailyAggregate>
+<Project id='4'>
+<Name>lhcb</Name>
+</Project>
+<UnixGroup id='5'>
+<Name>lhcb</Name>
+</UnixGroup>
+<Person id='5'>
+<WebName>lhcb003</WebName>
+<Email></Email>
+</Person>
+<DailyAggregate id='5'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>5</GroupID>
+<PersonID>5</PersonID>
+<QueueID>1</QueueID>
+<PeID>2</PeID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>242000</Residency>
+<Wall>242</Wall>
+<CPUTime>242.0</CPUTime>
+<JobCount>3</JobCount>
+</DailyAggregate>
+<Person id='6'>
+<WebName>lhcb022</WebName>
+<Email></Email>
+</Person>
+<DailyAggregate id='6'>
+<MachineID>1</MachineID>
+<ProjectID>4</ProjectID>
+<GroupID>5</GroupID>
+<PersonID>6</PersonID>
+<QueueID>1</QueueID>
+<PeID>2</PeID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>373000</Residency>
+<Wall>373</Wall>
+<CPUTime>373.0</CPUTime>
+<JobCount>5</JobCount>
+</DailyAggregate>
+<School id='2'>
+<Name>Physics</Name>
+</School>
+<Institute id='2'>
+<Name>Physics</Name>
+<SchoolID>2</SchoolID>
+</Institute>
+<Project id='5'>
+<Name>atlas</Name>
+<InstituteID>2</InstituteID>
+</Project>
+<UnixGroup id='6'>
+<Name>atlas</Name>
+</UnixGroup>
+<Person id='7'>
+<WebName>atlas015</WebName>
+<Email></Email>
+</Person>
+<DailyAggregate id='7'>
+<MachineID>1</MachineID>
+<ProjectID>5</ProjectID>
+<GroupID>6</GroupID>
+<PersonID>7</PersonID>
+<QueueID>1</QueueID>
+<PeID>2</PeID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>164000</Residency>
+<Wall>164</Wall>
+<CPUTime>164.0</CPUTime>
+<JobCount>2</JobCount>
+</DailyAggregate>
+<DailyAggregate id='8'>
+<MachineID>1</MachineID>
+<ProjectID>3</ProjectID>
+<GroupID>2</GroupID>
+<PersonID>2</PersonID>
+<QueueID>1</QueueID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>260840000</Residency>
+<Wall>65210</Wall>
+<CPUTime>65210.0</CPUTime>
+<JobCount>24</JobCount>
+</DailyAggregate>
+<DailyAggregate id='9'>
+<MachineID>1</MachineID>
+<ProjectID>3</ProjectID>
+<GroupID>3</GroupID>
+<PersonID>3</PersonID>
+<QueueID>1</QueueID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>35164000</Residency>
+<Wall>8791</Wall>
+<CPUTime>8791.0</CPUTime>
+<JobCount>3</JobCount>
+</DailyAggregate>
+<Institute id='3'>
+<Name>Digital Communications</Name>
+<SchoolID>1</SchoolID>
+</Institute>
+<Project id='6'>
+<Name>inf_hcrc_cstr_emime</Name>
+<InstituteID>3</InstituteID>
+</Project>
+<UnixGroup id='7'>
+<Name>inf_cstr</Name>
+</UnixGroup>
+<Person id='8'>
+<WebName>v1busaba</WebName>
+<Email></Email>
+</Person>
+<DailyAggregate id='10'>
+<MachineID>1</MachineID>
+<ProjectID>6</ProjectID>
+<GroupID>7</GroupID>
+<PersonID>8</PersonID>
+<QueueID>1</QueueID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>623177000</Residency>
+<Wall>140360</Wall>
+<CPUTime>140360.0</CPUTime>
+<JobCount>31</JobCount>
+</DailyAggregate>
+<DailyAggregate id='11'>
+<MachineID>1</MachineID>
+<ProjectID>3</ProjectID>
+<GroupID>7</GroupID>
+<PersonID>8</PersonID>
+<QueueID>1</QueueID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>195704000</Residency>
+<Wall>48926</Wall>
+<CPUTime>48929.0</CPUTime>
+<JobCount>4</JobCount>
+</DailyAggregate>
+<Project id='7'>
+<Name>ngsadmin</Name>
+</Project>
+<UnixGroup id='8'>
+<Name>ngsadmin</Name>
+</UnixGroup>
+<Person id='9'>
+<WebName>ngsadminuser</WebName>
+<Email></Email>
+</Person>
+<Queue id='2'>
+<Name>ngs</Name>
+</Queue>
+<DailyAggregate id='12'>
+<MachineID>1</MachineID>
+<ProjectID>7</ProjectID>
+<GroupID>8</GroupID>
+<PersonID>9</PersonID>
+<QueueID>2</QueueID>
+<PeID>2</PeID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>1000</Residency>
+<Wall>1</Wall>
+<CPUTime>1.0</CPUTime>
+<JobCount>1</JobCount>
+</DailyAggregate>
+<Person id='10'>
+<WebName>s0565741</WebName>
+<Email></Email>
+</Person>
+<DailyAggregate id='13'>
+<MachineID>1</MachineID>
+<ProjectID>3</ProjectID>
+<GroupID>2</GroupID>
+<PersonID>10</PersonID>
+<QueueID>1</QueueID>
+<PeID>2</PeID>
+<StartedTimestamp>1222815600</StartedTimestamp>
+<CompletedTimestamp>1222902000</CompletedTimestamp>
+<Residency>13574000</Residency>
+<Wall>13574</Wall>
+<CPUTime>13575.0</CPUTime>
+<JobCount>25</JobCount>
+</DailyAggregate>
+</dataset>

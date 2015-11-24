@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RMIS schema document
+	based on RMIS schema version 2.0
+	Thomas Soddemann, RZG, 2006
+-->
+
+<xsd:schema attributeFormDefault="qualified" elementFormDefault="qualified"
+	targetNamespace="http://rmis.deisa.org/acct"
+	xmlns:acct="http://rmis.deisa.org/acct"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:urwg="http://www.gridforum.org/2003/ur-wg"
+	xmlns:Q1="http://www.w3.org/2000/09/xmldsig#">
+
+	<xsd:annotation>
+		<xsd:documentation xml:lang="en">
+			RMIS schema document - version 1.0 contains extensions to the ur format
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<xsd:import namespace="http://www.gridforum.org/2003/ur-wg"
+		schemaLocation="urwg-schema.11.xsd">
+	</xsd:import>
+
+	<xsd:element name="SubmitTime">
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="xsd:dateTime">
+					<xsd:attribute ref="urwg:description"
+						use="optional" />
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="DeisaUsageRecord" substitutionGroup="urwg:Usage">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="urwg:UsageRecordType">
+                    <xsd:sequence>
+                    	<xsd:element ref="acct:SubmitTime"></xsd:element>
+                    </xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	
+
+</xsd:schema>

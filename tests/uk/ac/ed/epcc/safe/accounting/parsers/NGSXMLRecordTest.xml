@@ -1,0 +1,9 @@
+<dataset><TableSpecification name='Machine'>
+<Name type='String' nullable='false' max='32'/>
+<Table type='String' nullable='true' max='32'/>
+</TableSpecification>
+<Machine id='1'>
+<Name>OGFURMachine</Name>
+<Table>ogfurRecord</Table>
+</Machine>
+</dataset>

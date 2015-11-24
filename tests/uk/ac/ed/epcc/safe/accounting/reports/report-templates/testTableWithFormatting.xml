@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../../../../../../../../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<per:Period>
+	<per:StartTime>26-09-2008</per:StartTime>
+</per:Period>
+ <Section>
+<Heading>Formatted tables</Heading>
+<fil:Filter><fil:OrderBy><fil:Property>JobID</fil:Property></fil:OrderBy></fil:Filter>
+<tab:Table>		
+    <fil:Filter>
+       	<fil:EQ>
+			<fil:Property>UserName</fil:Property>
+		   	<fil:Value>s0565741</fil:Value>
+		</fil:EQ>
+       </fil:Filter>	
+    <fil:Filter>
+       	<fil:EQ>
+			<fil:Property>Project</fil:Property>
+		   	<fil:Value>ecdf_baseline</fil:Value>
+		</fil:EQ>
+    </fil:Filter> 
+	<tab:Column>
+		<tab:Name>Job Name</tab:Name>
+		<tab:Property>JobName</tab:Property>
+	</tab:Column>	
+	<tab:Column>
+		<tab:Name>Job ID</tab:Name>
+		<tab:Property>JobID</tab:Property>
+	</tab:Column>		
+	<tab:Column>
+		<tab:Name>Time</tab:Name>
+		<tab:Property>Wall</tab:Property>
+	</tab:Column>			
+	<tab:Column>
+		<tab:Name>Residency</tab:Name>
+		<tab:Property>Residency</tab:Property>
+	</tab:Column>			
+	<tab:PercentColumn>				
+		<tab:Name>Percent Time</tab:Name>				
+		<tab:Column>Time</tab:Column>				
+	</tab:PercentColumn>			
+	<tab:PercentColumn>				
+		<tab:Name>Percent Residency</tab:Name>				
+		<tab:Column>Residency</tab:Column>				
+	</tab:PercentColumn>	
+		
+	<tab:TotalColumn>				
+		<tab:Name>Total</tab:Name>			
+		<tab:Column>Time</tab:Column>				
+	</tab:TotalColumn>
+	
+	<tab:TotalColumn>				
+		<tab:Name>Total</tab:Name>			
+		<tab:Column>Residency</tab:Column>				
+	</tab:TotalColumn>
+	
+	<tab:TotalColumn>				
+		<tab:Name>SubTotal Time</tab:Name>			
+		<tab:Column>Time</tab:Column>				
+	</tab:TotalColumn>
+	
+	<tab:TotalColumn>				
+		<tab:Name>SubTotal Residency</tab:Name>			
+		<tab:Column>Residency</tab:Column>				
+	</tab:TotalColumn>
+	
+    <tab:MaxRows>10</tab:MaxRows>	
+    
+	<tab:SetColumnAt>
+		<tab:Column>Percent Time</tab:Column>
+		<tab:At>2</tab:At>
+	</tab:SetColumnAt>
+	
+	<tab:SetColumnAfter>
+		<tab:Column>Percent Residency</tab:Column>
+		<tab:After>Percent Time</tab:After>
+	</tab:SetColumnAfter>
+	
+	<tab:SetColumnLast>
+		<tab:Column>Job ID</tab:Column>
+	</tab:SetColumnLast>
+	
+	<tab:SetRowAt>
+		<tab:Row>SubTotal Time</tab:Row>
+		<tab:At>5</tab:At>
+	</tab:SetRowAt>
+	
+	<tab:SetRowAfter>
+		<tab:Row>SubTotal Residency</tab:Row>
+		<tab:After>SubTotal Time</tab:After>
+	</tab:SetRowAfter>
+	
+	<tab:SetRowLast>
+		<tab:Row>Total</tab:Row>
+	</tab:SetRowLast>
+</tab:Table>
+</Section>
+</Report>

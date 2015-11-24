@@ -1,0 +1,76 @@
+<dataset><TableSpecification name='LSFRecord'>
+<Queue type='String' nullable='true' max='32'/>
+<UserName type='String' nullable='true' max='32'/>
+<JobName type='String' nullable='true' max='32'/>
+<JobID type='String' nullable='true' max='32'/>
+<JobStatus type='String' nullable='true' max='32'/>
+<SubmittedTimestamp type='Long' nullable='true'/>
+<LogDate type='Long' nullable='true'/>
+<StartedTimestamp type='Long' nullable='true'/>
+<CompletedTimestamp type='Long' nullable='true'/>
+<Wall type='Double' nullable='true'/>
+<Project type='String' nullable='true' max='32'/>
+<CPUTime type='Double' nullable='true'/>
+</TableSpecification>
+<LSFRecord id='1'>
+<Queue>n32_6</Queue>
+<UserName>testuser</UserName>
+<JobID>100581</JobID>
+<JobStatus>COMPLETED</JobStatus>
+<SubmittedTimestamp>1276596666</SubmittedTimestamp>
+<LogDate>1276596704</LogDate>
+<StartedTimestamp>1276596672</StartedTimestamp>
+<CompletedTimestamp>1276596704</CompletedTimestamp>
+<Wall>32.0</Wall>
+<CPUTime>188.571322</CPUTime>
+</LSFRecord>
+<LSFRecord id='2'>
+<Queue>n4_6</Queue>
+<UserName>benzi</UserName>
+<JobID>100588</JobID>
+<JobStatus>COMPLETED</JobStatus>
+<SubmittedTimestamp>1276598233</SubmittedTimestamp>
+<LogDate>1276598301</LogDate>
+<StartedTimestamp>1276598239</StartedTimestamp>
+<CompletedTimestamp>1276598301</CompletedTimestamp>
+<Wall>62.0</Wall>
+<CPUTime>99.838819</CPUTime>
+</LSFRecord>
+<LSFRecord id='3'>
+<Queue>n4_1</Queue>
+<UserName>jmht93</UserName>
+<JobName>dalton</JobName>
+<JobID>100619</JobID>
+<JobStatus>EXITED</JobStatus>
+<SubmittedTimestamp>1276621188</SubmittedTimestamp>
+<LogDate>1276621225</LogDate>
+<StartedTimestamp>1276621193</StartedTimestamp>
+<CompletedTimestamp>1276621225</CompletedTimestamp>
+<Wall>32.0</Wall>
+<CPUTime>0.262957</CPUTime>
+</LSFRecord>
+<LSFRecord id='4'>
+<Queue>n64_6</Queue>
+<UserName>benzi</UserName>
+<JobID>100622</JobID>
+<JobStatus>EXITED</JobStatus>
+<SubmittedTimestamp>1276676915</SubmittedTimestamp>
+<LogDate>1276677130</LogDate>
+<StartedTimestamp>1276676917</StartedTimestamp>
+<CompletedTimestamp>1276677130</CompletedTimestamp>
+<Wall>213.0</Wall>
+<CPUTime>12236.487704</CPUTime>
+</LSFRecord>
+<LSFRecord id='5'>
+<Queue>n64_12</Queue>
+<UserName>benzi</UserName>
+<JobID>100630</JobID>
+<JobStatus>COMPLETED</JobStatus>
+<SubmittedTimestamp>1276698635</SubmittedTimestamp>
+<LogDate>1276715766</LogDate>
+<StartedTimestamp>1276698638</StartedTimestamp>
+<CompletedTimestamp>1276715766</CompletedTimestamp>
+<Wall>17128.0</Wall>
+<CPUTime>1025160.697822</CPUTime>
+</LSFRecord>
+</dataset>

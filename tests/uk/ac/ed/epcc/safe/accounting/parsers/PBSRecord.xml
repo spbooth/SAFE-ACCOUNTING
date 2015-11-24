@@ -1,0 +1,226 @@
+<dataset><TableSpecification name='PBSRecord'>
+<account type='String' nullable='false' max='32'/>
+<accounting_id type='String' nullable='true' max='32'/>
+<alt_id type='String' nullable='true' max='32'/>
+<ctime type='Long' nullable='false'/>
+<end type='Long' nullable='false'/>
+<etime type='Long' nullable='true'/>
+<exec_host type='String' nullable='true' max='65535'/>
+<Exit_status type='Integer' nullable='true'/>
+<group type='String' nullable='true' max='128'/>
+<jobname type='String' nullable='false' max='128'/>
+<id_string type='String' nullable='false' max='32'/>
+<qtime type='Long' nullable='false'/>
+<queue type='String' nullable='true' max='32'/>
+<record_type type='String' nullable='false' max='1'/>
+<resvname type='String' nullable='true' max='128'/>
+<resvID type='String' nullable='true' max='128'/>
+<session type='Integer' nullable='true'/>
+<start type='Long' nullable='false'/>
+<user type='String' nullable='false' max='32'/>
+<Resource_List_mpparch type='String' nullable='true' max='4'/>
+<Resource_List_mppnppn type='Integer' nullable='true'/>
+<Resource_List_mppwidth type='Integer' nullable='true'/>
+<Resource_List_ncpus type='Integer' nullable='false'/>
+<Resource_List_nodect type='Integer' nullable='true'/>
+<Resource_List_place type='String' nullable='false' max='65535'/>
+<Resource_List_select type='Integer' nullable='false'/>
+<Resource_List_walltime type='Long' nullable='true'/>
+<resources_used_cpupercent type='Integer' nullable='false'/>
+<resources_used_cput type='Long' nullable='false'/>
+<resources_used_mem type='Integer' nullable='true'/>
+<resources_used_ncpus type='Integer' nullable='false'/>
+<resources_used_vmem type='Integer' nullable='true'/>
+<resources_used_walltime type='Long' nullable='false'/>
+</TableSpecification>
+<PBSRecord id='13'>
+<account>y06</account>
+<alt_id>2872</alt_id>
+<ctime>1218495664</ctime>
+<end>1218495694</end>
+<etime>1218495664</etime>
+<exec_host>nid00007/24</exec_host>
+<Exit_status>0</Exit_status>
+<group>-default-</group>
+<jobname>STDIN</jobname>
+<id_string>101.user123</id_string>
+<qtime>1218495664</qtime>
+<queue>par:n8c2_20m</queue>
+<record_type>E</record_type>
+<session>19384</session>
+<start>1218495693</start>
+<user>shiv</user>
+<Resource_List_mpparch>XT</Resource_List_mpparch>
+<Resource_List_mppnppn>2</Resource_List_mppnppn>
+<Resource_List_mppwidth>1</Resource_List_mppwidth>
+<Resource_List_ncpus>1</Resource_List_ncpus>
+<Resource_List_nodect>1</Resource_List_nodect>
+<Resource_List_place>pack</Resource_List_place>
+<Resource_List_select>1</Resource_List_select>
+<Resource_List_walltime>120000</Resource_List_walltime>
+<resources_used_cpupercent>0</resources_used_cpupercent>
+<resources_used_cput>0</resources_used_cput>
+<resources_used_mem>1302528</resources_used_mem>
+<resources_used_ncpus>1</resources_used_ncpus>
+<resources_used_vmem>10334208</resources_used_vmem>
+<resources_used_walltime>1000</resources_used_walltime>
+</PBSRecord>
+<PBSRecord id='14'>
+<account>e71-DQ</account>
+<alt_id>2501</alt_id>
+<ctime>1218451557</ctime>
+<end>1218495854</end>
+<etime>1218451557</etime>
+<exec_host>nid00007/17</exec_host>
+<Exit_status>0</Exit_status>
+<group>-default-</group>
+<jobname>fnp_equil.pbs</jobname>
+<id_string>102.user123</id_string>
+<qtime>1218451557</qtime>
+<queue>par:n32c2_12h</queue>
+<record_type>E</record_type>
+<session>26609</session>
+<start>1218454455</start>
+<user>msseay</user>
+<Resource_List_mpparch>XT</Resource_List_mpparch>
+<Resource_List_mppnppn>2</Resource_List_mppnppn>
+<Resource_List_mppwidth>64</Resource_List_mppwidth>
+<Resource_List_ncpus>1</Resource_List_ncpus>
+<Resource_List_nodect>1</Resource_List_nodect>
+<Resource_List_place>pack</Resource_List_place>
+<Resource_List_select>1</Resource_List_select>
+<Resource_List_walltime>43200000</Resource_List_walltime>
+<resources_used_cpupercent>0</resources_used_cpupercent>
+<resources_used_cput>0</resources_used_cput>
+<resources_used_mem>6348800</resources_used_mem>
+<resources_used_ncpus>1</resources_used_ncpus>
+<resources_used_vmem>36896768</resources_used_vmem>
+<resources_used_walltime>41400000</resources_used_walltime>
+</PBSRecord>
+<PBSRecord id='15'>
+<account>n02-chem</account>
+<alt_id>1065</alt_id>
+<ctime>1219438652</ctime>
+<end>1219438865</end>
+<etime>1219438652</etime>
+<exec_host>nid00004/13</exec_host>
+<Exit_status>0</Exit_status>
+<group>-default-</group>
+<jobname>xdggj000</jobname>
+<id_string>103.user123</id_string>
+<qtime>1219438652</qtime>
+<queue>par:n32c2_20m</queue>
+<record_type>E</record_type>
+<session>11260</session>
+<start>1219438684</start>
+<user>ptelford</user>
+<Resource_List_mpparch>XT</Resource_List_mpparch>
+<Resource_List_mppnppn>2</Resource_List_mppnppn>
+<Resource_List_mppwidth>64</Resource_List_mppwidth>
+<Resource_List_ncpus>1</Resource_List_ncpus>
+<Resource_List_nodect>1</Resource_List_nodect>
+<Resource_List_place>pack</Resource_List_place>
+<Resource_List_select>1</Resource_List_select>
+<Resource_List_walltime>1200000</Resource_List_walltime>
+<resources_used_cpupercent>0</resources_used_cpupercent>
+<resources_used_cput>6000</resources_used_cput>
+<resources_used_mem>4300800</resources_used_mem>
+<resources_used_ncpus>1</resources_used_ncpus>
+<resources_used_vmem>15728640</resources_used_vmem>
+<resources_used_walltime>182000</resources_used_walltime>
+</PBSRecord>
+<PBSRecord id='16'>
+<account>a02</account>
+<ctime>1199439548</ctime>
+<end>1199439729</end>
+<etime>1199439548</etime>
+<exec_host>nid00004/0</exec_host>
+<Exit_status>0</Exit_status>
+<group>-default-</group>
+<jobname>report16n2c</jobname>
+<id_string>104.user234</id_string>
+<qtime>1199439548</qtime>
+<queue>par:n16c2_20m</queue>
+<record_type>E</record_type>
+<session>21187</session>
+<start>1199439548</start>
+<user>expc01</user>
+<Resource_List_mpparch>XT</Resource_List_mpparch>
+<Resource_List_mppnppn>2</Resource_List_mppnppn>
+<Resource_List_mppwidth>32</Resource_List_mppwidth>
+<Resource_List_ncpus>1</Resource_List_ncpus>
+<Resource_List_nodect>1</Resource_List_nodect>
+<Resource_List_place>pack</Resource_List_place>
+<Resource_List_select>1</Resource_List_select>
+<Resource_List_walltime>180000</Resource_List_walltime>
+<resources_used_cpupercent>0</resources_used_cpupercent>
+<resources_used_cput>0</resources_used_cput>
+<resources_used_mem>6496256</resources_used_mem>
+<resources_used_ncpus>1</resources_used_ncpus>
+<resources_used_vmem>40747008</resources_used_vmem>
+<resources_used_walltime>181000</resources_used_walltime>
+</PBSRecord>
+<PBSRecord id='17'>
+<account>a03</account>
+<ctime>1199444256</ctime>
+<end>1199444437</end>
+<etime>1199444256</etime>
+<exec_host>nid00004/0</exec_host>
+<Exit_status>1</Exit_status>
+<group>-default-</group>
+<jobname>liquid1</jobname>
+<id_string>105.user234</id_string>
+<qtime>1199444256</qtime>
+<queue>par:n8c2_1h</queue>
+<record_type>E</record_type>
+<session>23145</session>
+<start>1199444256</start>
+<user>lucian</user>
+<Resource_List_mpparch>XT</Resource_List_mpparch>
+<Resource_List_mppnppn>2</Resource_List_mppnppn>
+<Resource_List_mppwidth>10</Resource_List_mppwidth>
+<Resource_List_ncpus>1</Resource_List_ncpus>
+<Resource_List_nodect>1</Resource_List_nodect>
+<Resource_List_place>pack</Resource_List_place>
+<Resource_List_select>1</Resource_List_select>
+<Resource_List_walltime>3600000</Resource_List_walltime>
+<resources_used_cpupercent>0</resources_used_cpupercent>
+<resources_used_cput>0</resources_used_cput>
+<resources_used_mem>6516736</resources_used_mem>
+<resources_used_ncpus>1</resources_used_ncpus>
+<resources_used_vmem>40710144</resources_used_vmem>
+<resources_used_walltime>181000</resources_used_walltime>
+</PBSRecord>
+<PBSRecord id='18'>
+<account>d01-mat</account>
+<alt_id>2873</alt_id>
+<ctime>1218495709</ctime>
+<end>1218495728</end>
+<etime>1218495709</etime>
+<exec_host>nid00004/16</exec_host>
+<Exit_status>1</Exit_status>
+<group>-default-</group>
+<jobname>al3x3-64</jobname>
+<id_string>106.user234</id_string>
+<qtime>1218495709</qtime>
+<queue>par:n32c2_3h</queue>
+<record_type>E</record_type>
+<session>13852</session>
+<start>1218495725</start>
+<user>pjh503</user>
+<Resource_List_mpparch>XT</Resource_List_mpparch>
+<Resource_List_mppnppn>2</Resource_List_mppnppn>
+<Resource_List_mppwidth>64</Resource_List_mppwidth>
+<Resource_List_ncpus>1</Resource_List_ncpus>
+<Resource_List_nodect>1</Resource_List_nodect>
+<Resource_List_place>pack</Resource_List_place>
+<Resource_List_select>1</Resource_List_select>
+<Resource_List_walltime>7200000</Resource_List_walltime>
+<resources_used_cpupercent>0</resources_used_cpupercent>
+<resources_used_cput>1000</resources_used_cput>
+<resources_used_mem>5697536</resources_used_mem>
+<resources_used_ncpus>1</resources_used_ncpus>
+<resources_used_vmem>39845888</resources_used_vmem>
+<resources_used_walltime>3000</resources_used_walltime>
+</PBSRecord>
+</dataset>

@@ -1,0 +1,99 @@
+<dataset><TableSpecification name='VomsAccounting'>
+<Dn type='String' nullable='true' max='128'/>
+<Id type='String' nullable='true' max='128'/>
+<Submission type='String' nullable='true' max='32'/>
+<UID type='Integer' nullable='true'/>
+<VO0 type='String' nullable='true' max='128'/>
+</TableSpecification>
+<VomsAccounting id='1'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:24:11.0000012793.0000000000</Id>
+<Submission>jobmanager-pbs</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='2'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:24:12.0000012813.0000000000</Id>
+<Submission>jobmanager-pbs</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='3'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:24:14.0000012835.0000000000</Id>
+<Submission>jobmanager-pbs</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='4'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:24:14.0000012855.0000000000</Id>
+<Submission>jobmanager-pbs</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='5'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:25:02.0000013718.0000000000</Id>
+<Submission>jobmanager-fork</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='6'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:25:23.0000014359.0000000000</Id>
+<Submission>jobmanager</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='7'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:29:01.0000017446.0000000000</Id>
+<Submission>jobmanager-pbs</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='8'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:29:02.0000017466.0000000000</Id>
+<Submission>jobmanager-pbs</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='9'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:31:27.0000019636.0000000000</Id>
+<Submission>jobmanager-fork</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='10'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:31:27.0000019676.0000000000</Id>
+<Submission>jobmanager-fork</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='11'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:31:27.0000019657.0000000000</Id>
+<Submission>jobmanager-fork</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='12'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:31:28.0000019704.0000000000</Id>
+<Submission>jobmanager-fork</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+<VomsAccounting id='13'>
+<Dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=inca2.ngs.ac.uk/emailAddress=support@grid-support.ac.uk</Dn>
+<Id>2010-05-30.00:31:52.0000020720.0000000000</Id>
+<Submission>jobmanager</Submission>
+<UID>618</UID>
+<VO0>vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk</VO0>
+</VomsAccounting>
+</dataset>

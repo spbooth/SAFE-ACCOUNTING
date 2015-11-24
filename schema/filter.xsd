@@ -1,0 +1,153 @@
+<xsd:schema elementFormDefault="qualified"
+	targetNamespace="http://safe.epcc.ed.ac.uk/filter"
+	xmlns="http://safe.epcc.ed.ac.uk/filter"
+
+	xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:prop="http://safe.epcc.ed.ac.uk/propexpression" >
+
+	<xsd:import schemaLocation="propexpression.xsd" namespace="http://safe.epcc.ed.ac.uk/propexpression"></xsd:import>
+	<xsd:complexType name="PropertyFilterType">
+		<xsd:all>
+			<xsd:element name="Property" type="prop:PropExpressionType"
+				maxOccurs="1" minOccurs="1" />
+			<xsd:element name="Value" type="prop:PropValueType"
+				maxOccurs="1" minOccurs="1" />
+		</xsd:all>
+	</xsd:complexType>
+
+<xsd:complexType name="DateType">
+		<xsd:choice>
+			<xsd:sequence>
+			    <xsd:annotation><xsd:documentation>
+				This property must be defined and give a result within the period
+				</xsd:documentation></xsd:annotation>
+				<xsd:element name="Property"
+					type="prop:PropExpressionType" minOccurs="1" maxOccurs="1" >
+				
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:sequence>
+			    <xsd:annotation><xsd:documentation>
+				These propertied must be defined and bound a period that overlaps the
+				target period
+				</xsd:documentation></xsd:annotation>
+				<xsd:element name="StartProperty"
+					type="prop:PropExpressionType" minOccurs="1" maxOccurs="1" />
+				<xsd:element name="EndProperty"
+					type="prop:PropExpressionType" minOccurs="1" maxOccurs="1" />
+			</xsd:sequence>
+			<xsd:sequence>
+			   <xsd:annotation><xsd:documentation>
+					No time filter is generated.
+				</xsd:documentation></xsd:annotation>
+				<xsd:element name="AllTimes">
+					<xsd:complexType>
+					</xsd:complexType>
+					
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:choice>
+	</xsd:complexType>
+
+	<xsd:complexType name="OperationsType">
+		<xsd:group ref="Operation" minOccurs="1" maxOccurs="unbounded" />
+	</xsd:complexType>
+
+	<xsd:group name="Operation">
+		<xsd:choice>
+			<xsd:element name="EQ" type="PropertyFilterType" />
+			<xsd:element name="NE" type="PropertyFilterType" />
+			<xsd:element name="LT" type="PropertyFilterType" />
+			<xsd:element name="GT" type="PropertyFilterType" />
+			<xsd:element name="LE" type="PropertyFilterType" />
+			<xsd:element name="GE" type="PropertyFilterType" />
+			<xsd:element name="And" type="OperationsType" />
+			<xsd:element name="Or" type="OperationsType" />
+			<xsd:element name="Null" type="NullType" />
+			<xsd:element name="NotNull" type="NullType" />
+		</xsd:choice>
+	</xsd:group>
+
+	<xsd:complexType name="FilterType">
+		<xsd:sequence>
+			<xsd:element name="Producer" type="xsd:string" maxOccurs="1"
+				minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						Define the usage producer that records should be
+						selected from. Defining a producer clears any
+						existing filters. Note that a producer may
+						consist of multiple table.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TimeBounds" type="DateType" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						Define the property expressions used to specify the start end end of
+						A record. This is used to generate the implicit time period filter.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:group ref="Operation" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0"
+				ref="OrderBy">
+				
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TargetType">
+		<xsd:sequence>
+			<xsd:element name="Target" type="xsd:string" maxOccurs="1"
+				minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						Define a set of objects of the same type. Unlike Filter elements this can select any ExpressionTarget type
+						and the element is stand-alone a single Target element defines the entire selection.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:group ref="Operation" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0"
+				ref="OrderBy">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="Filter" type="FilterType" />
+
+	<xsd:element name="ObjectSet" type="TargetType" />
+	
+	<xsd:complexType name="NullType">
+		<xsd:sequence>
+			<xsd:element name="Property" type="xsd:anyType"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="OrderType">
+		<xsd:sequence>
+			<xsd:element name="Property" type="xsd:anyType"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="descending" type="xsd:boolean" default="false" use="optional"></xsd:attribute>
+	</xsd:complexType>
+	
+    <xsd:element name="OrderBy" type="OrderType">
+    	<xsd:annotation>
+					<xsd:documentation>
+						Define an order filter for the selected records.
+						This only has an impact if records are being
+						processed individually and a limit clause is in
+						place. It also only applies on a table by table
+						basis so composite usage producers will generate
+						multiple ordered sequences.
+					</xsd:documentation>
+				</xsd:annotation>
+    </xsd:element>
+</xsd:schema>

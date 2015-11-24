@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<rep:Title>TimeChart generator</rep:Title>
+	<!-- Chart -->
+	<par:ParameterDef label="Quantity to Plot" name="Plot" type="Plot" />
+	<par:ParameterDef label="Quantity to Group by" name="Group" type="Group" optional="true" />
+	
+	<!--  Period -->
+	<par:ParameterDef label="Report period" name="Period" type="CalendarPeriod" />	
+	<par:Parameter name="Period"/>
+	
+
+    
+    <rep:Text>This is a plot of <par:Parameter name="Plot"/> against time. The plot is divided into a number of
+    classes according to <par:Parameter name="Group"/>. This is a stacked plot so the top of the plot represents the total usage at a given time.</rep:Text>
+    <rep:Text>The reporting period is <per:StartDate format="dd-MM-yyyy"/> to <per:EndDate format="dd-MM-yyyy"/></rep:Text>
+	<cha:TimeChart>
+		<cha:Plot><par:Parameter name="Plot"/></cha:Plot>
+		<cha:GroupBy><par:Parameter name="Group"/></cha:GroupBy>
+	</cha:TimeChart>
+
+</rep:Report>

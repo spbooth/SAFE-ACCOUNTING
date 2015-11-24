@@ -1,0 +1,122 @@
+package uk.ac.ed.epcc.safe.accounting.expr;
+
+import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.model.data.DataObject;
+/** Class that expands derived properties to generate an implementation string.
+ * This is essentially the same as the {@link #toString()} method on the expression
+ * except that nested expressions are expanded to leaf values.
+ * @author spb
+ *
+ */
+public abstract class ImplementationPropExpressionVisitor implements
+		PropExpressionVisitor<String> {
+	
+
+	public String visitStringPropExpression(
+			StringPropExpression<?> stringExpression) throws Exception {
+		return "String("+stringExpression.getExpression().accept(this)+")";
+	}
+
+	public String visitIntPropExpression(IntPropExpression<?> intExpression)
+			throws Exception {
+		return "Int("+intExpression.getExpression().accept(this)+")";
+	}
+	public String visitLongCastPropExpression(LongCastPropExpression<?> intExpression)
+			throws Exception {
+		return "Long("+intExpression.getExpression().accept(this)+")";
+	}
+	public String visitDoubleCastPropExpression(
+			DoubleCastPropExpression<?> doubleExpression) throws Exception {
+		return "Double("+doubleExpression.getExpression().accept(this)+")";
+	}
+
+	public String visitDurationSecondPropExpression(
+			DurationSecondsPropExpression e) throws Exception {
+		return "Seconds("+e.getDuration().accept(this)+")";
+	}
+	public String visitConstPropExpression(
+			ConstPropExpression<?> constExpression) throws Exception {
+		return constExpression.toString();
+	}
+
+	public String visitBinaryPropExpression(
+			BinaryPropExpression binaryPropExpression) throws Exception {
+		//TODO supress unecessary brackets
+		return "("+binaryPropExpression.a.accept(this)+binaryPropExpression.op.text()+binaryPropExpression.b.accept(this)+")";
+	}
+
+	public String visitMilliSecondDatePropExpression(
+			MilliSecondDatePropExpression milliSecondDate) throws Exception {
+		
+		return milliSecondDate.toString();
+	}
+
+	public String visitNamePropExpression(NamePropExpression namePropExpression)
+			throws Exception {
+		return namePropExpression.toString();
+	}
+
+	public <T extends DataObject & ExpressionTarget> String visitDeRefExpression(
+			DeRefExpression<T, ?> deRefExpression) throws Exception {
+		return deRefExpression.toString();
+	}
+
+	public String visitSelectPropExpression(SelectPropExpression<?> sel)
+			throws Exception {
+		return sel.toString();
+	}
+
+	public String visitDurationPropExpression(DurationPropExpression sel)
+			throws Exception {
+		return "Duration("+sel.start.accept(this)+","+sel.end.accept(this)+")";
+	}
+
+	public String visitDurationCastPropExpression(
+			DurationCastPropExpression<?> sel) throws Exception {
+		return "Duration("+sel.exp.accept(this)+","+sel.resolution+")";
+	}
+
+	public <T, D> String visitTypeConverterPropExpression(
+			TypeConverterPropExpression<T, D> sel) throws Exception {
+		return sel.getConverter().getClass().getSimpleName()+"("+sel.getInnerExpression().accept(this)+")";
+	}
+
+	public <T, X> String visitLabelPropExpression(LabelPropExpression<T, X> expr)
+			throws Exception {
+		
+		return "Label("+expr.getLabeller().getClass().getSimpleName()+","+expr.getExpr().accept(this)+")";
+	}
+
+	public <T> String visitCasePropExpression(CasePropExpression<T> expr)
+			throws Exception {
+		StringBuilder sb = new StringBuilder();
+		sb.append("CASE(");
+		for(CasePropExpression.Case<T> c: expr.getCases()){
+			sb.append(c.sel.toString());
+			sb.append(":");
+			sb.append(c.expr.accept(this));
+			sb.append(";");
+		}
+		PropExpression<? extends T> def = expr.getDefaultExpression();
+		if( def != null ){
+			sb.append("default:");
+			sb.append(def.accept(this));
+		}
+		sb.append(")");
+		return sb.toString();
+	}
+
+	public String visitConvetMillisecondToDateExpression(
+			ConvertMillisecondToDatePropExpression expr) throws Exception {
+		return expr.toString();
+	}
+
+	@Override
+	public <C extends Comparable> String visitCompareExpression(
+			ComparePropExpression<C> expr) throws Exception {
+
+		return "("+expr.e1.accept(this)+(expr.m==null?"==":expr.m.toString())+expr.e2.accept(this)+")";
+	}
+
+
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-settings>
+  <settings defaultResolver="main" />
+  <resolvers>
+    <chain name="main">
+      <url name="safe-ext-release-local-resolver" m2compatible="true">
+        <artifact pattern="http://safe-ci.epcc.ed.ac.uk:8081/artifactory/safe-ext-release-local/[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]" />
+        <ivy pattern="http://safe-ci.epcc.ed.ac.uk:8081/artifactory/safe-ext-release-local/[organization]/[module]/[revision]/[module]-[revision](-[classifier]).pom" />
+      </url>
+    </chain>
+  </resolvers>
+</ivy-settings>

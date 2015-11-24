@@ -1,0 +1,93 @@
+<xsd:schema elementFormDefault="qualified"
+	targetNamespace="http://safe.epcc.ed.ac.uk/helpdesk"
+	xmlns="http://safe.epcc.ed.ac.uk/helpdesk"
+	xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	
+	
+<xsd:import namespace="http://safe.epcc.ed.ac.uk/filter"
+		schemaLocation="filter.xsd" />
+
+<xsd:element name="Config">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:group ref="config" minOccurs="0" maxOccurs="unbounded"></xsd:group>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+
+<xsd:group name="config">
+<xsd:choice>
+<xsd:element ref="Forbidden"/>
+<xsd:element ref="Escalator"/>
+</xsd:choice>
+</xsd:group>
+
+  <xsd:element name="Forbidden" type="ForbiddenType">
+  <xsd:annotation><xsd:documentation>
+  A forbidden element defines an illegal combination of attributes. The update form will raise the specified error if
+  these attributes are selected.
+  </xsd:documentation></xsd:annotation>
+  </xsd:element>
+	
+	<xsd:complexType name="ForbiddenType">
+	<xsd:sequence>
+    		<xsd:element name="Error" type="xsd:string"></xsd:element>
+    		<xsd:element ref="fil:Filter"></xsd:element>
+    	</xsd:sequence>
+	</xsd:complexType>
+
+    <xsd:element name="Category" type="CategoryType">
+    <xsd:annotation>
+    <xsd:documentation>
+    A category defines a selection/filter on queries.
+    </xsd:documentation>
+    </xsd:annotation>
+    </xsd:element>
+
+    
+    <xsd:complexType name="CategoryType">
+    	<xsd:sequence>
+    		<xsd:element name="Description" type="xsd:string"></xsd:element>
+    		<xsd:element ref="fil:Filter"/>		
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="MetricType">
+    	<xsd:choice>
+    		<xsd:element ref="MilestoneMetric" />
+    		<xsd:element ref="ResolveGroupMetric"></xsd:element>
+    	</xsd:choice>
+    </xsd:complexType>
+
+    <xsd:element name="MilestoneMetric" type="xsd:string"></xsd:element>
+    <xsd:element name="ResolveGroupMetric"
+    	type="ResolveGroupMetricType">
+    </xsd:element>
+
+    <xsd:element name="Escalator" type="EscalatorType">
+    <xsd:annotation><xsd:documentation>
+    An Escalator automatically increases the priority of queries that match the category. The metric is calculated
+    and the priority increased linearly between the start/end durations of the metric </xsd:documentation></xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="EscalatorType">
+    	<xsd:sequence>
+    		<xsd:element name="Description" type="xsd:string" />
+    		<xsd:element name="Catagory" type="CategoryType"></xsd:element>
+    		<xsd:element name="Metric" type="MetricType"></xsd:element>
+    	</xsd:sequence>
+    	<xsd:attribute name="priority" type="xsd:int"></xsd:attribute>
+    	<xsd:attribute name="start" type="xsd:duration"></xsd:attribute>
+    	<xsd:attribute name="end" type="xsd:duration"></xsd:attribute>
+    	<xsd:attribute name="ongoing" type="xsd:boolean" use="optional"></xsd:attribute>
+    </xsd:complexType>
+
+
+    <xsd:complexType name="ResolveGroupMetricType">
+    	<xsd:sequence>
+    		<xsd:element name="Type" type="xsd:string"></xsd:element>
+    		<xsd:element name="ResolveGroup" type="xsd:string" maxOccurs="1" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../../../../../../../../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<per:Period>
+	<per:StartTime>26-09-2008</per:StartTime>
+</per:Period>
+<Section>
+<Heading>School table</Heading>
+<tab:ObjectTable>
+<fil:ObjectSet>
+<fil:Target>School</fil:Target>
+<fil:OrderBy><fil:Property>Name</fil:Property></fil:OrderBy>
+</fil:ObjectSet>
+<tab:Column><tab:Name>School</tab:Name><tab:Property>Name</tab:Property></tab:Column>
+</tab:ObjectTable>
+</Section>
+</Report>

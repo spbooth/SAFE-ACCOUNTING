@@ -1,0 +1,283 @@
+<dataset><TableSpecification name='JobManager'>
+<localUser type='Integer' nullable='true'/>
+<userDN type='String' nullable='true' max='128'/>
+<userFQAN type='String' nullable='true' max='128'/>
+<jobID type='String' nullable='true' max='64'/>
+<ceID type='String' nullable='true' max='64'/>
+<lrmsID type='String' nullable='true' max='128'/>
+<timestamp type='Long' nullable='true'/>
+<CertificateID reference='Certificate'/>
+<LinkID reference='PBSRecord'/>
+</TableSpecification>
+<TableSpecification name='Certificate'>
+<Name type='String' nullable='false' max='255'/>
+</TableSpecification>
+<Certificate id='1'>
+<Name>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</Name>
+</Certificate>
+<TableSpecification name='PBSRecord'>
+<account type='String' nullable='true' max='32'/>
+<accounting_id type='String' nullable='true' max='32'/>
+<alt_id type='String' nullable='true' max='32'/>
+<ctime type='Long' nullable='false'/>
+<end type='Long' nullable='false'/>
+<etime type='Long' nullable='true'/>
+<exec_host type='String' nullable='true' max='65535'/>
+<Exit_status type='Integer' nullable='true'/>
+<group type='String' nullable='true' max='128'/>
+<jobname type='String' nullable='false' max='128'/>
+<id_string type='String' nullable='false' max='32'/>
+<qtime type='Long' nullable='false'/>
+<queue type='String' nullable='true' max='32'/>
+<record_type type='String' nullable='false' max='1'/>
+<resvname type='String' nullable='true' max='128'/>
+<resvID type='String' nullable='true' max='128'/>
+<session type='Integer' nullable='true'/>
+<start type='Long' nullable='false'/>
+<user type='String' nullable='false' max='32'/>
+<LinkID reference='JobManager'/>
+<CertificateID reference='Certificate'/>
+<userDN type='String' nullable='true' max='128'/>
+</TableSpecification>
+<PBSRecord id='20'>
+<ctime>1244616299</ctime>
+<end>1244616819</end>
+<etime>1244616299</etime>
+<exec_host>iwrcgop135/7+iwrcgop135/6+iwrcgop135/5+iwrcgop135/4+iwrcgop135/3+iwrcgop135/2+iwrcgop135/1+iwrcgop135/0+iwrcgop133/7+iwrcgop133/6+iwrcgop133/5+iwrcgop133/4+iwrcgop133/3+iwrcgop133/2+iwrcgop133/1+iwrcgop133/0+iwrcgop131/7+iwrcgop131/6+iwrcgop131/5+iwrcgop131/4+iwrcgop131/3+iwrcgop131/2+iwrcgop131/1+iwrcgop131/0+iwrcgop129/7+iwrcgop129/6+iwrcgop129/5+iwrcgop129/4+iwrcgop129/3+iwrcgop129/2+iwrcgop129/1+iwrcgop129/0+iwrcgop127/7+iwrcgop127/6+iwrcgop127/5+iwrcgop127/4+iwrcgop127/3+iwrcgop127/2+iwrcgop127/1+iwrcgop127/0+iwrcgop125/7+iwrcgop125/6+iwrcgop125/5+iwrcgop125/4+iwrcgop125/3+iwrcgop125/2+iwrcgop125/1+iwrcgop125/0+iwrcgop123/7+iwrcgop123/6+iwrcgop123/5+iwrcgop123/4+iwrcgop123/3+iwrcgop123/2+iwrcgop123/1+iwrcgop123/0+iwrcgop121/7+iwrcgop121/6+iwrcgop121/5+iwrcgop121/4+iwrcgop121/3+iwrcgop121/2+iwrcgop121/1+iwrcgop121/0+iwrcgop120/7+iwrcgop120/6+iwrcgop120/5+iwrcgop120/4+iwrcgop120/3+iwrcgop120/2+iwrcgop120/1+iwrcgop120/0+iwrcgop119/7+iwrcgop119/6+iwrcgop119/5+iwrcgop119/4+iwrcgop119/3+iwrcgop119/2+iwrcgop119/1+iwrcgop119/0+iwrcgop118/7+iwrcgop118/6+iwrcgop118/5+iwrcgop118/4+iwrcgop118/3+iwrcgop118/2+iwrcgop118/1+iwrcgop118/0+iwrcgop117/7+iwrcgop117/6+iwrcgop117/5+iwrcgop117/4+iwrcgop117/3+iwrcgop117/2+iwrcgop117/1+iwrcgop117/0+iwrcgop116/7+iwrcgop116/6+iwrcgop116/5+iwrcgop116/4+iwrcgop116/3+iwrcgop116/2+iwrcgop116/1+iwrcgop116/0+iwrcgop115/7+iwrcgop115/6+iwrcgop115/5+iwrcgop115/4+iwrcgop115/3+iwrcgop115/2+iwrcgop115/1+iwrcgop115/0+iwrcgop103/5+iwrcgop103/4+iwrcgop103/3+iwrcgop103/2+iwrcgop103/1+iwrcgop103/0+iwrcgop102/7+iwrcgop102/6+iwrcgop102/5+iwrcgop102/4+iwrcgop102/3+iwrcgop102/2+iwrcgop102/1+iwrcgop102/0+iwrcgop101/1+iwrcgop101/0</exec_host>
+<Exit_status>0</Exit_status>
+<group>euforia</group>
+<jobname>STDIN</jobname>
+<id_string>710078.iwrcgpbs0.fzk.de</id_string>
+<qtime>1244616299</qtime>
+<queue>i2gpar</queue>
+<record_type>E</record_type>
+<session>22227</session>
+<start>1244616339</start>
+<user>eufo015</user>
+<LinkID>1</LinkID>
+<CertificateID>1</CertificateID>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+</PBSRecord>
+<JobManager id='1'>
+<localUser>90069</localUser>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+<userFQAN>/euforia/Role=NULL/Capability=NULL</userFQAN>
+<jobID>https://i2g-rb01.lip.pt:9000/RNA3ptXR91dI1qbR_4Rh3g</jobID>
+<ceID>iwrce2.fzk.de:2119/jobmanager-lcgpbs-i2gpar</ceID>
+<lrmsID>710078.iwrcgpbs0.fzk.de</lrmsID>
+<timestamp>1244612708</timestamp>
+<CertificateID>1</CertificateID>
+<LinkID>20</LinkID>
+</JobManager>
+<PBSRecord id='21'>
+<ctime>1244616336</ctime>
+<end>1244617552</end>
+<etime>1244616336</etime>
+<exec_host>iwrcgop134/7+iwrcgop134/6+iwrcgop134/5+iwrcgop134/4+iwrcgop134/3+iwrcgop134/2+iwrcgop134/1+iwrcgop134/0+iwrcgop130/7+iwrcgop130/6+iwrcgop130/5+iwrcgop130/4+iwrcgop130/3+iwrcgop130/2+iwrcgop130/1+iwrcgop130/0+iwrcgop126/7+iwrcgop126/6+iwrcgop126/5+iwrcgop126/4+iwrcgop126/3+iwrcgop126/2+iwrcgop126/1+iwrcgop126/0+iwrcgop122/7+iwrcgop122/6+iwrcgop122/5+iwrcgop122/4+iwrcgop122/3+iwrcgop122/2+iwrcgop122/1+iwrcgop122/0+iwrcgop113/7+iwrcgop113/6+iwrcgop113/5+iwrcgop113/4+iwrcgop113/3+iwrcgop113/2+iwrcgop113/1+iwrcgop113/0+iwrcgop111/7+iwrcgop111/6+iwrcgop111/5+iwrcgop111/4+iwrcgop111/3+iwrcgop111/2+iwrcgop111/1+iwrcgop111/0+iwrcgop109/7+iwrcgop109/6+iwrcgop109/5+iwrcgop109/4+iwrcgop109/3+iwrcgop109/2+iwrcgop109/1+iwrcgop109/0+iwrcgop107/7+iwrcgop107/6+iwrcgop107/5+iwrcgop107/4+iwrcgop107/3+iwrcgop107/2+iwrcgop107/1+iwrcgop107/0+iwrcgop106/7+iwrcgop106/6+iwrcgop106/5+iwrcgop106/4+iwrcgop106/3+iwrcgop106/2+iwrcgop106/1+iwrcgop106/0+iwrcgop105/7+iwrcgop105/6+iwrcgop105/5+iwrcgop105/4+iwrcgop105/3+iwrcgop105/2+iwrcgop105/1+iwrcgop105/0+iwrcgop104/7+iwrcgop104/6+iwrcgop104/5+iwrcgop104/4+iwrcgop104/3+iwrcgop104/2+iwrcgop104/1+iwrcgop104/0+iwrcgop099/7+iwrcgop099/6+iwrcgop099/5+iwrcgop099/4+iwrcgop099/3+iwrcgop099/2+iwrcgop099/1+iwrcgop099/0+iwrcgop098/7+iwrcgop098/6+iwrcgop098/5+iwrcgop098/4+iwrcgop098/3+iwrcgop098/2+iwrcgop098/1+iwrcgop098/0+iwrcgop097/7+iwrcgop097/6+iwrcgop097/5+iwrcgop097/4+iwrcgop097/3+iwrcgop097/2+iwrcgop097/1+iwrcgop097/0+iwrcgop146/7+iwrcgop146/6+iwrcgop136/7+iwrcgop136/6+iwrcgop132/7+iwrcgop132/6+iwrcgop132/5+iwrcgop132/4+iwrcgop132/3+iwrcgop132/2+iwrcgop132/1+iwrcgop132/0+iwrcgop128/3+iwrcgop128/2+iwrcgop128/1+iwrcgop128/0</exec_host>
+<Exit_status>0</Exit_status>
+<group>euforia</group>
+<jobname>STDIN</jobname>
+<id_string>710079.iwrcgpbs0.fzk.de</id_string>
+<qtime>1244616336</qtime>
+<queue>i2gpar</queue>
+<record_type>E</record_type>
+<session>18268</session>
+<start>1244616339</start>
+<user>eufo015</user>
+<LinkID>2</LinkID>
+<CertificateID>1</CertificateID>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+</PBSRecord>
+<JobManager id='2'>
+<localUser>90069</localUser>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+<userFQAN>/euforia/Role=NULL/Capability=NULL</userFQAN>
+<jobID>https://i2g-rb01.lip.pt:9000/jP7sqe8z4IpB8FQ5QJFaOQ</jobID>
+<ceID>iwrce2.fzk.de:2119/jobmanager-lcgpbs-i2gpar</ceID>
+<lrmsID>710079.iwrcgpbs0.fzk.de</lrmsID>
+<timestamp>1244612739</timestamp>
+<CertificateID>1</CertificateID>
+<LinkID>21</LinkID>
+</JobManager>
+<PBSRecord id='22'>
+<ctime>1244624633</ctime>
+<end>1244625882</end>
+<etime>1244624633</etime>
+<exec_host>iwrcgop133/7+iwrcgop133/6+iwrcgop133/5+iwrcgop133/4+iwrcgop133/3+iwrcgop133/2+iwrcgop133/1+iwrcgop133/0+iwrcgop129/7+iwrcgop129/6+iwrcgop129/5+iwrcgop129/4+iwrcgop129/3+iwrcgop129/2+iwrcgop129/1+iwrcgop129/0+iwrcgop127/7+iwrcgop127/6+iwrcgop127/5+iwrcgop127/4+iwrcgop127/3+iwrcgop127/2+iwrcgop127/1+iwrcgop127/0+iwrcgop124/7+iwrcgop124/6+iwrcgop124/5+iwrcgop124/4+iwrcgop124/3+iwrcgop124/2+iwrcgop124/1+iwrcgop124/0+iwrcgop121/7+iwrcgop121/6+iwrcgop121/5+iwrcgop121/4+iwrcgop121/3+iwrcgop121/2+iwrcgop121/1+iwrcgop121/0+iwrcgop119/7+iwrcgop119/6+iwrcgop119/5+iwrcgop119/4+iwrcgop119/3+iwrcgop119/2+iwrcgop119/1+iwrcgop119/0+iwrcgop117/7+iwrcgop117/6+iwrcgop117/5+iwrcgop117/4+iwrcgop117/3+iwrcgop117/2+iwrcgop117/1+iwrcgop117/0+iwrcgop116/7+iwrcgop116/6+iwrcgop116/5+iwrcgop116/4+iwrcgop116/3+iwrcgop116/2+iwrcgop116/1+iwrcgop116/0+iwrcgop115/7+iwrcgop115/6+iwrcgop115/5+iwrcgop115/4+iwrcgop115/3+iwrcgop115/2+iwrcgop115/1+iwrcgop115/0+iwrcgop114/7+iwrcgop114/6+iwrcgop114/5+iwrcgop114/4+iwrcgop114/3+iwrcgop114/2+iwrcgop114/1+iwrcgop114/0+iwrcgop113/7+iwrcgop113/6+iwrcgop113/5+iwrcgop113/4+iwrcgop113/3+iwrcgop113/2+iwrcgop113/1+iwrcgop113/0+iwrcgop112/7+iwrcgop112/6+iwrcgop112/5+iwrcgop112/4+iwrcgop112/3+iwrcgop112/2+iwrcgop112/1+iwrcgop112/0+iwrcgop110/7+iwrcgop110/6+iwrcgop110/5+iwrcgop110/4+iwrcgop110/3+iwrcgop110/2+iwrcgop110/1+iwrcgop110/0+iwrcgop109/7+iwrcgop109/6+iwrcgop109/5+iwrcgop109/4+iwrcgop109/3+iwrcgop109/2+iwrcgop109/1+iwrcgop109/0+iwrcgop102/5+iwrcgop102/4+iwrcgop102/3+iwrcgop102/2+iwrcgop102/1+iwrcgop102/0+iwrcgop101/7+iwrcgop101/6+iwrcgop101/5+iwrcgop101/4+iwrcgop101/3+iwrcgop101/2+iwrcgop101/1+iwrcgop101/0+iwrcgop100/1+iwrcgop100/0</exec_host>
+<Exit_status>0</Exit_status>
+<group>euforia</group>
+<jobname>STDIN</jobname>
+<id_string>710090.iwrcgpbs0.fzk.de</id_string>
+<qtime>1244624633</qtime>
+<queue>i2gpar</queue>
+<record_type>E</record_type>
+<session>13173</session>
+<start>1244624638</start>
+<user>eufo015</user>
+<LinkID>3</LinkID>
+<CertificateID>1</CertificateID>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+</PBSRecord>
+<JobManager id='3'>
+<localUser>90069</localUser>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+<userFQAN>/euforia/Role=NULL/Capability=NULL</userFQAN>
+<jobID>https://i2g-rb01.lip.pt:9000/tqZT5YblZee67bI_tsgJTA</jobID>
+<ceID>iwrce2.fzk.de:2119/jobmanager-lcgpbs-i2gpar</ceID>
+<lrmsID>710090.iwrcgpbs0.fzk.de</lrmsID>
+<timestamp>1244621014</timestamp>
+<CertificateID>1</CertificateID>
+<LinkID>22</LinkID>
+</JobManager>
+<PBSRecord id='23'>
+<ctime>1244624639</ctime>
+<end>1244627105</end>
+<etime>1244624639</etime>
+<exec_host>iwrcgop133/7+iwrcgop133/6+iwrcgop133/5+iwrcgop133/4+iwrcgop133/3+iwrcgop133/2+iwrcgop133/1+iwrcgop133/0+iwrcgop129/7+iwrcgop129/6+iwrcgop129/5+iwrcgop129/4+iwrcgop129/3+iwrcgop129/2+iwrcgop129/1+iwrcgop129/0+iwrcgop127/7+iwrcgop127/6+iwrcgop127/5+iwrcgop127/4+iwrcgop127/3+iwrcgop127/2+iwrcgop127/1+iwrcgop127/0+iwrcgop124/7+iwrcgop124/6+iwrcgop124/5+iwrcgop124/4+iwrcgop124/3+iwrcgop124/2+iwrcgop124/1+iwrcgop124/0+iwrcgop121/7+iwrcgop121/6+iwrcgop121/5+iwrcgop121/4+iwrcgop121/3+iwrcgop121/2+iwrcgop121/1+iwrcgop121/0+iwrcgop119/7+iwrcgop119/6+iwrcgop119/5+iwrcgop119/4+iwrcgop119/3+iwrcgop119/2+iwrcgop119/1+iwrcgop119/0+iwrcgop117/7+iwrcgop117/6+iwrcgop117/5+iwrcgop117/4+iwrcgop117/3+iwrcgop117/2+iwrcgop117/1+iwrcgop117/0+iwrcgop116/7+iwrcgop116/6+iwrcgop116/5+iwrcgop116/4+iwrcgop116/3+iwrcgop116/2+iwrcgop116/1+iwrcgop116/0+iwrcgop115/7+iwrcgop115/6+iwrcgop115/5+iwrcgop115/4+iwrcgop115/3+iwrcgop115/2+iwrcgop115/1+iwrcgop115/0+iwrcgop114/7+iwrcgop114/6+iwrcgop114/5+iwrcgop114/4+iwrcgop114/3+iwrcgop114/2+iwrcgop114/1+iwrcgop114/0+iwrcgop113/7+iwrcgop113/6+iwrcgop113/5+iwrcgop113/4+iwrcgop113/3+iwrcgop113/2+iwrcgop113/1+iwrcgop113/0+iwrcgop112/7+iwrcgop112/6+iwrcgop112/5+iwrcgop112/4+iwrcgop112/3+iwrcgop112/2+iwrcgop112/1+iwrcgop112/0+iwrcgop110/7+iwrcgop110/6+iwrcgop110/5+iwrcgop110/4+iwrcgop110/3+iwrcgop110/2+iwrcgop110/1+iwrcgop110/0+iwrcgop109/7+iwrcgop109/6+iwrcgop109/5+iwrcgop109/4+iwrcgop109/3+iwrcgop109/2+iwrcgop109/1+iwrcgop109/0+iwrcgop102/5+iwrcgop102/4+iwrcgop102/3+iwrcgop102/2+iwrcgop102/1+iwrcgop102/0+iwrcgop101/7+iwrcgop101/6+iwrcgop101/5+iwrcgop101/4+iwrcgop101/3+iwrcgop101/2+iwrcgop101/1+iwrcgop101/0+iwrcgop100/1+iwrcgop100/0</exec_host>
+<Exit_status>0</Exit_status>
+<group>euforia</group>
+<jobname>STDIN</jobname>
+<id_string>710091.iwrcgpbs0.fzk.de</id_string>
+<qtime>1244624639</qtime>
+<queue>i2gpar</queue>
+<record_type>E</record_type>
+<session>15351</session>
+<start>1244625919</start>
+<user>eufo015</user>
+<LinkID>4</LinkID>
+<CertificateID>1</CertificateID>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+</PBSRecord>
+<JobManager id='4'>
+<localUser>90069</localUser>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+<userFQAN>/euforia/Role=NULL/Capability=NULL</userFQAN>
+<jobID>https://i2g-rb01.lip.pt:9000/EPwo93mttquzCcY8wyuxlw</jobID>
+<ceID>iwrce2.fzk.de:2119/jobmanager-lcgpbs-i2gpar</ceID>
+<lrmsID>710091.iwrcgpbs0.fzk.de</lrmsID>
+<timestamp>1244621020</timestamp>
+<CertificateID>1</CertificateID>
+<LinkID>23</LinkID>
+</JobManager>
+<PBSRecord id='24'>
+<ctime>1244624639</ctime>
+<end>1244670373</end>
+<etime>1244624639</etime>
+<exec_host>iwrcgop133/7+iwrcgop133/6+iwrcgop133/5+iwrcgop133/4+iwrcgop133/3+iwrcgop133/2+iwrcgop133/1+iwrcgop133/0+iwrcgop129/7+iwrcgop129/6+iwrcgop129/5+iwrcgop129/4+iwrcgop129/3+iwrcgop129/2+iwrcgop129/1+iwrcgop129/0+iwrcgop127/7+iwrcgop127/6+iwrcgop127/5+iwrcgop127/4+iwrcgop127/3+iwrcgop127/2+iwrcgop127/1+iwrcgop127/0+iwrcgop124/7+iwrcgop124/6+iwrcgop124/5+iwrcgop124/4+iwrcgop124/3+iwrcgop124/2+iwrcgop124/1+iwrcgop124/0+iwrcgop121/7+iwrcgop121/6+iwrcgop121/5+iwrcgop121/4+iwrcgop121/3+iwrcgop121/2+iwrcgop121/1+iwrcgop121/0+iwrcgop119/7+iwrcgop119/6+iwrcgop119/5+iwrcgop119/4+iwrcgop119/3+iwrcgop119/2+iwrcgop119/1+iwrcgop119/0+iwrcgop117/7+iwrcgop117/6+iwrcgop117/5+iwrcgop117/4+iwrcgop117/3+iwrcgop117/2+iwrcgop117/1+iwrcgop117/0+iwrcgop116/7+iwrcgop116/6+iwrcgop116/5+iwrcgop116/4+iwrcgop116/3+iwrcgop116/2+iwrcgop116/1+iwrcgop116/0+iwrcgop115/7+iwrcgop115/6+iwrcgop115/5+iwrcgop115/4+iwrcgop115/3+iwrcgop115/2+iwrcgop115/1+iwrcgop115/0+iwrcgop114/7+iwrcgop114/6+iwrcgop114/5+iwrcgop114/4+iwrcgop114/3+iwrcgop114/2+iwrcgop114/1+iwrcgop114/0+iwrcgop113/7+iwrcgop113/6+iwrcgop113/5+iwrcgop113/4+iwrcgop113/3+iwrcgop113/2+iwrcgop113/1+iwrcgop113/0+iwrcgop112/7+iwrcgop112/6+iwrcgop112/5+iwrcgop112/4+iwrcgop112/3+iwrcgop112/2+iwrcgop112/1+iwrcgop112/0+iwrcgop110/7+iwrcgop110/6+iwrcgop110/5+iwrcgop110/4+iwrcgop110/3+iwrcgop110/2+iwrcgop110/1+iwrcgop110/0+iwrcgop109/7+iwrcgop109/6+iwrcgop109/5+iwrcgop109/4+iwrcgop109/3+iwrcgop109/2+iwrcgop109/1+iwrcgop109/0+iwrcgop102/5+iwrcgop102/4+iwrcgop102/3+iwrcgop102/2+iwrcgop102/1+iwrcgop102/0+iwrcgop101/7+iwrcgop101/6+iwrcgop101/5+iwrcgop101/4+iwrcgop101/3+iwrcgop101/2+iwrcgop101/1+iwrcgop101/0+iwrcgop100/1+iwrcgop100/0</exec_host>
+<Exit_status>271</Exit_status>
+<group>euforia</group>
+<jobname>STDIN</jobname>
+<id_string>710092.iwrcgpbs0.fzk.de</id_string>
+<qtime>1244624639</qtime>
+<queue>i2gpar</queue>
+<record_type>E</record_type>
+<session>17893</session>
+<start>1244627139</start>
+<user>eufo015</user>
+<LinkID>5</LinkID>
+<CertificateID>1</CertificateID>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+</PBSRecord>
+<JobManager id='5'>
+<localUser>90069</localUser>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+<userFQAN>/euforia/Role=NULL/Capability=NULL</userFQAN>
+<jobID>https://i2g-rb01.lip.pt:9000/RxCpgaJOSMtoFCeC52wRug</jobID>
+<ceID>iwrce2.fzk.de:2119/jobmanager-lcgpbs-i2gpar</ceID>
+<lrmsID>710092.iwrcgpbs0.fzk.de</lrmsID>
+<timestamp>1244621020</timestamp>
+<CertificateID>1</CertificateID>
+<LinkID>24</LinkID>
+</JobManager>
+<PBSRecord id='25'>
+<ctime>1244624644</ctime>
+<end>1244689367</end>
+<etime>1244624644</etime>
+<exec_host>iwrcgop135/7+iwrcgop135/6+iwrcgop135/5+iwrcgop135/4+iwrcgop135/3+iwrcgop135/2+iwrcgop135/1+iwrcgop135/0+iwrcgop132/7+iwrcgop132/6+iwrcgop132/5+iwrcgop132/4+iwrcgop132/3+iwrcgop132/2+iwrcgop132/1+iwrcgop132/0+iwrcgop130/7+iwrcgop130/6+iwrcgop130/5+iwrcgop130/4+iwrcgop130/3+iwrcgop130/2+iwrcgop130/1+iwrcgop130/0+iwrcgop126/7+iwrcgop126/6+iwrcgop126/5+iwrcgop126/4+iwrcgop126/3+iwrcgop126/2+iwrcgop126/1+iwrcgop126/0+iwrcgop123/7+iwrcgop123/6+iwrcgop123/5+iwrcgop123/4+iwrcgop123/3+iwrcgop123/2+iwrcgop123/1+iwrcgop123/0+iwrcgop120/7+iwrcgop120/6+iwrcgop120/5+iwrcgop120/4+iwrcgop120/3+iwrcgop120/2+iwrcgop120/1+iwrcgop120/0+iwrcgop111/7+iwrcgop111/6+iwrcgop111/5+iwrcgop111/4+iwrcgop111/3+iwrcgop111/2+iwrcgop111/1+iwrcgop111/0+iwrcgop107/7+iwrcgop107/6+iwrcgop107/5+iwrcgop107/4+iwrcgop107/3+iwrcgop107/2+iwrcgop107/1+iwrcgop107/0+iwrcgop105/7+iwrcgop105/6+iwrcgop105/5+iwrcgop105/4+iwrcgop105/3+iwrcgop105/2+iwrcgop105/1+iwrcgop105/0+iwrcgop104/7+iwrcgop104/6+iwrcgop104/5+iwrcgop104/4+iwrcgop104/3+iwrcgop104/2+iwrcgop104/1+iwrcgop104/0+iwrcgop099/7+iwrcgop099/6+iwrcgop099/5+iwrcgop099/4+iwrcgop099/3+iwrcgop099/2+iwrcgop099/1+iwrcgop099/0+iwrcgop098/7+iwrcgop098/6+iwrcgop098/5+iwrcgop098/4+iwrcgop098/3+iwrcgop098/2+iwrcgop098/1+iwrcgop098/0+iwrcgop097/7+iwrcgop097/6+iwrcgop097/5+iwrcgop097/4+iwrcgop097/3+iwrcgop097/2+iwrcgop097/1+iwrcgop097/0+iwrcgop096/7+iwrcgop096/6+iwrcgop096/5+iwrcgop096/4+iwrcgop096/3+iwrcgop096/2+iwrcgop096/1+iwrcgop096/0+iwrcgop146/7+iwrcgop146/6+iwrcgop136/7+iwrcgop136/6+iwrcgop134/7+iwrcgop134/6+iwrcgop134/5+iwrcgop134/4+iwrcgop134/3+iwrcgop134/2+iwrcgop134/1+iwrcgop134/0+iwrcgop131/3+iwrcgop131/2+iwrcgop131/1+iwrcgop131/0</exec_host>
+<Exit_status>271</Exit_status>
+<group>euforia</group>
+<jobname>STDIN</jobname>
+<id_string>710093.iwrcgpbs0.fzk.de</id_string>
+<qtime>1244624644</qtime>
+<queue>i2gpar</queue>
+<record_type>E</record_type>
+<session>23875</session>
+<start>1244646149</start>
+<user>eufo015</user>
+<LinkID>6</LinkID>
+<CertificateID>1</CertificateID>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+</PBSRecord>
+<JobManager id='6'>
+<localUser>90069</localUser>
+<userDN>/C=DE/O=GridGermany/OU=Forschungszentrum Juelich GmbH/CN=Heinke Frerichs</userDN>
+<userFQAN>/euforia/Role=NULL/Capability=NULL</userFQAN>
+<jobID>https://i2g-rb01.lip.pt:9000/dZ8wpuD_GQwKwD51lIEL8g</jobID>
+<ceID>iwrce2.fzk.de:2119/jobmanager-lcgpbs-i2gpar</ceID>
+<lrmsID>710093.iwrcgpbs0.fzk.de</lrmsID>
+<timestamp>1244621025</timestamp>
+<CertificateID>1</CertificateID>
+<LinkID>25</LinkID>
+</JobManager>
+<Certificate id='3'>
+<Name>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=adrian jackson</Name>
+</Certificate>
+<PBSRecord id='26'>
+<ctime>1244639967</ctime>
+<end>1244640383</end>
+<etime>1244639968</etime>
+<exec_host>iwrcgop092/3+iwrcgop092/2+iwrcgop091/3+iwrcgop091/2+iwrcgop090/3+iwrcgop090/2+iwrcgop089/3+iwrcgop089/2</exec_host>
+<Exit_status>0</Exit_status>
+<group>euforia</group>
+<jobname>STDIN</jobname>
+<id_string>710105.iwrcgpbs0.fzk.de</id_string>
+<qtime>1244639968</qtime>
+<queue>i2gpar</queue>
+<record_type>E</record_type>
+<session>26388</session>
+<start>1244640013</start>
+<user>eufo019</user>
+<LinkID>7</LinkID>
+<CertificateID>3</CertificateID>
+<userDN>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=adrian jackson</userDN>
+</PBSRecord>
+<JobManager id='7'>
+<localUser>90073</localUser>
+<userDN>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=adrian jackson</userDN>
+<jobID>https://i2g-rb01.lip.pt:9000/p_BpiMuhSIIMqAzDCWIYHQ</jobID>
+<ceID>iwrce2.fzk.de:2119/jobmanager-lcgpbs-i2gpar</ceID>
+<lrmsID>710105.iwrcgpbs0.fzk.de</lrmsID>
+<timestamp>1244636410</timestamp>
+<CertificateID>3</CertificateID>
+<LinkID>26</LinkID>
+</JobManager>
+<PBSRecord id='27'>
+<ctime>1244641687</ctime>
+<end>1244642193</end>
+<etime>1244641687</etime>
+<exec_host>iwrcgop089/3+iwrcgop089/2+iwrcgop087/3+iwrcgop087/2+iwrcgop084/3+iwrcgop084/2+iwrcgop072/3+iwrcgop072/2</exec_host>
+<Exit_status>0</Exit_status>
+<group>euforia</group>
+<jobname>STDIN</jobname>
+<id_string>710107.iwrcgpbs0.fzk.de</id_string>
+<qtime>1244641687</qtime>
+<queue>i2gpar</queue>
+<record_type>E</record_type>
+<session>5675</session>
+<start>1244641721</start>
+<user>eufo019</user>
+<LinkID>8</LinkID>
+<CertificateID>3</CertificateID>
+<userDN>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=adrian jackson</userDN>
+</PBSRecord>
+<JobManager id='8'>
+<localUser>90073</localUser>
+<userDN>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=adrian jackson</userDN>
+<jobID>https://i2g-rb01.lip.pt:9000/YXbbnokgvC55lfMtRx9_og</jobID>
+<ceID>iwrce2.fzk.de:2119/jobmanager-lcgpbs-i2gpar</ceID>
+<lrmsID>710107.iwrcgpbs0.fzk.de</lrmsID>
+<timestamp>1244638062</timestamp>
+<CertificateID>3</CertificateID>
+<LinkID>27</LinkID>
+</JobManager>
+</dataset>

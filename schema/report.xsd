@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+	xmlns="http://safe.epcc.ed.ac.uk/report"
+	targetNamespace="http://safe.epcc.ed.ac.uk/report" 
+	elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+    xmlns:prop="http://safe.epcc.ed.ac.uk/propexpression"
+    xmlns:mac="http://safe.epcc.ed.ac.uk/macro"
+    xmlns:sub="http://safe.epcc.ed.ac.uk/substitute"
+    xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+    xmlns:fmt="http://safe.epcc.ed.ac.uk/format"
+    xmlns:per="http://safe.epcc.ed.ac.uk/period"
+    xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+    xmlns:acc="http://safe.epcc.ed.ac.uk/restrict"
+    xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+    xmlns:ato="http://safe.epcc.ed.ac.uk/atom">	
+	
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/parameter" 
+		schemaLocation="parameter.xsd"/>
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/substitute" 
+		schemaLocation="substitute.xsd"/>
+			
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/macro" 
+		schemaLocation="macro.xsd"/>
+		
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/period" 
+		schemaLocation="period.xsd"/>
+		
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/filter" 
+		schemaLocation="filter.xsd"/>
+		
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/format" 
+		schemaLocation="format.xsd"/>
+	
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/restrict" 
+		schemaLocation="restrict.xsd"/>
+		
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/chart" 
+		schemaLocation="chart.xsd"/>
+		
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/table" 
+		schemaLocation="table.xsd"/>
+		
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/atom" 
+		schemaLocation="atom.xsd"/>
+	
+	<!-- Comment -->	
+    <xsd:element name="Comment" type="xsd:string"/>
+	
+	<!-- Report -->	    
+	<xsd:element name="Report" type="ReportContentType" >
+	<xsd:annotation><xsd:documentation>
+	Global container element for the report.
+	</xsd:documentation></xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Title" type="TextContentType" />
+<xsd:element name="Text" type="TextContentType" >
+	<xsd:annotation>
+		<xsd:documentation>A text paragraph</xsd:documentation>
+	</xsd:annotation></xsd:element>
+<xsd:element name="Heading" type="TextContentType" />	
+
+
+<xsd:element name="Section">
+        <xsd:annotation>
+        	<xsd:documentation>First level section of a report. In printable versions these often start a new page.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+<xsd:sequence>
+			<xsd:element ref="Title" maxOccurs="1" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Main heading at the top of a report or section</xsd:documentation>
+				</xsd:annotation></xsd:element>
+			<xsd:group ref="SectionGroup" maxOccurs="unbounded"
+				minOccurs="0" />
+	</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+
+<xsd:element name="SubSection">
+<xsd:complexType mixed="true">
+		<xsd:sequence>
+		<xsd:element ref="Title" maxOccurs="1" minOccurs="0"></xsd:element>
+		<xsd:group ref="Content" maxOccurs="unbounded" minOccurs="0"/>
+		</xsd:sequence>	
+</xsd:complexType>
+</xsd:element>
+
+
+<xsd:complexType name="TextContentType" mixed="true">
+		<xsd:annotation>
+			<xsd:documentation>
+				Mixed content element where the sub-elements expand to text.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+		<xsd:group ref="TextSubstitution" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+</xsd:complexType>
+
+	<xsd:complexType name="ReportContentType" mixed="true">
+		<xsd:sequence>
+			<xsd:element ref="par:PageTitle" maxOccurs="1" minOccurs="0"/>
+			<xsd:element ref="Title" maxOccurs="1" minOccurs="0"></xsd:element>
+			<xsd:group ref="ReportGroup" maxOccurs="unbounded" minOccurs="0"/>
+		</xsd:sequence>	
+	</xsd:complexType>
+	<xsd:group name="ReportGroup">
+	<xsd:annotation><xsd:documentation>
+	Reports can contain Sections. General content and elements that define the
+	parameter form or access control
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+				<xsd:element ref="Section" ></xsd:element>
+				<xsd:group ref="Content" />
+				<xsd:element ref="par:ParameterDef" />
+				
+				<xsd:element ref="par:Text" />
+				
+				<xsd:element ref="acc:RequireRole" />
+				<xsd:element ref="acc:SufficientRole" />
+				<xsd:element ref="acc:RequireRelationship" />
+				<xsd:element ref="acc:SufficientRelationship" />
+			</xsd:choice>
+	</xsd:group>
+	
+	<xsd:group name="SectionGroup">
+	<xsd:annotation><xsd:documentation>
+	Section may contain general content and subsections.
+	</xsd:documentation></xsd:annotation>
+		<xsd:choice>
+			<xsd:element ref="SubSection"></xsd:element>
+			<xsd:group ref="Content" />
+		</xsd:choice>
+	</xsd:group>
+	
+	<xsd:group name="Content">
+	<xsd:annotation><xsd:documentation>
+	General content elements. Specialised schemas can add custom elements by
+	redefining this group.
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+	<xsd:element ref="Text" />
+	<xsd:element ref="Comment" />
+	<xsd:element ref="mac:MacroDef" />
+	<xsd:element ref="ato:Define" />
+	<xsd:element ref="Heading" />
+	<xsd:group ref="cha:Chart" />
+	<xsd:group ref="tab:AnyTable" />
+	<xsd:element ref="table"/>
+	<xsd:element ref="Figure"/>
+	<xsd:element ref="NoData"/>
+	<xsd:group ref="sub:Content"/>
+	<xsd:element ref="per:Period" />
+	<xsd:element ref="fil:Filter"/>
+	<xsd:element ref="fmt:Format" />
+	</xsd:choice>
+	</xsd:group>
+<xsd:group name="TextSubstitution">
+        <xsd:annotation>
+        	<xsd:documentation>
+        	This group should contain substitution elements that may
+				get replaced with Text elements. Additional elements may be added to the
+				schema by redefining the TextSubstitution group or defining a substitute extension element.
+				 This works best where
+				element order and count are not bounded. ie a group with
+				minOccurs=0 maxOccurs=unbounded containing a choice
+				element.
+        	</xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice>
+				<xsd:element ref="par:Parameter"/>
+				<xsd:element ref="par:IfSet"/>
+				<xsd:element ref="par:Optional"/>
+				<xsd:group ref="ato:NumberGroup"/>
+				<xsd:element ref="ato:Percentage" />
+				<xsd:element ref="ato:Property"/>
+				<xsd:element ref="mac:Macro"/>
+				<xsd:element ref="mac:Switch" />
+				<xsd:element ref="ato:Numeric"/>
+				<xsd:element ref="sub:Text"/>
+				<xsd:group ref="per:Substitution"/>
+		</xsd:choice>
+	</xsd:group>
+	
+
+<xsd:element name="table">
+<xsd:annotation><xsd:documentation>
+A static table. These may also be generated as output of a dynamic
+element.
+</xsd:documentation></xsd:annotation>
+<xsd:complexType>
+    	<xsd:sequence >
+    	<xsd:group ref="TableGroup" maxOccurs="unbounded" minOccurs="0" />
+    	</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="th" type="TextContentType"></xsd:element>
+<xsd:element name="td" type="TextContentType"></xsd:element>
+<xsd:element name="tr" type="TrType"/>
+
+<xsd:group name="TableGroup">
+<xsd:choice>
+<xsd:element ref="tr"/>
+<xsd:group ref="sub:Content"/>
+</xsd:choice>
+</xsd:group>
+<xsd:group name="TableCell">
+<xsd:choice>
+<xsd:group ref="sub:Content" />
+<xsd:element ref="th"/>
+<xsd:element ref="td"/>
+</xsd:choice>
+</xsd:group>
+    
+    <xsd:complexType name="TrType">
+    	<xsd:sequence>
+    		<xsd:group ref="TableCell" maxOccurs="unbounded"
+    			minOccurs="0" />
+    	</xsd:sequence>
+    	<xsd:attribute name="class" type="xsd:string" use="optional"></xsd:attribute>
+    </xsd:complexType>
+<xsd:element name="NoData">
+<xsd:annotation>
+ <xsd:documentation>
+ An empty figure
+ </xsd:documentation>
+ </xsd:annotation>
+ <xsd:complexType>
+ </xsd:complexType>
+ </xsd:element>
+ <xsd:element name="Figure" type="xsd:anyType">
+ <xsd:annotation>
+ <xsd:documentation>
+ A generated figure. The format depends on the chart implementation.
+ </xsd:documentation>
+ </xsd:annotation>
+ </xsd:element>
+ <xsd:element name="Caption" type="TextContentType">
+ <xsd:annotation>
+ <xsd:documentation>
+ A caption within a Figure element. 
+ </xsd:documentation>
+ </xsd:annotation>
+ </xsd:element>
+</xsd:schema>

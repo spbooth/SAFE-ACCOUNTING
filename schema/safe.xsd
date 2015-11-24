@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema
+	elementFormDefault="qualified"
+    targetNamespace="http://safe.epcc.ed.ac.uk/safe"
+    xmlns="http://safe.epcc.ed.ac.uk/safe"
+    xmlns:ato="http://safe.epcc.ed.ac.uk/atom"
+    xmlns:sub="http://safe.epcc.ed.ac.uk/substitute"
+    xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+    xmlns:per="http://safe.epcc.ed.ac.uk/period"
+    xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">	
+	
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/atom" 
+		schemaLocation="atom.xsd"/>
+			
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/substitute" 
+		schemaLocation="substitute.xsd"/>
+	
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/period" 
+		schemaLocation="period.xsd"/>
+		
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/filter" 
+		schemaLocation="filter.xsd"/>
+		
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/chart" 
+		schemaLocation="chart.xsd"/>
+
+	
+	<xsd:element name="MaxRate" />
+	
+	<xsd:complexType name="TextType">
+	<xsd:complexContent><xsd:extension base="sub:TextExtensionBase">
+	</xsd:extension>
+	</xsd:complexContent>
+	</xsd:complexType>
+	
+	
+	
+	<xsd:complexType name="NumberType">
+	<xsd:complexContent><xsd:extension base="ato:NumberExtensionBase"></xsd:extension></xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="DefaultUnit" type="TextType" substitutionGroup="sub:Text"/>
+	<xsd:element name="DefaultUnits" type="TextType" substitutionGroup="sub:Text"/>
+	<xsd:element name="DefaultUnitCharged"  type="TextType" substitutionGroup="sub:Text"/>
+	<xsd:element name="DefaultUnitRaw" type="TextType" substitutionGroup="sub:Text"/>
+	
+	<xsd:element name="DefaultUnitChargedProp" type="TextType" substitutionGroup="sub:Text"/>
+	<xsd:element name="DefaultUnitRawProp" type="TextType" substitutionGroup="sub:Text"/>
+	
+
+	
+	<xsd:element name="UserChart" type="SafeChartType"/>
+	<xsd:element name="QualityTokenChart" type="SafeChartType"/>
+     <xsd:element name="Expected" type="ExpectedType" substitutionGroup="ato:Numeric"/>
+     
+    <xsd:group name="SafeContent">
+    <xsd:choice>
+    <xsd:element ref="UserChart"/>
+    <xsd:element ref="QualityTokenChart"/>
+    <xsd:element ref="Expected"/>
+    </xsd:choice>
+    </xsd:group>
+    
+    <xsd:group name="SafeTextSubstitution">
+	<xsd:choice>
+		<xsd:element ref="DefaultUnit" />
+		<xsd:element ref="DefaultUnits" />
+		<xsd:element ref="DefaultUnitCharged" />
+		<xsd:element ref="DefaultUnitChargedProp" />
+		<xsd:element ref="DefaultUnitRaw" />
+		<xsd:element ref="DefaultUnitRawProp" />
+	</xsd:choice>
+</xsd:group>
+   
+    <xsd:complexType name="ExpectedType">
+     <xsd:complexContent>
+    <xsd:extension base="ato:NumberExtensionBase">
+      <xsd:sequence>
+    	<xsd:element ref="per:Period" minOccurs="0" maxOccurs="1" />
+    	<xsd:element name="ProjectID" type="sub:NumberOrParameterType"/>
+      </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+    </xsd:complexType>
+    
+    
+    
+    <xsd:complexType name="SafeChartType">
+    <xsd:sequence>
+    	<xsd:element ref="per:Period" minOccurs="0" maxOccurs="1" />
+    	<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
+    	<xsd:element ref="cha:NumberOfTimeBlocks" minOccurs="0" maxOccurs="1"/>
+    	<xsd:element ref="cha:Caption" maxOccurs="1" minOccurs="0" />
+    </xsd:sequence>
+    
+    </xsd:complexType>
+</xsd:schema>

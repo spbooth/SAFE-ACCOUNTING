@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<Title>Test Parameters</Title>
+<par:ParameterDef name="MyLong" type="Long" value="1"/>  
+<par:ParameterDef name="MyInteger" type="Integer" value="1"/>  
+<par:ParameterDef name="MyFloat" type="Float" value="1"/>
+<par:ParameterDef name="MyDouble" type="Double" value="1"/>
+<par:ParameterDef name="MyString" type="String" value="1"/>
+<par:ParameterDef name="MyDate" type="Date" value="2010-10-10"/>
+<par:ParameterDef name="MyTimeStamp" type="TimeStamp" value="2010-10-10 10:10:10"/>
+<par:ParameterDef name="MyBoolean" type="Boolean" value="true"/>
+<par:ParameterDef name="MyMachine" type="Machine" value="1"/>
+<par:ParameterDef name="Derived" type="Institute" value="1"/>
+<par:ParameterDef name="DoubleDerived" type="School" value="1"/>
+<par:ParameterDef name="MyLabel" type="String" label="My Label" value="blah"/>
+<par:ParameterDef name="Optional" type="String" optional="true" />
+<par:ParameterDef name="Default" type="String" value="Bob" />
+<par:ParameterDef name="ReadOnly" type="ReadOnly" value="Bob" />
+<par:ParameterDef name="LongString" type="String" length="256" value="blah, blah, blah"/>
+<par:ParameterDef name="ListString" type="List" value="bar" >
+	<par:Choice>foo</par:Choice>	
+	<par:Choice>bar</par:Choice>
+	<par:Choice>baz</par:Choice>
+</par:ParameterDef>
+
+
+
+<Text>My Long is <par:Parameter name="MyLong"/>.</Text>
+<Text>My Integer is <par:Parameter name="MyInteger"/>.</Text>
+<Text>My Float is <par:Parameter name="MyFloat"/>.</Text>
+<Text>My Double is <par:Parameter name="MyDouble"/>.</Text>
+<Text>My String is <par:Parameter name="MyString"/>.</Text>
+<Text>My Date is <par:Parameter name="MyDate" format="Date"/>.</Text>
+<Text>My TimeStamp is <par:Parameter name="MyTimeStamp" format="DateTime"/>.</Text>
+<Text>My Boolean is <par:Parameter name="MyBoolean"/>.</Text>
+<Text>My Machine is <par:Parameter name="MyMachine"/>.</Text>
+<Text>My Institute is <par:Parameter name="Derived"/>.</Text>
+<Text>My School is <par:Parameter name="DoubleDerived"/>.</Text>
+<Text>My name is <par:Parameter name="MyLabel"/>.</Text>
+<Text>My name is <par:Parameter name="Optional"/>.</Text>
+<Text>My name is <par:Parameter name="Default"/>.</Text>
+<Text>My name is <par:Parameter name="ReadOnly"/>.</Text>
+<Text>My String is <par:Parameter name="LongString"/>.</Text>
+<Text>My List is <par:Parameter name="ListString"/>.</Text>
+<Text>My Username is <par:Parameter name="User" format="WebName"/>.</Text>
+<Text>My E-mail is <par:Parameter name="User" format="Email"/>.</Text>
+<Text>My Expression is <par:Parameter name="User" format="expression:Email"/>.</Text>
+<par:Optional>
+<par:Value name="ReportType"/>
+<par:Option>
+<par:Target>HTML</par:Target>
+<par:Target>CSV</par:Target>
+<par:Content>
+<Text>Report type is <par:Parameter name="ReportType"/></Text>
+</par:Content>
+</par:Option>
+<par:Option>
+<par:Target>XML</par:Target>
+<par:Content>
+<Text>This is XML</Text>
+</par:Content>
+</par:Option>
+
+</par:Optional>
+
+
+</Report>

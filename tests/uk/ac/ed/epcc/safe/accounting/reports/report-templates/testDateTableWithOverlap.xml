@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../../../../../../../../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<per:Period>
+	<per:StartTime>26-09-2008</per:StartTime>
+</per:Period>
+<Section>
+<Heading>Date Overlap table</Heading>	
+<tab:SummaryTable>
+	<per:Period>
+		<per:StartTime>01-10-2008 04:40:00</per:StartTime>
+		<per:EndTime>01-10-2008 05:10:00</per:EndTime>
+	</per:Period>	
+	<tab:Date>
+		<tab:StartProperty>StartedTimestamp</tab:StartProperty>
+		<tab:EndProperty>CompletedTimestamp</tab:EndProperty>      
+	</tab:Date>
+	<tab:Index>				
+		<tab:Name>Project</tab:Name>		
+		<tab:Property>Project</tab:Property>
+	</tab:Index>	     
+	
+
+	<tab:SumColumn>
+		<tab:Name>Time</tab:Name>
+		<tab:Property>Wall</tab:Property>
+	</tab:SumColumn>	
+	<tab:SortBy>
+		<tab:Columns>Time</tab:Columns>
+		<tab:Reverse>true</tab:Reverse>
+	</tab:SortBy>		    
+</tab:SummaryTable>	
+<!--
+Need to use 4 queries to calculate this one. Also as an added check
+calculate wallclock directly as well as scaling the wall property.
+
+jobs totally within the period
+ select sum(Wall), Name, count(1) from SGERecord,ProjectEddie where ProjectID=ProjectEddie.ID and 
+ StartedTimestamp   > UNIX_TIMESTAMP('2008-10-01 04:40:00') and 
+ CompletedTimestamp < UNIX_TIMESTAMP('2008-10-01 05:10:00') and SGERecord.DataSetName="Eddie" group by ProjectID;
+
+| sum(Wall) | Name                | count(1) |
+|      6282 | ecdf_baseline       |       12 | 
+|         1 | ngsadmin            |        1 | 
+|      1351 | inf_hcrc_cstr_emime |       16 | 
+|       164 | atlas               |        2 | 
+|       615 | lhcb                |        8 | 
+|      2348 | inf_iccs_smt        |        4 | 
+
+jobs spanning the whole period
+select sum(30*60) as 'Base',
+sum(Wall*30*60/(CompletedTimestamp-StartedTimestamp)) as 'Cost', Name, count(1) from SGERecord,ProjectEddie where ProjectID=ProjectEddie.ID and   
+StartedTimestamp < UNIX_TIMESTAMP('2008-10-01 04:40:00') and   
+CompletedTimestamp > UNIX_TIMESTAMP('2008-10-01 05:10:00') and SGERecord.DataSetName="Eddie" group by ProjectID;
+
+| Base | Cost      | Name          | count(1) |
+
+| 7200 | 7200.0000 | ecdf_baseline |        4 | 
+| 5400 | 5400.0000 | prdatlas      |        3 | 
+
+
+jobs overlapping start but ending in period
+
+ select sum(CompletedTimestamp-UNIX_TIMESTAMP('2008-10-01 04:40:00')) as 'Base',
+ sum(Wall*(CompletedTimestamp -UNIX_TIMESTAMP('2008-10-01 04:40:00'))/(CompletedTimestamp-StartedTimestamp)) as 'Cost', Name, count(1) from SGERecord,ProjectEddie where ProjectID=ProjectEddie.ID and  
+ StartedTimestamp < UNIX_TIMESTAMP('2008-10-01 04:40:00') and  
+ CompletedTimestamp < UNIX_TIMESTAMP('2008-10-01 05:10:00') and  
+ CompletedTimestamp > UNIX_TIMESTAMP('2008-10-01 04:40:00') and SGERecord.DataSetName="Eddie" group by ProjectID;
+
+| Base  | Cost       | Name          | count(1) |
+
+| 11946 | 11946.0000 | ecdf_baseline |       31 | 
+| 18629 | 18629.0000 | inf_iccs_smt  |       19 | 
+
+
+jobs starting within period and overlapping end.
+
+select sum(UNIX_TIMESTAMP('2008-10-01 05:10:00')-StartedTimestamp) as 'Base',  
+sum(Wall*(UNIX_TIMESTAMP('2008-10-01 05:10:00')-StartedTimestamp)/(CompletedTimestamp-StartedTimestamp)) as 'Cost', Name, count(1) from SGERecord,ProjectEddie where ProjectID=ProjectEddie.ID and    
+StartedTimestamp < UNIX_TIMESTAMP('2008-10-01 05:10:00') and  
+StartedTimestamp > UNIX_TIMESTAMP('2008-10-01 04:40') and 
+CompletedTimestamp > UNIX_TIMESTAMP('2008-10-01 05:10:00') and SGERecord.DataSetName="Eddie" group by ProjectID;
+
+| Base  | Cost       | Name                | count(1) |
+
+| 69195 | 69195.0000 | ecdf_baseline       |       59 | 
+| 20129 | 20129.0000 | inf_hcrc_cstr_emime |       15 | 
+| 10170 | 10170.0000 | prdatlas            |        8 | 
+| 13402 | 13402.0000 | inf_iccs_smt        |       18 | 
+
+
+
+
+I O F L Y ecdf_baseline=69195+11946+7200+6282 = 94623
+I       Y ngsadmin=1
+I       Y atlas=164
+I       Y lhcb=615
+  O   L Y prdatlas= 10170 + 5400 = 15570
+I     L Y inf_hcrc_cstr_emime=20129 + 1351 =21480
+I   F L Y inf_iccs_smt= 13402 + 18629 + 2348 =34379
+
+got
+
+inf_hcrc_cstr_emime, 21480
+prdatlas, 15570
+ecdf_baseline, 94623
+ngsadmin, 1
+inf_iccs_smt, 34379
+lhcb, 615
+atlas, 164
+
+
+ -->	
+ </Section>
+</Report>

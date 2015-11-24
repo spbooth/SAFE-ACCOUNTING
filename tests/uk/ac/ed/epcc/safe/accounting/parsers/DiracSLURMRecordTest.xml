@@ -1,0 +1,15 @@
+<dataset>
+<TableSpecification name='SLURMRecord'>
+<JobID type='integer' nullable='false'/>
+<Start type='long' nullable='false' />
+<End type='long' nullable='false' />
+</TableSpecification>
+<TableSpecification name='Machine'>
+<Name type='String' nullable='false' max='32'/>
+<Table type='String' nullable='true' max='32'/>
+</TableSpecification>
+<Machine id='1'>
+<Name>SLURMMachine</Name>
+<Table>SLURMRecord</Table>
+</Machine>
+</dataset>

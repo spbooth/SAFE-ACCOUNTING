@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+	xmlns="http://safe.epcc.ed.ac.uk/report"
+	targetNamespace="http://safe.epcc.ed.ac.uk/report" 
+	elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+    xmlns:mac="http://safe.epcc.ed.ac.uk/macro"
+    xmlns:sub="http://safe.epcc.ed.ac.uk/substitute"
+    xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+    xmlns:fmt="http://safe.epcc.ed.ac.uk/format"
+    xmlns:per="http://safe.epcc.ed.ac.uk/period"
+    xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+    xmlns:acc="http://safe.epcc.ed.ac.uk/restrict"
+    xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+    xmlns:ato="http://safe.epcc.ed.ac.uk/atom"
+    xmlns:safe="http://safe.epcc.ed.ac.uk/safe">
+    
+ <xsd:import namespace="http://safe.epcc.ed.ac.uk/safe" 
+		schemaLocation="safe.xsd"/>	
+
+		
+
+<xsd:redefine schemaLocation="report.xsd">
+<xsd:group name="Content">
+	<xsd:annotation><xsd:documentation>
+	General content elements extended with safe elements
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+	<xsd:group ref="Content"/>
+	<xsd:group ref="safe:SafeContent"/>
+	</xsd:choice>
+</xsd:group>  
+<!-- We don't need to redifine the group as elements extend
+TextExtensionBase  
+<xsd:group name="TextSubstitution">
+	<xsd:annotation><xsd:documentation>
+	General content elements extended with safe elements
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+	<xsd:group ref="TextSubstitution"/>
+	<xsd:group ref="safe:SafeTextSubstitution"/>
+	</xsd:choice>
+</xsd:group>
+-->
+</xsd:redefine>
+</xsd:schema>
+
+

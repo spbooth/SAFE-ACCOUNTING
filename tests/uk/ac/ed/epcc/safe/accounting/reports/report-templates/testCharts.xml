@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<Title>Test Plots</Title>  
+<per:Period>
+	<per:StartTime>29-09-2008</per:StartTime>
+	<per:EndTime>29-10-2008</per:EndTime>
+</per:Period>
+
+
+<Heading>Time Chart Plot</Heading>
+<cha:TimeChart>
+	<cha:NumberOfTimeBlocks>5</cha:NumberOfTimeBlocks>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+	
+</cha:TimeChart>
+<!--  
+mysql> SELECT Project.Name, Sum(Wall) FROM SGERecord JOIN Project ON SGERecord.ProjectID=Project.Id GROUP BY ProjectID\G
+*************************** 1. row ***************************
+     Name: ecdf_baseline
+Sum(Wall): 241730
+*************************** 2. row ***************************
+     Name: ngsadmin
+Sum(Wall): 1
+*************************** 3. row ***************************
+     Name: inf_hcrc_cstr_emime
+Sum(Wall): 140360
+*************************** 4. row ***************************
+     Name: prdatlas
+Sum(Wall): 170304
+*************************** 5. row ***************************
+     Name: atlas
+Sum(Wall): 164
+*************************** 6. row ***************************
+     Name: lhcb
+Sum(Wall): 615
+*************************** 7. row ***************************
+     Name: inf_iccs_smt
+Sum(Wall): 49854
+7 rows in set (0.01 sec)
+-->
+
+<Heading>Time Chart Plot without a Group</Heading>
+<cha:TimeChart>
+	<cha:NumberOfTimeBlocks>5</cha:NumberOfTimeBlocks>
+	<cha:Plot>Wall</cha:Plot>
+</cha:TimeChart>
+<!-- 
+mysql> SELECT SUM(Wall) FROM SGERecord\G
+*************************** 1. row ***************************
+SUM(Wall): 603028
+1 row in set (0.00 sec)
+-->
+
+<Heading>Time Chart Cumulative</Heading>
+<cha:TimeChart>
+	<per:Period>
+		<per:StartTime>01-10-2008 04:00:00</per:StartTime>
+		<per:EndTime>01-10-2008 12:00:00</per:EndTime>
+	</per:Period>
+	<cha:NumberOfTimeBlocks>10</cha:NumberOfTimeBlocks>
+	<cha:Plot>TotalWall</cha:Plot>
+	<cha:Cumulative>true</cha:Cumulative>
+</cha:TimeChart>
+<!-- 
+No proof
+-->
+
+<Heading>Pie Time Chart Plot</Heading>
+<cha:PieTimeChart>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:PieTimeChart>
+<!-- 
+mysql> SELECT Project.Name, Sum(Wall) FROM SGERecord JOIN Project ON SGERecord.ProjectID=Project.Id GROUP BY ProjectID\G
+*************************** 1. row ***************************
+     Name: ecdf_baseline
+Sum(Wall): 241730
+*************************** 2. row ***************************
+     Name: ngsadmin
+Sum(Wall): 1
+*************************** 3. row ***************************
+     Name: inf_hcrc_cstr_emime
+Sum(Wall): 140360
+*************************** 4. row ***************************
+     Name: prdatlas
+Sum(Wall): 170304
+*************************** 5. row ***************************
+     Name: atlas
+Sum(Wall): 164
+*************************** 6. row ***************************
+     Name: lhcb
+Sum(Wall): 615
+*************************** 7. row ***************************
+     Name: inf_iccs_smt
+Sum(Wall): 49854
+7 rows in set (0.01 sec)
+-->
+
+<Heading>Bar Time Chart Plot</Heading>
+<cha:BarTimeChart>
+	<cha:Plot>JobCount</cha:Plot>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:BarTimeChart>
+<!-- 
+mysql> SELECT Project.Name,SUM(1) AS `JobCount` FROM SGERecord JOIN Project ON SGERecord.ProjectID=Project.Id GROUP BY ProjectID\G
+*************************** 1. row ***************************
+    Name: ecdf_baseline
+JobCount: 106
+*************************** 2. row ***************************
+    Name: ngsadmin
+JobCount: 1
+*************************** 3. row ***************************
+    Name: inf_hcrc_cstr_emime
+JobCount: 31
+*************************** 4. row ***************************
+    Name: prdatlas
+JobCount: 11
+*************************** 5. row ***************************
+    Name: atlas
+JobCount: 2
+*************************** 6. row ***************************
+    Name: lhcb
+JobCount: 8
+*************************** 7. row ***************************
+    Name: inf_iccs_smt
+JobCount: 41
+7 rows in set (0.00 sec)
+-->
+
+<Heading>The Plots Grouped by Derived</Heading>
+
+<Heading>Institute Usage</Heading>
+
+<cha:TimeChart>
+    <cha:NumberOfTimeBlocks>5</cha:NumberOfTimeBlocks>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>Institute</cha:GroupBy>
+</cha:TimeChart>
+<!-- 
+mysql> SELECT Institute.Name, SUM(Wall) FROM SGERecord JOIN (Project,Institute) ON (SGERecord.ProjectID=Project.Id AND Project.InstituteID=Institute.Id) GROUP BY Institute.Name\G
+*************************** 1. row ***************************
+     Name: Computing Systems Architecture
+SUM(Wall): 49854
+*************************** 2. row ***************************
+     Name: Digital Communications
+SUM(Wall): 140360
+*************************** 3. row ***************************
+     Name: Physics
+SUM(Wall): 164
+3 rows in set (0.01 sec)
+-->
+
+<Heading>School Usage</Heading>
+
+<cha:TimeChart>
+	<cha:NumberOfTimeBlocks>5</cha:NumberOfTimeBlocks>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>School</cha:GroupBy>
+</cha:TimeChart>
+<!-- 
+mysql> SELECT School.Name, SUM(Wall) FROM SGERecord JOIN (Project,Institute,School) ON (SGERecord.ProjectID=Project.Id AND Project.InstituteID=Institute.Id AND Institute.SchoolID=School.ID) GROUP BY School.Name\G
+*************************** 1. row ***************************
+     Name: Informatics
+SUM(Wall): 190214
+*************************** 2. row ***************************
+     Name: Physics
+SUM(Wall): 164
+-->
+
+
+
+</Report>

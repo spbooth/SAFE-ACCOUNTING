@@ -1,0 +1,24 @@
+<!--
+    Copyright (c) - The Univeristy of Edinburgh 2010
+ -->
+<ur:UsageRecord xmlns:ur="http://schema.ogf.org/urf/2003/09/urf">
+  <ur:RecordIdentity ur:createTime="2007-12-31T23:52:48.000Z"
+    ur:recordId="l1f403.119213.03167609168" />
+  <ur:JobIdentity>
+    <ur:LocalJobId>l1f403.119213.03167609168</ur:LocalJobId>
+  </ur:JobIdentity>
+  <ur:UserIdentity>
+    <ur:LocalUserId>luttkw2</ur:LocalUserId>
+  </ur:UserIdentity>
+  <ur:JobName>pre_run</ur:JobName>
+  <ur:Charge>33.3373</ur:Charge>
+  <ur:Status>completed</ur:Status>
+  <ur:StartTime>2007-12-31T23:52:48.000Z</ur:StartTime>
+  <ur:EndTime>2007-03-03T00:05:47.000Z</ur:EndTime>
+  <ur:WallDuration>PT12M59S</ur:WallDuration>
+  <ur:CpuDuration>PT6H37M40.22S</ur:CpuDuration>
+  <ur:MachineName>login.machine1.ac.uk</ur:MachineName>
+  <ur:ProjectName>e37</ur:ProjectName>
+  <ur:Queue>par32_6</ur:Queue>
+  <ur:Processors>32</ur:Processors>
+</ur:UsageRecord>

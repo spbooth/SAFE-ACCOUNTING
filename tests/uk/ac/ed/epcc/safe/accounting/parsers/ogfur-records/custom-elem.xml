@@ -1,0 +1,26 @@
+<!--
+    Copyright (c) - The Univeristy of Edinburgh 2010
+ -->
+<UsageRecord xmlns="http://schema.ogf.org/urf/2003/09/urf"
+  xmlns:urf="http://schema.ogf.org/urf/2003/09/urf" 
+  xmlns:test="http://gridsafe.epcc.ed.ac.uk/tests"
+  xmlns:t2="Grid-SAFE.epcc.tests">
+  <RecordIdentity urf:recordId="Grid-SAFE.webacct.test:custom-elem" />
+  <urf:Status>Completed</urf:Status>
+
+  <test:defaults>1</test:defaults>
+  <urf:defaultNS>2</urf:defaultNS>
+  <test:custom>3</test:custom>
+  <test:custom type="someType">4</test:custom>
+
+  <test:customAtts att_string="101" att_int="102"
+    att_dateTime="1970-01-01T01:01:43+01:00" att_duration="PT104S" 
+    att_real="105.0">100</test:customAtts>
+
+  <t2:elem_string>201</t2:elem_string>
+  <t2:elem_int>202</t2:elem_int>
+  <t2:elem_dateTime>1970-01-01T01:03:23+01:00</t2:elem_dateTime>
+  <t2:elem_duration>PT204S</t2:elem_duration>
+  <t2:elem_real>205.0</t2:elem_real>
+
+</UsageRecord>

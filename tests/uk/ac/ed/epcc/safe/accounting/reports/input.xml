@@ -1,0 +1,31 @@
+<?xml version="1.0"?><!--
+    Copyright (c) - The Univeristy of Edinburgh 2010
+ -->
+
+<document>
+
+<test1>
+<name1>fred</name1>
+<test2>
+<name2>boris</name2>
+<block>
+This is a test <probe/>
+</block>
+
+</test2>
+</test1>
+
+Nested Test <probe><name1>tim</name1><name2>topsy</name2></probe>
+
+<!--  definition test -->
+
+<definition>
+<MacroDefinition name="arg1"><bracket>igor</bracket></MacroDefinition>
+<MacroDefinition name="arg2"><bracket>cuddles</bracket></MacroDefinition>
+
+Definition test <UseMacro name="arg1"/><UseMacro name="arg2"/> !
+
+
+</definition> 
+
+</document>

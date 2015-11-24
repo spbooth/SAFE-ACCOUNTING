@@ -1,0 +1,34 @@
+<!--
+    Copyright (c) - The Univeristy of Edinburgh 2010
+ -->
+<JobUsageRecord 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.ogf.org/urf/2003/09/urf
+	file:/Users/bekah/Documents/GGF/URWG/urwg-schema.09.xsd">
+	<RecordIdentity
+	recordId="http://www.emsl.pnl.gov/mscf/colony/PBS.1234.0" 
+	createTime="2003-08-13T18:56:56Z" />
+	<JobIdentity>
+		<LocalJobId>PBS.1234.0</LocalJobId>
+	</JobIdentity>
+	<UserIdentity>
+		<LocalUserId>scottmo</LocalUserId>
+	</UserIdentity>
+	<Charge>2870</Charge>
+	<Status>completed</Status>
+	<Memory storageUnit="MB">1234</Memory>
+	<ServiceLevel type="QOS">BottomFeeder</ServiceLevel>
+	<Processors>4</Processors>
+	<ProjectName>mscfops</ProjectName>
+	<MachineName>Colony</MachineName>
+	<WallDuration>PT1S</WallDuration>
+	<StartTime>2003-08-13T17:34:50Z</StartTime>
+	<EndTime>2003-08-13T18:37:38Z</EndTime>
+	<NodeCount>2</NodeCount>
+	<Queue>batch</Queue>
+	<Resource description="quoteId">1435</Resource>
+	<Resource description="application">NWChem</Resource>
+	<Resource
+	description="executable">nwchem_linux</Resource>
+</JobUsageRecord>
+

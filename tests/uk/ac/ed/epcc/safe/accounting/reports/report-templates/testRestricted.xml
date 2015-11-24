@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:mac="http://safe.epcc.ed.ac.uk/macro"
+  xmlns:acc="http://safe.epcc.ed.ac.uk/restrict"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+    <acc:RequireRole>frog</acc:RequireRole>
+	<acc:SufficientRole>earwig</acc:SufficientRole>
+	<acc:SufficientRelationship type='ProjectRelationship' role='Tadpole'>Example</acc:SufficientRelationship>
+	<acc:RestrictedSection>
+	<acc:Roles><acc:Required>Bard</acc:Required><acc:Sufficient>Shakespear</acc:Sufficient></acc:Roles>
+	<acc:Content>Now is the winter of our discontent</acc:Content>
+	<acc:Fallback>Made glorious summer by this son of York</acc:Fallback>
+	</acc:RestrictedSection>
+
+</rep:Report>

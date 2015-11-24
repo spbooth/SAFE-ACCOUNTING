@@ -1,0 +1,232 @@
+<xsd:schema elementFormDefault="qualified"
+	targetNamespace="http://safe.epcc.ed.ac.uk/parameter"
+	xmlns="http://safe.epcc.ed.ac.uk/parameter"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fil="http://safe.epcc.ed.ac.uk/filter">
+
+    <xsd:import schemaLocation="filter.xsd" namespace="http://safe.epcc.ed.ac.uk/filter"></xsd:import>
+
+
+    <xsd:complexType name="ParameterDefType">
+    	<xsd:choice>
+    		<xsd:sequence>
+    			<xsd:element name="Choice" type="xsd:string"
+    				minOccurs="0" maxOccurs="unbounded" />
+    		</xsd:sequence>
+    		<xsd:element ref="fil:Filter"></xsd:element>
+    		<xsd:element name="Value" type="ValueType"
+    			maxOccurs="unbounded" minOccurs="0">
+    		</xsd:element>
+    	</xsd:choice>
+    	<xsd:attribute name="name" type="xsd:string" use="required" />
+    	<xsd:attribute name="type" type="xsd:string" use="required" />
+    	<xsd:attribute name="label" type="xsd:string" />
+    	<xsd:attribute name="producer" type="xsd:string" />
+    	<xsd:attribute name="tag" type="xsd:string" />
+    	<xsd:attribute name="optional" type="xsd:boolean" />
+    	<xsd:attribute name="value" type="xsd:string" />
+    	<xsd:attribute name="length" type="xsd:integer" />
+    	<xsd:attribute name="role" type="xsd:string" />
+    	<xsd:attribute name="unselected" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="ParameterType">
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="format" type="xsd:string" />
+		<xsd:attribute name="unselected" type="xsd:string"/>
+	</xsd:complexType>
+
+
+	<xsd:element name="ParameterDef" type="ParameterDefType">
+	<xsd:annotation>
+	<xsd:documentation>
+	Defines an input to be included in the parameter form.
+	</xsd:documentation>
+	</xsd:annotation>
+	</xsd:element>
+
+
+	<!-- Inserts the result of a form parameter into the document -->
+	<xsd:element name="Parameter" type="ParameterType"><xsd:annotation>
+	<xsd:documentation>
+	Inserts the result of a form or iteration parameter into the document.
+	</xsd:documentation>
+	</xsd:annotation></xsd:element>
+
+	<xsd:element name="ParameterRef" type="ParameterRefType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Identifies a parameter to be retrieved directly by an
+				extension. 
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Text" type="xsd:string" ><xsd:annotation><xsd:documentation>
+	Text to include in the parameter form.
+	</xsd:documentation></xsd:annotation></xsd:element>
+	
+	<xsd:element name="FormatParameter" type="FormatParameterType"><xsd:annotation>
+	<xsd:documentation>
+	Expands a template node using properties form the specified parameter.
+	The selected object must implement ExpressionTargetContainer
+	</xsd:documentation>
+	</xsd:annotation></xsd:element>
+	
+	<xsd:complexType name="FormatParameterType">
+		<xsd:complexContent mixed="true">
+			<xsd:restriction base="xsd:anyType">
+				<xsd:sequence>
+					<xsd:any processContents="lax" minOccurs="0"
+						maxOccurs="unbounded" />
+				</xsd:sequence>
+				<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="PageTitle" type="xsd:string">
+	<xsd:annotation><xsd:documentation>Title of parameter form</xsd:documentation></xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="Optional" type="OptionalType"><xsd:annotation><xsd:documentation>
+	Defines a set of alternative contents that are selected based on the expanded value
+	of a parameter.
+	</xsd:documentation></xsd:annotation></xsd:element>
+
+	<xsd:complexType name="OptionalType">
+		<xsd:sequence>
+			<xsd:element name="Value" type="ParameterType" maxOccurs="1" minOccurs="1"></xsd:element>
+			<xsd:element name="Option" type="OptionType" maxOccurs="unbounded" minOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OptionType">
+		<xsd:sequence>
+			<xsd:element name="Target" type="xsd:string"
+				maxOccurs="unbounded" minOccurs="1">
+				<xsd:annotation><xsd:documentation>
+				The text that the parameter has to expand to to select this option.
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Content"  maxOccurs="1"
+				minOccurs="1">
+				<xsd:annotation><xsd:documentation>
+				The content to include if this option is selected.
+				</xsd:documentation></xsd:annotation>
+				<xsd:complexType>
+    					<xsd:complexContent mixed="true">
+    						<xsd:restriction base="xsd:anyType">
+    							<xsd:sequence>
+    								<xsd:any processContents="lax"
+    									minOccurs="0" maxOccurs="unbounded" />
+    							</xsd:sequence>
+    						</xsd:restriction>
+    					</xsd:complexContent>
+    				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ValueType">
+		<xsd:sequence>
+			<xsd:element name="Value" type="ValueType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+		<xsd:attribute name="value" type="xsd:string" use="required"></xsd:attribute>
+	</xsd:complexType>
+
+	<!-- Optional content based on parameter -->
+	<xsd:element name="IfSet" type="IfType"></xsd:element>
+
+	<xsd:complexType name="IfType">
+        <xsd:sequence>
+        	<xsd:element name="Content" maxOccurs="1"
+    				minOccurs="1">
+    				<xsd:complexType>
+    					<xsd:complexContent mixed="true">
+    						<xsd:restriction base="xsd:anyType">
+    							<xsd:sequence>
+    								<xsd:any processContents="lax"
+    									minOccurs="0" maxOccurs="unbounded" />
+    							</xsd:sequence>
+    						</xsd:restriction>
+    					</xsd:complexContent>
+    				</xsd:complexType>
+    			</xsd:element>
+    			<xsd:element name="Fallback" maxOccurs="1" minOccurs="0">
+    			<xsd:complexType>
+    					<xsd:complexContent mixed="true">
+    						<xsd:restriction base="xsd:anyType">
+    							<xsd:sequence>
+    								<xsd:any processContents="lax"
+    									minOccurs="0" maxOccurs="unbounded" />
+    							</xsd:sequence>
+    						</xsd:restriction>
+    					</xsd:complexContent>
+    				</xsd:complexType>
+    			</xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+	
+	
+	<xsd:complexType name="TextOrParameterType" mixed="true">    
+		<xsd:choice maxOccurs="1" minOccurs="0">
+			<xsd:element ref="Parameter"></xsd:element>
+			<xsd:element ref="ParameterRef"></xsd:element>
+		</xsd:choice>
+	</xsd:complexType>
+	<xsd:complexType name="NumberOrParameterType" mixed="true">    
+		<xsd:choice maxOccurs="1" minOccurs="0">
+			<xsd:element ref="Parameter"></xsd:element>
+			<xsd:element ref="ParameterRef"></xsd:element>
+		</xsd:choice>
+	</xsd:complexType>
+   <xsd:complexType name="TextContentType" mixed="true">
+		<xsd:sequence>
+			<xsd:choice maxOccurs="unbounded" minOccurs="0">
+			<xsd:element ref="Parameter"></xsd:element>
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="For" type="ForType"><xsd:annotation><xsd:documentation>
+	Generates a repeated section with a parameter set to set of expression target objects
+	selected by a filter. If parameter expansion is required in the filter ParameterRef expansion should be used.
+	Note that the iteration parameter cannot be retreived by reference except by other parameter operations.
+	Only Parameter expansion, Repeat and For constructs are legal within this element.
+	</xsd:documentation></xsd:annotation></xsd:element>
+	
+	<xsd:complexType name="ForType">
+	<xsd:sequence>
+	<xsd:group ref="fil:Operation" minOccurs="0" maxOccurs="unbounded"></xsd:group>
+	<xsd:element ref="fil:OrderBy" minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:element name="Content" type="ContentType"/>
+	</xsd:sequence>
+	<xsd:attribute name="source" type="xsd:string" use="required"></xsd:attribute>
+	<xsd:attribute name="var" type="xsd:string" use="required"></xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="ContentType" mixed="true">
+		<xsd:sequence>
+			<xsd:any processContents="lax" minOccurs="0"
+							maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="Repeat" type="RepeatType"><xsd:annotation><xsd:documentation>
+	Expands the contents multiple times with the parameter named by the var attribute 
+	set to a series of values generated by applying the split operation to the named parameter.
+	Note that the iteration parameter cannot be retreived by reference except by other parameter operations.
+	Only Parameter expansion, Repeat and For constructs are legal within this elment.
+	</xsd:documentation></xsd:annotation></xsd:element>
+
+	<xsd:complexType name="RepeatType" mixed="true">
+		<xsd:sequence>
+			<xsd:any processContents="lax" minOccurs="0"
+							maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="var" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="split" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="ParameterRefType">
+		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+</xsd:schema>

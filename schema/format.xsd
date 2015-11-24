@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema elementFormDefault="qualified"
+	targetNamespace="http://safe.epcc.ed.ac.uk/format"
+	xmlns="http://safe.epcc.ed.ac.uk/format"
+	xmlns:sub="http://safe.epcc.ed.ac.uk/substitute"
+	xmlns:prop="http://safe.epcc.ed.ac.uk/propexpression"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:import schemaLocation="substitute.xsd" namespace="http://safe.epcc.ed.ac.uk/substitute"></xsd:import>
+	<xsd:import schemaLocation="propexpression.xsd" namespace="http://safe.epcc.ed.ac.uk/propexpression"></xsd:import>
+
+	<xsd:annotation>
+		<xsd:documentation>
+			This schema defines the Format element that is used to
+			perform template expansion of usage records. As this is may
+			be used to generate XML the schema allows any XML within the
+			format region.
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<xsd:element name="IfDef" type="IfDefComplexType"></xsd:element>
+
+	<xsd:element name="If">
+		<xsd:complexType>
+			<xsd:complexContent mixed="true">
+				<xsd:restriction base="xsd:anyType">
+					<xsd:sequence>
+						<xsd:any processContents="lax" minOccurs="0"
+							maxOccurs="unbounded" />
+					</xsd:sequence>
+					<xsd:attribute name="property" type="xsd:string"></xsd:attribute>
+					<xsd:attribute name="value" type="xsd:string"></xsd:attribute>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+
+
+	<xsd:element name="Format">
+		<xsd:complexType>
+			<xsd:complexContent mixed="true">
+				<xsd:restriction base="xsd:anyType">
+					<xsd:sequence>
+						<xsd:any processContents="lax" minOccurs="0"
+							maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<!-- Limit Date elements occur inside a Format element. However as the rest of the content is unconstrained
+		we can't make this explicit in the schema
+	-->
+	<xsd:element name="Limit" type="LimitType"></xsd:element>
+	<xsd:element name="TimeBounds" type="DateType"/>
+	<xsd:complexType name="LimitType">
+		<xsd:sequence>
+			<xsd:element name="Start" type="sub:NumberOrParameterType"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="Count" type="sub:NumberOrParameterType"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="IfDefComplexType" mixed="true">
+		<xsd:sequence>
+			<xsd:any minOccurs="0" maxOccurs="unbounded"
+				processContents="lax">
+			</xsd:any>
+		</xsd:sequence>
+		<xsd:attribute name="required" type="xsd:string"
+			use="required">
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:element name="IfNDef" type="IfDefComplexType"></xsd:element>
+
+
+<xsd:complexType name="DateType">
+		<xsd:choice>
+			<xsd:sequence>
+				<xsd:element name="Property"
+					type="prop:PropExpressionType" minOccurs="1" maxOccurs="1" />
+			</xsd:sequence>
+			<xsd:sequence>
+				<xsd:element name="StartProperty"
+					type="prop:PropExpressionType" minOccurs="1" maxOccurs="1" />
+				<xsd:element name="EndProperty"
+					type="prop:PropExpressionType" minOccurs="1" maxOccurs="1" />
+			</xsd:sequence>
+			
+		</xsd:choice>
+	</xsd:complexType>
+
+
+
+</xsd:schema>

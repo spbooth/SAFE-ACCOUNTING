@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+	
+  
+	<rep:Title>Test document</rep:Title>
+	
+	<per:Period>
+		<per:StartTime>01-10-2008</per:StartTime>
+	</per:Period>
+	<rep:Section>
+	<fil:Filter>
+		<fil:EQ>
+			<fil:Property>Project</fil:Property>
+			<fil:Value>ecdf_baseline</fil:Value>
+		</fil:EQ>
+	</fil:Filter>
+	
+	<rep:Heading>First Plot</rep:Heading>
+	<rep:Text>
+		This is a plot of the baseline project broken down by group
+	</rep:Text>
+	
+	<cha:TimeChart>
+		<cha:Plot>Wall</cha:Plot>
+		<cha:GroupBy>UnixGroup</cha:GroupBy>
+	</cha:TimeChart>
+    </rep:Section>
+	<rep:Heading>Second plot</rep:Heading>
+	<rep:Text>This is a plot of all use broken down by Project</rep:Text>
+
+	<cha:TimeChart>
+		<per:Period>
+			<per:StartTime>19-10-2008</per:StartTime>
+		</per:Period>
+		<cha:Plot>Wall</cha:Plot>
+		<cha:GroupBy>Project</cha:GroupBy>
+
+	</cha:TimeChart>
+	<cha:TimeChart>
+	<cha:NumberOfTimeBlocks>5</cha:NumberOfTimeBlocks>
+		<cha:Plot>Wall</cha:Plot>
+		<cha:GroupBy>Project</cha:GroupBy>
+		
+	</cha:TimeChart>
+
+	<tab:CompoundTable>
+		<tab:SummaryTable>
+			<tab:Index>
+				<tab:Name>The Project</tab:Name>
+				<tab:Property>Project</tab:Property>
+			</tab:Index>
+			<tab:SumColumn>
+				<tab:Name>Time</tab:Name>
+				<tab:Property>Wall</tab:Property>
+			</tab:SumColumn>
+		</tab:SummaryTable>
+		<tab:SummaryTable>
+			<tab:Index>
+				<tab:Name>The Project</tab:Name>
+				<tab:Property>Project</tab:Property>
+			</tab:Index>
+			    <fil:Filter>
+			       <fil:EQ>
+				   <fil:Property>Project</fil:Property>
+				   <fil:Value>ecdf_baseline</fil:Value>
+			     </fil:EQ>
+		        </fil:Filter>
+			<tab:SumColumn>
+				<tab:Name>BaseTime</tab:Name>
+				<tab:Property>Wall</tab:Property>
+			</tab:SumColumn>
+		</tab:SummaryTable>
+	</tab:CompoundTable>
+	
+</rep:Report>

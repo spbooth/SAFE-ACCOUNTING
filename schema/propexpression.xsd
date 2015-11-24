@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://safe.epcc.ed.ac.uk/propexpression" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://safe.epcc.ed.ac.uk/propexpression">
+	<xsd:complexType name="PropExpressionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				This is a PropExpression valid for the current context. Normally this is just a string that parses as a
+				PropExpression but may contain parameters or macros.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent mixed="true">
+    			<xsd:restriction base="xsd:anyType">
+    				<xsd:sequence>
+    				<xsd:any processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+    				</xsd:sequence>
+    			</xsd:restriction>
+    	</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="PropValueType">
+		<xsd:annotation>
+			<xsd:documentation>
+				This is content that will be parsed as the value of a
+				PropExpression. Normally this is just a string but may
+				contain parameters or macros.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent mixed="true">
+			<xsd:restriction base="xsd:anyType">
+				<xsd:sequence>
+					<xsd:any processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+				</xsd:sequence>
+				<xsd:attribute name="format" type="xsd:string" use="optional"></xsd:attribute>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>

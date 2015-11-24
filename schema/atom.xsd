@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+	targetNamespace="http://safe.epcc.ed.ac.uk/atom"
+	xmlns="http://safe.epcc.ed.ac.uk/atom"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:prop="http://safe.epcc.ed.ac.uk/propexpression"
+	xmlns:per="http://safe.epcc.ed.ac.uk/period"
+	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+	xmlns:pref="http://safe.epcc.ed.ac.uk/substitute" xmlns:param="http://safe.epcc.ed.ac.uk/parameter">
+
+	<xsd:import schemaLocation="propexpression.xsd"
+		namespace="http://safe.epcc.ed.ac.uk/propexpression">
+	</xsd:import>
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/filter"
+		schemaLocation="filter.xsd" />
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/period"
+		schemaLocation="period.xsd" />
+
+	<xsd:import schemaLocation="parameter.xsd" namespace="http://safe.epcc.ed.ac.uk/parameter"></xsd:import>
+	<xsd:annotation>
+		<xsd:documentation>
+			Schema for elements that retrieve a single value based on
+			the current select context. Note that to be expanded in a single pass
+			elements need to have the same filter/period context.
+		</xsd:documentation>
+	</xsd:annotation>
+
+
+	<xsd:element name="Count" type="CountType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Count the number of records matching the current
+				selection.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="Sum" type="prop:PropExpressionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Sum a prop-expression over the current selection.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="Average" type="prop:PropExpressionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Average a prop-expression over the current selection.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="Minimum" type="prop:PropExpressionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Minimum value of a prop-expression over the current
+				selection.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="Maximum" type="prop:PropExpressionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Maximum value of a prop-expression over the current
+				selection.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="Property" type="prop:PropExpressionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Comma separated list of distinct prop-expression values
+				over the current selection.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+<xsd:element name="Numeric" type="NumberExtensionBase" ></xsd:element>
+ <xsd:complexType name="NumberExtensionBase" abstract="true" mixed="false">
+	<xsd:annotation>
+		<xsd:documentation>An abstract base type for numeric substitution
+			elements added by custom schema and available (expanded to a numeric value) before atom processing.
+		</xsd:documentation>
+	</xsd:annotation>
+ </xsd:complexType>
+ 
+ 
+
+<xsd:complexType name="valueType">
+<xsd:sequence>
+<xsd:element ref="Numeric"/>
+</xsd:sequence>
+</xsd:complexType>
+
+	<xsd:group name="NumberGroup">
+		<xsd:annotation>
+			<xsd:documentation>
+				Elements that can generate a number result
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:choice>
+			<xsd:element ref="Count" />
+			<xsd:element ref="Sum" />
+			<xsd:element ref="Average" />
+			<xsd:element ref="Minimum" />
+			<xsd:element ref="Maximum" />
+			<xsd:element ref="Add" />
+			<xsd:element ref="Sub" />
+			<xsd:element ref="Mul" />
+			<xsd:element ref="Div" />
+			<xsd:element ref="Number" />
+			<xsd:element ref="Value" />
+			<xsd:element ref="Atom"/>
+			<xsd:element ref="AtomValue"/>
+		</xsd:choice>
+	</xsd:group>
+
+	
+	<xsd:element name="Add" type="BinaryType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Add two NumberGroup elements over the current selection.
+				Unlike a complex prop-expression, this combines the
+				result of 2 separate queries.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Sub" type="BinaryType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Subtract two NumberGroup elements over the current
+				selection. Unlike a complex prop-expression, this
+				combines the result of 2 separate queries.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Mul" type="BinaryType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Multiply two NumberGroup elements over the current
+				selection. Unlike a complex prop-expression, this
+				combines the result of 2 separate queries.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Div" type="BinaryType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Divide two NumberGroup elements over the current
+				selection. Unlike a complex prop-expression, this
+				combines the result of 2 separate queries.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+
+	<xsd:complexType name="BinaryType">
+		<xsd:sequence>
+			<xsd:group ref="NumberGroup" />
+			<xsd:group ref="NumberGroup" />
+		</xsd:sequence>
+    </xsd:complexType>
+
+	<xsd:element name="Atom" type="AtomType">
+	<xsd:annotation><xsd:documentation>
+	A value generated with a distinct filter/period context.
+	This can be used to bind a filter to an in-line atom.
+	</xsd:documentation></xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="AtomValue" type="AtomType">
+	<xsd:annotation><xsd:documentation>
+	Like an Atom but result is generated as a raw formatted number. This is intended to be
+	consumed as a parameter by a later stage of processing so formatting is irrelevent but
+	should be as loss-less as possible.	It can be used interchangably with Atom in binary operations
+	as the values are not formatted.
+	</xsd:documentation></xsd:annotation>
+	</xsd:element>
+
+
+
+	<xsd:complexType name="AtomType">
+		<xsd:sequence>
+			<xsd:element ref="per:Period" minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="fil:Filter" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:group ref="NumberGroup" minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+
+		
+        <xsd:attributeGroup ref="NumberFormatGroup"></xsd:attributeGroup>
+    </xsd:complexType>
+	<xsd:element name="Number" type="param:NumberOrParameterType">
+		<xsd:annotation>
+			<xsd:documentation>
+				A constant number (As opposed to the result of a query).
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+   <xsd:element name="Value" type="valueType">
+   <xsd:annotation>
+   <xsd:documentation>
+   A value generated by a previous expansion stage. By the time the atom processor sees this its
+   contents should have been replaced by a numerical value.
+   </xsd:documentation>
+   </xsd:annotation>
+   
+   </xsd:element>
+	<xsd:element name="Define" type="DefineType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Adds the result of an atom calculation to the parameter
+				list.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:complexType name="DefineType">
+		<xsd:sequence>
+			<xsd:element ref="per:Period" minOccurs="0" maxOccurs="1"/>
+   			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:group ref="NumberGroup" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:element name="Percentage" type="PercentageType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Divide two numbers and present as a percentage.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="IfRecords" type="IfRecordsType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Element that only expands if some records are selected
+				by the in-scope filter and period
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+    <xsd:complexType name="IfRecordsType">
+    <xsd:complexContent mixed="true">
+			<xsd:restriction base="xsd:anyType">
+				<xsd:sequence>
+					<xsd:any processContents="lax" minOccurs="0"
+						maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="CountType">
+    	<xsd:sequence>
+    		<xsd:element ref="fil:Filter" maxOccurs="1" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+        <xsd:attributeGroup ref="NumberFormatGroup"></xsd:attributeGroup>
+    </xsd:complexType>
+
+    <xsd:complexType name="PercentageType">
+    	<xsd:complexContent>
+    		<xsd:extension base="BinaryType">
+    			<xsd:attribute name="min_fraction" type="xsd:int" use="optional"></xsd:attribute>
+    			<xsd:attribute name="max_fraction" type="xsd:int" use="optional"></xsd:attribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:attributeGroup name="NumberFormatGroup">
+    	<xsd:attribute name="min_fraction"
+			type="xsd:int" use="optional">
+		</xsd:attribute>
+		<xsd:attribute name="max_fraction"
+			type="xsd:int" use="optional">
+		</xsd:attribute>
+		<xsd:attribute name="min_integer" type="xsd:int" use="optional"></xsd:attribute>
+		<xsd:attribute name="max_integer" type="xsd:int" use="optional"></xsd:attribute>
+    </xsd:attributeGroup>
+
+    <xsd:attribute name="NewAttribute" type="xsd:string"></xsd:attribute>
+
+</xsd:schema>

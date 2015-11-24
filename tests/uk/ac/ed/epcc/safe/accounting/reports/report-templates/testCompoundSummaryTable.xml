@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../../../../../../../../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<per:Period>
+	<per:StartTime>26-09-2008</per:StartTime>
+</per:Period>
+<Section>
+<Heading>Compound Summary Table</Heading>	
+<tab:CompoundTable>		
+	<tab:SummaryTable>	
+	    <fil:Filter>
+	       	<fil:NE>
+				<fil:Property>Project</fil:Property>
+			   	<fil:Value>ecdf_baseline</fil:Value>
+			</fil:NE>
+	    </fil:Filter>  		
+		<tab:Column>				
+			<tab:Name>User</tab:Name>		
+			<tab:Property>UserName</tab:Property>
+		</tab:Column>		    			
+		<tab:SumColumn>
+			<tab:Name>Project</tab:Name>
+			<tab:Property>Residency</tab:Property>
+		</tab:SumColumn>		
+	</tab:SummaryTable>	
+	<tab:SummaryTable>	
+	    <fil:Filter>
+	       	<fil:EQ>
+				<fil:Property>Project</fil:Property>
+			   	<fil:Value>ecdf_baseline</fil:Value>
+			</fil:EQ>
+	    </fil:Filter>  	
+		<tab:Column>				
+			<tab:Name>User</tab:Name>		
+			<tab:Property>UserName</tab:Property>
+		</tab:Column>	   				
+		<tab:SumColumn>
+			<tab:Name>Baseline</tab:Name>
+			<tab:Property>Residency</tab:Property>
+		</tab:SumColumn>		
+	</tab:SummaryTable>		
+	<tab:SortBy>
+		<tab:Columns>User</tab:Columns>
+	</tab:SortBy>		
+</tab:CompoundTable>
+</Section>
+</Report>

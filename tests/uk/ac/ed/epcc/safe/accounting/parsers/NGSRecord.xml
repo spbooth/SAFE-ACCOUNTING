@@ -1,0 +1,244 @@
+<dataset><TableSpecification name='NGSRecord'>
+<recordId type='String' nullable='true' max='128'/>
+<GlobalJobId type='String' nullable='true' max='32'/>
+<LocalJobId type='String' nullable='true' max='32'/>
+<GlobalUsername type='String' nullable='true' max='16777215'/>
+<LocalUserId type='String' nullable='true' max='32'/>
+<X509SubjectName type='String' nullable='true' max='16777215'/>
+<EndTime type='Long' nullable='true'/>
+<JobName type='String' nullable='true' max='128'/>
+<Queue type='String' nullable='true' max='32'/>
+<StartTime type='Long' nullable='true'/>
+<Status type='String' nullable='true' max='32'/>
+<CpuDuration type='Integer' nullable='true'/>
+<NodeCount type='Integer' nullable='true'/>
+<Processors type='Integer' nullable='true'/>
+<Text type='String' nullable='true' max='16777215'/>
+</TableSpecification>
+<NGSRecord id='1'>
+<recordId>2009-07-02T23:01:08Z:199322.vidar@mymachine.ngs.example.com</recordId>
+<LocalJobId>199322.vidar</LocalJobId>
+<LocalUserId>ngs0193</LocalUserId>
+<X509SubjectName>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk</X509SubjectName>
+<EndTime>1246575668</EndTime>
+<JobName>STDIN</JobName>
+<Queue>workq</Queue>
+<StartTime>1246575668</StartTime>
+<Status>completed</Status>
+<CpuDuration>0</CpuDuration>
+<Processors>1</Processors>
+<Text>JobUsageRecord xmlns=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:ds=&#39;http://www.w3.org/2000/09/xmldsig#&#39; xmlns:urwg=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:xsi=&#39;http://www.w3.org/2001/XMLSchema-instance&#39;
+     RecordIdentity urwg:createTime=&#39;2010-12-07T11:05:52Z&#39; urwg:recordId=&#39;2009-07-02T23:01:08Z:199322.vidar@mymachine.ngs.example.com&#39;/RecordIdentityJobIdentityLocalJobId199322.vidar/LocalJobId/JobIdentityUserIdentityLocalUserIdngs0193/LocalUserIdKeyInfo xmlns=&#39;http://www.w3.org/2000/09/xmldsig#&#39;X509DataX509SubjectName/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk/X509SubjectName/X509Data/KeyInfo/UserIdentityJobNameSTDIN/JobNameStatuscompleted/StatusMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;memoryUsed&#39;1224/MemoryMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;virtualMemoryUsed&#39;8692/MemoryTimeInstant urwg:type=&#39;timeGlobusSubmitted&#39;2009-07-02T23:01:08Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusExecutable&#39;2009-07-02T23:01:08Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusFinished&#39;2009-07-02T23:01:19Z/TimeInstantTimeInstant urwg:type=&#39;BatchSubmittedTimestamp&#39;2009-07-02T23:01:08Z/TimeInstantProcessors1/ProcessorsEndTime2009-07-02T23:01:08Z/EndTimeStartTime2009-07-02T23:01:08Z/StartTimeMachineNamemymachine.ngs.example.com/MachineNameSubmitHost129.215.190.68/SubmitHostQueueworkq/QueueResource urwg:description=&#39;VOinfo&#39;vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk/Resource/JobUsageRecord</Text>
+</NGSRecord>
+<NGSRecord id='2'>
+<recordId>2009-07-02T23:01:11Z:199323.vidar@mymachine.ngs.example.com</recordId>
+<LocalJobId>199323.vidar</LocalJobId>
+<LocalUserId>ngs0193</LocalUserId>
+<X509SubjectName>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk
+				</X509SubjectName>
+<EndTime>1246575672</EndTime>
+<JobName>STDIN</JobName>
+<Queue>workq</Queue>
+<StartTime>1246575671</StartTime>
+<Status>completed</Status>
+<CpuDuration>0</CpuDuration>
+<Processors>1</Processors>
+<Text>JobUsageRecord xmlns=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:ato=&#39;http://safe.epcc.ed.ac.uk/atom&#39; xmlns:cha=&#39;http://safe.epcc.ed.ac.uk/chart&#39; xmlns:ds=&#39;http://www.w3.org/2000/09/xmldsig#&#39; xmlns:fil=&#39;http://safe.epcc.ed.ac.uk/filter&#39; xmlns:fmt=&#39;http://safe.epcc.ed.ac.uk/format&#39; xmlns:par=&#39;http://safe.epcc.ed.ac.uk/parameter&#39; xmlns:per=&#39;http://safe.epcc.ed.ac.uk/period&#39; xmlns:rep=&#39;http://safe.epcc.ed.ac.uk/report&#39; xmlns:tab=&#39;http://safe.epcc.ed.ac.uk/table&#39; xmlns:urwg=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:xsi=&#39;http://www.w3.org/2001/XMLSchema-instance&#39; xsi:schemaLocation=&#39;http://www.gridforum.org/2003/ur-wg urwg-schema.11.xsd&#39;
+	RecordIdentity urwg:recordId=&#39;2009-07-02T23:01:11Z:199323.vidar@mymachine.ngs.example.com&#39; urwg:createTime=&#39;2010-12-07T11:05:52Z&#39;/RecordIdentity
+	JobIdentity
+		LocalJobId199323.vidar/LocalJobId
+	/JobIdentity
+	UserIdentity
+		LocalUserIdngs0193/LocalUserId
+		KeyInfo xmlns=&#39;http://www.w3.org/2000/09/xmldsig#&#39;
+			X509Data
+				X509SubjectName/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk
+				/X509SubjectName
+			/X509Data
+		/KeyInfo
+	/UserIdentity
+	JobNameSTDIN/JobName
+	Statuscompleted/Status
+	Memory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;memoryUsed&#39;916/Memory
+	Memory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;virtualMemoryUsed&#39;6508/Memory
+	TimeInstant urwg:type=&#39;timeGlobusSubmitted&#39;2009-07-02T23:01:11Z/TimeInstant
+	TimeInstant urwg:type=&#39;timeGlobusExecutable&#39;2009-07-02T23:01:11Z/TimeInstant
+	TimeInstant urwg:type=&#39;timeGlobusFinished&#39;2009-07-02T23:01:22Z/TimeInstant
+	TimeInstant urwg:type=&#39;BatchSubmittedTimestamp&#39;2009-07-02T23:01:11Z/TimeInstant
+	WallDurationPT1S/WallDuration
+	Processors1/Processors
+	EndTime2009-07-02T23:01:12Z/EndTime
+	StartTime2009-07-02T23:01:11Z/StartTime
+	MachineNamemymachine.ngs.example.com/MachineName
+	SubmitHost129.215.190.68/SubmitHost
+	Queueworkq/Queue
+	Resource urwg:description=&#39;VOinfo&#39;vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk/Resource
+/JobUsageRecord</Text>
+</NGSRecord>
+<NGSRecord id='3'>
+<recordId>2009-07-02T23:01:14Z:199324.vidar@mymachine.ngs.example.com</recordId>
+<LocalJobId>199324.vidar</LocalJobId>
+<LocalUserId>ngs0193</LocalUserId>
+<X509SubjectName>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk</X509SubjectName>
+<EndTime>1246575676</EndTime>
+<JobName>STDIN</JobName>
+<Queue>workq</Queue>
+<StartTime>1246575674</StartTime>
+<Status>completed</Status>
+<CpuDuration>0</CpuDuration>
+<Processors>1</Processors>
+<Text>JobUsageRecord xmlns=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:ato=&#39;http://safe.epcc.ed.ac.uk/atom&#39; xmlns:cha=&#39;http://safe.epcc.ed.ac.uk/chart&#39; xmlns:ds=&#39;http://www.w3.org/2000/09/xmldsig#&#39; xmlns:fil=&#39;http://safe.epcc.ed.ac.uk/filter&#39; xmlns:fmt=&#39;http://safe.epcc.ed.ac.uk/format&#39; xmlns:par=&#39;http://safe.epcc.ed.ac.uk/parameter&#39; xmlns:per=&#39;http://safe.epcc.ed.ac.uk/period&#39; xmlns:rep=&#39;http://safe.epcc.ed.ac.uk/report&#39; xmlns:tab=&#39;http://safe.epcc.ed.ac.uk/table&#39; xmlns:urwg=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:xsi=&#39;http://www.w3.org/2001/XMLSchema-instance&#39; xsi:schemaLocation=&#39;http://www.gridforum.org/2003/ur-wg urwg-schema.11.xsd&#39;
+
+    RecordIdentity urwg:createTime=&#39;2010-12-07T11:05:52Z&#39; urwg:recordId=&#39;2009-07-02T23:01:14Z:199324.vidar@mymachine.ngs.example.com&#39;
+    /RecordIdentity
+
+    JobIdentity
+        LocalJobId199324.vidar/LocalJobId
+    /JobIdentity
+
+    UserIdentity
+
+        LocalUserIdngs0193/LocalUserId
+
+        KeyInfo xmlns=&#39;http://www.w3.org/2000/09/xmldsig#&#39;
+
+            X509Data
+
+                X509SubjectName/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk/X509SubjectName
+            /X509Data
+        /KeyInfo
+    /UserIdentity
+
+    JobNameSTDIN/JobName
+
+    Statuscompleted/Status
+
+    Memory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;memoryUsed&#39;784/Memory
+
+    Memory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;virtualMemoryUsed&#39;5440/Memory
+
+    TimeInstant urwg:type=&#39;timeGlobusSubmitted&#39;2009-07-02T23:01:14Z/TimeInstant
+
+    TimeInstant urwg:type=&#39;timeGlobusExecutable&#39;2009-07-02T23:01:14Z/TimeInstant
+
+    TimeInstant urwg:type=&#39;timeGlobusFinished&#39;2009-07-02T23:01:25Z/TimeInstant
+
+    TimeInstant urwg:type=&#39;BatchSubmittedTimestamp&#39;2009-07-02T23:01:14Z/TimeInstant
+
+    WallDurationPT2S/WallDuration
+
+    Processors1/Processors
+
+    EndTime2009-07-02T23:01:16Z/EndTime
+
+    StartTime2009-07-02T23:01:14Z/StartTime
+
+    MachineNamemymachine.ngs.example.com/MachineName
+
+    SubmitHost129.215.190.68/SubmitHost
+
+    Queueworkq/Queue
+
+    Resource urwg:description=&#39;VOinfo&#39;vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk/Resource
+
+/JobUsageRecord</Text>
+</NGSRecord>
+<NGSRecord id='4'>
+<recordId>2009-07-02T23:01:18Z:199325.vidar@mymachine.ngs.example.com</recordId>
+<LocalJobId>199325.vidar</LocalJobId>
+<LocalUserId>ngs0193</LocalUserId>
+<X509SubjectName>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk</X509SubjectName>
+<EndTime>1246575679</EndTime>
+<JobName>STDIN</JobName>
+<Queue>workq</Queue>
+<StartTime>1246575678</StartTime>
+<Status>completed</Status>
+<CpuDuration>0</CpuDuration>
+<Processors>1</Processors>
+<Text>JobUsageRecord xmlns=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:ato=&#39;http://safe.epcc.ed.ac.uk/atom&#39; xmlns:cha=&#39;http://safe.epcc.ed.ac.uk/chart&#39; xmlns:ds=&#39;http://www.w3.org/2000/09/xmldsig#&#39; xmlns:fil=&#39;http://safe.epcc.ed.ac.uk/filter&#39; xmlns:fmt=&#39;http://safe.epcc.ed.ac.uk/format&#39; xmlns:par=&#39;http://safe.epcc.ed.ac.uk/parameter&#39; xmlns:per=&#39;http://safe.epcc.ed.ac.uk/period&#39; xmlns:rep=&#39;http://safe.epcc.ed.ac.uk/report&#39; xmlns:tab=&#39;http://safe.epcc.ed.ac.uk/table&#39; xmlns:urwg=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:xsi=&#39;http://www.w3.org/2001/XMLSchema-instance&#39;RecordIdentity urwg:createTime=&#39;2010-12-07T11:05:52Z&#39; urwg:recordId=&#39;2009-07-02T23:01:18Z:199325.vidar@mymachine.ngs.example.com&#39;/RecordIdentityJobIdentityLocalJobId199325.vidar/LocalJobId/JobIdentityUserIdentityLocalUserIdngs0193/LocalUserIdKeyInfo xmlns=&#39;http://www.w3.org/2000/09/xmldsig#&#39;X509DataX509SubjectName/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk/X509SubjectName/X509Data/KeyInfo/UserIdentityJobNameSTDIN/JobNameStatuscompleted/StatusMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;memoryUsed&#39;764/MemoryMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;virtualMemoryUsed&#39;5432/MemoryTimeInstant urwg:type=&#39;timeGlobusSubmitted&#39;2009-07-02T23:01:18Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusExecutable&#39;2009-07-02T23:01:18Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusFinished&#39;2009-07-02T23:01:29Z/TimeInstantTimeInstant urwg:type=&#39;BatchSubmittedTimestamp&#39;2009-07-02T23:01:18Z/TimeInstantWallDurationPT1S/WallDurationProcessors1/ProcessorsEndTime2009-07-02T23:01:19Z/EndTimeStartTime2009-07-02T23:01:18Z/StartTimeMachineNamemymachine.ngs.example.com/MachineNameSubmitHost129.215.190.68/SubmitHostQueueworkq/QueueResource urwg:description=&#39;VOinfo&#39;vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk/Resource/JobUsageRecord</Text>
+</NGSRecord>
+<NGSRecord id='5'>
+<recordId>2009-07-02T23:01:22Z:199326.vidar@mymachine.ngs.example.com</recordId>
+<LocalJobId>199326.vidar</LocalJobId>
+<LocalUserId>ngs0193</LocalUserId>
+<X509SubjectName>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk</X509SubjectName>
+<EndTime>1246575683</EndTime>
+<JobName>STDIN</JobName>
+<Queue>workq</Queue>
+<StartTime>1246575682</StartTime>
+<Status>completed</Status>
+<CpuDuration>0</CpuDuration>
+<Processors>1</Processors>
+<Text>JobUsageRecord xmlns=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:ato=&#39;http://safe.epcc.ed.ac.uk/atom&#39; xmlns:cha=&#39;http://safe.epcc.ed.ac.uk/chart&#39; xmlns:ds=&#39;http://www.w3.org/2000/09/xmldsig#&#39; xmlns:fil=&#39;http://safe.epcc.ed.ac.uk/filter&#39; xmlns:fmt=&#39;http://safe.epcc.ed.ac.uk/format&#39; xmlns:par=&#39;http://safe.epcc.ed.ac.uk/parameter&#39; xmlns:per=&#39;http://safe.epcc.ed.ac.uk/period&#39; xmlns:rep=&#39;http://safe.epcc.ed.ac.uk/report&#39; xmlns:tab=&#39;http://safe.epcc.ed.ac.uk/table&#39; xmlns:urwg=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:xsi=&#39;http://www.w3.org/2001/XMLSchema-instance&#39;RecordIdentity urwg:createTime=&#39;2010-12-07T11:05:52Z&#39; urwg:recordId=&#39;2009-07-02T23:01:22Z:199326.vidar@mymachine.ngs.example.com&#39;/RecordIdentityJobIdentityLocalJobId199326.vidar/LocalJobId/JobIdentityUserIdentityLocalUserIdngs0193/LocalUserIdKeyInfo xmlns=&#39;http://www.w3.org/2000/09/xmldsig#&#39;X509DataX509SubjectName/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk/X509SubjectName/X509Data/KeyInfo/UserIdentityJobNameSTDIN/JobNameStatuscompleted/StatusMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;memoryUsed&#39;684/MemoryMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;virtualMemoryUsed&#39;5432/MemoryTimeInstant urwg:type=&#39;timeGlobusSubmitted&#39;2009-07-02T23:01:22Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusExecutable&#39;2009-07-02T23:01:22Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusFinished&#39;2009-07-02T23:01:33Z/TimeInstantTimeInstant urwg:type=&#39;BatchSubmittedTimestamp&#39;2009-07-02T23:01:22Z/TimeInstantWallDurationPT1S/WallDurationProcessors1/ProcessorsEndTime2009-07-02T23:01:23Z/EndTimeStartTime2009-07-02T23:01:22Z/StartTimeMachineNamemymachine.ngs.example.com/MachineNameSubmitHost129.215.190.68/SubmitHostQueueworkq/QueueResource urwg:description=&#39;VOinfo&#39;vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk/Resource/JobUsageRecord</Text>
+</NGSRecord>
+<NGSRecord id='6'>
+<recordId>2009-07-02T23:01:24Z:199327.vidar@mymachine.ngs.example.com</recordId>
+<LocalJobId>199327.vidar</LocalJobId>
+<LocalUserId>ngs0193</LocalUserId>
+<X509SubjectName>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk</X509SubjectName>
+<EndTime>1246575686</EndTime>
+<JobName>STDIN</JobName>
+<Queue>workq</Queue>
+<StartTime>1246575684</StartTime>
+<Status>completed</Status>
+<CpuDuration>0</CpuDuration>
+<Processors>1</Processors>
+<Text>JobUsageRecord xmlns=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:ato=&#39;http://safe.epcc.ed.ac.uk/atom&#39; xmlns:cha=&#39;http://safe.epcc.ed.ac.uk/chart&#39; xmlns:ds=&#39;http://www.w3.org/2000/09/xmldsig#&#39; xmlns:fil=&#39;http://safe.epcc.ed.ac.uk/filter&#39; xmlns:fmt=&#39;http://safe.epcc.ed.ac.uk/format&#39; xmlns:par=&#39;http://safe.epcc.ed.ac.uk/parameter&#39; xmlns:per=&#39;http://safe.epcc.ed.ac.uk/period&#39; xmlns:rep=&#39;http://safe.epcc.ed.ac.uk/report&#39; xmlns:tab=&#39;http://safe.epcc.ed.ac.uk/table&#39; xmlns:urwg=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:xsi=&#39;http://www.w3.org/2001/XMLSchema-instance&#39;RecordIdentity urwg:createTime=&#39;2010-12-07T11:05:52Z&#39; urwg:recordId=&#39;2009-07-02T23:01:24Z:199327.vidar@mymachine.ngs.example.com&#39;/RecordIdentityJobIdentityLocalJobId199327.vidar/LocalJobId/JobIdentityUserIdentityLocalUserIdngs0193/LocalUserIdKeyInfo xmlns=&#39;http://www.w3.org/2000/09/xmldsig#&#39;X509DataX509SubjectName/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk/X509SubjectName/X509Data/KeyInfo/UserIdentityJobNameSTDIN/JobNameStatuscompleted/StatusMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;memoryUsed&#39;308/MemoryMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;virtualMemoryUsed&#39;5304/MemoryTimeInstant urwg:type=&#39;timeGlobusSubmitted&#39;2009-07-02T23:01:24Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusExecutable&#39;2009-07-02T23:01:24Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusFinished&#39;2009-07-02T23:01:35Z/TimeInstantTimeInstant urwg:type=&#39;BatchSubmittedTimestamp&#39;2009-07-02T23:01:24Z/TimeInstantWallDurationPT2S/WallDurationProcessors1/ProcessorsEndTime2009-07-02T23:01:26Z/EndTimeStartTime2009-07-02T23:01:24Z/StartTimeMachineNamemymachine.ngs.example.com/MachineNameSubmitHost129.215.190.68/SubmitHostQueueworkq/QueueResource urwg:description=&#39;VOinfo&#39;vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk/Resource/JobUsageRecord</Text>
+</NGSRecord>
+<NGSRecord id='7'>
+<recordId>2009-07-02T23:00:57Z:199319.vidar@mymachine.ngs.example.com</recordId>
+<LocalJobId>199319.vidar</LocalJobId>
+<LocalUserId>ngs0193</LocalUserId>
+<X509SubjectName>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk</X509SubjectName>
+<EndTime>1246575690</EndTime>
+<JobName>STDIN</JobName>
+<Queue>workq</Queue>
+<StartTime>1246575658</StartTime>
+<Status>completed</Status>
+<CpuDuration>28000</CpuDuration>
+<Processors>1</Processors>
+<Text>JobUsageRecord xmlns=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:ato=&#39;http://safe.epcc.ed.ac.uk/atom&#39; xmlns:cha=&#39;http://safe.epcc.ed.ac.uk/chart&#39; xmlns:ds=&#39;http://www.w3.org/2000/09/xmldsig#&#39; xmlns:fil=&#39;http://safe.epcc.ed.ac.uk/filter&#39; xmlns:fmt=&#39;http://safe.epcc.ed.ac.uk/format&#39; xmlns:par=&#39;http://safe.epcc.ed.ac.uk/parameter&#39; xmlns:per=&#39;http://safe.epcc.ed.ac.uk/period&#39; xmlns:rep=&#39;http://safe.epcc.ed.ac.uk/report&#39; xmlns:tab=&#39;http://safe.epcc.ed.ac.uk/table&#39; xmlns:urwg=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:xsi=&#39;http://www.w3.org/2001/XMLSchema-instance&#39;RecordIdentity urwg:createTime=&#39;2010-12-07T11:05:52Z&#39; urwg:recordId=&#39;2009-07-02T23:00:57Z:199319.vidar@mymachine.ngs.example.com&#39;/RecordIdentityJobIdentityLocalJobId199319.vidar/LocalJobId/JobIdentityUserIdentityLocalUserIdngs0193/LocalUserIdKeyInfo xmlns=&#39;http://www.w3.org/2000/09/xmldsig#&#39;X509DataX509SubjectName/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk/X509SubjectName/X509Data/KeyInfo/UserIdentityJobNameSTDIN/JobNameStatuscompleted/StatusMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;memoryUsed&#39;27136/MemoryMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;virtualMemoryUsed&#39;1394872/MemoryTimeInstant urwg:type=&#39;timeGlobusSubmitted&#39;2009-07-02T23:00:57Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusExecutable&#39;2009-07-02T23:00:57Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusFinished&#39;2009-07-02T23:01:30Z/TimeInstantTimeInstant urwg:type=&#39;BatchSubmittedTimestamp&#39;2009-07-02T23:00:57Z/TimeInstantWallDurationPT32S/WallDurationCpuDurationPT28S/CpuDurationProcessors1/ProcessorsEndTime2009-07-02T23:01:30Z/EndTimeStartTime2009-07-02T23:00:58Z/StartTimeMachineNamemymachine.ngs.example.com/MachineNameSubmitHost129.215.190.68/SubmitHostQueueworkq/QueueResource urwg:description=&#39;VOinfo&#39;vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk/Resource/JobUsageRecord</Text>
+</NGSRecord>
+<NGSRecord id='8'>
+<recordId>2009-07-02T23:01:01Z:199320.vidar@mymachine.ngs.example.com</recordId>
+<LocalJobId>199320.vidar</LocalJobId>
+<LocalUserId>ngs0193</LocalUserId>
+<X509SubjectName>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk</X509SubjectName>
+<EndTime>1246575692</EndTime>
+<JobName>STDIN</JobName>
+<Queue>workq</Queue>
+<StartTime>1246575662</StartTime>
+<Status>completed</Status>
+<CpuDuration>25000</CpuDuration>
+<Processors>1</Processors>
+<Text>JobUsageRecord xmlns=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:ato=&#39;http://safe.epcc.ed.ac.uk/atom&#39; xmlns:cha=&#39;http://safe.epcc.ed.ac.uk/chart&#39; xmlns:ds=&#39;http://www.w3.org/2000/09/xmldsig#&#39; xmlns:fil=&#39;http://safe.epcc.ed.ac.uk/filter&#39; xmlns:fmt=&#39;http://safe.epcc.ed.ac.uk/format&#39; xmlns:par=&#39;http://safe.epcc.ed.ac.uk/parameter&#39; xmlns:per=&#39;http://safe.epcc.ed.ac.uk/period&#39; xmlns:rep=&#39;http://safe.epcc.ed.ac.uk/report&#39; xmlns:tab=&#39;http://safe.epcc.ed.ac.uk/table&#39; xmlns:urwg=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:xsi=&#39;http://www.w3.org/2001/XMLSchema-instance&#39;RecordIdentity urwg:createTime=&#39;2010-12-07T11:05:52Z&#39; urwg:recordId=&#39;2009-07-02T23:01:01Z:199320.vidar@mymachine.ngs.example.com&#39;/RecordIdentityJobIdentityLocalJobId199320.vidar/LocalJobId/JobIdentityUserIdentityLocalUserIdngs0193/LocalUserIdKeyInfo xmlns=&#39;http://www.w3.org/2000/09/xmldsig#&#39;X509DataX509SubjectName/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk/X509SubjectName/X509Data/KeyInfo/UserIdentityJobNameSTDIN/JobNameStatuscompleted/StatusMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;memoryUsed&#39;27132/MemoryMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;virtualMemoryUsed&#39;1394856/MemoryTimeInstant urwg:type=&#39;timeGlobusSubmitted&#39;2009-07-02T23:01:01Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusExecutable&#39;2009-07-02T23:01:01Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusFinished&#39;2009-07-02T23:01:53Z/TimeInstantTimeInstant urwg:type=&#39;BatchSubmittedTimestamp&#39;2009-07-02T23:01:01Z/TimeInstantWallDurationPT30S/WallDurationCpuDurationPT25S/CpuDurationProcessors1/ProcessorsEndTime2009-07-02T23:01:32Z/EndTimeStartTime2009-07-02T23:01:02Z/StartTimeMachineNamemymachine.ngs.example.com/MachineNameSubmitHost129.215.190.68/SubmitHostQueueworkq/QueueResource urwg:description=&#39;VOinfo&#39;vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk/Resource/JobUsageRecord</Text>
+</NGSRecord>
+<NGSRecord id='9'>
+<recordId>2009-07-02T23:01:04Z:199321.vidar@mymachine.ngs.example.com</recordId>
+<LocalJobId>199321.vidar</LocalJobId>
+<LocalUserId>ngs0193</LocalUserId>
+<X509SubjectName>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk</X509SubjectName>
+<EndTime>1246575695</EndTime>
+<JobName>STDIN</JobName>
+<Queue>workq</Queue>
+<StartTime>1246575664</StartTime>
+<Status>completed</Status>
+<CpuDuration>27000</CpuDuration>
+<Processors>1</Processors>
+<Text>JobUsageRecord xmlns=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:ato=&#39;http://safe.epcc.ed.ac.uk/atom&#39; xmlns:cha=&#39;http://safe.epcc.ed.ac.uk/chart&#39; xmlns:ds=&#39;http://www.w3.org/2000/09/xmldsig#&#39; xmlns:fil=&#39;http://safe.epcc.ed.ac.uk/filter&#39; xmlns:fmt=&#39;http://safe.epcc.ed.ac.uk/format&#39; xmlns:par=&#39;http://safe.epcc.ed.ac.uk/parameter&#39; xmlns:per=&#39;http://safe.epcc.ed.ac.uk/period&#39; xmlns:rep=&#39;http://safe.epcc.ed.ac.uk/report&#39; xmlns:tab=&#39;http://safe.epcc.ed.ac.uk/table&#39; xmlns:urwg=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:xsi=&#39;http://www.w3.org/2001/XMLSchema-instance&#39;RecordIdentity urwg:createTime=&#39;2010-12-07T11:05:52Z&#39; urwg:recordId=&#39;2009-07-02T23:01:04Z:199321.vidar@mymachine.ngs.example.com&#39;/RecordIdentityJobIdentityLocalJobId199321.vidar/LocalJobId/JobIdentityUserIdentityLocalUserIdngs0193/LocalUserIdKeyInfo xmlns=&#39;http://www.w3.org/2000/09/xmldsig#&#39;X509DataX509SubjectName/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk/X509SubjectName/X509Data/KeyInfo/UserIdentityJobNameSTDIN/JobNameStatuscompleted/StatusMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;memoryUsed&#39;64312/MemoryMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;virtualMemoryUsed&#39;1394864/MemoryTimeInstant urwg:type=&#39;timeGlobusSubmitted&#39;2009-07-02T23:01:04Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusExecutable&#39;2009-07-02T23:01:04Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusFinished&#39;2009-07-02T23:01:56Z/TimeInstantTimeInstant urwg:type=&#39;BatchSubmittedTimestamp&#39;2009-07-02T23:01:04Z/TimeInstantWallDurationPT31S/WallDurationCpuDurationPT27S/CpuDurationProcessors1/ProcessorsEndTime2009-07-02T23:01:35Z/EndTimeStartTime2009-07-02T23:01:04Z/StartTimeMachineNamemymachine.ngs.example.com/MachineNameSubmitHost129.215.190.68/SubmitHostQueueworkq/QueueResource urwg:description=&#39;VOinfo&#39;vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk/Resource/JobUsageRecord</Text>
+</NGSRecord>
+<NGSRecord id='10'>
+<recordId>2009-07-02T23:02:13Z:199328.vidar@mymachine.ngs.example.com</recordId>
+<LocalJobId>199328.vidar</LocalJobId>
+<LocalUserId>ngs0193</LocalUserId>
+<X509SubjectName>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk</X509SubjectName>
+<EndTime>1246575734</EndTime>
+<JobName>STDIN</JobName>
+<Queue>workq</Queue>
+<StartTime>1246575734</StartTime>
+<Status>completed</Status>
+<CpuDuration>0</CpuDuration>
+<Processors>1</Processors>
+<Text>JobUsageRecord xmlns=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:ato=&#39;http://safe.epcc.ed.ac.uk/atom&#39; xmlns:cha=&#39;http://safe.epcc.ed.ac.uk/chart&#39; xmlns:ds=&#39;http://www.w3.org/2000/09/xmldsig#&#39; xmlns:fil=&#39;http://safe.epcc.ed.ac.uk/filter&#39; xmlns:fmt=&#39;http://safe.epcc.ed.ac.uk/format&#39; xmlns:par=&#39;http://safe.epcc.ed.ac.uk/parameter&#39; xmlns:per=&#39;http://safe.epcc.ed.ac.uk/period&#39; xmlns:rep=&#39;http://safe.epcc.ed.ac.uk/report&#39; xmlns:tab=&#39;http://safe.epcc.ed.ac.uk/table&#39; xmlns:urwg=&#39;http://www.gridforum.org/2003/ur-wg&#39; xmlns:xsi=&#39;http://www.w3.org/2001/XMLSchema-instance&#39;RecordIdentity urwg:createTime=&#39;2010-12-07T11:05:52Z&#39; urwg:recordId=&#39;2009-07-02T23:02:13Z:199328.vidar@mymachine.ngs.example.com&#39;/RecordIdentityJobIdentityLocalJobId199328.vidar/LocalJobId/JobIdentityUserIdentityLocalUserIdngs0193/LocalUserIdKeyInfo xmlns=&#39;http://www.w3.org/2000/09/xmldsig#&#39;X509DataX509SubjectName/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=portal/cleopatra.cap.ed.ac.uk/emailAddress=jgrunche@staffmail.ed.ac.uk/X509SubjectName/X509Data/KeyInfo/UserIdentityJobNameSTDIN/JobNameStatuscompleted/StatusMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;memoryUsed&#39;100/MemoryMemory urwg:storageUnit=&#39;KB&#39; urwg:type=&#39;virtualMemoryUsed&#39;960/MemoryTimeInstant urwg:type=&#39;timeGlobusSubmitted&#39;2009-07-02T23:02:13Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusExecutable&#39;2009-07-02T23:02:13Z/TimeInstantTimeInstant urwg:type=&#39;timeGlobusFinished&#39;2009-07-02T23:02:24Z/TimeInstantTimeInstant urwg:type=&#39;BatchSubmittedTimestamp&#39;2009-07-02T23:02:13Z/TimeInstantProcessors1/ProcessorsEndTime2009-07-02T23:02:14Z/EndTimeStartTime2009-07-02T23:02:14Z/StartTimeMachineNamemymachine.ngs.example.com/MachineNameSubmitHost129.215.190.68/SubmitHostQueueworkq/QueueResource urwg:description=&#39;VOinfo&#39;vomss://voms.ngs.ac.uk:8443/voms/ngs.ac.uk/Resource/JobUsageRecord</Text>
+</NGSRecord>
+</dataset>

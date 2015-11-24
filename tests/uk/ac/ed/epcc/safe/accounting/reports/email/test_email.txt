@@ -1,0 +1,11 @@
+%%begin{Subject}%%
+A %%service.name%% Email
+%%end{Subject}%%
+
+
+This is a test email
+
+			Thanks
+			
+--
+  A signature			

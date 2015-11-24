@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+	targetNamespace="http://safe.epcc.ed.ac.uk/chart"
+	xmlns="http://safe.epcc.ed.ac.uk/chart"
+	xmlns:par="http://safe.epcc.ed.ac.uk/substitute"
+	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+	xmlns:per="http://safe.epcc.ed.ac.uk/period"
+	xmlns:prop="http://safe.epcc.ed.ac.uk/propexpression"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://safe.epcc.ed.ac.uk/propexpression">
+
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/substitute"
+		schemaLocation="substitute.xsd" />
+
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/period"
+		schemaLocation="period.xsd" />
+
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/filter"
+		schemaLocation="filter.xsd" />
+
+	<xsd:import schemaLocation="propexpression.xsd" namespace="http://safe.epcc.ed.ac.uk/propexpression"></xsd:import>
+
+	<xsd:complexType name="TimeChartType">
+		<xsd:sequence>
+			<xsd:element ref="per:Period" minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="NumberOfTimeBlocks" minOccurs="0"
+				maxOccurs="1" />
+			<xsd:element name="WarningLevel"
+				type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" />
+			<xsd:group ref="ChartGroup"></xsd:group>
+			<xsd:group ref="PlotGroup"></xsd:group>
+			<xsd:element name="AddChart" type="ChartType"
+				maxOccurs="unbounded" minOccurs="0" />
+			<xsd:element ref="Caption" maxOccurs="1" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="NumberOfTimeBlocks"
+		type="par:TextOrParameterType" >
+	<xsd:annotation><xsd:documentation>Set the number of plot points within each major sub-division of the chart.</xsd:documentation></xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Caption" type="par:TextOrParameterType" />
+	<xsd:element name="TimeChart" type="TimeChartType" />
+
+	<xsd:complexType name="PieTimeChartType">
+		<xsd:sequence>
+			<xsd:element ref="per:Period" minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
+			<xsd:group ref="ChartGroup"></xsd:group>
+			<xsd:group ref="PlotGroup"></xsd:group>
+			<xsd:element ref="Caption" maxOccurs="1" minOccurs="0"></xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="nographic" type="xsd:boolean" default="false" use="optional"></xsd:attribute>
+		<xsd:attribute name="table" type="xsd:boolean" default="false" use="optional"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:element name="PieTimeChart" type="PieTimeChartType" />
+	<xsd:element name="BarTimeChart" type="PieTimeChartType" />
+
+
+
+
+	<xsd:complexType name="ChartType">
+		<xsd:sequence>
+			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
+			<xsd:group ref="PlotGroup"></xsd:group>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- Options for all chart types -->
+	<xsd:group name="ChartGroup">
+		<xsd:sequence>
+			<xsd:element name="Title" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:group>
+
+	<!--  parameters for data to be added to the chart -->
+	<xsd:group name="PlotGroup">
+		<xsd:sequence>
+			<xsd:element name="Plot" type="par:TextOrParameterType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="PlotLabel" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Reduction" type="ReductionType"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="StartProp" type="prop:PropExpressionType"
+				maxOccurs="1" minOccurs="0">
+				<xsd:annotation><xsd:documentation>A prop-expression of type date defining the start of the record for overlap calculation.
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="EndProp" type="prop:PropExpressionType"
+				maxOccurs="1" minOccurs="0">
+				<xsd:annotation><xsd:documentation>
+				A prop-expression of type date defining the end of the record.
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Overlap" type="xsd:boolean" maxOccurs="1"
+				minOccurs="0">
+				<xsd:annotation><xsd:documentation>
+				Flag to supress overlap calculation
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Scale" type="par:NumberOrParameterType" minOccurs="0" maxOccurs="1">
+			<xsd:annotation><xsd:documentation>
+			Numerical value to scale plot by
+			</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="RateScale" type="xsd:boolean"
+				maxOccurs="1" minOccurs="0">
+				<xsd:annotation><xsd:documentation>
+				Flag to enable rate-scaling (divide by the number of milliseconds in each plot)
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="NPlots" type="xsd:integer"
+				maxOccurs="1" minOccurs="0">
+				<xsd:annotation>
+				<xsd:documentation>
+				Set the maximum number of groups to show (remaining groups merged into "others")
+				Set to zero to disable (this also disables sorting of datasets).
+				</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:choice>
+				<xsd:element name="GroupBy"
+					type="par:TextOrParameterType" minOccurs="1" maxOccurs="1" />
+				<xsd:element name="Label" type="par:TextOrParameterType"
+					minOccurs="0" maxOccurs="1" >
+				<xsd:annotation><xsd:documentation>
+				A MapperEntry to assign data to catagories
+				</xsd:documentation></xsd:annotation>	
+				</xsd:element>
+			</xsd:choice>
+			<xsd:element name="Line" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1" >
+			<xsd:annotation><xsd:documentation>
+			Force plot to be a line not an area.
+			</xsd:documentation></xsd:annotation>	
+				</xsd:element>
+			<xsd:element name="Cumulative"
+				type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" >
+				<xsd:annotation><xsd:documentation>
+				Boolean flag. converts plot to cummulative.
+				</xsd:documentation></xsd:annotation>
+				</xsd:element>
+			<xsd:element name="Colours" type="xsd:string" maxOccurs="1"
+				minOccurs="0">
+				<xsd:annotation><xsd:documentation>
+				Comma separated list of colour definitions.
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
+
+		</xsd:sequence>
+	</xsd:group>
+
+	<xsd:group name="Chart">
+	<xsd:choice>
+	<xsd:element ref="TimeChart"/>
+	<xsd:element ref="BarTimeChart"/>
+	<xsd:element ref="PieTimeChart"/>
+	</xsd:choice>
+	</xsd:group>
+	<xsd:simpleType name="ReductionType">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="SUM|AVG|MIN|MAX" />
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

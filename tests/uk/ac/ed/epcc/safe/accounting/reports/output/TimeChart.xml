@@ -1,0 +1,11 @@
+<Heading>Time Chart Plot</Heading>
+<table class="auto" cols="5" rows="7">
+<tr count="0"><th class="key" count="0">Project</th><th class="main" count="1">29-Sep-2008 06-Oct-2008</th><th class="main" count="2">06-Oct-2008 14-Oct-2008</th><th class="main" count="3">14-Oct-2008 21-Oct-2008</th><th class="main" count="4">21-Oct-2008 29-Oct-2008</th></tr>
+<tr count="1"><td class="key" count="0">ecdf_baseline</td><td class="main" count="1" numeric="true">241730</td><td class="main" count="2" numeric="true">0</td><td class="main" count="3" numeric="true">0</td><td class="main" count="4" numeric="true">0</td></tr>
+<tr count="2"><td class="key" count="0">prdatlas</td><td class="main" count="1" numeric="true">170304</td><td class="main" count="2" numeric="true">0</td><td class="main" count="3" numeric="true">0</td><td class="main" count="4" numeric="true">0</td></tr>
+<tr count="3"><td class="key" count="0">inf_hcrc_cstr_emime</td><td class="main" count="1" numeric="true">140360</td><td class="main" count="2" numeric="true">0</td><td class="main" count="3" numeric="true">0</td><td class="main" count="4" numeric="true">0</td></tr>
+<tr count="4"><td class="key" count="0">inf_iccs_smt</td><td class="main" count="1" numeric="true">49854</td><td class="main" count="2" numeric="true">0</td><td class="main" count="3" numeric="true">0</td><td class="main" count="4" numeric="true">0</td></tr>
+<tr count="5"><td class="key" count="0">lhcb</td><td class="main" count="1" numeric="true">615</td><td class="main" count="2" numeric="true">0</td><td class="main" count="3" numeric="true">0</td><td class="main" count="4" numeric="true">0</td></tr>
+<tr count="6"><td class="key" count="0">atlas</td><td class="main" count="1" numeric="true">164</td><td class="main" count="2" numeric="true">0</td><td class="main" count="3" numeric="true">0</td><td class="main" count="4" numeric="true">0</td></tr>
+<tr count="7"><td class="key" count="0">ngsadmin</td><td class="main" count="1" numeric="true">1</td><td class="main" count="2" numeric="true">0</td><td class="main" count="3" numeric="true">0</td><td class="main" count="4" numeric="true">0</td></tr>
+</table>

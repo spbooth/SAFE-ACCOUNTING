@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://safe.epcc.ed.ac.uk/report" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../../../../../../../../schema/report.xsd">
+
+<Title>The Title</Title>
+
+<Heading>The Heading</Heading>
+
+<Text>This is some text.</Text>
+
+<Text>This is a paragraph.</Text>
+
+<Text>And another paragraph.</Text>
+
+<Section>
+<Title>Section 1</Title>
+<Text>This is a bit section text.</Text>
+
+<SubSection>
+<Title>Subsection 1</Title>
+<Text>This is a subsection.</Text>
+</SubSection>
+
+<SubSection>
+<Title>Subsection 2</Title>
+<Text>And a second subsection.</Text>
+</SubSection>
+
+</Section>
+
+<Section>
+<Title>Section 2</Title>
+<Text>This is some more section text.</Text>
+
+<SubSection>
+<Title>Subsection 1</Title>
+<Text>This is a subsection in the second section.</Text>
+</SubSection>
+
+<SubSection>
+<Title>Subsection 2</Title>
+<Text>And a second subsection in the second section.</Text>
+</SubSection>
+
+</Section>
+
+<table>
+<tr><th>Heading 1</th><th>Heading 2</th></tr>
+<tr><td>Row 1</td><td>Row 1</td></tr>
+<tr><td>Row 2</td><td>Row 2</td></tr>
+<tr><td>Row 3</td><td>Row 3</td></tr>
+</table>
+
+</Report>

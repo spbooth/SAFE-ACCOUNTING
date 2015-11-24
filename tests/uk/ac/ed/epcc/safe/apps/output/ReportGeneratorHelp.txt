@@ -1,0 +1,20 @@
+	ReportGeneratorApp
+
+	Generates a report from a report template file.
+
+
+OPTIONS:
+  -h, --help
+	Print usage information and exit
+
+  -r, --report-template
+	Specifiy a report template file
+
+  -S
+	Specifiy a report parameter value.  e.g. -Sparam=val
+
+  -f, --output
+	Specifiy the report file name
+
+  -t, --type
+	Specifiy the type of report, 'html' (default), 'pdf', 'xml' or 'csv'
