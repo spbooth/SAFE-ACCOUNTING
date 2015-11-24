@@ -1,0 +1,6 @@
+CVS
+*.class
+build
+work
+~*
+bin
