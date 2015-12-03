@@ -1,3 +1,4 @@
+// Copyright - The University of Edinburgh 2015
 package uk.ac.ed.epcc.safe.accounting.reports;
 
 import static org.junit.Assert.assertTrue;

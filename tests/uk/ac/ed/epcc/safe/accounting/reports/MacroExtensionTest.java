@@ -1,3 +1,4 @@
+// Copyright - The University of Edinburgh 2015
 /*******************************************************************************
  * Copyright (c) - The Univeristy of Edinburgh 2010
  *******************************************************************************/
@@ -27,7 +28,7 @@ public class MacroExtensionTest extends ExtensionTestCase {
 	}
 
 	protected void testMacro(String reportType, File outputFile) throws Exception {
-		testMacro(reportType, TestDataHelper.readFileAsString(outputFile));
+		testMacro(reportType, TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n", ""));
 		
 	}
 	
@@ -58,11 +59,12 @@ public class MacroExtensionTest extends ExtensionTestCase {
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 		
 	
-		System.out.println(out.toString());
+		String result = out.toString().replaceAll("<!--.*-->\\s*\n?", "");
+		System.out.println(result);
 		// Check it was correctly formatted.
 		assertTrue("Report wasn't correctly formatted:\n"+
-				TestDataHelper.diff(expectedOutput, out.toString()),
-				out.toString().contains(expectedOutput));
+				TestDataHelper.diff(expectedOutput, result),
+				result.contains(expectedOutput));
 	
 	}
 		

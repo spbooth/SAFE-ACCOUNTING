@@ -1,3 +1,4 @@
+<!-- Copyright - The University of Edinburgh 2015 -->
 <!--
     Copyright (c) - The Univeristy of Edinburgh 2010
  -->
@@ -31,4 +32,3 @@
 	<Resource
 	description="executable">nwchem_linux</Resource>
 </JobUsageRecord>
-

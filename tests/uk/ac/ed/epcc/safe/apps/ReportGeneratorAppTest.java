@@ -1,3 +1,4 @@
+// Copyright - The University of Edinburgh 2015
 /*******************************************************************************
  * Copyright (c) - The Univeristy of Edinburgh 2010
  *******************************************************************************/
@@ -165,7 +166,7 @@ public void testCSVReport() throws Exception {
     }
 	protected void testReport(ArrayList<String> args, File outputFile) throws Exception
 	{
-		testReport(args, TestDataHelper.readFileAsString(outputFile));
+		testReport(args, TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n?", ""));
 	}
 	
 	protected void testReport(ArrayList<String> args, String expectedOutput) throws Exception
@@ -192,7 +193,7 @@ public void testCSVReport() throws Exception {
 			//outputFile.delete();
 			
 		}
-		stdOutString=stdOutString.replace(ctx.getInitParameter("java.io.tmpdir","/tmp"), "/tmp");
+		stdOutString=stdOutString.replace(ctx.getInitParameter("java.io.tmpdir","/tmp"), "/tmp").replaceAll("<!--.*-->\\s*\n?", "");
 		System.err.print(stdOutString);
 		
 		// Check it was correctly formatted.

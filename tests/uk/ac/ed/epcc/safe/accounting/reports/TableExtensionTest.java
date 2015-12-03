@@ -1,3 +1,4 @@
+// Copyright - The University of Edinburgh 2015
 /*******************************************************************************
  * Copyright (c) - The Univeristy of Edinburgh 2010
  *******************************************************************************/
@@ -139,7 +140,7 @@ public class TableExtensionTest extends ExtensionTestCase {
 	protected void testTables(String reportType, String templateName,File outputFile) throws Exception {
 		System.out.println("Type="+reportType+" template="+templateName+" expected output in "+outputFile);
 		
-		testTable(reportType,templateName ,TestDataHelper.readFileAsString(outputFile));
+		testTable(reportType,templateName ,TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n", ""));
 		
 	}
 	

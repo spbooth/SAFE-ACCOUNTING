@@ -1,3 +1,4 @@
+// Copyright - The University of Edinburgh 2015
 /*******************************************************************************
  * Copyright (c) - The Univeristy of Edinburgh 2010
  *******************************************************************************/
@@ -43,7 +44,7 @@ public class StyleSheetExtensionTest extends ExtensionTestCase {
 	
 
 	protected void testFormat(String reportType, File outputFile) throws Exception {
-		testFormat(reportType, TestDataHelper.readFileAsString(outputFile));
+		testFormat(reportType, TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n?", ""));
 	}	
 	
 	protected void testFormat(String type, String expectedOutput)
@@ -73,10 +74,11 @@ public class StyleSheetExtensionTest extends ExtensionTestCase {
 		// Look for errors
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 
-		System.out.println(out.toString());
+		String result = out.toString().replaceAll("<!--.*-->\\s*\n?", "");
+		System.out.println(result);
 
 		// Check it was correctly formatted.
-		String output = out.toString().replace(ctx.getInitParameter("java.io.tmpdir","/tmp"), "/tmp");
+		String output = result.replace(ctx.getInitParameter("java.io.tmpdir","/tmp"), "/tmp");
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, output),
 				output.contains(expectedOutput));

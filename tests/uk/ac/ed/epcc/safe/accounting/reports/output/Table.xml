@@ -1,3 +1,4 @@
+<!-- Copyright - The University of Edinburgh 2015 -->
 <table class="auto" cols="4" rows="6">
 <tr count="0"><th class="first" count="0">Job ID</th><th class="main" count="1">Job Name</th><th class="main" count="2">Time</th><th class="main" count="3">Percent Use</th></tr>
 <tr count="1"><td class="first" count="0">1153838</td><td class="main" count="1">mert8-aa</td><td class="main" count="2" numeric="true">524</td><td class="main" count="3" numeric="true">18.7%</td></tr>

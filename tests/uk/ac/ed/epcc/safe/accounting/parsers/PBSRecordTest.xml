@@ -1,3 +1,4 @@
+<!-- Copyright - The University of Edinburgh 2015 -->
 <dataset><TableSpecification name='PBSRecord'>
 <account type='String' nullable='false' max='32'/>
 <accounting_id type='String' nullable='true' max='32'/>

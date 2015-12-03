@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright - The University of Edinburgh 2015 -->
 <ivy-settings>
   <settings defaultResolver="main" />
   <resolvers>

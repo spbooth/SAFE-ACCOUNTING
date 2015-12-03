@@ -1,3 +1,4 @@
+// Copyright - The University of Edinburgh 2015
 /*******************************************************************************
  * Copyright (c) - The Univeristy of Edinburgh 2010
  *******************************************************************************/
@@ -140,7 +141,7 @@ public class ChartExtensionTest extends ExtensionTestCase {
 //	}
 	
 	protected void testChart(String reportType, File outputFile) throws Exception {
-		testChart(reportType, TestDataHelper.readFileAsString(outputFile));
+		testChart(reportType, TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n", ""));
 		
 	}	
 	

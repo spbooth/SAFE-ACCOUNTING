@@ -1,3 +1,4 @@
+<!-- Copyright - The University of Edinburgh 2015 -->
 <dataset><TableSpecification name='JobManager'>
 <localUser type='Integer' nullable='true'/>
 <userDN type='String' nullable='true' max='128'/>

@@ -1,3 +1,4 @@
+-- Copyright - The University of Edinburgh 2015
 -- MySQL dump 10.13  Distrib 5.1.61, for redhat-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: webacct_testdata

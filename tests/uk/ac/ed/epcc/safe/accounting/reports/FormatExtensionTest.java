@@ -1,3 +1,4 @@
+// Copyright - The University of Edinburgh 2015
 /*******************************************************************************
  * Copyright (c) - The Univeristy of Edinburgh 2010
  *******************************************************************************/
@@ -47,7 +48,7 @@ public class FormatExtensionTest extends ExtensionTestCase {
 
 	}
 	protected void testFormatExtension(String type, File outputFile) throws Exception {
-		testChart(type, TestDataHelper.readFileAsString(outputFile));
+		testChart(type, TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n", ""));
 		
 	}	
 	protected void testFormatExtension(String reportType, String name) throws Exception {
@@ -55,7 +56,7 @@ public class FormatExtensionTest extends ExtensionTestCase {
 		
 		ByteArrayStreamData data = new ByteArrayStreamData();
 		data.read(getClass().getResourceAsStream("output/"+name));
-		testChart(reportType, data.toString());
+		testChart(reportType, data.toString().replaceAll("<!--.*-->\\s*\n", ""));
 		
 	}
 	protected void testChart(String type, String expectedOutput)

@@ -1,3 +1,4 @@
+<!-- Copyright - The University of Edinburgh 2015 -->
 <dataset><TableSpecification name='NGSRecord'>
 <recordId type='String' nullable='true' max='128'/>
 <GlobalJobId type='String' nullable='true' max='32'/>

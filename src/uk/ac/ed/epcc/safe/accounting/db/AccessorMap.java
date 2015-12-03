@@ -1,4 +1,16 @@
-// Copyright - The University of Edinburgh 2011
+//| Copyright - The University of Edinburgh 2011                            |
+//|                                                                         |
+//| Licensed under the Apache License, Version 2.0 (the "License");         |
+//| you may not use this file except in compliance with the License.        |
+//| You may obtain a copy of the License at                                 |
+//|                                                                         |
+//|    http://www.apache.org/licenses/LICENSE-2.0                           |
+//|                                                                         |
+//| Unless required by applicable law or agreed to in writing, software     |
+//| distributed under the License is distributed on an "AS IS" BASIS,       |
+//| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.|
+//| See the License for the specific language governing permissions and     |
+//| limitations under the License.                                          |
 /*******************************************************************************
  * Copyright (c) - The University of Edinburgh 2010
  *******************************************************************************/
@@ -113,7 +125,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  *
  * 
  */
-@uk.ac.ed.epcc.webapp.Version("$Id: AccessorMap.java,v 1.230 2015/03/12 14:19:08 spb Exp $")
+
 
 public class AccessorMap<X extends DataObject&ExpressionTarget> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>{
 	public static final Feature EVALUATE_CACHE_FEATURE = new Feature("evaluate.cache",true,"cache expression evaluations in ExpressionTargets");

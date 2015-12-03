@@ -1,3 +1,4 @@
+// Copyright - The University of Edinburgh 2015
 /*******************************************************************************
  * Copyright (c) - The Univeristy of Edinburgh 2010
  *******************************************************************************/
@@ -40,7 +41,7 @@ public class RestrictExtensionTest extends ExtensionTestCase {
 	}
 
 	protected void testRestrict(String reportType, File outputFile) throws Exception {
-		testRestrict(reportType, TestDataHelper.readFileAsString(outputFile));
+		testRestrict(reportType, TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n", ""));
 		
 	}
 	
