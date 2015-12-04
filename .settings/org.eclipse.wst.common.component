@@ -2,11 +2,9 @@
     <wb-module deploy-name="ACCOUNTING-JAR">
         <wb-resource deploy-path="/" source-path="/src"/>
         <wb-resource deploy-path="/" source-path="/tests"/>
-        <wb-resource deploy-path="/schema" source-path="/schema"/>
-        <wb-resource deploy-path="/stylesheets" source-path="/stylesheets"/>
-        <wb-resource deploy-path="/report-templates" source-path="/report-templates"/>
         <wb-resource deploy-path="/META-INF" source-path="/META-INF"/>
         <wb-resource deploy-path="/" source-path="/META-INF/resources"/>
+        <wb-resource deploy-path="/" source-path="/resources"/>
         <dependent-module archiveName="WEBAPP-JAR.jar" deploy-path="/" handle="module:/resource/WEBAPP-JAR/WEBAPP-JAR">
             <dependency-type>uses</dependency-type>
         </dependent-module>

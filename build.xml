@@ -80,19 +80,9 @@
 				<filename name="**/*.properties" />
 			</fileset>
 		</copy>
-		<copy todir="${build.home}/schema" verbose="true" overwrite="true" >
-			<fileset dir="${basedir}/schema">
-				<filename name="**/*.xsd" />
-			</fileset>
-		</copy>
-		<copy todir="${build.home}/stylesheets" verbose="true" overwrite="true" >
-			<fileset dir="${basedir}/stylesheets">
-				<filename name="**/*.xsl" />
-			</fileset>
-		</copy>
-		<copy todir="${build.home}/report-templates" verbose="true" overwrite="true" >
-			<fileset dir="${basedir}/report-templates">
-				<filename name="**/*.xml" />
+		<copy todir="${build.home}" verbose="true" overwrite="true" >
+			<fileset dir="${basedir}/resources">
+				<filename name="**/*.*" />
 			</fileset>
 		</copy>
 		<copy todir="${build.home}/META-INF" verbose="true" overwrite="true">
