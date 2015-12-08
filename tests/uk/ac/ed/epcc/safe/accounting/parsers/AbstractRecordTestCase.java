@@ -4,6 +4,10 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,11 +28,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
-import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import static org.junit.Assert.*;
 
 /**
  * A superclass for some record parsing tests. Most of the test functionality
