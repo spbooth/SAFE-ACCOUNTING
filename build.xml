@@ -142,7 +142,7 @@
 		<delete dir="${coverage.dir}" />
 		<mkdir dir="${coverage.dir}" />
 		<jacoco:coverage>
-			<junit fork="yes" printsummary="on" showoutput="yes"  forkMode="perBatch"  >
+			<junit fork="yes" printsummary="on" showoutput="yes" >
 				<sysproperty key="java.awt.headless"
 				value="${ant.headless}" />
 				<!-- This is to allow database connection params to be overidden from command line -->
