@@ -813,12 +813,18 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	
 	protected Source getStyleSheet(String name) throws DataFault {
 		TextFile sheet = stylesheet_overlay.find(STYLESHEET_GROUP, name);
+		if( ! sheet.hasData()){
+			throw new DataFault("No stylesheet "+name);
+		}
 		return new StreamSource(sheet.getDataReader(), STYLESHEET_LOC + "/"
 				+ name);
 	}
 
 	protected Source getReport(String name) throws DataFault {
 		TextFile sheet = report_overlay.find(REPORT_TEMPLATE_GROUP, name);
+		if( ! sheet.hasData()){
+			throw new DataFault("No report "+name);
+		}
 		return new StreamSource(sheet.getDataReader(), REPORT_LOC + "/"
 				+ name);
 	}

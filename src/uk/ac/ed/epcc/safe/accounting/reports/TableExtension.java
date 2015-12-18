@@ -425,7 +425,13 @@ public class TableExtension extends ReportExtension {
 							dates[0], dates[1], 
 							period.getStart(), period.getEnd(), 
 							selector);
-					overlap=true;
+					if( period.getStart().equals(period.getEnd())){
+						// zero length period we must be trying to pick up records
+						// that overlap a specific point in time.
+						overlap=false;
+					}else{
+						overlap=true;
+					}
 				}else{
 					data = producer.getIndexedReductionMap(reductions, selector);
 				}
