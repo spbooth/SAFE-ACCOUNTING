@@ -80,7 +80,6 @@ import uk.ac.ed.epcc.webapp.model.data.TableStructureContributer;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
-import uk.ac.ed.epcc.webapp.model.far.response.personal.PersonalResponseTransitionProvider;
 import uk.ac.ed.epcc.webapp.session.AppUserFactory;
 import uk.ac.ed.epcc.webapp.session.EmailNameFinder;
 import uk.ac.ed.epcc.webapp.session.RoleUpdate;
@@ -89,20 +88,8 @@ import uk.ac.ed.epcc.webapp.session.SignupDateComposite;
 import uk.ac.ed.epcc.webapp.session.WebNameFinder;
 import uk.ac.ed.epcc.webapp.time.Period;
 
-/** Externally authenticated AppUserFactory extended to support properties.
+/** An {@link AppUserFactory} that supports accounting properties and parse mechanisms.
  * 
- * This class can also operate as a classification table based on the WEBNAME
- * The property <i>tag</i><b>.parser</b> can be used to define a parser to populate the table from form uploads.
- * This will also require a PropExpression defining the WEBNAMe in terms of the parsed properties.  
- * 
- * By default this table is automatically populated when a new user appears at the web-site.
- * This can be disabled by the <i>disable.createusers</i> service feature. 
- * 
- * Users can be forced through the user self-registration mechanism by setting both the <i>disable.createusers</i>
- * feature and the <i>self.register</i> feature.
- * 
- * If The <i>bootstrap.admin</i> feature is on then the first user to connect to the system will
- * automatically be given the admin role. This is to simplify setup of an initial system with a blank database.
  * @author spb
  *
  * @param <P>
@@ -111,8 +98,6 @@ import uk.ac.ed.epcc.webapp.time.Period;
 public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFactory<P> implements NameFinder<P>, ExpressionTargetFactory<P>, TableStructureTransitionTarget, ClassificationParseTarget<P>, PlugInOwner, FilterSelector<DataObjectItemInput<P>>{
 
 	
-	//public static final Feature DISABLE_CREATEUSERS_FEATURE = new Feature("disable.createusers",false,"Set of users are fixed and new users cannot sign-up or be created automatically");
-	//public static final Feature SELF_REGISTER_FEATURE = new Feature("self.register",false,"New users are allowed to register");;
 	public static final Feature MAKE_ON_UPLOAD_FEATURE = new Feature("person.make_on_upload",true,"On a person upload unknown users will be created as well as existing ones updated");
 	private static final PropertyRegistry person_registy = new PropertyRegistry("appuser","Properties associated with the Person class");
     public static final PropertyTag<String> WEBNAME_PROP = new PropertyTag<String>(person_registy,WebNameFinder.WEB_NAME,String.class,"Web authenticated REMOTE_USER name");

@@ -30,15 +30,15 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	public static final PropertyTag<Integer> ALPS_ID = new PropertyTag<Integer>(alps_reg, "apid",Integer.class,"Alps job id");
 	@AutoTable(target=Integer.class, unique=true)
 	public static final PropertyTag<Integer> USER = new PropertyTag<Integer>(alps_reg, "user", Integer.class, "User");
-	@AutoTable(target=String.class, unique=true)
+	@AutoTable(target=String.class)
 	public static final PropertyTag<String> CMD_LINE = new PropertyTag<String>(alps_reg, "cmd_line", String.class, "Command line");
-	@AutoTable(target=String.class, unique=true)
+	@AutoTable(target=String.class)
 	public static final PropertyTag<String> CWD = new PropertyTag<String>(alps_reg, "cwd", String.class, "Current working directory");
-	@AutoTable(target=String.class, unique=true)
+	@AutoTable(target=String.class)
 	public static final PropertyTag<String> NODE_LIST = new PropertyTag<String>(alps_reg, "node_list", String.class, "Node list");
-	@AutoTable(target=Integer.class, unique=true)
+	@AutoTable(target=Integer.class)
 	public static final PropertyTag<Integer> NUM_NODES = new PropertyTag<Integer>(alps_reg, "num_nodes", Integer.class, "Number of nodes");
-	@AutoTable(target=String.class, unique=true)
+	@AutoTable(target=String.class)
 	public static final PropertyTag<String> HOSTNAME = new PropertyTag<String>(alps_reg, "hostname", String.class, "Hostname");
 	@AutoTable(target=Date.class)
 	public static final PropertyTag<Date> APRUN_START_TIMESTAMP = new PropertyTag<Date>(alps_reg, "aprunStartTime", Date.class, "Timestamp of starting aprun record");
@@ -49,8 +49,15 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	
 	@Override
 	public boolean parse(PropertyMap map, String record) throws AccountingParseException {
+		
+		if(record.trim().length() == 0) {
+			return false;
+		}
+		log.debug("line is " + record);
+		
+		// TODO parse the record into the declared properties and set them in the property map
+		
 		throw new AccountingParseException();
-		// TODO Auto-generated method stub
 		//return true;
 	}
 
@@ -155,8 +162,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 
 	@Override
 	public void postComplete(UsageRecord record) throws Exception {
-		// TODO Auto-generated method stub
-
+		// not needed for this parser
 	}
 	
 }
