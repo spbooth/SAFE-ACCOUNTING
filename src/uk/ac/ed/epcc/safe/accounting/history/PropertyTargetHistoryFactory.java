@@ -34,6 +34,7 @@ import uk.ac.ed.epcc.safe.accounting.db.PropertyMaker;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
@@ -49,6 +50,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.safe.accounting.reference.ConfigPropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
@@ -193,6 +195,11 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		PEER = new ReferenceTag<T, F>(peer, "peer", (Class<F>) fac.getClass(), fac.getTag());
 		IndexedFieldValue referenceExpression = res.getReferenceExpression(getTarget(),getPeerName(),fac);
 		mapi.put(PEER,  referenceExpression);
+		// add in config registries
+		String list = conn.getInitParameter("registry_list."+tag, "expression");
+		for( String name : list.split("\\s*,\\s*")){
+			finder.addFinder(new ConfigPropertyRegistry(conn, name));
+		}
 		if( fac instanceof PropertyTargetFactory){
 			PropertyTargetFactory etf = (ExpressionTargetFactory) fac;
 		// import properties from peer.
@@ -209,6 +216,8 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 				}
 			}
 		}
+		// add config overrides
+		derived.addFromProperties(finder, conn, tag);
 		finder.addFinder(history);
 		try{
 			derived.put(StandardProperties.STARTED_PROP, HISTORY_START);
