@@ -1,0 +1,87 @@
+<dataset><TableSpecification name='AlpsRecord'>
+<batch_id type='String' nullable='true' max='32'/>
+<apid type='Integer' nullable='true'/>
+<user type='Integer' nullable='true'/>
+<cmd_line type='String' nullable='true' max='5592405'/>
+<cwd type='String' nullable='true' max='5592405'/>
+<node_list type='String' nullable='true' max='32'/>
+<num_nodes type='Integer' nullable='true'/>
+<hostname type='String' nullable='true' max='32'/>
+<aprunStartTime type='Long' nullable='true'/>
+<apsysEndTime type='Long' nullable='true'/>
+<duplicate_key type='Index' unique='true'><Column name='batch_id'/><Column name='apid'/><Column name='user'/></duplicate_key>
+</TableSpecification>
+<AlpsRecord id='1'>
+<batch_id>3245599.sdb</batch_id>
+<apid>18543815</apid>
+<user>15559</user>
+<hostname>c0-1c0s0n1</hostname>
+<apsysEndTime>1446332403</apsysEndTime>
+</AlpsRecord>
+<AlpsRecord id='2'>
+<batch_id>3246064.sdb</batch_id>
+<apid>18543818</apid>
+<user>15031</user>
+<cmd_line>aprun -n 96 -N 24 -S 12 -d 1 /usr/local/packages/gmx/4.6.5-phase1/bin/mdrun_mpi -s -v -cpi -tunepme -maxh 23.75 </cmd_line>
+<cwd>/fs2/e280/e280/gsala280/MAPK_DMotif/ERK-MSK-on-RSK/PP/nvt</cwd>
+<node_list>1519-1520,1522,1525</node_list>
+<num_nodes>4</num_nodes>
+<hostname>c2-0c1s1n1</hostname>
+<aprunStartTime>1446336015</aprunStartTime>
+<apsysEndTime>1446332467</apsysEndTime>
+</AlpsRecord>
+<AlpsRecord id='3'>
+<batch_id>3246065.sdb</batch_id>
+<apid>18543819</apid>
+<user>15031</user>
+<cmd_line>aprun -n 96 -N 24 -S 12 -d 1 /usr/local/packages/gmx/4.6.5-phase1/bin/mdrun_mpi -s -v -cpi -tunepme -maxh 23.75 </cmd_line>
+<cwd>/fs2/e280/e280/gsala280/MAPK_DMotif/ERK-MSK-on-RSK/wt/nvt</cwd>
+<node_list>1526,1603,1634-1635</node_list>
+<num_nodes>4</num_nodes>
+<hostname>c0-1c0s0n1</hostname>
+<aprunStartTime>1446336015</aprunStartTime>
+</AlpsRecord>
+<AlpsRecord id='4'>
+<batch_id>3246052.sdb</batch_id>
+<apid>18543788</apid>
+<user>16032</user>
+<hostname>c6-0c1s1n1</hostname>
+<apsysEndTime>1446332416</apsysEndTime>
+</AlpsRecord>
+<AlpsRecord id='5'>
+<batch_id>3246011.sdb</batch_id>
+<apid>18543707</apid>
+<user>16033</user>
+<hostname>c6-0c1s1n1</hostname>
+<apsysEndTime>1446332430</apsysEndTime>
+</AlpsRecord>
+<AlpsRecord id='6'>
+<batch_id>3245590.sdb</batch_id>
+<apid>18543783</apid>
+<user>13854</user>
+<hostname>c2-0c1s1n1</hostname>
+<apsysEndTime>1446332431</apsysEndTime>
+</AlpsRecord>
+<AlpsRecord id='7'>
+<batch_id>3245590.sdb</batch_id>
+<apid>18543820</apid>
+<user>13854</user>
+<cmd_line>aprun -n 24 /home/e05/shared/red/vasp5 </cmd_line>
+<cwd>/fs3/e05/e05/federico/alloys/211/balena/1I_5Br/001</cwd>
+<node_list>1765</node_list>
+<num_nodes>1</num_nodes>
+<hostname>c2-0c1s1n1</hostname>
+<aprunStartTime>1446336032</aprunStartTime>
+</AlpsRecord>
+<AlpsRecord id='8'>
+<batch_id>3245599.sdb</batch_id>
+<apid>18543822</apid>
+<user>15559</user>
+<cmd_line>aprun -n 336 pw.x -npool 28 -ntg 4 -in monoVACMD_53_xyz_362_add_1H_2000.000.pwi </cmd_line>
+<cwd>/fs4/e304/e304-WP3-Csanyi/tdd20h/Iron/ConfigGen/AddedHydrogen/monoVACMD_53</cwd>
+<node_list>3484-3497</node_list>
+<num_nodes>14</num_nodes>
+<hostname>c0-1c0s0n1</hostname>
+<aprunStartTime>1446336067</aprunStartTime>
+</AlpsRecord>
+</dataset>

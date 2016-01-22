@@ -18,6 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.db.transitions;
 
 
 
+import uk.ac.ed.epcc.safe.accounting.db.ConfigUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.update.ConfigPlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
@@ -44,6 +45,7 @@ import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
 public class AccountingTableCreator implements FormCreator,Contexed{
 
 	private static final String PARSER = "Parser";
+	private static final String HANDLER = "Handler";
 	private static final String TABLE = "Table";
 	private AppContext conn;
 	public AccountingTableCreator(AppContext c){
@@ -51,7 +53,11 @@ public class AccountingTableCreator implements FormCreator,Contexed{
 	}
 	public void buildCreationForm(String type_name,Form f) throws Exception {
 		f.addInput(TABLE, "Name of table to create", new NewTableInput(conn));
+		ClassInput<ParseUsageRecordFactory> handler_input = new ClassInput<ParseUsageRecordFactory>(conn, ParseUsageRecordFactory.class);
+		handler_input.setValue(conn.getInitParameter("accounting_handler.default", "ConfigUsageRecordFactory"));
+		f.addInput(HANDLER,"Table handler type",handler_input);
 		f.addInput(PARSER,"Parser type",new ClassInput<PropertyContainerParser>(conn, PropertyContainerParser.class));
+	
 		f.addAction("Create", new CreateAction());
 	}
 
@@ -65,11 +71,12 @@ public class AccountingTableCreator implements FormCreator,Contexed{
 		public FormResult action(Form f) throws ActionException {
 			try{
 				String table_name=(String) f.get(TABLE);
+				String handler_tag = (String) f.get(HANDLER);
 				String parser_tag = (String) f.get(PARSER);
 				ClassInput<PropertyContainerParser> input = (ClassInput<PropertyContainerParser>) f.getInput(PARSER);
 				ConfigService serv = conn.getService(ConfigService.class);
 				serv.setProperty("class."+ConfigPlugInOwner.PARSER_PREFIX+table_name, parser_tag);
-				serv.setProperty("class."+table_name, "ConfigUsageRecordFactory");
+				serv.setProperty("class."+table_name, handler_tag);
 				
 				// Note that the following step is only needed if auto_table is not enabled.
 				PropertyContainerParser parser = conn.makeObject(input.getItem());

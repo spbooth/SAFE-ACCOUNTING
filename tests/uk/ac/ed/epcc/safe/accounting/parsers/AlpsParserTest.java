@@ -3,10 +3,8 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.junit.Ignore;
-
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
-@Ignore
+
 public class AlpsParserTest extends AbstractRecordTestCase {
 
 	public AlpsParserTest() {

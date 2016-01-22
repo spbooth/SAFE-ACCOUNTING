@@ -340,7 +340,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		String updateText = getUpdateText();
 		System.out.println(updateText);
 		String result = new AccountingUpdater<R>(ctx,getDefaults(),fac).receiveAccountingData( updateText, false,false,false);
-		//save(getClass().getSimpleName());
+		//save("tests",getClass().getSimpleName(),fac);
 	}
 @Test
 	public void testGetPolicies() {
