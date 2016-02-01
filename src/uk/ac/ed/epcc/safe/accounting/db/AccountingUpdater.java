@@ -29,6 +29,7 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
+import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Class to import new accounting data and store it in a {@link UsageRecordFactory}
@@ -239,7 +240,9 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use> {
     			errors.add("Unexpected parse error",current_line);
     			log.error("Unexpected Error parsing line "+current_line,e);
     		}
-    		
+    		// We don't want very long held locks so commit between records.
+    		DatabaseService serv = conn.getService(DatabaseService.class);
+			serv.commitTransaction();
     	}
     	StringBuilder error_text= target.endParse();
     	error_text.append(errors.toString());
