@@ -21,7 +21,7 @@ import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactoryTestCase;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 
-public abstract class ParseAccountingClassificationFactoryTestCase<F extends ParseAccountingClassificationFactory<R>,R extends AccountingClassification>
+public abstract class ParseAccountingClassificationFactoryTestCase<F extends ParseAccountingClassificationFactory<R,I>,R extends AccountingClassification,I>
 		extends DataObjectFactoryTestCase<F, R>  {
 	
 	
@@ -69,7 +69,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		System.out.println(updateText);
 		ErrorSet errors = new ErrorSet();
 		ErrorSet skips = new ErrorSet();
-		ClassificationUpdater<R> updater = new ClassificationUpdater<R>(ctx, fac);
+		ClassificationUpdater<R,I> updater = new ClassificationUpdater<R,I>(ctx, fac);
 		String result = updater.receiveData(getUpdateMap(), updateText,errors,skips);
 		//TestDataHelper.saveDataSet("NGSRecord", "NGSRecord", "lsf");
 		Assert.assertEquals(0,errors.size());

@@ -16,7 +16,6 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,17 +53,18 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * defined as derived properties
  * @author spb
  *
- * @param <T>
+ * @param <T> type of {@link AccountingClassification}
+ * @param <R> IR type of {@link PropertyContainerParser}
  */
 
 
-public class ParseAccountingClassificationFactory<T extends AccountingClassification>
-extends PropertyTargetClassificationFactory<T> implements PlugInOwner ,
-ClassificationParseTarget<T>, FilterSelector<DataObjectItemInput<T>>{
+public class ParseAccountingClassificationFactory<T extends AccountingClassification,R>
+extends PropertyTargetClassificationFactory<T> implements PlugInOwner<R> ,
+ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 	private PropertyFinder reg=null;
 	private AccessorMap<T> map=null;
 	
-	private PlugInOwner plugin_owner=null;
+	private PlugInOwner<R> plugin_owner=null;
 	private PropertyTag<String> match_prop=null;
 
 	public ParseAccountingClassificationFactory(AppContext c, String table) {
@@ -85,7 +85,7 @@ ClassificationParseTarget<T>, FilterSelector<DataObjectItemInput<T>>{
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 		map.makeReferences(refs);
 		finder.addFinder(refs);
-		plugin_owner= new ConfigPlugInOwner<ParseAccountingClassificationFactory<T>>(c,finder ,table);
+		plugin_owner= new ConfigPlugInOwner<ParseAccountingClassificationFactory<T,R>,R>(c,finder ,table);
 		finder.addFinder(getPluginOwner().getFinder());
 
 
@@ -165,7 +165,7 @@ ClassificationParseTarget<T>, FilterSelector<DataObjectItemInput<T>>{
 		initAccessorMap(getContext(), getConfigTag());
 
 	}
-	public PropertyContainerParser getParser() {
+	public PropertyContainerParser<R> getParser() {
 		return getPluginOwner().getParser();
 	}
 
@@ -240,13 +240,13 @@ ClassificationParseTarget<T>, FilterSelector<DataObjectItemInput<T>>{
 		return sb;
 	}
 
-	public boolean parse(DerivedPropertyMap map, String currentLine)
+	public boolean parse(DerivedPropertyMap map, R currentLine)
 	throws AccountingParseException {
 		// Note each stage of the parse sees the derived properties 
 		// as defined in the previous stage. Once its own parse is complete
 		// It can then override the definition if it wants to
 		PropExpressionMap derived = new PropExpressionMap();
-		PropertyContainerParser parser = getParser();
+		PropertyContainerParser<R> parser = getParser();
 		if( parser.parse(map, currentLine) ){
 			derived=parser.getDerivedProperties(derived);
 			map.addDerived(derived);
@@ -258,12 +258,6 @@ ClassificationParseTarget<T>, FilterSelector<DataObjectItemInput<T>>{
 			return true;
 		}
 		return false;
-	}
-
-	public Iterator<String> splitRecords(String update)
-	throws AccountingParseException {
-
-		return getParser().splitRecords(update);
 	}
 
 	public void startParse(PropertyMap defaults) throws Exception {
@@ -291,8 +285,8 @@ ClassificationParseTarget<T>, FilterSelector<DataObjectItemInput<T>>{
 		if( spec != null ){
 			// Don't use anything that needs getContext as this does not work unless
 			// factory is valid.
-			PlugInOwner owner = new ConfigPlugInOwner<ParseAccountingClassificationFactory<T>>(c,null, table);
-			PropertyContainerParser parser=owner.getParser();
+			PlugInOwner<R> owner = new ConfigPlugInOwner<ParseAccountingClassificationFactory<T,R>,R>(c,null, table);
+			PropertyContainerParser<R> parser=owner.getParser();
 			if( parser == null){
 				return null;
 			}
@@ -321,7 +315,7 @@ ClassificationParseTarget<T>, FilterSelector<DataObjectItemInput<T>>{
 	}
 
 
-	private PlugInOwner getPluginOwner() {
+	private PlugInOwner<R> getPluginOwner() {
 		if( plugin_owner == null ){
 			initAccessorMap(getContext(), getConfigTag());
 		}

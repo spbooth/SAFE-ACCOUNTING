@@ -50,7 +50,7 @@ import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
  */
 
 
-public class ConfigPlugInOwner<T extends TableTransitionTarget & PlugInOwner> extends AbstractPlugInOwner<T> {
+public class ConfigPlugInOwner<T extends TableTransitionTarget & PlugInOwner<R>,R> extends AbstractPlugInOwner<T,R> {
 	public static final String POLICIES_PREFIX = "policies.";
 	public static final String PARSER_PREFIX = "parser.";
 	Class<? extends PropertyContainerParser> default_parser_class;
@@ -62,10 +62,11 @@ public class ConfigPlugInOwner<T extends TableTransitionTarget & PlugInOwner> ex
 		super(c,prev, tag);
 		this.default_parser_class=ReadOnlyParser.class;
 	}
+	@SuppressWarnings("unchecked")
 	@Override
-	protected PropertyContainerParser makeParser() {
+	protected PropertyContainerParser<R> makeParser() {
 		AppContext ctx = getContext();
-			PropertyContainerParser parser=null;
+			PropertyContainerParser<R> parser=null;
 		    	Class<? extends PropertyContainerParser> parser_class = ctx.getPropertyClass(PropertyContainerParser.class,default_parser_class, PARSER_PREFIX+getTag());
 		    	if( parser_class != null ){
 		    		try {

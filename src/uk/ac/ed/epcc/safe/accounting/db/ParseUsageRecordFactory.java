@@ -16,7 +16,6 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
@@ -77,10 +76,11 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * 
  * @author spb
  * @param <T> class of UsageRecord
+ * @param <R> type of parser IR
  *
  */
 
-public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use> extends UsageRecordFactory<T> implements UsageRecordParseTarget<T>, PlugInOwner {
+public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R> extends UsageRecordFactory<T> implements UsageRecordParseTarget<T,R>, PlugInOwner<R> {
 
 	 
 	
@@ -100,7 +100,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use> 
 		// The parser can specify a default table to create.
 		// Don't use anything that needs getContext as this does not work unless
 		// factory is valid.
-		PlugInOwner owner = makePlugInOwner(c,null, table);
+		PlugInOwner<R> owner = makePlugInOwner(c,null, table);
 
 		PropertyContainerParser parser=owner.getParser();
 		if( parser == null ){
@@ -231,15 +231,15 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use> 
 		return property_finder;
 	}
 	
-	private  UsageRecordParseTarget<T> parse_target=null;
-	private final UsageRecordParseTarget<T> getParseTarget(){
+	private  UsageRecordParseTarget<T,R> parse_target=null;
+	private final UsageRecordParseTarget<T,R> getParseTarget(){
 		if( parse_target == null ){
 			parse_target = makeParseTarget(getPlugInOwner());
 		}
 		return parse_target;
 	}
-	protected UsageRecordParseTarget<T> makeParseTarget(PlugInOwner owner){
-		return new UsageRecordParseTargetPlugIn<T>(getContext(), owner, this);
+	protected UsageRecordParseTarget<T,R> makeParseTarget(PlugInOwner<R> owner){
+		return new UsageRecordParseTargetPlugIn<T,R>(getContext(), owner, this);
 	}
 	public T findDuplicate(T r)throws Exception {
 		// Note this method is commonly overridden in sub-classes.
@@ -248,17 +248,10 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use> 
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseTarget#parse(uk.ac.ed.epcc.safe.accounting.PropertyMap, java.lang.String)
 	 */
-	public final boolean parse(DerivedPropertyMap map, String current_line) throws AccountingParseException{
+	public final boolean parse(DerivedPropertyMap map, R current_line) throws AccountingParseException{
 		return getParseTarget().parse(map, current_line);
 	}
 	
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseTarget#splitRecords(java.lang.String)
-	 */
-	public final Iterator<String> splitRecords(String update)
-			throws AccountingParseException {
-		return getParseTarget().splitRecords(update);
-	}
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseTarget#deleteRecord(T)
 	 */
@@ -303,10 +296,10 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use> 
 		getParseTarget().startParse(defaults);
 	}
 	
-	private PlugInOwner plugin_owner=null;
-	protected abstract PlugInOwner makePlugInOwner(AppContext c,PropertyFinder prev, String tag);
+	private PlugInOwner<R> plugin_owner=null;
+	protected abstract PlugInOwner<R> makePlugInOwner(AppContext c,PropertyFinder prev, String tag);
 
-	protected final PlugInOwner getPlugInOwner(){
+	protected final PlugInOwner<R> getPlugInOwner(){
 		if( plugin_owner == null ){
 			initAccessorMap(getContext(), getConfigTag());
 		}
@@ -315,7 +308,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use> 
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.PlugInOwner#getParser()
 	 */
-	public final PropertyContainerParser getParser(){
+	public final PropertyContainerParser<R> getParser(){
 		return getPlugInOwner().getParser();
 	}
 	
@@ -376,7 +369,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use> 
 				// a different table
 				PlugInOwner owner = getPlugInOwner();
 				if( owner instanceof TransitionSource){
-					addTransitionSource((TransitionSource<ParseUsageRecordFactory<T>>)owner);
+					addTransitionSource((TransitionSource<ParseUsageRecordFactory<T,R>>)owner);
 				}
 				if( hasProperty(StandardProperties.TEXT_PROP) && hasProperty(StandardProperties.ENDED_PROP)){
 					addTableTransition(new TransitionKey<ParseUsageRecordFactory>(ParseUsageRecordFactory.class, "Rescan", "Rescan all records stored as text"), new RescanTableTransition());
@@ -414,6 +407,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use> 
 	 * values stored in the database that came from derived properties won't be overwritten even if the values used in the derivation have been changed. 
 	 * @see ReParser
 	 * @param sel 
+	 * @return array or status counts [good,fails,updates]
 	 * 
 	 * @throws Exception 
 	 */
@@ -434,8 +428,8 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use> 
 					startParse(map);
 					String text = rec.getProperty(StandardProperties.TEXT_PROP,null);
 					if( text != null && text.trim().length() > 0){
-						
-						if( parse(map, text)){
+						R ir = getParser().getRecord(text);
+						if( parse(map, ir)){
 							if(updateRecord(map, rec)){
 								updates++;
 							}

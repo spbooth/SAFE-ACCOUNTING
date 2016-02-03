@@ -31,7 +31,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
  * @author spb
  *
  */
-public class NullParser implements PropertyContainerParser {
+public class NullParser implements PropertyContainerParser<String> {
 
 	
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
@@ -75,6 +75,18 @@ public class NullParser implements PropertyContainerParser {
 
 	public Set<PropertyTag> getDefaultUniqueProperties() {
 		return new HashSet<PropertyTag>();
+	}
+
+
+	@Override
+	public String formatRecord(String record) {
+		return record;
+	}
+
+
+	@Override
+	public String getRecord(String text) {
+		return text;
 	}
 
 }

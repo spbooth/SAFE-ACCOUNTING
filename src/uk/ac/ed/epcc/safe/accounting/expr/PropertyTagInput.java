@@ -75,4 +75,8 @@ public void setItem(PropertyTag item) {
 public <R> R accept(InputVisitor<R> vis) throws Exception {
 	return vis.visitListInput(this);
 }
+@Override
+public boolean isValid(PropertyTag item) {
+	return finder.hasProperty(item);
+}
 }

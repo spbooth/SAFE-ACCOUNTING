@@ -19,20 +19,23 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Iterator;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
+import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 
-/** Common interface for classes that generate upload data.
+/** Common interface for classes that receive upload data.
+ * This is the class implemented by the actual destination factory that will contain
+ * a nested parser that implements {@link PropertyContainerParser}.
  * 
  * @author spb
- *
- * @param <T>
+ * @see PropertyContainerParser
+ * @param <T> Type of record parsed to
+ * @param <R> Type of intermediate record for parse
  */
-public interface PropertyContainerParseTarget<T extends DataObject & PropertyContainer> {
+public interface PropertyContainerParseTarget<T extends DataObject & PropertyContainer,R> {
 	/** Parse a text line into a DerivedPropertyMap. This will add
 	 * derived definitions as well as terminal data values.
 	 * 
@@ -41,16 +44,17 @@ public interface PropertyContainerParseTarget<T extends DataObject & PropertyCon
 	 * @return true if ok false if this line should be skipped without error
 	 * @throws AccountingParseException
 	 */
-	public abstract boolean parse(DerivedPropertyMap map, String current_line)
+	public abstract boolean parse(DerivedPropertyMap map, R current_line)
 			throws AccountingParseException;
 
-	/** split update text into a series of lines.
-	 * @param update
-	 * @return Iterator<String>
-	 * @throws AccountingParseException
+	/** Get the underlying {@link PropertyContainerParser} 
+	 * 
+	 * This is needed to split the input records.
+	 * 
+	 * @return {@link PropertyContainerParser}
 	 */
-	public abstract Iterator<String> splitRecords(String update)
-			throws AccountingParseException;
+	public abstract PropertyContainerParser<R> getParser();
+	
 	
 	/** Start a batch parse. This allocates any temporary state.
      * Some properties may be set globally for all records in the parse

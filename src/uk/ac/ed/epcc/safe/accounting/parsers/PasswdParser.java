@@ -35,7 +35,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  */
 
 
-public class PasswdParser extends AbstractPropertyContainerParser implements PropertyContainerParser {
+public class PasswdParser extends AbstractPropertyContainerParser {
 
 	private static final PropertyRegistry passwd = new PropertyRegistry("passwd", "Properties from a unix passwd file");
 	public static final PropertyTag<String> USERNAME = new PropertyTag<String>(passwd,"Username",String.class,"login name of user");

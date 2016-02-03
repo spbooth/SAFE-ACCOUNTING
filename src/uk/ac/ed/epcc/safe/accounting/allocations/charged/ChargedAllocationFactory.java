@@ -105,7 +105,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class ChargedAllocationFactory<T extends ChargedAllocationFactory.ChargedAllocationRecord> extends SequenceAllocationFactory<T> implements
+public class ChargedAllocationFactory<T extends ChargedAllocationFactory.ChargedAllocationRecord,R> extends SequenceAllocationFactory<T,R> implements
 		ChargedAllocationManager<AllocationKey<T>, T> {
 	
 
@@ -422,9 +422,9 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	public void preDelete(UsageRecord rec) throws Exception {
 		aggregate(rec, false);
 	}
-	public class RegenerateAllTransition extends AbstractDirectTransition<ChargedAllocationFactory<T>>{
+	public class RegenerateAllTransition extends AbstractDirectTransition<ChargedAllocationFactory<T,R>>{
 
-		public FormResult doTransition(ChargedAllocationFactory<T> target,
+		public FormResult doTransition(ChargedAllocationFactory<T,R> target,
 				AppContext c) throws TransitionException {
 			try {
 				target.regenerateAll();
@@ -459,7 +459,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		}
 
 		public ChargedAllocationTableRegistry() {
-			addTableTransition(new TransitionKey<ChargedAllocationFactory<T>>(ChargedAllocationFactory.class, "Regenerate"), new RegenerateAllTransition());
+			addTableTransition(new TransitionKey<ChargedAllocationFactory<T,R>>(ChargedAllocationFactory.class, "Regenerate"), new RegenerateAllTransition());
 		}
 		
 	}

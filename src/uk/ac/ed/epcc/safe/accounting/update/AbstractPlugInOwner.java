@@ -33,18 +33,21 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
-/** Base class for implementing {@link PlugInOwner}
+/** Base class for implementing {@link PlugInOwner}.
+ * 
+ * This also implements {@link TransitionSource}
  * 
  * @author spb
  *
- * @param <T>
+ * @param <T> target type for {@link TransitionSource}
+ * @param <R> {@link PropertyContainerParser} IR type
  */
-public abstract class AbstractPlugInOwner<T extends PlugInOwner & TableTransitionTarget> implements Contexed, PlugInOwner, SummaryProvider, TransitionSource<T> {
+public abstract class AbstractPlugInOwner<T extends PlugInOwner<R> & TableTransitionTarget,R> implements Contexed, PlugInOwner<R>, SummaryProvider, TransitionSource<T> {
   
 	private final AppContext c;
     private final String tag;
     private final PropertyFinder prev;
-	private PropertyContainerParser parser=null;
+	private PropertyContainerParser<R> parser=null;
 	private Set<PropertyContainerPolicy> policies=null;
 	private PropertyFinder finder=null;
 	private PropExpressionMap derived=null;
@@ -54,7 +57,7 @@ public abstract class AbstractPlugInOwner<T extends PlugInOwner & TableTransitio
 		this.c=c;
 		this.tag=tag;
 	}
-	public final PropertyContainerParser getParser() {
+	public final PropertyContainerParser<R> getParser() {
 		if( parser == null){
 			parser = makeParser();
 		}
@@ -62,7 +65,7 @@ public abstract class AbstractPlugInOwner<T extends PlugInOwner & TableTransitio
 		return parser;
 	}
 
-	protected abstract PropertyContainerParser makeParser();
+	protected abstract PropertyContainerParser<R> makeParser();
 
 	public final Set<PropertyContainerPolicy> getPolicies() {
 		if( policies == null){

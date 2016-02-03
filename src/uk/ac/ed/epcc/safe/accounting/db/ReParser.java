@@ -21,16 +21,18 @@ import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.webapp.AppContext;
 /** Class to perform a record replace based on a stored Text field
  * 
  * @author spb
  *
- * @param <T>
+ * @param <T> Type of output record
+ * @param <R> Parser IR type
  */
-public class ReParser<T extends UsageRecordFactory.Use> {
-	private final ParseUsageRecordFactory<T> target;
-	public ReParser(ParseUsageRecordFactory<T> target) {
+public class ReParser<T extends UsageRecordFactory.Use,R> {
+	private final ParseUsageRecordFactory<T,R> target;
+	public ReParser(ParseUsageRecordFactory<T,R> target) {
 		this.target=target;
 	}
 
@@ -43,6 +45,7 @@ public class ReParser<T extends UsageRecordFactory.Use> {
 			int count=0;
 			int error_count=0;
 			target.startParse(meta_data);
+			PropertyContainerParser<R> parser = target.getParser();
 			for(Iterator<T> it = target.getIterator(sel); it.hasNext();){
 				T record = it.next();
 				String current_line = record.getProperty(StandardProperties.TEXT_PROP);
@@ -51,8 +54,8 @@ public class ReParser<T extends UsageRecordFactory.Use> {
 					meta_data.setContainer(map);
 					
 
-
-					if( target.parse(map, current_line) ){
+					R r= parser.getRecord(current_line);
+					if( target.parse(map, r) ){
 						// add date and text
 						map.setProperty(StandardProperties.INSERTED_PROP, start);
 						map.setProperty(StandardProperties.TEXT_PROP, current_line);

@@ -44,8 +44,8 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
  * @author jgreen4
  * 
  */
-public abstract class AbstractRecordTestCase extends
-		ParseUsageRecordFactoryTestCase<ConfigUsageRecordFactory<UsageRecordFactory.Use>,UsageRecordFactory.Use> {
+public abstract class AbstractRecordTestCase<R> extends
+		ParseUsageRecordFactoryTestCase<ConfigUsageRecordFactory<UsageRecordFactory.Use,R>,UsageRecordFactory.Use,R> {
 	
 
 	private String machineName;
@@ -77,9 +77,9 @@ public abstract class AbstractRecordTestCase extends
 	}
 	@Test
 	public void testCreateTable(){
-		PlugInOwner fac = getFactory();
+		PlugInOwner<R> fac = getFactory();
 		
-		PropertyContainerParser parser = fac.getParser();
+		PropertyContainerParser<R> parser = fac.getParser();
 		PropExpressionMap map = new PropExpressionMap();
 		map = parser.getDerivedProperties(map);
 		for(PropertyContainerPolicy pol : fac.getPolicies()){
@@ -114,8 +114,8 @@ public abstract class AbstractRecordTestCase extends
 	 */
 	
 	@Override
-	public final ConfigUsageRecordFactory<Use> getFactory() {
-		return new ConfigUsageRecordFactory<Use>(ctx, this.tableName);
+	public final ConfigUsageRecordFactory<Use,R> getFactory() {
+		return new ConfigUsageRecordFactory<Use,R>(ctx, this.tableName);
 	}
 
 	/**
@@ -184,15 +184,17 @@ public abstract class AbstractRecordTestCase extends
 	protected void processBadParseErrors(Collection<String> successfulRecords,
 			ErrorSet failedRecords, ErrorSet errors) throws Exception {
 		HashMap<Integer, BadRecordText> recordTable = new HashMap<Integer, BadRecordText>();
-
+		PropertyContainerParser<R> parser = getFactory().getParser();
 		/*
 		 * Put all the record in a table referenced by hash code for fast look up
 		 * and comparison to the record that caused the error
 		 */
 		for (BadRecordText record : this.getBadRecords()){
-			Iterator<String> lines = getFactory().splitRecords(record.getText());
+			
+			Iterator<R> lines = parser.splitRecords(record.getText());
 			while(lines.hasNext()){
-				String line = lines.next();
+				R rec = lines.next();
+				String line = parser.formatRecord(rec);
 				System.out.println("hash="+line.hashCode()+" text=["+line+"]");
 				recordTable.put(line.hashCode(), record);
 			}

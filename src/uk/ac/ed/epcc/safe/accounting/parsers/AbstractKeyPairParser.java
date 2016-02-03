@@ -34,8 +34,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  * @author spb
  *
  */
-public abstract class AbstractKeyPairParser extends BatchParser implements Contexed,
-PropertyContainerParser {
+public abstract class AbstractKeyPairParser extends BatchParser implements Contexed{
 	private final AppContext conn;
 	
 	/**

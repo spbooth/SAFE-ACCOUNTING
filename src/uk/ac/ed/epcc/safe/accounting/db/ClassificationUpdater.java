@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
+import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -41,14 +42,14 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
 
 
 
-public class ClassificationUpdater<T extends DataObject & PropertyContainer> {
+public class ClassificationUpdater<T extends DataObject & PropertyContainer,R> {
 	private final AppContext conn;
-	private final ClassificationParseTarget<T> target;
+	private final ClassificationParseTarget<T,R> target;
 	// These defined as object attributes to allow unit tests
 	int n_lines=0;
 	int skip=0;
 	int updates=0;
-    public ClassificationUpdater(AppContext c, ClassificationParseTarget<T> target){
+    public ClassificationUpdater(AppContext c, ClassificationParseTarget<T,R> target){
     	this.conn=c;
     	this.target=target;
     }
@@ -75,11 +76,12 @@ public class ClassificationUpdater<T extends DataObject & PropertyContainer> {
     	n_lines=0;
     	skip=0;
     	updates=0;
-		Iterator<String> lines;
-    	
+		Iterator<R> lines;
+		PropertyContainerParser<R> parser = target.getParser();
     
     	try{
-    		lines = target.splitRecords(update);
+    		
+			lines = parser.splitRecords(update);
     		
     		target.startParse(meta_data);
     		
@@ -91,7 +93,8 @@ public class ClassificationUpdater<T extends DataObject & PropertyContainer> {
     	}
     	while (lines.hasNext()) {
     		n_lines++;
-    		String current_line =lines.next();
+    		R current_line =lines.next();
+    		String fmt = parser.formatRecord(current_line);
     		try{
     			DerivedPropertyMap map = new DerivedPropertyMap(conn);
     			if( meta_data != null ){
@@ -109,13 +112,13 @@ public class ClassificationUpdater<T extends DataObject & PropertyContainer> {
     			    }
     			}
     		}catch (SkipRecord s){
-    			skip_list.add(s.getMessage(),current_line);
+    			skip_list.add(s.getMessage(),fmt);
     			skip++;
     		}catch(AccountingParseException pe){
-    			errors.add(pe.getMessage(), current_line);
+    			errors.add(pe.getMessage(), fmt);
     		}catch(Exception e){
-    			errors.add("Unexpected parse error",current_line);
-    			conn.error(e,"Unexpected Error parsing line "+current_line);
+    			errors.add("Unexpected parse error",fmt);
+    			conn.error(e,"Unexpected Error parsing line "+fmt);
     		}
     		
     	}

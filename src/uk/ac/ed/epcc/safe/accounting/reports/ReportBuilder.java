@@ -196,6 +196,11 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		public <R> R accept(InputVisitor<R> vis) throws Exception {
 			return vis.visitListInput(this);
 		}
+
+		@Override
+		public boolean isValid(ReportType item) {
+			return report_type_reg.containsValue(item);
+		}
 		
 	}
 	public static final String REPORT_TYPE_CONFIG_PREFIX="report_type";

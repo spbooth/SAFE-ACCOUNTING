@@ -91,8 +91,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  */
 
 
-public abstract class AbstractPbsParser extends BatchParser implements Contexed,
-PropertyContainerParser {
+public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	private static final PBSIdStringEntryMaker pbs_id_maker = new PBSIdStringEntryMaker();
 	private AppContext context;
 	private String mode;

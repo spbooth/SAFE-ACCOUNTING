@@ -58,7 +58,7 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 @SuppressWarnings("unused")
 
 
-public class LSFParser extends BatchParser implements PropertyContainerParser, Contexed {
+public class LSFParser extends BatchParser implements  Contexed {
 	private AppContext c;
 	
 	

@@ -38,7 +38,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  */
 
 
-public class ConfigUsageRecordFactory<T extends UsageRecordFactory.Use> extends ParseUsageRecordFactory<T> {
+public class ConfigUsageRecordFactory<T extends UsageRecordFactory.Use,R> extends ParseUsageRecordFactory<T,R> {
 
 	public ConfigUsageRecordFactory(AppContext ctx, String table){
     	super(ctx,table);
@@ -54,12 +54,12 @@ public class ConfigUsageRecordFactory<T extends UsageRecordFactory.Use> extends 
     	return getContext().getInitParameter("description."+getConfigTag(),getConfigTag());
     }
 	@Override
-	protected PlugInOwner makePlugInOwner(AppContext c,PropertyFinder prev, String tag) {
+	protected PlugInOwner<R> makePlugInOwner(AppContext c,PropertyFinder prev, String tag) {
 		// For accounting record tables default to no parser
 		// This will supress auto-table generation for unconfigured tables.
 		// This is important as we may try to construct this class based on
 		// a user input tag and we don't want to auto-create randomly named tables.
-		return new ConfigPlugInOwner(c, prev,tag);
+		return new ConfigPlugInOwner<ConfigUsageRecordFactory<T, R>,R>(c, prev,tag);
 	}
 
 

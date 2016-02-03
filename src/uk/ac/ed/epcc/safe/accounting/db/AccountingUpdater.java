@@ -26,6 +26,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
+import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
@@ -42,8 +43,8 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
 
-public class AccountingUpdater<T extends UsageRecordFactory.Use> {
-	private UsageRecordParseTarget<T> target;
+public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
+	private UsageRecordParseTarget<T,R> target;
 	private AppContext conn;
 	private PropertyMap meta_data;
 	/** Create an AccountingUpdater. 
@@ -57,7 +58,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use> {
 	 * @param meta_data MetaData properties
 	 * @param t ParseTarget
 	 */
-	public AccountingUpdater(AppContext conn,PropertyMap meta_data,UsageRecordParseTarget<T> t){
+	public AccountingUpdater(AppContext conn,PropertyMap meta_data,UsageRecordParseTarget<T,R> t){
 		this.conn=conn;
 		this.meta_data=meta_data;
 		this.target=t;
@@ -83,7 +84,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use> {
 		Date last= null;
 		Date bad_date = new Date(100000000000L); //. roughly 1973-03-03
     	Logger log = conn.getService(LoggerService.class).getLogger(getClass());
-    	Iterator<String> lines;
+    	Iterator<R> lines;
     
     	boolean check_exists=conn.getBooleanParameter("accounting.checkduplicate", true);
     	Date start=new Date();
@@ -91,10 +92,11 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use> {
     	ErrorSet errors = new ErrorSet();
     	ErrorSet skip_list = new ErrorSet();
     	ErrorSet verify_list = new ErrorSet();
-    
+    	PropertyContainerParser<R> parser = target.getParser();
     
     	try{
-    		lines = target.splitRecords(update);
+    		
+			lines = parser.splitRecords(update);
     		
     		target.startParse(meta_data);
     		
@@ -104,8 +106,9 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use> {
     	}
     	while (lines.hasNext()) {
     		n_lines++;
-    		String current_line =lines.next();
-    		try{
+    		R current_line =lines.next();
+    		String fmt = parser.formatRecord(current_line);
+			try{
     			DerivedPropertyMap map = new DerivedPropertyMap(conn);
     			if( meta_data != null ){
     				
@@ -115,7 +118,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use> {
     			if( target.parse(map, current_line) ){
     				// add date and text
     				map.setProperty(StandardProperties.INSERTED_PROP, start);
-    				map.setProperty(StandardProperties.TEXT_PROP, current_line);
+    				map.setProperty(StandardProperties.TEXT_PROP, fmt);
     				
     				Date point = map.getProperty(StandardProperties.ENDED_PROP, null);
     				if( point != null ){
@@ -179,7 +182,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use> {
     									n_bad_verify++;
     								}
     							}catch(Throwable t){
-    								verify_list.add("Error in verify", current_line, t);
+    								verify_list.add("Error in verify", fmt, t);
     							}
     						}
     						if( augment ){
@@ -201,7 +204,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use> {
     									n_update_dup++;
     								}
     							}catch(Throwable t){
-    								verify_list.add("Error in augment existing", current_line, t);
+    								verify_list.add("Error in augment existing", fmt, t);
     							}
     						}
     					}
@@ -232,13 +235,13 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use> {
     				record.release();
     			}
     		}catch (SkipRecord s){
-    			skip_list.add(s.getMessage(),current_line);
+    			skip_list.add(s.getMessage(),fmt);
     			skip++;
     		}catch(AccountingParseException pe){
-    			errors.add(pe.getMessage(), current_line);
+    			errors.add(pe.getMessage(), fmt);
     		}catch(Exception e){
-    			errors.add("Unexpected parse error",current_line);
-    			log.error("Unexpected Error parsing line "+current_line,e);
+    			errors.add("Unexpected parse error",fmt);
+    			log.error("Unexpected Error parsing line "+fmt,e);
     		}
     		// We don't want very long held locks so commit between records.
     		DatabaseService serv = conn.getService(DatabaseService.class);

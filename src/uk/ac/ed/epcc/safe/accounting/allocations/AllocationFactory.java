@@ -104,7 +104,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  */
 
 
-public class AllocationFactory<T extends AllocationFactory.AllocationRecord> extends ConfigUsageRecordFactory<T> implements
+public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends ConfigUsageRecordFactory<T,R> implements
 		AllocationManager<AllocationKey<T>,T> {
 
 	protected static final String VALUE_COL = "Value";

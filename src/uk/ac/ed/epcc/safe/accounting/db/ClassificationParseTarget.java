@@ -31,8 +31,8 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
  *
  * @param <T>
  */
-public interface ClassificationParseTarget<T extends DataObject & PropertyContainer> extends
-		PropertyContainerParseTarget<T> {
+public interface ClassificationParseTarget<T extends DataObject & PropertyContainer,R> extends
+		PropertyContainerParseTarget<T,R> {
 	/** Returns an uncommitted object updated to match the input container.
 	 * This is either a new object or an existing object selected using the
 	 * key properties.

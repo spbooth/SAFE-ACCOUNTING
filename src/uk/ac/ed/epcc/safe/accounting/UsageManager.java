@@ -172,6 +172,14 @@ public abstract class UsageManager<UR extends UsageRecord> implements
 			return vis.visitListInput(this);
 		}
 
+		@Override
+		public boolean isValid(UsageProducer item) {
+			if( item.equals(UsageManager.this)){
+				return allow_all;
+			}
+			return factories.containsValue(item);
+		}
+
 	}
     public class MultiIterator extends AbstractMultiIterator<UR>{
        

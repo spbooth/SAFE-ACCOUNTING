@@ -44,7 +44,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  *
  * @param <T>
  */
-public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRecord> extends AllocationFactory<T>  implements SequenceManager<T>{
+public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends AllocationFactory<T,R>  implements SequenceManager<T>{
 
 	public SequenceAllocationFactory(AppContext c, String table) {
 		super(c, table);

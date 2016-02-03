@@ -28,12 +28,12 @@ import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-/** template class for PropertyContainerParser.
+/** template class for {@link PropertyContainerParser} using Strings as the intermediate representation.
  * 
  * @author spb
  *
  */
-public abstract class AbstractPropertyContainerParser extends AbstractPropertyContainerUpdater implements PropertyContainerParser {
+public abstract class AbstractPropertyContainerParser extends AbstractPropertyContainerUpdater implements PropertyContainerParser<String> {
 	public static final String DUPLICATE_KEY = "duplicate_key";
     private Set<String> unique=null;
 	@Override
@@ -105,7 +105,17 @@ public abstract class AbstractPropertyContainerParser extends AbstractPropertyCo
 			throws AccountingParseException {
 		return new StringSplitter(update);
 	}
-
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser#formatRecord(java.lang.Object)
+	 */
+	@Override
+	public String formatRecord(String record) {
+		return record;
+	}
+	@Override
+	public String getRecord(String text){
+		return text;
+	}
 
 	
 }

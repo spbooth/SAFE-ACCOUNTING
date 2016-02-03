@@ -19,17 +19,22 @@ package uk.ac.ed.epcc.safe.accounting.update;
 import java.util.Iterator;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 
 
 /** PropertyContainerUpdater that parses a text usage record into a PropertyMap
  * 
+ * This is the interface implemented by the parser itself rather than the target class.
+ * 
  * @see IncrementalPropertyContainerParser
+ * @see PropertyContainerParseTarget
  * @author spb
+ * @param <R> type of intermediate record
  *
  */
-public interface PropertyContainerParser extends PropertyContainerUpdater{
+public interface PropertyContainerParser<R> extends PropertyContainerUpdater{
 	
 	/** Parse a String representation of the UsageRecord.
 	 * If the parse needs to be aborted throw and AccountingParseException.
@@ -41,16 +46,32 @@ public interface PropertyContainerParser extends PropertyContainerUpdater{
 	 * @return true if parse ok
 	 * @throws AccountingParseException
 	 */
-  public boolean parse(PropertyMap map,String record) throws AccountingParseException;
-  /** Split multiple usage records into individual usage records
+  public boolean parse(PropertyMap map,R record) throws AccountingParseException;
+  /** Split multiple usage records into individual usage records.
+   * 
+   * Though the individual records are usually also represented as Strings they can
+   * also use some intermediate representation such as a DOM tree or JSON object.
    * 
    * @param update string containing multiple records
-   * @return Iterator<String> over individual records
- * @throws AccountingParseException 
+   * @return Iterator<R> over individual records
+   * @throws AccountingParseException 
    */
-  public Iterator<String> splitRecords(String update) throws AccountingParseException;
+  public Iterator<R> splitRecords(String update) throws AccountingParseException;
  
-  
+  /** format the record back to a String.
+   * 
+   * The output format should be compatible with the input to {@link #getRecord(String)}.
+   * 
+   * @param record
+   * @return String representation of a single record.
+   */
+  public String formatRecord(R record);
+  /** convert a single record into internal representation
+   * 
+   * @param text
+   * @return R
+   */
+  public R getRecord(String text);
   /** Get the default set of unique properties for this parser
    * 
    * @return Set of PropertyTag or null

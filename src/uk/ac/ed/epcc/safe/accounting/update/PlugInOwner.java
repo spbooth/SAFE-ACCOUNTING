@@ -26,13 +26,13 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
  * @author spb
  *
  */
-public interface PlugInOwner extends PropertyTargetFactory {
+public interface PlugInOwner<R> extends PropertyTargetFactory {
 
 	/** get the {@link PropertyContainerParser} used for the initial parse stage
 	 * 
 	 * @return PropertyContainerParser
 	 */
-	public abstract PropertyContainerParser getParser();
+	public abstract PropertyContainerParser<R> getParser();
 
 	/** Get a set of {@link PropertyContainerPolicy} to be applied to the
 	 * property stream. 

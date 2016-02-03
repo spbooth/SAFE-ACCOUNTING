@@ -18,7 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.update;
 
 import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 
-/** A PropertyContainerParser for data where the UsageRecordData
+/** A {@link PropertyContainerParser} for data where the UsageRecordData
  * is composed of multiple event records.
  * Each event record needs to specify the unique properties to allow
  * the partial record to be identified correctly. 
@@ -26,8 +26,7 @@ import uk.ac.ed.epcc.safe.accounting.UsageRecord;
  * @author spb
  *
  */
-public interface IncrementalPropertyContainerParser extends
-		PropertyContainerParser {
+public interface IncrementalPropertyContainerParser  {
 	/** Are all the necessary properties present in the record.
 	 * Once this method resolves as true the parse process will 
 	 * assume the record is complete and not update again.

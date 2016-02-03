@@ -103,5 +103,10 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 	public <R> R accept(InputVisitor<R> vis) throws Exception {
 		return vis.visitListInput(this);
 	}
+
+	@Override
+	public boolean isValid(PlotEntry item) {
+		return items.containsValue(item);
+	}
 	
 }

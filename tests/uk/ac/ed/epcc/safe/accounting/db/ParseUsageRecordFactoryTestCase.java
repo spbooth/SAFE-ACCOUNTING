@@ -32,7 +32,7 @@ import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 
-public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecordFactory<R>,R extends UsageRecordFactory.Use>
+public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecordFactory<R,I>,R extends UsageRecordFactory.Use,I>
 		extends UsageRecordFactoryTestCase<F,R> {
 	
 	
@@ -122,11 +122,11 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 	}
 	@Test
 	public void testGetParser() {
-		ParseUsageRecordFactory<R> fac = getFactory();
+		ParseUsageRecordFactory<R,I> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
 		}
-		PropertyContainerParser p = fac.getParser();
+		PropertyContainerParser<I> p = fac.getParser();
 
 		assertNotNull(p);
 
@@ -141,11 +141,11 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 
 	@Test
 	public void testParser() throws Exception {
-		ParseUsageRecordFactory<R> fac = getFactory();
+		ParseUsageRecordFactory<R,I> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
 		}
-		PropertyContainerParser parser = fac.getParser();
+		PropertyContainerParser<I> parser = fac.getParser();
 		PropExpressionMap dmap = new PropExpressionMap();
 		dmap = parser.getDerivedProperties(dmap);
 		for(PropertyContainerPolicy pol : fac.getPolicies()){
@@ -163,15 +163,15 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		}
 
 		PropertyMap defaults = getDefaults();
-		Iterator<String> lines = fac.splitRecords(updateText);
+		Iterator<I> lines = parser.splitRecords(updateText);
 		
 		fac.startParse(defaults);
 
 		Set ignore = getIgnore();
 
 		while (lines.hasNext()) {
-			String current_line = lines.next();
-			System.out.println(current_line);
+			I current_line = lines.next();
+			System.out.println(parser.formatRecord(current_line));
 			try {
 				System.out.println("parse "
 						+ fac.getParser().getClass().getCanonicalName());
@@ -274,7 +274,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 			return;
 		}
 
-		ParseUsageRecordFactory<R> fac = getFactory();
+		ParseUsageRecordFactory<R,I> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
 		}
@@ -284,7 +284,8 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		ErrorSet errors = new ErrorSet();
 
 		PropertyMap defaults = getDefaults();
-		Iterator<String> lines = fac.splitRecords(updateText);
+		PropertyContainerParser<I> parser = fac.getParser();
+		Iterator<I> lines = parser.splitRecords(updateText);
 		
 		
 		try {
@@ -298,16 +299,17 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		
 
 		while (lines.hasNext()) {
-			String current_line = lines.next();
+			I rec = lines.next();
+			String current_line = parser.formatRecord(rec);
 			System.out.println(current_line);
 			System.out.println("parse "
-					+ fac.getParser().getClass().getCanonicalName());
+					+ parser.getClass().getCanonicalName());
 			DerivedPropertyMap map = new DerivedPropertyMap(ctx);
 			if (defaults != null) {
 				defaults.setContainer(map);
 			}
 			try {
-				fac.parse(map, current_line);
+				fac.parse(map, rec);
 				sucessfulRecords.add(current_line);
 			} catch (Exception e) {
 				/*
@@ -333,18 +335,18 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 @Test
 	public void testRecieveAccounting() throws Exception {
 
-		ParseUsageRecordFactory<R> fac = getFactory();
+		ParseUsageRecordFactory<R,I> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
 		}
 		String updateText = getUpdateText();
 		System.out.println(updateText);
-		String result = new AccountingUpdater<R>(ctx,getDefaults(),fac).receiveAccountingData( updateText, false,false,false);
+		String result = new AccountingUpdater<R,I>(ctx,getDefaults(),fac).receiveAccountingData( updateText, false,false,false);
 		//save("tests",getClass().getSimpleName(),fac);
 	}
 @Test
 	public void testGetPolicies() {
-		ParseUsageRecordFactory<R> fac = getFactory();
+		ParseUsageRecordFactory<R,I> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
 		}

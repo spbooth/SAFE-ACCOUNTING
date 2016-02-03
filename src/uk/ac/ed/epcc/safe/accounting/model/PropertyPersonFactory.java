@@ -95,7 +95,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * @param <P>
  */
 
-public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFactory<P> implements NameFinder<P>, ExpressionTargetFactory<P>, TableStructureTransitionTarget, ClassificationParseTarget<P>, PlugInOwner, FilterSelector<DataObjectItemInput<P>>{
+public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFactory<P> implements NameFinder<P>, ExpressionTargetFactory<P>, TableStructureTransitionTarget, ClassificationParseTarget<P,String>, PlugInOwner<String>, FilterSelector<DataObjectItemInput<P>>{
 
 	
 	public static final Feature MAKE_ON_UPLOAD_FEATURE = new Feature("person.make_on_upload",true,"On a person upload unknown users will be created as well as existing ones updated");
@@ -107,7 +107,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 	private PropertyFinder reg=null;
 	private AccessorMap<P> map=null;
 	
-    private PlugInOwner plugin_owner=null;
+    private PlugInOwner<String> plugin_owner=null;
     private PropertyTag<? extends String> match_prop=null;
 	
 	public PropertyPersonFactory() {
@@ -158,7 +158,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		map.makeReferences( refs);
 		finder.addFinder(refs);
 		finder.addFinder(person_registy);
-		plugin_owner = new ConfigPlugInOwner<PropertyPersonFactory<P>>(c,finder ,tag);
+		plugin_owner = new ConfigPlugInOwner<PropertyPersonFactory<P>,String>(c,finder ,tag);
 		finder.addFinder(plugin_owner.getFinder());
 		map.addDerived(c, plugin_owner.getDerivedProperties());
 		String role_list = c.getInitParameter(RoleUpdate.ROLE_LIST_CONFIG);
@@ -322,7 +322,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		}
 	}
 
-	public PropertyContainerParser getParser() {
+	public PropertyContainerParser<String> getParser() {
 		if(plugin_owner == null){
 			initAccessorMap(getContext(), getConfigTag());
 		}
@@ -378,8 +378,8 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		if( spec != null ){
 			// Don't use anything that needs getContext as this does not work unless
 			// factory is valid.
-			PlugInOwner owner = new ConfigPlugInOwner<PropertyPersonFactory<P>>(c,person_registy, table,NullParser.class);
-			PropertyContainerParser parser=owner.getParser();
+			PlugInOwner<String> owner = new ConfigPlugInOwner<PropertyPersonFactory<P>,String>(c,person_registy, table,NullParser.class);
+			PropertyContainerParser<String> parser=owner.getParser();
 			PropExpressionMap map = new PropExpressionMap();
 			map = parser.getDerivedProperties(map);
 			for(PropertyContainerPolicy pol : owner.getPolicies()){

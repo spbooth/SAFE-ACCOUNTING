@@ -43,7 +43,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
 
-public class SgeParser extends BatchParser implements PropertyContainerParser, Contexed {
+public class SgeParser extends BatchParser implements Contexed {
 	private AppContext c;
 	private static final boolean DEFAULT_SKIP_SLAVE=true;
 	private static final boolean DEFAULT_SKIP_FAILED=false;

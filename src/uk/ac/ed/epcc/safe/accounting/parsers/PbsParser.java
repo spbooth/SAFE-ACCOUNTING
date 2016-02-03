@@ -116,8 +116,7 @@ import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
  */
 
 
-public class PbsParser extends AbstractPbsParser implements Contexed,
-PropertyContainerParser {
+public class PbsParser extends AbstractPbsParser implements Contexed{
 	
 	private static MakerMap additionalAttributes= new MakerMap();
 	private MakerMap extensionAttributes;

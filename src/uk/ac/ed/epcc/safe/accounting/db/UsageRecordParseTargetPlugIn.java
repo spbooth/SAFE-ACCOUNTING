@@ -15,7 +15,6 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
@@ -48,14 +47,15 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  * @author spb
  *
  * @param <T> type of usage record
+ * @param <R> Parser IR type
  */
-public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use> implements
-		UsageRecordParseTarget<T>,Contexed{
+public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> implements
+		UsageRecordParseTarget<T,R>,Contexed{
 
 	private final AppContext conn;
-	private final PlugInOwner plugin_owner;
+	private final PlugInOwner<R> plugin_owner;
 	private final UsageRecordFactory<T> factory;
-	public UsageRecordParseTargetPlugIn(AppContext conn,PlugInOwner owner,UsageRecordFactory<T> fac){
+	public UsageRecordParseTargetPlugIn(AppContext conn,PlugInOwner<R> owner,UsageRecordFactory<T> fac){
 		this.conn=conn;
 		this.plugin_owner=owner;
 		this.factory=fac;
@@ -63,13 +63,13 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use> impl
 	public AppContext getContext(){
 		return conn;
 	}
-	public boolean parse(DerivedPropertyMap map, String current_line)
+	public boolean parse(DerivedPropertyMap map, R current_line)
 			throws AccountingParseException {
 		// Note each stage of the parse sees the derived properties 
 				// as defined in the previous stage. Once its own parse is complete
 				// It can then override the definition if it wants to
 		PropExpressionMap derived = new PropExpressionMap();
-		PropertyContainerParser parser = plugin_owner.getParser();
+		PropertyContainerParser<R> parser = plugin_owner.getParser();
 		if( parser.parse(map, current_line) ){
 			derived = parser.getDerivedProperties(derived);
 			map.addDerived(derived);
@@ -93,13 +93,10 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use> impl
 		}
 	}
 
-	public Iterator<String> splitRecords(String update)
-			throws AccountingParseException {
-		if( update == null ){
-			throw new AccountingParseException("Null update text");
-		}
-		return plugin_owner.getParser().splitRecords(update);
+	public PropertyContainerParser<R> getParser(){
+		return plugin_owner.getParser();
 	}
+	
 
 	public void startParse(PropertyMap defaults) throws Exception {
 		PropertyContainerParser tmp_parser = plugin_owner.getParser();

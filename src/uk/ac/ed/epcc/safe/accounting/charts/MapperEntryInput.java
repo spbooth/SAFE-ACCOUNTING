@@ -87,4 +87,9 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 	public <R> R accept(InputVisitor<R> vis) throws Exception {
 		return vis.visitListInput(this);
 	}
+
+	@Override
+	public boolean isValid(MapperEntry item) {
+		return items.containsValue(item);
+	}
 }

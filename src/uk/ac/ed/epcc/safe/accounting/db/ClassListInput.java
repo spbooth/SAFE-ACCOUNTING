@@ -132,5 +132,10 @@ public class ClassListInput implements ListInput<String, Class>{
 	public <R> R accept(InputVisitor<R> vis) throws Exception {
 		return vis.visitListInput(this);
 	}
+
+	@Override
+	public boolean isValid(Class item) {
+		return map.values().contains(item);
+	}
 	
 }

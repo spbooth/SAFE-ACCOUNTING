@@ -67,8 +67,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  */
 
 
-public class XMLRecordParser extends BatchParser implements Contexed,
-		PropertyContainerParser {
+public class XMLRecordParser extends BatchParser implements Contexed {
 
 	
 
