@@ -69,12 +69,7 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	
 	protected class DataObjectTableRegistry extends TableRegistry{
 		public DataObjectTableRegistry(){
-			super(getProperties(),getAccessorMap());
-			TableSpecification spec = getFinalTableSpecification(getContext(), getTag());
-			if(spec != null ){
-				addTransitionSource(new TableSpecificationTransitionSource<DataObjectPropertyFactory>(res, spec));
-			}
-			addTransitionSource(new GeneralTransitionSource<DataObjectPropertyFactory>(res));
+			super(res,getFinalTableSpecification(getContext(), getTag()),getProperties(),getAccessorMap());
 		}
 	}
 	protected DataObjectTableRegistry makeTableRegistry() {

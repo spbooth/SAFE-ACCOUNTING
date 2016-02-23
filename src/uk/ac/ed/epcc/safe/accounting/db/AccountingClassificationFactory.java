@@ -106,7 +106,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 		map.populate( finder, def,false);
 		finder.addFinder(def);
 		
-		finder.addFinder(map.setRelationshipProperties(tag));
+		finder.addFinder(map.setRelationshipProperties(this));
 		
 		
 		

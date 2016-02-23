@@ -243,7 +243,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 	
 
 	protected TableRegistry makeTableRegistry() {
-		return new TableRegistry(getProperties(),getAccessorMap());
+		return new TableRegistry(res,getFinalTableSpecification(getContext(), getTag()),getProperties(),getAccessorMap());
 	}
 	
 

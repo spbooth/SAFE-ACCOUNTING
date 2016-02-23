@@ -106,12 +106,7 @@ public abstract class PropertyTargetClassificationFactory<T extends AccountingCl
 	public class PropertyTargetClassificationTableRegistry extends TableRegistry{
 
 		public PropertyTargetClassificationTableRegistry() {
-			super(null,getAccessorMap());
-			TableSpecification spec = getFinalTableSpecification(getContext(), getTag());
-			if(spec != null ){
-				addTransitionSource(new TableSpecificationTransitionSource<PropertyTargetClassificationFactory>(res, spec));
-			}
-			addTransitionSource(new GeneralTransitionSource<PropertyTargetClassificationFactory<T>>(res));
+			super(res,getFinalTableSpecification(getContext(), getTag()),null,getAccessorMap());
 		}
 	}
 

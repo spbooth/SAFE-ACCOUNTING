@@ -37,7 +37,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.OrFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.SQLOrFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 
 
@@ -67,7 +67,7 @@ public class FilterSelectVisitor<T extends ExpressionTarget> implements Selector
 	}
 
 	public SQLFilter<T> visitOrRecordSelector(OrRecordSelector o) throws Exception {
-		OrFilter<T> result = new OrFilter<T>(target.getTarget());
+		SQLOrFilter<T> result = new SQLOrFilter<T>(target.getTarget());
 		for( RecordSelector s : o){
 			assert(s!=null);
 			//try{

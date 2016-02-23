@@ -21,16 +21,17 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Accessor;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
+import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
-import uk.ac.ed.epcc.webapp.model.relationship.RelationshipProvider;
-import uk.ac.ed.epcc.webapp.session.AppUser;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
-/** Accessor to access Relationship info.
+/** {@link Accessor} to access Relationship info.
  * 
  * @author spb
  *
@@ -40,10 +41,10 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 public class RelationshipAccessor<T extends DataObject & PropertyTarget> implements Accessor<Boolean,T>, FilterProvider<T,Boolean> {
     
-	private RelationshipProvider<?,T> rel;
+	private DataObjectFactory<T> fac;
 	private String role;
-	RelationshipAccessor(RelationshipProvider<?,T> rel, String property){
-		this.rel=rel;
+	RelationshipAccessor(DataObjectFactory<T> fac, String property){
+		this.fac=fac;
 		this.role=property;
 	}
 	public Class<? super Boolean> getTarget() {
@@ -52,21 +53,23 @@ public class RelationshipAccessor<T extends DataObject & PropertyTarget> impleme
 	}
 
 	public Boolean getValue(T r) {
-		if( rel == null ){
+		if( fac == null ){
 			return false;
 		}
-		
-		return Boolean.valueOf(rel.hasRole(rel.getContext().getService(SessionService.class),r, role));
+		SessionService<?> sess = fac.getContext().getService(SessionService.class);
+		return Boolean.valueOf(
+				fac.matches(sess.getRelationshipRoleFilter(fac, role), r)		
+		);
 	}
 
 	@Override
 	public String toString(){
-		return "hasRole("+rel.getTag()+","+role+")";
+		return "hasRole("+fac.getTag()+","+role+")";
 	}
 	public SQLFilter<T> getFilter(MatchCondition match,
 			Boolean val) throws CannotFilterException {
-		AppContext context = rel.getContext();
-		AppUser user = context.getService(SessionService.class).getCurrentPerson();
+		AppContext context = fac.getContext();
+		SessionService user = context.getService(SessionService.class);
 		Logger log = context.getService(LoggerService.class).getLogger(getClass());
 		log.debug("RelationshipAccessor getFilter "+role+" "+match+" "+val);
 		boolean check = val.booleanValue();
@@ -74,7 +77,12 @@ public class RelationshipAccessor<T extends DataObject & PropertyTarget> impleme
 			check = ! check;
 		}
 		if( check){
-		    return rel.getTargetFilter(user,role);
+		    BaseFilter<? super T> fil = user.getRelationshipRoleFilter(fac, role);
+			try {
+				return fil.acceptVisitor(new FilterConverter<T>());
+			} catch (Exception e) {
+				throw new CannotFilterException("Cannot make relationship filter", e);
+			}
 		}else{
 			throw new CannotFilterException("Cannot negate relationship");
 		}
@@ -95,7 +103,7 @@ public class RelationshipAccessor<T extends DataObject & PropertyTarget> impleme
 		throw new CannotFilterException("Order filter not supported");
 	}
 	public Class<? super T> getFilterType() {
-		return rel.getTargetFactory().getTarget();
+		return fac.getTarget();
 	}
 	
 

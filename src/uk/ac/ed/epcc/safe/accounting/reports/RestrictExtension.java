@@ -28,13 +28,13 @@ import org.w3c.dom.NodeList;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
-import uk.ac.ed.epcc.webapp.model.ClassificationFactory;
+import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
+import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
 import uk.ac.ed.epcc.webapp.model.NameFinder;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.RoleSelector;
-import uk.ac.ed.epcc.webapp.model.relationship.Relationship;
-import uk.ac.ed.epcc.webapp.model.relationship.RelationshipProvider;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
@@ -116,10 +116,22 @@ public class RestrictExtension extends ReportExtension {
 			RoleSelector<?> sel = conn.makeObject(RoleSelector.class,type);
 			if( sel != null){
 				return sel.hasRole(val, user);
-			}else{
-				addDeveloperError("no_role_selector", "No role selector for type "+type);
-				return false;
 			}
+			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
+			if( fac != null){
+				BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, val);
+				if( fil == null ){
+					fil = new FalseFilter(fac.getTarget());
+				}
+				try {
+					return fac.exists(fil);
+				} catch (DataException e) {
+					addError("relationship_error", "Cannot check for relationship="+val+" on "+type, e);
+					return false;
+				}
+			}
+			addDeveloperError("no_role_selector", "No role selector for type "+type);
+			return false;
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -133,7 +145,7 @@ public class RestrictExtension extends ReportExtension {
 		String type = element.getAttribute("type");
 		String role = element.getAttribute("role");
 		String name = getText(element);
-		RoleSelector rel = conn.makeObjectWithDefault(RoleSelector.class, Relationship.class,type);
+		RoleSelector rel = conn.makeObjectWithDefault(RoleSelector.class, null,type);
 		if( rel != null){
 			if( name == null || name.trim().length()==0 ){
 				return rel.hasRole(role, user);
@@ -147,7 +159,32 @@ public class RestrictExtension extends ReportExtension {
 				}
 			}
 		}else{
+			type=conn.getInitParameter("typealias."+type, type);
+
+			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
+			if( fac != null){
+				BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
+				if( fil == null ){
+					fil = new FalseFilter(fac.getTarget());
+				}
+				if( name == null || name.trim().length()==0 ){
+					try {
+						return fac.exists(fil);
+					} catch (DataException e) {
+						addError("relationship_error", "Cannot check for relationship="+role+" on "+type, e);
+						return false;
+					}
+				}else{
+					// Want role on specific object
+					if( fac instanceof NameFinder){
+						return fac.matches(fil, (DataObject) ((NameFinder)fac).findFromString(name));
+					}else{
+						addDeveloperError("not_name_finder", type);
+					}
+				}
+			}else{
 			addDeveloperError("no_relationship", type);
+		}
 		}
 		return false;
 	}

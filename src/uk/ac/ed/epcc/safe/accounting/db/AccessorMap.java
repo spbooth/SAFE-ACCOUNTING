@@ -84,6 +84,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
@@ -92,7 +93,7 @@ import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DurationInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedTypeProducer;
-import uk.ac.ed.epcc.webapp.model.relationship.Relationship;
+import uk.ac.ed.epcc.webapp.model.relationship.RelationshipProvider;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 
@@ -900,16 +901,22 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		}
 
 	}
-	/** Add properties defined as a {@link Relationship} between the object and the 
-	 * current user.
+	/** Add properties defined as a Relationship between the object and the 
+	 * current user from an external {@link RelationshipProvider}.
+	 * We assume that directly implemented relationships can be added from the implementing class.
+	 * 
+	 * The list of tags corresponding to the {@link RelationshipProvider}s to add should be
+	 * set in:
+	 *  <b><em>factory-tag</em>.relationships</b>
 	 * 
 	 * @param tag 
 	 * @return PropertyFinder
 	 */
 	@SuppressWarnings("unchecked")
-	public PropertyFinder setRelationshipProperties(String tag){
+	public PropertyFinder setRelationshipProperties(DataObjectFactory<X> fac){
 		AppContext c = getContext();
 		// Relationship properties
+		String tag = fac.getTag();
 		SessionService serv = c.getService(SessionService.class);
 		MultiFinder finder = new MultiFinder();
 		if( serv != null){
@@ -919,11 +926,11 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 			for(String t : tags){
 			   try{
 				   // If target factory is wrong relationship always returns false
-				Relationship<?,X> rel = c.makeObject(Relationship.class, t);
+				RelationshipProvider<?,X> rel = c.makeObject(RelationshipProvider.class, t);
 				if( rel != null ){
 					PropertyRegistry reg = new PropertyRegistry(t,"Relationships via "+t);
-				    for(String role : rel.getRoles()){
-				    	put(new PropertyTag<Boolean>(reg, role,Boolean.class), new RelationshipAccessor<X>(rel, role));
+				    for(String role : rel.getRelationships()){
+				    	put(new PropertyTag<Boolean>(reg, role,Boolean.class), new RelationshipAccessor<X>(fac, tag+"."+role));
 				    }
 				    reg.lock();
 				    finder.addFinder(reg);

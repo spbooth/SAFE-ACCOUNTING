@@ -27,7 +27,11 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.jdbc.table.AbstractTableRegistry;
+import uk.ac.ed.epcc.webapp.jdbc.table.DefaultTableTransitionRegistry;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionRegistry;
+import uk.ac.ed.epcc.webapp.model.data.Repository;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
@@ -36,11 +40,12 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * @author spb
  *
  */
-public class TableRegistry extends AbstractTableRegistry implements TableTransitionRegistry{
+public class TableRegistry<T extends TableStructureTransitionTarget> extends DefaultTableTransitionRegistry<T> implements TableTransitionRegistry{
 	private AccessorMap<?> map;
 	private final Set<PropertyTag> props;
 	
-	public TableRegistry(Set<PropertyTag> props,AccessorMap<?> m){
+	public TableRegistry(Repository res, TableSpecification spec, Set<PropertyTag> props,AccessorMap<?> m){
+		super(res,spec);
 		this.map=m;
 		if( props == null){
 			this.props=map.getProperties();

@@ -46,9 +46,6 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
-import uk.ac.ed.epcc.webapp.jdbc.table.GeneralTransitionSource;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecificationTransitionSource;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.LinkManager;
@@ -77,12 +74,7 @@ implements ExpressionTargetFactory<T>{
 	public class AccountingLinkManagerTableRegistry extends TableRegistry{
 
 		public AccountingLinkManagerTableRegistry() {
-			super(getProperties(),getAccessorMap());
-			TableSpecification spec = getDefaultTableSpecification(getContext(), getTag(),getLeftFactory(),getLeftField(),getRightFactory(),getRightField());
-			if(spec != null ){
-				addTransitionSource(new TableSpecificationTransitionSource<AccountingLinkManager>(res, spec));
-			}
-			addTransitionSource(new GeneralTransitionSource<AccountingLinkManager>(res));
+			super(res,getDefaultTableSpecification(getContext(), getTag(),getLeftFactory(),getLeftField(),getRightFactory(),getRightField()),getProperties(),getAccessorMap());
 		}
 	}
 	protected TableRegistry makeTableRegistry() {

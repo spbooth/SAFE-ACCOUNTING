@@ -83,7 +83,10 @@ import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
+import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.RoleSelector;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -360,6 +363,15 @@ public class ParameterExtension extends ReportExtension {
 			RoleSelector sel = conn.makeObjectWithDefault(RoleSelector.class,null,type);
 			if( sel != null ){
 				return sel.getInput(role, conn.getService(SessionService.class));
+			}
+			type=conn.getInitParameter("typealias."+type, type);
+			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
+			if( fac != null ){
+				BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
+				if( fil == null ){
+					fil = new FalseFilter(fac.getTarget());
+				}
+				return fac.getInput(fil);
 			}
 		}
 		// Now a FilterSelector

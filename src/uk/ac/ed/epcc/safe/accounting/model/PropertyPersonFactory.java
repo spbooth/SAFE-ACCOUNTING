@@ -221,9 +221,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 
 		@SuppressWarnings("unchecked")
 		public PersonTableRegistry(AccessorMap m) {
-			super(null,m);
-			addTransitionSource(new TableSpecificationTransitionSource<PropertyPersonFactory<P>>(res, getFinalTableSpecification(getContext(), getTag())));
-			addTransitionSource(new GeneralTransitionSource<PropertyPersonFactory>(res));
+			super(res,getFinalTableSpecification(getContext(), getTag()),null,m);			
 			if( plugin_owner instanceof TransitionSource){
 				addTransitionSource((TransitionSource) plugin_owner);
 			}

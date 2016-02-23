@@ -94,7 +94,7 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 		map.addDerived(c, getPluginOwner().getDerivedProperties());
 		finder.addFinder(def);
 
-		finder.addFinder(map.setRelationshipProperties(table));
+		finder.addFinder(map.setRelationshipProperties(this));
 		match_prop = (PropertyTag<String>) finder.find(String.class,c.getInitParameter(table+".match",Classification.NAME));
 		if( match_prop == null ){
 			c.error("No match property defined");
