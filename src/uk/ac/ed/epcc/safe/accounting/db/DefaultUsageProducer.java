@@ -147,7 +147,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 					if( log !=null) log.debug(getTag()+": calculated cutoff for "+start+","+end+" as "+cutoff);
 					cutoffs.put(key,calc_cutoff);
 				} catch (Exception e) {
-					getContext().error(e, "Error making cutoff");
+					getLogger().error("Error making cutoff",e);
 					calc_cutoff=0L;
 				}
 			}

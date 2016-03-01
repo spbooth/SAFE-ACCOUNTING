@@ -313,7 +313,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	private static final String SCHEMA_LOC = BASE_LOC;
 	private final URI SCHEMA_URI=new URI(SCHEMA_LOC);
 
-	private AppContext conn;
+	private final AppContext conn;
 	private TextFileOverlay default_overlay, report_overlay,
 			stylesheet_overlay, schema_overlay;
 	private TextFile template;
@@ -325,7 +325,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	private Set<ErrorSet> error_sets;
 	ErrorSet general_error;
 	private Set<TemplateValidator> validators;
-	private Logger log;
+	private final Logger log;
 	public static final String REPORT_DEVELOPER = "ReportDeveloper";
 
 	public ReportBuilder(AppContext conn) throws URISyntaxException, ParserConfigurationException {
@@ -345,7 +345,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		try {
 			base_url = new URL(BASE_LOC);
 		} catch (MalformedURLException e) {
-			conn.error(e,"Error making base URL");
+			log.error("Error making base URL",e);
 		}
 		default_overlay = new TextFileOverlay(conn);
 		default_overlay.setBaseURL(base_url);
@@ -416,7 +416,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 				);
 				
 			}catch(Throwable t){
-				conn.error(t,"Error making ReportType "+name);
+				log.error("Error making ReportType "+name,t);
 			}
 		}
 	}
@@ -511,7 +511,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		   StreamResult(out));
 		log.debug(text+" source XML is:"+out.toString());
 		}catch(Throwable t){
-			conn.error(t,"Error in logSource");
+			log.error("Error in logSource",t);
 		}
 	}
 	
@@ -655,7 +655,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			if( extension_name.length() > 0){
 				Class<? extends ReportExtension> clazz = conn.getPropertyClass(ReportExtension.class, extension_name);
 				if( clazz == null ){
-					conn.error("Extension "+extension_name+" not defined");
+					log.error("Extension "+extension_name+" not defined");
 				}else{
 					try {
 						ReportExtension ext = conn.makeParamObject(clazz, conn,nf);
@@ -666,7 +666,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 						register(ext);
 						params.put(param_name, ext);
 					} catch (Exception e) {
-						conn.error(e,"Error making extension "+clazz.getCanonicalName());
+						log.error("Error making extension "+clazz.getCanonicalName(),e);
 					}
 				}
 			}
@@ -810,7 +810,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			Transformer transformer = getXSLTransform(name, params);
 			transformer.transform(xmlSource,out );
 		}catch(Throwable t){
-			getContext().error(t,"Error in transform "+name);
+			log.error("Error in transform "+name,t);
 			throw new Exception(t);
 		}
 	}
@@ -864,7 +864,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			try {
 				factory.setResourceResolver(new LSResolver(docBuilder.getDOMImplementation(), schema_overlay, SCHEMA_GROUP, parent));
 			} catch (ParserConfigurationException e) {
-				conn.error(e,"Error setting schema resolver");
+				log.error("Error setting schema resolver",e);
 			}
 		}
 		Source source = getSchemaSource(name);

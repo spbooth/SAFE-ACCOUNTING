@@ -457,6 +457,9 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 		return context;
 	}
 
+	protected Logger getLogger(){
+		return getContext().getService(LoggerService.class).getLogger(getClass());
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -532,7 +535,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 				try {
 					this.recordTypes.add(type);
 				} catch (IllegalArgumentException e) {
-					this.context.error("Unable to identify record type '" + type
+					getLogger().error("Unable to identify record type '" + type
 							+ "'.  It is not a recognised PBS record type");
 				}
 			}

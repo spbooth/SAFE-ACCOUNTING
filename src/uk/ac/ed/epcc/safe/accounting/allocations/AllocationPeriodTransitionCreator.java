@@ -16,6 +16,7 @@ package uk.ac.ed.epcc.safe.accounting.allocations;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryCreator;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 public class AllocationPeriodTransitionCreator implements
 		Contexed, TransitionFactoryCreator<AllocationPeriodTransitionProvider> {
@@ -33,7 +34,7 @@ public class AllocationPeriodTransitionCreator implements
 					return new AllocationPeriodTransitionProvider(man);
 				}
 			} catch (Exception e) {
-				c.error(e,"Error making AllocationPeriodTransitionProvider");
+				c.getService(LoggerService.class).getLogger(getClass()).error("Error making AllocationPeriodTransitionProvider",e);
 			}
 			
 		

@@ -23,6 +23,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Class to perform a record replace based on a stored Text field
  * 
  * @author spb
@@ -66,7 +67,7 @@ public class ReParser<T extends UsageRecordFactory.Use,R> {
 						count++;
 					}
 				}catch(Exception e){
-					conn.error(e,"Error in reparse");
+					conn.getService(LoggerService.class).getLogger(getClass()).error("Error in reparse",e);
 					error_count++;
 					if( error_count > 10 ){
 						return "Too many errors";

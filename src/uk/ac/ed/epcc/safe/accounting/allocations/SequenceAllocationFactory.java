@@ -68,7 +68,7 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 			try {
 				return sameSequence(first, second);
 			} catch (InvalidExpressionException e) {
-				getContext().error(e,"Error checking sequence");
+				getLogger().error("Error checking sequence",e);
 				return false;
 			}
 		}
@@ -118,7 +118,7 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 			}
 			return null;
 		}catch(Exception e){
-			getContext().error(e,"Error in move-up");
+			getLogger().error("Error in move-up",e);
 			return null;
 		}
 	}

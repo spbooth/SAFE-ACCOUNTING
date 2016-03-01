@@ -97,6 +97,9 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     public AppContext getContext(){
     	return conn;
     }
+    private Logger getLogger(){
+    	return getContext().getService(LoggerService.class).getLogger(getClass());
+    }
     public void setColours(Color custom[]){
     	custom_colour=custom;
     }
@@ -383,7 +386,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 				data_added=true;
 			}
 		} catch (Exception e1) {
-			conn.error(e1,"Error making iterator");
+			getLogger().error("Error making iterator",e1);
 		} 
 
 		return data_added;
@@ -638,7 +641,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     								data_added=true;
     							}
     						} catch (Exception e1) {
-    							conn.error(e1,"Error making iterator");
+    							getLogger().error("Error making iterator",e1);
     						} 
     					}
 
@@ -654,14 +657,14 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     							data_added=true;
     						}
     					} catch (Exception e1) {
-    						conn.error(e1,"Error making iterator");
+    						getLogger().error("Error making iterator",e1);
     					} 
     				}
     			}
     			return data_added;
     		}catch(CannotUseSQLException e1){
     			if( data_added ){
-    				conn.error(e1,"MapperEntry aborted after adding data");
+    				getLogger().error("MapperEntry aborted after adding data",e1);
     			}
     			// default to iterating
     		}
@@ -676,7 +679,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 				data_added=true;
 			}
 		} catch (Exception e1) {
-			conn.error(e1,"Error making iterator");
+			getLogger().error("Error making iterator",e1);
 		} 
 
 
@@ -798,7 +801,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 				   try{
 					   set.add(getConfigMapperEntry(c, prop,finder, name));
 				   }catch(Exception e){
-					   c.error(e, "Error making MapperEntry "+name);
+					   c.getService(LoggerService.class).getLogger(MapperEntry.class).error("Error making MapperEntry "+name,e);
 				   }
 			   }
 		   }
@@ -846,7 +849,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 				   lab=conn.makeObjectWithDefault(Labeller.class, null, lab_tag);
 				   if( lab == null){
 					  // still can't do anything with this tag.
-					  conn.error("Specified class "+lab_tag+" is not assignable to Labeller");
+					  conn.getService(LoggerService.class).getLogger(MapperEntry.class).error("Specified class "+lab_tag+" is not assignable to Labeller");
 				   }
 			   }
 		   }

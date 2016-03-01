@@ -93,7 +93,9 @@ public class XMLGeneratorApp implements Command {
 	public AppContext getContext() {
 		return conn;
 	}
-	
+	protected final Logger getLogger(){
+		return conn.getService(LoggerService.class).getLogger(getClass());
+	}
 	public String description() {
 		return desc;
 	}
@@ -271,7 +273,7 @@ public class XMLGeneratorApp implements Command {
 				}
 			}
 		} catch (Exception e) {
-			conn.error(e,"Error generating report");
+			getLogger().error("Error generating report",e);
 			CommandLauncher.die(e);
 		}
 

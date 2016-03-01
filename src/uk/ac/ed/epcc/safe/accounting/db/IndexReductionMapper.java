@@ -126,7 +126,7 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 			}
 			if( reductions == 0 && skips >0 ){
 				// This might be a problem as spurious index values might be generated.
-				getContext().error("All reductions skipped!");
+				getLogger().error("All reductions skipped!");
 			}
 		}
 

@@ -37,6 +37,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay.TextFile;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
@@ -557,9 +559,9 @@ public class UsageRecordFormatter implements Contexed {
 			e1.printStackTrace();
 			
 		} catch (IOException e) {
-			this.context.error(e, "Unable to obtain the OGF usage record template '"
+			getLogger().error("Unable to obtain the OGF usage record template '"
 					+ urTemplateName
-					+ "'.  An empty string will be used for the template");
+					+ "'.  An empty string will be used for the template",e);
 			sb = new StringBuilder("");
 			
 		} finally {
@@ -571,7 +573,7 @@ public class UsageRecordFormatter implements Contexed {
 						bufferedReader.close();
 					}
 				} catch (IOException e) {
-					this.context.error("Unable to close the input stream "
+					getLogger().error("Unable to close the input stream "
 							+ "used to read the OGF usage record template");
 				}
 			}
@@ -579,5 +581,8 @@ public class UsageRecordFormatter implements Contexed {
 		}		
 		return "";
 
+	}
+	private Logger getLogger(){
+		return context.getService(LoggerService.class).getLogger(getClass());
 	}
 }

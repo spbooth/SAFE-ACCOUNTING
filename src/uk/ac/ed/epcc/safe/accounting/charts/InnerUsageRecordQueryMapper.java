@@ -36,6 +36,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** QueryMapper that plots property data based on the record being entirely within
  * the target range. note that this will net generate sensible plots by itself it
@@ -121,7 +122,7 @@ public class InnerUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 				}
 			}
 		} catch (Exception e) {
-			conn.error(e,"error in PropertyQueryMapper");
+			conn.getService(LoggerService.class).getLogger(getClass()).error("error in PropertyQueryMapper",e);
 		}
 		return res;
 	}

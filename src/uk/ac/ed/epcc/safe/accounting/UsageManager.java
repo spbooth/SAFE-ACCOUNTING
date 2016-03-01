@@ -216,7 +216,7 @@ public abstract class UsageManager<UR extends UsageRecord> implements
 				}
 				return null;
 			}catch(Exception e){
-				getContext().error(e,"Error in MultiIterator");
+				log.error("Error in MultiIterator",e);
 				return null;		
 			}
 		}
@@ -243,7 +243,7 @@ public abstract class UsageManager<UR extends UsageRecord> implements
 	
    
     private AppContext ctx;
-	Logger log;
+	protected final Logger log;
 	/**
 	 * Stores the underlying implementation classes all should Implement
 	 * AccountingProducer
@@ -357,7 +357,7 @@ public abstract class UsageManager<UR extends UsageRecord> implements
 					result += prod.getRecordCount(sel);
 				}
 			} catch (Exception e) {
-				ctx.error(e,"Error in getCount");
+				log.error("Error in getCount",e);
 			}
 
 		}
@@ -495,7 +495,7 @@ public abstract class UsageManager<UR extends UsageRecord> implements
 			return hb.toString();
 			
 		} catch (Exception e) {
-			getContext().error(e,"Error making selctor from input");
+			log.error("Error making selctor from input",e);
 			return null;
 		}
 	}
@@ -644,6 +644,9 @@ public abstract class UsageManager<UR extends UsageRecord> implements
 			}
 		}
 		return false;
+	}
+	protected Logger getLogger(){
+		return log;
 	}
 //	public boolean isMyRecord(UsageRecord r){
 //		for (UsageProducer<UR> prod : factories.values()) {

@@ -205,7 +205,8 @@
                 path="${umldoc.home}/lib/ydoc.jar${ps}${umldoc.home}/resources${ps}${build.home}">
 				<param name="-author"/>
 				<param name="-generic"/>
-				<param name="-umlautogen"/>
+				<param name="-umlpackagegen"/>
+				<param name="-umltypegen"/>
 				<param name="-filterpath" value="${umldoc.home}/lib/ydoc.jar"/>
 				<param name="-filter"     value="ydoc.filters.ExcludeFilter"/>
 				<param name="-tag" value="y.precondition"/>

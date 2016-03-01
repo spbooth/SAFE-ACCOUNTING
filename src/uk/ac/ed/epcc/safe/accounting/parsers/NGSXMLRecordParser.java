@@ -97,7 +97,7 @@ public class NGSXMLRecordParser extends OGFXMLRecordParser {
 			map.put(NGSXMLRecordParser.NGS_VIRTUAL_KB_USED_PROP, new IntPropExpression<Number>(new BinaryPropExpression(NGSXMLRecordParser.NGS_VIRTUAL_MEMORY_USED_PROP, Operator.DIV, new ConstPropExpression<Integer>(Integer.class,8192))));
 			
 		} catch (PropertyCastException e) {
-			getContext().error(e,"Error making derived prop");
+			getLogger().error("Error making derived prop",e);
 		}
 		return map;
 	}

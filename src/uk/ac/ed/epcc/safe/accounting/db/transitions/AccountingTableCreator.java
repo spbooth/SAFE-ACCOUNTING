@@ -18,7 +18,6 @@ package uk.ac.ed.epcc.safe.accounting.db.transitions;
 
 
 
-import uk.ac.ed.epcc.safe.accounting.db.ConfigUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.update.ConfigPlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
@@ -33,6 +32,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.ClassInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableListResult;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
 
 /** Class to create ConfigUsageRecordFactory accounting tables
@@ -86,7 +86,7 @@ public class AccountingTableCreator implements FormCreator,Contexed{
 				}
 				return new TableListResult();
 			}catch(Exception e){
-				conn.error(e,"Error creating table");
+				conn.getService(LoggerService.class).getLogger(getClass()).error("Error creating table",e);
 				throw new ActionException("Create failed");
 			}
 		}

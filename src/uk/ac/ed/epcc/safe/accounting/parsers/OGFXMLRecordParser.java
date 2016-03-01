@@ -234,7 +234,7 @@ public class OGFXMLRecordParser extends XMLRecordParser {
 			map.put(p1, p2);
 			map.put(p2, p1);
 		}catch(PropertyCastException t){
-			getContext().error(t,"Error adding Derivations in OGFUsageRecordParser");
+			getLogger().error("Error adding Derivations in OGFUsageRecordParser",t);
 			throw new ConsistencyError("Bad derivation", t);
 		}
 	}
@@ -264,7 +264,7 @@ public class OGFXMLRecordParser extends XMLRecordParser {
 			map.put(OGFXMLRecordParser.OGFUR_WALL_DURATION_PROP, new DurationCastPropExpression<Number>(BatchParser.WALLCLOCK_PROP,1000L));
 			map.put(BatchParser.WALLCLOCK_PROP, new DurationSecondsPropExpression(OGFXMLRecordParser.OGFUR_WALL_DURATION_PROP));
 			}catch(PropertyCastException e){
-				getContext().error(e,"Error adding Derivations in OGFUsageRecordParser");
+				getLogger().error("Error adding Derivations in OGFUsageRecordParser",e);
 				throw new ConsistencyError("Bad derivation", e);
 			}
 		return map;
@@ -301,7 +301,7 @@ public class OGFXMLRecordParser extends XMLRecordParser {
 			// match our field names
 			spec.new Index("EndIndex",false,OGFUR_END_TIME_PROP.getName());
 		} catch (InvalidArgument e) {
-			c.error(e,"Failed to make EndIndex");
+			getLogger().error("Failed to make EndIndex",e);
 		}
 		}
 		return spec;

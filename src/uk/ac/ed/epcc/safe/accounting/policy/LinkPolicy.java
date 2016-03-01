@@ -148,7 +148,7 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 		}
 		
 		if( remote_tag == null ){
-			ctx.error("LinkPolicy target not a RefenceTag to a UsageRecordFactory "+tag);
+			getLogger().error("LinkPolicy target not a RefenceTag to a UsageRecordFactory "+tag);
 			return null;
 		}
 		
@@ -183,7 +183,7 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 		   try{
 			    peer =remote_fac.find(sel);
 		   }catch(Exception e){
-			     c.error(e,"Error finding peer in LinkPolicy");
+			     getLogger().error("Error finding peer in LinkPolicy",e);
 		   }
 		   if( peer == null ){
 			   throw new SkipRecord("No link record found");
@@ -296,5 +296,8 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 		Map<TransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
 		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "Set Master", "Set the master table for LinkPolicy"), new SetRemoteTransition());
 		return result;
+	}
+	protected final Logger getLogger(){
+		return c.getService(LoggerService.class).getLogger(getClass());
 	}
 }

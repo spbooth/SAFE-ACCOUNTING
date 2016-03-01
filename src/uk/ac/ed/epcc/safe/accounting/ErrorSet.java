@@ -28,6 +28,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
 import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 /**
  * Collection of error messages.
@@ -289,15 +290,7 @@ public class ErrorSet
     s.println("------");
   }
   public void report(AppContext c){
-	  for(String k : reg.keySet())
-	    {
-	      Entry e = reg.get(k);
-	      for(Detail lines : e.fails)
-	      {
-	        c.error(lines.getThrowable(),lines.getText());
-	      }
-	    }
-	 
+	 report(c.getService(LoggerService.class).getLogger(getClass()));
   }
   public void report(Logger l){
 	  for(String k : reg.keySet())

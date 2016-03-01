@@ -35,6 +35,8 @@ import uk.ac.ed.epcc.safe.accounting.update.UsageRecordPolicy;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** Class to implement {@link UsageRecordParseTarget} using a {@link PlugInOwner} and
@@ -62,6 +64,9 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	}
 	public AppContext getContext(){
 		return conn;
+	}
+	protected final Logger getLogger(){
+		return conn.getService(LoggerService.class).getLogger(getClass());
 	}
 	public boolean parse(DerivedPropertyMap map, R current_line)
 			throws AccountingParseException {
@@ -153,7 +158,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	    		try {
 					unique_properties=parsePropertyList(unique_prop_list);
 				} catch (InvalidPropertyException e) {
-					getContext().error(e,"Invalid property specified as unique");
+					getLogger().error("Invalid property specified as unique",e);
 				}
 	    	}else{
 	    		unique_properties = plugin_owner.getParser().getDefaultUniqueProperties();
@@ -215,7 +220,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 					}
 				}
 			}catch(Exception e){
-				getContext().error(e,"Error in record post-create");
+				getLogger().error("Error in record post-create",e);
 			}
 			return true;
 		}
@@ -250,7 +255,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 					}
 				}
 			}catch(Exception e){
-				getContext().error(e,"Error in record post-create");
+				getLogger().error("Error in record post-create",e);
 			}
 			
 		}else{

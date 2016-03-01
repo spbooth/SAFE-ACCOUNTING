@@ -44,8 +44,8 @@ import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
-
-
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.apps.Command;
 import uk.ac.ed.epcc.webapp.apps.CommandLauncher;
 import uk.ac.ed.epcc.webapp.apps.Options;
@@ -299,7 +299,7 @@ public class UsageRecordWriterFromDBApp implements Command {
 				}
 			}
 		} catch (Exception e) {
-			conn.error(e,"Error formatting records");
+			getLogger().error("Error formatting records",e);
 		}
 		
 		if( fw != null ){
@@ -308,7 +308,7 @@ public class UsageRecordWriterFromDBApp implements Command {
 			fw.close();
 		} catch (Exception e)
 		{
-			conn.error(e,"Error closing file");
+			getLogger().error("Error closing file",e);
 		}
 		}
 		// print any errors to stdout.
@@ -390,5 +390,8 @@ public class UsageRecordWriterFromDBApp implements Command {
 	
 	public AppContext getContext() {
 		return conn;
+	}
+	protected final Logger getLogger(){
+		return conn.getService(LoggerService.class).getLogger(getClass());
 	}
 }

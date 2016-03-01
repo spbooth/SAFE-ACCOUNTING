@@ -72,7 +72,7 @@ public class ConfigPlugInOwner<T extends TableTransitionTarget & PlugInOwner<R>,
 		    		try {
 						parser = ctx.makeObject(parser_class);
 					} catch (Exception e) {
-						ctx.error(e,"Error making parser");
+						getLogger().error("Error making parser",e);
 					}
 		    	}
 			return parser;
@@ -98,10 +98,10 @@ public class ConfigPlugInOwner<T extends TableTransitionTarget & PlugInOwner<R>,
 	    					policies.add(ctx.makeObject(pol_class));
 	    					log.debug("made ok");
 	    				}else{
-	    					ctx.error("Bad Policy class "+pol);
+	    					getLogger().error("Bad Policy class "+pol);
 	    				}
 	    			}catch(Throwable e){
-	    				ctx.error(e,"Error making policy ");
+	    				getLogger().error("Error making policy ",e);
 	    			}
 	    		}
 	    	}
@@ -123,10 +123,10 @@ public class ConfigPlugInOwner<T extends TableTransitionTarget & PlugInOwner<R>,
 	    		if( pol_class != null){
 	    			input.addChoice(pol, pol_class);
 	    		}else{
-	    			ctx.error("Bad Policy class "+pol);
+	    			getLogger().error("Bad Policy class "+pol);
 	    		}
 	    		}catch(Exception e){
-	    			ctx.error(e,"Error making policy ");
+	    			getLogger().error("Error making policy ",e);
 	    		}
 	    	}
 	    	}

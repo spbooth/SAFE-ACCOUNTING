@@ -48,6 +48,7 @@ import uk.ac.ed.epcc.webapp.forms.swing.SwingContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.swing.SwingFormComponentListener;
 import uk.ac.ed.epcc.webapp.forms.swing.SwingTransitionHandler;
 import uk.ac.ed.epcc.webapp.forms.text.CommandLineForm;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
 import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
 import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
@@ -276,7 +277,7 @@ public class ReportGeneratorApp implements Command {
                 }
 			}
 		} catch (Exception e) {
-			conn.error(e,"Error generating report "+e.getMessage());
+			conn.getService(LoggerService.class).getLogger(getClass()).error("Error generating report "+e.getMessage(),e);
 			CommandLauncher.die(e);
 		}
 		System.out.println("All done");

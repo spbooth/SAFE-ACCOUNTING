@@ -46,13 +46,13 @@ public class TransformErrorListener implements ErrorListener {
     	}
     }
 	public void error(TransformerException arg0) throws TransformerException {
-		conn.error(arg0,"Error in transform "+name+" "+arg0.getMessageAndLocation());
+		log.error("Error in transform "+name+" "+arg0.getMessageAndLocation(),arg0);
 		throw arg0;
 	}
 
 	public void fatalError(TransformerException arg0)
 			throws TransformerException {
-		conn.error(arg0,"Fatal Error in transform "+name+" "+arg0.getMessageAndLocation());
+		log.error("Fatal Error in transform "+name+" "+arg0.getMessageAndLocation(),arg0);
 		throw arg0;
 
 	}

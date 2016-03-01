@@ -190,7 +190,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			try {
 				getAccessorMap().addFormContents(map, f);
 			} catch (InvalidPropertyException e) {
-				getContext().error(e, "Error reading form");
+				getLogger().error("Error reading form",e);
 				return;
 			}
 			canModify(orig,map);
@@ -281,7 +281,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			try {
 				getAccessorMap().addFormContents(map, f);
 			} catch (InvalidPropertyException e) {
-				getContext().error(e, "Error reading form");
+				getLogger().error("Error reading form",e);
 				return;
 			}
 			checkCreate(map);
@@ -345,7 +345,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 					return new BackResult(getTransitionProvider(), new ForwardResult("/main.jsp"));
 				}
 			} catch (DataFault e) {
-				c.error(e,"Error deleting Allocation");
+				getLogger().error("Error deleting Allocation",e);
 			}
 			return new MessageResult("internal_error");
 		}
@@ -744,7 +744,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 					}
 				}
 		}catch(Throwable tr){
-			getContext().error(tr,"Error formating property as HTML");
+			getLogger().error("Error formating property as HTML",tr);
 		}
 	}
 

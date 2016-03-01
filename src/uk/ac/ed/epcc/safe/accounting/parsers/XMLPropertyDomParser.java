@@ -73,6 +73,7 @@ import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerDomParser;
 import uk.ac.ed.epcc.safe.accounting.xml.LSResolver;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
@@ -127,7 +128,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 	/**
 	 * The context within which this parser operates
 	 */
-	private AppContext context;
+	private final AppContext context;
 	boolean try_schema_info;
 	boolean use_schema_info=false;
 
@@ -156,7 +157,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
     private final NamespaceContext namespaces;
     private final Class target_class;
     private String default_schema_name;
-    Logger log;
+    protected final Logger log;
 
 	/*
 	 * ##########################################################################
@@ -266,7 +267,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 						}
 					}
 				}catch(Exception e){
-					context.error(e,"Error making targets for property fields "+f.toGenericString());
+					log.error("Error making targets for property fields "+f.toGenericString(),e);
 				}
 			}
 		}
@@ -278,7 +279,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 				XPathExpression exp = xpath.compile(path);
     			targets.put(t, exp);
 				}catch( Exception e){
-					context.error(e,"Error setting path from property");
+					log.error("Error setting path from property",e);
 				}
 			}
 			DomValueParser parser=context.makeObjectWithDefault(DomValueParser.class, null, mode+"."+t.getName()+".parser");
@@ -290,7 +291,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 		
 		documentFactory.setNamespaceAware(true);
 		// Set schema if defined
-		if( context.isFeatureOn(USE_SCHEMA_FEATURE_PREFIX+mode, true)){
+		if( Feature.checkDynamicFeature(getContext(),USE_SCHEMA_FEATURE_PREFIX+mode, true)){
 		TextFileOverlay schema_overlay = context.makeObject(TextFileOverlay.class, context.getInitParameter("schema.overlay", "schema"));
 		if( schema_overlay.isValid()){
 			String schema = getSchemaName(context, mode);
@@ -306,7 +307,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 						documentFactory.setSchema(factory.newSchema(new StreamSource(sheet.getDataReader())));
 				}
 				}catch(Exception e){
-					context.error(e,"Error setting schema");
+					log.error("Error setting schema",e);
 				}
 			}
 		}
@@ -377,7 +378,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 					result.add(t);
 				}
 			} catch (XPathExpressionException e1) {
-				context.error(e1, "Error in defines call");
+				log.error("Error in defines call",e1);
 			}
 		}
 		return result;
@@ -544,7 +545,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
         }
         catch (TransformerException e)
         {
-          context.error(e,"Error printing dom");
+          log.error("Error printing dom",e);
           return "BAD DOM";
         }
 

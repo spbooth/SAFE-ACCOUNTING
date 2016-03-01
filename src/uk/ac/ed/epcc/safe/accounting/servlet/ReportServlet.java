@@ -185,7 +185,7 @@ public class ReportServlet extends SessionServlet {
 				}
 			}
 		}catch(Throwable t){
-			conn.error(t,"Cannot build report");
+			getLogger(conn).error("Cannot build report",t);
 			global_error.add("Global Report error", "Cannot build report", t);
 			has_errors=true;
 		}
@@ -225,7 +225,7 @@ public class ReportServlet extends SessionServlet {
 						builder.renderXML(type, report_params, type.getResult(raw.getOutputStream()));
 						result = new ServeDataResult(producer, producer.setData(raw));
 					}catch(Throwable t){
-						conn.error(t,"Error generating raw XML");
+						getLogger(conn).error("Error generating raw XML",t);
 					}
 				}
 				result = new DeveloperResult(result, logs, errors, true);

@@ -60,7 +60,7 @@ public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X>
 				try {
 					commit();
 				} catch (DataFault e) {
-					getContext().error(e,"Error increasing counter");
+					getLogger().error("Error increasing counter",e);
 				}
 			}
 		}
@@ -77,7 +77,7 @@ public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X>
 			try {
 				builder=new ReportBuilder(getContext());
 			} catch (Exception e) {
-				getContext().error(e,"Error making builder");
+				getLogger().error("Error making builder",e);
 			}
 		}
 		return builder;
@@ -100,7 +100,7 @@ public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X>
 		try {
 			return getBuilder().getSchema(getContext().getInitParameter(ReportBuilder.REPORT_SCHEMA_CONFIG, ReportBuilder.DEFAULT_REPORT_SCHEMA));
 		} catch (Exception e) {
-			getContext().error(e,"Error getting schema");
+			getLogger().error("Error getting schema",e);
 			return null;
 		}
 	}
@@ -116,7 +116,7 @@ public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X>
 			return TextFileOverlay.getStringFromStream(getContext(),
 					TextFileOverlay.getResourceStream(getContext(), ReportBuilder.REPORT_TEMPLATE_GROUP, "InitialReport.xml"));
 		} catch (IOException e) {
-			getContext().error(e,"Error making initial report");
+			getLogger().error("Error making initial report",e);
 			return null;
 		}
 	}
@@ -128,7 +128,7 @@ public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X>
 			// its actually the extensions with do the validating.
 			b.setupExtensions(new HashMap<String, Object>());
 		} catch (ParserConfigurationException e) {
-			getContext().error(e,"Error setting up validator");
+			getLogger().error("Error setting up validator",e);
 			return null;
 		}
 		return new ValidatingDomVisitor(b);

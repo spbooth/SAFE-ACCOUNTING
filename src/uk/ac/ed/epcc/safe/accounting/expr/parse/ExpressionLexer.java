@@ -27,6 +27,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
 
@@ -227,7 +228,10 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 	}
 
 	public void yyerror(String s) {
-		conn.error(s);
+		LoggerService serv = conn.getService(LoggerService.class);
+		if( serv != null ){
+			serv.getLogger(getClass()).error(s);
+		}
 		
 	}
 

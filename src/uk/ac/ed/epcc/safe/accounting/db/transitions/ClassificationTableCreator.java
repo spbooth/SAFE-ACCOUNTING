@@ -32,6 +32,7 @@ import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.jdbc.table.DataBaseHandlerService;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableListResult;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
@@ -85,7 +86,7 @@ public class ClassificationTableCreator implements FormCreator,Contexed{
 				}
 				return new TableListResult();
 			}catch(Exception e){
-				conn.error(e,"Error creating table");
+				conn.getService(LoggerService.class).getLogger(getClass()).error("Error creating table",e);
 				throw new ActionException("Create failed");
 			}
 		}

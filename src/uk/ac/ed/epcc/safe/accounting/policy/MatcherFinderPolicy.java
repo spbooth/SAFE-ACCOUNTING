@@ -90,7 +90,7 @@ public class MatcherFinderPolicy extends BasePolicy implements Contexed,Transiti
 	private Set<PropertyTag<String>> available_names = new HashSet<PropertyTag<String>>();
 	private Set<ReferenceTag> available_refs = new HashSet<ReferenceTag>();
 	private String table;
-	private Logger log;
+	private final Logger log;
 	public MatcherFinderPolicy(AppContext c){
 		this.c=c;
         log = c.getService(LoggerService.class).getLogger(getClass());
@@ -170,17 +170,17 @@ public class MatcherFinderPolicy extends BasePolicy implements Contexed,Transiti
 						log.debug("found new tag "+prop_tag);
 						PropertyTag<? extends IndexedReference> target_tag = finder.find(IndexedReference.class, prop_tag);
 						if( target_tag == null ){
-							c.error("Expected IndexedReferenceTag "+prop_tag+" not found for "+name);
+							log.error("Expected IndexedReferenceTag "+prop_tag+" not found for "+name);
 						}else{
 							if( target_tag instanceof ReferenceTag){
 								ReferenceTag ett = (ReferenceTag) target_tag;
 								if( MatcherFinder.class.isAssignableFrom(ett.getFactoryClass())){
 									tagmap.put(tag, ett);
 								}else{
-									c.error("The Factory for ReferenceTag "+target_tag.getFullName()+" is not an OwnerFinder");
+									log.error("The Factory for ReferenceTag "+target_tag.getFullName()+" is not an OwnerFinder");
 								}
 							}else{
-								c.error("PropertyTag "+target_tag.getFullName()+" not a ReferenceTag");
+								log.error("PropertyTag "+target_tag.getFullName()+" not a ReferenceTag");
 							}
 						}
 					}else{
@@ -282,7 +282,7 @@ public FormResult action(Form f)
 			try {
 				regenerate(name);
 			} catch (Exception e) {
-				getContext().error(e,"Error in Owner regenerate");
+				log.error("Error in Owner regenerate",e);
 				return new MessageResult("internal_error");
 			}
 			return new ViewTableResult(target);
@@ -328,7 +328,7 @@ public FormResult action(Form f)
 				hb.addTable(getContext(), t);
 			}
 		}catch(Throwable e){
-			getContext().error(e,"Error making ClassificationPolicy summary table");
+			log.error("Error making ClassificationPolicy summary table",e);
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -376,7 +376,7 @@ public FormResult action(Form f)
 				if( t.goodFieldName(name)){
 					t.setField(name, new ReferenceFieldType(table));
 				}else{
-					conn.error("Bad field name "+name+" in ClassificationPolicy");
+					conn.getService(LoggerService.class).getLogger(getClass()).error("Bad field name "+name+" in ClassificationPolicy");
 				}
 			}
 		}

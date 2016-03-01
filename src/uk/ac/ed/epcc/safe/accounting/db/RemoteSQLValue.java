@@ -29,6 +29,8 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.PatternArgument;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -98,6 +100,9 @@ public abstract class RemoteSQLValue<H extends DataObject,R extends DataObject, 
 	
 	public AppContext getContext(){
 		return c;
+	}
+	protected Logger getLogger(){
+		return c.getService(LoggerService.class).getLogger(getClass());
 	}
 	
 	public final T makeObject(ResultSet rs, int pos) throws DataException {

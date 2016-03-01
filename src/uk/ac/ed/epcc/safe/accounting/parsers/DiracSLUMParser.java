@@ -151,7 +151,7 @@ public class DiracSLUMParser extends AbstractKeyPairParser {
 			derv.peer(BatchParser.JOB_NAME_PROP, JOB_NAME_PROP);
 			derv.put(BatchParser.WALLCLOCK_PROP, new DurationSecondsPropExpression(ELAPSED_PROP));
 		} catch (PropertyCastException e) {
-			getContext().error(e, "Error setting standard derived props");
+			getLogger().error("Error setting standard derived props",e);
 		}
 		return derv;
 	}

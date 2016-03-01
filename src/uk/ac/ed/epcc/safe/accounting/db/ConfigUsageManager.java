@@ -61,14 +61,14 @@ public class ConfigUsageManager extends UsageRecordUsageManager {
 						}
 						addProducer(desc, producer);
 					}else{
-						c.error("No valid producer for "+tab);
+						getLogger().error("No valid producer for "+tab);
 					}
 				}catch(Throwable e){
-					c.error(e,"Error making UsageProducer "+tag);
+					getLogger().error("Error making UsageProducer "+tag,e);
 				}
 			}
 		}else{
-			c.error("No tables specified for ConfigUsageManager tag "+tag+".tables");
+			getLogger().error("No tables specified for ConfigUsageManager tag "+tag+".tables");
 		}
 
 	}

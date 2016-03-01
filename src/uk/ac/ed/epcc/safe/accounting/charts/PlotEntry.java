@@ -302,7 +302,7 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 	   try{
 		   return c.getService(ChartService.class).getPlotEntry(finder, name, start, end);
 	   }catch(Exception e){
-		   c.error(e,"Error making PlotEntry name=<"+name+">");
+		   c.getService(LoggerService.class).getLogger(PlotEntry.class).error("Error making PlotEntry name=<"+name+">",e);
 		   throw e;
 	   }
    }

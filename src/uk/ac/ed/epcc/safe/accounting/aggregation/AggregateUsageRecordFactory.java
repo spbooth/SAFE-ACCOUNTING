@@ -233,7 +233,7 @@ public abstract class AggregateUsageRecordFactory
 					try {
 						target.fastRegenerate();
 					} catch (Exception e) {
-						getContext().error(e,"Error regenerating table");
+						getLogger().error("Error regenerating table",e);
 						throw new TransitionException("Regenerate failed");
 					}
 					return new ViewTableResult(target);
@@ -349,7 +349,7 @@ public abstract class AggregateUsageRecordFactory
 			tmp.put(StandardProperties.ENDED_PROP,AGGREGATE_ENDED_PROP);
 			map.addDerived(c, tmp);
 		}catch(PropertyCastException e){
-			c.error(e,"Failed to make time aliases");
+			getLogger().error("Failed to make time aliases",e);
 		}
 		assert(map.getDerivedProperties().size()==(propsize+2));
 		propsize+=2;
@@ -715,7 +715,7 @@ public abstract class AggregateUsageRecordFactory
 		try {
 			clear();
 		} catch (DataFault e) {
-			getContext().error(e,"Error in clear");
+			getLogger().error("Error in clear",e);
 		}
 		
 		StringBuilder sb = new StringBuilder();

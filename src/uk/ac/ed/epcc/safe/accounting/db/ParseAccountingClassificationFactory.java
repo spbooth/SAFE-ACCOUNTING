@@ -97,7 +97,7 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 		finder.addFinder(map.setRelationshipProperties(this));
 		match_prop = (PropertyTag<String>) finder.find(String.class,c.getInitParameter(table+".match",Classification.NAME));
 		if( match_prop == null ){
-			c.error("No match property defined");
+			getLogger().error("No match property defined");
 		}
 		
 		PropertyRegistry derived = new PropertyRegistry(table+"DerivedProperties","Derived properties for table "+table);
@@ -107,7 +107,7 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 			try {
 				expression_map.put(AccountingClassificationFactory.NAME_PROP, match_prop);
 			} catch (PropertyCastException e) {
-				c.error(e,"Error adding derived mapping for name");
+				getLogger().error("Error adding derived mapping for name",e);
 			}
 		}
 		map.addDerived(c, expression_map);
@@ -226,7 +226,7 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 			}
 			map.setContainer(c);
 			}catch(Exception e){
-				getContext().error(e,"Error applying policies in postMakeByName");
+				getLogger().error("Error applying policies in postMakeByName",e);
 			}
 		}
 	}
@@ -304,7 +304,7 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 		}
 		return spec;
 		}catch(Throwable t){
-			c.error(t,"Error in getDefaultTableSpecification");
+			getLogger().error("Error in getDefaultTableSpecification",t);
 			return null;
 		}
 	}

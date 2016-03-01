@@ -119,13 +119,14 @@ public class RestrictExtension extends ReportExtension {
 			}
 			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
 			if( fac != null){
-				BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, val);
-				if( fil == null ){
-					fil = new FalseFilter(fac.getTarget());
-				}
 				try {
+					BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, val);
+					if( fil == null ){
+						fil = new FalseFilter(fac.getTarget());
+					}
+
 					return fac.exists(fil);
-				} catch (DataException e) {
+				} catch (Exception e) {
 					addError("relationship_error", "Cannot check for relationship="+val+" on "+type, e);
 					return false;
 				}
@@ -163,24 +164,24 @@ public class RestrictExtension extends ReportExtension {
 
 			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
 			if( fac != null){
-				BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
-				if( fil == null ){
-					fil = new FalseFilter(fac.getTarget());
-				}
-				if( name == null || name.trim().length()==0 ){
-					try {
+				try {
+					BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
+					if( fil == null ){
+						fil = new FalseFilter(fac.getTarget());
+					}
+					if( name == null || name.trim().length()==0 ){
 						return fac.exists(fil);
-					} catch (DataException e) {
-						addError("relationship_error", "Cannot check for relationship="+role+" on "+type, e);
-						return false;
-					}
-				}else{
-					// Want role on specific object
-					if( fac instanceof NameFinder){
-						return fac.matches(fil, (DataObject) ((NameFinder)fac).findFromString(name));
 					}else{
-						addDeveloperError("not_name_finder", type);
+						// Want role on specific object
+						if( fac instanceof NameFinder){
+							return fac.matches(fil, (DataObject) ((NameFinder)fac).findFromString(name));
+						}else{
+							addDeveloperError("not_name_finder", type);
+						}
 					}
+				} catch (Exception e) {
+					addError("relationship_error", "Cannot check for relationship="+role+" on "+type, e);
+					return false;
 				}
 			}else{
 			addDeveloperError("no_relationship", type);

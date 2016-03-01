@@ -228,7 +228,7 @@ public final PropExpressionMap getDerivedProperties() {
 			return getAccessorMap().getFilter(c.tag, c.match, c.data);
 			
 		} catch (CannotFilterException e) {
-			getContext().error(e,"Attempt to filter on illegal property");
+			getLogger().error("Attempt to filter on illegal property",e);
 			return new FalseFilter<T>(getTarget());
 		}
 	}

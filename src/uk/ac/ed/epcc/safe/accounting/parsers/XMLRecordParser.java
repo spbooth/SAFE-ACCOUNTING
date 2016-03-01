@@ -38,7 +38,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
-import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.xml.XMLErrorHandler;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
@@ -143,7 +142,9 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 	public AppContext getContext() {
 		return this.context;
 	}
-
+    protected final Logger getLogger(){
+    	return log;
+    }
 
 
 	
@@ -280,8 +281,8 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 			
 			return handler.iterator();
 		} catch (IOException e) {
-			this.context.error(e,
-					"I/O exception occured while splitting OGF usage records");
+			getLogger().error(
+					"I/O exception occured while splitting OGF usage records",e);
 			throw new AccountingParseException(
 					"Problem while separating OGF-UR usage records", e);
 		}

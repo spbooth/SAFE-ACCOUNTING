@@ -40,9 +40,7 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
-import uk.ac.ed.epcc.webapp.forms.transition.FormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
-import uk.ac.ed.epcc.webapp.forms.transition.TransitionVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
@@ -150,7 +148,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 						tmp.startListenerParse();
 						result.add(tmp);
 					} catch (Throwable e) {
-						ctx.error(e,"Error making UsageRecordListner list="+list+" table="+tables[i]);
+						getLogger().error("Error making UsageRecordListner list="+list+" table="+tables[i],e);
 					}
 				}
 			}
@@ -304,6 +302,9 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 			result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "Remove Listener"),new DeleteListenerTransition());
 		}
 		return result;
+	}
+	protected final Logger getLogger(){
+		return ctx.getService(LoggerService.class).getLogger(getClass());
 	}
 
 }

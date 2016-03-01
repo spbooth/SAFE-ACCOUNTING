@@ -27,6 +27,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** QueryMapper that plots property data using the {@link OverlapHandler} overlap methods
  * Note that this may be inefficient if used in a TimeChart as the overlap records will be processed multiple times.
  * 
@@ -93,7 +94,7 @@ public class OverlapUsageRecordQueryMapper<K,D extends Number> extends UsageReco
 				res.put(set, handler.getOverlapSum(red,plot_prop, start_prop, end_prop, sel, start, end));
 			}
 		} catch (Exception e) {
-			conn.error(e,"error in PropertyQueryMapper");
+			conn.getService(LoggerService.class).getLogger(getClass()).error("error in PropertyQueryMapper",e);
 		}
 		return res;
 	}

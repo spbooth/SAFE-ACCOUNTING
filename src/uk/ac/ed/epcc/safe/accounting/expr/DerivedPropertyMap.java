@@ -28,6 +28,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.SetPropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** A PropertyMap that can also define derived properties.
  * stored properties always take precidence even when a derived definition exists
  * 
@@ -44,6 +46,9 @@ public class DerivedPropertyMap extends PropertyMap implements ExpressionTarget{
   public DerivedPropertyMap(AppContext c){
 	  conn=c;
 	 // log=c.getService(LoggerService.class).getLogger(getClass());
+  }
+  protected final Logger getLogger(){
+	  return conn.getService(LoggerService.class).getLogger(getClass());
   }
   public <T extends Number> void addDerived(PropertyTag<T> tag,PropExpression<? extends T> expr ) throws PropertyCastException{
 	  derived.put(tag, expr);
@@ -67,7 +72,7 @@ public <T> T getProperty(PropertyTag<T> key) {
 		}catch(InvalidPropertyException e){
 			return null;
 		} catch (Exception e) {
-			conn.error(e,"Error in derived property evaluation "+derived.get(key));
+			getLogger().error("Error in derived property evaluation "+derived.get(key),e);
 		}
 	
 	}

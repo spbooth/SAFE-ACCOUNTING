@@ -62,7 +62,7 @@ public class ReportTemplate extends DataObject implements Retirable{
 			b.setupExtensions(params);
 			res = b.canUse(user,params);
 		} catch (Exception e) {
-			getContext().error(e,"Error creating builder");
+			getLogger().error("Error creating builder",e);
 		}
 		getContext().getService(LoggerService.class).getLogger(getClass()).debug("Template "+getReportName()+" canUse="+res);
 		return res;
@@ -78,7 +78,7 @@ public class ReportTemplate extends DataObject implements Retirable{
 		try {
 			return getBuilder() == null;
 		} catch (Exception e) {
-			getContext().error(e,"Error creating builder");
+			getLogger().error("Error creating builder",e);
 		}
 		return true;
 	}

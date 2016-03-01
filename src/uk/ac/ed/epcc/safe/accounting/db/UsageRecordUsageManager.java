@@ -29,7 +29,6 @@ import uk.ac.ed.epcc.webapp.forms.inputs.DateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
-import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataNotFoundException;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -94,7 +93,7 @@ public abstract class UsageRecordUsageManager extends UsageManager<UsageRecordFa
 				}catch(DataNotFoundException nfe){
 					return null;
 				}catch(Exception e){
-					getContext().error(e,"Error in getSelected ");
+					getLogger().error("Error in getSelected ",e);
 					return null;
 				}
 				

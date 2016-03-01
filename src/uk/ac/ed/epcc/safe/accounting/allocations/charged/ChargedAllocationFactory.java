@@ -270,7 +270,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 			try {
 				regenerate(target);
 			} catch (Exception e) {
-				getContext().error(e,"Error from regenerate");
+				getLogger().error("Error from regenerate",e);
 				throw new TransitionException("Internal error");
 			}
 			return new ChainedTransitionResult<T, AllocationKey<T>>(ChargedAllocationFactory.this, target, null);
@@ -429,7 +429,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 			try {
 				target.regenerateAll();
 			} catch (Exception e) {
-				getContext().error(e,"Error in regenerateAll");
+				getLogger().error("Error in regenerateAll",e);
 				throw new TransitionException("internal error");
 			}
 			return new ViewTableResult(target);
@@ -510,7 +510,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 				
 			}
 		}catch(Exception e){
-			getContext().error(e,"Error regenerating use");
+			getLogger().error("Error regenerating use",e);
 		}
 		super.notifySplit(first, second);
 	}
@@ -519,7 +519,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		try {
 			regenerate(rec);
 		} catch (Exception e) {
-			getContext().error(e,"Error regenerating after creation");
+			getLogger().error("Error regenerating after creation",e);
 		}
 		super.notifyCreated(rec);
 	}
@@ -538,7 +538,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		try {
 			regenerate(rec);
 		} catch (Exception e) {
-			getContext().error(e,"Error regenerating after creation");
+			getLogger().error("Error regenerating after creation",e);
 		}
 		super.notifyModified(rec, details);
 	}

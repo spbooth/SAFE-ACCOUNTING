@@ -21,6 +21,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.content.Table;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 /** Class that generates Table summaries of a PropertyContainer
  * 
@@ -61,12 +63,15 @@ public class PropertyTableMaker implements Contexed {
 			t.put("Description",tag,tag.getDescription());
 			t.put("Value",tag,vp.format(dat));
 			}catch(Throwable te){
-				conn.error(te,"Error formatting property");
+				getLogger().error("Error formatting property",te);
 			}
 		}
 	}
 	public AppContext getContext() {
 		return conn;
+	}
+	protected final Logger getLogger(){
+		return conn.getService(LoggerService.class).getLogger(getClass());
 	}
 	
 }

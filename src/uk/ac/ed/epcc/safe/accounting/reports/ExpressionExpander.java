@@ -104,16 +104,16 @@ public <T> String expand(String input){
 					  if( fmt.getType().isAssignableFrom(val.getClass())){
 						  text = fmt.format(val);
 					  }else{
-						  conn.error("Bad formatter selected for "+expr.toString()+":"+expr.getTarget().getCanonicalName()+" passed "+val.getClass().getCanonicalName()+" "+val.toString());
+						  getLogger().error("Bad formatter selected for "+expr.toString()+":"+expr.getTarget().getCanonicalName()+" passed "+val.getClass().getCanonicalName()+" "+val.toString());
 					  }
 				  }else{
 					  log.warn("Property "+expr.toString()+" null in MacroExpander");
 				  }
 			  }else{
-				  conn.error("bad expression "+name);
+				  getLogger().error("bad expression "+name);
 			  }
 		  }catch(Throwable t){
-			  conn.error(t,"Cannot parse expression");
+			  getLogger().error("Cannot parse expression",t);
 		  }
 		  text = text.replace("\\", "\\\\");
 		  text = text.replace("$", "\\$");
@@ -147,7 +147,7 @@ public <T> boolean isDefined(String name){
 	  try {
 		return parser.parse(name);
 	} catch (Throwable e) {
-		conn.error(e,"Error parsing expression");
+		getLogger().error("Error parsing expression",e);
 		return null;
 	}
   }
@@ -160,8 +160,12 @@ public <T> T evaluate(PropExpression<T> expr){
 		  T val = container.evaluateExpression(expr);
 		  return val;
 	  }catch(Throwable t){
-		  conn.error(t, "Error expanding expression");
+		  getLogger().error( "Error expanding expression",t);
 	  }
 	  return null;
   }
+
+	private Logger getLogger(){
+		return getContext().getService(LoggerService.class).getLogger(getClass());
+	}
 }

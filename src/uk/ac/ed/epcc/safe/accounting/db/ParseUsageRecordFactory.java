@@ -341,7 +341,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 				int result[] = target.rescan(sel);
 				return new MessageResult("data_loaded","Stored text",Integer.toString(result[0]),Integer.toString(result[1]),Integer.toBinaryString(result[2]));
 			} catch (Exception e) {
-				target.getContext().error(e,"Error rescaning");
+				target.getContext().getService(LoggerService.class).getLogger(getClass()).error("Error rescaning",e);
 				return new MessageResult("internal_error");
 			}
 		}
@@ -440,7 +440,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 					}
 				}catch(AccountingParseException e){
 					fail++;
-					getContext().error(e,"Error in re-parse");
+					getLogger().error("Error in re-parse",e);
 				}
 			}
 		}

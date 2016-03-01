@@ -28,11 +28,9 @@ import org.w3c.dom.traversal.NodeIterator;
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.UnexpandedContentException;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -118,13 +116,13 @@ public class FilterExtension extends ReportExtension{
 			  }
 
 		  }catch(Throwable t){
-			  getContext().error(t,"Error parsing filter clause");
+			  getLogger().error("Error parsing filter clause",t);
 			  addError("Filter parse error", t.getMessage());
 			  prev.addRecordSelector(new SelectClause());
 		  }
 		  return prev;
 	  }catch(Throwable t){
-		  getContext().error(t,"Error parsing filter clause");
+		  getLogger().error("Error parsing filter clause",t);
 		  addError("Filter parse error", t.getMessage());
 		  return null;
 	  }
@@ -145,7 +143,7 @@ public class FilterExtension extends ReportExtension{
 		  }
 
 	  }catch(Throwable t){
-		  getContext().error(t,"Error parsing filter clause");
+		  getLogger().error("Error parsing filter clause",t);
 		  addError("ObjectSet parse error", t.getMessage());
 	  }
 	  return null;

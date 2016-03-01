@@ -22,6 +22,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Input for propExpressions
  * 
  * @author spb
@@ -47,12 +49,18 @@ public void validate() throws FieldException {
 		try {
 			parser.parse(value);
 		} catch (ParseException e) {
-			parser.getContext().error(e,"Error parsing prop expression");
+			getLogger().error("Error parsing prop expression",e);
 			throw new ValidateException(e.getMessage());
 		} catch (InvalidPropertyException e) {
-			parser.getContext().error(e,"Error parsing prop expression");
+			getLogger().error("Error parsing prop expression",e);
 			throw new ValidateException(e.getMessage());
 		}
 	}
+}
+/**
+ * @return
+ */
+protected Logger getLogger() {
+	return parser.getContext().getService(LoggerService.class).getLogger(getClass());
 }
 }

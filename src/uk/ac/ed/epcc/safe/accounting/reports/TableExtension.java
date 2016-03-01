@@ -80,6 +80,8 @@ import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.content.Transform;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 /**
@@ -473,13 +475,13 @@ public class TableExtension extends ReportExtension {
 				}
 			} catch (DataException e) {
 				//e.printStackTrace();
-				conn.error(e,"Error making table");
+				getLogger(conn).error("Error making table",e);
 				extension.addError("Data Error", "Error making summary table", e);
 			} catch (InvalidPropertyException e) {
-				conn.error(e,"Unsupported property in table");
+				getLogger(conn).error("Unsupported property in table",e);
 				extension.addError("Property Error", "Unsupported property in summary table", e);
 			}catch(Throwable t){
-				conn.error(t,"Error making table");
+				getLogger(conn).error("Error making table",t);
 				extension.addError("Internal error", "Error making table",t);
 			}
 			//store period to custom formatters can retreive
@@ -540,7 +542,9 @@ public class TableExtension extends ReportExtension {
 			
 			
 		}
-
+		protected final Logger getLogger(AppContext conn){
+			return conn.getService(LoggerService.class).getLogger(getClass());
+		}
 		
 
 		
@@ -697,13 +701,13 @@ public class TableExtension extends ReportExtension {
 				}
 			} catch (DataException e) {
 				//e.printStackTrace();
-				conn.error(e,"Error making table");
+				getLogger(conn).error("Error making table",e);
 				extension.addError("Data Error", "Error making summary table", e);
 			} catch (InvalidPropertyException e) {
-				conn.error(e,"Unsupported property in table");
+				getLogger(conn).error("Unsupported property in table",e);
 				extension.addError("Property Error", "Unsupported property in summary table", e);
 			}catch(Throwable t){
-				conn.error(t,"Error making table");
+				getLogger(conn).error("Error making table",t);
 				extension.addError("Internal error", "Error making table",t);
 			}
 			table = extension.processTable(table, instructions);
@@ -1177,7 +1181,7 @@ public class TableExtension extends ReportExtension {
 				target.setPrintHeadings(getBooleanParam("Value", true, inst));
 			}
 		} catch (Throwable t) {
-			getContext().error(t, "Error processing table " + instruction);
+			getLogger().error( "Error processing table " + instruction,t);
 
 		}
 	}

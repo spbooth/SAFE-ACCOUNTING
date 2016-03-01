@@ -56,6 +56,9 @@ public class MacroExpander implements Contexed{
   public AppContext getContext() {
 	  return conn;
   }
+  protected final Logger getLogger(){
+	  return conn.getService(LoggerService.class).getLogger(getClass());
+  }
   public void setPropertyContainer(PropertyContainer cont){
 	  container=cont;
   }
@@ -110,13 +113,13 @@ public <T> String expand(String input){
 					  if( t.allow(val) && fmt.getType().isAssignableFrom(val.getClass())){
 						  text = fmt.format(val);
 					  }else{
-						  conn.error("Bad formatter selected for "+t.getFullName()+":"+t.getTarget().getCanonicalName()+" passed "+val.getClass().getCanonicalName()+" "+val.toString());
+						  getLogger().error("Bad formatter selected for "+t.getFullName()+":"+t.getTarget().getCanonicalName()+" passed "+val.getClass().getCanonicalName()+" "+val.toString());
 					  }
 				  }else{
 					  log.warn("Property "+t.getFullName()+" null in MacroExpander");
 				  }
 			  }else{
-				  conn.error("non existent property "+name);
+				  getLogger().error("non existent property "+name);
 			  }
 		  }
 		  m.appendReplacement(result, text);

@@ -31,6 +31,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** PropertyContainerParser based on regular expressions.
  * 
  * This class should be sub-classed to make a working parser. Any {@link PropertyTag}
@@ -47,6 +49,9 @@ public abstract class RegexpParser extends AbstractPropertyContainerParser {
     
     public abstract AppContext getContext();
     
+    protected final Logger getLogger(){
+    	return getContext().getService(LoggerService.class).getLogger(getClass());
+    }
 	@SuppressWarnings("unchecked")
 	public boolean parse(PropertyMap map, String record)
 			throws AccountingParseException {
@@ -100,7 +105,7 @@ public abstract class RegexpParser extends AbstractPropertyContainerParser {
 					parsers.put(tag, (ValueParser) tag.accept(vis));
 				}
 			}catch(Exception e){
-				getContext().error(e,"Error making targets for property fields "+f.toGenericString());
+				getLogger().error("Error making targets for property fields "+f.toGenericString(),e);
 			}
 		}
 	}

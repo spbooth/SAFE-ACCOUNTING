@@ -94,7 +94,7 @@ public class AliasPropertyPolicy extends BasePolicy {
 				 * TODO if this class is merged with DerivedPropertyPolicy, a new
 				 * property tag would be created here instead of reporting an error
 				 */
-				ctx.error("Error while making an alias for '" + aliasName
+				getLogger(ctx).error("Error while making an alias for '" + aliasName
 						+ "':  Couldn't find property '" + aliasName + "'");
 				continue;
 			}
@@ -107,13 +107,13 @@ public class AliasPropertyPolicy extends BasePolicy {
 					
 
 			} catch (ParseException e) {
-				ctx.error(e, "Error making alias for property '" + aliasName
-						+ "': Couldn't interpret expression '" + derived_properties.get(key) + "'");
+				getLogger(ctx).error( "Error making alias for property '" + aliasName
+						+ "': Couldn't interpret expression '" + derived_properties.get(key) + "'",e);
 			} catch (PropertyCastException e) {
-				ctx.error(e,"Type mis-match aliasing properties");
+				getLogger(ctx).error("Type mis-match aliasing properties",e);
 				
 			} catch (InvalidPropertyException e) {
-				ctx.error(e,"Property not found ");
+				getLogger(ctx).error("Property not found ",e);
 			}
 		}
 

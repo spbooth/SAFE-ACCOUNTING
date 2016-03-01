@@ -208,6 +208,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
 			String table) {
 		conn=ctx;
+		log = conn.getService(LoggerService.class).getLogger(getClass());
 		tag=table;
 		MultiFinder mf = new MultiFinder();
 		mf.addFinder(StandardProperties.time);
@@ -264,7 +265,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 	@Override
 	public void startParse(PropertyContainer staticProps) throws Exception {
 		super.startParse(staticProps);
-		log = conn.getService(LoggerService.class).getLogger(getClass());
+		
 		master_factories = new HashMap<String,UsageRecordFactory<?>>();
 		String prefix = "GlobusJobmanagerParser."+tag+".";
 		Map<String,String> props = conn.getInitParameters(prefix);
@@ -279,7 +280,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 			if( fac != null ){
 				master_factories.put(name, fac);
 			}else{
-				conn.error("No master factory found for "+key+"->"+tag);
+				log.error("No master factory found for "+key+"->"+tag);
 			}
 		}
 	}

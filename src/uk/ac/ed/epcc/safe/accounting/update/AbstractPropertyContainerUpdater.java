@@ -33,6 +33,8 @@ import uk.ac.ed.epcc.webapp.jdbc.table.LongFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 /** Base class for implementing {@link PropertyContainerUpdater}
  * 
@@ -66,7 +68,7 @@ public TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpec
         					final int length = t.length();
         					FieldType type= makeFieldType(c, tag, target, length);
         					if( type == null){
-        						c.error("Can't resolve field type for "+name);
+        						getLogger(c).error("Can't resolve field type for "+name);
         					}else{
         						// Note that AccessorMap will try to 
         						// locate this property from the name of the field so 
@@ -102,7 +104,7 @@ public TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpec
         					final int length = t.length();
         					FieldType type= makeFieldType(c, tag, target, length);
         					if( type == null){
-        						c.error("Can't resolve field type for "+name);
+        						getLogger(c).error("Can't resolve field type for "+name);
         					}else{
         						if( c.getBooleanParameter("auto_tag."+table_name+"."+tag.getFullName(), false)){
         							spec.setField(name, type);
@@ -131,6 +133,9 @@ public TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpec
 
 		return spec;
 	}
+protected Logger getLogger(AppContext c) {
+	return c.getService(LoggerService.class).getLogger(getClass());
+}
 private FieldType makeFieldType(AppContext c, PropertyTag tag,
 		Class target, final int length) {
 	FieldType type;

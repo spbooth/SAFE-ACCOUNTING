@@ -27,6 +27,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Class to upload an accounting table.
  * Upload parameters are passed as a map.
  * <ul>
@@ -78,7 +80,7 @@ public class AccountingUploadParser implements UploadParser, Contexed {
         			try {
 						val = ((ValueParser)tag.accept(vis)).parse((String) val);
 					} catch (Exception e) {
-						conn.error(e,"Error parsing fixed parameter "+tag.getName());
+						getLogger().error("Error parsing fixed parameter "+tag.getName(),e);
 					}
         		}
         		defaults.setProperty(tag, val);
@@ -92,6 +94,12 @@ public class AccountingUploadParser implements UploadParser, Contexed {
         String result = new AccountingUpdater(conn,defaults,fac).receiveAccountingData( update, replace,verify,augment);
 		
 		return result;
+	}
+	/**
+	 * @return
+	 */
+	protected Logger getLogger() {
+		return conn.getService(LoggerService.class).getLogger(getClass());
 	}
 
 	public AppContext getContext() {

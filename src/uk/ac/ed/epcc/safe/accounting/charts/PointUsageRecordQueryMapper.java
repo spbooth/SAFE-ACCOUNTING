@@ -36,6 +36,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** QueryMapper that plots property data based on a single DateProperty being within the target range
  * 
  * @author spb
@@ -110,7 +111,7 @@ public class PointUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 				
 			}
 		} catch (Exception e) {
-			conn.error(e,"error in PropertyQueryMapper");
+			conn.getService(LoggerService.class).getLogger(getClass()).error("error in PropertyQueryMapper",e);
 		}
 		return res;
 	}

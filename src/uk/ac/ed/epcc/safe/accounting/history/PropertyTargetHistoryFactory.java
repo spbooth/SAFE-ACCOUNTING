@@ -34,7 +34,6 @@ import uk.ac.ed.epcc.safe.accounting.db.PropertyMaker;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
@@ -212,7 +211,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 						derived.put(t, new DeRefExpression(PEER, t));
 					}
 				}catch(Exception e){
-					conn.error(e,"Error adding peer property");
+					getLogger().error("Error adding peer property",e);
 				}
 			}
 		}
@@ -223,7 +222,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 			derived.put(StandardProperties.STARTED_PROP, HISTORY_START);
 			derived.put(StandardProperties.ENDED_PROP, HISTORY_END);
 		}catch(Exception e){
-				conn.error(e,"Unexpected exception");
+				getLogger().error("Unexpected exception",e);
 		}
 		PropertyRegistry table_reg = new PropertyRegistry(tag, "Fields from table "+tag);
 		mapi.populate( finder, table_reg, false);

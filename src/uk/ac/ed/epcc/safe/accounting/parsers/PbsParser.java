@@ -549,7 +549,7 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 			derv.put(BatchParser.NODE_COUNT_PROP, PBS_NUM_NODES_PROP);
 			derv.put(BatchParser.PROC_COUNT_PROP, PBS_NUM_CPUS_PROP);
 		} catch (PropertyCastException e) {
-			getContext().error(e,"Error adding derivations");
+			getLogger().error("Error adding derivations",e);
 		}
 		
 		return derv;

@@ -85,7 +85,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 			assert(result == null || getTarget().isAssignableFrom(result.getClass()));
 			return result;
 		} catch (InvalidExpressionException e) {
-			getContext().error(e, "Error evaluating expression");
+			getLogger().error("Error evaluating expression",e);
 			return null;
 		}
 	}

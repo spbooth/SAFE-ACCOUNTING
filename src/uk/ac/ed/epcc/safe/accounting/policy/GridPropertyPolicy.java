@@ -37,6 +37,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** Policy to define standard properties used to 
  * generate OGF-Usage records
@@ -71,7 +73,7 @@ public class GridPropertyPolicy extends BaseUsageRecordPolicy {
 		try{
 			map.put(p2, p1);
 		}catch(PropertyCastException t){
-			conn.error(t,"Error adding Derivations in OGFUsageRecordParser");
+			getLogger().error("Error adding Derivations in OGFUsageRecordParser",t);
 			throw new ConsistencyError("Bad derivation", t);
 		}
 	}
@@ -80,7 +82,7 @@ public class GridPropertyPolicy extends BaseUsageRecordPolicy {
 		try{
 		    map.put(local, new DeRefExpression(globus_tag, remote));
 		}catch(PropertyCastException e){
-			conn.error(e,"Error adding expression for globus property");
+			getLogger().error("Error adding expression for globus property",e);
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -95,13 +97,13 @@ public class GridPropertyPolicy extends BaseUsageRecordPolicy {
 			try {
 				map.put(OGFXMLRecordParser.OGFUR_CPU_DURATION_PROP, new DurationCastPropExpression<Number>(StandardProperties.CPU_TIME_PROP, 1000L));
 			} catch (PropertyCastException e) {
-				conn.error(e,"Error making CPU_DURATION expression");
+				getLogger().error("Error making CPU_DURATION expression",e);
 			}
 			try {
 				
 				map.put(OGFXMLRecordParser.OGFUR_CREATE_TIME_PROP, new SelectPropExpression<Date>(Date.class, new PropExpression[]{StandardProperties.INSERTED_PROP,StandardProperties.ENDED_PROP}));
 			} catch (PropertyCastException e) {
-				conn.error(e,"Error making create CREATE_TIME expression");
+				getLogger().error("Error making create CREATE_TIME expression",e);
 			}
 
 			ADD_DERIVATON(map,OGFXMLRecordParser.OGFUR_QUEUE_PROP, BatchParser.QUEUE_PROP);
@@ -132,5 +134,8 @@ public class GridPropertyPolicy extends BaseUsageRecordPolicy {
 			}
 		}
 		return t;
+	}
+	protected final Logger getLogger(){
+		return conn.getService(LoggerService.class).getLogger(getClass());
 	}
 }

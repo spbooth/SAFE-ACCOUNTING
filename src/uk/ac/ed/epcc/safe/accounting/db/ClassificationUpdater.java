@@ -27,6 +27,8 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 /** Parses an external source of classification data.
  * 
@@ -88,7 +90,7 @@ public class ClassificationUpdater<T extends DataObject & PropertyContainer,R> {
     	
     	}catch(Exception e){
     		errors.add("Initialisation error", update, e);
-    		conn.error(e,"Error initialising parse");
+    		getLogger().error("Error initialising parse",e);
     		return "Error initialising parse";
     	}
     	while (lines.hasNext()) {
@@ -118,7 +120,7 @@ public class ClassificationUpdater<T extends DataObject & PropertyContainer,R> {
     			errors.add(pe.getMessage(), fmt);
     		}catch(Exception e){
     			errors.add("Unexpected parse error",fmt);
-    			conn.error(e,"Unexpected Error parsing line "+fmt);
+    			getLogger().error("Unexpected Error parsing line "+fmt,e);
     		}
     		
     	}
@@ -138,8 +140,11 @@ public class ClassificationUpdater<T extends DataObject & PropertyContainer,R> {
     	sb.append(skip_list.details(0));
     	if( error_text.length() > 0 ){
     		sb.append(error_text);
-    		conn.error("Error in parse\n"+error_text.toString());
+    		getLogger().error("Error in parse\n"+error_text.toString());
     	}
     	return sb.toString();
+	}
+	private Logger getLogger(){
+		return conn.getService(LoggerService.class).getLogger(getClass());
 	}
 }

@@ -234,7 +234,7 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 			}
 			cb.addTable(c, tab);
 		}catch(Exception e){
-			c.error(e,"Error making index table");
+			getLogger().error("Error making index table",e);
 		}
 		return cb;
 	}

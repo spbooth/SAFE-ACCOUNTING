@@ -97,19 +97,19 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 				// Include parse error in message.
 				throw new ValidateException("Cannot parse/validate template "+e.toString(),e);
 			} catch (IOException e) {
-				conn.error(e,"Bad template in ReportTemplate");
+				getLogger().error("Bad template in ReportTemplate",e);
 				throw new ValidateException("Cannot read template",e);
 			} catch (ParserConfigurationException e) {
-				conn.error(e,"Bad template in ReportTemplate");
+				getLogger().error("Bad template in ReportTemplate",e);
 				throw new ValidateException("XML Parser fault",e);
 			} catch (InvalidArgument e) {
-				conn.error(e,"Bad template in ReportTemplate");
+				getLogger().error("Bad template in ReportTemplate",e);
 				throw new ValidateException("Not found",e);
 			} catch (TransformerFactoryConfigurationError e) {
-				conn.error(e,"Bad template in ReportTemplate");
+				getLogger().error("Bad template in ReportTemplate",e);
 				throw new ValidateException("Bad template",e);
 			} catch (TransformerException e) {
-				conn.error(e,"Bad template in ReportTemplate");
+				getLogger().error("Bad template in ReportTemplate",e);
 				throw new ValidateException("Bad template",e);
 			}
 		}

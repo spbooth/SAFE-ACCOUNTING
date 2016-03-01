@@ -216,7 +216,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 			}catch(InvalidPropertyException ee){
 				throw ee;
 			} catch (Exception e) {
-				getContext().error(e,"Unexpected exception evaluating expression");
+				getLogger().error("Unexpected exception evaluating expression",e);
 				throw new InvalidExpressionException("Error evaluating expression "+expr.toString(), e);
 			}
 			if(use_cache){
@@ -321,7 +321,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 					try {
 						setProperty(t, source.getProperty(t));
 					} catch (InvalidExpressionException e) {
-						getContext().error(e,"Error copying property");
+						getLogger().error("Error copying property",e);
 					}
 				}
 			}
@@ -540,7 +540,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 			// job count as a DB field so we can't hardwire this as an accessor
 			derived.put(StandardProperties.COUNT_PROP,  new ConstPropExpression<Long>(Long.class, Long.valueOf(1L)));
 		} catch (PropertyCastException e) {
-			getContext().error(e,"Error adding count expression");
+			getLogger().error("Error adding count expression",e);
 		}
 	}
 	public <T> void put(PropertyTag<? extends T> tag, Targetted<T> obj){
@@ -599,7 +599,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		}catch(InvalidSQLPropertyException ee){
 			throw ee;
 		} catch (Exception e) {
-			getContext().error(e,"Unexpected error evaluating SQLexpression");
+			getLogger().error("Unexpected error evaluating SQLexpression",e);
 			throw new ConsistencyError("Error evaluating SQLexpression", e);
 		//}finally{
 		//	sql_expression_visitor.reset();
@@ -632,7 +632,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		}catch(InvalidSQLPropertyException ee){
 			throw ee;
 		} catch (Exception e) {
-			getContext().error(e,"Unexpected exception type in getSQLValue");
+			getLogger().error("Unexpected exception type in getSQLValue",e);
 			throw new ConsistencyError("Error evaluating SQLValue "+expr.toString(), e);
 		//}finally{
 		//	sql_value_visitor.reset();
@@ -890,7 +890,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 					if (warn_orphan) {
 						throw new ConsistencyError(prob);
 					}
-					getContext().error(prob);
+					getLogger().error(prob);
 				}
 			}else{
 				if( warn_orphan && ! info.isReference() ){
@@ -936,7 +936,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 				    finder.addFinder(reg);
 				}
 			   }catch(Throwable e){
-				   c.error(e,"Error adding relationship "+t+" to "+tag);
+				   getLogger().error("Error adding relationship "+t+" to "+tag,e);
 			   }
 			}
 		}
@@ -1010,14 +1010,14 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 				}catch(InvalidPropertyException e2){
 					return "Not Saved/Defined";
 				}catch (Throwable e3) {
-					getContext().error(e3,"Error calculating implementation of "+tag.getFullName());
+					getLogger().error("Error calculating implementation of "+tag.getFullName(),e3);
 					sb.append("Error");
 				}
 			}else{
 				sb.append(a.toString());
 			}
 		} catch (Throwable e) {
-			getContext().error(e,"Error calculating implementation of "+tag.getFullName());
+			getLogger().error("Error calculating implementation of "+tag.getFullName(),e);
 			sb.append("Error");
 		}
 		// sb.append("}");
@@ -1056,7 +1056,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 					it.remove();
 				}
 			} catch (Exception e) {
-				getContext().error(e,"Error checking resolve in clearUnresolvableDefinitions");
+				getLogger().error("Error checking resolve in clearUnresolvableDefinitions",e);
 				it.remove();
 			}
 		}
@@ -1294,7 +1294,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	public AppContext getContext() {
 		return res.getContext();
 	}
-	private Logger getLog() {
+	private Logger getLogger() {
 		if( log == null ){
 			log =getContext().getService(LoggerService.class).getLogger(getClass());
 		}

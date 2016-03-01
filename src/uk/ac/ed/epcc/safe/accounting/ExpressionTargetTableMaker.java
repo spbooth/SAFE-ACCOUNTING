@@ -145,7 +145,7 @@ public class ExpressionTargetTableMaker<E extends ExpressionTarget,F extends Exp
 				   }
 				   res.setWarning(key, set);
 			   }catch(Throwable t){
-				   c.error(t,"Error evaluating warning");
+				   c.getService(LoggerService.class).getLogger(getClass()).error("Error evaluating warning",t);
 			   }
 		   }
 	   }

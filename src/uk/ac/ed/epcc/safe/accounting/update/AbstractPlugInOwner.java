@@ -31,6 +31,8 @@ import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Base class for implementing {@link PlugInOwner}.
@@ -157,4 +159,7 @@ public Map<TransitionKey<T>, Transition<T>> getTransitions() {
 	return res;
 }
 
+	protected Logger getLogger(){
+		return c.getService(LoggerService.class).getLogger(getClass());
+	}
 }

@@ -33,6 +33,8 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 /** Class that holds a set of PropertyTag definitions in terms of PropExpressions.
  * This is essentially a wrapper around a Map object with additional run-time type checking.
@@ -151,7 +153,7 @@ public int size() {
 			try {
 				resolve(reg, ctx, prefix, missing, parser, derived_properties, key);
 			} catch (UnresolvedNameException e) {
-				ctx.error(e,"Cannot resolve property");
+				getLogger(ctx).error("Cannot resolve property",e);
 			}
 		}
   }
@@ -183,9 +185,9 @@ private void resolve(PropertyRegistry reg, AppContext ctx, String prefix,
 			}
 			missing.remove(name);
 		}catch(ParseException e){
-			ctx.error(e,"Error making derived property "+name+" from "+def);
+			getLogger(ctx).error("Error making derived property "+name+" from "+def,e);
 		} catch (PropertyCastException e) {
-			ctx.error(e,"Type of expression and PropertyTag don't match");
+			getLogger(ctx).error("Type of expression and PropertyTag don't match",e);
 		}
 	}
 }
@@ -203,16 +205,16 @@ public void addFromProperties(PropertyFinder prev, AppContext ctx, String table 
 					PropExpression e = parser.parse(def);
 					PropertyTag tag = prev.find( name);
 					if( tag == null ){
-						ctx.error("Tag "+name+" not found setting derived properties for "+table);
+						getLogger(ctx).error("Tag "+name+" not found setting derived properties for "+table);
 					}else{
 						put(tag,e);
 					}
 				}catch(ParseException e){
-					ctx.error(e,"Error making derived property "+name+" from "+def);
+					getLogger(ctx).error("Error making derived property "+name+" from "+def,e);
 				} catch (PropertyCastException e) {
-					ctx.error(e,"Type of expression and PropertyTag don't match");
+					getLogger(ctx).error("Type of expression and PropertyTag don't match",e);
 				} catch (InvalidPropertyException e) {
-					ctx.error(e,"Error making property "+name+"");
+					getLogger(ctx).error("Error making property "+name+"",e);
 				}
 			}
 		}
@@ -268,7 +270,7 @@ public void addConfigProperty(AppContext ctx, PropertyRegistry reg, PropertyFind
 				serv.setProperty(PROPERTY_PREFIX+table+"."+name, def);
 				serv.clearServiceProperties();
 			} catch (PropertyCastException e1) {
-				ctx.error(e1,"Error adding prop expression");
+				getLogger(ctx).error("Error adding prop expression",e1);
 			}
 		  }
   }
@@ -288,7 +290,7 @@ public void addConfigProperty(AppContext ctx,PropertyFinder prev,String table,Pr
 				serv.setProperty(PROPERTY_PREFIX+table+"."+tag.getFullName(), def);
 				serv.clearServiceProperties();
 			} catch (PropertyCastException e1) {
-				ctx.error(e1,"Error adding prop expression");
+				getLogger(ctx).error("Error adding prop expression",e1);
 			}
   }
   public void removeConfigProperty(AppContext ctx, String table, PropertyTag tag){
@@ -298,8 +300,11 @@ public void addConfigProperty(AppContext ctx,PropertyFinder prev,String table,Pr
 	  serv.clearServiceProperties();
   }
 
-public void clear() {
-	map.clear();
-	
-}
+  public void clear() {
+	  map.clear();
+  }
+  
+  protected Logger getLogger(AppContext conn){
+	  return conn.getService(LoggerService.class).getLogger(getClass());
+  }
 }

@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 
 /** {@link Accessor} to access Relationship info.
  * 
@@ -57,9 +58,14 @@ public class RelationshipAccessor<T extends DataObject & PropertyTarget> impleme
 			return false;
 		}
 		SessionService<?> sess = fac.getContext().getService(SessionService.class);
-		return Boolean.valueOf(
-				fac.matches(sess.getRelationshipRoleFilter(fac, role), r)		
-		);
+		try {
+			return Boolean.valueOf(
+					fac.matches(sess.getRelationshipRoleFilter(fac, role), r)		
+			);
+		} catch (UnknownRelationshipException e) {
+			fac.getContext().getService(LoggerService.class).getLogger(getClass()).error("Error getting value", e);
+			return Boolean.FALSE;
+		}
 	}
 
 	@Override
@@ -77,8 +83,8 @@ public class RelationshipAccessor<T extends DataObject & PropertyTarget> impleme
 			check = ! check;
 		}
 		if( check){
-		    BaseFilter<? super T> fil = user.getRelationshipRoleFilter(fac, role);
 			try {
+				BaseFilter<? super T> fil = user.getRelationshipRoleFilter(fac, role);
 				return fil.acceptVisitor(new FilterConverter<T>());
 			} catch (Exception e) {
 				throw new CannotFilterException("Cannot make relationship filter", e);

@@ -39,6 +39,8 @@ import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 /** This policy allows derived property expressions to be defined for 
@@ -145,7 +147,7 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSo
 					PropertyTagInput input = (PropertyTagInput) f.getInput("Prop");
 					defs.addConfigProperty(c, finder, table, input.getItem(), (String)f.get("Expr"));
 				} catch (Throwable e) {
-					c.error(e, "Error setting derived prop");
+					getLogger().error( "Error setting derived prop",e);
 					throw new ActionException("Operation failed",e);
 				}
 				return new ViewTableResult(target);
@@ -165,6 +167,9 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSo
 		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "AddDefinition"),new AddDerivedTransition());
 		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "AddProperty"),new AddPropertyTransition());
 		return result;
+	}
+	protected final Logger getLogger(){
+		return c.getService(LoggerService.class).getLogger(getClass());
 	}
 
 }

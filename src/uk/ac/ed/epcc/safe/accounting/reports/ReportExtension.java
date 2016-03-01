@@ -37,12 +37,10 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
-import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 //import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
@@ -50,12 +48,10 @@ import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomValueFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.properties.UnresolvedNameException;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
@@ -151,6 +147,9 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 	
 	}
+	protected final Logger getLogger(){
+		return log;
+	}
 	public void setParams(Map<String,Object> p){
 		this.params=p;
 	}
@@ -186,7 +185,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			t.transform(new DOMSource(e), new StreamResult(out));
 			return out.toString();
 		} catch (Exception e1) {
-			conn.error(e1,"Error performing transform");
+			log.error("Error performing transform",e1);
 		}
 		return "";
 	}

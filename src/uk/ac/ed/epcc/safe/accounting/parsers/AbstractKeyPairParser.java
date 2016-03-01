@@ -140,6 +140,9 @@ public abstract class AbstractKeyPairParser extends BatchParser implements Conte
 	public AppContext getContext() {
 		return conn;
 	}
+	protected final Logger getLogger(){
+		return conn.getService(LoggerService.class).getLogger(getClass());
+	}
 
 	/** get the {@link ContainerEntryMaker} for the attribute name.
 	 * 

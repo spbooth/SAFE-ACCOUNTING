@@ -28,6 +28,7 @@ import uk.ac.ed.epcc.webapp.forms.factory.FormCreator;
 import uk.ac.ed.epcc.webapp.forms.inputs.ClassInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableListResult;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
 
 /** Class to create {@link AllocationManager} accounting tables
@@ -69,7 +70,7 @@ public class AllocationTableCreator implements FormCreator,Contexed{
 			    // relies on auto_create_tables
 				return new TableListResult();
 			}catch(Exception e){
-				conn.error(e,"Error creating table");
+				conn.getService(LoggerService.class).getLogger(getClass()).error("Error creating table",e);
 				throw new ActionException("Create failed");
 			}
 		}

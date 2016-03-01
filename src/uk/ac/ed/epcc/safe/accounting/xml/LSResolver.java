@@ -40,7 +40,7 @@ public class LSResolver implements LSResourceResolver{
     private final LSResourceResolver nested;
     private final TextFileOverlay schema_overlay;
     private final String group;
-    Logger log;
+    private final Logger log;
 	public LSResolver(DOMImplementation imp,TextFileOverlay overlay, String group,LSResourceResolver parent) throws ParserConfigurationException{
 		this.schema_overlay=overlay;
 		this.group=group;
@@ -67,7 +67,7 @@ public class LSResolver implements LSResourceResolver{
 				try {
 					sheet = schema_overlay.find(group, name);
 				} catch (DataFault e) {
-					schema_overlay.getContext().error(e, "Error getting resource");
+					log.error( "Error getting resource",e);
 				}
 				if (sheet != null && sheet.hasData()) {
 				

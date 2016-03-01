@@ -167,6 +167,9 @@ public class UsageRecordWriter implements Contexed {
 		return this.context;
 	}
 
+	protected final Logger getLogger(){
+		return context.getService(LoggerService.class).getLogger(getClass());
+	}
 	/**
 	 * Reads usage records from this writer's input, parses it using the parser
 	 * specified in this writer's <code>AppContext</code> and formats the
@@ -425,10 +428,10 @@ public class UsageRecordWriter implements Contexed {
 					policies.add((UsageRecordPolicy) this.context.makeObject(polClass));
 				} else {
 					logger.debug("Bad policy: " + polClass);
-					this.context.error("Bad Policy class " + pol);
+					getLogger().error("Bad Policy class " + pol);
 				}
 			} catch (Exception e) {
-				this.context.error(e, "Error making policy ");
+				getLogger().error("Error making policy ",e);
 			}
 		}
 		return policies;
