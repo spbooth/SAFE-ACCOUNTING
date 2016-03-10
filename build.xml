@@ -32,6 +32,7 @@
 	<!-- ==== Clean Target ==== -->
 
 	<target name="clean" description="Delete old build directories.">
+		<delete file="jacoco.exec"/>
 		<delete dir="${report.dir}" />
 		<delete dir="${test.home}" />
 		<delete dir="${build.home}" />
@@ -168,7 +169,7 @@
 			<report todir="${report.dir}" />
 		</junitreport>
 	</target>
-	<target name="jacoco-report">
+	<target name="jacoco-report" depends="coverage">
 		<jacoco:report>
 			<executiondata>
 				<file file="jacoco.exec"/>

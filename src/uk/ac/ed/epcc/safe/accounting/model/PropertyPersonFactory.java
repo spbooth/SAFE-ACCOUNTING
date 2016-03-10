@@ -129,15 +129,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		return new PropertyPerson(this,res);
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.webapp.model.AppUserFactory#makeToggleMap()
-	 */
-	@Override
-	public Map<String, Boolean> makeToggleMap() {
-		Map<String,Boolean> map = super.makeToggleMap();
-		map.put(ReportBuilder.REPORT_DEVELOPER, Boolean.FALSE);
-		return map;
-	}
+	
 
 	
 	@Override
