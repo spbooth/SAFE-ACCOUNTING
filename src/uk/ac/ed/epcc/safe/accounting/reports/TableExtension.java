@@ -577,7 +577,8 @@ public class TableExtension extends ReportExtension {
 					}
 				// use Plot property name as the default
 				String col_name = extension.getParamWithDefault("Name", name, (Element)columnNode);
-				if(columnType.equals("Index") || columnType.equals("Column")){
+				boolean isColumn = columnType.equals("Column");
+				if(isColumn || columnType.equals("Index") ){
 					// Optionally use a labeller
 					String labeller = extension.getAttribute("labeller", (Element)columnNode);
 					if( labeller != null && labeller.length() > 0){
@@ -590,6 +591,7 @@ public class TableExtension extends ReportExtension {
 					}
 					// printing index
 					IndexReduction red = new IndexReduction(property);
+					red.setAllowNull(isColumn);
 					reductions.add(red);
 					col_names.add(col_name);
 					cols.put(col_name,red);
