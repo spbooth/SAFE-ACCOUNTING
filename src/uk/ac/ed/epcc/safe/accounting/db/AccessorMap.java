@@ -1239,38 +1239,40 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
     	if( expr == null ){
     		throw new CannotFilterException("Cannot filter on null expression");
     	}
-    	
+
     	// fitst choice a SQLExpression
     	try{
-			SQLExpression<I> exp = getSQLExpression(expr);
-			if( exp instanceof FilterProvider){
-				try {
-					return ((FilterProvider<X, I>)exp).getNullFilter(is_null);
-				} catch (NoSQLFilterException e) {
-					// Go with default SQLExpressionNullFilter
-				}
-			}
-			return new SQLExpressionNullFilter<X, I>(target,exp, is_null);
-		}catch(InvalidSQLPropertyException e){
-			// keep lookin
-		}
-    	try{
-		// next try an sqlvalue
-		try{
-			SQLValue<I> val = getSQLValue(expr);
-			if( val instanceof FilterProvider){
-				return ((FilterProvider<X,I>) val).getNullFilter(is_null);
-			}
-		
-		}catch(InvalidSQLPropertyException e){
-			// keep looking
-		}
-    	if( expr instanceof PropertyTag){
-    		Accessor<I,X> m = accessor_map.get((PropertyTag<I>) expr);
-    		if( m != null && m instanceof FilterProvider){
-    			return ((FilterProvider<X,I>)m).getNullFilter(is_null);
+    		SQLExpression<I> exp = getSQLExpression(expr);
+    		if( exp instanceof FilterProvider){
+    			try {
+    				return ((FilterProvider<X, I>)exp).getNullFilter(is_null);
+    			} catch (NoSQLFilterException e) {
+    				// Go with default SQLExpressionNullFilter
+    			}
     		}
+    		return new SQLExpressionNullFilter<X, I>(target,exp, is_null);
+    	}catch(InvalidSQLPropertyException e){
+    		// keep looking
     	}
+    	try{
+    		// next try an sqlvalue
+    		try{
+    			SQLValue<I> val = getSQLValue(expr);
+    			if( val instanceof FilterProvider){
+    				
+    				return ((FilterProvider<X,I>) val).getNullFilter(is_null);
+    				
+    			}
+
+    		}catch(InvalidSQLPropertyException e){
+    			// keep looking
+    		}
+    		if( expr instanceof PropertyTag){
+    			Accessor<I,X> m = accessor_map.get((PropertyTag<I>) expr);
+    			if( m != null && m instanceof FilterProvider){
+    				return ((FilterProvider<X,I>)m).getNullFilter(is_null);
+    			}
+    		}
     	}catch(NoSQLFilterException e){
     		// try an accept filter below
     	}
@@ -1279,10 +1281,10 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
     	if(resolves(expr,false)){
     		return new ExpressionAcceptNullFilter<X, I>(target,expr, is_null);
     	}
-		
-		
-		throw new CannotFilterException("Cannot filter on expression "
-				+ expr+" for "+config_tag);
+
+
+    	throw new CannotFilterException("Cannot filter on expression "
+    			+ expr+" for "+config_tag);
     }
     /** Generate default set of form selectors
      * 

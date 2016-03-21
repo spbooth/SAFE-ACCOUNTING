@@ -76,7 +76,7 @@ public class ClassificationSQLValue<H extends DataObject, T extends DataObject> 
 			}
 			return ((FilterProvider)a).getFilter(match, ref);
 		}
-		throw new CannotFilterException("Underlying value not a FilterProvider");
+		throw new NoSQLFilterException("Underlying value not a FilterProvider");
 	}
     @SuppressWarnings("unchecked")
 	public SQLFilter<H> getNullFilter(boolean is_null) throws CannotFilterException, NoSQLFilterException {
@@ -84,14 +84,14 @@ public class ClassificationSQLValue<H extends DataObject, T extends DataObject> 
 		if( a instanceof FilterProvider){
 			return ((FilterProvider)a).getNullFilter(is_null );
 		}
-		throw new CannotFilterException("Underlying value not a FilterProvider");
+		throw new NoSQLFilterException("Underlying value not a FilterProvider");
 	}
     public SQLFilter<H> getOrderFilter(boolean descending)
 			throws CannotFilterException, NoSQLFilterException {
     	if( a instanceof FilterProvider){
 			return ((FilterProvider)a).getOrderFilter(descending);
 		}
-		throw new CannotFilterException("Underlying value not a FilterProvider");
+		throw new NoSQLFilterException("Underlying value not a FilterProvider");
 	}
 	public List<PatternArgument> getParameters(List<PatternArgument> list) {
 		return list;
