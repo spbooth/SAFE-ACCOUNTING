@@ -13,15 +13,19 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.servlet;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -37,6 +41,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * @author spb
  *
  */
+@WebServlet(name="TemplateServlet",urlPatterns="/templates/*")
 public class TemplateServlet extends SessionServlet {
 
 	
@@ -45,6 +50,7 @@ public class TemplateServlet extends SessionServlet {
 			AppContext conn, SessionService person) throws Exception {
 		ServletService serv = conn.getService(ServletService.class);
 		LinkedList<String> args=serv.getArgs();
+		boolean transform=false;
 		Map params = serv.getParams();
 		if( args.size() < 2 ){
 			res.sendError(HttpServletResponse.SC_BAD_REQUEST, "File path required");
@@ -70,26 +76,49 @@ public class TemplateServlet extends SessionServlet {
 			res.sendError(HttpServletResponse.SC_NO_CONTENT);
 			return;
 		}
-		res.setContentType("application/xml");
-		TextFile file = overlay.find(group, name);
-		if( file == null ){
-			res.sendError(HttpServletResponse.SC_NO_CONTENT);
-			return;
-		}
-		if( update ){
-			// post method update.
-			getLogger(conn).debug("Update of "+name);
-			InputStreamReader reader = new InputStreamReader(req.getInputStream());
-			StringBuilder sb = new StringBuilder();
-			for(int c=reader.read(); c != -1 ; c=reader.read()){
-				sb.append((char)c);
+		if( ! update && name.endsWith(".html")){
+			String extension="txt";
+			if( group.equals(builder.SCHEMA_GROUP)){
+				extension="xsd";
+			}else{
+				extension="xml";
 			}
-			file.setText(sb.toString());
-			file.commit();
+			name = name.substring(0, name.length()-4)+extension;
+			TextFile file = overlay.find(group, name);
+			if( file == null ){
+				res.sendError(HttpServletResponse.SC_NO_CONTENT);
+				return;
+			}
+			res.setContentType("text/html");
+			String transform_name = conn.getInitParameter("html_transform."+group);
+			Map<String,Object> p = new HashMap<String, Object>();
+			Transformer t = builder.getXSLTransform(transform_name, p);
+			Source s = new StreamSource(file.getResourceStream());
+			Result r = new StreamResult(res.getOutputStream());
+			t.transform(s, r);
+			
 		}else{
-			getLogger(conn).debug("Fetch of "+name);
-			String data = file.getData();
-			res.getWriter().append(data);
+			res.setContentType("application/xml");
+			TextFile file = overlay.find(group, name);
+			if( file == null ){
+				res.sendError(HttpServletResponse.SC_NO_CONTENT);
+				return;
+			}
+			if( update ){
+				// post method update.
+				getLogger(conn).debug("Update of "+name);
+				InputStreamReader reader = new InputStreamReader(req.getInputStream());
+				StringBuilder sb = new StringBuilder();
+				for(int c=reader.read(); c != -1 ; c=reader.read()){
+					sb.append((char)c);
+				}
+				file.setText(sb.toString());
+				file.commit();
+			}else{
+				getLogger(conn).debug("Fetch of "+name);
+				String data = file.getData();
+				res.getWriter().append(data);
+			}
 		}
 	}
 

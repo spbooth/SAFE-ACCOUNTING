@@ -31,7 +31,13 @@
 		</xsd:documentation>
 	</xsd:annotation>
 
-	<xsd:element name="IfDef" type="IfDefComplexType"></xsd:element>
+	<xsd:element name="IfDef" type="IfDefComplexType">
+	<xsd:annotation>
+		<xsd:documentation>
+		Expand a region if a parameter is defined.
+		</xsd:documentation>
+	</xsd:annotation>
+	</xsd:element>
 
 	<xsd:element name="If">
 		<xsd:complexType>
@@ -66,7 +72,14 @@
 	<!-- Limit Date elements occur inside a Format element. However as the rest of the content is unconstrained
 		we can't make this explicit in the schema
 	-->
-	<xsd:element name="Limit" type="LimitType"></xsd:element>
+	<xsd:element name="Limit" type="LimitType">
+	<xsd:annotation>
+		<xsd:documentation>
+		Limit Date elements occur inside a Format element and limit the number of records formated.
+		</xsd:documentation>
+	</xsd:annotation>
+	
+	</xsd:element>
 	<xsd:element name="TimeBounds" type="DateType"/>
 	<xsd:complexType name="LimitType">
 		<xsd:sequence>
@@ -86,10 +99,19 @@
 		</xsd:sequence>
 		<xsd:attribute name="required" type="xsd:string"
 			use="required">
+			<xsd:annotation><xsd:documentation>
+		Name of parameter
+		</xsd:documentation></xsd:annotation>
 		</xsd:attribute>
 	</xsd:complexType>
 
-	<xsd:element name="IfNDef" type="IfDefComplexType"></xsd:element>
+	<xsd:element name="IfNDef" type="IfDefComplexType">
+	<xsd:annotation>
+		<xsd:documentation>
+		Expand a region if a parameter is NOT defined.
+		</xsd:documentation>
+	</xsd:annotation>
+	</xsd:element>
 
 
 <xsd:complexType name="DateType">

@@ -227,7 +227,7 @@
 		<xsd:annotation>
 			<xsd:documentation>
 				Adds the result of an atom calculation to the parameter
-				list.
+				list. This allows a single atom calculation to be expanded in multiple locations as a parameter.
 			</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>

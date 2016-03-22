@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -52,7 +53,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  *
  */
 
-
+@WebServlet(name="ReportServlet",urlPatterns="/ReportServlet/*")
 public class ReportServlet extends SessionServlet {
 
 	public static final String SERVE_DATA_DEFAULT_TAG = "ServeData";

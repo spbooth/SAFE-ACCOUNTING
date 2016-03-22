@@ -21,15 +21,15 @@
 
 	<xsd:import schemaLocation="propexpression.xsd" namespace="http://safe.epcc.ed.ac.uk/propexpression"></xsd:import>
 	<xsd:complexType name="PropertyFilterType">
-		<xsd:all>
-			<xsd:element name="Property" type="prop:PropExpressionType"
-				maxOccurs="1" minOccurs="1" />
-			<xsd:element name="Value" type="prop:PropValueType"
-				maxOccurs="1" minOccurs="1" />
-		</xsd:all>
+	<xsd:annotation><xsd:documentation>
+	Specifies a property expression and corresponding value as part of a filter clause.
+	</xsd:documentation></xsd:annotation>
 	</xsd:complexType>
-
-<xsd:complexType name="DateType">
+   <xsd:complexType name="DateType">
+ 		<xsd:annotation><xsd:documentation>
+				Elements of this type are used to define an implicit filter based on the current scoped
+				reporting period. They define the property or properties in the target record that must match the reporting period.
+		</xsd:documentation></xsd:annotation>
 		<xsd:choice>
 			<xsd:sequence>
 			    <xsd:annotation><xsd:documentation>
@@ -42,7 +42,7 @@
 			</xsd:sequence>
 			<xsd:sequence>
 			    <xsd:annotation><xsd:documentation>
-				These propertied must be defined and bound a period that overlaps the
+				These properties must be defined and bound a period that overlaps the
 				target period
 				</xsd:documentation></xsd:annotation>
 				<xsd:element name="StartProperty"
@@ -52,7 +52,7 @@
 			</xsd:sequence>
 			<xsd:sequence>
 			   <xsd:annotation><xsd:documentation>
-					No time filter is generated.
+					No time filter is generated all records match.
 				</xsd:documentation></xsd:annotation>
 				<xsd:element name="AllTimes">
 					<xsd:complexType>
@@ -64,10 +64,15 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="OperationsType">
+	<xsd:annotation><xsd:documentation>Composite operation type.
+	</xsd:documentation></xsd:annotation>
 		<xsd:group ref="Operation" minOccurs="1" maxOccurs="unbounded" />
 	</xsd:complexType>
 
 	<xsd:group name="Operation">
+	<xsd:annotation><xsd:documentation>
+	A single filter clause. The value of the property expression must be in the specified relationship with the associated value.
+	</xsd:documentation></xsd:annotation>
 		<xsd:choice>
 			<xsd:element name="EQ" type="PropertyFilterType" />
 			<xsd:element name="NE" type="PropertyFilterType" />
@@ -83,6 +88,9 @@
 	</xsd:group>
 
 	<xsd:complexType name="FilterType">
+	<xsd:annotation><xsd:documentation>Selects a set of records from a UsageProducer. The set selected is defined as the AND combination of enclosing and directly nested filter elements
+	and an implicit time filter from the reporting period.
+	</xsd:documentation></xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="Producer" type="xsd:string" maxOccurs="1"
 				minOccurs="0">
@@ -91,7 +99,7 @@
 						Define the usage producer that records should be
 						selected from. Defining a producer clears any
 						existing filters. Note that a producer may
-						consist of multiple table.
+						consist of multiple tables.
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
