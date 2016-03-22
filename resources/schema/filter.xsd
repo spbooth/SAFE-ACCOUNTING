@@ -11,6 +11,7 @@
 <!--| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |-->
 <!--| See the License for the specific language governing permissions and      |-->
 <!--| limitations under the License.                                           |-->
+<?xml-stylesheet type="text/xsl" href="../stylesheets/xs3p/xs3p.xsl"?>
 <xsd:schema elementFormDefault="qualified"
 	targetNamespace="http://safe.epcc.ed.ac.uk/filter"
 	xmlns="http://safe.epcc.ed.ac.uk/filter"
@@ -24,6 +25,12 @@
 	<xsd:annotation><xsd:documentation>
 	Specifies a property expression and corresponding value as part of a filter clause.
 	</xsd:documentation></xsd:annotation>
+		<xsd:all>
+			<xsd:element name="Property" type="prop:PropExpressionType"
+				maxOccurs="1" minOccurs="1" />
+			<xsd:element name="Value" type="prop:PropValueType"
+				maxOccurs="1" minOccurs="1" />
+		</xsd:all>
 	</xsd:complexType>
    <xsd:complexType name="DateType">
  		<xsd:annotation><xsd:documentation>

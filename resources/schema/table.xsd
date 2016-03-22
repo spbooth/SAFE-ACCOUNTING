@@ -12,6 +12,7 @@
 <!--| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |-->
 <!--| See the License for the specific language governing permissions and      |-->
 <!--| limitations under the License.                                           |-->
+<?xml-stylesheet type="text/xsl" href="../stylesheets/xs3p/xs3p.xsl"?>
 <xsd:schema elementFormDefault="qualified"
 	targetNamespace="http://safe.epcc.ed.ac.uk/table"
 	xmlns="http://safe.epcc.ed.ac.uk/table"
@@ -35,6 +36,11 @@
 		schemaLocation="parameter.xsd" />
 
 	<xsd:import schemaLocation="propexpression.xsd" namespace="http://safe.epcc.ed.ac.uk/propexpression"></xsd:import>
+
+	<xsd:annotation><xsd:documentation>
+	Schema for template generation in reports.
+	</xsd:documentation></xsd:annotation>
+
 	<xsd:complexType name="ColumnType">
 		<xsd:sequence>
 			<xsd:element name="Name" type="par:TextOrParameterType"
@@ -372,7 +378,7 @@
 	<xsd:element name="SummaryTable">
 	<xsd:annotation>
 			   <xsd:documentation>
-			     A SummarTable is a version of SummaryObjectTable for use with UsageProducer data. In this case
+			     A SummaryTable is a version of SummaryObjectTable for use with UsageProducer data. In this case
 			     there is an implicit time filter selecting records based on the reporting period.
 			     If two time bound properties are specified the reductions will use overlap calculations to re-scale
 			     the values of records that cross the reporting period boundaries.

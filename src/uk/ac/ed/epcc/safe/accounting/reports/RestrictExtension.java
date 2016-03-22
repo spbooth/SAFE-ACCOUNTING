@@ -113,27 +113,31 @@ public class RestrictExtension extends ReportExtension {
 		if( type == null || type.length()==0){
 			return user.hasRole(val);
 		}else{
-			RoleSelector<?> sel = conn.makeObject(RoleSelector.class,type);
-			if( sel != null){
-				return sel.hasRole(val, user);
-			}
-			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
-			if( fac != null){
-				try {
-					BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, val);
-					if( fil == null ){
-						fil = new FalseFilter(fac.getTarget());
-					}
-
-					return fac.exists(fil);
-				} catch (Exception e) {
-					addError("relationship_error", "Cannot check for relationship="+val+" on "+type, e);
-					return false;
-				}
-			}
-			addDeveloperError("no_role_selector", "No role selector for type "+type);
-			return false;
+			return hasRelationship(conn, user, type, val);
 		}
+	}
+
+	private boolean hasRelationship(AppContext conn, SessionService user, String type, String val) {
+		RoleSelector<?> sel = conn.makeObject(RoleSelector.class,type);
+		if( sel != null){
+			return sel.hasRole(val, user);
+		}
+		DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
+		if( fac != null){
+			try {
+				BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, val);
+				if( fil == null ){
+					fil = new FalseFilter(fac.getTarget());
+				}
+
+				return fac.exists(fil);
+			} catch (Exception e) {
+				addError("relationship_error", "Cannot check for relationship="+val+" on "+type, e);
+				return false;
+			}
+		}
+		addDeveloperError("no_role_selector", "No role selector for type "+type);
+		return false;
 	}
 	@SuppressWarnings("unchecked")
 	private boolean checkRelationship(Element element) throws ReportException{

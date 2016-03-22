@@ -58,13 +58,26 @@ public class TemplateServlet extends SessionServlet {
 		}
 		String type = args.pop();
 		String name = args.pop();
+		while(! args.isEmpty()){
+			name = name +"/" + args.pop();
+		}
 		ReportBuilder builder = ReportBuilder.getInstance(conn);
 		TextFileOverlay overlay;
 		String group;
 		boolean update=false;
+		boolean do_transform=false;
+		String def_transform=null;
 		if( type.equals("schema")){
 			overlay=builder.getSchemaOverlay();
 			group=builder.SCHEMA_GROUP;
+		}else if( type.equals("schema-html")){
+			overlay=builder.getSchemaOverlay();
+			group=ReportBuilder.SCHEMA_GROUP;
+			do_transform=true;
+			def_transform="xs3p/xs3p.xsl";
+		}else if( type.equals("stylesheets")){
+			overlay=builder.getReportOverlay();
+			group=ReportBuilder.STYLESHEET_GROUP;
 		}else if( type.equals("report")){
 			overlay=builder.getReportOverlay();
 			group=ReportBuilder.REPORT_TEMPLATE_GROUP;
@@ -76,21 +89,15 @@ public class TemplateServlet extends SessionServlet {
 			res.sendError(HttpServletResponse.SC_NO_CONTENT);
 			return;
 		}
-		if( ! update && name.endsWith(".html")){
-			String extension="txt";
-			if( group.equals(builder.SCHEMA_GROUP)){
-				extension="xsd";
-			}else{
-				extension="xml";
-			}
-			name = name.substring(0, name.length()-4)+extension;
+		if( do_transform){
+			
 			TextFile file = overlay.find(group, name);
 			if( file == null ){
 				res.sendError(HttpServletResponse.SC_NO_CONTENT);
 				return;
 			}
 			res.setContentType("text/html");
-			String transform_name = conn.getInitParameter("html_transform."+group);
+			String transform_name = conn.getInitParameter("html_transform."+group,def_transform);
 			Map<String,Object> p = new HashMap<String, Object>();
 			Transformer t = builder.getXSLTransform(transform_name, p);
 			Source s = new StreamSource(file.getResourceStream());

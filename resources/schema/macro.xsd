@@ -13,6 +13,7 @@
 <!--| See the License for the specific language governing permissions and      |-->
 <!--| limitations under the License.                                           |-->
 	
+<?xml-stylesheet type="text/xsl" href="../stylesheets/xs3p/xs3p.xsl"?>
 <xsd:schema
 	elementFormDefault="qualified"
     targetNamespace="http://safe.epcc.ed.ac.uk/macro"

@@ -12,6 +12,7 @@
 <!--| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |-->
 <!--| See the License for the specific language governing permissions and      |-->
 <!--| limitations under the License.                                           |-->
+<?xml-stylesheet type="text/xsl" href="../stylesheets/xs3p/xs3p.xsl"?>
 <xsd:schema targetNamespace="http://safe.epcc.ed.ac.uk/propexpression" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://safe.epcc.ed.ac.uk/propexpression">
 	<xsd:complexType name="PropExpressionType">
 		<xsd:annotation>
