@@ -151,11 +151,11 @@
 
    <!-- If 'true', searches 'included' schemas for schema components 
         when generating links and XML Instance Representation tables. -->
-   <xsl:param name="searchIncludedSchemas">true</xsl:param>
+   <xsl:param name="searchIncludedSchemas">false</xsl:param>
 
    <!-- If 'true', searches 'imported' schemas for schema components 
         when generating links and XML Instance Representation tables. -->
-   <xsl:param name="searchImportedSchemas">true</xsl:param>
+   <xsl:param name="searchImportedSchemas">false</xsl:param>
 
    <!-- File containing the mapping from file locations of external 
         (e.g. included, imported, refined) schemas to file locations 
@@ -226,7 +226,7 @@
      -->
    <xsl:template match="/xsd:schema">
       <!-- Check that links file is provided if searching external
-           schemas for components. 
+           schemas for components. -->
       <xsl:if test="$linksFile='' and (normalize-space(translate($searchIncludedSchemas, 'TRUE', 'true'))='true' or normalize-space(translate($searchImportedSchemas, 'TRUE', 'true'))='true')">
          <xsl:call-template name="HandleError">
             <xsl:with-param name="isTerminating">true</xsl:with-param>
@@ -236,7 +236,7 @@
             </xsl:with-param>
          </xsl:call-template>
       </xsl:if>
--->
+
       <!-- Get title of document -->
       <xsl:variable name="actualTitle">
          <xsl:choose>
@@ -1766,7 +1766,7 @@ div#legend div.hint {
       <xsl:param name="code"/>
       <xsl:param name="term"/>
       <xsl:param name="description"/>
-      <xsl:param name="link">xxx</xsl:param>
+      <xsl:param name="link"/>
 
       <p>
          <span class="glossaryTerm">
@@ -1962,7 +1962,7 @@ div#legend div.hint {
      -->
    <xsl:template name="PrintSGroupMembers">
       <xsl:param name="element"/>
-      <xsl:param name="elementList"></xsl:param>
+      <xsl:param name="elementList"/>
 
       <xsl:variable name="elemName" select="normalize-space($element/@name)"/>
       <xsl:choose>
@@ -7659,7 +7659,6 @@ Unknown schema component, <xsl:value-of select="local-name($component)"/>.
      -->
    <xsl:template name="GetSchemaDocLocation">
       <xsl:param name="uri"/>
-<!-- 
       <xsl:if test="$linksFile!=''">
          <xsl:variable name="schemaDocFile" select="document($linksFile)/ppp:links/ppp:schema[@file-location=$uri]/@docfile-location"/>
          <xsl:if test="$schemaDocFile=''">
@@ -7673,8 +7672,6 @@ was not specified in the links file, <xsl:value-of select="$linksFile"/>.
          </xsl:if>
          <xsl:value-of select="$schemaDocFile"/>
       </xsl:if>
--->
-       <xsl:value-of select="$uri" />
    </xsl:template>
 
    <!--
