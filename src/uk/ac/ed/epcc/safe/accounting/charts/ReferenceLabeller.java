@@ -19,16 +19,17 @@ package uk.ac.ed.epcc.safe.accounting.charts;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.content.Labeller;
+import uk.ac.ed.epcc.webapp.content.UIGenerator;
 import uk.ac.ed.epcc.webapp.forms.Identified;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 
 
-public class ReferenceLabeller<D extends Indexed> implements Labeller<IndexedReference<D>,String> {
+public class ReferenceLabeller<D extends Indexed> implements Labeller<IndexedReference<D>,Object> {
     private static final String DEFAULT_LABEL = "Unknown";
 	
   
-	public final String getLabel(AppContext conn, IndexedReference<D> key) {
+	public final Object getLabel(AppContext conn, IndexedReference<D> key) {
 		if( key == null || key.isNull()){
 			return getDefaultLabel();
 		}
@@ -39,8 +40,8 @@ public class ReferenceLabeller<D extends Indexed> implements Labeller<IndexedRef
 		}
 		return getDefaultLabel();
 	}
-	public final Class<? super String> getTarget(){
-		return String.class;
+	public final Class<? super Object> getTarget(){
+		return Object.class;
 	}
 	/** Default label to generate
 	 * @return
@@ -48,7 +49,10 @@ public class ReferenceLabeller<D extends Indexed> implements Labeller<IndexedRef
 	public String getDefaultLabel() {
 		return DEFAULT_LABEL;
 	}
-	public String getLabel(D val){
+	public Object getLabel(D val){
+		if( val instanceof UIGenerator){
+			return val;
+		}
 		if( val instanceof Identified){
 			return ((Identified)val).getIdentifier();
 		}

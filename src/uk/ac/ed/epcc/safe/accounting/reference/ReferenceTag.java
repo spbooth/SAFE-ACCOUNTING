@@ -32,7 +32,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  */
 
 
-public class ReferenceTag<D extends DataObject, F extends DataObjectFactory> extends IndexedTag<D,F> implements  FormatProvider<IndexedReference<D>,String>{
+public class ReferenceTag<D extends DataObject, F extends DataObjectFactory> extends IndexedTag<D,F> implements  FormatProvider<IndexedReference<D>,Object>{
 	
    public ReferenceTag(PropertyRegistry reg,String name, Class<? extends F> fac, String table){
 	   super(reg,name,fac,table,"Reference to "+table);
@@ -45,7 +45,7 @@ public class ReferenceTag<D extends DataObject, F extends DataObjectFactory> ext
 //   }
    
 
-   public Labeller<IndexedReference<D>,String> getLabeller() {
+   public Labeller<IndexedReference<D>,Object> getLabeller() {
 
 	   return new ReferenceLabeller<D>();
    }
