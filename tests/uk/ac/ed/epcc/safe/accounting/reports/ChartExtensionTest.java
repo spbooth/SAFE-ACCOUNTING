@@ -177,7 +177,7 @@ public class ChartExtensionTest extends ExtensionTestCase {
 		String output = out.toString().replace(ctx.getInitParameter("java.io.tmpdir","/tmp"), "/tmp");
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, output),
-				output.contains(expectedOutput));
+				output.replaceAll("\r?\n", "\n").contains(expectedOutput.replaceAll("\r?\n", "\n")));
 
 	}
 
