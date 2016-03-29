@@ -30,7 +30,7 @@ public class ReferenceNameLabeller<D extends Indexed> extends ReferenceLabeller<
 	}
 
 	@Override
-	public String getLabel(D val) {
+	public Object getLabel(D val) {
 		if( val instanceof Principal){
 			return ((Principal)val).getName();
 		}
