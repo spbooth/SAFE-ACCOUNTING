@@ -17,19 +17,20 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.jdbc.filter.AbstractAcceptFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AcceptFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterVisitor;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 
 
-public class ExpressionAcceptNullFilter<T extends ExpressionTarget,I> implements AcceptFilter<T>{
-	private final Class<? super T> target;
+public class ExpressionAcceptNullFilter<T extends ExpressionTarget,I> extends AbstractAcceptFilter<T>{
+	
 	private final boolean is_null;
 	private final PropExpression<I> expr;
 	
 	public ExpressionAcceptNullFilter(Class<? super T> target,PropExpression<I> expr, boolean is_null){
-		this.target=target;
+		super(target);
 		this.expr=expr;
 		this.is_null=is_null;
 	}
@@ -48,14 +49,4 @@ public class ExpressionAcceptNullFilter<T extends ExpressionTarget,I> implements
 			return is_null;
 		}
 	}
-
-	public <X> X acceptVisitor(FilterVisitor<X, ? extends T> vis) throws Exception {
-		return vis.visitAcceptFilter(this);
-	}
-
-	public Class<? super T> getTarget() {
-		return target;
-	}
-
-
 }
