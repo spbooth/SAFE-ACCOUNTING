@@ -18,6 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.charts;
 
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Labeller;
 import uk.ac.ed.epcc.webapp.content.UIGenerator;
 import uk.ac.ed.epcc.webapp.forms.Identified;
@@ -49,9 +50,67 @@ public class ReferenceLabeller<D extends Indexed> implements Labeller<IndexedRef
 	public String getDefaultLabel() {
 		return DEFAULT_LABEL;
 	}
+	/** A wrapper class for a {@link UIGenerator} that ensures 
+	 * the string representation follows the {@link ReferenceLabeller} rules.
+	 * 
+	 * @author spb
+	 *
+	 */
+	public static class UIWrapper implements UIGenerator, Comparable<UIWrapper>{
+		@Override
+		public String toString() {
+			if( inner instanceof Identified){
+				return ((Identified)inner).getIdentifier();
+			}
+			return inner.toString();
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((inner == null) ? 0 : inner.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			UIWrapper other = (UIWrapper) obj;
+			if (inner == null) {
+				if (other.inner != null)
+					return false;
+			} else if (!inner.equals(other.inner))
+				return false;
+			return true;
+		}
+
+		@Override
+		public ContentBuilder addContent(ContentBuilder builder) {
+			return inner.addContent(builder);
+		}
+
+		public UIWrapper(UIGenerator inner) {
+			super();
+			this.inner = inner;
+		}
+
+		private final UIGenerator inner;
+
+		@Override
+		public int compareTo(UIWrapper o) {
+			
+			return toString().compareTo(o.toString());
+		}
+	}
 	public Object getLabel(D val){
 		if( val instanceof UIGenerator){
-			return val;
+			return new UIWrapper((UIGenerator)val);
 		}
 		if( val instanceof Identified){
 			return ((Identified)val).getIdentifier();
