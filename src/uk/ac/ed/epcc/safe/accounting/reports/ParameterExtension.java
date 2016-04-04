@@ -83,6 +83,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
+import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
@@ -367,10 +368,19 @@ public class ParameterExtension extends ReportExtension {
 			type=conn.getInitParameter("typealias."+type, type);
 			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
 			if( fac != null ){
-				BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
-				if( fil == null ){
-					fil = new FalseFilter(fac.getTarget());
+				AndFilter fil = new AndFilter(fac.getTarget());
+				if(role.startsWith("#")){
+					role=role.substring(1);
+				}else{
+					//narrow the default selector by default
+					fil.addFilter(fac.getSelectFilter());
 				}
+				BaseFilter fil2 = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
+				if( fil2 == null ){
+					fil2 = new FalseFilter(fac.getTarget());
+				}
+				fil.addFilter(fil);
+				//TODO could augment with filter clause
 				return fac.getInput(fil);
 			}
 		}
