@@ -540,7 +540,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 				}
 			}
 		}
-		this.charge_reservation_sub_job = ctx.getBooleanParameter("charge_reservation_sub_job."+mode, true);
+		this.charge_reservation_sub_job = ctx.getBooleanParameter("charge_reservation_sub_job."+mode, ctx.getBooleanParameter("charge_reservation_sub_job", true));
 		this.record_failed_jobs = ctx.getBooleanParameter("record_failed_jobs."+mode, false);
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(StandardProperties.time);
@@ -688,7 +688,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 		}
 	
 		// mark jobs from a reservation as sub-jobs.
-		if( ! charge_reservation_sub_job && pbsMap.getProperty(PBS_RESERVATION_ID_PROP) != null){
+		if( ! charge_reservation_sub_job && isReservation(pbsMap)){
 			pbsMap.setProperty(BatchParser.SUBJOB_PROP, Boolean.TRUE);
 		}
 		Number exit = pbsMap.getProperty(PBS_EXIT_PROP, null);
@@ -702,6 +702,12 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	
 	
 		return true;
+	}
+
+
+
+	public boolean isReservation(PropertyMap pbsMap) {
+		return pbsMap.getProperty(PBS_RESERVATION_ID_PROP) != null;
 	}
 
 	
