@@ -22,7 +22,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 
-/**
+/** A nested parser that parses a single field or fragment of record generating proeprty values.
  * <p>
  * Classes implementing this interface have the ability to add values to a
  * <code>PropertyContainer</code>. <code>PropertyContainer</code>s contain
