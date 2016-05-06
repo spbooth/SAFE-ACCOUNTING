@@ -815,7 +815,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 						  // as reseting the producer clears the selector
 						  rs.setUsageProducer(getText(e));
 					  }else if( e.getLocalName().equals(TIME_BOUNDS_ELEMENT)){
-						  rs.setBounds(getDateProperties(rs, e));
+						  rs.setBounds(getDateProperties(rs, e).bounds);
 					  }else{
 						  RecordSelector sel = getRecordSelectElement(rs.getUsageProducer().getFinder(), e);
 						  if( sel != null ){

@@ -66,6 +66,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -373,6 +374,7 @@ public class TableExtension extends ReportExtension {
 		PropExpression<Date>[] dates;
 		
 		
+		
 		public SummaryTable(TableExtension extension, 
 				CompoundTable compoundTable, Period period, 
 				RecordSet recordSet, Node tableNode) {
@@ -384,8 +386,10 @@ public class TableExtension extends ReportExtension {
 			this.dates = recordSet.getBounds();
 			Element paramElement = extension.getParamElement("Date", tableElement);
 			if( paramElement != null){
+				DateBounds dateProperties = extension.getDateProperties(recordSet,paramElement);
 				this.dates = 
-						extension.getDateProperties(recordSet,paramElement);
+						dateProperties.bounds;
+				this.use_overlap=dateProperties.overlap;
 			}
 			
 		}
@@ -411,7 +415,7 @@ public class TableExtension extends ReportExtension {
 				extension.addError("Selector not compatible with producer", selector.toString());
 				return table;
 			}
-			boolean overlap=false;
+			
 			try{
 				Map<ExpressionTuple,ReductionMapResult> data;
                 
@@ -423,17 +427,21 @@ public class TableExtension extends ReportExtension {
 							period.getEnd()));
 					data = producer.getIndexedReductionMap(reductions, sel);
 				}else if( dates.length ==2){
-					data = handler.getOverlapIndexedReductionMap( reductions, 
+					if( use_overlap ){
+						data = handler.getOverlapIndexedReductionMap( reductions, 
 							dates[0], dates[1], 
 							period.getStart(), period.getEnd(), 
 							selector);
-					if( period.getStart().equals(period.getEnd())){
-						// zero length period we must be trying to pick up records
-						// that overlap a specific point in time.
-						overlap=false;
 					}else{
-						overlap=true;
+						// explicitly asked for no overlap calc
+						AndRecordSelector sel = new AndRecordSelector(selector);
+						sel.add(new PeriodOverlapRecordSelector(period, dates[0],dates[1]));
+						data = producer.getIndexedReductionMap(reductions, sel);
 					}
+//					if( period.getStart().equals(period.getEnd())){
+//						// zero length period we must be trying to pick up records
+//						// that overlap a specific point in time.
+//					}
 				}else{
 					data = producer.getIndexedReductionMap(reductions, selector);
 				}
@@ -494,7 +502,7 @@ public class TableExtension extends ReportExtension {
 				compoundTable.table.addRows(table);
 				for( String col : col_names){
 					Reduction red = cols.get(col).getReduction();
-					if( overlap && red == Reduction.AVG){
+					if( use_overlap && red == Reduction.AVG){
 						// These have been mapped to time average 
 						red = Reduction.SUM;
 					}
@@ -516,7 +524,7 @@ public class TableExtension extends ReportExtension {
 	 *
 	 */
 	public static class SummaryObjectTable implements TableProxy{
-
+		boolean use_overlap=false;
 	
 		CompoundTable compoundTable;
 		TableExtension extension;
@@ -658,7 +666,7 @@ public class TableExtension extends ReportExtension {
 				return table;
 			}
 		
-			boolean overlap=false;
+			
 			try{
 				Map<ExpressionTuple,ReductionMapResult> data;
                 
@@ -720,7 +728,7 @@ public class TableExtension extends ReportExtension {
 				compoundTable.table.addRows(table);
 				for( String col : col_names){
 					Reduction red = cols.get(col).getReduction();
-					if( overlap && red == Reduction.AVG){
+					if( use_overlap && red == Reduction.AVG){
 						// These have been mapped to time average 
 						red = Reduction.SUM;
 					}

@@ -257,13 +257,21 @@ public abstract class SelectBuilder {
 		  }
 		  return false;
 	}
-	
-	public final PropExpression<Date>[] getDateProperties(ObjectSet recordSet,Node datePropertyNode) {		
+	public class DateBounds{
+		public DateBounds(PropExpression<Date>[] bounds, boolean overlap) {
+			super();
+			this.bounds = bounds;
+			this.overlap = overlap;
+		}
+		public final PropExpression<Date>[] bounds;
+		public final boolean overlap;
+	}
+	public final DateBounds getDateProperties(ObjectSet recordSet,Node datePropertyNode) {		
 		
 		ExpressionTargetGenerator producer = recordSet.getGenerator();
 		if (datePropertyNode != null) {
 			if( hasChild(ALL_TIMES_ELEMENT,(Element)datePropertyNode)){
-				return new PropertyTag[0];
+				return new DateBounds(new PropertyTag[0],false);
 			}
 			PropExpression property = null;
 			try{
@@ -276,7 +284,7 @@ public abstract class SelectBuilder {
 			}
 			
 			if (property != null && Date.class.isAssignableFrom(property.getTarget())) {
-				return new PropExpression[]{property};
+				return new DateBounds(new PropExpression[]{property},false);
 				
 			} else {
 				// check for overlap properties.
@@ -284,13 +292,13 @@ public abstract class SelectBuilder {
 				String end = getParam("EndProperty", (Element) datePropertyNode);
 				PropExpression<Date> startProperty = getExpression(producer.getFinder(), start); 
 				PropExpression<Date> endProperty = getExpression(producer.getFinder(), end);
-	
+				boolean overlap = ! hasChild("NoOverlap", (Element) datePropertyNode);
 				if (startProperty != null && Date.class.isAssignableFrom(startProperty.getTarget()) &&
 					endProperty != null && Date.class.isAssignableFrom(endProperty.getTarget())) {
 	
-					return new PropExpression[]{
+					return new DateBounds(new PropExpression[]{
 							startProperty,
-							endProperty};
+							endProperty},overlap);
 				}			
 			}
 			}catch(Exception e){
@@ -300,9 +308,9 @@ public abstract class SelectBuilder {
 		}
 		if( recordSet.getGenerator().compatible(StandardProperties.ENDED_PROP)){
 			// default to ended  if supported.
-			return new PropExpression[]{StandardProperties.ENDED_PROP};	
+			return new DateBounds(new PropExpression[]{StandardProperties.ENDED_PROP},false);	
 		}
-		return new PropExpression[0];
+		return new DateBounds(new PropExpression[0],false);
 				
 	}
 	protected <T> SelectClause<T> getSelectClause(PropExpression<T> expr, MatchCondition cond, Element e)
