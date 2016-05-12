@@ -720,6 +720,14 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		}
 		return Boolean.FALSE;
 	}
+	/** Does the property resolve as a derived property only.
+	 * 
+	 * @param tag
+	 * @return
+	 */
+	public <P> boolean isDerived(PropertyTag<P> tag){
+		return hasProperty(tag) && ! testProperty(tag, false);
+	}
 	private ResolveChecker checker=null;
 	/** Does this property Expression resolve
 	 * 

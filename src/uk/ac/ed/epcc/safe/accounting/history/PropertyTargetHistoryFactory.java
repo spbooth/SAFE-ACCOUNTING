@@ -75,6 +75,7 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.model.history.HistoryFactory;
 import uk.ac.ed.epcc.webapp.time.Period;
+import uk.ac.ed.epcc.webapp.time.TimePeriod;
 
 /** This class extends {@link HistoryFactory} for peer classes that are {@link ExpressionTarget}s.
  * This class also acts as a UsageProducer allowing the history data to be used in reports. 
@@ -96,7 +97,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 	 *
 	 * @param <T>
 	 */
-	public static  class HistoryUse<T extends DataObject> extends HistoryFactory.HistoryRecord<T> implements UsageRecord,ExpressionTarget{
+	public static  class HistoryUse<T extends DataObject> extends HistoryFactory.HistoryRecord<T> implements UsageRecord,ExpressionTarget,TimePeriod{
 		private final ExpressionTargetContainer proxy;
 		@SuppressWarnings("unchecked")
 		public HistoryUse(PropertyTargetHistoryFactory<T,?,?> fac,Record res) {
@@ -160,6 +161,13 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		public Parser getParser() {
 			return proxy.getParser();
 		}
+		public Date getEnd() {
+			return getProperty(StandardProperties.ENDED_PROP,null);
+		}		
+
+		public Date getStart()  {
+			return getProperty(StandardProperties.STARTED_PROP,null);
+		}
 		
 		
 	}
@@ -199,31 +207,59 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		for( String name : list.split("\\s*,\\s*")){
 			finder.addFinder(new ConfigPropertyRegistry(conn, name));
 		}
+	
 		if( fac instanceof PropertyTargetFactory){
-			PropertyTargetFactory etf = (ExpressionTargetFactory) fac;
+			PropertyTargetFactory ptf = (PropertyTargetFactory) fac;
 		// import properties from peer.
-			PropertyFinder peer_props = etf.getFinder();
+			PropertyFinder peer_props = ptf.getFinder();
 			finder.addFinder(peer_props);
-			for(PropertyTag t : peer_props.getProperties()){
-				try{
+			if( fac instanceof ExpressionTargetFactory){
+				ExpressionTargetFactory etf = (ExpressionTargetFactory) fac;
+				AccessorMap peer_map = etf.getAccessorMap();
+				PropExpressionMap peer_derived = peer_map.getDerivedProperties();
+				for(PropertyTag t : peer_props.getProperties()){
 					if( etf.hasProperty(t)){
-						// Fall back to getting value from peer
-						derived.put(t, new DeRefExpression(PEER, t));
+						try{
+							if( peer_map.isDerived(t)){
+								
+								// if its an expression add the same expression here
+								// we want to use the history values in preference to the current.
+								derived.put(t, peer_derived.get(t));
+							}else{
+								// Fall back to getting value from peer
+								derived.put(t, new DeRefExpression(PEER, t));
+							}
+						}catch(Exception e){
+							getLogger().error("Error adding peer property",e);
+						}
+					}	
+				}
+			}else{
+				for(PropertyTag t : peer_props.getProperties()){
+					try{
+						if( ptf.hasProperty(t)){
+							// Fall back to getting value from peer
+							derived.put(t, new DeRefExpression(PEER, t));
+						}
+					}catch(Exception e){
+						getLogger().error("Error adding peer property",e);
 					}
-				}catch(Exception e){
-					getLogger().error("Error adding peer property",e);
 				}
 			}
 		}
+		customAccessors(mapi, finder, derived);
 		// add config overrides
 		derived.addFromProperties(finder, conn, tag);
 		finder.addFinder(history);
-		try{
-			derived.put(StandardProperties.STARTED_PROP, HISTORY_START);
-			derived.put(StandardProperties.ENDED_PROP, HISTORY_END);
-		}catch(Exception e){
+		if( useHistoryAsTimeBounds()){
+			try{
+				derived.put(StandardProperties.STARTED_PROP, HISTORY_START);
+				derived.put(StandardProperties.ENDED_PROP, HISTORY_END);
+			}catch(Exception e){
 				getLogger().error("Unexpected exception",e);
+			}
 		}
+		
 		PropertyRegistry table_reg = new PropertyRegistry(tag, "Fields from table "+tag);
 		mapi.populate( finder, table_reg, false);
 		finder.addFinder(table_reg);
@@ -232,15 +268,32 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		property_finder=finder;
 	}
 
-	
+	/** Extension point to allow custom accessors and registries to be added.
+	 * 
+	 * @param mapi2
+	 * @param finder
+	 * @param derived
+	 */
+	protected void customAccessors(AccessorMap<H> mapi2, MultiFinder finder,
+			PropExpressionMap derived) {
+		
+	}
 	public final PropertyFinder getFinder(){
 		if(property_finder == null ){
 			initAccessorMap(getContext(), getConfigTag());
 		}
 		return property_finder;
 	}
-	
-
+	/** Should the history time bounds be used as the {@link UsageRecord} time bounds
+	 * 
+	 * This defaults to true but should be overridden if the peer is itself a UsageRecord
+	 * and the history table is being used to view reports as seen from the past.
+	 * 
+	 * @return
+	 */
+    protected boolean useHistoryAsTimeBounds(){
+    	return true;
+    }
 	protected TableRegistry makeTableRegistry() {
 		return new TableRegistry(res,getFinalTableSpecification(getContext(), getTag()),getProperties(),getAccessorMap());
 	}
