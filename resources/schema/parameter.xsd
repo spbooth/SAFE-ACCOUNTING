@@ -325,8 +325,8 @@
 		<xsd:attribute name="var" type="xsd:string" use="required">
 		<xsd:annotation><xsd:documentation>Iteration parameter name</xsd:documentation></xsd:annotation>
 		</xsd:attribute>
-		<xsd:attribute name="split" type="xsd:string" use="required">
-		<xsd:annotation><xsd:documentation>name to construct the Splitter plug-in class.</xsd:documentation></xsd:annotation>
+		<xsd:attribute name="split" type="xsd:string" use="optional">
+		<xsd:annotation><xsd:documentation>name to construct the Splitter plug-in class. Not needed if the parameter value is a collection.</xsd:documentation></xsd:annotation>
 		</xsd:attribute>
 	</xsd:complexType>
 	</xsd:element>

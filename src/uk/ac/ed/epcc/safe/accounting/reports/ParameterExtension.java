@@ -18,6 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.text.NumberFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -759,12 +760,22 @@ public class ParameterExtension extends ReportExtension {
 		}
 		String splitter = this.getAttribute(SPLIT_ATTR, element);
 		Splitter split = getContext().makeObjectWithDefault(Splitter.class, null, SPLITTER_PREFIX, splitter);
-		if( split == null ){
-			addError("Bad Repeat", "No Splitter class defined for tag "+splitter);
-			return result;
-		}
 		try{
-			Object[] list = split.split(param);
+			Object[] list;
+			if( split == null ){
+				if( param instanceof Collection ){
+					Collection collection = (Collection)param;
+					list = collection.toArray(new Object[collection.size()]);
+				}else{
+					addError("Bad Repeat", "No Splitter class defined for tag "+splitter);
+					return result;
+				}
+			}else{
+				list = split.split(param);
+			}
+
+
+
 			if( list == null){
 				// explicit request to do no expansion
 				return result;
