@@ -127,7 +127,7 @@ public int hashCode() {
 	final int prime = 31;
 	int result = super.hashCode();
 	result = prime * result + Arrays.hashCode(bounds);
-	result = prime * result + Boolean.hashCode(use_overlap);
+	result = prime * result + (use_overlap ? 0 : 1);  // Boolean.hashCode requires java-8
 	return result;
 }
 @Override
