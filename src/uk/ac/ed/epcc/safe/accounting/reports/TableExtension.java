@@ -384,6 +384,7 @@ public class TableExtension extends ReportExtension {
 			
 			// Get the dates, if there are any, default to the dates set in recordSet
 			this.dates = recordSet.getBounds();
+			this.use_overlap = recordSet.useOverlap();
 			Element paramElement = extension.getParamElement("Date", tableElement);
 			if( paramElement != null){
 				DateBounds dateProperties = extension.getDateProperties(recordSet,paramElement);
