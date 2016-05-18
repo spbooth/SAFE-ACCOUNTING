@@ -998,13 +998,13 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		try {
 			// The SQLValue should usually be implemented
 			// show this in preference 
-			SQLValue<?> a = getSQLValue(tag);
-			if( a instanceof SQLExpression){
+			SQLValue<?> s = getSQLValue(tag);
+			if( s instanceof SQLExpression){
 				sb.append("SQLExpression: ");
 			}else{
 				sb.append("SQLValue: ");
 			}
-			sb.append(a.toString());
+			sb.append(s.toString());
 			
 	
 		} catch (InvalidSQLPropertyException e) {

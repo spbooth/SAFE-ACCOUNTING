@@ -226,8 +226,10 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 								// we want to use the history values in preference to the current.
 								derived.put(t, peer_derived.get(t));
 							}else{
-								// Fall back to getting value from peer
-								derived.put(t, new DeRefExpression(PEER, t));
+								// Fall back to getting value from peer unless its an accessor
+								if( peer_map.resolves(t, true)){
+									derived.put(t, new DeRefExpression(PEER, t));
+								}
 							}
 						}catch(Exception e){
 							getLogger().error("Error adding peer property",e);
