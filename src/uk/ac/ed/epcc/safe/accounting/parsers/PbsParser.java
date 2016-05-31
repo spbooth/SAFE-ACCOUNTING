@@ -36,7 +36,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
-import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
@@ -123,9 +122,9 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 	private PropertyRegistry pbsExtensionRegistry;
 	
 
-	static final String PBS_PROPERTY_BASE = "pbs.";
-	static final String PBS_RECORD_TYPE_PROPERTY_BASE = PBS_PROPERTY_BASE
-	+ "recordTypes.";
+	//static final String PBS_PROPERTY_BASE = "pbs.";
+	//static final String PBS_RECORD_TYPE_PROPERTY_BASE = PBS_PROPERTY_BASE
+	//+ "recordTypes.";
 
 	/*
 	 * ##########################################################################
@@ -157,7 +156,7 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 
 	@AutoTable
 	public static final PropertyTag<Integer> PBS_NUM_CPUS_PROP = new PropertyTag<Integer>(
-			ADDITIONAL_REGISTRY, "num_cpus", Integer.class, "The number of cpus used, derived from the nodes list");
+			ADDITIONAL_REGISTRY, "num_cpus", Integer.class, "The number of cpus used, set explicitly");
 
 	public static final PropertyTag<Integer> PBS_PROC_PER_NODE_PROP = new PropertyTag<Integer>(
 			ADDITIONAL_REGISTRY, "ppn", Integer.class, "The number of cpus used per node, derived from the nodes list");
@@ -169,13 +168,17 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 
 	
 	static {
+		// sometimes this is an explicit field or it could be a resource list
 		additionalAttributes.addParser(PBS_NUM_CPUS_PROP, IntegerParser.PARSER);
+		additionalAttributes.addParser("Resource_List.ncpus", PBS_NUM_CPUS_PROP, IntegerParser.PARSER);
 		// D, K, S
 		additionalAttributes.put("requester", new RequesterEntryMaker());
 
 		additionalAttributes.put("exec_host", new ExecHostEntryMaker());
 
 		additionalAttributes.put("Resource_List.nodes", new PBSNodesCPUEntryMaker());
+		
+		
 	}
 
 	
@@ -312,7 +315,9 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 	
 		ValueParser parser = valueParserService.getValueParser(typeDeclaration);
 
-
+		if( parser == null ){
+			throw new IllegalArgumentException("Parser Type "+typeDeclaration+" did not resolve");
+		}else{
 				String tagName = name.replace('.', '_');
 
 				PropertyTag tag;
@@ -327,7 +332,7 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 
 				PropertyEntryMaker maker = new PropertyEntryMaker(tag, parser);
 				PbsParser.this.extensionAttributes.put(name, maker);
-		
+		}
 	}
 
 	/*
@@ -454,7 +459,7 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 	/**
 	 * Nodes cpu EntryMaker
 	 * 
-	 * Some varients of PBS use a modes=<n>:ppn=<n> syntax for the nodes
+	 * Some varients of PBS use a nodes=<n>:ppn=<n> syntax for the nodes
 	 * 
 	 * @author spb
 	 *
