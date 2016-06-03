@@ -34,6 +34,7 @@ import uk.ac.ed.epcc.safe.accounting.db.PropertyMaker;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
@@ -50,6 +51,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ConfigPropertyRegistry;
+import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
@@ -226,9 +228,16 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 								// we want to use the history values in preference to the current.
 								derived.put(t, peer_derived.get(t));
 							}else{
-								// Fall back to getting value from peer unless its an accessor
-								if( peer_map.resolves(t, true)){
-									derived.put(t, new DeRefExpression(PEER, t));
+								// Fall back to getting value from peer 
+								// We have a problem if the implementation is a "magic" accessor that calculates quantities based on other properties.
+								// This will calculate the properties based on the current peer state not the historical state so we don't want to forward to
+								// on the other hand reference tags need special handling
+								if( t instanceof ReferenceExpression){
+									derived.put(t, new DoubleDeRefExpression(PEER, (ReferenceExpression) t));
+								}else{
+									if( !  peer_map.isAccessor(t)){
+										derived.put(t, new DeRefExpression(PEER, t));
+									}
 								}
 							}
 						}catch(Exception e){
