@@ -142,6 +142,9 @@ public class TableExtension extends ReportExtension {
 		 * the results are added to the parent and null is returned.
 		 * otherwide the table is returned.
 		 * 
+		 * This is the last method called on the lifecycle of the object so we should try to drop
+		 * data references before returning from this routine.
+		 * 
 		 * @param instructions
 		 * @return null or Table
 		 */
@@ -191,9 +194,13 @@ public class TableExtension extends ReportExtension {
 		
 		public Table postProcess(Node instructions) {
 			if( parent == null ){
-				return extension.processTable(table, instructions);	
+				Table result = extension.processTable(table, instructions);
+				table=null;
+				return result;
 			}else{
 				parent.addTable(extension.processTable(table, instructions));
+				parent=null;
+				table=null;
 				return null;
 			}
 		}
@@ -341,12 +348,19 @@ public class TableExtension extends ReportExtension {
 			
 			//store period to custom formatters can retreive
 			conn.setAttribute(CURRENT_PERIOD_ATTR, period);
+			period=null; // drop uneeded references for GC
+			recordSet=null;
+			tableMaker=null;
 			if (compoundTable == null) {
-				return extension.processTable(table, instructions);	
+				Table result =  extension.processTable(table, instructions);
+				table=null;
+				return result;
 				
 			} else {
 				compoundTable.addTable(
 						extension.processTable(table, instructions));
+				table=null;
+				compoundTable=null;
 				return null;
 				
 			}			
@@ -497,6 +511,10 @@ public class TableExtension extends ReportExtension {
 			conn.setAttribute(CURRENT_PERIOD_ATTR, period);
 			table = extension.processTable(table, instructions);
 			conn.removeAttribute(CURRENT_PERIOD_ATTR);
+			
+			period=null; // for GC
+			dates=null;
+			
 			if (compoundTable != null) {
 				// we must only merge columns using the appropriate Operator
 				compoundTable.mergeKeys(table);
@@ -510,9 +528,13 @@ public class TableExtension extends ReportExtension {
 					compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 				}
 				//compoundTable.addTable(table);
+				table=null;
+				compoundTable=null;
 				return null;
 			}	
-			return table;
+			Table result = table;
+			table=null;
+			return result;
 
 		}
 
@@ -736,6 +758,7 @@ public class TableExtension extends ReportExtension {
 					compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 				}
 				//compoundTable.addTable(table);
+				table=null;
 				return null;
 			}	
 			return table;
@@ -829,11 +852,14 @@ public class TableExtension extends ReportExtension {
 			}		
 			AppContext conn = extension.getContext();
 			if (compoundTable == null) {
-				return extension.processTable(table, instructions);	
-				
+				Table result = extension.processTable(table, instructions);
+				table=null;
+				return result;
 			} else {
 				compoundTable.addTable(
 						extension.processTable(table, instructions));
+				table=null;
+				compoundTable=null;
 				return null;
 				
 			}			
