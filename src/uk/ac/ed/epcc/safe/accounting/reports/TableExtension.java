@@ -427,7 +427,7 @@ public class TableExtension extends ReportExtension {
 			
 			Table<String,Object> table = new Table<String,Object>();
 			if( ! producer.compatible(selector)){
-				extension.addError("Selector not compatible with producer", selector.toString());
+				extension.addError("Selector not compatible with producer", "Producer: "+producer.getTag()+" not compatible with "+ selector.toString());
 				return table;
 			}
 			

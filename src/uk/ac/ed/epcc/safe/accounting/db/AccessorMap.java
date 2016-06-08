@@ -451,6 +451,9 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 			super(log);
 			this.require_sql=require_sql;
 		}
+		public boolean getRequreSQL(){
+			return require_sql;
+		}
 		public Boolean visitPropertyTag(PropertyTag<?> tag) throws Exception {
 			//log.debug("resolve check for "+tag.getFullName()+" "+config_tag);
 			if( ! require_sql){
@@ -720,6 +723,9 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		}
 		return Boolean.FALSE;
 	}
+	public <P> boolean isAccessor(PropertyTag<P> tag){
+		return accessor_map.containsKey(tag) && ! value_map.containsKey(tag) && ! expression_map.containsKey(tag);
+	}
 	/** Does the property resolve as a derived property only.
 	 * 
 	 * @param tag
@@ -737,7 +743,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @return boolean
 	 */
 	public <T> Boolean resolves(PropExpression<T> e,boolean require_sql){
-		if( checker == null ){
+		if( checker == null || checker.getRequreSQL() != require_sql){
 			checker = new ResolveChecker(log,require_sql);
 		}
 		try {
