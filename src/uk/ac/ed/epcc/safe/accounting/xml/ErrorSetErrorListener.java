@@ -50,11 +50,12 @@ public class ErrorSetErrorListener implements ErrorListener {
 	public void fatalError(TransformerException arg0)
 			throws TransformerException {
 		if( log != null ){
-			log.warn("Transform error "+tag, arg0);
+			log.error("Transform error "+tag, arg0);
 		}
 		if( set !=  null ){
 			set.add("Transform fatal error "+tag, arg0.getMessage(), arg0);
 		}
+		throw arg0;
 	}
 
 	public void warning(TransformerException arg0) throws TransformerException {
