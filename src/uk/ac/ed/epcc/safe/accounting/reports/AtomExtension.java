@@ -263,6 +263,13 @@ public class AtomExtension extends ReportExtension {
 			  if( n.getNodeType() == Node.ELEMENT_NODE && (parent_namespace == null  || namespace == null || parent_namespace.equals(namespace))){
 				  try{
 					  Number num = (Number) expandNumberGroup(period, set, (Element)n).value;
+					  if( parameter_names != null){
+						  if( parameter_names.contains(name)){
+							  addError("Bad Defined Atom Name", "The name "+name+" is already in use");
+							  return "";
+						  }
+						  parameter_names.add(name);
+					  }
 					  params.put(name, num);
 					  return "";
 				  }catch(Throwable t){

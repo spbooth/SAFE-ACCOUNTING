@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -126,6 +127,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	protected final NumberFormat nf; // number format used for final user display
 	protected DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	protected Map<String,Object> params=null;
+	protected Set<String> parameter_names=null;
 	private boolean use_reference = false;
 	
 	public ReportExtension(AppContext conn,NumberFormat nf) throws ParserConfigurationException{
@@ -150,7 +152,8 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	protected final Logger getLogger(){
 		return log;
 	}
-	public void setParams(Map<String,Object> p){
+	public void setParams(Set<String> names,Map<String,Object> p){
+		this.parameter_names=names;
 		this.params=p;
 	}
 	
@@ -208,6 +211,9 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * @return parameter
 	 */
 	public Object getFormParameter(String name){
+		if( parameter_names != null && ! parameter_names.contains(name)){
+			addError("Bad Parameter Name", "Parameter name "+name+"not recognised");
+		}
 		if( params != null ){
 			return params.get(name);
 		}
@@ -698,6 +704,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			i++;
 		}
 		String key = "xml-generator-"+Integer.toString(i);
+		parameter_names.add(key);
 		params.put(key,gen);
 		result.appendChild(doc.createProcessingInstruction(XMLBuilderSaxHandler.EXTERNAL_CONTENT_PI, key));
 		return result;

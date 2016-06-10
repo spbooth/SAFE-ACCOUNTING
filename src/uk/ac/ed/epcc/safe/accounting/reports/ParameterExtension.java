@@ -758,6 +758,13 @@ public class ParameterExtension extends ReportExtension {
 			addError("Bad Repeat", "No variable specified");
 			return result;
 		}
+		if( parameter_names != null && parameter_names.contains(variable)){
+			addError("Bad Variable","Overiding the existing parameter named "+variable);
+			return result;
+		}
+		if( parameter_names != null){
+			parameter_names.add(variable);
+		}
 		String splitter = this.getAttribute(SPLIT_ATTR, element);
 		Splitter split = getContext().makeObjectWithDefault(Splitter.class, null, SPLITTER_PREFIX, splitter);
 		try{
@@ -790,6 +797,10 @@ public class ParameterExtension extends ReportExtension {
 			}
 		}catch(Exception e){
 			addError("Bad Repeat", "Exception in split", e);
+		}finally{
+			if( parameter_names != null){
+				parameter_names.remove(variable);
+			}
 		}
 		return result;
 	}
@@ -814,6 +825,13 @@ public class ParameterExtension extends ReportExtension {
 		if( variable == null || variable.trim().length() == 0){
 			addError("Bad Repeat", "No variable specified");
 			return result;
+		}
+		if( parameter_names != null && parameter_names.contains(variable)){
+			addError("Bad Variable","Overiding the existing parameter named "+variable);
+			return result;
+		}
+		if( parameter_names != null){
+			parameter_names.add(variable);
 		}
 		
 		String source = this.getAttribute(SOURCE_ATTR, element);
@@ -852,6 +870,10 @@ public class ParameterExtension extends ReportExtension {
 		}
 		}catch(Exception e){
 			addError("For error","Error generating expansion set",e);
+		}finally{
+			if( parameter_names != null){
+				parameter_names.remove(variable);
+			}
 		}
 		return result;
 		
