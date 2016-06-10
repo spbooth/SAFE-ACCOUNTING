@@ -37,7 +37,7 @@ public class ReferenceLabeller<D extends Indexed> implements Labeller<IndexedRef
 		assert(key instanceof IndexedReference);
 		D res = key.getIndexed(conn);
 		if( res != null ){
-			return getLabel(res);
+			return getLabel(conn,res);
 		}
 		return getDefaultLabel();
 	}
@@ -108,12 +108,12 @@ public class ReferenceLabeller<D extends Indexed> implements Labeller<IndexedRef
 			return toString().compareTo(o.toString());
 		}
 	}
-	public Object getLabel(D val){
+	public Object getLabel(AppContext conn,D val){
 		if( val instanceof UIGenerator){
 			return new UIWrapper((UIGenerator)val);
 		}
 		if( val instanceof Identified){
-			return ((Identified)val).getIdentifier();
+			return ((Identified)val).getIdentifier(conn.getIntegerParameter("referencelabeller.max_identified", 32));
 		}
 		return val.toString();
 	}
