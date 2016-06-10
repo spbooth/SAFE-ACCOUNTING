@@ -21,7 +21,7 @@ import java.text.NumberFormat;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;

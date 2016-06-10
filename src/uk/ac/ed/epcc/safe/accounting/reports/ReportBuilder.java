@@ -769,7 +769,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			throws Exception {
 		ReportType type = getReportType(params);
 		log.debug("Report type is "+type);
-		renderXML(type, params, type.getResult(out));
+		renderXML(type, params, type.getResult(getContext(),out));
 	}
 	/** Forward HTML output to a {@link SimpleXMLBuilder}.
 	 * 

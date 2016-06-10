@@ -223,7 +223,7 @@ public class ReportServlet extends SessionServlet {
 						ByteArrayMimeStreamData raw = new ByteArrayMimeStreamData();
 						raw.setMimeType("text/xml");
 						ReportType type = builder.getReportType("RXML");
-						builder.renderXML(type, report_params, type.getResult(raw.getOutputStream()));
+						builder.renderXML(type, report_params, type.getResult(conn,raw.getOutputStream()));
 						result = new ServeDataResult(producer, producer.setData(raw));
 					}catch(Throwable t){
 						getLogger(conn).error("Error generating raw XML",t);

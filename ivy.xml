@@ -30,11 +30,11 @@
 	
 	<dependencies>
 	
-	    <dependency org="org.apache" name="batik-all" rev="1.7">
+	    <dependency org="org.apache" name="batik-all" rev="1.8">
     		<artifact name="batik-all" ext="jar"/>
 		</dependency>
 				
-		<dependency org="org.apache" name="fop" rev="1.1">
+		<dependency org="org.apache" name="fop" rev="2.1">
     		<artifact name="fop" ext="jar"/>
 		</dependency>
 		
@@ -42,7 +42,7 @@
     		<artifact name="mail" ext="jar"/>
 		</dependency>
 		
-		<dependency org="org.apache" name="xmlgraphics-commons" rev="1.5">
+		<dependency org="org.apache" name="xmlgraphics-commons" rev="2.1">
     		<artifact name="xmlgraphics-commons" ext="jar"/>
 		</dependency>
 		
@@ -58,9 +58,15 @@
     		<artifact name="activation" ext="jar"/>
 		</dependency>
 		
-		<dependency org="org.apache" name="avalon-framework" rev="4.2.0">
-    		<artifact name="avalon-framework" ext="jar"/>
+		<dependency org="org.apache.avalon.framework" name="avalon-framework-api" rev="4.3.1">
+    		<artifact name="avalon-framework-api" ext="jar"/>
 		</dependency>
+		
+		<dependency org="org.apache.avalon.framework" name="avalon-framework-impl" rev="4.3.1">
+    		<artifact name="avalon-framework-impl" ext="jar"/>
+		</dependency>
+		
+		
 		
 		<dependency org="org.apache" name="commons-io" rev="2.4">
     		<artifact name="commons-io" ext="jar"/>
@@ -74,11 +80,11 @@
     		<artifact name="serializer" ext="jar"/>
 		</dependency>
 		
-		<dependency org="org.apache" name="xalan" rev="2.7.1">
+		<dependency org="org.apache" name="xalan" rev="2.7.2">
     		<artifact name="xalan" ext="jar"/>
 		</dependency>
 		
-		<dependency org="org.apache" name="xercesImpl" rev="2.7.1">
+		<dependency org="org.apache" name="xercesImpl" rev="2.9.1">
     		<artifact name="xercesImpl" ext="jar"/>
 		</dependency>
 		

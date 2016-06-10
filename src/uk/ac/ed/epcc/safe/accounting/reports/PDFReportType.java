@@ -13,22 +13,30 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.reports;
 
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
 
 import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopConfParser;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
+
+import uk.ac.ed.epcc.webapp.AppContext;
 
 public final class PDFReportType extends ReportType {
 	public PDFReportType(String name,String extension, String mime, String description) {
 		super(name,extension,mime,description);
 	}
 
-	public Result getResult(OutputStream out) throws Exception{
-		FopFactory fopFactory = FopFactory.newInstance();
+	public Result getResult(AppContext conn, OutputStream out) throws Exception{
+		InputStream config = getClass().getResourceAsStream("fop.xconf");
+		// probably not the right URI here
+		FopConfParser parser = new FopConfParser(config, new URI("http://safe.epcc.ed.ac.uk/"));
+		FopFactory fopFactory = parser.getFopFactoryBuilder().build();
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
 		return  new SAXResult(fop.getDefaultHandler());
