@@ -212,7 +212,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 */
 	public Object getFormParameter(String name){
 		if( parameter_names != null && ! parameter_names.contains(name)){
-			addError("Bad Parameter Name", "Parameter name "+name+"not recognised");
+			addError("Bad Parameter Name", "Parameter name "+name+" not recognised");
 		}
 		if( params != null ){
 			return params.get(name);
