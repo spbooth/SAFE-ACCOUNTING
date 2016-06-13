@@ -2,16 +2,17 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+
 import uk.ac.ed.epcc.safe.accounting.properties.AprunPropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.reference.IndexedTag;
+import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
-import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.StringSplitter;
 import uk.ac.ed.epcc.webapp.AppContext;
 
@@ -21,10 +22,12 @@ import uk.ac.ed.epcc.webapp.AppContext;
  *
  */
 
-public class AprunCmdParser extends AbstractPropertyContainerParser implements IncrementalPropertyContainerParser {
+public class AprunCmdParser extends AbstractPropertyContainerParser  {
 	
 	private static final PropertyRegistry aprun_reg = new PropertyRegistry("aprun", "Properties from an aprun command");
 	
+	
+	public static final IndexedTag parent_tag = new IndexedTag(aprun_reg, "Parent", null, null);
 	@AutoTable(target=String.class)
 	public static final AprunPropertyTag<String> ARCHITECTURE = new AprunPropertyTag<String>(aprun_reg, "architecture", new String[]{"-a", "--architecture"}, String.class);
 	@AutoTable(target=Boolean.class)
@@ -319,16 +322,6 @@ public class AprunCmdParser extends AbstractPropertyContainerParser implements I
 		return super.initFinder(ctx, aprun_reg);
 	}
 
-	@Override
-	public boolean isComplete(UsageRecord record) {
-		PropertyTag<?>[] attrs = {PE_COUNT, APP_EXE_PATH};
-		return super.isComplete(record, attrs);
-	}	
 	
-	
-	@Override
-	public void postComplete(UsageRecord record) throws Exception {
-		// do nothing
-	}
 	
 }
