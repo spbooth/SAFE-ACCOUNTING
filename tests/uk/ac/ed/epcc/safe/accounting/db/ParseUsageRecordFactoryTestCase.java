@@ -333,7 +333,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		this.processBadParseErrors(sucessfulRecords, failedRecords, errors);
 	}
 @Test
-	public void testRecieveAccounting() throws Exception {
+	public void testReceiveAccounting() throws Exception {
 
 		ParseUsageRecordFactory<R,I> fac = getFactory();
 		if (!fac.isValid()) {
