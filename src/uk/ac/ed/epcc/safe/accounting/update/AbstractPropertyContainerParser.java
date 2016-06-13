@@ -21,12 +21,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
+import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** template class for {@link PropertyContainerParser} using Strings as the intermediate representation.
  * 
@@ -116,6 +121,33 @@ public abstract class AbstractPropertyContainerParser extends AbstractPropertyCo
 	public String getRecord(String text){
 		return text;
 	}
-
 	
+	protected Logger log;
+
+	public PropertyFinder initFinder(AppContext ctx, PropertyRegistry prop_reg) {
+		log = ctx.getService(LoggerService.class).getLogger(getClass());
+		MultiFinder mf = new MultiFinder();
+		mf.addFinder(prop_reg);
+		return mf;
+	}
+	
+	public boolean isComplete(UsageRecord record, PropertyTag<?>[] attrs) {
+		boolean complete = true;
+					
+		for (int i = 0; i < attrs.length; i++) {
+			String name = attrs[i].getName();
+			Object value = record.getProperty(attrs[i], null);
+			if (null != value) {
+				log.debug(name + " is " + value.toString());
+			}
+			else {
+				log.debug("No " + name);
+				complete = false;
+			}
+		}
+					
+		if (complete) log.debug("Record is complete");
+				
+		return complete;
+	}
 }
