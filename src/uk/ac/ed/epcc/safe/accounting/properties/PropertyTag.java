@@ -58,10 +58,12 @@ public class PropertyTag<T> implements PropExpression<T> {
 		 }
 		 if( obj.getClass() == getClass()){
 			 PropertyTag tag = (PropertyTag) obj;
-			 return tag.name.equals(name) && tag.registry.equals(registry);
+			 return tag.registry.equals(registry) && tag.name.equals(name);
 		 }
 		return false;
 	}
+	 
+	 
 	@Override
 	public int hashCode() {
 		return name.hashCode();
@@ -85,51 +87,62 @@ public class PropertyTag<T> implements PropExpression<T> {
     public boolean allowExpression(PropExpression e){
     	return allowClass(e.getTarget());
     }
-       private final PropertyRegistry registry;
-	   private final String name;
-	   private final Class<? super T> property_type;
-	   private final String description;
-	   public PropertyTag(PropertyRegistry registry,String name, Class<? super T> property_type){
-		   this(registry,name,property_type,null);
-	   }
-	   public PropertyTag(PropertyRegistry registry,String name, Class<? super T> property_type,String description){
-		   this.name=name;
-		   assert(property_type!=null);
-		   assert(registry != null);
-		   this.property_type=property_type;
-		   this.registry=registry;
-		   if( description == null ){
-			   this.description=property_type.getSimpleName();
-		   }else{
-			   this.description=description;
-		   }
-		   if( ! name_pattern.matcher(name).matches()){
-			   throw new ConsistencyError("Invalid PropertyTag name "+name);
-		   }
-		   registry.register(this);
-	   }
+    
+    
+    protected final PropertyRegistry registry;
+	protected final String name;
+	private final Class<? super T> property_type;
+	private final String description;
+	   
+	   
+	public PropertyTag(PropertyRegistry registry,String name, Class<? super T> property_type){
+	   this(registry,name,property_type,null);
+	}
+	
+	public PropertyTag(PropertyRegistry registry,String name, Class<? super T> property_type,String description){
+		
+		this.name = name;
+		
+		assert(property_type != null);
+		assert(registry != null);
+		
+		this.property_type=property_type;
+		this.registry=registry;
+		
+		if (description == null) {
+		    this.description = property_type.getSimpleName();
+		} else {
+			this.description = description;
+		}
+		
+		if (!name_pattern.matcher(name).matches()) {
+			throw new ConsistencyError("Invalid PropertyTag name " + name);
+		}
+		
+		registry.register(this);
+	}
 	
 	  
 	@Override
-	   public String toString(){
-		   return getFullName();
-	   }
-	   public String getName(){
-		   return name;
-	   }
-	   public String getFullName(){
-		   return registry.getPrefix()+name;
-	   }
-	   public String getDescription(){
-		   return description;
-	   }
+	public String toString(){
+	   return getFullName();
+	}
+	public String getName(){
+	   return name;
+	}
+	public String getFullName(){
+	   return registry.getPrefix()+name;
+	}
+	public String getDescription(){
+	   return description;
+	}
 	  
-	   public Class<? super T> getTarget(){
-		   return property_type;
-	   }
-	   public PropertyRegistry getRegistry(){
-		   return registry;
-	   }
+	public Class<? super T> getTarget(){
+	   return property_type;
+	}
+	public PropertyRegistry getRegistry(){
+	   return registry;
+	}
 	public <R> R accept(BasePropExpressionVisitor<R> vis) throws Exception {
 		return vis.visitPropertyTag(this);
 	}
