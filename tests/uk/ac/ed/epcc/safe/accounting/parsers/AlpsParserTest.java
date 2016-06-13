@@ -8,10 +8,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 public class AlpsParserTest extends AbstractRecordTestCase {
 
 	public AlpsParserTest() {
-		super("ARCHER", "AlpsRecord");
-		// TODO Auto-generated constructor stub
+		super("ARCHER", "ALPSLog");
 	}
-
 
 
 	@Override
@@ -21,6 +19,7 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 		return defaults;
 		
 	}
+
 	private static final Collection<RecordText> goodRecords = new ArrayList<RecordText>();
 	private static final Collection<BadRecordText> badTexts = new ArrayList<BadRecordText>();
 	
@@ -28,19 +27,21 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactoryTestCase#getUpdateText()
 	 */
-	static{
-		String records[] =new String[]{
-		"<150>1 2015-11-01T00:00:03.957208+01:00 c0-1c0s0n1 apsys 2809 p0-20151014t172436 [alps_msgs@34] apid=18543815, Finishing, user=15559, batch_id=3245599.sdb",
-		"<150>1 2015-11-01T00:00:15.128132+00:00 c2-0c1s1n1 aprun 16111 p0-20151014t172436 [alps_msgs@34] apid=18543818, Starting, user=15031, batch_id=3246064.sdb, cmd_line=\"aprun -n 96 -N 24 -S 12 -d 1 /usr/local/packages/gmx/4.6.5-phase1/bin/mdrun_mpi -s -v -cpi -tunepme -maxh 23.75 \", num_nodes=4, node_list=1519-1520,1522,1525, cwd=\"/fs2/e280/e280/gsala280/MAPK_DMotif/ERK-MSK-on-RSK/PP/nvt\"",
-		"<150>1 2015-11-01T00:00:15.250913+00:00 c0-1c0s0n1 aprun 3578 p0-20151014t172436 [alps_msgs@34] apid=18543819, Starting, user=15031, batch_id=3246065.sdb, cmd_line=\"aprun -n 96 -N 24 -S 12 -d 1 /usr/local/packages/gmx/4.6.5-phase1/bin/mdrun_mpi -s -v -cpi -tunepme -maxh 23.75 \", num_nodes=4, node_list=1526,1603,1634-1635, cwd=\"/fs2/e280/e280/gsala280/MAPK_DMotif/ERK-MSK-on-RSK/wt/nvt\"",
-		"<150>1 2015-11-01T00:00:16.533355+01:00 c6-0c1s1n1 apsys 24532 p0-20151014t172436 [alps_msgs@34] apid=18543788, Finishing, user=16032, batch_id=3246052.sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
-		"<150>1 2015-11-01T00:00:30.482836+01:00 c6-0c1s1n1 apsys 21204 p0-20151014t172436 [alps_msgs@34] apid=18543707, Finishing, user=16033, batch_id=3246011.sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
-		"<150>1 2015-11-01T00:00:31.448373+01:00 c2-0c1s1n1 apsys 12079 p0-20151014t172436 [alps_msgs@34] apid=18543783, Finishing, user=13854, batch_id=3245590.sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
-		"<150>1 2015-11-01T00:00:32.204004+00:00 c2-0c1s1n1 aprun 16178 p0-20151014t172436 [alps_msgs@34] apid=18543820, Starting, user=13854, batch_id=3245590.sdb, cmd_line=\"aprun -n 24 /home/e05/shared/red/vasp5 \", num_nodes=1, node_list=1765, cwd=\"/fs3/e05/e05/federico/alloys/211/balena/1I_5Br/001\"",
-		"<150>1 2015-11-01T00:01:04.217889+00:00 c0-1c0s0n1 aprun 3706 p0-20151014t172436 [alps_msgs@34] apid=18543822, Starting, user=15559, batch_id=3245599.sdb, cmd_line=\"aprun -n 336 pw.x -npool 28 -ntg 4 -in monoVACMD_53_xyz_362_add_1H_2000.000.pwi \", num_nodes=14, node_list=3484-3497, cwd=\"/fs4/e304/e304-WP3-Csanyi/tdd20h/Iron/ConfigGen/AddedHydrogen/monoVACMD_53\"",
-		"<150>1 2015-11-01T00:01:07.302401+01:00 c2-0c1s1n1 apsys 16115 p0-20151014t172436 [alps_msgs@34] apid=18543818, Finishing, user=15031, batch_id=3246064.sdb, exit_code=137, exitcode_array=134:0, exitsignal_array=9:0",
+	static {
+		String records[] = new String[] {
+		"<150>1 2016-05-20T00:00:00.244775+01:00 c4-1c0s0n1 aprun 30934 p0-20160509t103958 [alps_msgs@34] apid=21699839, Starting, user=15998, batch_id=3696699.sdb, cmd_line=\"/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 1024 ./imagenew 1024 1 \", num_nodes=43, node_list=1131-1133,1135-1142,2515-2516,2726-2732,2736-2738,2823-2838,3381-3382,4379-4380, cwd=\"/fs4/d89/d89/s1514982/Work/MPP/bitbucket/mpp/coursework1/src/unstriped\"",
+		"<150>1 2016-05-20T00:00:29.188586+01:00 c4-1c0s0n1 apsys 30938 p0-20160509t103958 [alps_msgs@34] apid=21699839, Finishing, user=15998, batch_id=3696699.sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
+		"<150>1 2016-05-20T00:02:39.015905+01:00 c4-1c0s0n1 aprun 334 p0-20160509t103958 [alps_msgs@34] apid=21699856, Starting, user=15998, batch_id=3696699.sdb, cmd_line=\"/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 1024 ./imagenew 1024 1 \", num_nodes=43, node_list=1131-1133,1135-1142,2515-2516,2726-2732,2736-2738,2823-2838,3381-3382,4379-4380, cwd=\"/fs4/d89/d89/s1514982/Work/MPP/bitbucket/mpp/coursework1/src/unstriped\"",
+		"<150>1 2016-05-20T00:03:05.355536+01:00 c4-1c0s0n1 apsys 338 p0-20160509t103958 [alps_msgs@34] apid=21699856, Finishing, user=15998, batch_id=3696699.sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
+		"<150>1 2016-05-20T00:39:23.291704+01:00 c4-1c0s0n1 aprun 26297 p0-20160509t103958 [alps_msgs@34] apid=21699984, Starting, user=16257, batch_id=3696734.sdb, cmd_line=\"/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 1 /work/e280/e280/sv375/Solvaware_v1.3/Solvaware_Trunk/HydrationSiteAnalysis/Utilities/WriteDensityProfile /fs2/e280/e280/sv375/carbonic_anhydrase_2/2NNG/Equilibration/2NNG_system.pdb /fs2/e280/e280/sv375/carbonic_anhydrase_2/2NNG/Equilibration/2NNG_system.psf /fs2/e280/e280/sv375/carbonic_anhydrase_2/2NNG/Dynamics/2NNG_system_dynamics.dcd 0 9000 1 1.2 59 59 59 108 480 \", num_nodes=1, node_list=4830, cwd=\"/fs2/e280/e280/sv375/carbonic_anhydrase_2/2NNG/Cluster\"",
+		"<150>1 2016-05-20T00:40:04.401205+01:00 c4-1c0s0n1 apsys 26725 p0-20160509t103958 [alps_msgs@34] apid=21699984, Finishing, user=16257, batch_id=3696734.sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
+		"<150>1 2016-05-20T01:37:36.037244+01:00 c4-1c0s0n1 aprun 9259 p0-20160509t103958 [alps_msgs@34] apid=21701310, Starting, user=14597, batch_id=3695119.sdb, cmd_line=\"/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -N 1 -n 1 -S 1 /work/n02/n02/pappas/src/oasis/crayxe6_cce-20160403/bin/oasis3.MPI1.x : -N 24 -d 1 -n 144 -S 12 --ss /work/n02/n02/pappas/um/xgspt/bin/ga30_kpp.exe-20160403 : -N 1 -n 1 -d 24 /work/n02/n02/bdong/um/xmnub/dataw/KPP_ocean \", num_nodes=8, node_list=2502-2504,2511-2513,4200,4983, cwd=\"/fs2/n02/n02/bdong/um/xmnub/dataw\"",
+		"<150>1 2016-05-20T01:52:54.531097+01:00 c4-1c0s0n1 apsys 9282 p0-20160509t103958 [alps_msgs@34] apid=21701310, Finishing, user=14597, batch_id=3695119.sdb, exit_code=137, exitcode_array=139:0, exitsignal_array=9:0",
+		"<150>1 2016-05-20T03:40:21.393759+01:00 c4-1c0s0n1 aprun 2270 p0-20160509t103958 [alps_msgs@34] apid=21705594, Starting, user=5833, batch_id=3692330.sdb, cmd_line=\"/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun --ss -n 1920 -N 24 -d 1 -S 12 -j1 env OMP_NUM_THREADS=1 /work/n02/n02/wmcginty/um/xmrfd/bin/xmrfd.exe : --ss -n 24 -N 12 -d 2 -S 6 -j1 env OMP_NUM_THREADS=2 /work/n02/n02/wmcginty/um/xmrfd/bin/xmrfd.exe \", num_nodes=82, node_list=970-971,1534,1540-1555,1560-1587,1597-1603,1608-1615,1620,1622-1640, cwd=\"/fs2/n02/n02/wmcginty/VERA/um/xmrjc\"",
+		"<150>1 2016-05-20T14:14:06.978843+01:00 c4-1c0s0n1 apsys 2274 p0-20160509t103958 [alps_msgs@34] apid=21705594, Finishing, user=5833, batch_id=3692330.sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
 		"<150>1 2015-11-01T00:01:07.515128+00:00 c0-1c0s0n1 aprun 3706 p0-20151014t172436 [alps_msgs@34] apid=18543822, Error, user=15559, batch_id=3245599.sdb, [NID 03497] 2015-11-01 00:01:07 Apid 18543822: Cpuset file /dev/cpuset/18543822/cpus wrote -1 of 5; found 1 other local apid: 18540933 "
 		};
+		
 		for( String s : records){
 			goodRecords.add(new RecordText(s));
 		}
