@@ -16,8 +16,10 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.properties;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -58,6 +60,10 @@ public class FixedPropertyFinder implements PropertyFinder {
 		return description;
 	}
 
+	public Iterator<Entry<String, PropertyTag>> getIterator(){
+		return this.registry.entrySet().iterator();
+	}
+	
 	public PropertyTag<?> find(String name) {
 		if( name == null ){
 			return null;
