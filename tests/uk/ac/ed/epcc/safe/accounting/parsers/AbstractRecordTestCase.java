@@ -89,7 +89,7 @@ public abstract class AbstractRecordTestCase<R> extends
 		for(PropertyContainerPolicy pol : fac.getPolicies()){
 			pol.modifyDefaultTableSpecification(ctx,spec,map,tableName);
 		}
-		// We expect at elast a unique key
+		// We expect at least a unique key
 		assertTrue("No index for "+tableName,spec.getIndexes().hasNext());
 	}
 	/*
