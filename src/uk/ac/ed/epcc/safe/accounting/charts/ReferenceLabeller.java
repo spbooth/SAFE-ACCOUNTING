@@ -113,7 +113,7 @@ public class ReferenceLabeller<D extends Indexed> implements Labeller<IndexedRef
 			return new UIWrapper((UIGenerator)val);
 		}
 		if( val instanceof Identified){
-			return ((Identified)val).getIdentifier(conn.getIntegerParameter("referencelabeller.max_identified", 32));
+			return ((Identified)val).getIdentifier(conn.getIntegerParameter("referencelabeller.max_identified", 64));
 		}
 		return val.toString();
 	}
