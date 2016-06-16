@@ -512,6 +512,9 @@ public abstract class MapperEntry implements Contexed,Cloneable{
      * @throws Exception 
      */
     public <P extends PeriodSequencePlot>void plotTimeChart(PlotEntry e,TimeChart<P> tc, P ds, int nplots,boolean use_line, boolean graph_transforms) throws Exception{
+    	if(  isCumulative()){ 
+			tc.getChartData().setCumulative(true);
+    	}
     	Vector<String> labels=getLabels();
 		 if( use_line ){
 	        	tc.addLineGraph(ds,custom_colour);
