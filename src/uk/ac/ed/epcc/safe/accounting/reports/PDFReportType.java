@@ -15,7 +15,9 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.net.URL;
 
+import javax.imageio.IIOException;
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
 
@@ -31,10 +33,22 @@ public final class PDFReportType extends ReportType {
 		super(name,extension,mime,description);
 	}
 
+	private FopFactory fopFactory = null;
 	public Result getResult(AppContext conn, OutputStream out) throws Exception{
 		
-		FopConfParser parser = new FopConfParser(new File(getClass().getResource("fop.xconf").getFile()));
-		FopFactory fopFactory = parser.getFopFactoryBuilder().build();
+		if( fopFactory == null ){
+			URL uri = getClass().getResource("/fop.xconf");
+			if( uri != null  && uri.getFile() != null ){
+				File file = new File(uri.getFile());
+				if( file.exists()){
+					FopConfParser parser = new FopConfParser(file);
+					fopFactory = parser.getFopFactoryBuilder().build();
+				}
+			}
+		}
+		if( fopFactory == null ){
+			throw new IIOException("No fop factory");
+		}
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
 		return  new SAXResult(fop.getDefaultHandler());
