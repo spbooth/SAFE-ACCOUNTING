@@ -14,16 +14,18 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 
 import javax.imageio.IIOException;
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
 
+import org.apache.avalon.framework.configuration.Configuration;
+import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
 import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FopConfParser;
 import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.apps.MimeConstants;
 
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -33,18 +35,24 @@ public final class PDFReportType extends ReportType {
 		super(name,extension,mime,description);
 	}
 
-	private FopFactory fopFactory = null;
+	
+	
+	private static FopFactory fopFactory = null;
 	public Result getResult(AppContext conn, OutputStream out) throws Exception{
+		synchronized (getClass()) {
+			
 		
 		if( fopFactory == null ){
-			URL uri = getClass().getResource("/fop.xconf");
-			if( uri != null  && uri.getFile() != null ){
-				File file = new File(uri.getFile());
-				if( file.exists()){
-					FopConfParser parser = new FopConfParser(file);
-					fopFactory = parser.getFopFactoryBuilder().build();
-				}
+			
+			InputStream stream = getClass().getResourceAsStream("/fop.xconf");
+			if( stream != null ){
+				DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
+				Configuration cfg = builder.build(stream);
+				FopFactoryBuilder fop_builder = new FopFactoryBuilder(new File(".").toURI() );
+				fop_builder.setConfiguration(cfg);
+				fopFactory = fop_builder.build();
 			}
+		}
 		}
 		if( fopFactory == null ){
 			throw new IIOException("No fop factory");
