@@ -49,11 +49,10 @@ public class AprunParserTest extends AbstractRecordTestCase {
 		"/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -ss -n 24 -N 12 -d 2 -S 6 -j1 -e OMP_NUM_THREADS=2 /work/n02/n02/wmcginty/um/xmrfd/bin/xmrfd.exe",
 		"/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -ss -n 24 -N 12 -d 2 -S 6 -j1 env OMP_NUM_THREADS=2 /work/n02/n02/wmcginty/um/xmrfd/bin/xmrfd.exe"
 		};
-		
 		/*
 		for( String s : bad){
-			Class<? extends Throwable> x = AccountingParseException;
-			badTexts.add(new BadRecordText(s, new Exception()));
+			Exception x = new AccountingParseException();
+			badTexts.add(new BadRecordText(s, x.class));
 		}
 		*/
 	}
