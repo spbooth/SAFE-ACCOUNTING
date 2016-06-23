@@ -25,7 +25,7 @@ package uk.ac.ed.epcc.safe.accounting.properties;
  *  Hence, the actual names are stored as aliases, which also
  *  solves the problem of aprun attributes having short and long
  *  forms (e.g., "-cc" and "--cpu-binding"), and the tag name
- *  assciated with these aliases is SQL compatible (e.g., cpu_binding).
+ *  associated with these aliases is SQL compatible (e.g., cpu_binding).
  *  * 
  * @author mrb
  * @param <T> type of property
@@ -46,9 +46,36 @@ public class AprunPropertyTag<T> extends PropertyTag<T> {
 		this.aliases = aliases;
 	}
 	
-
-	public String[] getAliases(){
-		return aliases;
+	/**
+	 * @param i
+	 * @return the ith alias or null if i out of range
+	 */
+	public String getAlias(int i) {
+		String alias = null;
+		
+		if (null != aliases) {
+			if (i >= 0 && i < aliases.length) {
+				alias = aliases[i];
+			}
+		}
+		
+		return alias;
 	}
-	   
+	
+	/**
+	 * @param attrName
+	 * @return true if one of the aliases matches attrName
+	 */
+	public boolean aliasMatch(String attrName) {
+		boolean matchFound = false;
+		
+		if (null != attrName && null != aliases) {
+			for (int i = 0; !matchFound && i < aliases.length; ++i) {
+				matchFound = attrName.equals(aliases[i]);
+			}
+		}
+		
+		return matchFound;
+	}
+	
 }
