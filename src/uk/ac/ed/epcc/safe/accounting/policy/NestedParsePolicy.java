@@ -23,46 +23,69 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 public class NestedParsePolicy extends BaseUsageRecordPolicy {
 	
-
-	ReferenceTag parent_tag;
 	AppContext conn;
-	PropertyTag<String>  parse_prop;
-	String nested_table;
+	String table_name, nested_table_name;
+	String link_prop_name;
+	PropertyTag<Integer> link_prop;
+	PropertyTag<String> nested_prop;
+	ReferenceTag parent_tag;
+	
+	
 	public NestedParsePolicy() {
-			}
-
-	@Override
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
-		
-		String prop_name = ctx.getInitParameter("nested_parse.prop."+table);
-		nested_table = ctx.getInitParameter("nested_parse.table."+table);
-		if( prop_name != null){
-			parse_prop = (PropertyTag<String>) prev.find(String.class, prop_name);
-			this.conn=ctx;
-			ReferencePropertyRegistry registry = ReferencePropertyRegistry.getInstance(ctx);
-			
-			parent_tag = (ReferenceTag) registry.find(table);
-		}
-		return prev;
 	}
 
+	
+	@Override
+	public PropertyFinder initFinder(AppContext conn, PropertyFinder prev, String table_name) {
+		
+		this.conn = conn;
+		this.table_name = table_name;
+		
+		link_prop_name = conn.getInitParameter("nested_parse.link." + table_name);
+		if( link_prop_name != null ){
+			link_prop = (PropertyTag<Integer>) prev.find(Integer.class, link_prop_name);
+		}
+		
+		String prop_name = conn.getInitParameter("nested_parse.prop." + table_name);
+		if( prop_name != null ){
+			nested_prop = (PropertyTag<String>) prev.find(String.class, prop_name);
+			nested_table_name = conn.getInitParameter("nested_parse.table." + table_name);
+		}
+		
+		ReferencePropertyRegistry registry = ReferencePropertyRegistry.getInstance(conn);
+		parent_tag = (ReferenceTag) registry.find(table_name);
+		
+		return prev;
+		
+	}
+
+	
 	@Override
 	public void postCreate(PropertyContainer props, UsageRecord rec) throws Exception {
 		
-		if( parse_prop != null){
-			String update = props.getProperty(parse_prop);
+		if( nested_prop != null ){
+			
+			String update = rec.getProperty(nested_prop);
 			if( update != null ){
-				UsageRecordParseTarget<Use, String> parse_target = conn.makeObject(UsageRecordParseTarget.class, nested_table);
-			    PropertyMap meta_data = new PropertyMap();      
+				
+				if (link_prop_name != null) {
+				    update = link_prop_name + "=" + rec.getProperty(link_prop).toString() + " " + update;
+				}
+				
+				UsageRecordParseTarget<Use, String> parse_target = conn.makeObject(UsageRecordParseTarget.class, nested_table_name);
+				
+				PropertyMap meta_data = new PropertyMap();      
 			    meta_data.setAll(props);
-			  
-			    IndexedReference parent_ref = ((IndexedProducer)parse_target).makeReference((Indexed)rec);
-			    meta_data.setProperty(parent_tag, parent_ref);
+			    if (parent_tag != null) {
+			    	IndexedReference parent_ref = ((IndexedProducer) parse_target).makeReference((Indexed) rec);
+			    	meta_data.setProperty(parent_tag, parent_ref);
+			    }
+				
 				AccountingUpdater<Use, String> updater = new AccountingUpdater<Use, String>(conn, meta_data, parse_target);
 				updater.receiveAccountingData(update, true, false, false);
 				
-				
 			}
+			
 		}
 		
 	}
