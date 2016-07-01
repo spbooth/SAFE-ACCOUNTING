@@ -35,9 +35,12 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
+import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.charts.MapperEntryInput;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntryInput;
+import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
@@ -48,6 +51,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.UnresolvedNameException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ParameterParseException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
@@ -55,6 +59,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.FilterSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.ClassTableCreator;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
@@ -381,7 +386,33 @@ public class ParameterExtension extends ReportExtension {
 					fil2 = new FalseFilter(fac.getTarget());
 				}
 				fil.addFilter(fil);
-				//TODO could augment with filter clause
+				if( fac instanceof ExpressionTargetFactory ){
+					// If factory implements the correct interface futher narrow the selection using
+					// embedded filter cluases
+					ExpressionTargetFactory ptf = (ExpressionTargetFactory) fac;
+					PropertyFinder finder = ptf.getFinder();
+				
+					NodeList paramNodes = ((Element) param).getElementsByTagNameNS(
+							FilterExtension.FILTER_LOC,"Filter");
+					if( paramNodes.getLength() > 0 ){
+						AndRecordSelector selector = new AndRecordSelector();
+						for( int i=0; i < paramNodes.getLength() ; i++){
+							Element filter =  (Element) paramNodes.item(i);
+							 NodeList list =filter.getChildNodes();
+							  for(int j=0;j<list.getLength();j++){
+								  Node c = list.item(j);
+								  if( c.getNodeType() == Node.ELEMENT_NODE && c.getNamespaceURI() == filter.getNamespaceURI()){
+									  RecordSelector s = getRecordSelectElement(finder,  (Element)c);
+									  if( s != null ){
+										  selector.add(s);
+									  }
+								  }
+							  }	  
+						}
+						FilterSelectVisitor vis = new FilterSelectVisitor(ptf);
+						fil.addFilter((BaseFilter) selector.visit(vis));
+					}
+				}
 				return fac.getInput(fil);
 			}
 		}

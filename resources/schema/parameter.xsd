@@ -38,11 +38,11 @@
     				</xsd:element>
     		</xsd:sequence>
     		<xsd:element ref="fil:Filter">
-    		<xsd:annotation><xsd:documentation>A filter selecting possible values for a type that resolves to a FilterInput class.</xsd:documentation></xsd:annotation>
+    		<xsd:annotation><xsd:documentation>A filter selecting possible values for a type that resolves to a FilterInput class. These can also be used to further narrow the selection of a role based input if the target factory implements ExpressionTargetFactory. </xsd:documentation></xsd:annotation>
     		</xsd:element>
     		<xsd:element name="Value" type="ValueType"
     			maxOccurs="unbounded" minOccurs="0">
-    			
+    		<xsd:annotation><xsd:documentation>These are the initial values for a multi-input. As a multi-input is a hierarchy of inputs we need a hierarchy of values.</xsd:documentation></xsd:annotation>	
     		</xsd:element>
     	</xsd:choice>
     	<xsd:attribute name="name" type="xsd:string" use="required" >
