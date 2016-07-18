@@ -12,9 +12,19 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
 public class RegexpTargetFactory<T extends RegexpTarget> extends DefaultDataObjectPropertyFactory<T> {
 
+	
+	
+	
 	public static final String NAME_FIELD = "Name";
 	public static final String LONG_NAME_FIELD = "LongName";
 	public static final String REGEX_FIELD = "Regex";
+	
+	
+	public RegexpTargetFactory(AppContext conn, String table){
+		super();
+		setContext(conn, table);
+	}
+	
 	@Override
 	protected Map<String, Object> getSelectors() {
 		
