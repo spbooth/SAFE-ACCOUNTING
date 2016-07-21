@@ -11,9 +11,6 @@ import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
 public class RegexpTargetFactory<T extends RegexpTarget> extends DefaultDataObjectPropertyFactory<T> {
-
-	
-	
 	
 	public static final String NAME_FIELD = "Name";
 	public static final String LONG_NAME_FIELD = "LongName";
@@ -27,7 +24,6 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends DefaultDataObje
 	
 	@Override
 	protected Map<String, Object> getSelectors() {
-		
 		Map<String, Object> selectors = super.getSelectors();
 		RegexpInput regexp_input = new RegexpInput();
 		regexp_input.setSingle(true);
