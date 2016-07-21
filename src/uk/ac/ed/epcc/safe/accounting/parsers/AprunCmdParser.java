@@ -103,7 +103,6 @@ public class AprunCmdParser extends AbstractPropertyContainerParser  {
 	@AutoTable(target=String.class, length=512)
 	public static final AprunPropertyTag<String> APP_ATTR_LIST = new AprunPropertyTag<String>(aprun_reg, "app_attrs", null, String.class);
 	
-	
 	private static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
 	static {
 		STANDARD_ATTRIBUTES.addParser(ALPS_ID, IntegerParser.PARSER);
@@ -189,12 +188,13 @@ public class AprunCmdParser extends AbstractPropertyContainerParser  {
 			}
 			else if (0 != i) {
 				throw new AccountingParseException("Error alps id not found at start of, '" + update + "'.");
-			}			
+			}
+			attrApid = current_cmd.substring(i, current_cmd.indexOf(CHAR_WHITESPACE));
+			
 			i = current_cmd.indexOf(APRUN_CMD_NAME);
 			if (-1 == i) {
 				throw new AccountingParseException("Error aprun command name not found in, '" + update + "'.");
 			}
-			attrApid = current_cmd.substring(0, i);
 			i += APRUN_CMD_NAME.length();
 			current_cmd = current_cmd.substring(i, current_cmd.length());
 			
@@ -204,7 +204,8 @@ public class AprunCmdParser extends AbstractPropertyContainerParser  {
 			while (single_cmds.hasNext()) {
 				// prepend the alps id and aprun command number to the aprun command string
 				// these two fields are unique to each aprun command stored in AprunCommandLog
-				String single_cmd = attrApid + APRUN_CMD_NUM.getAlias(0) + "=" + apnum.toString() + " ";
+				attrApid = attrApid.replace(CHAR_EQUALS, CHAR_WHITESPACE);
+				String single_cmd = attrApid + " " + APRUN_CMD_NUM.getAlias(0) + " " + apnum.toString() + " ";
 				single_cmd += single_cmds.next();
 				
 				full_cmd += single_cmd;
@@ -294,7 +295,6 @@ public class AprunCmdParser extends AbstractPropertyContainerParser  {
 			attrTag = (AprunPropertyTag<?>) aprun_reg.find(prop.getName());
 			if (null != attrTag) {
 				matchFound = attrTag.aliasMatch(attrAlias);
-				
 			}
 		}
 		
@@ -328,13 +328,14 @@ public class AprunCmdParser extends AbstractPropertyContainerParser  {
 		
 		while (!parseComplete) {
 			// extract next element from command string
-			String attrName = parseNextElement(CHAR_WHITESPACE);
-			if (null == attrName || attrName.isEmpty()) {
+			String attrAlias = parseNextElement(CHAR_WHITESPACE);
+			if (null == attrAlias || attrAlias.isEmpty()) {
 				throw new AccountingParseException("Missing aprun attribute, '" + this.cmd + "'.");
 			}
 			
-			AprunPropertyTag<?> attrTag = findAprunPropertyTag(attrName);	
+			AprunPropertyTag<?> attrTag = findAprunPropertyTag(attrAlias);	
 			if (null != attrTag) {
+				String attrName = attrTag.getName();
 				// element is an aprun attribute
 				Boolean attrFlag = new Boolean(true);
 				if (attrTag.allow(attrFlag)) {
@@ -351,42 +352,45 @@ public class AprunCmdParser extends AbstractPropertyContainerParser  {
 				}
 			}
 			else {
-				if (CHAR_HYPHEN == attrName.charAt(0)) {
+				if (CHAR_HYPHEN == attrAlias.charAt(0)) {
 					// allow for the situation where there are no whitespaces
 					// between attribute name and argument
 					// note, this is only allowed for two-character attribute
 					// names, where the first character is a hyphen
-					String attrValue = attrName.substring(2, attrName.length());
-					attrName = attrName.substring(0, 2);
-					attrTag = findAprunPropertyTag(attrName);
+					String attrValue = attrAlias.substring(2, attrAlias.length());
+					attrAlias = attrAlias.substring(0, 2);
+					attrTag = findAprunPropertyTag(attrAlias);
 					if (null != attrTag) {
-						setProperty(map, attrName, attrValue);
+						setProperty(map, attrTag.getName(), attrValue);
 					}
 					else {
-						throw new AccountingParseException("Unrecognised aprun attribute, '" + attrName + "'.");
+						throw new AccountingParseException("Unrecognised aprun attribute, '" + attrAlias + "'.");
 					}
 				}
-				
-				// assume element is the application executable path
-				PropertyTag<?> appPathTag = aprun_reg.find(APP_EXE_PATH.getName());
-				map.setProperty((PropertyTag<String>) appPathTag, attrName);
-				
-				int i = attrName.lastIndexOf(CHAR_FORWARD_SLASH);
-				if (i > 0 && i < attrName.length()-1) {
-					// strip path
-					attrName = attrName.substring(i+1, attrName.length());
+				else {
+					// assume element is the application executable path
+					String attrValue = attrAlias;
+					String attrName = APP_EXE_PATH.getName();
+					PropertyTag<?> appPathTag = aprun_reg.find(attrName);
+					map.setProperty((PropertyTag<String>) appPathTag, attrValue);
+					
+					int i = attrValue.lastIndexOf(CHAR_FORWARD_SLASH);
+					if (i > 0 && i < attrValue.length()-1) {
+						// strip path
+						attrValue = attrValue.substring(i+1, attrValue.length());
+					}
+					attrName = APP_EXE_NAME.getName();
+					PropertyTag<?> appNameTag = aprun_reg.find(attrName);
+					map.setProperty((PropertyTag<String>) appNameTag, attrValue);
+					
+					// assume that any subsequent elements are application attributes
+					attrValue = this.cmd.trim();
+					PropertyTag<?> appAttrsTag = aprun_reg.find(APP_ATTR_LIST.getName());
+					map.setProperty((PropertyTag<String>) appAttrsTag, attrValue);
+					
+					this.cmd = null;
+					parseComplete = true;
 				}
-				PropertyTag<?> appNameTag = aprun_reg.find(APP_EXE_NAME.getName());
-				map.setProperty((PropertyTag<String>) appNameTag, attrName);
-				
-				this.cmd = this.cmd.trim();
-				
-				// assume that any subsequent elements are application attributes
-				PropertyTag<?> appAttrsTag = aprun_reg.find(APP_ATTR_LIST.getName());
-				map.setProperty((PropertyTag<String>) appAttrsTag, this.cmd);
-				
-				this.cmd = null;
-				parseComplete = true;
 			}
 		}
 		
@@ -434,19 +438,4 @@ public class AprunCmdParser extends AbstractPropertyContainerParser  {
 		}
 	}
 	
-	/*
-	WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'lmp' then 'LAMMPS*' \
-    WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'amber' then 'AMBER*' \
-    WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'charm' then 'CHARMM*' \
-    WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'enzo' then 'ENZO*' \
-    WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'gromacs' then 'GROMACS*' \
-    WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'cp2k' then 'CP2K*' \
-    WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'nwchem' then 'NWCHEM*' \
-    WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'ttmmd' then 'TTMMD*' \
-    WHEN LOWER(xalt_run.exec_path)  REGEXP 'genasis' then 'GENASIS*' \
-    WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'engine_par' then 'VISIT*' \
-    WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'foam' then 'OPENFOAM*' \
-    WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'ph.x' then 'Q-ESPRESSO*' \
-    WHEN LOWER(SUBSTRING_INDEX(xalt_run.exec_path,'/',-1)) REGEXP 'pw.x' then 'Q-ESPRESSO*' \
-	*/
 }
