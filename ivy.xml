@@ -46,8 +46,8 @@
     		<artifact name="xmlgraphics-commons" ext="jar"/>
 		</dependency>
 		
-		<dependency org="com.mysql" name="mysql-connector-java" rev="5.1.16">
-    		<artifact name="mysql-connector-java" m:classifier="bin" ext="jar"/>
+		<dependency org="com.mysql" name="mysql-connector-java" rev="5.1.39">
+    		<artifact name="mysql-connector-java" ext="jar"/>
 		</dependency>
 		
 		<dependency org="net.sourceforge" name="Chart2D" rev="1.0">
