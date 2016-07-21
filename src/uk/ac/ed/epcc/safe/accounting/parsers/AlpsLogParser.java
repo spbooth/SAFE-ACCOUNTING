@@ -34,8 +34,12 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	public static final PropertyTag<String> APRUN_TAG = new PropertyTag<String>(alps_reg, "aprun_entry_tag", String.class, "Alps log aprun tag");
 	@AutoTable(target=String.class)
 	public static final PropertyTag<String> APSYS_TAG = new PropertyTag<String>(alps_reg, "apsys_entry_tag", String.class, "Alps log apsys tag");
-	@AutoTable(target=String.class, unique=true)
-	public static final PropertyTag<String> PBS_ID = new PropertyTag<String>(alps_reg, "batch_id", String.class, "Batch job id");
+	
+	@AutoTable(target=Integer.class)
+	public static final PropertyTag<Integer> PBS_ID = new PropertyTag<Integer>(alps_reg, "batch_id", Integer.class, "Batch job id");
+	@AutoTable(target=String.class)
+	public static final PropertyTag<Integer> PBS_ARRAY_INDEX = new PropertyTag<Integer>(alps_reg, "batch_array_index", Integer.class, "Batch job array index");
+	
 	@AutoTable(target=Integer.class, unique=true)
 	public static final PropertyTag<Integer> ALPS_ID = new PropertyTag<Integer>(alps_reg, "apid", Integer.class, "Alps job id");
 	@AutoTable(target=Integer.class, unique=true)
@@ -69,7 +73,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	
 	private static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
 	static {
-		STANDARD_ATTRIBUTES.addParser(PBS_ID, StringParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(PBS_ID, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(USER_ID, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODE_COUNT, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODE_LIST, StringParser.PARSER);
@@ -153,7 +157,21 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 				
 				if (attrName.equals(PBS_ID.getName())) {
 					// strip the ".sdb"
-					attrValue=attrValue.substring(0, attrValue.length()-4);
+					attrValue = attrValue.substring(0, attrValue.length()-4);
+					
+					String indexValue = "-1";
+					int i = attrValue.indexOf('[', 0);
+					if (-1 != i) {
+						int i2 = attrValue.indexOf(']', i+1);
+						if (-1 == i2) {
+							throw new AccountingParseException("Error PBS array index is malformed, '" + attrValue + "'.");
+						}
+						
+						indexValue = attrValue.substring(i+1, i2);
+						attrValue = attrValue.substring(0, i);
+					}
+					
+					map.setProperty(PBS_ARRAY_INDEX, new Integer(indexValue));
 				}
 				
 				ContainerEntryMaker maker = getEntryMaker(attrName);
