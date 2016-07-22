@@ -14,10 +14,10 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.imageio.IIOException;
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
 
@@ -55,7 +55,7 @@ public final class PDFReportType extends ReportType {
 		}
 		}
 		if( fopFactory == null ){
-			throw new IIOException("No fop factory");
+			throw new IOException("No fop factory");
 		}
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
