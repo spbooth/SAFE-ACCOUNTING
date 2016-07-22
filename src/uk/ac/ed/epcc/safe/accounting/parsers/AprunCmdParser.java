@@ -386,7 +386,7 @@ public class AprunCmdParser extends AbstractPropertyContainerParser  {
 					PropertyTag<?> appNameTag = aprun_reg.find(attrName);
 					map.setProperty((PropertyTag<String>) appNameTag, attrValue);
 					
-					// set the app_id property to zero for which will remain
+					// set the app_id property to zero, which will not be changed,
 					// should RegexLinkParsePolicy be unable to associate the
 					// app_exe_name with an entry in the AprunApplication table
 					PropertyTag<?> appIdTag = aprun_reg.find(APP_ID.getName());
