@@ -102,6 +102,8 @@ public class AprunCmdParser extends AbstractPropertyContainerParser  {
 	public static final AprunPropertyTag<String> APP_EXE_NAME = new AprunPropertyTag<String>(aprun_reg, "app_exe_name", null, String.class);
 	@AutoTable(target=String.class, length=512)
 	public static final AprunPropertyTag<String> APP_ATTR_LIST = new AprunPropertyTag<String>(aprun_reg, "app_attrs", null, String.class);
+	@AutoTable(target=Integer.class)
+	public static final AprunPropertyTag<Integer> APP_ID = new AprunPropertyTag<Integer>(aprun_reg, "app_id", null, Integer.class);
 	
 	private static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
 	static {
@@ -140,6 +142,7 @@ public class AprunCmdParser extends AbstractPropertyContainerParser  {
 		STANDARD_ATTRIBUTES.addParser(CPU_TIME_LIMIT, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(APP_EXE_PATH, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(APP_EXE_NAME, StringParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(APP_ID, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(APP_ATTR_LIST, StringParser.PARSER);
 	}
 	
@@ -382,6 +385,9 @@ public class AprunCmdParser extends AbstractPropertyContainerParser  {
 					attrName = APP_EXE_NAME.getName();
 					PropertyTag<?> appNameTag = aprun_reg.find(attrName);
 					map.setProperty((PropertyTag<String>) appNameTag, attrValue);
+					
+					PropertyTag<?> appIdTag = aprun_reg.find(APP_ID.getName());
+					map.setProperty((PropertyTag<Integer>) appIdTag, 0);
 					
 					// assume that any subsequent elements are application attributes
 					attrValue = this.cmd.trim();
