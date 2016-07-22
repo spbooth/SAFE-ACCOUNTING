@@ -38,7 +38,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	@AutoTable(target=Integer.class)
 	public static final PropertyTag<Integer> PBS_ID = new PropertyTag<Integer>(alps_reg, "batch_id", Integer.class, "Batch job id");
 	@AutoTable(target=String.class)
-	public static final PropertyTag<Integer> PBS_ARRAY_INDEX = new PropertyTag<Integer>(alps_reg, "batch_array_index", Integer.class, "Batch job array index");
+	public static final PropertyTag<String> PBS_ARRAY_INDEX = new PropertyTag<String>(alps_reg, "batch_array_index", String.class, "Batch job array index");
 	
 	@AutoTable(target=Integer.class, unique=true)
 	public static final PropertyTag<Integer> ALPS_ID = new PropertyTag<Integer>(alps_reg, "apid", Integer.class, "Alps job id");
@@ -74,6 +74,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	private static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
 	static {
 		STANDARD_ATTRIBUTES.addParser(PBS_ID, IntegerParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(PBS_ARRAY_INDEX, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(USER_ID, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODE_COUNT, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODE_LIST, StringParser.PARSER);
@@ -111,6 +112,10 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 		Matcher m = parse_pattern.matcher(record);
 		if (m.matches()) {
 		
+			if (m.group("MESSAGE").equals("Error")) {
+				return false;
+			}
+			
 			map.setProperty(ALPS_ID, Integer.valueOf(m.group("APID")));
 			map.setProperty(HOST_NAME, m.group("HOSTNAME"));
 						
@@ -159,7 +164,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 					// strip the ".sdb"
 					attrValue = attrValue.substring(0, attrValue.length()-4);
 					
-					String indexValue = "-1";
+					String indexValue = "";
 					int i = attrValue.indexOf('[', 0);
 					if (-1 != i) {
 						int i2 = attrValue.indexOf(']', i+1);
@@ -170,8 +175,8 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 						indexValue = attrValue.substring(i+1, i2);
 						attrValue = attrValue.substring(0, i);
 					}
-					
-					map.setProperty(PBS_ARRAY_INDEX, new Integer(indexValue));
+				
+					map.setProperty(PBS_ARRAY_INDEX, indexValue);
 				}
 				
 				ContainerEntryMaker maker = getEntryMaker(attrName);
@@ -201,7 +206,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	@Override
 	public boolean isComplete(UsageRecord record) {
 		// set of properties from both record types, aprun and apsys
-		PropertyTag<?>[] attrs = {APRUN_TAG, APSYS_TAG, PBS_ID, ALPS_ID, USER_ID,
+		PropertyTag<?>[] attrs = {APRUN_TAG, APSYS_TAG, PBS_ID, PBS_ARRAY_INDEX, ALPS_ID, USER_ID,
 				HOST_NAME, NODE_COUNT, NODE_LIST,
 				SUBMISSION_TIMESTAMP, APRUN_START_TIMESTAMP, APSYS_END_TIMESTAMP,
 				CWD, APRUN_CMD_STRING};
