@@ -1,0 +1,211 @@
+<Diff><TableSpecification name='AprunApplication'>
+<Name type='String' nullable='false' max='16'/>
+<LongName type='String' nullable='true' max='128'/>
+<Regex type='String' nullable='false' max='256'/>
+</TableSpecification>
+<AprunApplication id='1'>
+<Name>WRF</Name>
+<LongName>Weather Research and Forecasting Model</LongName>
+<Regex>((geogrid|metgrid|real|ungrib|wrf)\.exe)</Regex>
+</AprunApplication>
+<AprunApplication id='2'>
+<Name>VASP</Name>
+<LongName>Vienna Ab initio Simulation Package</LongName>
+<Regex>(vasp_(gamma|ncl|std))</Regex>
+</AprunApplication>
+<AprunApplication id='3'>
+<Name>NAMD</Name>
+<LongName>A parallel molecular dynamics code.</LongName>
+<Regex>(namd2)</Regex>
+</AprunApplication>
+<AprunApplication id='4'>
+<Name>LAMMPS</Name>
+<LongName>Large-scale Atomic/Molecular Massively Parallel Simulator</LongName>
+<Regex>(lmp)</Regex>
+</AprunApplication>
+<AprunApplication id='5'>
+<Name>AMBER</Name>
+<LongName>Biomolecular Dynamics Simulator</LongName>
+<Regex>((sander|pmemd)\.MPI)</Regex>
+</AprunApplication>
+<AprunApplication id='6'>
+<Name>CHARMM</Name>
+<LongName>Chemistry at HARvard Macromolecular Mechanics</LongName>
+<Regex>(charm)</Regex>
+</AprunApplication>
+<AprunApplication id='7'>
+<Name>ENZO</Name>
+<LongName>An adaptive mesh refinement code for astrophysics.</LongName>
+<Regex>(enzo)</Regex>
+</AprunApplication>
+<AprunApplication id='8'>
+<Name>GROMACS</Name>
+<LongName>Groningen Machine for Chemical Simulations</LongName>
+<Regex>(mdrun_(mpi|mpi_d))</Regex>
+</AprunApplication>
+<AprunApplication id='9'>
+<Name>CP2K</Name>
+<LongName>A first principles simulation package for atomic structures.</LongName>
+<Regex>(cp2k)</Regex>
+</AprunApplication>
+<AprunApplication id='10'>
+<Name>NWCHEM</Name>>
+<LongName>Open Source High-Performance Computational Chemistry</LongName>
+<Regex>(nwchem)</Regex>
+</AprunApplication>
+<AprunApplication id='11'>
+<Name>TTMMD</Name>
+<LongName>Two-temperature Nonequilibrium Molecular Dynamics Simulator</LongName>
+<Regex>(ttmmd)</Regex>
+</AprunApplication>
+<AprunApplication id='12'>
+<Name>GenASiS</Name>
+<LongName>General Astrophysical Simulation System</LongName>
+<Regex>(genasis)</Regex>
+</AprunApplication>
+<AprunApplication id='13'>
+<Name>OPENFOAM</Name>
+<LongName>Open Source Field Operation and Manipulation</LongName>
+<Regex>(foam)</Regex>
+</AprunApplication>
+<AprunApplication id='14'>
+<Name>Q-ESPRESSO</Name>
+<LongName>Quantum Open-Source Package for Research in Electronic Structure, Simulation and Optimization</LongName>
+<Regex>(p(h|w)\.x)</Regex>
+</AprunApplication>
+<AprunApplication id='15'>
+<Name>VisIt</Name>
+<LongName>An open source, interactive, scalable, visualization, animation and analysis tool.</LongName>
+<Regex>(engine_par)</Regex>
+</AprunApplication> 
+<AprunApplication id='16'>
+<Name>CASTEP</Name>
+<LongName>A code for calculating the properties of materials from first principles using density functional theory.</LongName>
+<Regex>(castep|castep\.mpi)</Regex>
+</AprunApplication> 
+<AprunApplication id='17'>
+<Name>Desmond</Name>
+<LongName>A molecular dynamics simulator.</LongName>
+<Regex>(desmond)</Regex>
+</AprunApplication> 
+<AprunApplication id='18'>
+<Name>ABINIT</Name>
+<LongName>A code for finding the total energy, charge density and electronic structure of systems made of electrons and nuclei.</LongName>
+<Regex>(abinit)</Regex>
+</AprunApplication> 
+<AprunApplication id='19'>
+<Name>CESM</Name>
+<LongName>Community Earth System Model</LongName>
+<Regex>(cesm\.exe)</Regex>
+</AprunApplication> 
+<AprunApplication id='20'>
+<Name>ChemShell</Name>
+<LongName>A computational Chemistry environment based on the Tcl interpreter.</LongName>
+<Regex>(chemsh\.x)</Regex>
+</AprunApplication> 
+<AprunApplication id='21'>
+<Name>Code_Saturne</Name>
+<LongName>An open source CFD code.</LongName>
+<Regex>(cs_(solver|blas_test|core_test))</Regex>
+</AprunApplication> 
+<AprunApplication id='22'>
+<Name>COSA</Name>
+<LongName>CFD Optimized Structured multi-block Algorithm</LongName>
+<Regex>(cosa\.mpi(debug|ompdebug))</Regex>
+</AprunApplication> 
+<AprunApplication id='23'>
+<Name>CPMD</Name>
+<LongName>Car-Parrinello Molecular Dynamics</LongName>
+<Regex>(cpmd)</Regex>
+</AprunApplication>  
+<AprunApplication id='24'>
+<Name>CRYSTAL</Name>
+<LongName>A general-purpose program for the study of crystalline solids.</LongName>
+<Regex>((MPP|P)crystal|Pproperties|properties)</Regex>
+</AprunApplication> 
+<AprunApplication id='25'>
+<Name>DL_MESO</Name>
+<LongName>A general purpose mesoscale CFD code from Daresbury Laboratory.</LongName>
+<Regex>((lbe|dpd)\.exe)</Regex>
+</AprunApplication>  
+<AprunApplication id='26'>
+<Name>DL_POLY</Name>
+<LongName>A general purpose classical molecular dynamics code from Daresbury Laboratory.</LongName>
+<Regex>(DLPOLY\.Z)</Regex>
+</AprunApplication> 
+<AprunApplication id='27'>
+<Name>ELK</Name>
+<LongName>An all-electron full-potential linearised augmented-plane-wave code.</LongName>
+<Regex>(elk)</Regex>
+</AprunApplication> 
+<AprunApplication id='28'>
+<Name>Exciting</Name>
+<LongName>A full-potential all-electron density-functional-theory package.</LongName>
+<Regex>(excitingmpi)</Regex>
+</AprunApplication> 
+<AprunApplication id='29'>
+<Name>FDS</Name>
+<LongName>Fire Dynamics Simulator></LongName>
+<Regex>(fds_mpi_gnu_linux|fds_mpi_intel_linux_64)</Regex>
+</AprunApplication> 
+<AprunApplication id='30'>
+<Name>FEniCS</Name>
+<LongName>An automated solution of differential equations by the finite element method.</LongName>
+<Regex>(dolfin-(convert|get-demos|order|plot|version))</Regex>
+</AprunApplication> 
+<AprunApplication id='31'>
+<Name>GAMESS</Name>
+<LongName>General Atomic and Molecular Electronic Structure System</LongName>
+<Regex>(rungms)</Regex>
+</AprunApplication>
+<AprunApplication id='32'>
+<Name>GAMESS-UK</Name>
+<LongName>A general purpose ab initio molecular electronic structure program for performing SCF-, DFT- and MCSCF-gradient calculations.</LongName>
+<Regex>(gamess-uk)</Regex>
+</AprunApplication>
+<AprunApplication id='33'>
+<Name>GS2</Name>
+<LongName>A physics application, developed to study low-frequency turbulence in magnetized plasma.</LongName>
+<Regex>(gs2)</Regex>
+</AprunApplication>  
+<AprunApplication id='34'>
+<Name>Molpro</Name>
+<LongName>A complete system of ab initio programs for molecular electronic structure calculations.</LongName>
+<Regex>(molpro\.exe)</Regex>
+</AprunApplication>
+<AprunApplication id='35'>
+<Name>NCIPLOT</Name>
+<LongName>A program that enables the computation and graphical visualisation of inter- and intra-molecular non-covalent interactions.</LongName>
+<Regex>(nciplot)</Regex>
+</AprunApplication>
+<AprunApplication id='36'>
+<Name>ONETEP</Name>
+<LongName>Order-N Electronic Total Energy Package</LongName>
+<Regex>(onetep)</Regex>
+</AprunApplication>
+<AprunApplication id='37'>
+<Name>ParaView</Name>
+<LongName>An open-source, multi-platform data analysis and visualization application.</LongName>
+<Regex>(pvserver)</Regex>
+</AprunApplication>
+<AprunApplication id='38'>
+<Name>SIESTA</Name>
+<LongName>Spanish Initiative for Electronic Simulations with Thousands of Atoms</LongName>
+<Regex>(siesta)</Regex>
+</AprunApplication>
+<AprunApplication id='39'>
+<Name>WIEN2k</Name>
+<LongName>A simulation code for the electronic structure of solids using the Linearized Augmented Plane Wave method.</LongName>
+<Regex>(lapwS+_mpi)</Regex>
+</AprunApplication> 
+<AprunApplication id='40'>
+<Name>Unknown</Name>
+<LongName>Code Unknown</LongName>
+<Regex>(a\.out)</Regex>
+</AprunApplication>
+<AprunApplication id='41'>
+<Name>UM</Name>
+<LongName>Unified Model</LongName>
+<Regex>(um-atmos\.exe)</Regex>
+</AprunApplication>
+</Diff>
