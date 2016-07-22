@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
-import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 
 public class AprunParserTest extends AbstractRecordTestCase {
 
@@ -42,20 +41,6 @@ public class AprunParserTest extends AbstractRecordTestCase {
 		for( String s : good){
 			goodRecords.add(new RecordText(s));
 		}
-		
-		//TODO: resolve PlotEntry exceptions seen in console output
-		
-		//TODO: setup negative test cases
-		String bad[] = new String[] {
-		"apid=21705597 /opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -ss -n 24 -N 12 -d 2 -S 6 -j1 env OMP_NUM_THREADS=2 /work/n02/n02/wmcginty/um/xmrfd/bin/xmrfd.exe"
-		};
-		
-		/*
-		for( String s : bad){
-			Exception x = new AccountingParseException();
-			badTexts.add(new BadRecordText(s, x.class));
-		}
-		*/
 	}
 
 
