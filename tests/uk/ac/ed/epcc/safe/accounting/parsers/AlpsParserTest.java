@@ -1,5 +1,9 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -32,10 +36,11 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactoryTestCase#getUpdateText()
 	 */
 	static {
+		
 		String records[] = new String[] {
 		"<150>1 2016-07-10T00:06:20.261556+01:00 c2-1c0s0n1 aprun 2035 p0-20160622t161139 [alps_msgs@34] apid=22444371, Starting, user=15269, batch_id=3815975.sdb, cmd_line=\"/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 192 /work/e89/e89/zd242/src/vasp.5.4.1/bin/vasp_ncl \", num_nodes=8, node_list=2258-2259,2263,2322,2991,3005-3006,3016, cwd=\"/fs3/e89/e89/zd242/work/3815975.sdb\"",
 		"<150>1 2016-07-10T00:20:21.291116+01:00 c2-1c0s0n1 apsys 2039 p0-20160622t161139 [alps_msgs@34] apid=22444371, Finishing, user=15269, batch_id=3815975.sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
-						
+		
 		"<150>1 2016-07-10T00:18:47.860624+01:00 c0-1c0s0n1 aprun 18934 p0-20160622t161139 [alps_msgs@34] apid=22444398, Starting, user=14217, batch_id=3813206[16].sdb, cmd_line=\"/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 40 castep.mpi VI \", num_nodes=2, node_list=22-23, cwd=\"/fs3/e89/e89/eae32/KDP/VI/1x1x1_Anh/Supercell_1/kpoint.1/configurations/mode.94.7\"",
 		"<150>1 2016-07-10T00:22:58.198995+01:00 c0-1c0s0n1 apsys 18939 p0-20160622t161139 [alps_msgs@34] apid=22444398, Finishing, user=14217, batch_id=3813206[16].sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
 				
@@ -57,8 +62,28 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 		"<150>1 2016-05-20T03:40:21.393759+01:00 c4-1c0s0n1 aprun 2270 p0-20160509t103958 [alps_msgs@34] apid=21705594, Starting, user=5833, batch_id=3692330.sdb, cmd_line=\"/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -ss -n 1920 -N 24 -d 1 -S 12 -j 1 -e OMP_NUM_THREADS=1 /work/n02/n02/wmcginty/um/xmrfd/bin/xmrfd.exe : -ss -n 24 -N 12 -d 2 -S 6 -j 1 -e OMP_NUM_THREADS=2 /work/n02/n02/wmcginty/um/xmrfd/bin/xmrfd.exe \", num_nodes=82, node_list=970-971,1534,1540-1555,1560-1587,1597-1603,1608-1615,1620,1622-1640, cwd=\"/fs2/n02/n02/wmcginty/VERA/um/xmrjc\"",
 		"<150>1 2016-05-20T14:14:06.978843+01:00 c4-1c0s0n1 apsys 2274 p0-20160509t103958 [alps_msgs@34] apid=21705594, Finishing, user=5833, batch_id=3692330.sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
 		
-		"<150>1 2015-11-01T00:01:07.515128+00:00 c0-1c0s0n1 aprun 3706 p0-20151014t172436 [alps_msgs@34] apid=18543822, Error, user=15559, batch_id=3245599.sdb, [NID 03497] 2015-11-01 00:01:07 Apid 18543822: Cpuset file /dev/cpuset/18543822/cpus wrote -1 of 5; found 1 other local apid: 18540933 "
+		"<150>1 2015-11-01T00:01:07.515128+00:00 c0-1c0s0n1 aprun 3706 p0-20151014t172436 [alps_msgs@34] apid=18543822, Error, user=15559, batch_id=3245599.sdb, [NID 03497] 2015-11-01 00:01:07 Apid 18543822: Cpuset file /dev/cpuset/18543822/cpus wrote -1 of 5; found 1 other local apid: 18540933 ",
+		"<150>1 2016-07-01T00:16:49.799797+01:00 c2-0c1s1n1 aprun 8929 p0-20160622t161139 [alps_msgs@34] apid=none, Error, user=13676, batch_id=unknown, user specified option error"
 		};
+				
+		/*
+		ArrayList<String> records = new ArrayList<String>();
+		
+		try {
+			FileInputStream fstream = new FileInputStream("/Users/michaelbareford/Downloads/alps/alps.201607");
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			
+			String strLine;
+			while ((strLine = br.readLine()) != null)   {
+				records.add(strLine);
+			}
+			
+			in.close();
+		} catch (Exception e){
+		    System.err.println("Error: " + e.getMessage());
+		}
+		*/
 		
 		for( String s : records){
 			goodRecords.add(new RecordText(s));
