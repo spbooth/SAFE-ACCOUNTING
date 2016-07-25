@@ -11,7 +11,7 @@
 <AprunApplication id='2'>
 <Name>VASP</Name>
 <LongName>Vienna Ab initio Simulation Package</LongName>
-<Regex>(vasp_(gamma|ncl|std))</Regex>
+<Regex>(vasp|vasp_(gam|gamma|ncl|std))</Regex>
 </AprunApplication>
 <AprunApplication id='3'>
 <Name>NAMD</Name>
@@ -46,7 +46,7 @@
 <AprunApplication id='9'>
 <Name>CP2K</Name>
 <LongName>A first principles simulation package for atomic structures.</LongName>
-<Regex>(cp2k)</Regex>
+<Regex>(cp2k|(cp2k\.(popt|psmp)))</Regex>
 </AprunApplication>
 <AprunApplication id='10'>
 <Name>NWCHEM</Name>>
@@ -207,5 +207,15 @@
 <Name>UM</Name>
 <LongName>Unified Model</LongName>
 <Regex>(um-atmos\.exe)</Regex>
+</AprunApplication>
+<AprunApplication id='42'>
+<Name>LUDWIG</Name>
+<LongName>A lattice Boltzmann code for complex fluids.</LongName>
+<Regex>(Ludwig\.exe)</Regex>
+</AprunApplication>
+<AprunApplication id='43'>
+<Name>MITgcm</Name>
+<LongName>MIT General Circulation Model</LongName>
+<Regex>(mitgcmuv)</Regex>
 </AprunApplication>
 </Diff>
