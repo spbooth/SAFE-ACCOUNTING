@@ -90,8 +90,8 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	private static final SimpleDateFormat sf = new SimpleDateFormat("'p0-'yyyyMMdd't'HHmmss");
 	
 	private static final Pattern parse_pattern = Pattern.compile("\\S+ (?<TIMESTAMP>\\S+) (?<HOSTNAME>\\S+) (?<RECORDTYPE>\\S+) (?<TAG>\\S+) (?<SUBMISSION>\\S+)"
-			+ " \\S+ " + "apid=(?<APID>\\d+), (?<MESSAGE>\\w+)(?<ATTRS>.*)");
-	
+			+ " \\S+ " + "apid=(?<APID>\\S+), (?<MESSAGE>\\w+)(?<ATTRS>.*)");
+			
 	// This pattern matches an attribute pair. Note, an unquoted value can contain comma separators 
 	// so the pattern must match commas except in the last position where the comma is separating the attributes;
 	// as we also have to match 1 and 2 char values, we assume a quote is illegal everywhere in unquoted values
