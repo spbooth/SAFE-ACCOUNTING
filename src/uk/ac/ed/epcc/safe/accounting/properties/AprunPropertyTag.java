@@ -34,16 +34,19 @@ package uk.ac.ed.epcc.safe.accounting.properties;
 
 public class AprunPropertyTag<T> extends PropertyTag<T> {
 
-	private final String[] aliases;	   
+	private final String[] aliases;	 
+	private final T default_value;
 	
 	public AprunPropertyTag(PropertyRegistry registry, String name, Class<? super T> property_type) {
 		super(registry,name,property_type,null);
 		this.aliases = null;
+		this.default_value = null;
 	}
 	
-	public AprunPropertyTag(PropertyRegistry registry, String name, String[] aliases, Class<? super T> property_type) {
+	public AprunPropertyTag(PropertyRegistry registry, String name, String[] aliases, Class<? super T> property_type, T default_value) {
 		super(registry,name,property_type,null);
 		this.aliases = aliases;
+		this.default_value = default_value;
 	}
 	
 	/**
@@ -78,4 +81,7 @@ public class AprunPropertyTag<T> extends PropertyTag<T> {
 		return matchFound;
 	}
 	
+	public T getDefaultValue() {
+		return default_value;
+	}
 }
