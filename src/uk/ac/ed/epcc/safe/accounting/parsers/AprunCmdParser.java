@@ -42,9 +42,9 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	@AutoTable(target=Boolean.class)
 	public static final AprunPropertyTag<Boolean> RECONNECT = new AprunPropertyTag<Boolean>(aprun_reg, "reconnect", new String[]{"-C", "--reconnect"}, Boolean.class, false);
 	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> CPU_BINDING = new AprunPropertyTag<String>(aprun_reg, "cpu_binding", new String[]{"-cc", "--cpu-binding"}, String.class, "");
+	public static final AprunPropertyTag<String> CPU_BINDING = new AprunPropertyTag<String>(aprun_reg, "cpu_binding", new String[]{"-cc", "--cc", "--cpu-binding"}, String.class, "");
 	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> CPU_BINDING_FILE = new AprunPropertyTag<String>(aprun_reg, "cpu_binding_file", new String[]{"-cp", "--cpu-binding-file"}, String.class, "");
+	public static final AprunPropertyTag<String> CPU_BINDING_FILE = new AprunPropertyTag<String>(aprun_reg, "cpu_binding_file", new String[]{"-cp", "--cp", "--cpu-binding-file"}, String.class, "");
 	@AutoTable(target=Integer.class)
 	public static final AprunPropertyTag<Integer> CPUS_PER_PE = new AprunPropertyTag<Integer>(aprun_reg, "cpus_per_pe", new String[]{"-d", "--cpus-per-pe"}, Integer.class, 1);
 	@AutoTable(target=Integer.class)
@@ -86,9 +86,9 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	@AutoTable(target=Integer.class)
 	public static final AprunPropertyTag<Integer> PES_PER_NUMA_NODE = new AprunPropertyTag<Integer>(aprun_reg, "pes_per_numa_node", new String[]{"-S", "--pes-per-numa-node"}, Integer.class, 12);
 	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> NUMA_NODE_LIST = new AprunPropertyTag<String>(aprun_reg, "numa_node_list", new String[]{"-sl", "--numa-node-list"}, String.class, "");
+	public static final AprunPropertyTag<String> NUMA_NODE_LIST = new AprunPropertyTag<String>(aprun_reg, "numa_node_list", new String[]{"-sl", "--sl", "--numa-node-list"}, String.class, "");
 	@AutoTable(target=Integer.class)
-	public static final AprunPropertyTag<Integer> NUMA_NODES_PER_NODE = new AprunPropertyTag<Integer>(aprun_reg, "numa_nodes_per_node", new String[]{"-sn", "--numa-nodes-per-node"}, Integer.class, 2);
+	public static final AprunPropertyTag<Integer> NUMA_NODES_PER_NODE = new AprunPropertyTag<Integer>(aprun_reg, "numa_nodes_per_node", new String[]{"-sn", "--sn", "--numa-nodes-per-node"}, Integer.class, 2);
 	@AutoTable(target=Boolean.class)
 	public static final AprunPropertyTag<Boolean> STRICT_MEMORY_CONTAINMENT = new AprunPropertyTag<Boolean>(aprun_reg, "strict_memory_containment", new String[]{"-ss", "--ss", "--strict-memory-containment"}, Boolean.class, false);
 	@AutoTable(target=Boolean.class)
@@ -231,13 +231,16 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 				i++;
 			} while (i < len);
 			
+		
 			// iterate through the individual commands that make up a MPMD aprun command
+			Integer apnum = (-1 == current_cmd.indexOf(CHAR_COLON)) ? -1 : 0;
 			StringSplitter single_cmds = new StringSplitter(current_cmd, STRING_COLON);
-			Integer apnum = 0;
+			
 			while (single_cmds.hasNext()) {
 				// prepend the alps id and aprun command number to the aprun command string
 				// these two fields are unique to each aprun command stored in AprunCommandLog
 				attrApid = attrApid.replace(CHAR_EQUALS, CHAR_WHITESPACE);
+				
 				String single_cmd = attrApid + " " + APRUN_CMD_NUM.getAlias(0) + " " + apnum.toString() + " ";
 				single_cmd += single_cmds.next();
 				
