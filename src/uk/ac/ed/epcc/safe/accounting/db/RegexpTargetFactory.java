@@ -22,7 +22,15 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends DefaultDataObje
 	public static final String LONG_NAME_FIELD = "LongName";
 	public static final String REGEX_FIELD = "Regex";
 	
+	public static final String PRIMARY_LANGUAGE_FIELD = "PrimaryLanguage";
+	public static final String PRIMARY_LANGUAGE_VERSION_FIELD = "PrimaryLanguageVersion";
+	public static final String ACADEMIC_LICENCE_FIELD = "AcademicLicence";
+	public static final String COMMERCIAL_LICENCE_FIELD = "CommericalLicence";
+	public static final String CODE_TYPE_FIELD = "CodeType";
+	public static final String RESEARCH_AREA_FIELD = "ResearchArea";
+	public static final String PARALLEL_MODEL_FIELD = "ParallelModel";
 	
+		
 	public RegexpTargetFactory(AppContext conn, String table){
 		super();
 		setContext(conn, table);
@@ -50,9 +58,18 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends DefaultDataObje
 	protected TableSpecification getDefaultTableSpecification(AppContext c, String table) {
 		
 		TableSpecification spec = new TableSpecification("RegexTargetID");
-		spec.setField(NAME_FIELD, new StringFieldType(false, null, 32));
-		spec.setField(LONG_NAME_FIELD, new StringFieldType(true, null, 128));
-		spec.setField(REGEX_FIELD, new StringFieldType(false, null, 256));
+		spec.setField(NAME_FIELD, new StringFieldType(false, null, 16));
+		spec.setField(LONG_NAME_FIELD, new StringFieldType(true, null, 512));
+		spec.setField(REGEX_FIELD, new StringFieldType(false, null, 128));
+		
+		spec.setField(PRIMARY_LANGUAGE_FIELD, new StringFieldType(true, null, 128));
+		spec.setField(PRIMARY_LANGUAGE_VERSION_FIELD, new StringFieldType(true, null, 128));
+		spec.setField(ACADEMIC_LICENCE_FIELD, new StringFieldType(true, null, 128));
+		spec.setField(COMMERCIAL_LICENCE_FIELD, new StringFieldType(true, null, 128));
+		spec.setField(CODE_TYPE_FIELD, new StringFieldType(true, null, 128));
+		spec.setField(RESEARCH_AREA_FIELD, new StringFieldType(true, null, 128));
+		spec.setField(PARALLEL_MODEL_FIELD, new StringFieldType(true, null, 128));
+		
 		return spec;
 	}
 
