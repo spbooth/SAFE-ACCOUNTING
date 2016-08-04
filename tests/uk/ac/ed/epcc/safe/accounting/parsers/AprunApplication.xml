@@ -1,221 +1,1030 @@
-<Diff><TableSpecification name='AprunApplication'>
+<Diff>
+
+<TableSpecification name='AprunApplication'>
 <Name type='String' nullable='false' max='16'/>
-<LongName type='String' nullable='true' max='128'/>
-<Regex type='String' nullable='false' max='256'/>
+<LongName type='String' nullable='true' max='512'/>
+<Regex type='String' nullable='false' max='128'/>
+<PrimaryLanguage type='String' nullable='true' max='128'/>
+<PrimaryLanguageVersion type='String' nullable='true' max='128'/>
+<AcademicLicence type='String' nullable='true' max='128'/>
+<CommericalLicence type='String' nullable='true' max='128'/>
+<CodeType type='String' nullable='true' max='128'/>
+<ResearchArea type='String' nullable='true' max='128'/>
+<ParallelModel type='String' nullable='true' max='128'/>
 </TableSpecification>
+
 <AprunApplication id='1'>
-<Name>WRF</Name>
-<LongName>Weather Research and Forecasting Model</LongName>
-<Regex>((geogrid|metgrid|real|ungrib|wrf)\.exe)</Regex>
-</AprunApplication>
-<AprunApplication id='2'>
-<Name>VASP</Name>
-<LongName>Vienna Ab initio Simulation Package</LongName>
-<Regex>(vasp|vasp_(gam|gamma|ncl|std))</Regex>
-</AprunApplication>
-<AprunApplication id='3'>
-<Name>NAMD</Name>
-<LongName>A parallel molecular dynamics code.</LongName>
-<Regex>(namd2)</Regex>
-</AprunApplication>
-<AprunApplication id='4'>
-<Name>LAMMPS</Name>
-<LongName>Large-scale Atomic/Molecular Massively Parallel Simulator</LongName>
-<Regex>(lmp)</Regex>
-</AprunApplication>
-<AprunApplication id='5'>
-<Name>AMBER</Name>
-<LongName>Biomolecular Dynamics Simulator</LongName>
-<Regex>((sander|pmemd)\.MPI)</Regex>
-</AprunApplication>
-<AprunApplication id='6'>
-<Name>CHARMM</Name>
-<LongName>Chemistry at HARvard Macromolecular Mechanics</LongName>
-<Regex>(charm)</Regex>
-</AprunApplication>
-<AprunApplication id='7'>
-<Name>ENZO</Name>
-<LongName>An adaptive mesh refinement code for astrophysics.</LongName>
-<Regex>(enzo)</Regex>
-</AprunApplication>
-<AprunApplication id='8'>
-<Name>GROMACS</Name>
-<LongName>Groningen Machine for Chemical Simulations</LongName>
-<Regex>(mdrun_(mpi|mpi_d))</Regex>
-</AprunApplication>
-<AprunApplication id='9'>
-<Name>CP2K</Name>
-<LongName>A first principles simulation package for atomic structures.</LongName>
-<Regex>(cp2k|(cp2k\.(popt|psmp)))</Regex>
-</AprunApplication>
-<AprunApplication id='10'>
-<Name>NWCHEM</Name>>
-<LongName>Open Source High-Performance Computational Chemistry</LongName>
-<Regex>(nwchem)</Regex>
-</AprunApplication>
-<AprunApplication id='11'>
-<Name>TTMMD</Name>
-<LongName>Two-temperature Nonequilibrium Molecular Dynamics Simulator</LongName>
-<Regex>(ttmmd)</Regex>
-</AprunApplication>
-<AprunApplication id='12'>
-<Name>GenASiS</Name>
-<LongName>General Astrophysical Simulation System</LongName>
-<Regex>(genasis)</Regex>
-</AprunApplication>
-<AprunApplication id='13'>
-<Name>OPENFOAM</Name>
-<LongName>Open Source Field Operation and Manipulation</LongName>
-<Regex>(foam)</Regex>
-</AprunApplication>
-<AprunApplication id='14'>
-<Name>Q-ESPRESSO</Name>
-<LongName>Quantum Open-Source Package for Research in Electronic Structure, Simulation and Optimization</LongName>
-<Regex>(p(h|w)\.x)</Regex>
-</AprunApplication>
-<AprunApplication id='15'>
-<Name>VisIt</Name>
-<LongName>An open source, interactive, scalable, visualization, animation and analysis tool.</LongName>
-<Regex>(engine_par)</Regex>
-</AprunApplication> 
-<AprunApplication id='16'>
-<Name>CASTEP</Name>
-<LongName>A code for calculating the properties of materials from first principles using density functional theory.</LongName>
-<Regex>(castep|castep\.mpi)</Regex>
-</AprunApplication> 
-<AprunApplication id='17'>
-<Name>Desmond</Name>
-<LongName>A molecular dynamics simulator.</LongName>
-<Regex>(desmond)</Regex>
-</AprunApplication> 
-<AprunApplication id='18'>
 <Name>ABINIT</Name>
 <LongName>A code for finding the total energy, charge density and electronic structure of systems made of electrons and nuclei.</LongName>
 <Regex>(abinit)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Periodic Electronic Structure</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
 </AprunApplication> 
-<AprunApplication id='19'>
+
+<AprunApplication id='2'>
+<Name>AIMS</Name>
+<LongName>Full-Potential, All-Electron Electronic Structure Theory with Numeric Atom-Centered Basis Functions</LongName>
+<Regex>(aims\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Fee Payment</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Periodic Electronic Structure</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='3'>
+<Name>AMBER</Name>
+<LongName>Biomolecular Dynamics Simulator</LongName>
+<Regex>((sander|pmemd|MMPBSA)\.MPI)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Fee Payment</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>N-body</CodeType>
+<ResearchArea>Biomolecular Simulation</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='4'>
+<Name>B2-EIRENE</Name>
+<LongName>A Monte Carlo linear transport solver</LongName>
+<Regex>(b2\.out)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Academic Free</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Plasma Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='5'>
+<Name>CASINO</Name>
+<LongName>Monte CArlo SImulation of electroN trajectory in sOlid</LongName>
+<Regex>(casino)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Monte Carlo</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='6'>
+<Name>CASTEP</Name>
+<LongName>A code for calculating the properties of materials from first principles using density functional theory.</LongName>
+<Regex>(castep\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Periodic Electronic Structure</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI+SharedMem</ParallelModel>
+</AprunApplication> 
+
+<AprunApplication id='7'>
 <Name>CESM</Name>
 <LongName>Community Earth System Model</LongName>
 <Regex>(cesm\.exe)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
 </AprunApplication> 
-<AprunApplication id='20'>
+
+<AprunApplication id='8'>
+<Name>CHARMM</Name>
+<LongName>Chemistry at HARvard Macromolecular Mechanics</LongName>
+<Regex>(charmm\S*)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='9'>
 <Name>ChemShell</Name>
 <LongName>A computational Chemistry environment based on the Tcl interpreter.</LongName>
-<Regex>(chemsh\.x)</Regex>
+<Regex>(chemsh\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>QM/MM</CodeType>
+<ResearchArea>Chemistry</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
 </AprunApplication> 
-<AprunApplication id='21'>
+
+<AprunApplication id='10'>
+<Name>CHROMA</Name>
+<LongName>The Chroma package supports data-parallel programming constructs for lattice field theory and in particular lattice QCD.</LongName>
+<Regex>(chroma)</Regex>
+<PrimaryLanguage>C++</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Unknown</CommericalLicence>
+<CodeType>Lattice QCD</CodeType>
+<ResearchArea>Particle Physics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='11'>
+<Name>CloverLeaf</Name>
+<LongName>A code for calculating the properties of materials from first principles using density functional theory.</LongName>
+<Regex>(clover_leaf)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Hydrodynamics</CodeType>
+<ResearchArea>HPC Research</ResearchArea>
+<ParallelModel>MPI+OpenMP</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='12'>
 <Name>Code_Saturne</Name>
 <LongName>An open source CFD code.</LongName>
 <Regex>(cs_(solver|blas_test|core_test))</Regex>
+<PrimaryLanguage>C</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
 </AprunApplication> 
-<AprunApplication id='22'>
+
+<AprunApplication id='13'>
 <Name>COSA</Name>
 <LongName>CFD Optimized Structured multi-block Algorithm</LongName>
-<Regex>(cosa\.mpi(debug|ompdebug))</Regex>
+<Regex>(cosa\S*)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
 </AprunApplication> 
-<AprunApplication id='23'>
+
+<AprunApplication id='14'>
+<Name>CP2K</Name>
+<LongName>A first principles simulation package for atomic structures.</LongName>
+<Regex>(cp2k\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Periodic Electronic Structure</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI+OpenMP</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='15'>
 <Name>CPMD</Name>
 <LongName>Car-Parrinello Molecular Dynamics</LongName>
-<Regex>(cpmd)</Regex>
+<Regex>(cpmd\S*)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
 </AprunApplication>  
-<AprunApplication id='24'>
+
+<AprunApplication id='16'>
+<Name>Cray Testing</Name>
+<LongName>Cray Memory Testing</LongName>
+<Regex>(memtest|statcom|strace)</Regex>
+<PrimaryLanguage>C</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>None</AcademicLicence>
+<CommericalLicence>None</CommericalLicence>
+<CodeType>Test Code</CodeType>
+<ResearchArea>Internal Service Use</ResearchArea>
+<ParallelModel>None</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='17'>
 <Name>CRYSTAL</Name>
 <LongName>A general-purpose program for the study of crystalline solids.</LongName>
 <Regex>((MPP|P)crystal|Pproperties|properties)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Periodic Electronic Structure</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='18'>
+<Name>Desmond</Name>
+<LongName>A molecular dynamics simulator.</LongName>
+<Regex>(desmond)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
 </AprunApplication> 
-<AprunApplication id='25'>
+
+<AprunApplication id='19'>
 <Name>DL_MESO</Name>
 <LongName>A general purpose mesoscale CFD code from Daresbury Laboratory.</LongName>
 <Regex>((lbe|dpd)\.exe)</Regex>
-</AprunApplication>  
-<AprunApplication id='26'>
+<PrimaryLanguage>C++</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Lattice Boltzmann</CodeType>
+<ResearchArea>Mesoscale Simulation</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='20'>
 <Name>DL_POLY</Name>
 <LongName>A general purpose classical molecular dynamics code from Daresbury Laboratory.</LongName>
-<Regex>(DLPOLY\.Z)</Regex>
-</AprunApplication> 
-<AprunApplication id='27'>
+<Regex>(DLPOLY\S*|dlpoly\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>N-body</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI+OpenMP</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='21'>
+<Name>ECHAM</Name>
+<LongName>An atmospheric general circulation mode, developed at the Max Planck Institute for Meteorology.</LongName>
+<Regex>(echam)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Fee Payment</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Climate/Ocean Modelling</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='22'>
 <Name>ELK</Name>
 <LongName>An all-electron full-potential linearised augmented-plane-wave code.</LongName>
 <Regex>(elk)</Regex>
-</AprunApplication> 
-<AprunApplication id='28'>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='23'>
+<Name>ELMFIRE</Name>
+<LongName>A gyrokinetic plasma simulation code.</LongName>
+<Regex>(elmfire)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Free</CommericalLicence>
+<CodeType>Particle in Cell</CodeType>
+<ResearchArea>Plasma Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='24'>
+<Name>ENZO</Name>
+<LongName>An adaptive mesh refinement code for astrophysics.</LongName>
+<Regex>(enzo)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='25'>
+<Name>EPOCH</Name>
+<LongName>Extendable PIC Open Collaboration</LongName>
+<Regex>(epoch\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Particle in Cell</CodeType>
+<ResearchArea>Plasma Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='26'>
 <Name>Exciting</Name>
 <LongName>A full-potential all-electron density-functional-theory package.</LongName>
 <Regex>(excitingmpi)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
 </AprunApplication> 
-<AprunApplication id='29'>
+
+<AprunApplication id='27'>
 <Name>FDS</Name>
 <LongName>Fire Dynamics Simulator></LongName>
 <Regex>(fds_mpi_gnu_linux|fds_mpi_intel_linux_64)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
 </AprunApplication> 
-<AprunApplication id='30'>
+
+<AprunApplication id='28'>
 <Name>FEniCS</Name>
 <LongName>An automated solution of differential equations by the finite element method.</LongName>
 <Regex>(dolfin-(convert|get-demos|order|plot|version))</Regex>
-</AprunApplication> 
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='29'>
+<Name>flow_main</Name>
+<LongName></LongName>
+<Regex>(flow_main)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>90</PrimaryLanguageVersion>
+<AcademicLicence>None</AcademicLicence>
+<CommericalLicence>None</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='30'>
+<Name>Fluidity</Name>
+<LongName>An open source, general purpose, multiphase computational fluid dynamics code.</LongName>
+<Regex>(fluidity)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Climate/Ocean Modelling</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
 <AprunApplication id='31'>
+<Name>FVCOM</Name>
+<LongName>Finite Volume Coastal Ocean Model</LongName>
+<Regex>(fvcom)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>90</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Climate/Ocean Modelling</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='32'>
 <Name>GAMESS</Name>
 <LongName>General Atomic and Molecular Electronic Structure System</LongName>
-<Regex>(rungms)</Regex>
+<Regex>(gamess\S*|rungms)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Quantum Chemistry</CodeType>
+<ResearchArea>Chemistry</ResearchArea>
+<ParallelModel>DMAPP</ParallelModel>
 </AprunApplication>
-<AprunApplication id='32'>
+
+<AprunApplication id='33'>
 <Name>GAMESS-UK</Name>
 <LongName>A general purpose ab initio molecular electronic structure program for performing SCF-, DFT- and MCSCF-gradient calculations.</LongName>
 <Regex>(gamess-uk)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
 </AprunApplication>
-<AprunApplication id='33'>
+
+<AprunApplication id='34'>
+<Name>GenASiS</Name>
+<LongName>General Astrophysical Simulation System</LongName>
+<Regex>(genasis)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='35'>
+<Name>GPAW</Name>
+<LongName>A density-functional theory (DFT) Python code based on the projector-augmented wave (PAW) method.</LongName>
+<Regex>(gpaw)</Regex>
+<PrimaryLanguage>Python</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Periodic Electronic Structure</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='36'>
+<Name>GROMACS</Name>
+<LongName>Groningen Machine for Chemical Simulations</LongName>
+<Regex>(mdrun\S*)</Regex>
+<PrimaryLanguage>C</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>N-body</CodeType>
+<ResearchArea>Biomolecular Simulation</ResearchArea>
+<ParallelModel>MPI+OpenMP</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='37'>
 <Name>GS2</Name>
 <LongName>A physics application, developed to study low-frequency turbulence in magnetized plasma.</LongName>
 <Regex>(gs2)</Regex>
-</AprunApplication>  
-<AprunApplication id='34'>
-<Name>Molpro</Name>
-<LongName>A complete system of ab initio programs for molecular electronic structure calculations.</LongName>
-<Regex>(molpro\.exe)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>None</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Plasma Science</ResearchArea>
+<ParallelModel>MPI+OpenMP</ParallelModel>
 </AprunApplication>
-<AprunApplication id='35'>
-<Name>NCIPLOT</Name>
-<LongName>A program that enables the computation and graphical visualisation of inter- and intra-molecular non-covalent interactions.</LongName>
-<Regex>(nciplot)</Regex>
-</AprunApplication>
-<AprunApplication id='36'>
-<Name>ONETEP</Name>
-<LongName>Order-N Electronic Total Energy Package</LongName>
-<Regex>(onetep)</Regex>
-</AprunApplication>
-<AprunApplication id='37'>
-<Name>ParaView</Name>
-<LongName>An open-source, multi-platform data analysis and visualization application.</LongName>
-<Regex>(pvserver)</Regex>
-</AprunApplication>
+
 <AprunApplication id='38'>
-<Name>SIESTA</Name>
-<LongName>Spanish Initiative for Electronic Simulations with Thousands of Atoms</LongName>
-<Regex>(siesta)</Regex>
+<Name>HemeLB</Name>
+<LongName>Hemodynamics Lattice Boltzmann</LongName>
+<Regex>(hemelb)</Regex>
+<PrimaryLanguage>C++</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Lattice Boltzmann</CodeType>
+<ResearchArea>Medical Physics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
 </AprunApplication>
+
 <AprunApplication id='39'>
-<Name>WIEN2k</Name>
-<LongName>A simulation code for the electronic structure of solids using the Linearized Augmented Plane Wave method.</LongName>
-<Regex>(lapwS+_mpi)</Regex>
-</AprunApplication> 
+<Name>HiPSTAR</Name>
+<LongName>High-Performance Solver for Turbulence and Aeroacoustic Research</LongName>
+<Regex>(HiPSTAR.x|HiPSTAR_adj.x|hipstar.|jet_3d|c3d|jet_scalar_3d)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>90</PrimaryLanguageVersion>
+<AcademicLicence>None</AcademicLicence>
+<CommericalLicence>None</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI+OpenMP</ParallelModel>
+</AprunApplication>
+
 <AprunApplication id='40'>
-<Name>Unknown</Name>
-<LongName>Code Unknown</LongName>
-<Regex>(a\.out)</Regex>
+<Name>HYDRA</Name>
+<LongName>A design tool for aerodynamical problems developed by Rolls Royce.</LongName>
+<Regex>(jm51|hyd-|hydra)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>None</AcademicLicence>
+<CommericalLicence>None</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
 </AprunApplication>
+
 <AprunApplication id='41'>
-<Name>UM</Name>
-<LongName>Unified Model</LongName>
-<Regex>(um-atmos\.exe)</Regex>
+<Name>incompact3d</Name>
+<LongName>A powerful high-order flow solver designed for Direct and Large Eddy Simulations.</LongName>
+<Regex>(incompact3d)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
 </AprunApplication>
+
 <AprunApplication id='42'>
+<Name>LAMMPS</Name>
+<LongName>Large-scale Atomic/Molecular Massively Parallel Simulator</LongName>
+<Regex>(lmp\S*|lammps)</Regex>
+<PrimaryLanguage>C++</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>N-body</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI+OpenMP</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='43'>
+<Name>LB3D</Name>
+<LongName>Lattice Boltzmann 3D</LongName>
+<Regex>(lb3d)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>N-body</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI+OpenMP</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='44'>
+<Name>LS-DYNA</Name>
+<LongName>A general-purpose finite element program developed by Livermore Software.</LongName>
+<Regex>(mppdyna)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Fee Payment</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Finite Element</CodeType>
+<ResearchArea>Structural Engineering</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='45'>
 <Name>LUDWIG</Name>
 <LongName>A lattice Boltzmann code for complex fluids.</LongName>
 <Regex>(Ludwig\.exe)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
 </AprunApplication>
-<AprunApplication id='43'>
+
+<AprunApplication id='46'>
 <Name>MITgcm</Name>
 <LongName>MIT General Circulation Model</LongName>
-<Regex>(mitgcmuv)</Regex>
+<Regex>(mitgcm\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>90</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Climate/Ocean Modelling</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
 </AprunApplication>
+
+<AprunApplication id='47'>
+<Name>Molpro</Name>
+<LongName>A complete system of ab initio programs for molecular electronic structure calculations.</LongName>
+<Regex>(molpro\.exe)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Fee Payment</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Quantum Chemistry</CodeType>
+<ResearchArea>Chemistry</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='48'>
+<Name>NAMD</Name>
+<LongName>A parallel molecular dynamics code.</LongName>
+<Regex>(namd|namd2)</Regex>
+<PrimaryLanguage>C++</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>N-body</CodeType>
+<ResearchArea>Biomolecular Simulation</ResearchArea>
+<ParallelModel>MPI+OpenMP</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='49'>
+<Name>NECI</Name>
+<LongName></LongName>
+<Regex>(neci)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Monte Carlo</CodeType>
+<ResearchArea>Chemistry</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='50'>
+<Name>Nek5000</Name>
+<LongName>An open source, highly scalable and portable spectral element code.</LongName>
+<Regex>(nek5000\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='51'>
+<Name>Nektar++</Name>
+<LongName>A spectral/hp element framework.</LongName>
+<Regex>(ADRSolver|IncNavierStokesSolver)</Regex>
+<PrimaryLanguage>C++</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='52'>
+<Name>NEMO</Name>
+<LongName>Nucleus for European Modelling of the Ocean</LongName>
+<Regex>(nemo\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>None</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Climate/Ocean Modelling</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='53'>
+<Name>NWChem</Name>
+<LongName>Open Source High-Performance Computational Chemistry</LongName>
+<Regex>(nwchem)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Quantum Chemistry</CodeType>
+<ResearchArea>Chemistry</ResearchArea>
+<ParallelModel>DMAPP</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='54'>
+<Name>Oasis</Name>
+<LongName>A coupler for oceanic and atmospheric circulation models.</LongName>
+<Regex>(oasis\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Earth System Coupler</CodeType>
+<ResearchArea>Climate/Ocean Modelling</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='55'>
+<Name>ONETEP</Name>
+<LongName>Order-N Electronic Total Energy Package</LongName>
+<Regex>(onetep\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Fee Payment</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Periodic Electronic Structure</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='56'>
+<Name>OpenFOAM</Name>
+<LongName>Open Source Field Operation and Manipulation</LongName>
+<Regex>(\S*Foam\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='57'>
+<Name>OSIRIS</Name>
+<LongName>A fully relativistic plasma simulation code.</LongName>
+<Regex>(osiris\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>None</CommericalLicence>
+<CodeType>Particle in Cell</CodeType>
+<ResearchArea>Plasma Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='58'>
+<Name>PIMAIM</Name>
+<LongName>Molecular Dynamics Code</LongName>
+<Regex>(pimaim\S*)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='59'>
+<Name>PDNS3D</Name>
+<LongName>Order-N Electronic Total Energy Package</LongName>
+<Regex>(pdns3d\S*|pchan)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='60'>
+<Name>PRECISE</Name>
+<LongName>A CFD code developed by Rolls Royce.</LongName>
+<Regex>(precise)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>None</AcademicLicence>
+<CommericalLicence>None</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='61'>
+<Name>Python</Name>
+<LongName></LongName>
+<Regex>(python|python3)</Regex>
+<PrimaryLanguage>Python</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Various</CodeType>
+<ResearchArea>Various</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='62'>
+<Name>Quantum Espresso</Name>
+<LongName>Quantum Open-Source Package for Research in Electronic Structure, Simulation and Optimization</LongName>
+<Regex>(cp.x|ph.x|pw.x|neb.x|epw.x)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Periodic Electronic Structure</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='63'>
+<Name>Ramses</Name>
+<LongName>Adaptive Mesh Refinement for self-gravitating magnetized fluid flows.</LongName>
+<Regex>(ramses\S*)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='64'>
+<Name>SENGA</Name>
+<LongName>A parallel combustion DNS code developed in Cambridge to study turbulent combustion.</LongName>
+<Regex>(senga\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Fee Payment</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Combustion Modelling</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='65'>
+<Name>SIESTA</Name>
+<LongName>Spanish Initiative for Electronic Simulations with Thousands of Atoms</LongName>
+<Regex>(siesta)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Periodic Electronic Structure</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='66'>
+<Name>SimVascular</Name>
+<LongName>An open source software suite for cardiovascular simulation.</LongName>
+<Regex>(flowsolver)</Regex>
+<PrimaryLanguage>C++</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Medical Physics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='67'>
+<Name>SPECFEM3D</Name>
+<LongName>Simulates seismic wave propagation at the local or regional scale based upon the spectral-element method.</LongName>
+<Regex>(specfem)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>Open Source</AcademicLicence>
+<CommericalLicence>Open Source</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Geophysics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='68'>
+<Name>TAU</Name>
+<LongName>A 2nd order finite volume flow solver.</LongName>
+<Regex>(ptau3d\S*|tau\S*)</Regex>
+<PrimaryLanguage>C</PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence>None</AcademicLicence>
+<CommericalLicence>None</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='69'>
+<Name>TBE</Name>
+<LongName>Empirical Tight Binding</LongName>
+<Regex>(tbe)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='70'>
+<Name>TTMMD</Name>
+<LongName>Two-temperature Nonequilibrium Molecular Dynamics Simulator</LongName>
+<Regex>(ttmmd)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='71'>
+<Name>Tutorial Codes</Name>
+<LongName></LongName>
+<Regex>(sharpen|imagenew|fractal|matmult|hello\S*)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='72'>
+<Name>USCNS3D</Name>
+<LongName>A 3D unstructured solver.</LongName>
+<Regex>(ucns3d\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>90</PrimaryLanguageVersion>
+<AcademicLicence>None</AcademicLicence>
+<CommericalLicence>None</CommericalLicence>
+<CodeType>Unstructured Grid</CodeType>
+<ResearchArea>Computational Fluid Dynamics</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='73'>
+<Name>Unified Model</Name>
+<LongName>A numerical model of the atmosphere used for both weather and climate applications.</LongName>
+<Regex>(um_\S*|um-\S*|HadCM3\S*|KPP_ocean)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Fee Payment</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Climate/Ocean Modelling</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='74'>
+<Name>Unknown</Name>
+<LongName>Code Unknown</LongName>
+<Regex>(a\.out|run\.exe|run\.x|main|main.out)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='75'>
+<Name>VASP</Name>
+<LongName>Vienna Ab initio Simulation Package</LongName>
+<Regex>(vasp\S*)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Fee Payment</AcademicLicence>
+<CommericalLicence>Fee Payment</CommericalLicence>
+<CodeType>Periodic Electronic Structure</CodeType>
+<ResearchArea>Materials Science</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='76'>
+<Name>WIEN2k</Name>
+<LongName>A simulation code for the electronic structure of solids using the Linearized Augmented Plane Wave method.</LongName>
+<Regex>(lapwS+_mpi)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType></CodeType>
+<ResearchArea></ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='77'>
+<Name>WRF</Name>
+<LongName>Weather Research and Forecasting Model</LongName>
+<Regex>((geogrid|metgrid|real|ungrib|wrf)\.exe)</Regex>
+<PrimaryLanguage>Fortran</PrimaryLanguage>
+<PrimaryLanguageVersion>95</PrimaryLanguageVersion>
+<AcademicLicence>Academic Free</AcademicLicence>
+<CommericalLicence>None</CommericalLicence>
+<CodeType>Structured Grid</CodeType>
+<ResearchArea>Climate/Ocean Modelling</ResearchArea>
+<ParallelModel>MPI</ParallelModel>
+</AprunApplication>
+
+<AprunApplication id='78'>
+<Name>Yambo</Name>
+<LongName>Yet Another Many-Body cOde</LongName>
+<Regex>(yambo\S*)</Regex>
+<PrimaryLanguage></PrimaryLanguage>
+<PrimaryLanguageVersion></PrimaryLanguageVersion>
+<AcademicLicence></AcademicLicence>
+<CommericalLicence></CommericalLicence>
+<CodeType>N-body</CodeType>
+<ResearchArea>Solid State/Molecular Physics</ResearchArea>
+<ParallelModel></ParallelModel>
+</AprunApplication>
+
 </Diff>
