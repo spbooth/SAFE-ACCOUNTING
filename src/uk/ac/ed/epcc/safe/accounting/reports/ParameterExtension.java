@@ -18,6 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.text.NumberFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -34,9 +35,12 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
+import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.charts.MapperEntryInput;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntryInput;
+import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
@@ -47,6 +51,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.UnresolvedNameException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ParameterParseException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
@@ -54,6 +59,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.FilterSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.ClassTableCreator;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
@@ -83,6 +89,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
+import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
@@ -367,9 +374,44 @@ public class ParameterExtension extends ReportExtension {
 			type=conn.getInitParameter("typealias."+type, type);
 			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
 			if( fac != null ){
-				BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
-				if( fil == null ){
-					fil = new FalseFilter(fac.getTarget());
+				AndFilter fil = new AndFilter(fac.getTarget());
+				if(role.startsWith("#")){
+					role=role.substring(1);
+				}else{
+					//narrow the default selector by default
+					fil.addFilter(fac.getSelectFilter());
+				}
+				BaseFilter fil2 = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
+				if( fil2 == null ){
+					fil2 = new FalseFilter(fac.getTarget());
+				}
+				fil.addFilter(fil);
+				if( fac instanceof ExpressionTargetFactory ){
+					// If factory implements the correct interface futher narrow the selection using
+					// embedded filter cluases
+					ExpressionTargetFactory ptf = (ExpressionTargetFactory) fac;
+					PropertyFinder finder = ptf.getFinder();
+				
+					NodeList paramNodes = ((Element) param).getElementsByTagNameNS(
+							FilterExtension.FILTER_LOC,"Filter");
+					if( paramNodes.getLength() > 0 ){
+						AndRecordSelector selector = new AndRecordSelector();
+						for( int i=0; i < paramNodes.getLength() ; i++){
+							Element filter =  (Element) paramNodes.item(i);
+							 NodeList list =filter.getChildNodes();
+							  for(int j=0;j<list.getLength();j++){
+								  Node c = list.item(j);
+								  if( c.getNodeType() == Node.ELEMENT_NODE && c.getNamespaceURI() == filter.getNamespaceURI()){
+									  RecordSelector s = getRecordSelectElement(finder,  (Element)c);
+									  if( s != null ){
+										  selector.add(s);
+									  }
+								  }
+							  }	  
+						}
+						FilterSelectVisitor vis = new FilterSelectVisitor(ptf);
+						fil.addFilter((BaseFilter) selector.visit(vis));
+					}
 				}
 				return fac.getInput(fil);
 			}
@@ -747,14 +789,31 @@ public class ParameterExtension extends ReportExtension {
 			addError("Bad Repeat", "No variable specified");
 			return result;
 		}
-		String splitter = this.getAttribute(SPLIT_ATTR, element);
-		Splitter split = getContext().makeObjectWithDefault(Splitter.class, null, SPLITTER_PREFIX, splitter);
-		if( split == null ){
-			addError("Bad Repeat", "No Splitter class defined for tag "+splitter);
+		if( parameter_names != null && parameter_names.contains(variable)){
+			addError("Bad Variable","Overiding the existing parameter named "+variable);
 			return result;
 		}
+		if( parameter_names != null){
+			parameter_names.add(variable);
+		}
+		String splitter = this.getAttribute(SPLIT_ATTR, element);
+		Splitter split = getContext().makeObjectWithDefault(Splitter.class, null, SPLITTER_PREFIX, splitter);
 		try{
-			Object[] list = split.split(param);
+			Object[] list;
+			if( split == null ){
+				if( param instanceof Collection ){
+					Collection collection = (Collection)param;
+					list = collection.toArray(new Object[collection.size()]);
+				}else{
+					addError("Bad Repeat", "No Splitter class defined for tag "+splitter);
+					return result;
+				}
+			}else{
+				list = split.split(param);
+			}
+
+
+
 			if( list == null){
 				// explicit request to do no expansion
 				return result;
@@ -769,6 +828,10 @@ public class ParameterExtension extends ReportExtension {
 			}
 		}catch(Exception e){
 			addError("Bad Repeat", "Exception in split", e);
+		}finally{
+			if( parameter_names != null){
+				parameter_names.remove(variable);
+			}
 		}
 		return result;
 	}
@@ -793,6 +856,13 @@ public class ParameterExtension extends ReportExtension {
 		if( variable == null || variable.trim().length() == 0){
 			addError("Bad Repeat", "No variable specified");
 			return result;
+		}
+		if( parameter_names != null && parameter_names.contains(variable)){
+			addError("Bad Variable","Overiding the existing parameter named "+variable);
+			return result;
+		}
+		if( parameter_names != null){
+			parameter_names.add(variable);
 		}
 		
 		String source = this.getAttribute(SOURCE_ATTR, element);
@@ -831,6 +901,10 @@ public class ParameterExtension extends ReportExtension {
 		}
 		}catch(Exception e){
 			addError("For error","Error generating expansion set",e);
+		}finally{
+			if( parameter_names != null){
+				parameter_names.remove(variable);
+			}
 		}
 		return result;
 		

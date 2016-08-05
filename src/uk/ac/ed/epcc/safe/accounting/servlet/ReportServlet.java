@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -52,7 +53,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  *
  */
 
-
+@WebServlet(name="ReportServlet",urlPatterns="/ReportServlet/*")
 public class ReportServlet extends SessionServlet {
 
 	public static final String SERVE_DATA_DEFAULT_TAG = "ServeData";
@@ -222,7 +223,7 @@ public class ReportServlet extends SessionServlet {
 						ByteArrayMimeStreamData raw = new ByteArrayMimeStreamData();
 						raw.setMimeType("text/xml");
 						ReportType type = builder.getReportType("RXML");
-						builder.renderXML(type, report_params, type.getResult(raw.getOutputStream()));
+						builder.renderXML(type, report_params, type.getResult(conn,raw.getOutputStream()));
 						result = new ServeDataResult(producer, producer.setData(raw));
 					}catch(Throwable t){
 						getLogger(conn).error("Error generating raw XML",t);

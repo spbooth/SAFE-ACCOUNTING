@@ -163,7 +163,7 @@ public abstract class ChartExtension extends ReportExtension {
 	private <P extends PeriodChart> Chart<P> setChartOptions(P chart, Element e){
 		try{
 		if( hasParam("Title", e)){
-			chart.getChartData().setTitle(getParam("Title", e));
+			chart.getChartData().setTitle(getParam("Title", e).trim());
 		}
 		}catch(Exception e1){
 			addError("Bad Plot", "Error setting title", e1);

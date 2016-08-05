@@ -50,6 +50,7 @@ import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryVisitor;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
+import uk.ac.ed.epcc.webapp.model.data.transition.AbstractViewPathTransitionProvider;
 import uk.ac.ed.epcc.webapp.model.data.transition.AbstractViewTransitionFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Provide a filtered view of allocations from a nested
@@ -63,7 +64,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  *
  */
 public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
-		AbstractViewTransitionFactory<AllocationPeriod, PeriodKey>implements PathTransitionProvider<PeriodKey,AllocationPeriod>,
+		AbstractViewPathTransitionProvider<AllocationPeriod, PeriodKey>implements PathTransitionProvider<PeriodKey,AllocationPeriod>,
 		IndexTransitionFactory<PeriodKey, AllocationPeriod>{
 
 	public static final String ALLOCATION_PERIOD_PREFIX = "AllocationPeriod";
@@ -243,10 +244,6 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 		return sess.hasRole(AllocationManager.ALLOCATION_ADMIN);
 	}
 
-	public <R> R accept(
-			TransitionFactoryVisitor<R, AllocationPeriod, PeriodKey> vis) {
-		return vis.visitPathTransitionProvider(this);
-	}
 	@SuppressWarnings("unchecked")
 	public RecordSelector getSelector(AllocationPeriod view){
 		AndRecordSelector sel = new AndRecordSelector();

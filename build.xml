@@ -15,8 +15,8 @@
 	<property name="compile.debug" value="true" />
 	<property name="compile.deprecation" value="false" />
 	<property name="compile.optimize" value="true" />
-	<property name="compile.target" value="1.6" />
-	<property name="compile.source" value="1.6" />
+	<property name="compile.target" value="1.7" />
+	<property name="compile.source" value="1.7" />
 	<property name="ant.headless" value="true" />
 	<property name="db_name" value="" />
 	<property name="db_username" value="" />
@@ -194,7 +194,7 @@
 		<delete dir="${doc.dir}" />
 		<mkdir dir="${doc.dir}/api" />
 		<javadoc
-    		source="1.6"
+    		source="${compile.source}"
             destdir="${doc.dir}/api"
             additionalparam="-breakiterator">
 			<packageset dir="${basedir}/src">

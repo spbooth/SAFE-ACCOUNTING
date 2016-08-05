@@ -49,7 +49,7 @@ public class DeveloperResult  extends CustomPageResult {
 	}
 
 	public ContentBuilder addContent(AppContext conn, ContentBuilder cb) {
-		cb = cb.getPanel("block");
+		//cb = cb.getPanel("block");
 		cb.addHeading(2, "Report Developer Information");
 		cb.addText("You have the ReportDeveloper role active. This page gives access to additional information to aid in debugging the reports");
 		if( has_error ){
@@ -75,7 +75,7 @@ public class DeveloperResult  extends CustomPageResult {
 			cb.addLink(conn, "Logs from report generation", logs);
 			cb=cb.addParent();
 		}
-		cb = cb.addParent();
+		//cb = cb.addParent();
 		return cb;
 	}
 	

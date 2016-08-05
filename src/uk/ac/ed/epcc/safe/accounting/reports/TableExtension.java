@@ -66,6 +66,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -141,6 +142,9 @@ public class TableExtension extends ReportExtension {
 		 * the results are added to the parent and null is returned.
 		 * otherwide the table is returned.
 		 * 
+		 * This is the last method called on the lifecycle of the object so we should try to drop
+		 * data references before returning from this routine.
+		 * 
 		 * @param instructions
 		 * @return null or Table
 		 */
@@ -190,9 +194,13 @@ public class TableExtension extends ReportExtension {
 		
 		public Table postProcess(Node instructions) {
 			if( parent == null ){
-				return extension.processTable(table, instructions);	
+				Table result = extension.processTable(table, instructions);
+				table=null;
+				return result;
 			}else{
 				parent.addTable(extension.processTable(table, instructions));
+				parent=null;
+				table=null;
 				return null;
 			}
 		}
@@ -340,12 +348,19 @@ public class TableExtension extends ReportExtension {
 			
 			//store period to custom formatters can retreive
 			conn.setAttribute(CURRENT_PERIOD_ATTR, period);
+			period=null; // drop uneeded references for GC
+			recordSet=null;
+			tableMaker=null;
 			if (compoundTable == null) {
-				return extension.processTable(table, instructions);	
+				Table result =  extension.processTable(table, instructions);
+				table=null;
+				return result;
 				
 			} else {
 				compoundTable.addTable(
 						extension.processTable(table, instructions));
+				table=null;
+				compoundTable=null;
 				return null;
 				
 			}			
@@ -373,6 +388,7 @@ public class TableExtension extends ReportExtension {
 		PropExpression<Date>[] dates;
 		
 		
+		
 		public SummaryTable(TableExtension extension, 
 				CompoundTable compoundTable, Period period, 
 				RecordSet recordSet, Node tableNode) {
@@ -382,10 +398,13 @@ public class TableExtension extends ReportExtension {
 			
 			// Get the dates, if there are any, default to the dates set in recordSet
 			this.dates = recordSet.getBounds();
+			this.use_overlap = recordSet.useOverlap();
 			Element paramElement = extension.getParamElement("Date", tableElement);
 			if( paramElement != null){
+				DateBounds dateProperties = extension.getDateProperties(recordSet,paramElement);
 				this.dates = 
-						extension.getDateProperties(recordSet,paramElement);
+						dateProperties.bounds;
+				this.use_overlap=dateProperties.overlap;
 			}
 			
 		}
@@ -408,10 +427,10 @@ public class TableExtension extends ReportExtension {
 			
 			Table<String,Object> table = new Table<String,Object>();
 			if( ! producer.compatible(selector)){
-				extension.addError("Selector not compatible with producer", selector.toString());
+				extension.addError("Selector not compatible with producer", "Producer: "+producer.getTag()+" not compatible with "+ selector.toString());
 				return table;
 			}
-			boolean overlap=false;
+			
 			try{
 				Map<ExpressionTuple,ReductionMapResult> data;
                 
@@ -423,17 +442,21 @@ public class TableExtension extends ReportExtension {
 							period.getEnd()));
 					data = producer.getIndexedReductionMap(reductions, sel);
 				}else if( dates.length ==2){
-					data = handler.getOverlapIndexedReductionMap( reductions, 
+					if( use_overlap ){
+						data = handler.getOverlapIndexedReductionMap( reductions, 
 							dates[0], dates[1], 
 							period.getStart(), period.getEnd(), 
 							selector);
-					if( period.getStart().equals(period.getEnd())){
-						// zero length period we must be trying to pick up records
-						// that overlap a specific point in time.
-						overlap=false;
 					}else{
-						overlap=true;
+						// explicitly asked for no overlap calc
+						AndRecordSelector sel = new AndRecordSelector(selector);
+						sel.add(new PeriodOverlapRecordSelector(period, dates[0],dates[1]));
+						data = producer.getIndexedReductionMap(reductions, sel);
 					}
+//					if( period.getStart().equals(period.getEnd())){
+//						// zero length period we must be trying to pick up records
+//						// that overlap a specific point in time.
+//					}
 				}else{
 					data = producer.getIndexedReductionMap(reductions, selector);
 				}
@@ -488,22 +511,30 @@ public class TableExtension extends ReportExtension {
 			conn.setAttribute(CURRENT_PERIOD_ATTR, period);
 			table = extension.processTable(table, instructions);
 			conn.removeAttribute(CURRENT_PERIOD_ATTR);
+			
+			period=null; // for GC
+			dates=null;
+			
 			if (compoundTable != null) {
 				// we must only merge columns using the appropriate Operator
 				compoundTable.mergeKeys(table);
 				compoundTable.table.addRows(table);
 				for( String col : col_names){
 					Reduction red = cols.get(col).getReduction();
-					if( overlap && red == Reduction.AVG){
+					if( use_overlap && red == Reduction.AVG){
 						// These have been mapped to time average 
 						red = Reduction.SUM;
 					}
 					compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 				}
 				//compoundTable.addTable(table);
+				table=null;
+				compoundTable=null;
 				return null;
 			}	
-			return table;
+			Table result = table;
+			table=null;
+			return result;
 
 		}
 
@@ -516,7 +547,7 @@ public class TableExtension extends ReportExtension {
 	 *
 	 */
 	public static class SummaryObjectTable implements TableProxy{
-
+		boolean use_overlap=false;
 	
 		CompoundTable compoundTable;
 		TableExtension extension;
@@ -577,7 +608,8 @@ public class TableExtension extends ReportExtension {
 					}
 				// use Plot property name as the default
 				String col_name = extension.getParamWithDefault("Name", name, (Element)columnNode);
-				if(columnType.equals("Index") || columnType.equals("Column")){
+				boolean isColumn = columnType.equals("Column");
+				if(isColumn || columnType.equals("Index") ){
 					// Optionally use a labeller
 					String labeller = extension.getAttribute("labeller", (Element)columnNode);
 					if( labeller != null && labeller.length() > 0){
@@ -590,6 +622,7 @@ public class TableExtension extends ReportExtension {
 					}
 					// printing index
 					IndexReduction red = new IndexReduction(property);
+					red.setAllowNull(isColumn);
 					reductions.add(red);
 					col_names.add(col_name);
 					cols.put(col_name,red);
@@ -656,7 +689,7 @@ public class TableExtension extends ReportExtension {
 				return table;
 			}
 		
-			boolean overlap=false;
+			
 			try{
 				Map<ExpressionTuple,ReductionMapResult> data;
                 
@@ -718,13 +751,14 @@ public class TableExtension extends ReportExtension {
 				compoundTable.table.addRows(table);
 				for( String col : col_names){
 					Reduction red = cols.get(col).getReduction();
-					if( overlap && red == Reduction.AVG){
+					if( use_overlap && red == Reduction.AVG){
 						// These have been mapped to time average 
 						red = Reduction.SUM;
 					}
 					compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 				}
 				//compoundTable.addTable(table);
+				table=null;
 				return null;
 			}	
 			return table;
@@ -818,11 +852,14 @@ public class TableExtension extends ReportExtension {
 			}		
 			AppContext conn = extension.getContext();
 			if (compoundTable == null) {
-				return extension.processTable(table, instructions);	
-				
+				Table result = extension.processTable(table, instructions);
+				table=null;
+				return result;
 			} else {
 				compoundTable.addTable(
 						extension.processTable(table, instructions));
+				table=null;
+				compoundTable=null;
 				return null;
 				
 			}			

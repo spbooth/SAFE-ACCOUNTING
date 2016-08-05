@@ -41,7 +41,8 @@ public class SelectPropExpression<T> implements PropExpression<T> , Iterable<Pro
 	private final boolean use_any;
 	private final PropExpression<T> alts[];
 	private final Class<? super T> target;
-	public SelectPropExpression(Class<? super T> target, PropExpression<T> alts[]){
+	
+	public SelectPropExpression(Class<? super T> target, PropExpression<T> ... alts){
 		this(false,target,alts);
 	}
 	@SuppressWarnings("unchecked")

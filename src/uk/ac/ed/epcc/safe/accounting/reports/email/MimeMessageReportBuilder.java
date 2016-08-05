@@ -120,7 +120,7 @@ public class MimeMessageReportBuilder extends ReportBuilder{
 	         * as required. especially in outlook.
 		 	*/
 				ByteArrayStreamData data = new ByteArrayStreamData();
-				renderXML(type, params, type.getResult(data.getOutputStream()));
+				renderXML(type, params, type.getResult(getContext(),data.getOutputStream()));
 				if( hasErrors()){
 					Set<ErrorSet> errors = getErrors();
 					for(ErrorSet s : errors){

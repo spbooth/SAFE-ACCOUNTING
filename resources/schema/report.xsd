@@ -12,6 +12,7 @@
 <!--| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |-->
 <!--| See the License for the specific language governing permissions and      |-->
 <!--| limitations under the License.                                           |-->
+<?xml-stylesheet type="text/xsl" href="../stylesheets/xs3p/xs3p.xsl"?>
 <xsd:schema 
 	xmlns="http://safe.epcc.ed.ac.uk/report"
 	targetNamespace="http://safe.epcc.ed.ac.uk/report" 
@@ -67,7 +68,11 @@
 	Global container element for the report.
 	</xsd:documentation></xsd:annotation>
 	</xsd:element>
-	<xsd:element name="Title" type="TextContentType" />
+	<xsd:element name="Title" type="TextContentType" >
+	<xsd:annotation>
+		<xsd:documentation>The report title</xsd:documentation>
+	</xsd:annotation>
+</xsd:element>
 <xsd:element name="Text" type="TextContentType" >
 	<xsd:annotation>
 		<xsd:documentation>A text paragraph</xsd:documentation>
@@ -201,7 +206,7 @@
 <xsd:element name="table">
 <xsd:annotation><xsd:documentation>
 A static table. These may also be generated as output of a dynamic
-element.
+element but this is the format targeted by rendering transforms.
 </xsd:documentation></xsd:annotation>
 <xsd:complexType>
     	<xsd:sequence >

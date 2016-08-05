@@ -134,7 +134,13 @@ public abstract class EvaluatePropExpressionVisitor implements
 			try{
 			Object o = e.accept(this);
 			if (o != null) {
-				return o;
+				if( o instanceof IndexedReference){
+					if( ! ((IndexedReference)o).isNull()){
+						return o;
+					}
+				}else{
+					return o;
+				}
 			}
 			}catch(InvalidPropertyException ee){
 				

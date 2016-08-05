@@ -12,6 +12,7 @@
 <!--| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |-->
 <!--| See the License for the specific language governing permissions and      |-->
 <!--| limitations under the License.                                           |-->
+<?xml-stylesheet type="text/xsl" href="../stylesheets/xs3p/xs3p.xsl"?>
 <xsd:schema elementFormDefault="qualified"
 	targetNamespace="http://safe.epcc.ed.ac.uk/table"
 	xmlns="http://safe.epcc.ed.ac.uk/table"
@@ -35,6 +36,11 @@
 		schemaLocation="parameter.xsd" />
 
 	<xsd:import schemaLocation="propexpression.xsd" namespace="http://safe.epcc.ed.ac.uk/propexpression"></xsd:import>
+
+	<xsd:annotation><xsd:documentation>
+	Schema for template generation in reports.
+	</xsd:documentation></xsd:annotation>
+
 	<xsd:complexType name="ColumnType">
 		<xsd:sequence>
 			<xsd:element name="Name" type="par:TextOrParameterType"
@@ -42,6 +48,7 @@
 			<xsd:element name="Property" type="prop:PropExpressionType"
 				minOccurs="1" maxOccurs="1" />
 		</xsd:sequence>
+		
 	</xsd:complexType>
 
 	<xsd:group name="TableColumns">
@@ -51,13 +58,30 @@
 	</xsd:group>
 
 	<xsd:group name="SummaryTableColumns">
+		<xsd:annotation>
+			   <xsd:documentation>
+			     Set of possible column definitions for a summary type table.
+			   </xsd:documentation>
+		</xsd:annotation>
 		<xsd:choice>
-			<xsd:element name="Index" type="IndexType" />
-			<xsd:element name="Column" type="ColumnType" />
-			<xsd:element name="SumColumn" type="ColumnType" />
-			<xsd:element name="AverageColumn" type="ColumnType" />
-			<xsd:element name="MinColumn" type="ColumnType" />
-			<xsd:element name="MaxColumn" type="ColumnType" />
+			<xsd:element name="Index" type="IndexType" >
+			<xsd:annotation><xsd:documentation>A group-by index for the table, The distinct tuples of index values define the rows of the resulting table. Records where the index value resolves to null are excluded.</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Column" type="IndexType" >
+			<xsd:annotation><xsd:documentation>A group-by index for the table, The distinct tuples of index values define the rows of the resulting table. Records where the index value resolves to null are allowed.</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SumColumn" type="ColumnType" >
+			<xsd:annotation><xsd:documentation>A SUM reduction of a numerical expression</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AverageColumn" type="ColumnType" >
+			<xsd:annotation><xsd:documentation>A AVERAGE reduction of a numerical expression. When time bound overlap is in force this becomes the time-average.</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MinColumn" type="ColumnType" >
+			<xsd:annotation><xsd:documentation>A Minimum reduction of a numerical or date expression</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaxColumn" type="ColumnType" >
+			<xsd:annotation><xsd:documentation>A Maximum reduction of a numerical or date expression.</xsd:documentation></xsd:annotation>
+			</xsd:element>
 		</xsd:choice>
 	</xsd:group>
 
@@ -119,6 +143,7 @@
 	</xsd:complexType>
 
 	<xsd:group name="FormattingInstructions">
+	   <xsd:annotation><xsd:documentation>These are transformations and formatting applied after the data has been retrieved.</xsd:documentation></xsd:annotation>
 		<xsd:choice>
 			<xsd:element name="TableFormat" type="xsd:string"
 				minOccurs="0" maxOccurs="1" />
@@ -208,21 +233,61 @@
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element name="Remove" type="RemoveType"></xsd:element>
-			<xsd:element name="Format" type="FormatType"></xsd:element>
-			<xsd:element name="Transform" type="FormatType"></xsd:element>
-			<xsd:element name="TransformKeys" type="FormatType"></xsd:element>
-			<xsd:element name="NumberFormat" type="NumberFormatType"></xsd:element>
-			<xsd:element name="PercentFormat" type="PercentFormatType"></xsd:element>
-			<xsd:element name="DateFormat" type="DateFormatType"></xsd:element>
-			<xsd:element name="PercentColumn" type="PercentColumnType" />
-			<xsd:element name="TotalColumn" type="TotalColumnType" />
+			<xsd:element name="Remove" type="RemoveType">
+				<xsd:annotation><xsd:documentation>
+				Remove a specified row or column from the table. Normally used to remove scratch data used in
+				CombineColumn.
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Format" type="FormatType">
+			</xsd:element>
+			<xsd:element name="Transform" type="FormatType">
+			</xsd:element>
+			<xsd:element name="TransformKeys" type="FormatType">
+			</xsd:element>
+			<xsd:element name="NumberFormat" type="NumberFormatType">
+			<xsd:annotation>
+			   <xsd:documentation>
+			     Specify the formatting for numerical data.
+			   </xsd:documentation>
+			</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PercentFormat" type="PercentFormatType">
+			<xsd:annotation>
+			   <xsd:documentation>
+			     Format fractional data in a column as a percentage.
+			   </xsd:documentation>
+			</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DateFormat" type="DateFormatType">
+			<xsd:annotation>
+			   <xsd:documentation>
+			     Format column data as a date.
+			   </xsd:documentation>
+			</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PercentColumn" type="PercentColumnType" >
+			<xsd:annotation>
+			   <xsd:documentation>
+			     Add a new column presenting an existing column as a percentage of some value.
+			   </xsd:documentation>
+			</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TotalColumn" type="TotalColumnType" >
+			<xsd:annotation>
+			   <xsd:documentation>
+			     Add a total value to an existing column. 
+			   </xsd:documentation>
+			</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="CategoryTotals"
 				type="CategoryTotalsType" />
 			<xsd:element name="CategorySet"
 				type="CategorySetType" />
 			<xsd:element name="CombineColumn" type="CombineType"></xsd:element>
-			<xsd:element name="KeyName" type="KeyNameType"></xsd:element>
+			<xsd:element name="KeyName" type="KeyNameType">
+			<xsd:annotation><xsd:documentation>Set the name of the table key. Normally keys are not shown and in many cases are not human readable. Setting this value shows the key values as the first column with the specified name.</xsd:documentation></xsd:annotation>
+			</xsd:element>
 			<xsd:element name="PrintHeadings"
 				type="PrintHeadingsType">
 			</xsd:element>
@@ -240,9 +305,14 @@
 					type="prop:PropExpressionType" minOccurs="1" maxOccurs="1" />
 				<xsd:element name="EndProperty"
 					type="prop:PropExpressionType" minOccurs="1" maxOccurs="1" />
+				<xsd:element name="NoOverlap" minOccurs="0" maxOccurs="1" >
+				<xsd:annotation><xsd:documentation>Disable overlap calculation even thought there are two time bounds</xsd:documentation></xsd:annotation>
+				<xsd:complexType></xsd:complexType>
+				</xsd:element>
 			</xsd:sequence>
 			<xsd:sequence>
 				<xsd:element name="AllTimes">
+				<xsd:annotation><xsd:documentation>No default time filter</xsd:documentation></xsd:annotation>
 					<xsd:complexType></xsd:complexType>
 				</xsd:element>
 			</xsd:sequence>
@@ -259,6 +329,13 @@
 	</xsd:choice>
 	</xsd:group>
 	<xsd:element name="Table">
+		<xsd:annotation>
+			   <xsd:documentation>
+			     A version of ObjectTable where the data comes from a UsageProducer. In this case there is an
+			     implicit time filter on the records based on the active reporting period. This is normally used
+			     for generating a table of jobs that ran in the reporting period. 
+			   </xsd:documentation>
+			</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="per:Period" minOccurs="0"
@@ -272,6 +349,11 @@
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="ObjectTable">
+			<xsd:annotation>
+			   <xsd:documentation>
+			     An ObjectTable is a table where each row corresponds to a selected object and columns are generated by expressions on the objects properties.
+			   </xsd:documentation>
+			</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="fil:ObjectSet" minOccurs="1"
@@ -300,6 +382,14 @@
 		</xsd:choice>
 	</xsd:group>
 	<xsd:element name="SummaryTable">
+	<xsd:annotation>
+			   <xsd:documentation>
+			     A SummaryTable is a version of SummaryObjectTable for use with UsageProducer data. In this case
+			     there is an implicit time filter selecting records based on the reporting period.
+			     If two time bound properties are specified the reductions will use overlap calculations to re-scale
+			     the values of records that cross the reporting period boundaries.
+			   </xsd:documentation>
+			</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="per:Period" minOccurs="0"
@@ -312,6 +402,11 @@
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="SummaryObjectTable">
+		<xsd:annotation>
+			   <xsd:documentation>
+			     A SummaryObjectTable is a table where the data is generated as reductions over the matching records.
+			   </xsd:documentation>
+			</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="fil:ObjectSet" minOccurs="1"
@@ -349,6 +444,13 @@
 	</xsd:group>
 
 	<xsd:element name="CompoundTable">
+		<xsd:annotation>
+			   <xsd:documentation>
+			      A compound table allows table content to be generated in multiple passes and then
+			      formatted as a single unit. For example to generate columns of data from different time periods.
+			      The keys uses in the component tables need to be compatible to merge data into the same row.
+			   </xsd:documentation>
+			</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 

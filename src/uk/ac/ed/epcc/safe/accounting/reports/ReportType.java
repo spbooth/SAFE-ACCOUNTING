@@ -59,7 +59,7 @@ public class ReportType {
 		return nf;
 	}
 
-	public Result getResult(OutputStream out) throws Exception{
+	public Result getResult(AppContext conn, OutputStream out) throws Exception{
 		return new StreamResult(out);
 	}
 	@Override

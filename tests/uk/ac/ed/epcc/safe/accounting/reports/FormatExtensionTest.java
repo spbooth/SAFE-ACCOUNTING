@@ -91,7 +91,7 @@ public class FormatExtensionTest extends ExtensionTestCase {
 		// Check it was correctly formatted.
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, out.toString()),
-				out.toString().contains(expectedOutput));
+				out.toString().replaceAll("\r?\n", "\n").contains(expectedOutput.replaceAll("\r?\n", "\n")));
 
 	}
 }

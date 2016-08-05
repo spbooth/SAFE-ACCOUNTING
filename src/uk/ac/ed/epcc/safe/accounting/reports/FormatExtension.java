@@ -81,7 +81,7 @@ public class FormatExtension extends ReportExtension {
 		// TODO: Deprecate this in favour of the generic Filter;TimeBounds
 		Element boundsElement = getFirstElement(template, "TimeBounds");
 		if( boundsElement != null ){
-			PropExpression<Date> bounds[]=getDateProperties(recordSet, boundsElement); 
+			PropExpression<Date> bounds[]=getDateProperties(recordSet, boundsElement).bounds; 
 			sel.add(new PeriodOverlapRecordSelector(period, bounds[0],bounds[1]));
 		}
 		int start=-1;

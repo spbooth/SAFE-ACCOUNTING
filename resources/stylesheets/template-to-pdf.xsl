@@ -201,7 +201,7 @@
 						<fo:table-cell column-number="2">
 							<fo:block text-align="center">
 								<fo:instream-foreign-object
-									content-width="12cm" scaling="scale-to-fit">
+									content-width="18cm" scaling="scale-to-fit">
 									<xsl:copy-of select="svg:*" />
 								</fo:instream-foreign-object>
 							</fo:block>

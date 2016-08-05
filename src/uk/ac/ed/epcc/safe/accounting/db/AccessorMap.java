@@ -451,6 +451,9 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 			super(log);
 			this.require_sql=require_sql;
 		}
+		public boolean getRequreSQL(){
+			return require_sql;
+		}
 		public Boolean visitPropertyTag(PropertyTag<?> tag) throws Exception {
 			//log.debug("resolve check for "+tag.getFullName()+" "+config_tag);
 			if( ! require_sql){
@@ -720,6 +723,17 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		}
 		return Boolean.FALSE;
 	}
+	public <P> boolean isAccessor(PropertyTag<P> tag){
+		return accessor_map.containsKey(tag) && ! value_map.containsKey(tag) && ! expression_map.containsKey(tag);
+	}
+	/** Does the property resolve as a derived property only.
+	 * 
+	 * @param tag
+	 * @return
+	 */
+	public <P> boolean isDerived(PropertyTag<P> tag){
+		return hasProperty(tag) && ! testProperty(tag, false);
+	}
 	private ResolveChecker checker=null;
 	/** Does this property Expression resolve
 	 * 
@@ -729,7 +743,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @return boolean
 	 */
 	public <T> Boolean resolves(PropExpression<T> e,boolean require_sql){
-		if( checker == null ){
+		if( checker == null || checker.getRequreSQL() != require_sql){
 			checker = new ResolveChecker(log,require_sql);
 		}
 		try {
@@ -990,13 +1004,13 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		try {
 			// The SQLValue should usually be implemented
 			// show this in preference 
-			SQLValue<?> a = getSQLValue(tag);
-			if( a instanceof SQLExpression){
+			SQLValue<?> s = getSQLValue(tag);
+			if( s instanceof SQLExpression){
 				sb.append("SQLExpression: ");
 			}else{
 				sb.append("SQLValue: ");
 			}
-			sb.append(a.toString());
+			sb.append(s.toString());
 			
 	
 		} catch (InvalidSQLPropertyException e) {
@@ -1239,38 +1253,40 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
     	if( expr == null ){
     		throw new CannotFilterException("Cannot filter on null expression");
     	}
-    	
+
     	// fitst choice a SQLExpression
     	try{
-			SQLExpression<I> exp = getSQLExpression(expr);
-			if( exp instanceof FilterProvider){
-				try {
-					return ((FilterProvider<X, I>)exp).getNullFilter(is_null);
-				} catch (NoSQLFilterException e) {
-					// Go with default SQLExpressionNullFilter
-				}
-			}
-			return new SQLExpressionNullFilter<X, I>(target,exp, is_null);
-		}catch(InvalidSQLPropertyException e){
-			// keep lookin
-		}
-    	try{
-		// next try an sqlvalue
-		try{
-			SQLValue<I> val = getSQLValue(expr);
-			if( val instanceof FilterProvider){
-				return ((FilterProvider<X,I>) val).getNullFilter(is_null);
-			}
-		
-		}catch(InvalidSQLPropertyException e){
-			// keep looking
-		}
-    	if( expr instanceof PropertyTag){
-    		Accessor<I,X> m = accessor_map.get((PropertyTag<I>) expr);
-    		if( m != null && m instanceof FilterProvider){
-    			return ((FilterProvider<X,I>)m).getNullFilter(is_null);
+    		SQLExpression<I> exp = getSQLExpression(expr);
+    		if( exp instanceof FilterProvider){
+    			try {
+    				return ((FilterProvider<X, I>)exp).getNullFilter(is_null);
+    			} catch (NoSQLFilterException e) {
+    				// Go with default SQLExpressionNullFilter
+    			}
     		}
+    		return new SQLExpressionNullFilter<X, I>(target,exp, is_null);
+    	}catch(InvalidSQLPropertyException e){
+    		// keep looking
     	}
+    	try{
+    		// next try an sqlvalue
+    		try{
+    			SQLValue<I> val = getSQLValue(expr);
+    			if( val instanceof FilterProvider){
+    				
+    				return ((FilterProvider<X,I>) val).getNullFilter(is_null);
+    				
+    			}
+
+    		}catch(InvalidSQLPropertyException e){
+    			// keep looking
+    		}
+    		if( expr instanceof PropertyTag){
+    			Accessor<I,X> m = accessor_map.get((PropertyTag<I>) expr);
+    			if( m != null && m instanceof FilterProvider){
+    				return ((FilterProvider<X,I>)m).getNullFilter(is_null);
+    			}
+    		}
     	}catch(NoSQLFilterException e){
     		// try an accept filter below
     	}
@@ -1279,10 +1295,10 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
     	if(resolves(expr,false)){
     		return new ExpressionAcceptNullFilter<X, I>(target,expr, is_null);
     	}
-		
-		
-		throw new CannotFilterException("Cannot filter on expression "
-				+ expr+" for "+config_tag);
+
+
+    	throw new CannotFilterException("Cannot filter on expression "
+    			+ expr+" for "+config_tag);
     }
     /** Generate default set of form selectors
      * 

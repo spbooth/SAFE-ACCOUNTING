@@ -46,6 +46,7 @@ public class RecordSet extends ObjectSet<UsageProducer>{
   
 private final AccountingService serv;
   private PropExpression<Date> bounds[];
+  private boolean use_overlap=true;
  
   public RecordSet(AccountingService serv){
 	  super();
@@ -64,6 +65,9 @@ private final AccountingService serv;
   public void setBounds(PropExpression<Date> bounds[]){
 		this.bounds=bounds;
 	}
+    public void setUseOverlap(boolean val){
+    	this.use_overlap=val;
+    }
 	public PropExpression<Date>[] getBounds(){
 		return bounds;
 	}
@@ -78,10 +82,18 @@ private final AccountingService serv;
 		ExpressionTargetGenerator<?> up = getGenerator();
 		if( bounds.length == 1 && up.compatible(bounds[0])){
 			sel.add(new PeriodOverlapRecordSelector(period, bounds[0]));
-		}else if( useOverlap()){
+		}else if( hasOverlapBounds()){
 			sel.add(new PeriodOverlapRecordSelector(period, bounds[0], bounds[1]));
 		}
 		return sel;
+	}
+	/** Do we have the bounds to calculate an overlap filter
+	 * @param up
+	 * @return
+	 */
+	private boolean hasOverlapBounds() {
+		ExpressionTargetGenerator<?> up = getGenerator();
+		return bounds.length == 2 && up.compatible(bounds[0]) && up.compatible(bounds[1]);
 	}
 	/** Are overlap calculations requested
 	 * @param up
@@ -89,7 +101,7 @@ private final AccountingService serv;
 	 */
 	public boolean useOverlap() {
 		ExpressionTargetGenerator<?> up = getGenerator();
-		return bounds.length == 2 && up.compatible(bounds[0]) && up.compatible(bounds[1]);
+		return use_overlap && bounds.length == 2 && up.compatible(bounds[0]) && up.compatible(bounds[1]);
 	}
   public void setUsageProducer(String name){
 	  setUsageProducer(serv.getUsageProducer(name));
@@ -115,7 +127,7 @@ public int hashCode() {
 	final int prime = 31;
 	int result = super.hashCode();
 	result = prime * result + Arrays.hashCode(bounds);
-	result = prime * result + ((serv == null) ? 0 : serv.hashCode());
+	result = prime * result + (use_overlap ? 0 : 1);  // Boolean.hashCode requires java-8
 	return result;
 }
 @Override
@@ -129,11 +141,9 @@ public boolean equals(Object obj) {
 	RecordSet other = (RecordSet) obj;
 	if (!Arrays.equals(bounds, other.bounds))
 		return false;
-	if (serv == null) {
-		if (other.serv != null)
-			return false;
-	} else if (!serv.equals(other.serv))
+	if( use_overlap != other.use_overlap){
 		return false;
+	}
 	return true;
 }
 }

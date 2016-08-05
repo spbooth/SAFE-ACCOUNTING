@@ -13,22 +13,50 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.reports;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
 
+import org.apache.avalon.framework.configuration.Configuration;
+import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.apps.MimeConstants;
+
+import uk.ac.ed.epcc.webapp.AppContext;
 
 public final class PDFReportType extends ReportType {
 	public PDFReportType(String name,String extension, String mime, String description) {
 		super(name,extension,mime,description);
 	}
 
-	public Result getResult(OutputStream out) throws Exception{
-		FopFactory fopFactory = FopFactory.newInstance();
+	
+	
+	private static FopFactory fopFactory = null;
+	public Result getResult(AppContext conn, OutputStream out) throws Exception{
+		synchronized (getClass()) {
+			
+		
+		if( fopFactory == null ){
+			
+			InputStream stream = getClass().getResourceAsStream("/fop.xconf");
+			if( stream != null ){
+				DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
+				Configuration cfg = builder.build(stream);
+				FopFactoryBuilder fop_builder = new FopFactoryBuilder(new File(".").toURI() );
+				fop_builder.setConfiguration(cfg);
+				fopFactory = fop_builder.build();
+			}
+		}
+		}
+		if( fopFactory == null ){
+			throw new IOException("No fop factory");
+		}
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
 		return  new SAXResult(fop.getDefaultHandler());

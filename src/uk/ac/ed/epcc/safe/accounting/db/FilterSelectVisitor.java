@@ -20,6 +20,7 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
+import uk.ac.ed.epcc.safe.accounting.IndexReduction;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
@@ -113,9 +114,11 @@ public class FilterSelectVisitor<T extends ExpressionTarget> implements Selector
 			throws Exception {
 		AndFilter<T> fil = new AndFilter<T>(target.getTarget());
 		for(ReductionTarget t : r){
-			if( t.getReduction() == Reduction.INDEX){
-				// Index must not be null
-				fil.addFilter(target.getNullFilter(t.getExpression(), false));
+			if( t.getReduction() == Reduction.INDEX ){
+				if( !( t instanceof IndexReduction) || ! ((IndexReduction)t).allowNull() ){
+					// Index must not be null unless explicitly permitted
+					fil.addFilter(target.getNullFilter(t.getExpression(), false));
+				}
 			}
 		}
 		return fil;

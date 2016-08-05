@@ -128,9 +128,9 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 				return a.getSQLFilter(FilterConverter.convert(eft.getFilter(expr, match, val)));
 				
 			}
-			throw new CannotFilterException("Target is not an ExpressionFilterTarget");
+			throw new NoSQLFilterException("Target is not an ExpressionFilterTarget");
 		}
-		throw new CannotFilterException("Multiple de-reference");
+		throw new NoSQLFilterException("Multiple de-reference");
 	}
 	@SuppressWarnings("unchecked")
 	public SQLFilter<H> getOrderFilter(boolean descending) throws CannotFilterException, NoSQLFilterException {
@@ -153,9 +153,9 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 				return a.getSQLFilter(FilterConverter.convert(eft.getOrderFilter(descending, expr)));
 				
 			}
-			throw new CannotFilterException("Target is not an ExpressionFilterTarget");
+			throw new NoSQLFilterException("Target is not an ExpressionFilterTarget");
 		}
-		throw new CannotFilterException("Multiple de-reference");
+		throw new NoSQLFilterException("Multiple de-reference");
 	}
 	@SuppressWarnings("unchecked")
 	public SQLFilter<H> getNullFilter(boolean is_null) throws CannotFilterException, NoSQLFilterException {
@@ -174,9 +174,9 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 				return a.getSQLFilter(FilterConverter.convert(eft.getNullFilter(expr, is_null)));
 				
 			}
-			throw new CannotFilterException("Target is not an ExpressionFilterTarget");
+			throw new NoSQLFilterException("Target is not an ExpressionFilterTarget");
 		}
-		throw new CannotFilterException("Multiple de-reference");
+		throw new NoSQLFilterException("Multiple de-reference");
 	}
 
 

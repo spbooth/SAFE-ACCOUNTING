@@ -69,6 +69,7 @@ import uk.ac.ed.epcc.safe.accounting.xml.LSResolver;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.HtmlBuilder;
 import uk.ac.ed.epcc.webapp.content.SimpleXMLBuilder;
@@ -100,6 +101,8 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 public class ReportBuilder implements Contexed, TemplateValidator {
 
+	private static final String AUTHENTICATED_USER_PARAMETER_NAME = "AuthenticatedUser";
+	private static final String CURRENT_TIME_PARAMETER_NAME = "CurrentTime";
 	private static final String RESTRICT_EXTENSION_TAG = "RestrictExtension";
 	private static final String PARAMETER_EXTENSION_TAG = "ParameterExtension";
 	public static final String DEFAULT_REPORT_SCHEMA = "report.xsd";
@@ -109,7 +112,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	public static final String REPORT_TEMPLATE_GROUP = "report-templates";
 	public static final String STYLESHEET_GROUP = "stylesheets";
 
-	
+	public static final Feature CHECK_PARAMETER_NAMES = new Feature("reports.check_parameter_names",true,"Check that report parameter names come from the valid set");
 	public class Resolver implements URIResolver {
 
 		public Source resolve(String href, String base)
@@ -445,7 +448,16 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		
 		return param_document;
 	}
-	
+	private Set<String> getParameterDefNames(){
+		Set<String> names = new HashSet<String>();
+		NodeList paramNodes = getParameterDocument().getElementsByTagNameNS(
+				PARAMETER_LOC, "ParameterDef");
+		for(int i=0 ; i < paramNodes.getLength(); i++){
+			Element e = (Element) paramNodes.item(i);
+			names.add(e.getAttribute("name"));
+		}
+		return names;
+	}
 	public void setTemplate(String template_name) throws DataFault,
 			ParserConfigurationException, InvalidArgument,
 			TransformerFactoryConfigurationError, TransformerException {
@@ -623,25 +635,33 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		if( person != null ){
 			final AppUser currentPerson = person.getCurrentPerson();
 			if( currentPerson != null ){
-				params.put("AuthenticatedUser", currentPerson);
+				params.put(AUTHENTICATED_USER_PARAMETER_NAME, currentPerson);
 			}
 		}
 		// This allows tests to set the time.
 		CurrentTimeService current_time = conn.getService(CurrentTimeService.class);
-		params.put("CurrentTime", current_time.getCurrentTime());
+		params.put(CURRENT_TIME_PARAMETER_NAME, current_time.getCurrentTime());
 		// This is to allow custom classes created by reflection
 		// like formatters or table transforms access to the parameters.
 		conn.setAttribute(ReportBuilder.REPORT_PARAMS_ATTR, params);
+
+		Set<String> parameter_names=null;
+		if( CHECK_PARAMETER_NAMES.isEnabled(conn)){
+			// Make the set of legal parameter names.
+			parameter_names = getParameterDefNames();
+			parameter_names.add(CURRENT_TIME_PARAMETER_NAME);
+			parameter_names.add(AUTHENTICATED_USER_PARAMETER_NAME);
+		}
 		
 		//always need parameter and restrict extension
 		ReportExtension parme = new ParameterExtension(conn, nf);
 		parme.setPolicy(pol);
-		parme.setParams(params);
+		parme.setParams(parameter_names,params);
 		register(parme);
 		params.put(PARAMETER_EXTENSION_TAG, parme);
 		RestrictExtension rest = new RestrictExtension(conn, nf);
 		rest.setPolicy(pol);
-		rest.setParams(params);
+		rest.setParams(parameter_names,params);
 		register(rest);
 		params.put(RESTRICT_EXTENSION_TAG,rest);
 		
@@ -662,7 +682,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 						String param_name = conn.getInitParameter("ReportBuilder."+extension_name+".name",extension_name);
 						log.debug("Adding extension "+ext.getClass().getCanonicalName()+" as "+param_name);
 						ext.setPolicy(pol);
-						ext.setParams(params);
+						ext.setParams(parameter_names,params);
 						register(ext);
 						params.put(param_name, ext);
 					} catch (Exception e) {
@@ -749,7 +769,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			throws Exception {
 		ReportType type = getReportType(params);
 		log.debug("Report type is "+type);
-		renderXML(type, params, type.getResult(out));
+		renderXML(type, params, type.getResult(getContext(),out));
 	}
 	/** Forward HTML output to a {@link SimpleXMLBuilder}.
 	 * 

@@ -179,8 +179,8 @@ public class TableExtensionTest extends ExtensionTestCase {
 		// Check it was correctly formatted.
 		assertTrue("Summary table was permuted\n-------\n"+out.toString()+
 				"\nexpected\n-----\n"+expectedOutput+"\n---------\n"+
-				TestDataHelper.diff(expectedOutput, out.toString()), 
-				out.toString().contains(expectedOutput));
+				TestDataHelper.diff(expectedOutput, out.toString()+"\n---------\n"), 
+				out.toString().replaceAll("\r?\n", "\n").contains(expectedOutput.replaceAll("\r?\n", "\n")));
 		
 	}
 	

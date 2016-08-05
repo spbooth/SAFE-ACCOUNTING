@@ -15,22 +15,19 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.webapp.jdbc.filter.AcceptFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FilterVisitor;
+import uk.ac.ed.epcc.webapp.jdbc.filter.AbstractAcceptFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 
 
 
-public class ExpressionAcceptMatchFilter<T extends ExpressionTarget,I> implements AcceptFilter<T>{
-	private final Class<? super T> target;
+public class ExpressionAcceptMatchFilter<T extends ExpressionTarget,I> extends AbstractAcceptFilter<T>{
 	private final MatchCondition m;
 
 	private final PropExpression<I> expr1;
 	private final PropExpression<I> expr2;
 	public ExpressionAcceptMatchFilter(Class<? super T> target,PropExpression<I> expr1,MatchCondition m, PropExpression<I> expr2){
-		this.target=target;
+		super(target);
 		this.expr1=expr1;
 		this.m=m;
 		this.expr2=expr2;
@@ -50,12 +47,6 @@ public class ExpressionAcceptMatchFilter<T extends ExpressionTarget,I> implement
 		} catch (InvalidExpressionException e) {
 			return false;
 		}
-	}
-	public <X> X acceptVisitor(FilterVisitor<X, ? extends T> vis) throws Exception {
-		return vis.visitAcceptFilter(this);
-	}
-	public Class<? super T> getTarget() {
-		return target;
 	}
 
 }

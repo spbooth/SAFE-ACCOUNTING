@@ -13,6 +13,7 @@
 <!--| See the License for the specific language governing permissions and      |-->
 <!--| limitations under the License.                                           |-->
 	
+<?xml-stylesheet type="text/xsl" href="../stylesheets/xs3p/xs3p.xsl"?>
 <xsd:schema
 	elementFormDefault="qualified"
     targetNamespace="http://safe.epcc.ed.ac.uk/restrict"
@@ -64,12 +65,21 @@
     	</xsd:complexType>
     </xsd:element>
     <!--  Global access control -->
-    <xsd:element name="RequireRole" type="RoleType"></xsd:element>
-    <xsd:element name="SufficientRole" type="RoleType"></xsd:element>
-	<xsd:element name="RequireRelationship" type="RelationType"></xsd:element>
-    <xsd:element name="SufficientRelationship" type="RelationType"></xsd:element>
+    <xsd:element name="RequireRole" type="RoleType">
+    <xsd:annotation><xsd:documentation>The specified role or relationship is required to view the report.</xsd:documentation></xsd:annotation>
+    </xsd:element>
+    <xsd:element name="SufficientRole" type="RoleType">
+      <xsd:annotation><xsd:documentation>The specified role or relationship is sufficient to view the report.</xsd:documentation></xsd:annotation>
+    </xsd:element>
+	<xsd:element name="RequireRelationship" type="RelationType">
+	  <xsd:annotation><xsd:documentation>To view the report the user is required to have the specified relationship with the specified object of the target type.</xsd:documentation></xsd:annotation>
+	</xsd:element>
+    <xsd:element name="SufficientRelationship" type="RelationType">
+      <xsd:annotation><xsd:documentation>To view the report it is sufficient for the user to have the specified relationship with the specified object of the target type.</xsd:documentation></xsd:annotation>
+    </xsd:element>
 
     <xsd:complexType name="RoleType">
+    <xsd:annotation><xsd:documentation>If type is not present. This is a single global role name. If type is present it is a relationship that the user must have with at least one object of the type.</xsd:documentation></xsd:annotation>
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:token">
 				<xsd:attribute name="type" type="xsd:string" use="optional"></xsd:attribute>
@@ -77,11 +87,14 @@
 		</xsd:simpleContent>
 	</xsd:complexType>
     <xsd:complexType name="RelationType">
+        <xsd:annotation><xsd:documentation>
+        Checks for a relationship against a specific target. type is the type of the target, role is the relationship to be queried.
+        The body of the element is the name of the target. If empty this also tests for any object with the required relationship.
+        </xsd:documentation></xsd:annotation>
     	<xsd:simpleContent>
     		<xsd:extension base="xsd:token">
     			<xsd:attribute name="type" type="xsd:string" use="required"></xsd:attribute>
     			<xsd:attribute name="role" type="xsd:string" use="required"></xsd:attribute>
-    			<xsd:attribute name="name" type="xsd:string" use="optional"></xsd:attribute>
     		</xsd:extension>
     	</xsd:simpleContent>
     </xsd:complexType>
