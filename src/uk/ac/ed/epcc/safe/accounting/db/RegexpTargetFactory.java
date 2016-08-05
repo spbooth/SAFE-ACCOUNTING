@@ -84,7 +84,7 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends DefaultDataObje
 	}
 
 	@Override
-	protected AndFilter<T> getSelectFilter() {
+	public AndFilter<T> getSelectFilter() {
 	    AndFilter<T> fil = new AndFilter<T>(getTarget());
 		fil.addFilter(new NameOrderFilter());
 		fil.addFilter(super.getSelectFilter());
