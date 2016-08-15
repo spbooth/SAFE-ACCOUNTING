@@ -376,6 +376,7 @@ public class ParameterExtension extends ReportExtension {
 			if( fac != null ){
 				AndFilter fil = new AndFilter(fac.getTarget());
 				if(role.startsWith("#")){
+					// Starting a role with a hash supresses the default select-filter
 					role=role.substring(1);
 				}else{
 					//narrow the default selector by default
@@ -387,8 +388,8 @@ public class ParameterExtension extends ReportExtension {
 				}
 				fil.addFilter(fil2);
 				if( fac instanceof ExpressionTargetFactory ){
-					// If factory implements the correct interface futher narrow the selection using
-					// embedded filter cluases
+					// If factory implements the correct interface further narrow the selection using
+					// embedded filter clauses
 					ExpressionTargetFactory ptf = (ExpressionTargetFactory) fac;
 					PropertyFinder finder = ptf.getFinder();
 				
@@ -439,7 +440,7 @@ public class ParameterExtension extends ReportExtension {
 				}
 			}else{
 				if( sel instanceof Selector ){
-					// return default selector for object
+					// return default selector for object if no explicit filter
 					return ((Selector)sel).getInput();
 				}
 			}
