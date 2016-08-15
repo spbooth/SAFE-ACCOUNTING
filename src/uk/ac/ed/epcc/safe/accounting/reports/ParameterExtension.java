@@ -385,7 +385,7 @@ public class ParameterExtension extends ReportExtension {
 				if( fil2 == null ){
 					fil2 = new FalseFilter(fac.getTarget());
 				}
-				fil.addFilter(fil);
+				fil.addFilter(fil2);
 				if( fac instanceof ExpressionTargetFactory ){
 					// If factory implements the correct interface futher narrow the selection using
 					// embedded filter cluases
