@@ -46,6 +46,8 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
 public class AccountingUploadParser implements UploadParser, Contexed {
+	public static final String UPDATE_INPUT = "update";
+	public static final String TABLE_INPUT = "table";
 	private AppContext conn;
 	public AccountingUploadParser(AppContext c){
 		this.conn=c;
@@ -54,8 +56,8 @@ public class AccountingUploadParser implements UploadParser, Contexed {
 	public String upload(Map<String, Object> parameters) throws UploadException {
 
 		
-        String table = (String) parameters.get("table");
-        String update = (String) parameters.get("update");
+        String table = (String) parameters.get(TABLE_INPUT);
+        String update = (String) parameters.get(UPDATE_INPUT);
        
         PropertyMap defaults = new PropertyMap();       
         
