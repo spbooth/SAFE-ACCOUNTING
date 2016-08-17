@@ -122,32 +122,21 @@ public abstract class AbstractPropertyContainerParser extends AbstractPropertyCo
 		return text;
 	}
 	
-	protected Logger log;
-
-	public PropertyFinder initFinder(AppContext ctx, PropertyRegistry prop_reg) {
-		log = ctx.getService(LoggerService.class).getLogger(getClass());
-		MultiFinder mf = new MultiFinder();
-		mf.addFinder(prop_reg);
-		return mf;
-	}
+	
 	
 	public boolean isComplete(UsageRecord record, PropertyTag<?>[] attrs) {
-		boolean complete = true;
-					
+		
 		for (int i = 0; i < attrs.length; i++) {
 			String name = attrs[i].getName();
 			Object value = record.getProperty(attrs[i], null);
-			if (null != value) {
-				log.debug(name + " is " + value.toString());
-			}
-			else {
-				log.debug("No " + name);
-				complete = false;
+			if (null == value) {
+				
+				return false;
 			}
 		}
 					
-		if (complete) log.debug("Record is complete");
+		
 				
-		return complete;
+		return true;
 	}
 }

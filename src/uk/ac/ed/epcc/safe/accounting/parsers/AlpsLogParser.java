@@ -7,17 +7,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
+import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
+import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
+import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
 /** Parser for alps syslog information
@@ -35,6 +44,9 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	@AutoTable(target=String.class)
 	public static final PropertyTag<String> APSYS_TAG = new PropertyTag<String>(alps_reg, "apsys_entry_tag", String.class, "Alps log apsys tag");
 	
+
+	@AutoTable(target=String.class, length=16)
+	public static final PropertyTag<String> PBS_STRING_ID = new PropertyTag<String>(alps_reg,"batch_string_id",String.class,"Full Batch job identifier");
 	@AutoTable(target=Integer.class)
 	public static final PropertyTag<Integer> PBS_ID = new PropertyTag<Integer>(alps_reg, "batch_id", Integer.class, "Batch job id");
 	@AutoTable(target=String.class)
@@ -69,7 +81,44 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	public static final PropertyTag<String> EXIT_CODE_ARRAY = new PropertyTag<String>(alps_reg, "exitcode_array", String.class, "Exit code array");
 	@AutoTable(target=String.class, length=512)
 	public static final PropertyTag<String> EXIT_SIGNAL_ARRAY = new PropertyTag<String>(alps_reg, "exitsignal_array", String.class, "Exit signal array");
-	
+	public static class PBSIdParser implements ContainerEntryMaker{
+
+		@Override
+		public void setValue(PropertyContainer map, String attrValue) throws IllegalArgumentException,
+				InvalidPropertyException, NullPointerException, AccountingParseException {
+			
+			map.setProperty(PBS_STRING_ID, attrValue);
+			// strip the ".sdb"
+			if( attrValue.endsWith(".sdb")){
+				attrValue = attrValue.substring(0, attrValue.length()-4);
+			}
+			String indexValue = "";
+			int i = attrValue.indexOf('[', 0);
+			if (-1 != i) {
+				int i2 = attrValue.indexOf(']', i+1);
+				if (-1 == i2) {
+					throw new AccountingParseException("Error PBS array index is malformed, '" + attrValue + "'.");
+				}
+				
+				indexValue = attrValue.substring(i+1, i2);
+				attrValue = attrValue.substring(0, i);
+			}
+		
+			map.setProperty(PBS_ARRAY_INDEX, indexValue);
+			map.setProperty(PBS_ID, Integer.valueOf(attrValue.trim()));
+		}
+
+		@Override
+		public void setValue(PropertyMap map, String valueString)
+				throws IllegalArgumentException, NullPointerException, AccountingParseException {
+			try {
+				setValue((PropertyContainer)map,valueString);
+			} catch (InvalidPropertyException e) {
+				
+			}
+		}
+		
+	}
 	
 	private static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
 	static {
@@ -83,6 +132,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 		STANDARD_ATTRIBUTES.addParser(EXIT_CODE, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(EXIT_CODE_ARRAY, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(EXIT_SIGNAL_ARRAY, StringParser.PARSER);
+		STANDARD_ATTRIBUTES.put(PBS_ID.getName(),new PBSIdParser());
 	}
 	
 	
@@ -98,7 +148,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	// (we could just have stripped trailing commas after match as well).
 	private static final Pattern attribute_pattern = Pattern.compile("(?<ATTRNAME>\\w+)=(?<ATTRVALUE>(?:[^\"\\s]*[^,\"\\s])|(?:\"[^\"]*\"))");
 	                            
-	
+	private Logger log;
 	@Override
 	public boolean parse(PropertyMap map, String record) throws AccountingParseException {
 		
@@ -124,7 +174,8 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 			
 			String submission = m.group("SUBMISSION");
 			try {
-				map.setProperty(SUBMISSION_TIMESTAMP, sf.parse(submission));
+				Date start = sf.parse(submission);
+				map.setProperty(SUBMISSION_TIMESTAMP, start);
 			} catch (ParseException e) {
 				throw new AccountingParseException("bad submission date format", e);
 			}
@@ -133,17 +184,20 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 			// removes microsecond part since Date has millisecond precision
 			timestamp = new StringBuffer(timestamp).delete(23, 26).toString();
 			
+			
 			if (record_type.equals("aprun")) {
 				map.setProperty(APRUN_TAG, tag);
 				try {
-					map.setProperty(APRUN_START_TIMESTAMP, df.parse(timestamp));
+					Date start = df.parse(timestamp);
+					map.setProperty(APRUN_START_TIMESTAMP, start);
 				} catch (ParseException e) {
 					throw new AccountingParseException("bad start date format", e);
 				}
 			} else if (record_type.equals("apsys")) {
 				map.setProperty(APSYS_TAG, tag);
 				try {
-					map.setProperty(APSYS_END_TIMESTAMP, df.parse(timestamp));
+					Date end = df.parse(timestamp);
+					map.setProperty(APSYS_END_TIMESTAMP, end);
 				} catch (ParseException e) {
 					throw new AccountingParseException("bad end date format", e);
 				}
@@ -158,25 +212,6 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 				
 				if( attrValue.startsWith("\"")){
 					attrValue=attrValue.substring(1, attrValue.length()-1);
-				}
-				
-				if (attrName.equals(PBS_ID.getName())) {
-					// strip the ".sdb"
-					attrValue = attrValue.substring(0, attrValue.length()-4);
-					
-					String indexValue = "";
-					int i = attrValue.indexOf('[', 0);
-					if (-1 != i) {
-						int i2 = attrValue.indexOf(']', i+1);
-						if (-1 == i2) {
-							throw new AccountingParseException("Error PBS array index is malformed, '" + attrValue + "'.");
-						}
-						
-						indexValue = attrValue.substring(i+1, i2);
-						attrValue = attrValue.substring(0, i);
-					}
-				
-					map.setProperty(PBS_ARRAY_INDEX, indexValue);
 				}
 				
 				ContainerEntryMaker maker = getEntryMaker(attrName);
@@ -200,14 +235,18 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 
 	@Override
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
-		return super.initFinder(ctx, alps_reg);
+		log = ctx.getService(LoggerService.class).getLogger(getClass());
+		MultiFinder finder = new MultiFinder();
+		finder.addFinder(alps_reg);
+		finder.addFinder(StandardProperties.time);
+		return finder;
 	}
 
 	@Override
 	public boolean isComplete(UsageRecord record) {
-		// set of properties from both record types, aprun and apsys
-		PropertyTag<?>[] attrs = {APRUN_TAG, APSYS_TAG, PBS_ID, PBS_ARRAY_INDEX, ALPS_ID, USER_ID,
-				HOST_NAME, NODE_COUNT, NODE_LIST,
+		// set of minimal required properties from both record types, aprun and apsys
+		// Don't include the batch ids as testing apruns not run from batch won't complete
+		PropertyTag<?>[] attrs = {APRUN_TAG, APSYS_TAG,  ALPS_ID,
 				SUBMISSION_TIMESTAMP, APRUN_START_TIMESTAMP, APSYS_END_TIMESTAMP,
 				CWD, APRUN_CMD_STRING};
 		
@@ -221,6 +260,21 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	@Override
 	public void postComplete(UsageRecord record) throws Exception {
 		// do nothing
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerUpdater#getDerivedProperties(uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap)
+	 */
+	@Override
+	public PropExpressionMap getDerivedProperties(PropExpressionMap previous) {
+		PropExpressionMap derived = new PropExpressionMap(previous);
+		try{
+			derived.put(StandardProperties.STARTED_PROP, APRUN_START_TIMESTAMP);
+			derived.put(StandardProperties.ENDED_PROP, APSYS_END_TIMESTAMP);
+		}catch(PropertyCastException e){
+			throw new ConsistencyError("Type inconsistency", e);
+		}
+		return derived;
 	}
 	
 }

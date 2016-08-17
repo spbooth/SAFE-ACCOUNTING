@@ -1,8 +1,11 @@
 package uk.ac.ed.epcc.safe.accounting.policy;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.RegexpTarget;
 import uk.ac.ed.epcc.safe.accounting.db.RegexpTargetFactory;
@@ -22,7 +25,7 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy {
 	
 	PropertyTag<String> link_prop;
 	PropertyTag<Integer> target_prop;
-	Map<Integer, Object> target_map = new HashMap();
+	Set<RegexpTarget> targets = new LinkedHashSet();
 	
 	public RegexLinkParsePolicy() {
 	}
@@ -55,18 +58,10 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy {
 				throw new AccountingParseException("Error, regex_link_parse.table." + table + " not set.");
 			}	
 			
-			RegexpTargetFactory rt_fac = new RegexpTargetFactory(conn, target_table);
-			Integer rt_key = 1;
-			Iterator targets;
-			targets = rt_fac.all().iterator();
-			while (targets.hasNext()) {
-				RegexpTarget rt = (RegexpTarget) targets.next();
-				target_map.put(rt_key, rt);
-				rt_key++;
-			}
-			
+			RegexpTargetFactory rt_fac = conn.makeObject(RegexpTargetFactory.class,target_table);
+			rt_fac.all().toCollection(targets);
 		} catch (Exception e) {
-			e.printStackTrace();
+			conn.error(e, "Error initialising RegexLinkParsePolicy");
 		}
 		
 		return prev;
@@ -76,12 +71,9 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy {
 	public void parse(PropertyMap rec) throws AccountingParseException {
 		
 		String link_data = rec.getProperty(link_prop);
+		for( RegexpTarget tar : targets){
 		
-		Iterator targets = target_map.values().iterator();
-		while (targets.hasNext()) {
-			RegexpTarget tar = (RegexpTarget) targets.next();
-			
-			if (link_data.matches(tar.getRegexp().toString())) {
+			if( tar.getRegexp().matcher(link_data).matches()) {
 				rec.setProperty(target_prop, tar.getID());
 				break;
 			}

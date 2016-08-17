@@ -15,8 +15,12 @@ public class RegexpTarget extends DataObjectPropertyContainer {
 		super(fac, r);
 	}
 	
+	private Pattern patt=null;
 	public Pattern getRegexp(){
-		return Pattern.compile(record.getStringProperty(RegexpTargetFactory.REGEX_FIELD));
+		if( patt == null ){
+			patt = Pattern.compile(record.getStringProperty(RegexpTargetFactory.REGEX_FIELD));
+		}
+		return patt;
 	}
 
 	public String getName(){

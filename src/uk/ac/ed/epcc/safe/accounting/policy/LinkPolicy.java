@@ -18,7 +18,9 @@ package uk.ac.ed.epcc.safe.accounting.policy;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
@@ -29,6 +31,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
@@ -69,9 +72,11 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * <ul>
  * <li> <b>LinkPolicy.target.<i>table-name</i></b> defines the remote table we are linking to.
  * <li> <b>LinkPolicy.link.<i>table-name</i>.<i>local-prop</i></b> defines a property name in the remote table
- *          that has to match <i>local-prop</i> in the local table.
+ *          that has to match <i>local-prop</i> in the local table. The special value <b>inside</b> means that the property is a data property 
+ *          that should lie between start and end of the parent record as defined using the {@link StandardProperties}.
  * <li> <b>LinkPolicy.grace.<i>table-name</i></b> defines a matching threshold (in seconds) for time properties.
  *         Properties are taken as matching if they are within the specified threshold. Defaults to 4000 seconds.
+ * <li> <b>LinkPolicy.require_link.<i>table-name</i></b> can be set to false if we don't want to allow records without a valid link to be parsed.
  * </ul>
  * 
  * If a match is found the ReferenceProperty to the primary table is set in the parse method.
@@ -83,6 +88,9 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * memory problems if the secondary table is used in code written assuming small classifier tables.
  * Properties that may be used to group queries should therefore be duplicated in the primary table
  * where they can be set by the PostCreate method.
+ * <p> 
+ * If the mapping is not one-to-one for example a log of executables run inside a batch job then it does not make sense to copy properties into the main table.
+ * 
  * @author spb
  *
  */
@@ -97,13 +105,16 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 	private UsageRecordFactory<?> remote_fac=null;
 	private Map<PropertyTag,PropertyTag> match_map=null;
 	private Map<PropertyTag,PropertyTag> copy_properties=null;
+	private Set<PropertyTag> inside_date_properties=null;
 	private long grace_millis;
+	private boolean require_link=true;
 	private Logger log;
 	@SuppressWarnings("unchecked")
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
 			String table) {
 		c = ctx;
 		grace_millis = 1000L * ctx.getLongParameter("LinkPolicy.grace."+table, 4000L);
+		require_link = ctx.getBooleanParameter("LinkPolicy.require_link."+table, true);
 		log = c.getService(LoggerService.class).getLogger(getClass());
 		//System.out.println("grace is "+grace_millis);
 		String target_name = c.getInitParameter(LINK_POLICY_TARGET+table);
@@ -114,6 +125,7 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 			   remote_tag=ref_tag;
 			   remote_fac=(UsageRecordFactory) remote_tag.getFactory(c);
 			   match_map = new HashMap<PropertyTag, PropertyTag>();
+			   inside_date_properties = new HashSet<PropertyTag>();
 			   copy_properties = new HashMap<PropertyTag,PropertyTag>();
 			   String prefix ="LinkPolicy.link."+table+".";
 			   PropertyFinder remote_finder=remote_fac.getFinder();
@@ -123,22 +135,29 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 				   // alwas store the first one in the search path
 				   
 				   PropertyTag store_tag = prev.find(local_name);
-				   String remote_name = ctx.getInitParameter(prefix+local_name, null);
-				   if( remote_name != null ){
-					 
-				       // match property
-				       PropertyTag remote_tag = remote_finder.find(remote_name);
-				      if( remote_tag != null ){
-					    match_map.put(store_tag,remote_tag);
-				      }
-				   }else{
-					   // may-be copy property 
-					   // if remote table has a property with same simple name
-					   // assume they should be copied.
-					   PropertyTag remote_tag = remote_finder.find(local_name);
-					
-					   if( remote_tag != null && remote_fac.hasProperty(remote_tag) ){
-						   copy_properties.put(store_tag, remote_tag);
+				   if( store_tag != null){
+					   String remote_name = ctx.getInitParameter(prefix+local_name, null);
+					   if( remote_name != null ){
+						   if( remote_name.equals("inside") ){
+							   // This should be a date property that lives inside the standard time bounds
+							   // of the parent record
+							   inside_date_properties.add(store_tag);
+						   }else{
+							   // match property
+							   PropertyTag remote_tag = remote_finder.find(remote_name);
+							   if( remote_tag != null ){
+								   match_map.put(store_tag,remote_tag);
+							   }
+						   }
+					   }else{
+						   // may-be copy property 
+						   // if remote table has a property with same simple name
+						   // assume they should be copied.
+						   PropertyTag remote_tag = remote_finder.find(local_name);
+
+						   if( remote_tag != null && remote_fac.hasProperty(remote_tag) ){
+							   copy_properties.put(store_tag, remote_tag);
+						   }
 					   }
 				   }
 			   }
@@ -152,7 +171,7 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 			return null;
 		}
 		
-		// this policy defines no new policies.
+		// this policy defines no new properties.
 		return null;
 	}
 	
@@ -168,15 +187,36 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 			   PropertyTag remote = match_map.get(local);
 			   Object o = rec.getProperty(local);
 			   if( o == null ){
-				   throw new AccountingParseException("Link Property "+local.getFullName()+" is null");
+				   if( require_link){
+					   throw new AccountingParseException("Link Property "+local.getFullName()+" is null");
+				   }else{
+					   return;
+				   }
 			   }
 			   if( remote.getTarget() == Date.class && grace_millis != 0L){
 				   Date point = (Date) rec.getProperty(local);
-				   sel.add(new SelectClause(remote,MatchCondition.GT, new Date(point.getTime()-grace_millis)));
-				   sel.add(new SelectClause(remote,MatchCondition.LT, new Date(point.getTime()+grace_millis)));
+				   if( point != null ){
+					   // might be a partial record
+					   sel.add(new SelectClause(remote,MatchCondition.GT, new Date(point.getTime()-grace_millis)));
+					   sel.add(new SelectClause(remote,MatchCondition.LT, new Date(point.getTime()+grace_millis)));
+				   }else{
+					   // assume partial record so skip this policy
+					   return;
+				   }
 			   }else{
 				
 				   sel.add(new SelectClause(remote,rec.getProperty(local)));
+			   }
+		   }
+		   for(PropertyTag date : inside_date_properties){
+			   Date point = (Date) rec.getProperty(date);
+			   if( point != null){
+				   // might be a partial record
+				   sel.add(new SelectClause(StandardProperties.ENDED_PROP,MatchCondition.GE, new Date(point.getTime()-grace_millis)));
+				   sel.add(new SelectClause(StandardProperties.STARTED_PROP,MatchCondition.LE, new Date(point.getTime()+grace_millis)));
+			   }else{
+				   // assume partial record so just skip policy
+				   return;
 			   }
 		   }
 		   UsageRecordFactory.Use peer = null;

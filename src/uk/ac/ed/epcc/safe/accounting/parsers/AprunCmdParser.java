@@ -3,6 +3,7 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import uk.ac.ed.epcc.safe.accounting.parsers.value.AprunMemoryParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.BooleanParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
@@ -16,6 +17,8 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.StringSplitter;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 /** Parser for aprun commands
  * 
@@ -63,8 +66,8 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	public static final AprunPropertyTag<String> NODE_LIST = new AprunPropertyTag<String>(aprun_reg, "node_list", new String[]{"-L", "--node-list"}, String.class, "");
 	@AutoTable(target=String.class)
 	public static final AprunPropertyTag<String> NODE_LIST_FILE = new AprunPropertyTag<String>(aprun_reg, "node_list_file", new String[]{"-l", "--node-list-file"}, String.class, "");
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> MEMORY_PER_PE = new AprunPropertyTag<String>(aprun_reg, "memory_per_pe", new String[]{"-m", "--memory-per-pe"}, String.class, "2.6G");
+	@AutoTable(target=Long.class)
+	public static final AprunPropertyTag<Long> MEMORY_PER_PE = new AprunPropertyTag<Long>(aprun_reg, "memory_per_pe", new String[]{"-m", "--memory-per-pe"}, Long.class,null);
 	@AutoTable(target=Integer.class)
 	public static final AprunPropertyTag<Integer> PE_COUNT = new AprunPropertyTag<Integer>(aprun_reg, "pes", new String[]{"-n", "--pes"}, Integer.class, 1);
 	@AutoTable(target=Integer.class)
@@ -123,7 +126,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 		STANDARD_ATTRIBUTES.addParser(XEON_PHI_PLACEMENT, BooleanParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODE_LIST, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODE_LIST_FILE, StringParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(MEMORY_PER_PE, StringParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(MEMORY_PER_PE, AprunMemoryParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(PE_COUNT, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(PES_PER_NODE, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(ACCESS_MODE, StringParser.PARSER);
@@ -162,6 +165,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	
 	public static final String APRUN_CMD_NAME = "aprun ";
 	
+	protected Logger log;
 	/// This attribute is used by the parse and parseNextElement methods only.
     private String cmd = null;
     
@@ -456,7 +460,8 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 
 	@Override
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
-		return super.initFinder(ctx, aprun_reg);
+		log = ctx.getService(LoggerService.class).getLogger(getClass());
+		return aprun_reg;
 	}
 
 	private void setProperty(PropertyMap map, String attrName, String attrValue) throws AccountingParseException {

@@ -1,15 +1,11 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.forms.inputs.RegexpInput;
-import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FilterVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderClause;
-import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -83,38 +79,14 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends DefaultDataObje
 		return new RegexpTarget(this, res);
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.webapp.model.data.DataObjectFactory#getOrder()
+	 */
 	@Override
-	public AndFilter<T> getSelectFilter() {
-	    AndFilter<T> fil = new AndFilter<T>(getTarget());
-		fil.addFilter(new NameOrderFilter());
-		fil.addFilter(super.getSelectFilter());
-		return fil;	
-	}
-	
-	
-	public class NameOrderFilter implements OrderFilter<T>, SQLFilter<T>{
+	protected List<OrderClause> getOrder() {
 		
-
-		@Override
-		public LinkedList<OrderClause> OrderBy() {
-			LinkedList<OrderClause> order = new LinkedList<OrderClause>();
-			order.add(res.getOrder(NAME_FIELD, false));
-			return order;
-		}
-
-		@Override
-		public <X> X acceptVisitor(FilterVisitor<X, ? extends T> vis) throws Exception {
-			return vis.visitOrderFilter(this);
-		}
-
-		@Override
-		public void accept(T o) {
-		}
-
-		@Override
-		public Class<? super T> getTarget() {
-			return RegexpTargetFactory.this.getTarget();
-		}
-		
+		List<OrderClause> order = super.getOrder();
+		order.add(res.getOrder(NAME_FIELD, false));
+		return order;
 	}
 }
