@@ -81,7 +81,10 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * 
  * If a match is found the ReferenceProperty to the primary table is set in the parse method.
  * Then in the PostCreate method the remote object is updated to set the back-reference (if there is one)
- * and the any common properties (based on simple names) that are not already set.
+ * and the any common properties (based on simple names) that are not already set. 
+ * Only properties from previous (parser/policies) that are writable in the primary table will be copied.
+ * If you want to define expressions that copy primary properties into the secondary table do this in policies installed
+ * later than the LinkPolicy   
  * <p>
  * Note that as the mapping between primary and secondary tables is expected to be one-to-one, 
  * at the very least this makes joins inefficient but there may also be serious performance and
@@ -150,12 +153,13 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 							   }
 						   }
 					   }else{
+						   
 						   // may-be copy property 
-						   // if remote table has a property with same simple name
+						   // if remote table has a writable property with same simple name
 						   // assume they should be copied.
 						   PropertyTag remote_tag = remote_finder.find(local_name);
 
-						   if( remote_tag != null && remote_fac.hasProperty(remote_tag) ){
+						   if( remote_tag != null && remote_tag.allowExpression(store_tag) &&remote_fac.hasProperty(remote_tag) && remote_fac.getAccessorMap().writable(remote_tag)){
 							   copy_properties.put(store_tag, remote_tag);
 						   }
 					   }

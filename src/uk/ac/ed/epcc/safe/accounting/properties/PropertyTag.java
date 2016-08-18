@@ -81,9 +81,19 @@ public class PropertyTag<T> implements PropExpression<T> {
     	}
     	return allowClass(o.getClass());
 	}
+    /** Is a class compatible with the type of this property
+     * 
+     * @param clazz
+     * @return
+     */
     public boolean allowClass(Class clazz){    	
     	return property_type.isAssignableFrom(clazz);
     }
+    /** is a {@link PropExpression} compatible with this property.
+     * 
+     * @param e
+     * @return
+     */
     public boolean allowExpression(PropExpression e){
     	return allowClass(e.getTarget());
     }
