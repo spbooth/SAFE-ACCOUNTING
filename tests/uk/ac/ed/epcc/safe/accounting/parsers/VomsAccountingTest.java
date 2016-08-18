@@ -25,10 +25,7 @@ public class VomsAccountingTest extends ParseUsageRecordFactoryTestCase {
 	public ParseUsageRecordFactory getFactory() {
 		return new ConfigUsageRecordFactory(ctx,"VomsAccounting");
 	}
-	@Override
-	public boolean expectData(){
-		return true;
-	}
+	
 
 	@Override
 	public String getUpdateText() {

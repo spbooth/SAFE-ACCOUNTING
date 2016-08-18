@@ -33,12 +33,6 @@ public class SGERecordTest extends ParseUsageRecordFactoryTestCase{
 	}
 
 
-	
-	@Override
-	public boolean expectData(){
-		return true;
-	}
-
 	@Override
 	public String getUpdateText() {
 		return "ecdf:node025.beowulf.cluster:physics_ifp_ppe:s0571079:afs_toy_so:1155664:sge:5:1222847031:1222848422:1222851714:0:0:3292:3287:0:0.000000:0:0:0:0:72259:0:0:0.000000:0:0:0:0:13885:21950:ecdf_baseline:defaultdepartment:NONE:1:0:3292.000000:8037.109375:0.000000:-u s0571079 -l h_rt=14400,h_vmem=2500M -P ecdf_baseline:0.000000:NONE:384315392.000000\n"+

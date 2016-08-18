@@ -25,11 +25,7 @@ public class GlobusAccountingTest extends ParseUsageRecordFactoryTestCase {
 	public ParseUsageRecordFactory getFactory() {
 		return new ConfigUsageRecordFactory(ctx,"Globus");
 	}
-	@Override
-	public boolean expectData(){
-		return true;
-	}
-
+	
 	@Override
 	public String getUpdateText() {
 		return 

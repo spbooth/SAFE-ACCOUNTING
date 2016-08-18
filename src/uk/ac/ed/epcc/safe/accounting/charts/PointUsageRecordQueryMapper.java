@@ -87,11 +87,7 @@ public class PointUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 			if( key_prop == null ){
 				Number n = o.getReduction(sum_target, selector);
 				if( n != null ){  
-					Number def = sum_target.getDefault();
-					if( def == null || ! def.equals(n)){
-						// Don't record default values This will erroneously show as data added.
-						res.put(set,n);
-					}
+					res.put(set,n);
 				}
 			}else{
 				Set<ReductionTarget> req = new LinkedHashSet<ReductionTarget>();
