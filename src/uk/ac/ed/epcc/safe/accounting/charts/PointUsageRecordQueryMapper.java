@@ -35,6 +35,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.AverageValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** QueryMapper that plots property data based on a single DateProperty being within the target range
@@ -85,8 +86,12 @@ public class PointUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 			NumberReductionTarget sum_target = NumberReductionTarget.getInstance(red,plot_prop);
 			if( key_prop == null ){
 				Number n = o.getReduction(sum_target, selector);
-				if( n != null){
-					res.put(set,n);
+				if( n != null ){  
+					Number def = sum_target.getDefault();
+					if( def == null || ! def.equals(n)){
+						// Don't record default values This will erroneously show as data added.
+						res.put(set,n);
+					}
 				}
 			}else{
 				Set<ReductionTarget> req = new LinkedHashSet<ReductionTarget>();

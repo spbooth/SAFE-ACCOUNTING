@@ -428,7 +428,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     public boolean plot(PlotEntry e, TimeChart<?> tc, UsageProducer<?> ap,RecordSelector sel, int nplots,boolean allow_overlap) throws Exception {
     	return plot(e,tc,ap,sel,nplots,allow_overlap,use_line,true);
     }
-    /** Make a dataset for a TimeChart and plot data to it usign this transform.
+    /** Make a dataset for a TimeChart and plot data to it using this transform.
      * 
      * @param e
      * @param tc
