@@ -223,9 +223,13 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 						throw new AccountingParseException("Problem with attribute '" + attrName
 								+ "': Unable to parse value '" + attrValue + "'", e);
 					}
-				}
+				}	
 			}
-			
+			Date start = map.getProperty(APRUN_START_TIMESTAMP);
+			Date end = map.getProperty(APSYS_END_TIMESTAMP);
+			if( start != null && end != null && end.before(start) ){
+				throw new AccountingParseException("reversed time bounds");
+			}
 		} else {
 			throw new AccountingParseException("Unexpected line format");
 		}
