@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
@@ -48,7 +49,9 @@ public final class PDFReportType extends ReportType {
 			if( stream != null ){
 				DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
 				Configuration cfg = builder.build(stream);
-				FopFactoryBuilder fop_builder = new FopFactoryBuilder(new File(".").toURI() );
+				URL res = getClass().getResource("/fonts");
+				File dir = new File(res.getFile());
+				FopFactoryBuilder fop_builder = new FopFactoryBuilder(dir.toURI() );
 				fop_builder.setConfiguration(cfg);
 				fopFactory = fop_builder.build();
 			}
