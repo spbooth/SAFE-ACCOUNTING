@@ -26,6 +26,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
+import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.PatternArgument;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
@@ -47,10 +48,10 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  */
 public abstract class RemoteSQLValue<H extends DataObject,R extends DataObject, T>  implements SQLValue<T>, FilterProvider<H,T>{
 	public static final Feature CACHE_REMOTE_ACCESSOR_FEATURE = new Feature("cache.remote-accessor",true,"cache expression results when implementing remore expression as a SQLValue");
-	private final IndexedFieldValue<H, R> a;
+	private final IndexedSQLValue<H, R> a;
 	private final AppContext c;
 	private Map<IndexedReference<R>,T> cache=null;
- 	public RemoteSQLValue(AppContext c,IndexedFieldValue<H, R> a) throws PropertyCastException{
+ 	public RemoteSQLValue(AppContext c,IndexedSQLValue<H, R> a) throws PropertyCastException{
 
 		this.c=c;
 		this.a=a;
@@ -63,7 +64,7 @@ public abstract class RemoteSQLValue<H extends DataObject,R extends DataObject, 
 	 * 
 	 * @return DataObjectRefefenceAccessor
 	 */
-	public IndexedFieldValue<H, R> getReferenceValue(){
+	public IndexedSQLValue<H, R> getReferenceValue(){
 		return a;
 	}
 	public T getRemoteValueFromReference(IndexedReference<R> ref){

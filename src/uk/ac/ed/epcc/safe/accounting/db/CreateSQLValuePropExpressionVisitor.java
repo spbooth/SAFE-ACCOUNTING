@@ -44,10 +44,12 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinarySQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.CompositeIndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DateSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DoubleConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DurationSecondConvertSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IntConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LabellerSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LongConvertSQLValue;
@@ -176,6 +178,18 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	}
 	public <T extends DataObject & ExpressionTarget> SQLValue visitDoubleDeRefExpression(
 			DoubleDeRefExpression<T, ?> dre) throws Exception {
+		SQLValue base = dre.getTargetObject().accept(this);
+		if( base != null && base instanceof IndexedSQLValue){
+			// Consider de-referencing in SQL
+			IndexedSQLValue isv = (IndexedSQLValue) base;
+			IndexedProducer prod = isv.getFactory(); // base factory for branch
+			if( prod instanceof ExpressionTargetFactory ){
+				SQLValue branch = ((ExpressionTargetFactory) prod).getAccessorMap().getSQLValue(dre.getNext());
+				if( branch != null && branch instanceof IndexedSQLValue){
+					return new CompositeIndexedSQLValue(isv, (IndexedSQLValue)branch);
+				}
+			}
+		}
 		// This will perform all levels of de-referencing as an evaluation.
 		return visitDeRefExpression(dre);
 	}
@@ -189,12 +203,13 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		if( a == null ){
 			throw new InvalidSQLPropertyException(x);
 		}
-		if(  a instanceof IndexedFieldValue ){
-			IndexedFieldValue<?,T> dra = (IndexedFieldValue)a;
+		if(  a instanceof IndexedSQLValue ){
+			IndexedSQLValue<?,T> dra = (IndexedSQLValue)a;
 			
 			return new DerefSQLValue(dra, expression, conn);
 		}else if( a instanceof DerefSQLValue){
-			// need to split out the ReferenceFieldValue and combine the two expressions.
+			// We are already evaluating the de-ref in the first step
+			// need to split out the IndexedSQLValue and combine the two expressions.
 			DerefSQLValue<?,?,IndexedReference<T>> dsv = (DerefSQLValue<?, ?, IndexedReference<T>>) a;
 			PropExpression<IndexedReference<T>> ref = dsv.getExpression();
 			if( ref instanceof ReferenceExpression){

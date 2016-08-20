@@ -30,8 +30,8 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  *  
  * @author spb
  *
- * @param <R>
- * @param <T>
+ * @param <R> Type of first de-reference
+ * @param <T> Type of target
  */
 
 

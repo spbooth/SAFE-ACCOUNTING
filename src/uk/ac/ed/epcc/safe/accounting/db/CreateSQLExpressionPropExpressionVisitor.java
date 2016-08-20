@@ -45,15 +45,19 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CastDoubleSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CastLongSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.CompositeIndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DerefSQLExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.RoundSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.StringConvertSQLExpression;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLExpression;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 /** get an SQLExpression from a PropExpression
  * 
  * @author spb
@@ -161,6 +165,7 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	}
 	public <T extends DataObject & ExpressionTarget> SQLExpression visitDoubleDeRefExpression(
 			DoubleDeRefExpression<T, ?> dre) throws Exception {
+		
 		return visitDeRefExpression(dre);
 	}
 	
@@ -170,8 +175,8 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 			DeRefExpression<T, ?> dre) throws Exception {
 		SQLValue a =  getSQLValue(dre.getTargetObject());
 		
-		if( a != null && a instanceof IndexedFieldValue ){
-			IndexedFieldValue ifv = (IndexedFieldValue)a;
+		if( a != null && a instanceof IndexedSQLValue ){
+			IndexedSQLValue ifv = (IndexedSQLValue)a;
 			SQLExpression remote = ((ExpressionTargetFactory)ifv.getFactory()).getAccessorMap().getSQLExpression(dre.getExpression());
 			return new DerefSQLExpression(ifv, remote);
 		}else{
