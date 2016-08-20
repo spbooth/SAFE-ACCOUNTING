@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.expr;
 
+import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
@@ -25,6 +26,8 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 /** A de-reference expression that is itself a reference expression.
  * 
+ * By using this class rather than a simple {@link DeRefExpression} there is more opportunity to implement as joins
+ *  
  * @author spb
  *
  * @param <R>
@@ -33,6 +36,17 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 
 public class DoubleDeRefExpression<R extends DataObject & ExpressionTarget,T extends Indexed> extends DeRefExpression<R, IndexedReference<T>> implements ReferenceExpression<T>{
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression#accept(uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor)
+	 */
+	@Override
+	public <X> X accept(BasePropExpressionVisitor<X> vis) throws Exception {
+		if( vis instanceof PropExpressionVisitor){
+			return ((PropExpressionVisitor<X>)vis).visitDoubleDeRefExpression(this);
+		}
+		throw new UnsupportedExpressionException(this);
+	}
 
 	public DoubleDeRefExpression(ReferenceExpression<R> tag,
 			ReferenceExpression<T> expr) {

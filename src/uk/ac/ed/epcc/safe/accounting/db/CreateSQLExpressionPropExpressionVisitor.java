@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConvertMillisecondToDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DoubleCastPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
@@ -158,11 +159,16 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	public SQLExpression visitDurationSecondPropExpression(DurationSecondsPropExpression expr) throws Exception{
 		throw new InvalidSQLPropertyException("DurationSecondsPropExpression not representable as SQLExpression");
 	}
-
+	public <T extends DataObject & ExpressionTarget> SQLExpression visitDoubleDeRefExpression(
+			DoubleDeRefExpression<T, ?> dre) throws Exception {
+		return visitDeRefExpression(dre);
+	}
+	
+	public abstract <T> SQLValue<T> getSQLValue(PropExpression<T> expr) throws InvalidSQLPropertyException;
 	@SuppressWarnings("unchecked")
 	public <T extends DataObject & ExpressionTarget> SQLExpression visitDeRefExpression(
 			DeRefExpression<T, ?> dre) throws Exception {
-		SQLValue a =  dre.getTargetObject().accept(this);
+		SQLValue a =  getSQLValue(dre.getTargetObject());
 		
 		if( a != null && a instanceof IndexedFieldValue ){
 			IndexedFieldValue ifv = (IndexedFieldValue)a;

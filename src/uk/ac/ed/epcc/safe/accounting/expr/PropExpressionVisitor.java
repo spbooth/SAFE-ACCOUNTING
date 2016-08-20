@@ -37,7 +37,17 @@ public interface  PropExpressionVisitor<R> extends BasePropExpressionVisitor<R>{
   public R visitMilliSecondDatePropExpression(MilliSecondDatePropExpression milliSecondDate) throws Exception;
   public R visitNamePropExpression(NamePropExpression namePropExpression) throws Exception;
   public <T extends DataObject & ExpressionTarget> R visitDeRefExpression(DeRefExpression<T,?> deRefExpression) throws Exception;
- 
+  /** Process as a {@link DoubleDeRefExpression}. 
+   * Note that as these are always {@link DeRefExpression}s it is always legal to implement this methos
+   * by forwarding to {@link #visitDeRefExpression(DeRefExpression)} though we have a separate method to allow custom handling of 
+   * multiple levels of de-referencing. 
+   * 
+   * @param deRefExpression
+   * @return R
+   * @throws Exception
+   */
+  public <T extends DataObject & ExpressionTarget> R visitDoubleDeRefExpression(DoubleDeRefExpression<T,?> deRefExpression) throws Exception;
+  
   public R visitSelectPropExpression(SelectPropExpression<?> sel) throws Exception;
   public R visitDurationPropExpression(DurationPropExpression sel) throws Exception;
   public R visitDurationCastPropExpression(DurationCastPropExpression<?> sel) throws Exception;

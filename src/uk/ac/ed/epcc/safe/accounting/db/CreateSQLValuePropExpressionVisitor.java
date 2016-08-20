@@ -16,6 +16,7 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Date;
 import java.util.LinkedList;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
@@ -61,6 +62,7 @@ import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationConvertSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.TypeConverterSQLValue;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** get an SQLValue from a PropExpression
  * We try to generate an SQLExpression where possible as long as this does not
@@ -172,14 +174,20 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		SQLValue a = targetRef.accept(this);
 		return new ClassificationSQLValue(conn,target,targetRef.getFactory(conn), a);
 	}
-
+	public <T extends DataObject & ExpressionTarget> SQLValue visitDoubleDeRefExpression(
+			DoubleDeRefExpression<T, ?> dre) throws Exception {
+		// This will perform all levels of de-referencing as an evaluation.
+		return visitDeRefExpression(dre);
+	}
 	@SuppressWarnings("unchecked")
 	public <T extends DataObject & ExpressionTarget> SQLValue visitDeRefExpression(
 			DeRefExpression<T, ?> dre) throws Exception {
 		PropExpression<?> expression = dre.getExpression();
-		SQLValue<IndexedReference<T>> a =  dre.getTargetObject().accept(this);
+		ReferenceExpression<T> x = dre.getTargetObject();
+		// SQLValue to create the remote object
+		SQLValue<IndexedReference<T>> a =  x.accept(this);
 		if( a == null ){
-			throw new InvalidSQLPropertyException(dre.getTargetObject());
+			throw new InvalidSQLPropertyException(x);
 		}
 		if(  a instanceof IndexedFieldValue ){
 			IndexedFieldValue<?,T> dra = (IndexedFieldValue)a;

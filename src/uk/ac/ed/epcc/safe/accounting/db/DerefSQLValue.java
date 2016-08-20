@@ -36,8 +36,9 @@ import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
-/** An SQLAccessor for a DerefExpression
+/** An SQLAccessor for a single level DerefExpression
  * The remote object is retrieved and the remote expression evaluated programatically.
+ * Additional levels of de-referencing can be applied in the evaluation stage.
  * @author spb
  * @param <H> type of owning object
  * @param <R> type of remote object

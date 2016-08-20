@@ -98,7 +98,10 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 			throws Exception {
 		return namePropExpression.getTargetRef().accept(this);
 	}
-
+	public <T extends DataObject & ExpressionTarget> Boolean visitDoubleDeRefExpression(
+			DoubleDeRefExpression<T, ?> deRefExpression) throws Exception {
+		return deRefExpression.getTargetObject().accept(this);
+	}
 	public <T extends DataObject & ExpressionTarget> Boolean visitDeRefExpression(
 			DeRefExpression<T, ?> deRefExpression) throws Exception {
 		return deRefExpression.getTargetObject().accept(this);
