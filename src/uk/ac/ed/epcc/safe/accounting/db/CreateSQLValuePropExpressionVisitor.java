@@ -21,8 +21,8 @@ import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConvertMillisecondToDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DoubleCastPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
@@ -47,6 +47,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DateSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DoubleConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DurationSecondConvertSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IntConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LabellerSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LongConvertSQLValue;
@@ -57,7 +58,6 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.StringConvertSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
-import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationConvertSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.TypeConverterSQLValue;
@@ -181,8 +181,8 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		if( a == null ){
 			throw new InvalidSQLPropertyException(dre.getTargetObject());
 		}
-		if(  a instanceof IndexedFieldValue ){
-			IndexedFieldValue<?,T> dra = (IndexedFieldValue)a;
+		if(  a instanceof IndexedSQLValue ){
+			IndexedSQLValue<?,T> dra = (IndexedSQLValue)a;
 			
 			return new DerefSQLValue(dra, expression, conn);
 		}else if( a instanceof DerefSQLValue){

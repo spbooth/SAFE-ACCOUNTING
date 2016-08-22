@@ -46,6 +46,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.CastLongSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DerefSQLExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.RoundSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
@@ -164,8 +165,8 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 			DeRefExpression<T, ?> dre) throws Exception {
 		SQLValue a =  dre.getTargetObject().accept(this);
 		
-		if( a != null && a instanceof IndexedFieldValue ){
-			IndexedFieldValue ifv = (IndexedFieldValue)a;
+		if( a != null && a instanceof IndexedSQLValue ){
+			IndexedSQLValue ifv = (IndexedSQLValue)a;
 			SQLExpression remote = ((ExpressionTargetFactory)ifv.getFactory()).getAccessorMap().getSQLExpression(dre.getExpression());
 			return new DerefSQLExpression(ifv, remote);
 		}else{
