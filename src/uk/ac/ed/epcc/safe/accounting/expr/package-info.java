@@ -19,7 +19,7 @@ expression this package defines additional more complex expressions such as:
 <ul>
 <li> Simple mathematical expressions over numerical properties</li>
 <li>Date to millisecond conversion</li>
-<li> Dereference expressions that access the properties of a referenced AccountingClassification</li>
+<li> Dereference expressions that access the properties of a referenced {@link uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget}</li>
 </ul>
 
 **/

@@ -54,7 +54,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.StringConvertSQLExpression;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLExpression;
-/** get an SQLExpression from a PropExpression
+/** get an {@link SQLExpression} from a {@link PropExpression}
  * 
  * @author spb
  *
@@ -72,7 +72,11 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	@SuppressWarnings("unchecked")
 	public SQLExpression visitStringPropExpression(
 			StringPropExpression<?> stringExpression) throws Exception {
-		if( Number.class.isAssignableFrom(stringExpression.exp.getTarget())){
+		Class<?> target = stringExpression.exp.getTarget();
+		if( target == String.class){
+			return stringExpression.exp.accept(this);
+		}
+		if( Number.class.isAssignableFrom(target)){
 			// SQL can treat numbers as strings
 			return new StringConvertSQLExpression(stringExpression.exp.accept(this));
 		}
@@ -83,7 +87,11 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	public SQLExpression visitIntPropExpression(
 			IntPropExpression<?> intExpression) throws Exception {
 		// use round if nested expression is a number
-		if( Number.class.isAssignableFrom(intExpression.exp.getTarget())){
+		Class<?> target = intExpression.exp.getTarget();
+		if( Number.class.isAssignableFrom(target)){
+			if( target == Integer.class){
+				return intExpression.exp.accept(this);
+			}
 			return new RoundSQLExpression(intExpression.exp.accept(this));
 		}
 		throw new InvalidSQLPropertyException("IntPropExpression not representable as SQLExpression");
@@ -92,7 +100,11 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	public SQLExpression visitLongCastPropExpression(
 			LongCastPropExpression<?> intExpression) throws Exception {
 		// use round if nested expression is a number
-		if( Number.class.isAssignableFrom(intExpression.exp.getTarget())){
+		Class<?> target = intExpression.exp.getTarget();
+		if( Number.class.isAssignableFrom(target)){
+			if( target == Long.class ){
+				return intExpression.exp.accept(this);
+			}
 			return new CastLongSQLExpression<Number>(intExpression.exp.accept(this));
 		}
 		throw new InvalidSQLPropertyException("LongPropExpression not representable as SQLExpression");
@@ -101,7 +113,11 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	public SQLExpression visitDoubleCastPropExpression(
 			DoubleCastPropExpression<?> expression) throws Exception {
 		// use round if nested expression is a number
-		if( Number.class.isAssignableFrom(expression.exp.getTarget())){
+		Class<?> target = expression.exp.getTarget();
+		if( Number.class.isAssignableFrom(target)){
+			if( target == Double.class){
+				return expression.exp.accept(this);
+			}
 			return new CastDoubleSQLExpression(expression.exp.accept(this));
 		}
 		throw new InvalidSQLPropertyException("DoublePropExpression not representable as SQLExpression");

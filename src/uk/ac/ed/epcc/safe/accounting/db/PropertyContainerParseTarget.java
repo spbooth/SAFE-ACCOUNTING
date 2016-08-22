@@ -16,8 +16,6 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Iterator;
-
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;

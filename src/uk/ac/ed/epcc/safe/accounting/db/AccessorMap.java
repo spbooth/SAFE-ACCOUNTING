@@ -116,7 +116,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * Composite {@link Accessor}s are not created as evaluating the expression directly with a visitor takes the same amount of
  * recursive calls as a required by the {@link Accessor}.
  * </p>
- * Normally all properties are accessible from a {@link SQLValue}. This is true in the standard accouning classes
+ * Normally all properties are accessible from a {@link SQLValue}. This is true in the standard accounting classes
  * but it is possible to install a custom {@link Accessor} for a value that can only be evaluated in java.
  *  
  * 
