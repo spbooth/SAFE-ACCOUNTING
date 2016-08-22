@@ -81,6 +81,8 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.SQLAndFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -1179,6 +1181,13 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 				} catch (NoSQLFilterException e) {
 					// default to simple SQLExpressionFilter
 				}
+			}
+			SQLFilter<X> required = exp.getRequiredFilter();
+			if( required != null){
+				SQLAndFilter<X> fil = new SQLAndFilter<X>(target);
+				fil.addFilter(required);
+				fil.addFilter(new SQLExpressionFilter<X, I>(target,exp, match,data));
+				return fil;
 			}
 			return new SQLExpressionFilter<X, I>(target,exp, match,data);
 		}catch(Exception e){
