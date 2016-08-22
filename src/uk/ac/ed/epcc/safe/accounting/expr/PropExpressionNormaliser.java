@@ -86,7 +86,10 @@ public class PropExpressionNormaliser implements PropExpressionVisitor<PropExpre
 			NamePropExpression namePropExpression) throws Exception {
 		return namePropExpression;
 	}
-
+	public <T extends DataObject & ExpressionTarget> PropExpression visitDoubleDeRefExpression(
+			DoubleDeRefExpression<T, ?> deRefExpression) throws Exception {
+		return visitDeRefExpression(deRefExpression);
+	}
 	@SuppressWarnings("unchecked")
 	public <T extends DataObject & ExpressionTarget> PropExpression visitDeRefExpression(
 			DeRefExpression<T, ?> deRefExpression) throws Exception {

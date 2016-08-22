@@ -16,6 +16,7 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Date;
 import java.util.LinkedList;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
@@ -43,10 +44,12 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinarySQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.CompositeIndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DateSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DoubleConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DurationSecondConvertSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IntConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LabellerSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LongConvertSQLValue;
@@ -61,6 +64,7 @@ import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationConvertSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.TypeConverterSQLValue;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** get an SQLValue from a PropExpression
  * We try to generate an SQLExpression where possible as long as this does not
@@ -172,21 +176,40 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		SQLValue a = targetRef.accept(this);
 		return new ClassificationSQLValue(conn,target,targetRef.getFactory(conn), a);
 	}
-
+	public <T extends DataObject & ExpressionTarget> SQLValue visitDoubleDeRefExpression(
+			DoubleDeRefExpression<T, ?> dre) throws Exception {
+		SQLValue base = dre.getTargetObject().accept(this);
+		if( base != null && base instanceof IndexedSQLValue){
+			// Consider de-referencing in SQL
+			IndexedSQLValue isv = (IndexedSQLValue) base;
+			IndexedProducer prod = isv.getFactory(); // base factory for branch
+			if( prod instanceof ExpressionTargetFactory ){
+				SQLValue branch = ((ExpressionTargetFactory) prod).getAccessorMap().getSQLValue(dre.getNext());
+				if( branch != null && branch instanceof IndexedSQLValue){
+					return new CompositeIndexedSQLValue(isv, (IndexedSQLValue)branch);
+				}
+			}
+		}
+		// This will perform all levels of de-referencing as an evaluation.
+		return visitDeRefExpression(dre);
+	}
 	@SuppressWarnings("unchecked")
 	public <T extends DataObject & ExpressionTarget> SQLValue visitDeRefExpression(
 			DeRefExpression<T, ?> dre) throws Exception {
 		PropExpression<?> expression = dre.getExpression();
-		SQLValue<IndexedReference<T>> a =  dre.getTargetObject().accept(this);
+		ReferenceExpression<T> x = dre.getTargetObject();
+		// SQLValue to create the remote object
+		SQLValue<IndexedReference<T>> a =  x.accept(this);
 		if( a == null ){
-			throw new InvalidSQLPropertyException(dre.getTargetObject());
+			throw new InvalidSQLPropertyException(x);
 		}
-		if(  a instanceof IndexedFieldValue ){
-			IndexedFieldValue<?,T> dra = (IndexedFieldValue)a;
+		if(  a instanceof IndexedSQLValue ){
+			IndexedSQLValue<?,T> dra = (IndexedSQLValue)a;
 			
 			return new DerefSQLValue(dra, expression, conn);
 		}else if( a instanceof DerefSQLValue){
-			// need to split out the ReferenceFieldValue and combine the two expressions.
+			// We are already evaluating the de-ref in the first step
+			// need to split out the IndexedSQLValue and combine the two expressions.
 			DerefSQLValue<?,?,IndexedReference<T>> dsv = (DerefSQLValue<?, ?, IndexedReference<T>>) a;
 			PropExpression<IndexedReference<T>> ref = dsv.getExpression();
 			if( ref instanceof ReferenceExpression){

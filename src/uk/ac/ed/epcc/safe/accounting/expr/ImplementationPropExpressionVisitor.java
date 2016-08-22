@@ -68,7 +68,10 @@ public abstract class ImplementationPropExpressionVisitor implements
 			throws Exception {
 		return namePropExpression.toString();
 	}
-
+	public <T extends DataObject & ExpressionTarget> String visitDoubleDeRefExpression(
+			DoubleDeRefExpression<T, ?> deRefExpression) throws Exception {
+		return deRefExpression.toString();
+	}
 	public <T extends DataObject & ExpressionTarget> String visitDeRefExpression(
 			DeRefExpression<T, ?> deRefExpression) throws Exception {
 		return deRefExpression.toString();

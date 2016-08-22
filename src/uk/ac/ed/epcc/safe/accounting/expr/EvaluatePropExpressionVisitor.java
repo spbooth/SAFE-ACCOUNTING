@@ -105,6 +105,16 @@ public abstract class EvaluatePropExpressionVisitor implements
 				"Target of DeRefExpresion not an ExpressionTarget");
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitdoubleDeRefExpression(uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression)
+	 */
+	@Override
+	public <T extends DataObject & ExpressionTarget> Object visitDoubleDeRefExpression(
+			DoubleDeRefExpression<T, ?> deRefExpression) throws Exception {
+		// No special handling
+		return visitDeRefExpression(deRefExpression);
+	}
+
 	public Duration visitDurationPropExpression(DurationPropExpression sel)
 			throws Exception {
 

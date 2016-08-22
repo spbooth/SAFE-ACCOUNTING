@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConvertMillisecondToDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DoubleCastPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
@@ -44,15 +45,19 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CastDoubleSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CastLongSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.CompositeIndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DerefSQLExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.RoundSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.StringConvertSQLExpression;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLExpression;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 /** get an SQLExpression from a PropExpression
  * 
  * @author spb
@@ -158,14 +163,20 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	public SQLExpression visitDurationSecondPropExpression(DurationSecondsPropExpression expr) throws Exception{
 		throw new InvalidSQLPropertyException("DurationSecondsPropExpression not representable as SQLExpression");
 	}
-
+	public <T extends DataObject & ExpressionTarget> SQLExpression visitDoubleDeRefExpression(
+			DoubleDeRefExpression<T, ?> dre) throws Exception {
+		
+		return visitDeRefExpression(dre);
+	}
+	
+	public abstract <T> SQLValue<T> getSQLValue(PropExpression<T> expr) throws InvalidSQLPropertyException;
 	@SuppressWarnings("unchecked")
 	public <T extends DataObject & ExpressionTarget> SQLExpression visitDeRefExpression(
 			DeRefExpression<T, ?> dre) throws Exception {
-		SQLValue a =  dre.getTargetObject().accept(this);
+		SQLValue a =  getSQLValue(dre.getTargetObject());
 		
-		if( a != null && a instanceof IndexedFieldValue ){
-			IndexedFieldValue ifv = (IndexedFieldValue)a;
+		if( a != null && a instanceof IndexedSQLValue ){
+			IndexedSQLValue ifv = (IndexedSQLValue)a;
 			SQLExpression remote = ((ExpressionTargetFactory)ifv.getFactory()).getAccessorMap().getSQLExpression(dre.getExpression());
 			return new DerefSQLExpression(ifv, remote);
 		}else{

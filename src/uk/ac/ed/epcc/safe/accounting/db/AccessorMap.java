@@ -388,6 +388,11 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 				CasePropExpression<T> expr) throws Exception {
 			return getCaseExpression(expr);
 		}
+		@Override
+		public <T> SQLValue<T> getSQLValue(PropExpression<T> expr) throws InvalidSQLPropertyException {
+			
+			return AccessorMap.this.getSQLValue(expr);
+		}
 		
 	}
 	public class SQLValueVisitor extends CreateSQLValuePropExpressionVisitor{
