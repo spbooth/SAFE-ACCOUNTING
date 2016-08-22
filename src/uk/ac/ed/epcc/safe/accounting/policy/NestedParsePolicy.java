@@ -4,6 +4,7 @@ import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.db.AccountingUpdater;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordParseTarget;
+import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
@@ -12,6 +13,8 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
+import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
@@ -99,6 +102,21 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy {
 			}
 			
 		}
+		
+	}
+
+
+	@Override
+	public TableSpecification modifyDefaultTableSpecification(AppContext c, TableSpecification spec,
+			PropExpressionMap map, String table_name) {
+		
+		TableSpecification ss = super.modifyDefaultTableSpecification(c, spec, map, table_name);
+		String remote_table = 	c.getInitParameter("nested_parse.table." + table_name);
+		if( remote_table != null){
+			ss.setField(table_name+"ID", new ReferenceFieldType(remote_table));
+		}
+		return ss;
+		
 		
 	}
 

@@ -80,6 +80,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.CalendarFieldSplitPeriod;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.RegularSplitPeriod;
+import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 /** Abstract superclass for Reporting Extensions
  * holds methods useful in multiple extensions. 
@@ -129,6 +130,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	protected Map<String,Object> params=null;
 	protected Set<String> parameter_names=null;
 	private boolean use_reference = false;
+	private TimerService timer;
 	
 	public ReportExtension(AppContext conn,NumberFormat nf) throws ParserConfigurationException{
 		super(conn);
@@ -147,10 +149,21 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}else{
 			log=loggin_serv.getLogger(getClass());
 		}
-	
+	    timer = conn.getService(TimerService.class);
 	}
 	protected final Logger getLogger(){
 		return log;
+	}
+	
+	protected final void startTimer(String name){
+		if( timer != null){
+			timer.startTimer(name);
+		}
+	}
+	protected final void stopTimer(String name){
+		if( timer != null){
+			timer.stopTimer(name);
+		}
 	}
 	public void setParams(Set<String> names,Map<String,Object> p){
 		this.parameter_names=names;

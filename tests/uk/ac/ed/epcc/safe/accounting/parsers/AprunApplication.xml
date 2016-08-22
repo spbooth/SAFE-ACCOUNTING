@@ -1,8 +1,7 @@
 <Diff>
-
 <TableSpecification name='AprunApplication'>
 <Name type='String' nullable='false' max='16'/>
-<LongName type='String' nullable='true' max='512'/>
+<Description type='String' nullable='true' max='512'/>
 <Regex type='String' nullable='false' max='128'/>
 <PrimaryLanguage type='String' nullable='true' max='128'/>
 <PrimaryLanguageVersion type='String' nullable='true' max='128'/>
@@ -15,7 +14,7 @@
 
 <AprunApplication id='1'>
 <Name>ABINIT</Name>
-<LongName>A code for finding the total energy, charge density and electronic structure of systems made of electrons and nuclei.</LongName>
+<Description>A code for finding the total energy, charge density and electronic structure of systems made of electrons and nuclei.</Description>
 <Regex>(abinit)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -28,7 +27,7 @@
 
 <AprunApplication id='2'>
 <Name>AIMS</Name>
-<LongName>Full-Potential, All-Electron Electronic Structure Theory with Numeric Atom-Centered Basis Functions</LongName>
+<Description>Full-Potential, All-Electron Electronic Structure Theory with Numeric Atom-Centered Basis Functions</Description>
 <Regex>(aims\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -41,7 +40,7 @@
 
 <AprunApplication id='3'>
 <Name>AMBER</Name>
-<LongName>Biomolecular Dynamics Simulator</LongName>
+<Description>Biomolecular Dynamics Simulator</Description>
 <Regex>((sander|pmemd|MMPBSA)\.MPI)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -54,7 +53,7 @@
 
 <AprunApplication id='4'>
 <Name>B2-EIRENE</Name>
-<LongName>A Monte Carlo linear transport solver</LongName>
+<Description>A Monte Carlo linear transport solver</Description>
 <Regex>(b2\.out)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -67,7 +66,7 @@
 
 <AprunApplication id='5'>
 <Name>CASINO</Name>
-<LongName>Monte CArlo SImulation of electroN trajectory in sOlid</LongName>
+<Description>Monte CArlo SImulation of electroN trajectory in sOlid</Description>
 <Regex>(casino)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -80,7 +79,7 @@
 
 <AprunApplication id='6'>
 <Name>CASTEP</Name>
-<LongName>A code for calculating the properties of materials from first principles using density functional theory.</LongName>
+<Description>A code for calculating the properties of materials from first principles using density functional theory.</Description>
 <Regex>(castep\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -93,7 +92,7 @@
 
 <AprunApplication id='7'>
 <Name>CESM</Name>
-<LongName>Community Earth System Model</LongName>
+<Description>Community Earth System Model</Description>
 <Regex>(cesm\.exe)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -106,7 +105,7 @@
 
 <AprunApplication id='8'>
 <Name>CHARMM</Name>
-<LongName>Chemistry at HARvard Macromolecular Mechanics</LongName>
+<Description>Chemistry at HARvard Macromolecular Mechanics</Description>
 <Regex>(charmm\S*)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -119,7 +118,7 @@
 
 <AprunApplication id='9'>
 <Name>ChemShell</Name>
-<LongName>A computational Chemistry environment based on the Tcl interpreter.</LongName>
+<Description>A computational Chemistry environment based on the Tcl interpreter.</Description>
 <Regex>(chemsh\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -132,7 +131,7 @@
 
 <AprunApplication id='10'>
 <Name>CHROMA</Name>
-<LongName>The Chroma package supports data-parallel programming constructs for lattice field theory and in particular lattice QCD.</LongName>
+<Description>The Chroma package supports data-parallel programming constructs for lattice field theory and in particular lattice QCD.</Description>
 <Regex>(chroma)</Regex>
 <PrimaryLanguage>C++</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -145,7 +144,7 @@
 
 <AprunApplication id='11'>
 <Name>CloverLeaf</Name>
-<LongName>A code for calculating the properties of materials from first principles using density functional theory.</LongName>
+<Description>A code for calculating the properties of materials from first principles using density functional theory.</Description>
 <Regex>(clover_leaf)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -158,7 +157,7 @@
 
 <AprunApplication id='12'>
 <Name>Code_Saturne</Name>
-<LongName>An open source CFD code.</LongName>
+<Description>An open source CFD code.</Description>
 <Regex>(cs_(solver|blas_test|core_test))</Regex>
 <PrimaryLanguage>C</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -171,7 +170,7 @@
 
 <AprunApplication id='13'>
 <Name>COSA</Name>
-<LongName>CFD Optimized Structured multi-block Algorithm</LongName>
+<Description>CFD Optimized Structured multi-block Algorithm</Description>
 <Regex>(cosa\S*)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -184,7 +183,7 @@
 
 <AprunApplication id='14'>
 <Name>CP2K</Name>
-<LongName>A first principles simulation package for atomic structures.</LongName>
+<Description>A first principles simulation package for atomic structures.</Description>
 <Regex>(cp2k\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -197,7 +196,7 @@
 
 <AprunApplication id='15'>
 <Name>CPMD</Name>
-<LongName>Car-Parrinello Molecular Dynamics</LongName>
+<Description>Car-Parrinello Molecular Dynamics</Description>
 <Regex>(cpmd\S*)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -210,7 +209,7 @@
 
 <AprunApplication id='16'>
 <Name>Cray Testing</Name>
-<LongName>Cray Memory Testing</LongName>
+<Description>Cray Memory Testing</Description>
 <Regex>(memtest|statcom|strace)</Regex>
 <PrimaryLanguage>C</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -223,7 +222,7 @@
 
 <AprunApplication id='17'>
 <Name>CRYSTAL</Name>
-<LongName>A general-purpose program for the study of crystalline solids.</LongName>
+<Description>A general-purpose program for the study of crystalline solids.</Description>
 <Regex>((MPP|P)crystal|Pproperties|properties)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -236,7 +235,7 @@
 
 <AprunApplication id='18'>
 <Name>Desmond</Name>
-<LongName>A molecular dynamics simulator.</LongName>
+<Description>A molecular dynamics simulator.</Description>
 <Regex>(desmond)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -249,7 +248,7 @@
 
 <AprunApplication id='19'>
 <Name>DL_MESO</Name>
-<LongName>A general purpose mesoscale CFD code from Daresbury Laboratory.</LongName>
+<Description>A general purpose mesoscale CFD code from Daresbury Laboratory.</Description>
 <Regex>((lbe|dpd)\.exe)</Regex>
 <PrimaryLanguage>C++</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -262,7 +261,7 @@
 
 <AprunApplication id='20'>
 <Name>DL_POLY</Name>
-<LongName>A general purpose classical molecular dynamics code from Daresbury Laboratory.</LongName>
+<Description>A general purpose classical molecular dynamics code from Daresbury Laboratory.</Description>
 <Regex>(DLPOLY\S*|dlpoly\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -275,7 +274,7 @@
 
 <AprunApplication id='21'>
 <Name>ECHAM</Name>
-<LongName>An atmospheric general circulation mode, developed at the Max Planck Institute for Meteorology.</LongName>
+<Description>An atmospheric general circulation mode, developed at the Max Planck Institute for Meteorology.</Description>
 <Regex>(echam)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -288,7 +287,7 @@
 
 <AprunApplication id='22'>
 <Name>ELK</Name>
-<LongName>An all-electron full-potential linearised augmented-plane-wave code.</LongName>
+<Description>An all-electron full-potential linearised augmented-plane-wave code.</Description>
 <Regex>(elk)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -301,7 +300,7 @@
 
 <AprunApplication id='23'>
 <Name>ELMFIRE</Name>
-<LongName>A gyrokinetic plasma simulation code.</LongName>
+<Description>A gyrokinetic plasma simulation code.</Description>
 <Regex>(elmfire)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -314,7 +313,7 @@
 
 <AprunApplication id='24'>
 <Name>ENZO</Name>
-<LongName>An adaptive mesh refinement code for astrophysics.</LongName>
+<Description>An adaptive mesh refinement code for astrophysics.</Description>
 <Regex>(enzo)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -327,7 +326,7 @@
 
 <AprunApplication id='25'>
 <Name>EPOCH</Name>
-<LongName>Extendable PIC Open Collaboration</LongName>
+<Description>Extendable PIC Open Collaboration</Description>
 <Regex>(epoch\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -340,7 +339,7 @@
 
 <AprunApplication id='26'>
 <Name>Exciting</Name>
-<LongName>A full-potential all-electron density-functional-theory package.</LongName>
+<Description>A full-potential all-electron density-functional-theory package.</Description>
 <Regex>(excitingmpi)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -353,7 +352,7 @@
 
 <AprunApplication id='27'>
 <Name>FDS</Name>
-<LongName>Fire Dynamics Simulator></LongName>
+<Description>Fire Dynamics Simulator></Description>
 <Regex>(fds_mpi_gnu_linux|fds_mpi_intel_linux_64)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -366,7 +365,7 @@
 
 <AprunApplication id='28'>
 <Name>FEniCS</Name>
-<LongName>An automated solution of differential equations by the finite element method.</LongName>
+<Description>An automated solution of differential equations by the finite element method.</Description>
 <Regex>(dolfin-(convert|get-demos|order|plot|version))</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -379,7 +378,7 @@
 
 <AprunApplication id='29'>
 <Name>flow_main</Name>
-<LongName></LongName>
+<Description></Description>
 <Regex>(flow_main)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>90</PrimaryLanguageVersion>
@@ -392,7 +391,7 @@
 
 <AprunApplication id='30'>
 <Name>Fluidity</Name>
-<LongName>An open source, general purpose, multiphase computational fluid dynamics code.</LongName>
+<Description>An open source, general purpose, multiphase computational fluid dynamics code.</Description>
 <Regex>(fluidity)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -405,7 +404,7 @@
 
 <AprunApplication id='31'>
 <Name>FVCOM</Name>
-<LongName>Finite Volume Coastal Ocean Model</LongName>
+<Description>Finite Volume Coastal Ocean Model</Description>
 <Regex>(fvcom)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>90</PrimaryLanguageVersion>
@@ -418,7 +417,7 @@
 
 <AprunApplication id='32'>
 <Name>GAMESS</Name>
-<LongName>General Atomic and Molecular Electronic Structure System</LongName>
+<Description>General Atomic and Molecular Electronic Structure System</Description>
 <Regex>(gamess\S*|rungms)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -431,7 +430,7 @@
 
 <AprunApplication id='33'>
 <Name>GAMESS-UK</Name>
-<LongName>A general purpose ab initio molecular electronic structure program for performing SCF-, DFT- and MCSCF-gradient calculations.</LongName>
+<Description>A general purpose ab initio molecular electronic structure program for performing SCF-, DFT- and MCSCF-gradient calculations.</Description>
 <Regex>(gamess-uk)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -444,7 +443,7 @@
 
 <AprunApplication id='34'>
 <Name>GenASiS</Name>
-<LongName>General Astrophysical Simulation System</LongName>
+<Description>General Astrophysical Simulation System</Description>
 <Regex>(genasis)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -457,7 +456,7 @@
 
 <AprunApplication id='35'>
 <Name>GPAW</Name>
-<LongName>A density-functional theory (DFT) Python code based on the projector-augmented wave (PAW) method.</LongName>
+<Description>A density-functional theory (DFT) Python code based on the projector-augmented wave (PAW) method.</Description>
 <Regex>(gpaw)</Regex>
 <PrimaryLanguage>Python</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -470,7 +469,7 @@
 
 <AprunApplication id='36'>
 <Name>GROMACS</Name>
-<LongName>Groningen Machine for Chemical Simulations</LongName>
+<Description>Groningen Machine for Chemical Simulations</Description>
 <Regex>(mdrun\S*)</Regex>
 <PrimaryLanguage>C</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -483,7 +482,7 @@
 
 <AprunApplication id='37'>
 <Name>GS2</Name>
-<LongName>A physics application, developed to study low-frequency turbulence in magnetized plasma.</LongName>
+<Description>A physics application, developed to study low-frequency turbulence in magnetized plasma.</Description>
 <Regex>(gs2)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -496,7 +495,7 @@
 
 <AprunApplication id='38'>
 <Name>HemeLB</Name>
-<LongName>Hemodynamics Lattice Boltzmann</LongName>
+<Description>Hemodynamics Lattice Boltzmann</Description>
 <Regex>(hemelb)</Regex>
 <PrimaryLanguage>C++</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -509,7 +508,7 @@
 
 <AprunApplication id='39'>
 <Name>HiPSTAR</Name>
-<LongName>High-Performance Solver for Turbulence and Aeroacoustic Research</LongName>
+<Description>High-Performance Solver for Turbulence and Aeroacoustic Research</Description>
 <Regex>(HiPSTAR.x|HiPSTAR_adj.x|hipstar.|jet_3d|c3d|jet_scalar_3d)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>90</PrimaryLanguageVersion>
@@ -522,7 +521,7 @@
 
 <AprunApplication id='40'>
 <Name>HYDRA</Name>
-<LongName>A design tool for aerodynamical problems developed by Rolls Royce.</LongName>
+<Description>A design tool for aerodynamical problems developed by Rolls Royce.</Description>
 <Regex>(jm51|hyd-|hydra)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -535,7 +534,7 @@
 
 <AprunApplication id='41'>
 <Name>incompact3d</Name>
-<LongName>A powerful high-order flow solver designed for Direct and Large Eddy Simulations.</LongName>
+<Description>A powerful high-order flow solver designed for Direct and Large Eddy Simulations.</Description>
 <Regex>(incompact3d)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -548,7 +547,7 @@
 
 <AprunApplication id='42'>
 <Name>LAMMPS</Name>
-<LongName>Large-scale Atomic/Molecular Massively Parallel Simulator</LongName>
+<Description>Large-scale Atomic/Molecular Massively Parallel Simulator</Description>
 <Regex>(lmp\S*|lammps)</Regex>
 <PrimaryLanguage>C++</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -561,7 +560,7 @@
 
 <AprunApplication id='43'>
 <Name>LB3D</Name>
-<LongName>Lattice Boltzmann 3D</LongName>
+<Description>Lattice Boltzmann 3D</Description>
 <Regex>(lb3d)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -574,7 +573,7 @@
 
 <AprunApplication id='44'>
 <Name>LS-DYNA</Name>
-<LongName>A general-purpose finite element program developed by Livermore Software.</LongName>
+<Description>A general-purpose finite element program developed by Livermore Software.</Description>
 <Regex>(mppdyna)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -587,7 +586,7 @@
 
 <AprunApplication id='45'>
 <Name>LUDWIG</Name>
-<LongName>A lattice Boltzmann code for complex fluids.</LongName>
+<Description>A lattice Boltzmann code for complex fluids.</Description>
 <Regex>(Ludwig\.exe)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -600,7 +599,7 @@
 
 <AprunApplication id='46'>
 <Name>MITgcm</Name>
-<LongName>MIT General Circulation Model</LongName>
+<Description>MIT General Circulation Model</Description>
 <Regex>(mitgcm\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>90</PrimaryLanguageVersion>
@@ -613,7 +612,7 @@
 
 <AprunApplication id='47'>
 <Name>Molpro</Name>
-<LongName>A complete system of ab initio programs for molecular electronic structure calculations.</LongName>
+<Description>A complete system of ab initio programs for molecular electronic structure calculations.</Description>
 <Regex>(molpro\.exe)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -626,7 +625,7 @@
 
 <AprunApplication id='48'>
 <Name>NAMD</Name>
-<LongName>A parallel molecular dynamics code.</LongName>
+<Description>A parallel molecular dynamics code.</Description>
 <Regex>(namd|namd2)</Regex>
 <PrimaryLanguage>C++</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -639,7 +638,7 @@
 
 <AprunApplication id='49'>
 <Name>NECI</Name>
-<LongName></LongName>
+<Description></Description>
 <Regex>(neci)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -652,7 +651,7 @@
 
 <AprunApplication id='50'>
 <Name>Nek5000</Name>
-<LongName>An open source, highly scalable and portable spectral element code.</LongName>
+<Description>An open source, highly scalable and portable spectral element code.</Description>
 <Regex>(nek5000\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -665,7 +664,7 @@
 
 <AprunApplication id='51'>
 <Name>Nektar++</Name>
-<LongName>A spectral/hp element framework.</LongName>
+<Description>A spectral/hp element framework.</Description>
 <Regex>(ADRSolver|IncNavierStokesSolver)</Regex>
 <PrimaryLanguage>C++</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -678,7 +677,7 @@
 
 <AprunApplication id='52'>
 <Name>NEMO</Name>
-<LongName>Nucleus for European Modelling of the Ocean</LongName>
+<Description>Nucleus for European Modelling of the Ocean</Description>
 <Regex>(nemo\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -691,7 +690,7 @@
 
 <AprunApplication id='53'>
 <Name>NWChem</Name>
-<LongName>Open Source High-Performance Computational Chemistry</LongName>
+<Description>Open Source High-Performance Computational Chemistry</Description>
 <Regex>(nwchem)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -704,7 +703,7 @@
 
 <AprunApplication id='54'>
 <Name>Oasis</Name>
-<LongName>A coupler for oceanic and atmospheric circulation models.</LongName>
+<Description>A coupler for oceanic and atmospheric circulation models.</Description>
 <Regex>(oasis\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -717,7 +716,7 @@
 
 <AprunApplication id='55'>
 <Name>ONETEP</Name>
-<LongName>Order-N Electronic Total Energy Package</LongName>
+<Description>Order-N Electronic Total Energy Package</Description>
 <Regex>(onetep\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -730,7 +729,7 @@
 
 <AprunApplication id='56'>
 <Name>OpenFOAM</Name>
-<LongName>Open Source Field Operation and Manipulation</LongName>
+<Description>Open Source Field Operation and Manipulation</Description>
 <Regex>(\S*Foam\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -743,7 +742,7 @@
 
 <AprunApplication id='57'>
 <Name>OSIRIS</Name>
-<LongName>A fully relativistic plasma simulation code.</LongName>
+<Description>A fully relativistic plasma simulation code.</Description>
 <Regex>(osiris\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -756,7 +755,7 @@
 
 <AprunApplication id='58'>
 <Name>PIMAIM</Name>
-<LongName>Molecular Dynamics Code</LongName>
+<Description>Molecular Dynamics Code</Description>
 <Regex>(pimaim\S*)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -769,7 +768,7 @@
 
 <AprunApplication id='59'>
 <Name>PDNS3D</Name>
-<LongName>Order-N Electronic Total Energy Package</LongName>
+<Description>Order-N Electronic Total Energy Package</Description>
 <Regex>(pdns3d\S*|pchan)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -782,7 +781,7 @@
 
 <AprunApplication id='60'>
 <Name>PRECISE</Name>
-<LongName>A CFD code developed by Rolls Royce.</LongName>
+<Description>A CFD code developed by Rolls Royce.</Description>
 <Regex>(precise)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -795,7 +794,7 @@
 
 <AprunApplication id='61'>
 <Name>Python</Name>
-<LongName></LongName>
+<Description></Description>
 <Regex>(python|python3)</Regex>
 <PrimaryLanguage>Python</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -808,7 +807,7 @@
 
 <AprunApplication id='62'>
 <Name>Quantum Espresso</Name>
-<LongName>Quantum Open-Source Package for Research in Electronic Structure, Simulation and Optimization</LongName>
+<Description>Quantum Open-Source Package for Research in Electronic Structure, Simulation and Optimization</Description>
 <Regex>(cp.x|ph.x|pw.x|neb.x|epw.x)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -821,7 +820,7 @@
 
 <AprunApplication id='63'>
 <Name>Ramses</Name>
-<LongName>Adaptive Mesh Refinement for self-gravitating magnetized fluid flows.</LongName>
+<Description>Adaptive Mesh Refinement for self-gravitating magnetized fluid flows.</Description>
 <Regex>(ramses\S*)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -834,7 +833,7 @@
 
 <AprunApplication id='64'>
 <Name>SENGA</Name>
-<LongName>A parallel combustion DNS code developed in Cambridge to study turbulent combustion.</LongName>
+<Description>A parallel combustion DNS code developed in Cambridge to study turbulent combustion.</Description>
 <Regex>(senga\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -847,7 +846,7 @@
 
 <AprunApplication id='65'>
 <Name>SIESTA</Name>
-<LongName>Spanish Initiative for Electronic Simulations with Thousands of Atoms</LongName>
+<Description>Spanish Initiative for Electronic Simulations with Thousands of Atoms</Description>
 <Regex>(siesta)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -860,7 +859,7 @@
 
 <AprunApplication id='66'>
 <Name>SimVascular</Name>
-<LongName>An open source software suite for cardiovascular simulation.</LongName>
+<Description>An open source software suite for cardiovascular simulation.</Description>
 <Regex>(flowsolver)</Regex>
 <PrimaryLanguage>C++</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -873,7 +872,7 @@
 
 <AprunApplication id='67'>
 <Name>SPECFEM3D</Name>
-<LongName>Simulates seismic wave propagation at the local or regional scale based upon the spectral-element method.</LongName>
+<Description>Simulates seismic wave propagation at the local or regional scale based upon the spectral-element method.</Description>
 <Regex>(specfem)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -886,7 +885,7 @@
 
 <AprunApplication id='68'>
 <Name>TAU</Name>
-<LongName>A 2nd order finite volume flow solver.</LongName>
+<Description>A 2nd order finite volume flow solver.</Description>
 <Regex>(ptau3d\S*|tau\S*)</Regex>
 <PrimaryLanguage>C</PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -899,7 +898,7 @@
 
 <AprunApplication id='69'>
 <Name>TBE</Name>
-<LongName>Empirical Tight Binding</LongName>
+<Description>Empirical Tight Binding</Description>
 <Regex>(tbe)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -912,7 +911,7 @@
 
 <AprunApplication id='70'>
 <Name>TTMMD</Name>
-<LongName>Two-temperature Nonequilibrium Molecular Dynamics Simulator</LongName>
+<Description>Two-temperature Nonequilibrium Molecular Dynamics Simulator</Description>
 <Regex>(ttmmd)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -925,7 +924,7 @@
 
 <AprunApplication id='71'>
 <Name>Tutorial Codes</Name>
-<LongName></LongName>
+<Description></Description>
 <Regex>(sharpen|imagenew|fractal|matmult|hello\S*)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -938,7 +937,7 @@
 
 <AprunApplication id='72'>
 <Name>USCNS3D</Name>
-<LongName>A 3D unstructured solver.</LongName>
+<Description>A 3D unstructured solver.</Description>
 <Regex>(ucns3d\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>90</PrimaryLanguageVersion>
@@ -951,7 +950,7 @@
 
 <AprunApplication id='73'>
 <Name>Unified Model</Name>
-<LongName>A numerical model of the atmosphere used for both weather and climate applications.</LongName>
+<Description>A numerical model of the atmosphere used for both weather and climate applications.</Description>
 <Regex>(um_\S*|um-\S*|HadCM3\S*|KPP_ocean)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -964,7 +963,7 @@
 
 <AprunApplication id='74'>
 <Name>Unknown</Name>
-<LongName>Code Unknown</LongName>
+<Description>Code Unknown</Description>
 <Regex>(a\.out|run\.exe|run\.x|main|main.out)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -977,7 +976,7 @@
 
 <AprunApplication id='75'>
 <Name>VASP</Name>
-<LongName>Vienna Ab initio Simulation Package</LongName>
+<Description>Vienna Ab initio Simulation Package</Description>
 <Regex>(vasp\S*)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -990,7 +989,7 @@
 
 <AprunApplication id='76'>
 <Name>WIEN2k</Name>
-<LongName>A simulation code for the electronic structure of solids using the Linearized Augmented Plane Wave method.</LongName>
+<Description>A simulation code for the electronic structure of solids using the Linearized Augmented Plane Wave method.</Description>
 <Regex>(lapwS+_mpi)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>
@@ -1003,7 +1002,7 @@
 
 <AprunApplication id='77'>
 <Name>WRF</Name>
-<LongName>Weather Research and Forecasting Model</LongName>
+<Description>Weather Research and Forecasting Model</Description>
 <Regex>((geogrid|metgrid|real|ungrib|wrf)\.exe)</Regex>
 <PrimaryLanguage>Fortran</PrimaryLanguage>
 <PrimaryLanguageVersion>95</PrimaryLanguageVersion>
@@ -1016,7 +1015,7 @@
 
 <AprunApplication id='78'>
 <Name>Yambo</Name>
-<LongName>Yet Another Many-Body cOde</LongName>
+<Description>Yet Another Many-Body cOde</Description>
 <Regex>(yambo\S*)</Regex>
 <PrimaryLanguage></PrimaryLanguage>
 <PrimaryLanguageVersion></PrimaryLanguageVersion>

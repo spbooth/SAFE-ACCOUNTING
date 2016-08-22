@@ -25,6 +25,8 @@ import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
+import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
@@ -279,6 +281,19 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 			throw new ConsistencyError("Type inconsistency", e);
 		}
 		return derived;
+	}
+
+	@Override
+	public TableSpecification modifyDefaultTableSpecification(AppContext c, TableSpecification spec,
+			PropExpressionMap map, String table_name) {
+		TableSpecification ss = super.modifyDefaultTableSpecification(c, spec, map, table_name);
+		try {
+			ss.new Index("time",false,APSYS_END_TIMESTAMP.getName());
+			ss.new Index("alps_time",false,APRUN_START_TIMESTAMP.getName(), APSYS_END_TIMESTAMP.getName());
+		} catch (InvalidArgument e) {
+			c.getService(LoggerService.class).getLogger(getClass()).error("Error adding time index",e);
+		}
+		return ss;
 	}
 	
 }

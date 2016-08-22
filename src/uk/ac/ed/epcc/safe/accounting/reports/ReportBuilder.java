@@ -90,6 +90,7 @@ import uk.ac.ed.epcc.webapp.model.TextFileOverlay.TextFile;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.session.AppUser;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 /**
  * Class to Build Reports from an XML template
@@ -804,7 +805,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		// always try parameters.
 		xmlSource = runParametersTransform( xmlSource,params);
 		// Get the report type
-		
+		TimerService timer = conn.getService(TimerService.class);
 		
 		
 		String transform_list = conn.getInitParameter("ReportBuilder."+type.name()+".transform_list", "identity.xsl");
@@ -816,6 +817,9 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 				name = transform_names[i];
 				name = name.trim();
 				if( name.length() > 0){
+					if( timer != null){
+						timer.startTimer("xml-transform "+name);
+					}
 					Transformer transformer = getXSLTransform(name,
 							params);
 					logSource(name, xmlSource);
@@ -823,12 +827,21 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 					DOMResult result = new DOMResult();
 					transformer.transform(xmlSource, result);
 					xmlSource = new DOMSource(result.getNode());
+					if( timer != null){
+						timer.stopTimer("xml-transform "+name);
+					}
 				}
 			}
 			name = transform_names[transform_names.length-1];
+			if( timer != null){
+				timer.startTimer("xml-transform "+name);
+			}
 			logSource(name, xmlSource);
 			Transformer transformer = getXSLTransform(name, params);
 			transformer.transform(xmlSource,out );
+			if( timer != null){
+				timer.stopTimer("xml-transform "+name);
+			}
 		}catch(Throwable t){
 			log.error("Error in transform "+name,t);
 			throw new Exception(t);

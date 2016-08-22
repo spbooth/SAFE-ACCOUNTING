@@ -12,10 +12,8 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
-public class RegexpTargetFactory<T extends RegexpTarget> extends DefaultDataObjectPropertyFactory<T> {
+public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClassificationFactory<T> {
 	
-	public static final String NAME_FIELD = "Name";
-	public static final String LONG_NAME_FIELD = "LongName";
 	public static final String REGEX_FIELD = "Regex";
 	
 	public static final String PRIMARY_LANGUAGE_FIELD = "PrimaryLanguage";
@@ -28,8 +26,7 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends DefaultDataObje
 	
 		
 	public RegexpTargetFactory(AppContext conn, String table){
-		super();
-		setContext(conn, table);
+		super(conn,table);
 	}
 	
 	@Override
@@ -45,17 +42,15 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends DefaultDataObje
 	@Override
 	protected Map<String, String> getTranslations() {
 		Map<String, String> translations = super.getTranslations();
-		translations.put(LONG_NAME_FIELD, "Description");
 		translations.put(REGEX_FIELD,"Matching regular expression");
 		return translations;
 	}
 
 	@Override
-	protected TableSpecification getDefaultTableSpecification(AppContext c, String table) {
+	public TableSpecification getDefaultTableSpecification(AppContext c, String table) {
 		
-		TableSpecification spec = new TableSpecification("RegexTargetID");
-		spec.setField(NAME_FIELD, new StringFieldType(false, null, 16));
-		spec.setField(LONG_NAME_FIELD, new StringFieldType(true, null, 512));
+		TableSpecification spec = super.getDefaultTableSpecification(c, table);
+
 		spec.setField(REGEX_FIELD, new StringFieldType(false, null, 128));
 		
 		spec.setField(PRIMARY_LANGUAGE_FIELD, new StringFieldType(true, null, 128));
@@ -79,14 +74,4 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends DefaultDataObje
 		return new RegexpTarget(this, res);
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.webapp.model.data.DataObjectFactory#getOrder()
-	 */
-	@Override
-	protected List<OrderClause> getOrder() {
-		
-		List<OrderClause> order = super.getOrder();
-		order.add(res.getOrder(NAME_FIELD, false));
-		return order;
-	}
 }

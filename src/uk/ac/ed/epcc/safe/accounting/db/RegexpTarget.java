@@ -4,12 +4,9 @@ import java.util.regex.Pattern;
 
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 
-public class RegexpTarget extends DataObjectPropertyContainer {
+public class RegexpTarget extends AccountingClassification {
 
-	@Override
-	public String getIdentifier(int max_length) {
-		return getName();
-	}
+	
 
 	public RegexpTarget(RegexpTargetFactory fac, Record r) {
 		super(fac, r);
@@ -23,7 +20,4 @@ public class RegexpTarget extends DataObjectPropertyContainer {
 		return patt;
 	}
 
-	public String getName(){
-		return record.getStringProperty(RegexpTargetFactory.NAME_FIELD);
-	}
 }

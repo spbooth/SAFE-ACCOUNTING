@@ -934,7 +934,9 @@ public class TableExtension extends ReportExtension {
 	}
 	
 	public DocumentFragment postProcess(TableProxy proxy,  Node instructions) {
+		startTimer("postProcess "+proxy.getClass().getSimpleName());
 		Table table = proxy.postProcess(instructions);		
+		stopTimer("postProcess "+proxy.getClass().getSimpleName());
 		if (table != null) {
 			return format(table,instructions);
 			

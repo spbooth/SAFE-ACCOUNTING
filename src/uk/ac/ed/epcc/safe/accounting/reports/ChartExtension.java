@@ -171,7 +171,8 @@ public abstract class ChartExtension extends ReportExtension {
 		return new Chart<P>(chart);
 	}
 	public Chart<TimeChart> makeTimeChart(Period period, Node node) {
-		
+		startTimer("makeTimeChart");
+		try{
 		if (node.getNodeType() != Node.ELEMENT_NODE) {
 			addError("Bad Plot", "Non element fragment passed to makeTimeChart");
 			return null;
@@ -217,7 +218,9 @@ public abstract class ChartExtension extends ReportExtension {
 			return null;
 		}
 		
-
+		}finally{
+			stopTimer("makeTimeChart");
+		}
 	}
 //	public boolean addPlot(RecordSet set, Chart chart, Node node ){
 //		if (node.getNodeType() != Node.ELEMENT_NODE) {
@@ -266,6 +269,7 @@ public abstract class ChartExtension extends ReportExtension {
 		}
 		
 		Element e = (Element) node;
+		startTimer("addPlot");
 		try{
 			UsageProducer up = set.getUsageProducer();
 			if( up == null ){
@@ -291,6 +295,8 @@ public abstract class ChartExtension extends ReportExtension {
 		}catch(Throwable t){
 			addError("Error in plot", t.getClass().getCanonicalName(), t);
 			return result;
+		}finally{
+			stopTimer("addPlot");
 		}
 	}
 	public Chart<PieTimeChart> makePieTimeChart(Period period, Node node) {
