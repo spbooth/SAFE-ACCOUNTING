@@ -1,6 +1,5 @@
-<html>
-<body>
-<p>
+/**
+
 This package contains classes that implement the Accounting interfaces from 
 uk.ac.ed.epcc.safe.accounting as database persisted objects using the classes from
 uk.ac.ed.epcc.webapp.model.data
@@ -13,5 +12,5 @@ Classification tables and manual allocation records will have some properties th
 are only modified by forms code. In this case we want to automatically generate propertyTags 
 from the database schema.
 </p>
-</body>
-</html>
+**/
+package uk.ac.ed.epcc.safe.accounting.db;

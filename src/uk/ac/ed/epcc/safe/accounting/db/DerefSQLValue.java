@@ -27,20 +27,21 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.RemoteSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
-import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
-/** An SQLAccessor for a single level DerefExpression
- * The remote object is retrieved and the remote expression evaluated programatically.
- * Additional levels of de-referencing can be applied in the evaluation stage.
+/** An {@link SQLValue} for a {@link DeRefExpression} that implements {@link FilterProvider}
+ * The remote object is retrieved and the remote expression evaluated programmatically.
  * @author spb
+ * @see SQLExpression
  * @param <H> type of owning object
  * @param <R> type of remote object
  * @param <T> target type of accessor
