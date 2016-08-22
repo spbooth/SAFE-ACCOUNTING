@@ -26,19 +26,22 @@ import uk.ac.ed.epcc.safe.accounting.reference.IndexedTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
+import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.RemoteSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
-import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
-/** An SQLAccessor for a DerefExpression
- * The remote object is retrieved and the remote expression evaluated programatically.
+/** An {@link SQLValue} for a {@link DeRefExpression} that implements {@link FilterProvider}
+ * The remote object is retrieved and the remote expression evaluated programmatically.
  * @author spb
+ * @see SQLExpression
  * @param <H> type of owning object
  * @param <R> type of remote object
  * @param <T> target type of accessor
@@ -50,7 +53,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 	
 	protected final PropExpression<T> expr;
 	protected final Class<? super H> h_type;
-	public DerefSQLValue(IndexedFieldValue<H,R> a, PropExpression<T> expr,
+	public DerefSQLValue(IndexedSQLValue<H,R> a, PropExpression<T> expr,
 			AppContext conn) throws Exception {
 		super(conn, a);
 		this.expr = expr;
@@ -111,9 +114,9 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 	public SQLFilter<H> getFilter(MatchCondition match, T val) throws CannotFilterException, NoSQLFilterException {
 		
 		SQLValue<IndexedReference<R>> v = getReferenceValue();
-		if( v instanceof IndexedFieldValue){
+		if( v instanceof IndexedSQLValue){
 
-			IndexedFieldValue a = (IndexedFieldValue)v;
+			IndexedSQLValue a = (IndexedSQLValue)v;
 
 			IndexedProducer<R> producer;
 			try {
@@ -136,9 +139,9 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 	public SQLFilter<H> getOrderFilter(boolean descending) throws CannotFilterException, NoSQLFilterException {
 		
 		SQLValue<IndexedReference<R>> v = getReferenceValue();
-		if( v instanceof IndexedFieldValue){
+		if( v instanceof IndexedSQLValue){
 
-			IndexedFieldValue a = (IndexedFieldValue)v;
+			IndexedSQLValue a = (IndexedSQLValue)v;
 
 			IndexedProducer<R> producer;
 			try {
@@ -160,8 +163,8 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 	@SuppressWarnings("unchecked")
 	public SQLFilter<H> getNullFilter(boolean is_null) throws CannotFilterException, NoSQLFilterException {
 		SQLValue<IndexedReference<R>> v = getReferenceValue();
-		if( v instanceof IndexedFieldValue){
-			IndexedFieldValue a = (IndexedFieldValue)v;
+		if( v instanceof IndexedSQLValue){
+			IndexedSQLValue a = (IndexedSQLValue)v;
 			IndexedProducer<R> producer;
 			try {
 				producer = a.getFactory();

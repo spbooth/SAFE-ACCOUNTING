@@ -19,12 +19,19 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
+import uk.ac.ed.epcc.webapp.jdbc.expr.CompositeIndexedSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 /** A de-reference expression that is itself a reference expression.
  * 
+ * Though a normal {@link DeRefExpression} should always work using this class allows the de-reference to be implemented
+ * as a join in SQL. Note the {@link PropExpressionNormaliser} will attempt to promote de-references to this class if appropriate.
+ * 
+ * @see CompositeIndexedSQLValue
+ * @see IndexedSQLValue
  * @author spb
  *
  * @param <R>
