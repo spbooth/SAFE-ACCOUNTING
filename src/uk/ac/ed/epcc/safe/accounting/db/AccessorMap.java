@@ -1182,14 +1182,16 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 					// default to simple SQLExpressionFilter
 				}
 			}
+			SQLExpressionFilter<X, I> result = new SQLExpressionFilter<X, I>(target,exp, match,data);
 			SQLFilter<X> required = exp.getRequiredFilter();
 			if( required != null){
 				SQLAndFilter<X> fil = new SQLAndFilter<X>(target);
 				fil.addFilter(required);
-				fil.addFilter(new SQLExpressionFilter<X, I>(target,exp, match,data));
+				
+				fil.addFilter(result);
 				return fil;
 			}
-			return new SQLExpressionFilter<X, I>(target,exp, match,data);
+			return result;
 		}catch(Exception e){
 			//keep looking
 		}
@@ -1255,7 +1257,17 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		try {
 			SQLExpression<R> exp1 = getSQLExpression(left);
 			SQLExpression<R> exp2 = getSQLExpression(right);
-			return new SQLExpressionMatchFilter<X,R>(target,exp1,match,exp2);
+			SQLExpressionMatchFilter<X, R> result = new SQLExpressionMatchFilter<X,R>(target,exp1,match,exp2);
+			SQLFilter<X> req1 = exp1.getRequiredFilter();
+			SQLFilter<X> req2 = exp2.getRequiredFilter();
+			if( req1 != null || req2 != null){
+				SQLAndFilter<X> and = new SQLAndFilter<X>(target);
+				and.addFilter(result);
+				and.addFilter(req1);
+				and.addFilter(req2);
+				return and;
+			}
+			return result;
 		} catch (InvalidSQLPropertyException e) {
 			
 		}
@@ -1278,7 +1290,15 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
     				// Go with default SQLExpressionNullFilter
     			}
     		}
-    		return new SQLExpressionNullFilter<X, I>(target,exp, is_null);
+    		SQLExpressionNullFilter<X, I> result = new SQLExpressionNullFilter<X, I>(target,exp, is_null);
+    		SQLFilter<X> req = exp.getRequiredFilter();
+    		if( req != null ){
+    			SQLAndFilter<X> fil = new SQLAndFilter<X>(target);
+    			fil.addFilter(result);
+    			fil.addFilter(req);
+    			return fil;
+    		}
+			return result;
     	}catch(InvalidSQLPropertyException e){
     		// keep looking
     	}

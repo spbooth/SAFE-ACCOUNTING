@@ -41,6 +41,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinarySQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLValue;
@@ -75,6 +76,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 public abstract class CreateSQLValuePropExpressionVisitor implements
 		PropExpressionVisitor<SQLValue> {
 	
+	private static final Feature PARTIAL_JOIN_FEATURE = new Feature("sqlvalue.partial_join",true,"Perform SQL joins to evaluate remote references");
     private final Class target;
 	private final AppContext conn;
     public CreateSQLValuePropExpressionVisitor(Class target,AppContext c){
@@ -177,15 +179,17 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	}
 	public <T extends DataObject & ExpressionTarget> SQLValue visitDoubleDeRefExpression(
 			DoubleDeRefExpression<T, ?> dre) throws Exception {
-		SQLValue base = dre.getTargetObject().accept(this);
-		if( base != null && base instanceof IndexedSQLValue){
-			// Consider de-referencing in SQL
-			IndexedSQLValue isv = (IndexedSQLValue) base;
-			IndexedProducer prod = isv.getFactory(); // base factory for branch
-			if( prod instanceof ExpressionTargetFactory ){
-				SQLValue branch = ((ExpressionTargetFactory) prod).getAccessorMap().getSQLValue(dre.getNext());
-				if( branch != null && branch instanceof IndexedSQLValue){
-					return new CompositeIndexedSQLValue(isv, (IndexedSQLValue)branch);
+		if( PARTIAL_JOIN_FEATURE.isEnabled(conn)){
+			SQLValue base = dre.getTargetObject().accept(this);
+			if( base != null && base instanceof IndexedSQLValue){
+				// Consider de-referencing in SQL
+				IndexedSQLValue isv = (IndexedSQLValue) base;
+				IndexedProducer prod = isv.getFactory(); // base factory for branch
+				if( prod instanceof ExpressionTargetFactory ){
+					SQLValue branch = ((ExpressionTargetFactory) prod).getAccessorMap().getSQLValue(dre.getNext());
+					if( branch != null && branch instanceof IndexedSQLValue){
+						return new CompositeIndexedSQLValue(isv, (IndexedSQLValue)branch);
+					}
 				}
 			}
 		}
