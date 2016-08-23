@@ -106,18 +106,4 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy {
 	}
 
 
-	@Override
-	public TableSpecification modifyDefaultTableSpecification(AppContext c, TableSpecification spec,
-			PropExpressionMap map, String table_name) {
-		
-		TableSpecification ss = super.modifyDefaultTableSpecification(c, spec, map, table_name);
-		String remote_table = 	c.getInitParameter("nested_parse.table." + table_name);
-		if( remote_table != null){
-			ss.setField(table_name+"ID", new ReferenceFieldType(remote_table));
-		}
-		return ss;
-		
-		
-	}
-
 }

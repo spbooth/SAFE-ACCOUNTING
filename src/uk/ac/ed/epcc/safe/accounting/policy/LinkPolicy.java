@@ -26,6 +26,7 @@ import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
+import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -49,6 +50,8 @@ import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
@@ -343,5 +346,17 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 	}
 	protected final Logger getLogger(){
 		return c.getService(LoggerService.class).getLogger(getClass());
+	}
+
+	@Override
+	public TableSpecification modifyDefaultTableSpecification(AppContext c, TableSpecification spec,
+			PropExpressionMap map, String table_name) {
+	
+		TableSpecification result = super.modifyDefaultTableSpecification(c, spec, map, table_name);
+		String remote_table = c.getInitParameter("LinkPolicy.target."+table_name);
+		if( remote_table != null){
+			spec.setField(remote_table+"ID", new ReferenceFieldType(remote_table));
+		}
+		return result;
 	}
 }

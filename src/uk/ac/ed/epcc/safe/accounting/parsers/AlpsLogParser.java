@@ -40,6 +40,11 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 public class AlpsLogParser extends AbstractPropertyContainerParser implements IncrementalPropertyContainerParser {
 
 	private static final PropertyRegistry alps_reg = new PropertyRegistry("alps", "Properties from the alps log");
+	@AutoTable(target=Integer.class, unique=true)
+	public static final PropertyTag<Integer> ALPS_ID = new PropertyTag<Integer>(alps_reg, "apid", Integer.class, "Alps job id");
+	@AutoTable(target=Date.class, unique=true)
+	public static final PropertyTag<Date> SUBMISSION_TIMESTAMP = new PropertyTag<Date>(alps_reg, "alpsBootTime", Date.class, "Time alps system started");
+
 	
 	@AutoTable(target=String.class)
 	public static final PropertyTag<String> APRUN_TAG = new PropertyTag<String>(alps_reg, "aprun_entry_tag", String.class, "Alps log aprun tag");
@@ -53,21 +58,18 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	public static final PropertyTag<Integer> PBS_ID = new PropertyTag<Integer>(alps_reg, "batch_id", Integer.class, "Batch job id");
 	@AutoTable(target=String.class)
 	public static final PropertyTag<String> PBS_ARRAY_INDEX = new PropertyTag<String>(alps_reg, "batch_array_index", String.class, "Batch job array index");
+
 	
-	@AutoTable(target=Integer.class, unique=true)
-	public static final PropertyTag<Integer> ALPS_ID = new PropertyTag<Integer>(alps_reg, "apid", Integer.class, "Alps job id");
-	@AutoTable(target=Integer.class, unique=true)
+	@AutoTable(target=Integer.class)
 	public static final PropertyTag<Integer> USER_ID = new PropertyTag<Integer>(alps_reg, "user", Integer.class, "User");
-	@AutoTable(target=String.class, unique=true)
+	@AutoTable(target=String.class)
 	public static final PropertyTag<String> HOST_NAME = new PropertyTag<String>(alps_reg, "hostname", String.class, "Hostname");
 	@AutoTable(target=Integer.class)
 	public static final PropertyTag<Integer> NODE_COUNT = new PropertyTag<Integer>(alps_reg, "num_nodes", Integer.class, "Number of nodes");
 	@AutoTable(target=String.class, length=1024)
 	public static final PropertyTag<String> NODE_LIST = new PropertyTag<String>(alps_reg, "node_list", String.class, "Node list");
 	
-	@AutoTable(target=Date.class)
-	public static final PropertyTag<Date> SUBMISSION_TIMESTAMP = new PropertyTag<Date>(alps_reg, "aprunSubmissionTime", Date.class, "Timestamp of aprun submission");
-	
+		
 	@AutoTable(target=Date.class)
 	public static final PropertyTag<Date> APRUN_START_TIMESTAMP = new PropertyTag<Date>(alps_reg, "aprunStartTime", Date.class, "Timestamp of starting aprun record");
 	@AutoTable(target=Date.class)
@@ -186,7 +188,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 			// removes microsecond part since Date has millisecond precision and include colon in timezone
 			timestamp = new StringBuffer(timestamp).delete(23, 26).delete(26, 27).toString();
 			
-			System.out.println(timestamp);
+			
 			if (record_type.equals("aprun")) {
 				map.setProperty(APRUN_TAG, tag);
 				try {
@@ -290,6 +292,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 		try {
 			ss.new Index("time",false,APSYS_END_TIMESTAMP.getName());
 			ss.new Index("alps_time",false,APRUN_START_TIMESTAMP.getName(), APSYS_END_TIMESTAMP.getName());
+			
 		} catch (InvalidArgument e) {
 			c.getService(LoggerService.class).getLogger(getClass()).error("Error adding time index",e);
 		}
