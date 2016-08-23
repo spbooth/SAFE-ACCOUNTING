@@ -24,8 +24,10 @@ import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.webapp.Targetted;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.BaseSQLFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** Interface for ExpressionTarget factories that can generate filters based on a {@link PropExpression} 
  * 
@@ -79,6 +81,13 @@ public interface ExpressionFilterTarget<T extends ExpressionTarget> extends Targ
 			PropExpression<Date> end_prop, 
 			OverlapType type,long cutoff)
 			throws CannotFilterException;
-	
-	public <I> OrderFilter<T> getOrderFilter(boolean descending, PropExpression<I> expr) throws CannotFilterException;
+	/** get an ordering {@link SQLFilter} based on the expression.
+	 * 
+	 * This will contain an {@link OrderFilter} but will also contain any required filters.
+	 * @param descending
+	 * @param expr
+	 * @return
+	 * @throws CannotFilterException
+	 */
+	public <I> BaseSQLFilter<T> getOrderFilter(boolean descending, PropExpression<I> expr) throws CannotFilterException;
 }

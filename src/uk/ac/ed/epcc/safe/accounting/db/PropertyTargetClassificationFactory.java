@@ -40,6 +40,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.GeneralTransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecificationTransitionSource;
@@ -94,7 +95,7 @@ public abstract class PropertyTargetClassificationFactory<T extends AccountingCl
 		return getAccessorMap().getPeriodFilter(period, start, end,type,cutoff);
 	}
 	
-	public <I> OrderFilter<T> getOrderFilter(boolean descending, PropExpression<I> expr)
+	public <I> SQLFilter<T> getOrderFilter(boolean descending, PropExpression<I> expr)
 			throws CannotFilterException {
 		return getAccessorMap().getOrderFilter(descending, expr);
 	}

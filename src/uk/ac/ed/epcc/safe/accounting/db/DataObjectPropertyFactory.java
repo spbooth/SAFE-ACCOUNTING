@@ -150,7 +150,7 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 		return getAccessorMap().getPeriodFilter(period, start, end,type,cutoff);
 	}
 	
-	public <I> OrderFilter<T> getOrderFilter(boolean descending, PropExpression<I> expr)
+	public <I> SQLFilter<T> getOrderFilter(boolean descending, PropExpression<I> expr)
 			throws CannotFilterException {
 		return getAccessorMap().getOrderFilter(descending, expr);
 	}

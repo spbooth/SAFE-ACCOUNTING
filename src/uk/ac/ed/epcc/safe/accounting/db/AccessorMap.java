@@ -1182,16 +1182,8 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 					// default to simple SQLExpressionFilter
 				}
 			}
-			SQLExpressionFilter<X, I> result = new SQLExpressionFilter<X, I>(target,exp, match,data);
-			SQLFilter<X> required = exp.getRequiredFilter();
-			if( required != null){
-				SQLAndFilter<X> fil = new SQLAndFilter<X>(target);
-				fil.addFilter(required);
-				
-				fil.addFilter(result);
-				return fil;
-			}
-			return result;
+			return SQLExpressionFilter.getFilter(target,exp, match,data);
+			
 		}catch(Exception e){
 			//keep looking
 		}
@@ -1257,17 +1249,8 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		try {
 			SQLExpression<R> exp1 = getSQLExpression(left);
 			SQLExpression<R> exp2 = getSQLExpression(right);
-			SQLExpressionMatchFilter<X, R> result = new SQLExpressionMatchFilter<X,R>(target,exp1,match,exp2);
-			SQLFilter<X> req1 = exp1.getRequiredFilter();
-			SQLFilter<X> req2 = exp2.getRequiredFilter();
-			if( req1 != null || req2 != null){
-				SQLAndFilter<X> and = new SQLAndFilter<X>(target);
-				and.addFilter(result);
-				and.addFilter(req1);
-				and.addFilter(req2);
-				return and;
-			}
-			return result;
+			return SQLExpressionMatchFilter.getFilter(target, exp1,match, exp2);
+			
 		} catch (InvalidSQLPropertyException e) {
 			
 		}
@@ -1275,7 +1258,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	}
     @SuppressWarnings("unchecked")
 	public final <I> BaseFilter<X> getNullFilter(PropExpression<I> expr,
-			boolean is_null) throws CannotFilterException {
+			boolean is_null)  throws CannotFilterException {
     	if( expr == null ){
     		throw new CannotFilterException("Cannot filter on null expression");
     	}
@@ -1290,15 +1273,8 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
     				// Go with default SQLExpressionNullFilter
     			}
     		}
-    		SQLExpressionNullFilter<X, I> result = new SQLExpressionNullFilter<X, I>(target,exp, is_null);
-    		SQLFilter<X> req = exp.getRequiredFilter();
-    		if( req != null ){
-    			SQLAndFilter<X> fil = new SQLAndFilter<X>(target);
-    			fil.addFilter(result);
-    			fil.addFilter(req);
-    			return fil;
-    		}
-			return result;
+    		return SQLExpressionNullFilter.getFilter(target,exp, is_null);
+    		
     	}catch(InvalidSQLPropertyException e){
     		// keep looking
     	}
@@ -1419,14 +1395,14 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
     	}
 		return res;
 	}
-	public <I> OrderFilter<X> getOrderFilter(boolean descending, PropExpression<I> expr)
+	public <I> SQLFilter<X> getOrderFilter(boolean descending, PropExpression<I> expr)
 			throws CannotFilterException {
 		try {
 			SQLExpression<I> sqlExpression = getSQLExpression(expr);
 			if(sqlExpression == null ){
 				return null;
 			}
-			return new SQLExpressionOrderFilter<I, X>(target,descending,sqlExpression);
+			return SQLExpressionOrderFilter.getFilter(target,descending,sqlExpression);
 		} catch (InvalidSQLPropertyException e) {
 			throw new CannotFilterException(e);
 		}

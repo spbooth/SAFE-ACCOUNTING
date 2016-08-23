@@ -367,7 +367,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 	}
 
 		
-	public <I> OrderFilter<H> getOrderFilter(boolean descending, PropExpression<I> expr)
+	public <I> SQLFilter<H> getOrderFilter(boolean descending, PropExpression<I> expr)
 			throws CannotFilterException {
 		return getAccessorMap().getOrderFilter(descending, expr);
 	}

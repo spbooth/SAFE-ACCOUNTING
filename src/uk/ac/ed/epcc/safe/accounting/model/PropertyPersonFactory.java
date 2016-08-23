@@ -66,6 +66,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderClause;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.CompositeTableTransitionRegistry;
 import uk.ac.ed.epcc.webapp.jdbc.table.GeneralTransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
@@ -356,7 +357,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 			throws CannotFilterException {
 		return getAccessorMap().getPeriodFilter(period, start,end,type,cutoff);
 	}
-	public <I> OrderFilter<P> getOrderFilter(boolean descending, PropExpression<I> expr)
+	public <I> SQLFilter<P> getOrderFilter(boolean descending, PropExpression<I> expr)
 			throws CannotFilterException {
 		return getAccessorMap().getOrderFilter(descending, expr);
 	}
