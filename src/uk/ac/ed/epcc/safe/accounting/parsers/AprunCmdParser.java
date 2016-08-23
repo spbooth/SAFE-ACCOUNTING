@@ -46,7 +46,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	public static final AprunPropertyTag<Boolean> RECONNECT = new AprunPropertyTag<Boolean>(aprun_reg, "reconnect", new String[]{"-C", "--reconnect"}, Boolean.class, false);
 	@AutoTable(target=String.class)
 	public static final AprunPropertyTag<String> CPU_BINDING = new AprunPropertyTag<String>(aprun_reg, "cpu_binding", new String[]{"-cc", "--cc", "--cpu-binding"}, String.class, "");
-	@AutoTable(target=String.class)
+	@AutoTable(target=String.class, length=512)
 	public static final AprunPropertyTag<String> CPU_BINDING_FILE = new AprunPropertyTag<String>(aprun_reg, "cpu_binding_file", new String[]{"-cp", "--cp", "--cpu-binding-file"}, String.class, "");
 	@AutoTable(target=Integer.class)
 	public static final AprunPropertyTag<Integer> CPUS_PER_PE = new AprunPropertyTag<Integer>(aprun_reg, "cpus_per_pe", new String[]{"-d", "--cpus-per-pe"}, Integer.class, 1);
