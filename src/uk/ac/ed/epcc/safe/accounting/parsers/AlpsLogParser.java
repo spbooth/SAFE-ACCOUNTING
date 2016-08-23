@@ -47,7 +47,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	public static final PropertyTag<String> APSYS_TAG = new PropertyTag<String>(alps_reg, "apsys_entry_tag", String.class, "Alps log apsys tag");
 	
 
-	@AutoTable(target=String.class, length=16)
+	@AutoTable(target=String.class, length=32)
 	public static final PropertyTag<String> PBS_STRING_ID = new PropertyTag<String>(alps_reg,"batch_string_id",String.class,"Full Batch job identifier");
 	@AutoTable(target=Integer.class)
 	public static final PropertyTag<Integer> PBS_ID = new PropertyTag<Integer>(alps_reg, "batch_id", Integer.class, "Batch job id");
@@ -138,7 +138,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	}
 	
 	
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	private static final SimpleDateFormat sf = new SimpleDateFormat("'p0-'yyyyMMdd't'HHmmss");
 	
 	private static final Pattern parse_pattern = Pattern.compile("\\S+ (?<TIMESTAMP>\\S+) (?<HOSTNAME>\\S+) (?<RECORDTYPE>\\S+) (?<TAG>\\S+) (?<SUBMISSION>\\S+)"
@@ -183,10 +183,10 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 			}
 			
 			String timestamp = m.group("TIMESTAMP");
-			// removes microsecond part since Date has millisecond precision
-			timestamp = new StringBuffer(timestamp).delete(23, 26).toString();
+			// removes microsecond part since Date has millisecond precision and include colon in timezone
+			timestamp = new StringBuffer(timestamp).delete(23, 26).delete(26, 27).toString();
 			
-			
+			System.out.println(timestamp);
 			if (record_type.equals("aprun")) {
 				map.setProperty(APRUN_TAG, tag);
 				try {

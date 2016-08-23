@@ -59,7 +59,11 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 		"<150>1 2016-05-20T14:14:06.978843+01:00 c4-1c0s0n1 apsys 2274 p0-20160509t103958 [alps_msgs@34] apid=21705594, Finishing, user=5833, batch_id=3692330.sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
 		
 		"<150>1 2015-11-01T00:01:07.515128+00:00 c0-1c0s0n1 aprun 3706 p0-20151014t172436 [alps_msgs@34] apid=18543822, Error, user=15559, batch_id=3245599.sdb, [NID 03497] 2015-11-01 00:01:07 Apid 18543822: Cpuset file /dev/cpuset/18543822/cpus wrote -1 of 5; found 1 other local apid: 18540933 ",
-		"<150>1 2016-07-01T00:16:49.799797+01:00 c2-0c1s1n1 aprun 8929 p0-20160622t161139 [alps_msgs@34] apid=none, Error, user=13676, batch_id=unknown, user specified option error"
+		"<150>1 2016-07-01T00:16:49.799797+01:00 c2-0c1s1n1 aprun 8929 p0-20160622t161139 [alps_msgs@34] apid=none, Error, user=13676, batch_id=unknown, user specified option error",
+		"<150>1 2016-06-02T12:05:42.581451+01:00 c2-0c1s1n1 apsys 11428 p0-20160525t121452 [alps_msgs@34] apid=21897763, Finishing, user=15961, batch_id=3728292[1091].sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
+		"<150>1 2016-06-02T12:04:51.255478+01:00 c6-0c1s1n1 apsys 7157 p0-20160525t121452 [alps_msgs@34] apid=21897856, Finishing, user=15961, batch_id=3728292[1099].sdb, exit_code=0, exitcode_array=0, exitsignal_array=0"
+
+		
 		};
 				
 		/*
