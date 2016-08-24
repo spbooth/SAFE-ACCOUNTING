@@ -1,7 +1,13 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
+import static org.junit.Assert.*;
+
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+
+import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
@@ -105,5 +111,12 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 		return goodRecords;
 	}
 
-	
+	@Test
+	public void testDateParser() throws ParseException{
+		Date orig = AlpsLogParser.parseDate("2016-06-02T12:04:51.255478+01:00");
+		Date mod = AlpsLogParser.parseDate("2016-06-02T12:04:51.255478+00:00");
+		long orig_time = orig.getTime();
+		long mod_time = mod.getTime();
+		assertFalse(orig.getTime() == mod.getTime());
+	}
 }

@@ -185,14 +185,12 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 			}
 			
 			String timestamp = m.group("TIMESTAMP");
-			// removes microsecond part since Date has millisecond precision and include colon in timezone
-			timestamp = new StringBuffer(timestamp).delete(23, 26).delete(26, 27).toString();
 			
 			
 			if (record_type.equals("aprun")) {
 				map.setProperty(APRUN_TAG, tag);
 				try {
-					Date start = df.parse(timestamp);
+					Date start = parseDate(timestamp);
 					map.setProperty(APRUN_START_TIMESTAMP, start);
 				} catch (ParseException e) {
 					throw new AccountingParseException("bad start date format", e);
@@ -200,7 +198,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 			} else if (record_type.equals("apsys")) {
 				map.setProperty(APSYS_TAG, tag);
 				try {
-					Date end = df.parse(timestamp);
+					Date end = parseDate(timestamp);
 					map.setProperty(APSYS_END_TIMESTAMP, end);
 				} catch (ParseException e) {
 					throw new AccountingParseException("bad end date format", e);
@@ -239,6 +237,17 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 		}
 		
 		return true;
+	}
+
+	/**
+	 * @param timestamp
+	 * @return
+	 * @throws ParseException
+	 */
+	public static Date parseDate(String timestamp) throws ParseException {
+		Date stamp;
+		timestamp = new StringBuffer(timestamp).delete(23, 26).delete(26, 27).toString();
+		return df.parse(timestamp);
 	}
 
 	@Override
