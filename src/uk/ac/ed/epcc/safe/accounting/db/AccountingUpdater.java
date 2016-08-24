@@ -143,7 +143,12 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     					if( last == null || point.after(last)){
     						last=point;
     					}
+    					Date start_point = map.getProperty(StandardProperties.STARTED_PROP);
+    					if( start_point != null && point.before(start_point)){
+    						throw new AccountingParseException("Reversed time bounds");
+    					}
     				}
+    				
                     // make an un-commited record from the map
     				T record = target.prepareRecord(map);
     				

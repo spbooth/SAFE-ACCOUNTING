@@ -231,11 +231,12 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 					}
 				}	
 			}
-			Date start = map.getProperty(APRUN_START_TIMESTAMP);
-			Date end = map.getProperty(APSYS_END_TIMESTAMP);
-			if( start != null && end != null && end.before(start) ){
-				throw new AccountingParseException("reversed time bounds");
-			}
+// This won't work as we only ever have one of the two values in a single line
+//			Date start = map.getProperty(APRUN_START_TIMESTAMP);
+//			Date end = map.getProperty(APSYS_END_TIMESTAMP);
+//			if( start != null && end != null && end.before(start) ){
+//				throw new AccountingParseException("reversed time bounds");
+//			}
 		} else {
 			throw new AccountingParseException("Unexpected line format");
 		}
