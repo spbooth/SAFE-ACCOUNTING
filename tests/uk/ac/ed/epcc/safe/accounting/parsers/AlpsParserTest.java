@@ -113,10 +113,19 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 
 	@Test
 	public void testDateParser() throws ParseException{
-		Date orig = AlpsLogParser.parseDate("2016-06-02T12:04:51.255478+01:00");
-		Date mod = AlpsLogParser.parseDate("2016-06-02T12:04:51.255478+00:00");
+		Date orig = AlpsLogParser.parseDate(true,"2016-06-02T12:04:51.255478+01:00");
+		Date mod = AlpsLogParser.parseDate(true,"2016-06-02T12:04:51.255478+00:00");
 		long orig_time = orig.getTime();
 		long mod_time = mod.getTime();
-		assertFalse(orig.getTime() == mod.getTime());
+		assertNotEquals(orig.getTime() , mod.getTime());
+	}
+	
+	@Test
+	public void testDateParserNoTZ() throws ParseException{
+		Date orig = AlpsLogParser.parseDate(false,"2016-06-02T12:04:51.255478+01:00");
+		Date mod = AlpsLogParser.parseDate(false,"2016-06-02T12:04:51.255478+00:00");
+		long orig_time = orig.getTime();
+		long mod_time = mod.getTime();
+		assertEquals(orig.getTime() , mod.getTime());
 	}
 }

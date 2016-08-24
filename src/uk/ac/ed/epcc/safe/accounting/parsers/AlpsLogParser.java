@@ -33,6 +33,8 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 /** Parser for alps syslog information
  * 
+ *  Setting the <b><i>table_name</i>.parse_timezone</b> to <b>false</b> will suppress parsing
+ *  of the timezone part of the timestamps (for systems where the TZ information is unreliable).
  * @author spb
  *
  */
@@ -140,7 +142,8 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	}
 	
 	
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+	private static final SimpleDateFormat df_no_tz = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 	private static final SimpleDateFormat sf = new SimpleDateFormat("'p0-'yyyyMMdd't'HHmmss");
 	
 	private static final Pattern parse_pattern = Pattern.compile("\\S+ (?<TIMESTAMP>\\S+) (?<HOSTNAME>\\S+) (?<RECORDTYPE>\\S+) (?<TAG>\\S+) (?<SUBMISSION>\\S+)"
@@ -153,6 +156,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	private static final Pattern attribute_pattern = Pattern.compile("(?<ATTRNAME>\\w+)=(?<ATTRVALUE>(?:[^\"\\s]*[^,\"\\s])|(?:\"[^\"]*\"))");
 	                            
 	private Logger log;
+	private boolean parse_timezone=true;
 	@Override
 	public boolean parse(PropertyMap map, String record) throws AccountingParseException {
 		
@@ -190,7 +194,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 			if (record_type.equals("aprun")) {
 				map.setProperty(APRUN_TAG, tag);
 				try {
-					Date start = parseDate(timestamp);
+					Date start = parseDate(parse_timezone,timestamp);
 					map.setProperty(APRUN_START_TIMESTAMP, start);
 				} catch (ParseException e) {
 					throw new AccountingParseException("bad start date format", e);
@@ -198,7 +202,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 			} else if (record_type.equals("apsys")) {
 				map.setProperty(APSYS_TAG, tag);
 				try {
-					Date end = parseDate(timestamp);
+					Date end = parseDate(parse_timezone,timestamp);
 					map.setProperty(APSYS_END_TIMESTAMP, end);
 				} catch (ParseException e) {
 					throw new AccountingParseException("bad end date format", e);
@@ -244,10 +248,15 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	 * @return
 	 * @throws ParseException
 	 */
-	public static Date parseDate(String timestamp) throws ParseException {
-		Date stamp;
-		timestamp = new StringBuffer(timestamp).delete(23, 26).delete(26, 27).toString();
-		return df.parse(timestamp);
+	public static Date parseDate(boolean parse_timezone, String timestamp) throws ParseException {
+		if( parse_timezone){
+			// Remove sub-milisecond values
+			timestamp = new StringBuffer(timestamp).delete(23, 26).toString();
+			return df.parse(timestamp);
+		}else{
+			timestamp = timestamp.substring(0, 23);
+			return df_no_tz.parse(timestamp);
+		}
 	}
 
 	@Override
@@ -256,6 +265,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(alps_reg);
 		finder.addFinder(StandardProperties.time);
+		parse_timezone=ctx.getBooleanParameter(table+".parse_timezone", true);
 		return finder;
 	}
 
