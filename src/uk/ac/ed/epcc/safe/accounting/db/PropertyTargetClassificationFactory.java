@@ -189,5 +189,4 @@ public abstract class PropertyTargetClassificationFactory<T extends AccountingCl
 	public final T find(RecordSelector sel) throws DataException, CannotFilterException {
 		return find(getFilter(sel));
 	}
-
 }
