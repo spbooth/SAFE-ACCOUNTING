@@ -3,7 +3,9 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
+import uk.ac.ed.epcc.safe.accounting.parsers.value.LongParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
 import uk.ac.ed.epcc.safe.accounting.properties.AttributePropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.DynamicAttributePropertyTag;
@@ -13,6 +15,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
+import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -23,8 +26,10 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  * @param <T>
  *
  */
-
-public class RurLogParser<T> extends AbstractPropertyContainerParser  {
+public class RurLogParser extends AbstractPropertyContainerParser implements IncrementalPropertyContainerParser {
+//public class RurLogParser<T> extends AbstractPropertyContainerParser  {
+	
+	private static final String[] plugin_name_list = {"energy", "taskstats", "memory"};
 	
 	private static final PropertyRegistry rur_reg = new PropertyRegistry("rur", "Properties from rur log");
 	
@@ -79,61 +84,61 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser  {
 			"Number of accelerators with the minimum nonzero power cap", -1);
 	
 	
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> START_TIME = new AttributePropertyTag<Integer>(rur_reg, "btime", null, Integer.class,
-			"UNIX time when process started", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> ELAPSED_TIME = new AttributePropertyTag<Integer>(rur_reg, "etime", null, Integer.class,
-			"Total elapsed time in microseconds", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> SYSTEM_TIME = new AttributePropertyTag<Integer>(rur_reg, "stime", null, Integer.class,
-			"System time", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> USER_TIME = new AttributePropertyTag<Integer>(rur_reg, "utime", null, Integer.class,
-			"User time", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> TOTAL_IO_DELAY_TIME = new AttributePropertyTag<Integer>(rur_reg, "bkiowait", null, Integer.class,
-			"Total delay time (ns) waiting for synchronous block I/O to complete", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> HIGH_MEMORY_USED = new AttributePropertyTag<Integer>(rur_reg, "rss", null, Integer.class,
-			"RSS highwater mark", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> MAX_MEMORY_USED = new AttributePropertyTag<Integer>(rur_reg, "max_rss", null, Integer.class,
-			"Maximum memory used", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> MEMORY_USED_INTEGRAL = new AttributePropertyTag<Integer>(rur_reg, "coremem", null, Integer.class,
-			"Integral of RSS used by process in MB-usec", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> VIRTUAL_MEMORY_INTEGRAL = new AttributePropertyTag<Integer>(rur_reg, "vm", null, Integer.class,
-			"Integral of virtual memory used by process in MB-usecs", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> MAX_VIRTUAL_MEMORY_INTEGRAL = new AttributePropertyTag<Integer>(rur_reg, "max_vm", null, Integer.class,
-			"Number of accelerators with the minimum nonzero power cap", -1);		
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> SWAPPED_PAGE_COUNT = new AttributePropertyTag<Integer>(rur_reg, "pgswapcnt", null, Integer.class,
-			"Number of pages swapped", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> MINOR_PAGE_FAULT_COUNT = new AttributePropertyTag<Integer>(rur_reg, "minfault", null, Integer.class,
-			"Number of minor page faults", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> MAJOR_PAGE_FAULT_COUNT = new AttributePropertyTag<Integer>(rur_reg, "majfault", null, Integer.class,
-			"Number of major page faults", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> CHAR_READ_COUNT = new AttributePropertyTag<Integer>(rur_reg, "rchar", null, Integer.class,
-			"Characters read by process", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> CHAR_WRITE_COUNT = new AttributePropertyTag<Integer>(rur_reg, "wchar", null, Integer.class,
-			"Characters written by process", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> SYS_READ_CALLS_COUNT = new AttributePropertyTag<Integer>(rur_reg, "rcalls", null, Integer.class,
-			"Number of read system calls", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> SYS_WRITE_CALLS_COUNT = new AttributePropertyTag<Integer>(rur_reg, "wcalls", null, Integer.class,
-			"Number of write system calls", -1);
-	@AutoTable(target=String.class)
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> START_TIME = new AttributePropertyTag<Long>(rur_reg, "btime", null, Long.class,
+			"UNIX time when process started", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> ELAPSED_TIME = new AttributePropertyTag<Long>(rur_reg, "etime", null, Long.class,
+			"Total elapsed time in microseconds", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> SYSTEM_TIME = new AttributePropertyTag<Long>(rur_reg, "stime", null, Long.class,
+			"System time", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> USER_TIME = new AttributePropertyTag<Long>(rur_reg, "utime", null, Long.class,
+			"User time", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> TOTAL_IO_DELAY_TIME = new AttributePropertyTag<Long>(rur_reg, "bkiowait", null, Long.class,
+			"Total delay time (ns) waiting for synchronous block I/O to complete", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> HIGH_MEMORY_USED = new AttributePropertyTag<Long>(rur_reg, "rss", null, Long.class,
+			"RSS highwater mark", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> MAX_MEMORY_USED = new AttributePropertyTag<Long>(rur_reg, "max_rss", null, Long.class,
+			"Maximum memory used", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> MEMORY_USED_INTEGRAL = new AttributePropertyTag<Long>(rur_reg, "coremem", null, Long.class,
+			"Integral of RSS used by process in MB-usec", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> VIRTUAL_MEMORY_INTEGRAL = new AttributePropertyTag<Long>(rur_reg, "vm", null, Long.class,
+			"Integral of virtual memory used by process in MB-usecs", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> MAX_VIRTUAL_MEMORY_INTEGRAL = new AttributePropertyTag<Long>(rur_reg, "max_vm", null, Long.class,
+			"Number of accelerators with the minimum nonzero power cap", -1L);		
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> SWAPPED_PAGE_COUNT = new AttributePropertyTag<Long>(rur_reg, "pgswapcnt", null, Long.class,
+			"Number of pages swapped", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> MINOR_PAGE_FAULT_COUNT = new AttributePropertyTag<Long>(rur_reg, "minfault", null, Long.class,
+			"Number of minor page faults", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> MAJOR_PAGE_FAULT_COUNT = new AttributePropertyTag<Long>(rur_reg, "majfault", null, Long.class,
+			"Number of major page faults", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> CHAR_READ_COUNT = new AttributePropertyTag<Long>(rur_reg, "rchar", null, Long.class,
+			"Characters read by process", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> CHAR_WRITE_COUNT = new AttributePropertyTag<Long>(rur_reg, "wchar", null, Long.class,
+			"Characters written by process", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> SYS_READ_CALLS_COUNT = new AttributePropertyTag<Long>(rur_reg, "rcalls", null, Long.class,
+			"Number of read system calls", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> SYS_WRITE_CALLS_COUNT = new AttributePropertyTag<Long>(rur_reg, "wcalls", null, Long.class,
+			"Number of write system calls", -1L);
+	@AutoTable(target=String.class, length=1024)
 	public static final AttributePropertyTag<String> EXIT_CODE_LIST = new AttributePropertyTag<String>(rur_reg, "exitcode_signal", new String[]{"exitcode:signal"}, String.class,
 			"Exit code list", "");
-	@AutoTable(target=String.class)
+	@AutoTable(target=String.class, length=1024)
 	public static final AttributePropertyTag<String> ABORT_INFO = new AttributePropertyTag<String>(rur_reg, "abortinfo", null, String.class,
 			"If abnormal termination occurs, a list of abort_info fields is reported", "");
 	@AutoTable(target=Integer.class)
@@ -184,29 +189,29 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser  {
 	@AutoTable(target=String.class, length=1024)
 	public static final AttributePropertyTag<String> BOOT_MEM_PERCENTAGE = new AttributePropertyTag<String>(rur_reg, "boot_mem_percent", new String[]{"%_of_boot_mem"}, String.class,
 			"The percentage of boot memory for each order chunk in /proc/buddyinfo summed across all memory zones", "");
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> BOOT_FREE_MEM_CONTENTS = new AttributePropertyTag<Integer>(rur_reg, "boot_freemem", null, Integer.class,
-			"Contents of /proc/boot_freemem", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> CURRENT_FREE_MEM_CONTENTS = new AttributePropertyTag<Integer>(rur_reg, "current_freemem", null, Integer.class,
-			"Contents of /proc/current_freemem", -1);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> BOOT_FREE_MEM_CONTENTS = new AttributePropertyTag<Long>(rur_reg, "boot_freemem", null, Long.class,
+			"Contents of /proc/boot_freemem", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> CURRENT_FREE_MEM_CONTENTS = new AttributePropertyTag<Long>(rur_reg, "current_freemem", null, Long.class,
+			"Contents of /proc/current_freemem", -1L);
 	
 	
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> ACTIVE_MEM_TOTAL = new AttributePropertyTag<Integer>(rur_reg, "meminfo_active_anon", new String[]{"Active(anon)"}, Integer.class,
-			"Total amount of memory in active use by the application", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> ACTIVE_FILE_MEM_TOTAL = new AttributePropertyTag<Integer>(rur_reg, "meminfo_active_file", new String[]{"Active(file)"}, Integer.class,
-			"Total amount of memory in active use by cache and buffers", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> INACTIVE_MEM_TOTAL = new AttributePropertyTag<Integer>(rur_reg, "meminfo_inactive_anon", new String[]{"Inactive(anon)"}, Integer.class,
-			"Total amount of memory that is candidate to be swapped out", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> INACTIVE_FILE_MEM_TOTAL = new AttributePropertyTag<Integer>(rur_reg, "meminfo_inactive_file", new String[]{"Inactive(file)"}, Integer.class,
-			"Total amount of memory that is candidate to be dropped from cache", -1);
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> KERNEL_MEM_TOTAL = new AttributePropertyTag<Integer>(rur_reg, "meminfo_slab", new String[]{"Slab"}, Integer.class,
-			"Total amount of memory used by the kernel", -1);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> ACTIVE_MEM_TOTAL = new AttributePropertyTag<Long>(rur_reg, "meminfo_active_anon", new String[]{"Active(anon)"}, Long.class,
+			"Total amount of memory in active use by the application", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> ACTIVE_FILE_MEM_TOTAL = new AttributePropertyTag<Long>(rur_reg, "meminfo_active_file", new String[]{"Active(file)"}, Long.class,
+			"Total amount of memory in active use by cache and buffers", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> INACTIVE_MEM_TOTAL = new AttributePropertyTag<Long>(rur_reg, "meminfo_inactive_anon", new String[]{"Inactive(anon)"}, Long.class,
+			"Total amount of memory that is candidate to be swapped out", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> INACTIVE_FILE_MEM_TOTAL = new AttributePropertyTag<Long>(rur_reg, "meminfo_inactive_file", new String[]{"Inactive(file)"}, Long.class,
+			"Total amount of memory that is candidate to be dropped from cache", -1L);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> KERNEL_MEM_TOTAL = new AttributePropertyTag<Long>(rur_reg, "meminfo_slab", new String[]{"Slab"}, Long.class,
+			"Total amount of memory used by the kernel", -1L);
 	
 	public static final AttributePropertyTag<String> MEM_INFO = new AttributePropertyTag<String>(rur_reg, "meminfo", null, String.class,
 			"Memory information", "");
@@ -215,9 +220,9 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser  {
 	@AutoTable(target=String.class)
 	public static final AttributePropertyTag<String> HUGEPAGES_NAME = new AttributePropertyTag<String>(rur_reg, "hugepagesname", null, String.class,
 			"Hugepages name", "");
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> HUGEPAGES_SIZE = new AttributePropertyTag<Integer>(rur_reg, "hugepagessize", null, Integer.class,
-			"Hugepages size", -1);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> HUGEPAGES_SIZE = new AttributePropertyTag<Long>(rur_reg, "hugepagessize", null, Long.class,
+			"Hugepages size", -1L);
 	@AutoTable(target=String.class)
 	public static final AttributePropertyTag<String> HUGEPAGES_SIZE_UNIT = new AttributePropertyTag<String>(rur_reg, "hugepagessizeunit", null, String.class,
 			"Number of hugepages that exist at this point", "");
@@ -298,23 +303,23 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser  {
 		STANDARD_ATTRIBUTES.addParser(MIN_ACCEL_POWER_CAP, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(MIN_ACCEL_POWER_CAP_COUNT, IntegerParser.PARSER);
 		
-		STANDARD_ATTRIBUTES.addParser(START_TIME, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(ELAPSED_TIME, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(SYSTEM_TIME, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(USER_TIME, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(TOTAL_IO_DELAY_TIME, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(HIGH_MEMORY_USED, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(MAX_MEMORY_USED, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(MEMORY_USED_INTEGRAL, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(VIRTUAL_MEMORY_INTEGRAL, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(MAX_VIRTUAL_MEMORY_INTEGRAL, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(SWAPPED_PAGE_COUNT, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(MINOR_PAGE_FAULT_COUNT, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(MAJOR_PAGE_FAULT_COUNT, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(CHAR_READ_COUNT, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(CHAR_WRITE_COUNT, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(SYS_READ_CALLS_COUNT, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(SYS_WRITE_CALLS_COUNT, IntegerParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(START_TIME, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(ELAPSED_TIME, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(SYSTEM_TIME, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(USER_TIME, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(TOTAL_IO_DELAY_TIME, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(HIGH_MEMORY_USED, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(MAX_MEMORY_USED, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(MEMORY_USED_INTEGRAL, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(VIRTUAL_MEMORY_INTEGRAL, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(MAX_VIRTUAL_MEMORY_INTEGRAL, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(SWAPPED_PAGE_COUNT, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(MINOR_PAGE_FAULT_COUNT, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(MAJOR_PAGE_FAULT_COUNT, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(CHAR_READ_COUNT, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(CHAR_WRITE_COUNT, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(SYS_READ_CALLS_COUNT, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(SYS_WRITE_CALLS_COUNT, LongParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(EXIT_CODE_LIST, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(ABORT_INFO, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(CORE_DUMP_FLAG, IntegerParser.PARSER);
@@ -333,17 +338,17 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser  {
 		STANDARD_ATTRIBUTES.addParser(PROCESS_NAME, StringParser.PARSER);
 		
 		STANDARD_ATTRIBUTES.addParser(BOOT_MEM_PERCENTAGE, StringParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(BOOT_FREE_MEM_CONTENTS, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(CURRENT_FREE_MEM_CONTENTS, IntegerParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(BOOT_FREE_MEM_CONTENTS, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(CURRENT_FREE_MEM_CONTENTS, LongParser.PARSER);
 		
-		STANDARD_ATTRIBUTES.addParser(ACTIVE_MEM_TOTAL, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(ACTIVE_FILE_MEM_TOTAL, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(INACTIVE_MEM_TOTAL, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(INACTIVE_FILE_MEM_TOTAL, IntegerParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(KERNEL_MEM_TOTAL, IntegerParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(ACTIVE_MEM_TOTAL, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(ACTIVE_FILE_MEM_TOTAL, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(INACTIVE_MEM_TOTAL, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(INACTIVE_FILE_MEM_TOTAL, LongParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(KERNEL_MEM_TOTAL, LongParser.PARSER);
 		
 		STANDARD_ATTRIBUTES.addParser(HUGEPAGES_NAME, StringParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(HUGEPAGES_SIZE, IntegerParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(HUGEPAGES_SIZE, LongParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(HUGEPAGES_SIZE_UNIT, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(HUGEPAGES_COUNT, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(SURPLUS_HUGEPAGES_COUNT, IntegerParser.PARSER);
@@ -359,10 +364,14 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser  {
 	
 	protected Logger log;
 	
+	/*
 	private static final Pattern parse_pattern = Pattern.compile("(?<TIMESTAMP>\\S+) (?<HOSTNAME>\\S+) (?<RECORDTYPE>\\S+) (?<TAG>\\S+) (?<SUBMISSION>\\S+)"
 		+ " \\S+ " + "uid: (?<USERID>\\S+), apid: (?<APID>\\S+), jobid: (?<PBSID>\\S+), cmdname: (?<APRUNCMD>\\S+), (?<PLUGINS>.*)");
-			
-    private static final Pattern plugin_pattern = Pattern.compile("plugin: (?<PLUGNAME>\\S+) [{\\[](?<ATTRS>.*)[\\]}](,\\s)?");
+	*/		
+	private static final Pattern parse_pattern = Pattern.compile("uid: (?<USERID>\\S+), apid: (?<APID>\\S+), jobid: (?<PBSID>\\S+), "
+		+ "cmdname: (?<APRUNCMD>\\S*), (?<PLUGINS>.*)");
+	
+    private static final Pattern plugin_pattern = Pattern.compile("plugin: (?<PLUGINNAME>\\S+) [{\\[](?<ATTRS>.*)[\\]}](,\\s)?");
     
     private static final Pattern attribute_pattern = Pattern.compile("['\"](?<ATTRNAME>\\S+)['\"][,:] ([{](?<SUBATTRS>[^}]+)|[\\[](?<ATTRLIST>[^\\]]+)|['\"](?<ATTRSTRING>[^\"]+)|(?<ATTRVALUE>[^,]+))");
     
@@ -391,8 +400,14 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser  {
 		Matcher m = parse_pattern.matcher(record);
 		if (m.matches()) {
 			
-			if (!m.group("RECORDTYPE").equals("RUR")) {
-				return false;
+			// check record type if it exists
+			try {
+				String rec_type = m.group("RECORDTYPE");
+				if (!rec_type.equals("RUR")) {
+					return false;
+				}
+			} catch (IllegalArgumentException x) {
+				log.debug("rur record does not contain record type.");
 			}
 			
 			map.setProperty(ALPS_ID, Integer.valueOf(m.group("APID")));		
@@ -400,13 +415,25 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser  {
 			Matcher plugin_matcher = plugin_pattern.matcher(m.group("PLUGINS"));
 			while (plugin_matcher.find()) {
 				
+				boolean plugin_found = false;
+				String name = plugin_matcher.group("PLUGINNAME");
+				for (String plugin_name: plugin_name_list) {
+					if (plugin_name.equals(name)) {
+						plugin_found = true;
+						break;
+					}
+				}
+				if (!plugin_found) {
+					continue;
+				}
+				
 				Matcher attr_matcher = attribute_pattern.matcher(plugin_matcher.group("ATTRS"));
 				while (attr_matcher.find()) {
 				
 					String alias = attr_matcher.group("ATTRNAME");
 					AttributePropertyTag<?> tag = AttributePropertyTag.findAttribute(rur_reg, alias, true);
 					if (null != tag) {
-						String name = tag.getName();
+						name = tag.getName();
 						
 						String value = attr_matcher.group("ATTRVALUE");
 						if (null == value) {
@@ -478,6 +505,24 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser  {
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
 		log = ctx.getService(LoggerService.class).getLogger(getClass());
 		return rur_reg;
+	}
+
+
+
+
+	@Override
+	public boolean isComplete(UsageRecord record) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+
+	@Override
+	public void postComplete(UsageRecord record) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
