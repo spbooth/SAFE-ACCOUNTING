@@ -45,7 +45,7 @@ import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.Classification;
@@ -159,7 +159,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 		try {
 			if( c.data == null ){
 				// null data implies no match
-				return new FalseFilter<T>(getTarget());
+				return new GenericBinaryFilter<T>(getTarget(),false);
 			}
 			if( c.tag instanceof PropertyTag){
 				return getAccessorMap().getFilter((PropertyTag<I>)c.tag, c.match, c.data);
@@ -168,7 +168,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 			}
 		} catch (CannotFilterException e) {
 			getContext().getService(LoggerService.class).getLogger(getClass()).warn("Cannot filter", e);
-			return new FalseFilter<T>(getTarget());
+			return new GenericBinaryFilter<T>(getTarget(),false);
 		}
 	}
 	public class AddDerivedTransition extends AbstractFormTransition<AccountingClassificationFactory>{
