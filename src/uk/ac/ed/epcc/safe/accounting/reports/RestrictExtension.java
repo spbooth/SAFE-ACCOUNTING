@@ -28,9 +28,8 @@ import org.w3c.dom.NodeList;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
-import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.model.NameFinder;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
@@ -127,7 +126,7 @@ public class RestrictExtension extends ReportExtension {
 			try {
 				BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, val);
 				if( fil == null ){
-					fil = new FalseFilter(fac.getTarget());
+					fil = new GenericBinaryFilter(fac.getTarget(),false);
 				}
 
 				return fac.exists(fil);
@@ -171,7 +170,7 @@ public class RestrictExtension extends ReportExtension {
 				try {
 					BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
 					if( fil == null ){
-						fil = new FalseFilter(fac.getTarget());
+						fil = new GenericBinaryFilter(fac.getTarget(),false);
 					}
 					if( name == null || name.trim().length()==0 ){
 						return fac.exists(fil);
