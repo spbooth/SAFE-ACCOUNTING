@@ -22,5 +22,6 @@ expression this package defines additional more complex expressions such as:
 <li> Dereference expressions that access the properties of a referenced {@link uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget}</li>
 </ul>
 
+There is a direct correspondence between these expressions and those defined in {@link uk.ac.ed.epcc.webapp.jdbc.expr}
 **/
 package uk.ac.ed.epcc.safe.accounting.expr;
