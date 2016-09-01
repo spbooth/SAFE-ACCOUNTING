@@ -1,5 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +17,7 @@ import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
+import uk.ac.ed.epcc.safe.accounting.update.StringSplitter;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -26,8 +28,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  * @param <T>
  *
  */
-public class RurLogParser extends AbstractPropertyContainerParser implements IncrementalPropertyContainerParser {
-//public class RurLogParser<T> extends AbstractPropertyContainerParser  {
+public class RurLogParser<T> extends AbstractPropertyContainerParser {
 	
 	private static final String[] plugin_name_list = {"energy", "taskstats", "memory"};
 	
@@ -505,24 +506,6 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
 		log = ctx.getService(LoggerService.class).getLogger(getClass());
 		return rur_reg;
-	}
-
-
-
-
-	@Override
-	public boolean isComplete(UsageRecord record) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-
-
-	@Override
-	public void postComplete(UsageRecord record) throws Exception {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	
