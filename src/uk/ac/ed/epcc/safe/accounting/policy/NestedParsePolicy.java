@@ -72,6 +72,14 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy {
 		
 		return prev;
 		
+		//TODO: see below
+		/**
+		 * Process the init parameters concerned with rur logs.
+		 * 
+		 * nested_parse.rur_table.ALPSLog=RURLog
+		 * nested_parse.rur_logs_loc.ALPSLog=./logs
+		 */
+		
 	}
 
 	
@@ -102,6 +110,13 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy {
 			}
 			
 		}
+		
+		//TODO: see below
+		/**
+		 * Add code that will search suitable rurlog files for entries that match the alps id stored by rec.
+		 * These entries will be concatenated and passed to the RurLogParser via a suitably constructed
+		 * AccountingUpdater object.
+		 */
 		
 	}
 
