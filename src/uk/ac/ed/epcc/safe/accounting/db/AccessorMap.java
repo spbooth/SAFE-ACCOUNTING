@@ -78,6 +78,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
@@ -1245,6 +1246,15 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 			throws CannotFilterException {
 		if( left == null || right == null ){
 			throw new CannotFilterException("Cannot filter on null expression");
+		}
+		if( left instanceof ConstPropExpression && right instanceof ConstPropExpression){
+			// Do constant evaluation in properties as we may not be able to make a SQLExpression for them
+			ConstPropExpression<R> left_const = (ConstPropExpression<R>)left;
+			ConstPropExpression<R> right_const = (ConstPropExpression<R>)right;
+			if( match == null ){
+				return new GenericBinaryFilter<>(target, left_const.val.equals(right_const.val));
+			}
+			return new GenericBinaryFilter<>(target,match.compare(left_const.val,right_const.val));
 		}
 		try {
 			SQLExpression<R> exp1 = getSQLExpression(left);
