@@ -16,7 +16,9 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.expr.parse;
 
- /** Target expression for the lexer
+import uk.ac.ed.epcc.webapp.AppContext;
+
+/** Target expression for the lexer
   * 
   * @author spb
   *
@@ -33,5 +35,5 @@ public interface LexTarget {
    * @return target Object
  * @throws LexException 
    */
-  public Object make(String pattern) throws LexException;
+  public Object make(AppContext conn,String pattern) throws LexException;
 }

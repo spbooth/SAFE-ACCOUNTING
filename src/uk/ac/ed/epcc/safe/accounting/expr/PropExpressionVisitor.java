@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
+import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 /** A visitor interface for PropExpressions. 
  * 
@@ -57,4 +58,5 @@ public interface  PropExpressionVisitor<R> extends BasePropExpressionVisitor<R>{
   public <T> R visitCasePropExpression(CasePropExpression<T> expr)  throws Exception;
   public R visitConvetMillisecondToDateExpression(ConvertMillisecondToDatePropExpression expr)throws Exception;
   public <C extends Comparable> R visitCompareExpression(ComparePropExpression<C> expr) throws Exception;
+  public <I extends Indexed> R visitConstReferenceExpression(ConstReferenceExpression<I> expr) throws Exception;
 }

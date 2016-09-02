@@ -47,7 +47,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			return regexp;
 		}
 
-		public Object make(String pattern) throws LexException {
+		public Object make(AppContext conn,String pattern) throws LexException {
 			return pattern;
 		}
 		
@@ -66,7 +66,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			  public String getRegexp(){
 				  return "\\d+(?:\\.\\d*)?(?:e[+|-]?\\d+)?";
 			  }
-			  public Object make(String pattern){
+			  public Object make(AppContext conn,String pattern){
 				  try{
 					  return Long.parseLong(pattern);
 				  }catch(NumberFormatException e){
@@ -85,7 +85,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 				return "(?:"+FixedPropertyFinder.PROPERTY_FINDER_PREFIX_REGEXP+")?"+PropertyTag.PROPERT_TAG_NAME_PATTERN;
 			}
 
-			public Object make(String pattern) throws LexException{
+			public Object make(AppContext conn,String pattern) throws LexException{
 				return pattern;
 			}
 
@@ -101,7 +101,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 					return "\\+|-|\\*|/";
 				}
 
-				public Object make(String pattern) throws LexException{
+				public Object make(AppContext conn,String pattern) throws LexException{
 					for( Operator o : EnumSet.allOf(Operator.class)){
 						if( pattern.equals(o.text())){
 							return o;
@@ -140,7 +140,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 		  // String literal target
 		  targets.add(new ExpressionLexTarget() {
 			
-			public Object make(String pattern) throws LexException {
+			public Object make(AppContext conn,String pattern) throws LexException {
 				return pattern.subSequence(1, pattern.length()-1);
 			}
 			
@@ -160,7 +160,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 				return "@(?:"+Keywords.getRegexp()+")";
 			}
 
-			public Object make(String pattern) throws LexException {
+			public Object make(AppContext conn,String pattern) throws LexException {
 				return Keywords.valueOf(pattern.substring(1));
 			}
 
@@ -178,7 +178,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			}
 
 			@Override
-			public Object make(String pattern) throws LexException {
+			public Object make(AppContext conn,String pattern) throws LexException {
 				if( pattern == "=="){
 					return null;
 				}
@@ -196,6 +196,27 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			}
 			  
 		  });
+//		  targets.add(new ExpressionLexTarget(){
+//
+//			@Override
+//			public String getRegexp() {
+//				
+//				return IndexedReference.INDEXED_REFERENCE_NAME_REGEXP;
+//			}
+//
+//			@Override
+//			public Object make(String pattern) throws LexException {
+//				// TODO Auto-generated method stub
+//				return IndexedReference.parseIndexedReference(c, s);
+//			}
+//
+//			@Override
+//			public int getToken(String pattern) {
+//				// TODO Auto-generated method stub
+//				return ExpressionParser.REFERENCE;
+//			}
+//			  
+//		  });
 	  }
 	 
 	  public void back(){
@@ -212,7 +233,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			  Pattern p =  Pattern.compile(pattern);
 			  Matcher m = p.matcher(text);
 			  if( m.matches()){
-				  Object o = lt.make(m.group(1));
+				  Object o = lt.make(conn,m.group(1));
 				  prev = text;
 				  text = m.group(2);
 				  return o;
@@ -245,7 +266,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			  Pattern p =  Pattern.compile(pattern);
 			  Matcher m = p.matcher(text);
 			  if( m.matches()){
-				  val = lt.make(m.group(1));
+				  val = lt.make(conn,m.group(1));
 				  prev = text;
 				  text = m.group(2);
 				  return lt.getToken(m.group(1));

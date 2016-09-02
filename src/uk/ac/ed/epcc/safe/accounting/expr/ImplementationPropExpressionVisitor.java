@@ -14,6 +14,7 @@
 package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 /** Class that expands derived properties to generate an implementation string.
  * This is essentially the same as the {@link #toString()} method on the expression
@@ -132,6 +133,14 @@ public abstract class ImplementationPropExpressionVisitor implements
 			ComparePropExpression<C> expr) throws Exception {
 
 		return "("+expr.e1.accept(this)+(expr.m==null?"==":expr.m.toString())+expr.e2.accept(this)+")";
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitConstReferenceExpression(uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression)
+	 */
+	@Override
+	public <I extends Indexed> String visitConstReferenceExpression(ConstReferenceExpression<I> expr) throws Exception {
+		return visitConstPropExpression(expr);
 	}
 
 

@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.CasePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConvertMillisecondToDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DoubleCastPropExpression;
@@ -44,6 +45,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.TypeConverterPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -254,6 +256,11 @@ public class ValueParserPolicy implements
 	@Override
 	public <C extends Comparable> ValueParser visitCompareExpression(
 			ComparePropExpression<C> expr) throws Exception {
+		return getValueParser(expr.getTarget());
+	}
+	@Override
+	public <I extends Indexed> ValueParser visitConstReferenceExpression(ConstReferenceExpression<I> expr)
+			throws Exception {
 		return getValueParser(expr.getTarget());
 	}
 

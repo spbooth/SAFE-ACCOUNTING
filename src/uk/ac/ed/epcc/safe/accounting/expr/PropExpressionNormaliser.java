@@ -18,6 +18,7 @@ import java.util.Date;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
+import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
@@ -197,6 +198,13 @@ public class PropExpressionNormaliser implements PropExpressionVisitor<PropExpre
 	@Override
 	public <C extends Comparable> PropExpression visitCompareExpression(
 			ComparePropExpression<C> expr) throws Exception {
+		return expr;
+	}
+
+
+	@Override
+	public <I extends Indexed> PropExpression visitConstReferenceExpression(ConstReferenceExpression<I> expr)
+			throws Exception {
 		return expr;
 	}
 

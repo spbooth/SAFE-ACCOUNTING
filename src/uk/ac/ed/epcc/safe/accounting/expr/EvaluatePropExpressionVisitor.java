@@ -270,4 +270,12 @@ public abstract class EvaluatePropExpressionVisitor implements
 		}
 		return expr.m.compare(expr.e1.accept(this), expr.e2.accept(this));
 	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitConstReferenceExpression(uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression)
+	 */
+	@Override
+	public <I extends Indexed> Object visitConstReferenceExpression(ConstReferenceExpression<I> expr) throws Exception {
+		return expr;
+	}
 }

@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.ReductionSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
+import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -223,6 +224,14 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 	public <C extends Comparable> Boolean visitCompareExpression(
 			ComparePropExpression<C> expr) throws Exception {
 		return Boolean.valueOf( expr.e1.accept(this) && expr.e2.accept(this));
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitConstReferenceExpression(uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression)
+	 */
+	@Override
+	public <I extends Indexed> Boolean visitConstReferenceExpression(ConstReferenceExpression<I> expr)
+			throws Exception {
+		return Boolean.TRUE;
 	}
 
 }
