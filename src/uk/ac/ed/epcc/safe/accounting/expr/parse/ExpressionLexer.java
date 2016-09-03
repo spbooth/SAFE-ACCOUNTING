@@ -28,6 +28,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 
 
@@ -196,27 +197,26 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			}
 			  
 		  });
-//		  targets.add(new ExpressionLexTarget(){
-//
-//			@Override
-//			public String getRegexp() {
-//				
-//				return IndexedReference.INDEXED_REFERENCE_NAME_REGEXP;
-//			}
-//
-//			@Override
-//			public Object make(String pattern) throws LexException {
-//				// TODO Auto-generated method stub
-//				return IndexedReference.parseIndexedReference(c, s);
-//			}
-//
-//			@Override
-//			public int getToken(String pattern) {
-//				// TODO Auto-generated method stub
-//				return ExpressionParser.REFERENCE;
-//			}
-//			  
-//		  });
+		  targets.add(new ExpressionLexTarget(){
+
+			@Override
+			public String getRegexp() {
+				
+				return IndexedReference.INDEXED_REFERENCE_NAME_REGEXP;
+			}
+
+			@Override
+			public Object make(AppContext conn,String pattern) throws LexException {
+				return IndexedReference.parseIndexedReference(conn, pattern);
+			}
+
+			@Override
+			public int getToken(String pattern) {
+				// TODO Auto-generated method stub
+				return ExpressionParser.REFERENCE;
+			}
+			  
+		  });
 	  }
 	 
 	  public void back(){
