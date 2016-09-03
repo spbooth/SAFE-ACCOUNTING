@@ -25,10 +25,12 @@ import java.util.regex.Pattern;
 import uk.ac.ed.epcc.safe.accounting.properties.FixedPropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
+import uk.ac.ed.epcc.webapp.model.NameFinder;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 
 
 
@@ -197,26 +199,41 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			}
 			  
 		  });
-		  targets.add(new ExpressionLexTarget(){
-
-			@Override
-			public String getRegexp() {
-				
-				return IndexedReference.INDEXED_REFERENCE_NAME_REGEXP;
-			}
-
+		  targets.add(new ExpressionLexTarget() {
+			
 			@Override
 			public Object make(AppContext conn,String pattern) throws LexException {
-				return IndexedReference.parseIndexedReference(conn, pattern);
+				int a = pattern.indexOf('(');
+				int b = pattern.indexOf(',');
+				int c = pattern.indexOf(')');
+				String tag = pattern.substring(a+1, b).trim();
+				String id = pattern.substring(b+1,c).trim();
+				IndexedProducer  producer = conn.makeObject(IndexedProducer.class, tag);
+				if( producer == null ){
+					throw new LexException(tag+" does not resolve to IndexProducer");
+				}
+				try{
+					Integer int_id = Integer.parseInt(id);
+					return producer.makeReference(int_id);
+				}catch(NumberFormatException e){
+					if( producer instanceof NameFinder){
+						Indexed idx = ((NameFinder)producer).findFromString(id);
+						return producer.makeReference(idx);
+					}
+				}
+				throw new LexException(id+" does not resolve in "+tag);
 			}
-
+			
+			@Override
+			public String getRegexp() {
+				return "@REF\\(\\s*\\w+\\s*,\\s*\\w+\\s*\\)";
+			}
+			
 			@Override
 			public int getToken(String pattern) {
-				// TODO Auto-generated method stub
 				return ExpressionParser.REFERENCE;
 			}
-			  
-		  });
+		});
 	  }
 	 
 	  public void back(){
