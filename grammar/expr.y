@@ -25,7 +25,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 %define lex_throws "LexException"
 %define throws "Exception"
 
-%token NUMBER MULT DIV PLUS MINUS LPAREN RPAREN LBRACE RBRACE LSQR RSQR PROPTAG STRING COMMA KEYWORD MATCH
+%token NUMBER MULT DIV PLUS MINUS LPAREN RPAREN LBRACE RBRACE LSQR RSQR PROPTAG STRING COMMA KEYWORD MATCH REFERENCE
 
 %left  RPAREN
 %left  RSQR
@@ -135,7 +135,7 @@ expr : start_deref expr end_deref	{
   $$=new ConstPropExpression(Number.class,$1);    
 }
 | REFERENCE                      {
-  $$=new ConstReferenceExpression(Number.class,$1);    
+  $$=new ConstReferenceExpression($1);    
 }
 | expr MATCH expr {
   $$= new ComparePropExpression($1,$2,$3);
