@@ -1,5 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.expr;
 
+import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
@@ -49,6 +50,17 @@ public class ConstReferenceExpression<I extends Indexed> extends ConstPropExpres
 
 	public ConstReferenceExpression( IndexedReference<I> n) {
 		super(IndexedReference.class, n);
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression#accept(uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor)
+	 */
+	@Override
+	public <R> R accept(BasePropExpressionVisitor<R> vis) throws Exception {
+		if( vis instanceof PropExpressionVisitor){
+			return ((PropExpressionVisitor<R>)vis).visitConstReferenceExpression(this);
+		}
+		throw new UnsupportedExpressionException(this);
 	}
 
 }
