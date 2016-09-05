@@ -55,210 +55,210 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 		}
 		
 	}
-	 private CharSequence text=null;
-	  private CharSequence prev=null;
-	  private List<ExpressionLexTarget> targets=new LinkedList<ExpressionLexTarget>();
-	 
-	  private Object val=null;
-	  private AppContext conn;
-	  public ExpressionLexer(AppContext conn,String text){
-		  this.conn=conn;
-		  this.text=text;
-		  // Number target
-		  targets.add(new ExpressionLexTarget(){
-			  public String getRegexp(){
-				  return "\\d+(?:\\.\\d*)?(?:e[+|-]?\\d+)?";
-			  }
-			  public Object make(AppContext conn,String pattern){
-				  try{
-					  return Long.parseLong(pattern);
-				  }catch(NumberFormatException e){
-				    return Double.parseDouble(pattern);
+	  private static ExpressionLexTarget lex_targets[];
+	   static Pattern makePattern(){
+		   List<ExpressionLexTarget> targets=new LinkedList<ExpressionLexTarget>();
+			
+		   // Number target
+			  targets.add(new ExpressionLexTarget(){
+				  public String getRegexp(){
+					  return "\\d+(?:\\.\\d*)?(?:e[+|-]?\\d+)?";
 				  }
-			  }
-			public int getToken(String pattern) {
-				
-				return ExpressionParser.NUMBER;
-			}
-		  });
-		  // Property target
-		  targets.add(new ExpressionLexTarget(){
-
-			public String getRegexp() {
-				return "(?:"+FixedPropertyFinder.PROPERTY_FINDER_PREFIX_REGEXP+")?"+PropertyTag.PROPERT_TAG_NAME_PATTERN;
-			}
-
-			public Object make(AppContext conn,String pattern) throws LexException{
-				return pattern;
-			}
-
-			public int getToken(String pattern) {
-				return ExpressionParser.PROPTAG;
-			}
-			  
-		  });
-		  // operator target
-		  targets.add(new ExpressionLexTarget(){
+				  public Object make(AppContext conn,String pattern){
+					  try{
+						  return Long.parseLong(pattern);
+					  }catch(NumberFormatException e){
+					    return Double.parseDouble(pattern);
+					  }
+				  }
+				public int getToken(String pattern) {
+					
+					return ExpressionParser.NUMBER;
+				}
+			  });
+			  // Property target
+			  targets.add(new ExpressionLexTarget(){
 
 				public String getRegexp() {
-					return "\\+|-|\\*|/";
+					return "(?:"+FixedPropertyFinder.PROPERTY_FINDER_PREFIX_REGEXP+")?"+PropertyTag.PROPERT_TAG_NAME_PATTERN;
 				}
 
 				public Object make(AppContext conn,String pattern) throws LexException{
-					for( Operator o : EnumSet.allOf(Operator.class)){
-						if( pattern.equals(o.text())){
-							return o;
-						}
-							
-					}
-					throw new LexException("illegal operator "+pattern);
+					return pattern;
 				}
 
 				public int getToken(String pattern) {
-					if( pattern.equals("+")){
-						return ExpressionParser.PLUS;
-					}
-					else if( pattern.equals("-")){
-						return ExpressionParser.MINUS;
-					}
-					else if( pattern.equals("/")){
-						return ExpressionParser.DIV;
-					}
-					else{
-						return ExpressionParser.MULT;
-					}
-					
+					return ExpressionParser.PROPTAG;
 				}
 				  
 			  });
-		  // Bracket literal target
-		  targets.add(new LiteralExpressionLexTarget(ExpressionParser.COMMA, ","));
-		  targets.add(new LiteralExpressionLexTarget(ExpressionParser.LPAREN, "\\("));
-		  targets.add(new LiteralExpressionLexTarget(ExpressionParser.RPAREN, "\\)"));
-		  targets.add(new LiteralExpressionLexTarget(ExpressionParser.LSQR, "\\["));
-		  targets.add(new LiteralExpressionLexTarget(ExpressionParser.RSQR, "\\]"));
-		  targets.add(new LiteralExpressionLexTarget(ExpressionParser.LBRACE, "\\{"));
-		  targets.add(new LiteralExpressionLexTarget(ExpressionParser.RBRACE, "\\}"));
-	
-		  // String literal target
-		  targets.add(new ExpressionLexTarget() {
-			
-			public Object make(AppContext conn,String pattern) throws LexException {
-				return pattern.subSequence(1, pattern.length()-1);
-			}
-			
-			public String getRegexp() {
-				return "\"(?:[^\"\\n\\r])*\"";
-			}
+			  // operator target
+			  targets.add(new ExpressionLexTarget(){
 
-			public int getToken(String pattern) {
+					public String getRegexp() {
+						return "\\+|-|\\*|/";
+					}
+
+					public Object make(AppContext conn,String pattern) throws LexException{
+						for( Operator o : EnumSet.allOf(Operator.class)){
+							if( pattern.equals(o.text())){
+								return o;
+							}
+								
+						}
+						throw new LexException("illegal operator "+pattern);
+					}
+
+					public int getToken(String pattern) {
+						if( pattern.equals("+")){
+							return ExpressionParser.PLUS;
+						}
+						else if( pattern.equals("-")){
+							return ExpressionParser.MINUS;
+						}
+						else if( pattern.equals("/")){
+							return ExpressionParser.DIV;
+						}
+						else{
+							return ExpressionParser.MULT;
+						}
+						
+					}
+					  
+				  });
+			  // Bracket literal target
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.COMMA, ","));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.LPAREN, "\\("));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.RPAREN, "\\)"));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.LSQR, "\\["));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.RSQR, "\\]"));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.LBRACE, "\\{"));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.RBRACE, "\\}"));
+		
+			  // String literal target
+			  targets.add(new ExpressionLexTarget() {
 				
-				return ExpressionParser.STRING;
-			}
-		});
-	      // keyword
-		  targets.add(new ExpressionLexTarget(){
-
-			public String getRegexp() {
-				return "@(?:"+Keywords.getRegexp()+")";
-			}
-
-			public Object make(AppContext conn,String pattern) throws LexException {
-				return Keywords.valueOf(pattern.substring(1));
-			}
-
-			public int getToken(String pattern) {
-				return ExpressionParser.KEYWORD;
-			}
-			  
-		  });
-		  // matchcondition
-		  targets.add(new ExpressionLexTarget(){
-
-			@Override
-			public String getRegexp() {
-				return "(?:"+MatchCondition.getRegexp()+"|(?:==))";
-			}
-
-			@Override
-			public Object make(AppContext conn,String pattern) throws LexException {
-				if( pattern == "=="){
-					return null;
+				public Object make(AppContext conn,String pattern) throws LexException {
+					return pattern.subSequence(1, pattern.length()-1);
 				}
-				for( MatchCondition m : MatchCondition.values()){
-					if( m.match().equals(pattern)){
-						return m;
+				
+				public String getRegexp() {
+					return "\"(?:[^\"\\n\\r])*\"";
+				}
+
+				public int getToken(String pattern) {
+					
+					return ExpressionParser.STRING;
+				}
+			});
+		      // keyword
+			  targets.add(new ExpressionLexTarget(){
+
+				public String getRegexp() {
+					return "@(?:"+Keywords.getRegexp()+")";
+				}
+
+				public Object make(AppContext conn,String pattern) throws LexException {
+					return Keywords.valueOf(pattern.substring(1));
+				}
+
+				public int getToken(String pattern) {
+					return ExpressionParser.KEYWORD;
+				}
+				  
+			  });
+			  // matchcondition
+			  targets.add(new ExpressionLexTarget(){
+
+				@Override
+				public String getRegexp() {
+					return "(?:"+MatchCondition.getRegexp()+"|(?:==))";
+				}
+
+				@Override
+				public Object make(AppContext conn,String pattern) throws LexException {
+					if( pattern == "=="){
+						return null;
 					}
-				}
-				return MatchCondition.valueOf(pattern);
-			}
-
-			@Override
-			public int getToken(String pattern) {
-				return ExpressionParser.MATCH;
-			}
-			  
-		  });
-		  targets.add(new ExpressionLexTarget() {
-			
-			@Override
-			public Object make(AppContext conn,String pattern) throws LexException {
-				int a = pattern.indexOf('(');
-				int b = pattern.indexOf(',');
-				int c = pattern.indexOf(')');
-				String tag = pattern.substring(a+1, b).trim();
-				String id = pattern.substring(b+1,c).trim();
-				IndexedProducer  producer = conn.makeObject(IndexedProducer.class, tag);
-				if( producer == null ){
-					throw new LexException(tag+" does not resolve to IndexProducer");
-				}
-				try{
-					Integer int_id = Integer.parseInt(id);
-					return producer.makeReference(int_id);
-				}catch(NumberFormatException e){
-					if( producer instanceof NameFinder){
-						Indexed idx = ((NameFinder)producer).findFromString(id);
-						return producer.makeReference(idx);
+					for( MatchCondition m : MatchCondition.values()){
+						if( m.match().equals(pattern)){
+							return m;
+						}
 					}
+					return MatchCondition.valueOf(pattern);
 				}
-				throw new LexException(id+" does not resolve in "+tag);
+
+				@Override
+				public int getToken(String pattern) {
+					return ExpressionParser.MATCH;
+				}
+				  
+			  });
+			  targets.add(new ExpressionLexTarget() {
+				
+				@Override
+				public Object make(AppContext conn,String pattern) throws LexException {
+					int a = pattern.indexOf('(');
+					int b = pattern.indexOf(',');
+					int c = pattern.indexOf(')');
+					String tag = pattern.substring(a+1, b).trim();
+					String id = pattern.substring(b+1,c).trim();
+					IndexedProducer  producer = conn.makeObject(IndexedProducer.class, tag);
+					if( producer == null ){
+						throw new LexException(tag+" does not resolve to IndexProducer");
+					}
+					try{
+						Integer int_id = Integer.parseInt(id);
+						return producer.makeReference(int_id);
+					}catch(NumberFormatException e){
+						if( producer instanceof NameFinder){
+							Indexed idx = ((NameFinder)producer).findFromString(id);
+							return producer.makeReference(idx);
+						}
+					}
+					throw new LexException(id+" does not resolve in "+tag);
+				}
+				
+				@Override
+				public String getRegexp() {
+					return "@REF\\(\\s*\\w+\\s*,\\s*\\w+\\s*\\)";
+				}
+				
+				@Override
+				public int getToken(String pattern) {
+					return ExpressionParser.REFERENCE;
+				}
+			});
+			lex_targets=targets.toArray(new ExpressionLexTarget[targets.size()]);
+			StringBuilder pattern_text = new StringBuilder();
+			pattern_text.append("\\s*");
+			boolean seen=false;
+			for(ExpressionLexTarget t : lex_targets){
+				if( seen ){
+					pattern_text.append("|");
+				}
+				seen=true;
+				pattern_text.append("(");
+				pattern_text.append(t.getRegexp());
+				pattern_text.append(")");
 			}
-			
-			@Override
-			public String getRegexp() {
-				return "@REF\\(\\s*\\w+\\s*,\\s*\\w+\\s*\\)";
-			}
-			
-			@Override
-			public int getToken(String pattern) {
-				return ExpressionParser.REFERENCE;
-			}
-		});
+			return Pattern.compile(pattern_text.toString());
+	   }
+	  static Pattern lex_pattern = makePattern();
+	  
+	  private Object val=null;
+	  private AppContext conn;
+	  private String orig;
+	  private Matcher m;
+	  int end;
+	  public ExpressionLexer(AppContext conn,String text){
+		  this.conn=conn;
+		  this.orig=text.trim();
+		  this.m = lex_pattern.matcher(orig);
+		 
 	  }
 	 
-	  public void back(){
-		  text=prev;
-		  prev=null;
-	  }
-	  Object next()throws LexException{
-		  if( text == null || text.length() == 0){
-			  return null;
-		  }
-		  for( LexTarget lt : targets){
-			  String pattern="^\\s*("+lt.getRegexp()+")\\s*(.*)";
-			  //System.out.println("Pattern<"+pattern+"> text<"+text+">");
-			  Pattern p =  Pattern.compile(pattern);
-			  Matcher m = p.matcher(text);
-			  if( m.matches()){
-				  Object o = lt.make(conn,m.group(1));
-				  prev = text;
-				  text = m.group(2);
-				  return o;
-			  }
-		  }
-		  throw new LexException(text);
-	  }
-	  
+	
 	
 	
 	public Object getLVal() {
@@ -274,22 +274,24 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 	}
 
 	public int yylex() throws  LexException {
-		 if( text == null || text.length() == 0){
+		 if( m.regionStart() >= m.regionEnd()){
 			  return ExpressionParser.EOF;
 		  }
-		  for( ExpressionLexTarget lt : targets){
-			  String pattern="^\\s*("+lt.getRegexp()+")\\s*(.*)";
-			  //System.out.println("Pattern<"+pattern+"> text<"+text+">");
-			  Pattern p =  Pattern.compile(pattern);
-			  Matcher m = p.matcher(text);
-			  if( m.matches()){
-				  val = lt.make(conn,m.group(1));
-				  prev = text;
-				  text = m.group(2);
-				  return lt.getToken(m.group(1));
+		 if( m.lookingAt() ){
+			  for(int i=0 ; i< lex_targets.length ; i++){
+				  ExpressionLexTarget t = lex_targets[i];
+				  String text = m.group(i+1);
+				  if( text != null ){
+					  orig=orig.substring(text.length()).trim();
+					  m.reset(orig);
+					  //m.region(m.regionStart()+text.length(), m.regionEnd());
+					  val= t.make(conn,text);
+					  return t.getToken(text);
+				  }
 			  }
 		  }
-		  throw new LexException(text);
+		
+		  throw new LexException(orig.substring(m.regionStart()));
 	}
 
 }

@@ -39,6 +39,7 @@ public class ParserTest extends WebappTestBase{
 	  Parser p = new Parser(ctx,finder);
 	  //p.setDebug(10);
 	  String tests[] = {
+		BatchParser.NODE_COUNT_PROP+" > 7",	  
 		"@REF( thing , boris  )",
 		"@REF(thing,"+boris.getID()+")",
 		StandardProperties.CPU_TIME_PROP.toString(),
@@ -52,7 +53,7 @@ public class ParserTest extends WebappTestBase{
 		"{"+BatchParser.NODE_COUNT_PROP.toString()+","+BatchParser.PROC_COUNT_PROP.toString()+"}",
 		"@INT(30/7)",
 		"@INT("+StandardProperties.ENDED_PROP.toString()+"-"+StandardProperties.STARTED_PROP.toString()+")",
-		BatchParser.NODE_COUNT_PROP+" > 7",
+		
 		"99"
 		
 	  };
