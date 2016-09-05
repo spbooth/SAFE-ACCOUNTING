@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.policy;
 import java.util.HashMap;
 import java.util.Map;
 
+import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionInput;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyTagInput;
@@ -27,6 +28,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reference.ConfigPropertyRegistry;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
@@ -43,6 +45,7 @@ import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 /** This policy allows derived property expressions to be defined for 
  * properties in scope. It also provides a mechanism for {@link ConfigPropertyRegistry} objects to
  * be included in scope so that entirely new properties can be defined.
@@ -67,7 +70,7 @@ import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
  */
 
 
-public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSource<TableTransitionTarget>{
+public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSource<TableTransitionTarget>, SummaryProvider{
 	private PropExpressionMap defs=new PropExpressionMap();	
 	private AppContext c;
 	private String table;
@@ -170,6 +173,11 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSo
 	}
 	protected final Logger getLogger(){
 		return c.getService(LoggerService.class).getLogger(getClass());
+	}
+	@Override
+	public void getTableTransitionSummary(ContentBuilder hb, SessionService operator) {
+		hb.addText("This policy allows derived property expressions to be defined for properties in scope. You can also define entirely new properties");
+		
 	}
 
 }
