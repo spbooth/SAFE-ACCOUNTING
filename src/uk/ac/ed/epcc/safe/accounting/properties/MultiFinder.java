@@ -26,7 +26,8 @@ import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
  * If MultiFinders can be added then each of the wrapped PropertyRegistry objects will be added 
  * in turn. This means that any subsequent changes to the child MultiFinder will not be tracked by the 
  * parent.
- * Finders are always searched in the reverse order they were added.
+ * Finders are always searched for in the reverse order they were added. Re-adding a {@link FixedPropertyFinder}
+ * will promote that finder to the top of the search order.
  * @author spb
  *
  */
@@ -99,6 +100,7 @@ public final class MultiFinder implements PropertyFinder{
 		    }
 			return null;
 	}
+	
 	public <T> PropertyTag<? extends T> find(Class<T> clazz,String name) {
 		  for(PropertyFinder f : search_list){
 		    	PropertyTag<? extends T> t = f.find(clazz,name);
@@ -108,6 +110,7 @@ public final class MultiFinder implements PropertyFinder{
 		    }
 			return null;
 	}
+	
 	public PropertyTag<?> find(TagFilter fil,String name) {
 		  for(PropertyFinder f : search_list){
 		    	PropertyTag<?> t = f.find(fil,name);
@@ -117,6 +120,7 @@ public final class MultiFinder implements PropertyFinder{
 		    }
 			return null;
 	}
+	
 	public Set<PropertyTag> getProperties() {
 		LinkedHashSet<PropertyTag> result = new LinkedHashSet<PropertyTag>();
 		for( PropertyFinder f : search_list){
@@ -124,6 +128,7 @@ public final class MultiFinder implements PropertyFinder{
 		}
 		return result;
 	}
+	
 	public boolean hasProperty(PropertyTag tag){
 		for(PropertyFinder f : search_list){
 			if( f.hasProperty(tag)){

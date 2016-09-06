@@ -307,4 +307,7 @@ public void addConfigProperty(AppContext ctx,PropertyFinder prev,String table,Pr
   protected Logger getLogger(AppContext conn){
 	  return conn.getService(LoggerService.class).getLogger(getClass());
   }
+  public String toString(){
+	  return map.toString();
+  }
 }

@@ -455,8 +455,8 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	public class ResolveChecker extends ResolveCheckVisitor{
 		private final Set<PropertyTag> missing = new HashSet<PropertyTag>();
 		private final boolean require_sql;
-		public ResolveChecker(Logger log,boolean require_sql) {
-			super(log);
+		public ResolveChecker(AppContext conn,Logger log,boolean require_sql) {
+			super(conn,log);
 			this.require_sql=require_sql;
 		}
 		public boolean getRequreSQL(){
@@ -752,7 +752,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 */
 	public <T> Boolean resolves(PropExpression<T> e,boolean require_sql){
 		if( checker == null || checker.getRequreSQL() != require_sql){
-			checker = new ResolveChecker(log,require_sql);
+			checker = new ResolveChecker(getContext(),log,require_sql);
 		}
 		try {
 			return e.accept(checker);
@@ -1067,7 +1067,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * 
 	 */
 	public void clearUnresolvableDefinitions(){
-		ResolveChecker checker = new ResolveChecker(null,false);
+		ResolveChecker checker = new ResolveChecker(getContext(),null,false);
 		for(Iterator<PropertyTag> it = derived.keySet().iterator(); it.hasNext();){
 			
 			PropertyTag<?> t = it.next();

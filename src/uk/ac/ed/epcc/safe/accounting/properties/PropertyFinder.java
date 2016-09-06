@@ -50,6 +50,7 @@ public interface PropertyFinder {
 	 * 
 	 * This is primarily intended to distinguish between tags with the same unqualified name.
 	 * 
+	 * @see #find(TagFilter, String)
 	 * @param <T>  Target class
 	 * @param clazz Class object for target
 	 * @param name String name of property
@@ -57,7 +58,7 @@ public interface PropertyFinder {
 	 */
 	public abstract <T> PropertyTag<? extends T> find(Class<T> clazz, String name );
 		
-	/** Locate a registered property by name and additional filter.
+	/** Locate a registered property by name and an additional filter.
 	 * This method will only return a {@link PropertyTag} if the {@link TagFilter}
 	 * accepts the result.
 	 * 
