@@ -92,6 +92,7 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
+import uk.ac.ed.epcc.webapp.model.data.SelfSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DurationInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -994,15 +995,15 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 					}
 				}
 		}
-//		// Self reference
-//		// only really needed when filtering on a specific recordID
-//		ReferenceTag tag=(ReferenceTag) reference_registry.find(IndexedReference.class, res.getTag());
-//		if( tag != null ){
-//			Class clazz = conn.getPropertyClass(DataObjectFactory.class, res.getTag());
-//			if( clazz != null){
-//				put(tag, new SelfSQLValue(res, clazz));
-//			}
-//		}
+		// Self reference
+		// only really needed when filtering on a specific recordID
+		ReferenceTag tag=(ReferenceTag) reference_registry.find(IndexedReference.class, res.getTag());
+		if( tag != null && ! selector_map.containsValue(tag)){
+			Class clazz = getContext().getPropertyClass(DataObjectFactory.class, res.getTag());
+			if( clazz != null){
+				put(tag, new SelfSQLValue<X>(target,res, clazz));
+			}
+		}
 				
 	}
 

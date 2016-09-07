@@ -392,10 +392,22 @@ public abstract class SelectBuilder {
 			throws ReportException {
 				Element v = getParamElementNS(namespace,name, elem);
 				if( v != null ){
-					return getText(v);
+					return normalise(getText(v));
 				}
 				return null;  
 			}
+	/** Map whitespace to normalised form. This is important for configuration elements if
+	 * we want to be able to reformat the XML without braking thisng
+	 * 
+	 * @param value
+	 * @return
+	 */
+	protected final String normalise(String value){
+		if( value == null ){
+			return null;
+		}
+		return value.trim().replace("\\s+", " ");
+	}
 
 	protected final Element getParamElement(String name, Element e) {
 		return getParamElementNS(e.getNamespaceURI(), name, e);

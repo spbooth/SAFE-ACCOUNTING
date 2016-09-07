@@ -61,10 +61,15 @@ public class ReferenceValueParser<I extends Indexed> implements ValueParser<Inde
 		}
 		IndexedReference ref = IndexedReference.parseIndexedReference(c, valueString);
 		if( ref != null ){
+			if( ref.isNull()){
+				// This is probably as a result of parameter expansion using the expression format. Treat null references as wild-cards same as
+				// missing parameters.
+				return null;
+			}
 			if( producer.isMyReference(ref)){
 				return ref;
 			}
-			throw new ValueParseException("Reference parsed to wrong type "+valueString+" expecting "+producer.getTarget().getName());
+			throw new ValueParseException("Reference parsed to wrong type "+valueString+" expecting "+producer.getTarget().getName()+" got "+ref.toString());
 		}
 		// Try a simple integer parse first as we can determine if not
 		// an int without doing a database lookup.
