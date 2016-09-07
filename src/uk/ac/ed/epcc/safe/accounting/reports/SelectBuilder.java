@@ -390,6 +390,9 @@ public abstract class SelectBuilder {
 
 	protected final String getParamNS(String namespace, String name, Element elem)
 			throws ReportException {
+				if( elem == null){
+					return null;
+				}
 				Element v = getParamElementNS(namespace,name, elem);
 				if( v != null ){
 					String result = normalise(getText(v));
