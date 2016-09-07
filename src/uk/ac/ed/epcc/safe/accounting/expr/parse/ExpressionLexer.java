@@ -221,7 +221,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 				
 				@Override
 				public String getRegexp() {
-					return "@REF\\(\\s*\\w+\\s*,\\s*\\w+\\s*\\)";
+					return "@REF\\(\\s*\\w+\\s*,\\s*[\\w-]+\\s*\\)";
 				}
 				
 				@Override

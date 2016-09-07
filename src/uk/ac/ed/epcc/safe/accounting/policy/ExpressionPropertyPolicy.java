@@ -61,7 +61,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * 
  * Property definitions are under the control of java properties of the form
  * <b>
- * properties.<em>table-name</em>.name=<em>prop-expression</em>
+ * properties.<em>table-name</em>.<em>name</em>=<em>prop-expression</em>
  * </b>
  * 
  * 
