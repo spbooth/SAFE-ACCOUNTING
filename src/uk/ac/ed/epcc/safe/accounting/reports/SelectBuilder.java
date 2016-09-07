@@ -392,8 +392,11 @@ public abstract class SelectBuilder {
 			throws ReportException {
 				Element v = getParamElementNS(namespace,name, elem);
 				if( v != null ){
-					return normalise(getText(v));
+					String result = normalise(getText(v));
+					debug("lookup ["+name+"] in "+elem.getNodeName()+", found ["+result+"]");
+					return result;
 				}
+				debug("lookup ["+name+"] in "+elem.getNodeName()+", no element found");
 				return null;  
 			}
 	/** Map whitespace to normalised form. This is important for configuration elements if
@@ -406,7 +409,7 @@ public abstract class SelectBuilder {
 		if( value == null ){
 			return null;
 		}
-		return value.trim().replace("\\s+", " ");
+		return value.trim().replaceAll("\\s+", " ");
 	}
 
 	protected final Element getParamElement(String name, Element e) {
@@ -438,7 +441,7 @@ public abstract class SelectBuilder {
 						}
 					  }
 				  }
-				  debug("lookup ["+name+"] in "+elem.getNodeName()+", found "+result);
+				 
 				  return result;
 			  }
 
