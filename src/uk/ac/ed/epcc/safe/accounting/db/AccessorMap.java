@@ -997,13 +997,15 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		}
 		// Self reference
 		// only really needed when filtering on a specific recordID
-		ReferenceTag tag=(ReferenceTag) reference_registry.find(IndexedReference.class, res.getTag());
-		if( tag != null && ! selector_map.containsValue(tag)){
-			Class clazz = getContext().getPropertyClass(DataObjectFactory.class, res.getTag());
-			if( clazz != null){
-				put(tag, new SelfSQLValue<X>(target,res, clazz));
-			}
-		}
+		
+		// This gives an error when creating reservations as record is not committed
+//		ReferenceTag tag=(ReferenceTag) reference_registry.find(IndexedReference.class, res.getTag());
+//		if( tag != null && ! selector_map.containsValue(tag)){
+//			Class clazz = getContext().getPropertyClass(DataObjectFactory.class, res.getTag());
+//			if( clazz != null){
+//				put(tag, new SelfSQLValue<X>(target,res, clazz));
+//			}
+//		}
 				
 	}
 
