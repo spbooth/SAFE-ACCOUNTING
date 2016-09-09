@@ -22,7 +22,8 @@ public class StandardPropertyPolicy extends ExpressionPropertyPolicy {
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(StandardProperties.base);
 		finder.addFinder(StandardProperties.time);
-		return super.initFinder(ctx, finder, table);
+		finder.addFinder(super.initFinder(ctx, prev, table));
+		return finder;
 	}
 
 	/* (non-Javadoc)
