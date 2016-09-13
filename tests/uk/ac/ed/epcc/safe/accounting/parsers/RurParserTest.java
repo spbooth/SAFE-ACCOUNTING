@@ -40,7 +40,7 @@ public class RurParserTest extends AbstractRecordTestCase {
 	static {
 		
 		String local_records[] = new String[] {
-			"2013-08-30T11:19:06.545114-05:00 c0-0c0s2n2 RUR 18657 p2-20130829t090349 [RUR@34] uid: 12345, apid: 10963, jobid: 0, cmdname: /opt/intel/vtune_xe_2013/bin64/amplxe-cl, plugin: energy ['energy_used', 318]",
+			"2013-08-30T11:19:06.545114-05:00 c0-0c0s2n2 RUR 18657 p2-20130829t090349 [RUR@34] uid: 12346, apid: 10963, jobid: 0, cmdname: /opt/intel/vtune_xe_2013/bin64/amplxe-cl, plugin: energy ['energy_used', 318]",
 			"2014-01-17T10:05:54.026557-06:00 c0-0c0s1n1 RUR 11674 p0-20140116t214834 [rur@34] uid: 12345, apid: 286342, jobid: 0, cmdname: /bin/cat, plugin: energy {\"energy_used\": 5641, \"accel_energy_used\": 1340, \"nodes\": 32, \"nodes_power_capped\": 3, \"min_power_cap\": 155, \"min_power_cap_count\": 2, \"max_power_cap\": 355, \"max_power_cap_count\": 1, \"nodes_accel_power_capped\": 3, \"min_accel_power_cap\": 200, \"min_accel_power_cap_count\": 3, \"max_accel_power_cap\": 200, \"max_accel_power_cap_count\": 3, \"nodes_throttled\": 0, \"nodes_with_changed_power_cap\": 0}",
 			"2013-11-02T11:09:49.457770-05:00 c0-0c1s1n2 RUR 2417 p0-20131101t153028 [RUR@34] uid: 12345, apid: 86989, jobid: 0, cmdname: /lus/tmp/rur01.2338/./CPU01-2338, plugin: taskstats ['utime', 10000000, 'stime', 0, 'max_rss', 940, 'rchar', 107480, 'wchar', 90, 'exitcode:signal', ['0:0'], 'core', 0]",
 			"2013-11-02T11:12:45.020716-05:00 c0-0c1s1n2 RUR 3731 p0-20131101t153028 [RUR@34] uid: 12345, apid: 86996, jobid: 0, cmdname: /lus/tmp/rur01.3657/./exit04-3657, plugin: taskstats ['utime', 4000, 'stime', 144000, 'max_rss', 7336, 'rchar', 252289, 'wchar', 741, 'exitcode:signal', ['0:9', '139:0', '0:11', '0:0'], 'core', 1]",
