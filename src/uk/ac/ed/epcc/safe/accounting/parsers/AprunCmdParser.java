@@ -402,7 +402,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 					// app_exe_name with an entry in the AprunApplication table
 					attrName = APP_ID.getName();
 					AttributePropertyTag<?> appIdTag = AttributePropertyTag.findAttribute(aprun_reg, attrName, true);
-					appIdTag.setValue(STANDARD_ATTRIBUTES, map, attrName, attrValue);
+					appIdTag.setValue(STANDARD_ATTRIBUTES, map, attrName, "0");
 					
 					// assume that any subsequent elements are application attributes
 					attrName = APP_ATTR_LIST.getName();
