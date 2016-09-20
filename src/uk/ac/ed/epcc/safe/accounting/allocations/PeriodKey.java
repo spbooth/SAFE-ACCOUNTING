@@ -14,6 +14,7 @@
 package uk.ac.ed.epcc.safe.accounting.allocations;
 
 import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 
 public class PeriodKey extends TransitionKey<AllocationPeriod> {
 
@@ -25,7 +26,7 @@ public class PeriodKey extends TransitionKey<AllocationPeriod> {
 		super(AllocationPeriod.class,name,help);
 	}
 
-	public boolean allow(AllocationPeriod target){
+	public boolean allow(SessionService sess, AllocationPeriod target){
 		return true;
 	}
 }

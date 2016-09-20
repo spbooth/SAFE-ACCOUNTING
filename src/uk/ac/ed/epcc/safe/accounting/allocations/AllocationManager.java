@@ -77,4 +77,6 @@ public interface AllocationManager<K,T extends Allocation> extends UsageProducer
  * @throws TransitionException 
   */
  public void buildCreationForm(Form f, Period p, PropertyMap defaults) throws TransitionException;
+ 
+ public AllocationPeriodTransitionProvider getTransitionProvider();
 }
