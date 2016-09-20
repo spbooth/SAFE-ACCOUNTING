@@ -2,6 +2,10 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +33,8 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 		
 	}
 
-	
+	private static final String testDataPath = null;
+	//private static final String testDataPath = "/Users/michaelbareford/Downloads/rur/alps.test";
 	private static final Collection<RecordText> goodRecords = new ArrayList<RecordText>();
 	private static final Collection<BadRecordText> badTexts = new ArrayList<BadRecordText>();
 	
@@ -39,7 +44,7 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 	 */
 	static {
 		
-		String records[] = new String[] {
+		String local_records[] = new String[] {
 		"<150>1 2016-07-10T00:06:20.261556+01:00 c2-1c0s0n1 aprun 2035 p0-20160622t161139 [alps_msgs@34] apid=22444371, Starting, user=15269, batch_id=3815975.sdb, cmd_line=\"/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 192 /work/e89/e89/zd242/src/vasp.5.4.1/bin/vasp_ncl \", num_nodes=8, node_list=2258-2259,2263,2322,2991,3005-3006,3016, cwd=\"/fs3/e89/e89/zd242/work/3815975.sdb\"",
 		"<150>1 2016-07-10T00:20:21.291116+01:00 c2-1c0s0n1 apsys 2039 p0-20160622t161139 [alps_msgs@34] apid=22444371, Finishing, user=15269, batch_id=3815975.sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
 		
@@ -68,32 +73,36 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 		"<150>1 2016-07-01T00:16:49.799797+01:00 c2-0c1s1n1 aprun 8929 p0-20160622t161139 [alps_msgs@34] apid=none, Error, user=13676, batch_id=unknown, user specified option error",
 		"<150>1 2016-06-02T12:05:42.581451+01:00 c2-0c1s1n1 apsys 11428 p0-20160525t121452 [alps_msgs@34] apid=21897763, Finishing, user=15961, batch_id=3728292[1091].sdb, exit_code=0, exitcode_array=0, exitsignal_array=0",
 		"<150>1 2016-06-02T12:04:51.255478+01:00 c6-0c1s1n1 apsys 7157 p0-20160525t121452 [alps_msgs@34] apid=21897856, Finishing, user=15961, batch_id=3728292[1099].sdb, exit_code=0, exitcode_array=0, exitsignal_array=0"
-
-		
 		};
-				
-		/*
+		
 		ArrayList<String> records = new ArrayList<String>();
 		
-		try {
-			FileInputStream fstream = new FileInputStream("/Users/michaelbareford/Downloads/alps/alps.201607");
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			
-			String strLine;
-			while ((strLine = br.readLine()) != null)   {
-				records.add(strLine);
+		if (null == testDataPath) {
+			for (String s : local_records) {
+				records.add(s);
 			}
-			
-			in.close();
-		} catch (Exception e){
-		    System.err.println("Error: " + e.getMessage());
 		}
-		*/
+		else {
+			try {
+				FileInputStream fstream = new FileInputStream(testDataPath);
+				DataInputStream in = new DataInputStream(fstream);
+				BufferedReader br = new BufferedReader(new InputStreamReader(in));
+				
+				String strLine;
+				while ((strLine = br.readLine()) != null)   {
+					records.add(strLine);
+				}
+				
+				in.close();
+			} catch (Exception e){
+			    System.err.println("Error: " + e.getMessage());
+			}
+		}
 		
 		for( String s : records){
 			goodRecords.add(new RecordText(s));
 		}
+		
 	}
 
 
