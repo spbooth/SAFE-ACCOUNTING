@@ -1,6 +1,8 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
-import java.util.Iterator;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,14 +12,16 @@ import uk.ac.ed.epcc.safe.accounting.parsers.value.LongParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
 import uk.ac.ed.epcc.safe.accounting.properties.AttributePropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.DynamicAttributePropertyTag;
+import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
-import uk.ac.ed.epcc.safe.accounting.update.StringSplitter;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -25,18 +29,27 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Parser for aprun commands
  * 
  * @author mrb
- * @param <T>
  *
  */
-public class RurLogParser<T> extends AbstractPropertyContainerParser {
+public class RurLogParser extends AbstractPropertyContainerParser implements IncrementalPropertyContainerParser {
 	
-	private static final String[] plugin_name_list = {"energy", "taskstats", "memory"};
+	private static final String ENERGY_PLUGIN_NAME = "energy";
+	private static final String TASKSTATS_PLUGIN_NAME = "taskstats";
+	private static final String MEMORY_PLUGIN_NAME = "memory";
+	private static final String TIMESTAMP_PLUGIN_NAME = "timestamp";
+	private static final String[] plugin_name_list = {ENERGY_PLUGIN_NAME, TASKSTATS_PLUGIN_NAME, MEMORY_PLUGIN_NAME, TIMESTAMP_PLUGIN_NAME};
 	
 	private static final PropertyRegistry rur_reg = new PropertyRegistry("rur", "Properties from rur log");
 	
 	@AutoTable(target=Integer.class, unique=true)
-	public static final AttributePropertyTag<Integer> ALPS_ID = new AttributePropertyTag<Integer>(rur_reg, "alps_id", null, Integer.class,
+	public static final AttributePropertyTag<Integer> ALPS_ID = new AttributePropertyTag<Integer>(rur_reg, "apid", null, Integer.class,
 			"ALPS log id", -1);
+	
+	@AutoTable(target=Date.class)
+	public static final AttributePropertyTag<Date> START_TIMESTAMP = new AttributePropertyTag<Date>(rur_reg, "start_date_time", null, Date.class, "date time job started", new Date());
+	
+	@AutoTable(target=Date.class)
+	public static final AttributePropertyTag<Date> STOP_TIMESTAMP = new AttributePropertyTag<Date>(rur_reg, "stop_date_time", null, Date.class, "date time job stopped", new Date());
 	
 	@AutoTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> ENERGY_USED = new AttributePropertyTag<Integer>(rur_reg, "energy_used", null, Integer.class,
@@ -155,7 +168,7 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser {
 	public static final AttributePropertyTag<Integer> POSIX_NICE_VALUE = new AttributePropertyTag<Integer>(rur_reg, "nice", null, Integer.class,
 			"POSIX nice value of process", -1);
 	@AutoTable(target=String.class)
-	public static final AttributePropertyTag<String> APPLICATION_ID = new AttributePropertyTag<String>(rur_reg, "apid", null, String.class,
+	public static final AttributePropertyTag<String> APPLICATION_ID = new AttributePropertyTag<String>(rur_reg, "appid", new String[]{"apid"}, String.class,
 			"Application ID as defined by application launcher", "");
 	@AutoTable(target=String.class)
 	public static final AttributePropertyTag<String> USER_ID = new AttributePropertyTag<String>(rur_reg, "uid", null, String.class,
@@ -263,6 +276,9 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser {
 			"Node zone information", "", false, true);
 	
 	
+	/**
+	 * If a Python exception occurs during the post or staging scripts, the following data is reported for the energy and memory plugins.
+	 */
 	@AutoTable(target=String.class)
 	public static final AttributePropertyTag<String> ERROR_TRACEBACK = new AttributePropertyTag<String>(rur_reg, "error_traceback", new String[]{"traceback"}, String.class,
 			"Stack frame list", "");
@@ -272,11 +288,9 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser {
 	@AutoTable(target=String.class)
 	public static final AttributePropertyTag<String> ERROR_VALUE = new AttributePropertyTag<String>(rur_reg, "error_value", new String[]{"value"}, String.class,
 			"Python exception parameter", "");
-	/*
 	@AutoTable(target=String.class)
 	public static final AttributePropertyTag<String> ERROR_NID = new AttributePropertyTag<String>(rur_reg, "error_nid", new String[]{"nid"}, String.class,
 			"Id of node on which exception occurred", "");
-	*/
 	@AutoTable(target=String.class)
 	public static final AttributePropertyTag<String> ERROR_CNAME = new AttributePropertyTag<String>(rur_reg, "error_cname", new String[]{"cname"}, String.class,
 			"Node on which exception occurred", "");
@@ -287,7 +301,6 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser {
 	
 	private static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
 	static {
-		STANDARD_ATTRIBUTES.addParser(ALPS_ID, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(ENERGY_USED, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODES, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODES_POWER_CAPPED, IntegerParser.PARSER);
@@ -360,19 +373,37 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser {
 		STANDARD_ATTRIBUTES.addParser(NODEZONES_NUMBER, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODEZONES_TYPE, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODEZONES_DATA, StringParser.PARSER);
+		
+		STANDARD_ATTRIBUTES.addParser(ERROR_TRACEBACK, StringParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(ERROR_TYPE, StringParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(ERROR_VALUE, StringParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(ERROR_NID, StringParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(ERROR_CNAME, StringParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(ERROR_INFO, StringParser.PARSER);
 	}
 	
 	
 	protected Logger log;
+	private boolean parse_timezone=true;
 	
-	/*
-	private static final Pattern parse_pattern = Pattern.compile("(?<TIMESTAMP>\\S+) (?<HOSTNAME>\\S+) (?<RECORDTYPE>\\S+) (?<TAG>\\S+) (?<SUBMISSION>\\S+)"
+	/**
+	 * The full parse pattern is based on the format specification given in Chapter 9 of the Cray document entitled
+	 * Manage System Software for Cray Linux Environment, S-2393-5202axx. 
+	 */
+	private static final Pattern full_parse_pattern = Pattern.compile("(?<TIMESTAMP>\\S+) (?<HOSTNAME>\\S+) (?<RECORDTYPE>\\S+) (?<TAG>\\S+) (?<SUBMISSION>\\S+)"
 		+ " \\S+ " + "uid: (?<USERID>\\S+), apid: (?<APID>\\S+), jobid: (?<PBSID>\\S+), cmdname: (?<APRUNCMD>\\S+), (?<PLUGINS>.*)");
-	*/		
+	
+	/**
+	 * This parse pattern is based on the format specification followed by the ARCHER TDS data file located at /work/rurtest. 
+	 */
 	private static final Pattern parse_pattern = Pattern.compile("uid: (?<USERID>\\S+), apid: (?<APID>\\S+), jobid: (?<PBSID>\\S+), "
 		+ "cmdname: (?<APRUNCMD>\\S*), (?<PLUGINS>.*)");
 	
-    private static final Pattern plugin_pattern = Pattern.compile("plugin: (?<PLUGINNAME>\\S+) [{\\[](?<ATTRS>.*)[\\]}](,\\s)?");
+    private static final Pattern plugin_pattern = Pattern.compile("plugin: (?<PLUGINNAME>\\S+) (([{\\[](?<ATTRS>.*)[\\]}])|(?<TIMESTAMP>.*))(,\\s)?");
+    
+    private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
+    private static final SimpleDateFormat df_no_tz = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private static final Pattern timestamp_pattern = Pattern.compile("APP_START (?<START>\\S+) APP_STOP (?<STOP>\\S+)");
     
     private static final Pattern attribute_pattern = Pattern.compile("['\"](?<ATTRNAME>\\S+)['\"][,:] ([{](?<SUBATTRS>[^}]+)|[\\[](?<ATTRLIST>[^\\]]+)|['\"](?<ATTRSTRING>[^\"]+)|(?<ATTRVALUE>[^,]+))");
     
@@ -398,7 +429,11 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser {
 		log.debug("rur record is '" + record + "'.");
 		
 		// parse the record into the declared properties and set them in the property map
-		Matcher m = parse_pattern.matcher(record);
+		Matcher m = full_parse_pattern.matcher(record);
+		if (!m.matches()) {
+			m = parse_pattern.matcher(record);
+		}
+		
 		if (m.matches()) {
 			
 			// check record type if it exists
@@ -411,7 +446,8 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser {
 				log.debug("rur record does not contain record type.");
 			}
 			
-			map.setProperty(ALPS_ID, Integer.valueOf(m.group("APID")));		
+			String apid = m.group("APID");
+			map.setProperty(ALPS_ID, Integer.valueOf(apid));		
 						
 			Matcher plugin_matcher = plugin_pattern.matcher(m.group("PLUGINS"));
 			while (plugin_matcher.find()) {
@@ -425,6 +461,30 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser {
 					}
 				}
 				if (!plugin_found) {
+					log.debug("plugin " + name + " not supported.");
+					continue;
+				}
+				
+				if (name.equals(TIMESTAMP_PLUGIN_NAME)) {
+					Matcher ts_matcher = timestamp_pattern.matcher(plugin_matcher.group("TIMESTAMP"));
+					if (ts_matcher.find()) {
+						SimpleDateFormat rur_df = parse_timezone ? df : df_no_tz;
+						try {
+							Date start = rur_df.parse(ts_matcher.group("START"));
+							map.setProperty(START_TIMESTAMP, start);
+						} catch (ParseException e) {
+							throw new AccountingParseException("bad start date format", e);
+						}
+						try {
+							Date stop = rur_df.parse(ts_matcher.group("STOP"));
+							map.setProperty(STOP_TIMESTAMP, stop);
+						} catch (ParseException e) {
+							throw new AccountingParseException("bad stop date format", e);
+						}
+					}
+					else {
+						throw new AccountingParseException("bad timestamp format");
+					}
 					continue;
 				}
 				
@@ -466,8 +526,6 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser {
 			throw new AccountingParseException("Unexpected line format");
 		}
 		
-		AttributePropertyTag.completePropertyMap(rur_reg, STANDARD_ATTRIBUTES, map);
-			
 		return true;
 	}
 
@@ -505,7 +563,24 @@ public class RurLogParser<T> extends AbstractPropertyContainerParser {
 	@Override
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
 		log = ctx.getService(LoggerService.class).getLogger(getClass());
-		return rur_reg;
+		MultiFinder finder = new MultiFinder();
+		finder.addFinder(rur_reg);
+		finder.addFinder(StandardProperties.time);
+		parse_timezone=ctx.getBooleanParameter(table+".parse_timezone", true);
+		return finder;
+	}
+
+
+	@Override
+	public boolean isComplete(UsageRecord record) {
+		PropertyTag<?>[] attrs = {ALPS_ID, START_TIMESTAMP, STOP_TIMESTAMP};
+		return super.isComplete(record, attrs);
+	}
+
+
+	@Override
+	public void postComplete(UsageRecord record) throws Exception {
+		// do nothing
 	}
 	
 	
