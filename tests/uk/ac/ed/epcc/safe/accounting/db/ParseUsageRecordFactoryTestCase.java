@@ -29,8 +29,14 @@ import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
+import uk.ac.ed.epcc.webapp.content.XMLPrinter;
+import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
+import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.model.data.Dumper;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
+import uk.ac.ed.epcc.webapp.model.data.XMLDataUtils;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
 public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecordFactory<R,I>,R extends UsageRecordFactory.Use,I>
 		extends UsageRecordFactoryTestCase<F,R> {
@@ -342,6 +348,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		String updateText = getUpdateText();
 		System.out.println(updateText);
 		String result = new AccountingUpdater<R,I>(ctx,getDefaults(),fac).receiveAccountingData( updateText, false,false,false);
+		//takeBaseline();
 		//save("tests",getClass().getSimpleName(),fac);
 	}
 @Test
@@ -387,4 +394,25 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 	}
    
 	
+	/** take and remember a baseline dump of the current database state
+	 * that will be used in a subsequent call to {{@link #checkDiff(String, String)}
+	 * 
+	 * @throws DataFault
+	 * @throws DataException
+	 * @throws ConsistencyError
+	 */
+	public void takeBaseline() throws DataFault, DataException, ConsistencyError{
+		
+		XMLDataUtils utils = new XMLDataUtils(getContext());
+		XMLPrinter baseline = new XMLPrinter();
+		
+		// make a baseline dump
+		baseline.clear();
+		baseline.open("Data");
+		Dumper dmp = new Dumper(getContext(), baseline);
+		utils.dumpAllTables(dmp);
+		baseline.close();
+		
+		System.out.println(baseline.toString());
+	}
 }
