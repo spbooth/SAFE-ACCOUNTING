@@ -31,6 +31,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
@@ -278,5 +279,17 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	}
 	
 	
-
+	public SQLExpression visitLocatePropExpression(
+			LocatePropExpression expr) throws Exception {
+		Class<?> target = expr.getTarget();
+		if( target == Integer.class){
+			return expr.accept(this);
+		}
+		if( Number.class.isAssignableFrom(target)){
+			// SQL can treat numbers as strings
+			return expr.accept(this);
+		}
+		throw new InvalidSQLPropertyException("LocatePropExpression not representable as SQLExpression");
+		
+	}
 }

@@ -31,6 +31,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
@@ -143,6 +144,17 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		}else{
 			return new BinarySQLValue(conn,aa, binaryPropExpression.op, bb);
 		}
+	}
+	
+	public SQLValue visitLocatePropExpression(
+			LocatePropExpression expr) throws Exception {
+		@SuppressWarnings("unchecked")
+		SQLValue<Integer> i = expr.getLocation().accept(this);
+		if( i instanceof SQLExpression){
+			return (SQLExpression<Integer>)i;
+		}
+		return (SQLValue<Integer>)(i);
+		
 	}
 	
 
