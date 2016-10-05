@@ -35,6 +35,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
@@ -261,6 +262,10 @@ public class ValueParserPolicy implements
 	@Override
 	public <I extends Indexed> ValueParser visitConstReferenceExpression(ConstReferenceExpression<I> expr)
 			throws Exception {
+		return getValueParser(expr.getTarget());
+	}
+	@Override
+	public ValueParser visitLocatePropExpression(LocatePropExpression expr) throws Exception {
 		return getValueParser(expr.getTarget());
 	}
 

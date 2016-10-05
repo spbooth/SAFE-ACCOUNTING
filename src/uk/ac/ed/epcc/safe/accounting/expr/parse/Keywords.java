@@ -20,6 +20,7 @@ import java.util.LinkedList;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
 import uk.ac.ed.epcc.safe.accounting.expr.StringPropExpression;
@@ -32,62 +33,77 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
  *
  */
 public enum Keywords {
-   NAME {
-	@SuppressWarnings("unchecked")
-	@Override
-	public PropExpression getExpression(LinkedList<PropExpression> list)
-			throws ParseException {
-		PropExpression inner = list.getFirst();
-		if( inner instanceof ReferenceExpression){
-			return new NamePropExpression((ReferenceExpression) inner);
+	
+	NAME {
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> list)
+				throws ParseException {
+			PropExpression inner = list.getFirst();
+			if( inner instanceof ReferenceExpression){
+				return new NamePropExpression((ReferenceExpression) inner);
+			}
+			throw new ParseException("Expression "+inner.toString()+" not a reference");
 		}
-		throw new ParseException("Expression "+inner.toString()+" not a reference");
-	}
-},
-   STRING {
-	@SuppressWarnings("unchecked")
-	@Override
-	public PropExpression getExpression(LinkedList<PropExpression> inner)
-			throws ParseException {
-		
-		return new StringPropExpression(inner.getFirst());
-	}
-},
-INT {
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public PropExpression getExpression(LinkedList<PropExpression> inner)
-			throws ParseException {
-		return new IntPropExpression(inner.getFirst());
-	}
+	},
 	
-},
-DURATION_CAST {
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public PropExpression getExpression(LinkedList<PropExpression> inner)
-			throws ParseException {
-		return new DurationCastPropExpression(inner.getFirst(),1L);
-	}
+	STRING {
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			
+			return new StringPropExpression(inner.getFirst());
+		}
+	},
 	
-};
-   public abstract PropExpression getExpression(LinkedList<PropExpression> inner) throws ParseException;
+	INT {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			return new IntPropExpression(inner.getFirst());
+		}
+	
+	},
+	
+	DURATION_CAST {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			return new DurationCastPropExpression(inner.getFirst(),1L);
+		}
+	
+	},
+	
+	LOCATE {
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			return new LocatePropExpression(inner.getFirst(),inner.get(1),inner.getLast());
+		}
+	};
+
+	public abstract PropExpression getExpression(LinkedList<PropExpression> inner) throws ParseException;
+	
    /** regular expression to match any keyword
     * 
     * @return regular expression
     */
-   public static String getRegexp(){
-	   StringBuilder sb = new StringBuilder();
-	   for( Keywords k : values()){
-		   if( sb.length() > 0){
-			   sb.append("|");
-		   }
-		   sb.append("(?:");
-		   sb.append(k.toString());
-		   sb.append(")");
-	   }
-	   return sb.toString();
-   }
+	public static String getRegexp(){
+		StringBuilder sb = new StringBuilder();
+		for( Keywords k : values()){
+			if( sb.length() > 0){
+				sb.append("|");
+			}
+			sb.append("(?:");
+			sb.append(k.toString());
+			sb.append(")");
+		}
+		return sb.toString();
+	}
 }
