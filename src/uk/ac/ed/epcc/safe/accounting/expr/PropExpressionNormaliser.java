@@ -208,4 +208,10 @@ public class PropExpressionNormaliser implements PropExpressionVisitor<PropExpre
 		return expr;
 	}
 
+
+	@Override
+	public PropExpression visitLocatePropExpression(LocatePropExpression expr) throws Exception {
+		return expr;
+	}
+
 }

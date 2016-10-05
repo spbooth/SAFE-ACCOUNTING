@@ -236,6 +236,15 @@ public abstract class EvaluatePropExpressionVisitor implements
 		}
 		return dur.getSeconds();
 	}
+	
+	public Object visitLocatePropExpression(
+			LocatePropExpression l) throws Exception {
+		Integer i = (Integer) l.getLocation().accept(this);
+		if( i == null ){
+			return null;
+		}
+		return i;
+	}
 
 	/** Check if a {@link RecordSelector} matches the target object
 	 * 

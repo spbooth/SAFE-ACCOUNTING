@@ -55,7 +55,7 @@ public abstract class ImplementationPropExpressionVisitor implements
 
 	public String visitBinaryPropExpression(
 			BinaryPropExpression binaryPropExpression) throws Exception {
-		//TODO supress unecessary brackets
+		//TODO suppress unnecessary brackets
 		return "("+binaryPropExpression.a.accept(this)+binaryPropExpression.op.text()+binaryPropExpression.b.accept(this)+")";
 	}
 
@@ -91,6 +91,11 @@ public abstract class ImplementationPropExpressionVisitor implements
 	public String visitDurationCastPropExpression(
 			DurationCastPropExpression<?> sel) throws Exception {
 		return "Duration("+sel.exp.accept(this)+","+sel.resolution+")";
+	}
+	
+	public String visitLocatePropExpression(
+			LocatePropExpression loc) throws Exception {
+		return "Locate('"+loc.str.accept(this)+"',"+loc.col.accept(this)+","+loc.pos.accept(this)+")";
 	}
 
 	public <T, D> String visitTypeConverterPropExpression(
