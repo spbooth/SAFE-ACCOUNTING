@@ -276,6 +276,6 @@ public abstract class EvaluatePropExpressionVisitor implements
 	 */
 	@Override
 	public <I extends Indexed> Object visitConstReferenceExpression(ConstReferenceExpression<I> expr) throws Exception {
-		return expr;
+		return expr.val;
 	}
 }

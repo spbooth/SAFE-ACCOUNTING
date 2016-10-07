@@ -47,7 +47,7 @@ public final class SelectClause<T> implements RecordSelector{
 		assert(data != null);
 		this.data=data;
 		if( data != null && ! tag.getTarget().isAssignableFrom(data.getClass())){
-			throw new ClassCastException("Incompatible data and property in SelectClause");
+			throw new ClassCastException("Incompatible data and property in SelectClause "+tag.toString()+" "+tag.getTarget().getCanonicalName()+" "+data.getClass().getCanonicalName());
 		}
 	}
 	public SelectClause(PropertyTag<T> tag, MatchCondition m,PropertyContainer map) throws InvalidExpressionException{
