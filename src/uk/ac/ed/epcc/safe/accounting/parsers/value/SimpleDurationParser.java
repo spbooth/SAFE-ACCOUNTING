@@ -21,8 +21,8 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 /**
  * <p>
  * A parser for identifying durations specified in a particular format. The
- * duration is converted into a number (a long) representing the number of
- * seconds of the duration.
+ * duration is converted into a {@link Duration} the numerical value of which will be at the default
+ * resolution (milliseconds)
  * </p>
  * <p>
  * The format must be either <em>HHmmss</em> or <em>HH:mm:ss</em> where

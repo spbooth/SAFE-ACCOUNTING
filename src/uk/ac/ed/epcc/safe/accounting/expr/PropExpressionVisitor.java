@@ -25,7 +25,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
  * 
  
  * @author spb
- *
+ * @see BasePropExpressionVisitor
  * @param <R> type returned by visitor
  */
 public interface  PropExpressionVisitor<R> extends BasePropExpressionVisitor<R>{
