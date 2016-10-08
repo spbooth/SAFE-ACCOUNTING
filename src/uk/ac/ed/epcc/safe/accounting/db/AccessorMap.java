@@ -63,6 +63,7 @@ import uk.ac.ed.epcc.webapp.Targetted;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Accessor;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
@@ -149,7 +150,9 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	private Map<PropertyTag, SQLExpression> expression_map = new HashMap<PropertyTag, SQLExpression>();
 
 	// additional selectors that cannot be determined directly from repository
-	private Map<String,Object> selector_map = new HashMap<String,Object>();
+	// These have to be selectors as inputs are not immutable and may have their
+	// state changed after being returned the first time,
+	private Map<String,Selector> selector_map = new HashMap<String,Selector>();
 	
 	/** Encodes the rules for which kind of fields can
 	 * be implemented as a numberif database field.
@@ -825,7 +828,11 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 			if( tag == null && orphan_registy != null && ! info.isReference()){ // then try to make the tag
 				boolean force_date = getContext().getBooleanParameter(prefix+field_name+".forceDate", false);
 				if( force_date ){
-					selector_map.put(field_name, new TimeStampInput(res.getResolution()));
+					selector_map.put(field_name, new Selector(){
+						@Override
+						public Input getInput() {
+							return new TimeStampInput(res.getResolution());
+						}});
 				}
 
 				int idx = prop_name.lastIndexOf(FixedPropertyFinder.PROPERTY_FINDER_SEPERATOR);
@@ -858,18 +865,30 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 					put(tag, res.getStringExpression(target,field_name));
 				} else if (Date.class.isAssignableFrom(t)) {
 					put(tag, res.getDateExpression(target,field_name));
-					selector_map.put(field_name, new TimeStampInput(res.getResolution()));
+					selector_map.put(field_name, new Selector(){
+						@Override
+						public Input getInput() {
+							return new TimeStampInput(res.getResolution());
+						}});
 				} else if (Number.class.isAssignableFrom(t)) {
 					//Duration is supported at native millisecond resolution.
 					put(tag, res.getNumberExpression(target,t,field_name));
 					if (Duration.class.isAssignableFrom(t)) {
 						// we could support different resolutions using a DurationFieldValue
 						//put(tag, new DurationFieldValue(res.getNumberExpression(target,Number.class,field_name),1L));
-						selector_map.put(field_name, new DurationInput());
+						selector_map.put(field_name, new Selector(){
+							@Override
+							public Input getInput() {
+								return new DurationInput();
+							}});
 					} 
 				} else if (Boolean.class.isAssignableFrom(t)) {
 					put(tag, res.getBooleanExpression(target,field_name));
-					selector_map.put(field_name,new BooleanInput());
+					selector_map.put(field_name, new Selector(){
+						@Override
+						public Input getInput() {
+							return new BooleanInput();
+						}});
 				} else if( tag instanceof IndexedTag ){
 					// This may be an explicit reference from a policy registry
 					// where the tag has the necessary info to create the TypeProducer
@@ -1328,7 +1347,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
      * @return Map of seelctors
      */
     public Map<String,Object> getSelectors(){
-    	return selector_map;
+    	return new HashMap<String,Object>(selector_map);
     }
 	public AppContext getContext() {
 		return res.getContext();
