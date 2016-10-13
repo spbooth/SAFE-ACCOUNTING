@@ -56,6 +56,8 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.DurationSecondConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IntConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LabellerSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LongConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MillisecondSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
@@ -148,13 +150,7 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	
 	public SQLValue visitLocatePropExpression(
 			LocatePropExpression expr) throws Exception {
-		@SuppressWarnings("unchecked")
-		SQLValue<Integer> i = expr.getLocation().accept(this);
-		if( i instanceof SQLExpression){
-			return (SQLExpression<Integer>)i;
-		}
-		return (SQLValue<Integer>)(i);
-		
+		return new LocateSQLValue(expr.getString().accept(this), expr.getColumn().accept(this), expr.getPosition().accept(this));
 	}
 	
 

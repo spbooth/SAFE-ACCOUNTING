@@ -50,6 +50,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DerefSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.RoundSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
@@ -281,15 +282,7 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	
 	public SQLExpression visitLocatePropExpression(
 			LocatePropExpression expr) throws Exception {
-		Class<?> target = expr.getTarget();
-		if( target == Integer.class){
-			return expr.accept(this);
-		}
-		if( Number.class.isAssignableFrom(target)){
-			// SQL can treat numbers as strings
-			return expr.accept(this);
-		}
-		throw new InvalidSQLPropertyException("LocatePropExpression not representable as SQLExpression");
+		return new LocateSQLExpression(expr.getString().accept(this), expr.getColumn().accept(this), expr.getPosition().accept(this));
 		
 	}
 }
