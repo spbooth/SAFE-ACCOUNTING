@@ -390,7 +390,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	 * The full parse pattern is based on the format specification given in Chapter 9 of the Cray document entitled
 	 * Manage System Software for Cray Linux Environment, S-2393-5202axx. 
 	 */
-	private static final Pattern full_parse_pattern = Pattern.compile("(?<TIMESTAMP>\\S+) (?<HOSTNAME>\\S+) (?<RECORDTYPE>\\S+) (?<TAG>\\S+) (?<SUBMISSION>\\S+)"
+	private static final Pattern full_parse_pattern = Pattern.compile("\\S+ (?<TIMESTAMP>\\S+) (?<HOSTNAME>\\S+) (?<RECORDTYPE>\\S+) (?<TAG>\\S+) (?<SUBMISSION>\\S+)"
 		+ " \\S+ " + "uid: (?<USERID>\\S+), apid: (?<APID>\\S+), jobid: (?<PBSID>\\S+), cmdname: (?<APRUNCMD>\\S+), (?<PLUGINS>.*)");
 	
 	/**
