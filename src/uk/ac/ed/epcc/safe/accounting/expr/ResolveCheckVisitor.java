@@ -89,7 +89,7 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 
 	public Boolean visitLocatePropExpression(
 			LocatePropExpression expr) throws Exception {
-		return expr.str.accept(this) && expr.col.accept(this) && expr.pos.accept(this);
+		return expr.substr.accept(this) && expr.str.accept(this) && expr.pos.accept(this);
 	}
 
 	public Boolean visitBinaryPropExpression(

@@ -239,11 +239,11 @@ public abstract class EvaluatePropExpressionVisitor implements
 	
 	public Object visitLocatePropExpression(
 			LocatePropExpression l) throws Exception {
-		String col = (String) l.getColumn().accept(this);
 		String str = (String) l.getString().accept(this);
+		String substr = (String) l.getSubstring().accept(this);
 		Integer pos = (Integer) l.getPosition().accept(this);
 		
-		return col.indexOf(str, pos.intValue()-1);
+		return str.indexOf(substr, pos.intValue()-1);
 	}
 
 	/** Check if a {@link RecordSelector} matches the target object

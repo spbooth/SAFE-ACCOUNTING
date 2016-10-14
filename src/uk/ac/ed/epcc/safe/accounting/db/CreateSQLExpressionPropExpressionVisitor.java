@@ -282,7 +282,7 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	
 	public SQLExpression visitLocatePropExpression(
 			LocatePropExpression expr) throws Exception {
-		return new LocateSQLExpression(expr.getString().accept(this), expr.getColumn().accept(this), expr.getPosition().accept(this));
+		return new LocateSQLExpression(expr.getSubstring().accept(this), expr.getString().accept(this), expr.getPosition().accept(this));
 		
 	}
 }

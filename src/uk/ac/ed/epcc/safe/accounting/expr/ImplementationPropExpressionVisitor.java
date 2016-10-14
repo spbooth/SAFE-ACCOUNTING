@@ -95,7 +95,7 @@ public abstract class ImplementationPropExpressionVisitor implements
 	
 	public String visitLocatePropExpression(
 			LocatePropExpression loc) throws Exception {
-		return "Locate('"+loc.str.accept(this)+"',"+loc.col.accept(this)+","+loc.pos.accept(this)+")";
+		return "Locate('"+loc.substr.accept(this)+"',"+loc.str.accept(this)+","+loc.pos.accept(this)+")";
 	}
 
 	public <T, D> String visitTypeConverterPropExpression(

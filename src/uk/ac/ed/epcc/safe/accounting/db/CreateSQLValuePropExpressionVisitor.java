@@ -150,7 +150,7 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	
 	public SQLValue visitLocatePropExpression(
 			LocatePropExpression expr) throws Exception {
-		return new LocateSQLValue(expr.getString().accept(this), expr.getColumn().accept(this), expr.getPosition().accept(this));
+		return new LocateSQLValue(expr.getSubstring().accept(this), expr.getString().accept(this), expr.getPosition().accept(this));
 	}
 	
 
