@@ -40,18 +40,18 @@ public class AdvancedParserTest extends WebappTestBase{
 			"@LOCATE(\"el\",\"hello\",0)"
 		};
 		  
-		DummyDataObjectFactory ofac = new DummyDataObjectFactory(ctx);
-		DummyObject obj = ofac.makeBDO();
+		DummyDataObjectFactory fac = new DummyDataObjectFactory(ctx);
+		DummyObject obj = fac.makeBDO();
 				
-		DummyPropertyFactory fac = new DummyPropertyFactory(ctx, DummyDataObjectFactory.TABLE_NAME);
-		DummyPropertyContainer con = new DummyPropertyContainer(fac, obj.getRecord());
+		DummyPropertyFactory prop_fac = new DummyPropertyFactory(ctx, DummyDataObjectFactory.TABLE_NAME);
+		DummyPropertyContainer prop_con = new DummyPropertyContainer(prop_fac, obj.getRecord());
 		
 		for( String t : tests){
 			System.out.println(t);
 			PropExpression expr = p.parse(t);
 			
 			try {
-				Object res = expr.accept(con.getEvaluator());
+				Object res = expr.accept(prop_con.getEvaluator());
 				System.out.println("  ->"+expr.toString()+"="+res.toString());
 			} catch (Exception e) {
 				e.printStackTrace();
