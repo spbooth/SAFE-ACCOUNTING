@@ -92,11 +92,6 @@ public abstract class ImplementationPropExpressionVisitor implements
 			DurationCastPropExpression<?> sel) throws Exception {
 		return "Duration("+sel.exp.accept(this)+","+sel.resolution+")";
 	}
-	
-	public String visitLocatePropExpression(
-			LocatePropExpression loc) throws Exception {
-		return "Locate('"+loc.substr.accept(this)+"',"+loc.str.accept(this)+","+loc.pos.accept(this)+")";
-	}
 
 	public <T, D> String visitTypeConverterPropExpression(
 			TypeConverterPropExpression<T, D> sel) throws Exception {
@@ -148,5 +143,8 @@ public abstract class ImplementationPropExpressionVisitor implements
 		return visitConstPropExpression(expr);
 	}
 
-
+	public String visitLocatePropExpression(
+			LocatePropExpression loc) throws Exception {
+		return "Locate("+loc.substr.accept(this)+","+loc.str.accept(this)+","+loc.pos.accept(this)+")";
+	}
 }
