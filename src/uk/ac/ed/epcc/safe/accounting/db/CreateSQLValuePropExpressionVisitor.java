@@ -147,12 +147,6 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 			return new BinarySQLValue(conn,aa, binaryPropExpression.op, bb);
 		}
 	}
-	
-	public SQLValue visitLocatePropExpression(
-			LocatePropExpression expr) throws Exception {
-		return new LocateSQLValue(expr.getSubstring().accept(this), expr.getString().accept(this), expr.getPosition().accept(this));
-	}
-	
 
 	public SQLValue visitMilliSecondDatePropExpression(
 			MilliSecondDatePropExpression milliSecondDate) throws Exception {
@@ -304,4 +298,8 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		return new ConstIndexedSQLValue(conn, target, expr.val);
 	}
 
+	public SQLValue visitLocatePropExpression(
+			LocatePropExpression expr) throws Exception {
+		return new LocateSQLValue(expr.getSubstring().accept(this), expr.getString().accept(this), expr.getPosition().accept(this));
+	}
 }
