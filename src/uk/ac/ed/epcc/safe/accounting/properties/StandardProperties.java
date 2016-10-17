@@ -42,6 +42,7 @@ public class StandardProperties {
 	public static final PropertyTag<Number> CPU_TIME_PROP = new PropertyTag<Number>(base,"CPUTime",Number.class,"Total CPU time (seconds) used by all processes");
 	public static final PropertyTag<Number> RUNTIME_PROP = new PropertyTag<Number>(base,"RuntimeMillis",Number.class,"Wall-clock run-time in milliseconds");
 	public static final PropertyTag<Duration> DURATION_PROP = new PropertyTag<Duration>(base,"Duration",Duration.class,"Duration of usage");
+	public static final PropertyTag<Integer> LOCATE_PROP = new PropertyTag<Integer>(base,"Locate",Integer.class,"Locate substring within another string");
 	public static final PropertyTag<String> MACHINE_NAME_PROP = new PropertyTag<String>(base,"MachineName",String.class);
 	public static final PropertyTag<Date> INSERTED_PROP = new PropertyTag<Date>(time,"Inserted",Date.class,"Time record was inserted in database");
 	public static final PropertyTag<String> TEXT_PROP = new PropertyTag<String>(base,"Text",String.class,"Full text of accounting record as submitted");
