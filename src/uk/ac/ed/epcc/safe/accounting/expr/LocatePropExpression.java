@@ -30,8 +30,8 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 public class LocatePropExpression implements PropExpression<Integer> {
 	public final PropExpression<String> substr;
 	public final PropExpression<String> str;
-    public final PropExpression<Integer> pos; // starting index
-    public LocatePropExpression(PropExpression<String> substr, PropExpression<String> str, PropExpression<Integer> pos){
+    public final PropExpression<Long> pos; // starting index
+    public LocatePropExpression(PropExpression<String> substr, PropExpression<String> str, PropExpression<Long> pos){
     	this.substr=substr.copy();
     	this.str=str.copy();
     	this.pos=pos.copy();
@@ -47,14 +47,14 @@ public class LocatePropExpression implements PropExpression<Integer> {
 	public PropExpression<String> getString(){
 		return str;
 	}
-	public PropExpression<Integer> getPosition(){
+	public PropExpression<Long> getPosition(){
 		return pos;
 	}
  
 	
 	@Override
 	public String toString(){
-		return "Locate('"+substr.toString()+"',"+str.toString()+","+pos.toString()+")";
+		return "Locate("+substr.toString()+","+str.toString()+","+pos.toString()+")";
 	}
 	public <R> R accept(BasePropExpressionVisitor<R> vis) throws Exception {
 		if( vis instanceof PropExpressionVisitor){

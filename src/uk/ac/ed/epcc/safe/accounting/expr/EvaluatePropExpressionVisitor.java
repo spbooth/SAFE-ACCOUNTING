@@ -237,14 +237,6 @@ public abstract class EvaluatePropExpressionVisitor implements
 		return dur.getSeconds();
 	}
 	
-	public Object visitLocatePropExpression(
-			LocatePropExpression l) throws Exception {
-		String str = (String) l.getString().accept(this);
-		String substr = (String) l.getSubstring().accept(this);
-		Integer pos = (Integer) l.getPosition().accept(this);
-		
-		return str.indexOf(substr, pos.intValue()-1);
-	}
 
 	/** Check if a {@link RecordSelector} matches the target object
 	 * 
@@ -287,4 +279,15 @@ public abstract class EvaluatePropExpressionVisitor implements
 	public <I extends Indexed> Object visitConstReferenceExpression(ConstReferenceExpression<I> expr) throws Exception {
 		return expr;
 	}
+	
+	
+	public Object visitLocatePropExpression(
+			LocatePropExpression l) throws Exception {
+		String str = (String) l.getString().accept(this);
+		String substr = (String) l.getSubstring().accept(this);
+		Long pos = (Long) l.getPosition().accept(this);
+		
+		return str.indexOf(substr, pos.intValue()-1);
+	}
+	
 }
