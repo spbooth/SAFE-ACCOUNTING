@@ -13,7 +13,7 @@ public class DummyDataObjectFactory extends DataObjectFactory<DummyDataObjectFac
 	public static final String TABLE_NAME = "DummyTable";
 
 	public DummyDataObjectFactory(AppContext conn){
-		setContext(conn, "DummyTable");
+		setContext(conn, TABLE_NAME);
 	}
 
 	private static final String NAME = "Name";
