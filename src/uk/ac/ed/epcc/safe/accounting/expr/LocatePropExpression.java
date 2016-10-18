@@ -18,7 +18,6 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.webapp.model.data.Duration;
 
 /** A cast an index expression to {@link Locate}.
  * 
@@ -30,8 +29,8 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 public class LocatePropExpression implements PropExpression<Integer> {
 	public final PropExpression<String> substr;
 	public final PropExpression<String> str;
-    public final PropExpression<Long> pos; // starting index
-    public LocatePropExpression(PropExpression<String> substr, PropExpression<String> str, PropExpression<Long> pos){
+    public final PropExpression<Integer> pos; // starting index
+    public LocatePropExpression(PropExpression<String> substr, PropExpression<String> str, PropExpression<Integer> pos){
     	this.substr=substr.copy();
     	this.str=str.copy();
     	this.pos=pos.copy();
@@ -47,7 +46,7 @@ public class LocatePropExpression implements PropExpression<Integer> {
 	public PropExpression<String> getString(){
 		return str;
 	}
-	public PropExpression<Long> getPosition(){
+	public PropExpression<Integer> getPosition(){
 		return pos;
 	}
  
