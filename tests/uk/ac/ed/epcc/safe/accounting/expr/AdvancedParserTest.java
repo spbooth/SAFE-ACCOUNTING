@@ -16,8 +16,6 @@ import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
 import uk.ac.ed.epcc.webapp.WebappTestBase;
 import uk.ac.ed.epcc.webapp.junit4.ConfigFixtures;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
-import uk.ac.ed.epcc.webapp.model.data.Repository;
-import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
 @DataBaseFixtures({"DummyTable.xml"})
@@ -34,10 +32,17 @@ public class AdvancedParserTest extends WebappTestBase{
 		finder.addFinder(ReferencePropertyRegistry.getInstance(ctx));
 		
 		Parser p = new Parser(ctx,finder);
-		p.setDebug(10);
+		//p.setDebug(10);
 		
 		String tests[] = {
-			"@LOCATE(\"el\",\"hello\",0)"
+			"@LOCATE(\"hello\",\"hello\",1)",
+			"@LOCATE(\"el\",\"hello\",1)",
+			"@LOCATE(\"el\",\"hello\",2)",
+			"@LOCATE(\"el\",\"hello\",3)",
+			"@LOCATE(\"el\",\"hello\",5)",
+			"@LOCATE(\"el\",\"hello\",6)",
+			"@LOCATE(\"lo\",\"hello\",1)",
+			"@LOCATE(\"zz\",\"hello\",1)"
 		};
 		  
 		DummyDataObjectFactory fac = new DummyDataObjectFactory(ctx);
