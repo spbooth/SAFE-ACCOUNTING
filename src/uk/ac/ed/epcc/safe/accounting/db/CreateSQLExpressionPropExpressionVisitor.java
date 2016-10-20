@@ -90,10 +90,12 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 		// use round if nested expression is a number
 		Class<?> target = intExpression.exp.getTarget();
 		if( Number.class.isAssignableFrom(target)){
-			if( target == Integer.class){
-				return intExpression.exp.accept(this);
+			SQLExpression inner_sql_expr = intExpression.exp.accept(this);
+			if( target == Integer.class || inner_sql_expr.getTarget() == Integer.class){
+				return inner_sql_expr;
 			}
-			return new RoundSQLExpression(intExpression.exp.accept(this));
+			
+			return new RoundSQLExpression(inner_sql_expr);
 		}
 		throw new InvalidSQLPropertyException("IntPropExpression not representable as SQLExpression");
 		
