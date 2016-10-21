@@ -285,16 +285,16 @@ public abstract class EvaluatePropExpressionVisitor implements
 			LocatePropExpression l) throws Exception {
 		String str = (String) l.getString().accept(this);
 		String substr = (String) l.getSubstring().accept(this);
-		Long pos = (Long) l.getPosition().accept(this);
+		int pos = ((Number) l.getPosition().accept(this)).intValue();
 		
-		Integer loc = -1;
+		Integer loc = 0;
 		if (pos >= 1 && pos <= str.length()) {
 			// note, pos is converted to zero-based indexing
-			loc = str.indexOf(substr, pos.intValue()-1);
-			if (-1 != loc) {
-				// substr has been found, convert loc to one-based indexing
-				loc += 1;
-			}
+			loc = str.indexOf(substr, pos-1);
+
+			// convert loc to one-based indexing
+			loc += 1;
+
 		}
 				
 		return loc;
