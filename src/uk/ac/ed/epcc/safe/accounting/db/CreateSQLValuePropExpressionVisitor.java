@@ -56,7 +56,6 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.DurationSecondConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IntConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LabellerSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LongConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MillisecondSQLValue;
