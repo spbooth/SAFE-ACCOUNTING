@@ -294,7 +294,6 @@ public abstract class EvaluatePropExpressionVisitor implements
 
 			// convert loc to one-based indexing
 			loc += 1;
-
 		}
 				
 		return loc;
