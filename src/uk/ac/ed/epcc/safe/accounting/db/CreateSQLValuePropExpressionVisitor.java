@@ -31,6 +31,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
@@ -55,6 +56,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.DurationSecondConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IntConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LabellerSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LongConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MillisecondSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
@@ -144,7 +146,6 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 			return new BinarySQLValue(conn,aa, binaryPropExpression.op, bb);
 		}
 	}
-	
 
 	public SQLValue visitMilliSecondDatePropExpression(
 			MilliSecondDatePropExpression milliSecondDate) throws Exception {
@@ -296,4 +297,8 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		return new ConstIndexedSQLValue(conn, target, expr.val);
 	}
 
+	public SQLValue visitLocatePropExpression(
+			LocatePropExpression expr) throws Exception {
+		return new LocateSQLValue(expr.getSubstring().accept(this), expr.getString().accept(this), expr.getPosition().accept(this));
+	}
 }

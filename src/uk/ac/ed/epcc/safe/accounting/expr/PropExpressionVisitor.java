@@ -53,6 +53,7 @@ public interface  PropExpressionVisitor<R> extends BasePropExpressionVisitor<R>{
   public R visitDurationPropExpression(DurationPropExpression sel) throws Exception;
   public R visitDurationCastPropExpression(DurationCastPropExpression<?> sel) throws Exception;
   public R visitDurationSecondPropExpression(DurationSecondsPropExpression d)throws Exception;
+  public R visitLocatePropExpression(LocatePropExpression expr) throws Exception;
   public <T,D> R visitTypeConverterPropExpression(TypeConverterPropExpression<T,D> sel) throws Exception;
   public <T,X> R visitLabelPropExpression(LabelPropExpression<T,X> expr) throws Exception;
   public <T> R visitCasePropExpression(CasePropExpression<T> expr)  throws Exception;

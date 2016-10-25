@@ -31,7 +31,6 @@ import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
-import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 
 /** Visitor to check if an expression resolves
  * This version does not check expressions on remote objects
@@ -87,8 +86,6 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 		return Boolean.TRUE;
 	}
 
-	
-
 	public Boolean visitBinaryPropExpression(
 			BinaryPropExpression binaryPropExpression) throws Exception {
 	
@@ -124,9 +121,6 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 		}
 		return accept;
 	}
-
-	
-	
 
 	public Boolean visitSelectPropExpression(SelectPropExpression<?> sel)
 			throws Exception {
@@ -251,4 +245,10 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 		return Boolean.TRUE;
 	}
 
+	
+	public Boolean visitLocatePropExpression(
+			LocatePropExpression expr) throws Exception {
+		return expr.substr.accept(this) && expr.str.accept(this) && expr.pos.accept(this);
+	}
+	
 }

@@ -31,6 +31,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
@@ -49,6 +50,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DerefSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.RoundSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
@@ -280,5 +282,9 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	}
 	
 	
-
+	public SQLExpression visitLocatePropExpression(
+			LocatePropExpression expr) throws Exception {
+		return new LocateSQLExpression(expr.getSubstring().accept(this), expr.getString().accept(this), expr.getPosition().accept(this));
+	}
+	
 }
