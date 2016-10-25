@@ -30,7 +30,6 @@ public class DummyPropertyFactory extends DefaultDataObjectPropertyFactory<Dummy
 	}
 	
 	
-
 	@Override
 	protected DataObject makeBDO(Record res) throws DataFault {
 		return new DummyPropertyContainer(this, res);
@@ -60,7 +59,7 @@ public class DummyPropertyFactory extends DefaultDataObjectPropertyFactory<Dummy
 		return finder.find(fil , true);
 	}
 	
-	public SQLFilter<DummyPropertyContainer> getRefereceFilter(IndexedReference<DummyPropertyContainer> ref){
+	public SQLFilter<DummyPropertyContainer> getReferenceFilter(IndexedReference<DummyPropertyContainer> ref){
 		return new SelfReferenceFilter<>(getTarget(), res, ref);
 	}
 }

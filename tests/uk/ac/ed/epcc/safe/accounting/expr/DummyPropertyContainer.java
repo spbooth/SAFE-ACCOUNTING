@@ -22,6 +22,7 @@ public class DummyPropertyContainer extends DataObjectPropertyContainer{
 	public void setData(String s){
 		record.setProperty(DummyPropertyFactory.DATA_FIELD, s);
 	}
+	
 	public int getOffset(){
 		return record.getIntProperty(DummyPropertyFactory.OFFSET_FIELD);
 	}
