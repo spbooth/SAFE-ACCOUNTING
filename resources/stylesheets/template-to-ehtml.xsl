@@ -47,6 +47,14 @@
 <xsl:template match="rep:Section/rep:Title|rep:Section/Title">
 <h3><xsl:apply-templates/></h3>
 </xsl:template>
+
+<!--  
+<xsl:template match="rep:Section">
+<div class="block">
+<xsl:apply-templates/>
+</div>
+</xsl:template>
+-->
 	
 <!-- Convert sub-sections -->
 <xsl:template match="rep:SubSection/rep:Title|rep:SubSection/Title">
@@ -101,4 +109,10 @@
 <xsl:template match="rep:NoData|NoData">
 <div class='nodata'>This plot contained no data</div>
 </xsl:template>
+
+<!--  Copy processing instruction as the result includes these directly -->
+<xsl:template match="processing-instruction('external-content')">
+<xsl:copy/>
+</xsl:template>
+
 </xsl:stylesheet>

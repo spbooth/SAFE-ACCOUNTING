@@ -25,7 +25,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.NumberFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -114,6 +113,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	public static final String STYLESHEET_GROUP = "stylesheets";
 
 	public static final Feature CHECK_PARAMETER_NAMES = new Feature("reports.check_parameter_names",true,"Check that report parameter names come from the valid set");
+	public static final Feature EMBEDDED_USE_REFERENCE = new Feature("reports.embedded.use_reference",true,"XMLGenerators (e.g. tables) are added directly to the final XMLBuilder to allow links etc");
 	public class Resolver implements URIResolver {
 
 		public Source resolve(String href, String base)
@@ -786,7 +786,10 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		setupExtensions(EHTML,params);
 		for(Object o : params.values()){
 			if( o instanceof ReportExtension){
-				((ReportExtension)o).setUseReference(true);
+				// XMLGenerators are added to parameters and added to the output as processing instructions
+				// the generators are then added directly to the builder in the XMLBuilderSAXHandler
+				// This allows domain objects to add navication links
+				((ReportExtension)o).setUseReference(EMBEDDED_USE_REFERENCE.isEnabled(getContext()));
 			}
 		}
 		// We pass the params to allow extensions to store XMLGenereator objects and
@@ -833,11 +836,13 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 				}
 			}
 			name = transform_names[transform_names.length-1];
+			//name=null;
 			if( timer != null){
 				timer.startTimer("xml-transform "+name);
 			}
 			logSource(name, xmlSource);
 			Transformer transformer = getXSLTransform(name, params);
+			
 			transformer.transform(xmlSource,out );
 			if( timer != null){
 				timer.stopTimer("xml-transform "+name);

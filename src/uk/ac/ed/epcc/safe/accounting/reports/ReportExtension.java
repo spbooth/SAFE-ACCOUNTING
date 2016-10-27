@@ -1028,7 +1028,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	/** Store the table in the parameters list and just reference it
 	 * via a processing instruction. This is to expose the table to a ContentBuilder
 	 * in an embedded report.
-	 * 
+	 * @se {@link XMLBuilderSaxHandler}
 	 * @param val
 	 */
 	public void setUseReference(boolean val) {
