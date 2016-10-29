@@ -409,9 +409,6 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		return new FilterIterator(getFilter(sel));
 	}
 
-	public String getImplemenationInfo(PropertyTag<?> tag) {
-		return  getAccessorMap().getImplemenationInfo(tag);
-	}
 
 	public long getRecordCount(RecordSelector selector) throws Exception {
 		 if( ! compatible(selector)){

@@ -70,13 +70,6 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 		return res.getTag();
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.UsageProducer#getImplemenationInfo(uk.ac.ed.epcc.safe.accounting.PropertyTag)
-	 */
-	public String getImplemenationInfo(PropertyTag<?> tag) {
-		return  getAccessorMap().getImplemenationInfo(tag);
-	}
-
 
 	public final PropExpressionMap getDerivedProperties(){
 		return getAccessorMap().getDerivedProperties();

@@ -86,7 +86,7 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 	
 		PropertyFinder finder = fac.getFinder();
 		for (PropertyTag tag : finder.getProperties()) {
-			String info = fac.getImplemenationInfo(tag);
+			String info = fac.getAccessorMap().getImplemenationInfo(tag);
 			assertNotNull(info);
 		}
 	}

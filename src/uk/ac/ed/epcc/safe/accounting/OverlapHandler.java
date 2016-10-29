@@ -28,7 +28,6 @@ import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
-import uk.ac.ed.epcc.safe.accounting.expr.TimePeriodExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -45,7 +44,6 @@ import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.NumberOp;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CaseExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
@@ -725,26 +723,6 @@ public class OverlapHandler<T extends UsageRecord> {
 	 * @throws InvalidPropertyException 
      */
     public static Number getOverlap(ExpressionTarget rec,NumberReductionTarget target,PropExpression<Date> start_prop,PropExpression<Date> end_prop,TimePeriod p) throws InvalidExpressionException {
-    	PropExpression e = target.getExpression();
-    	if( rec instanceof TimePeriodExpressionTarget && e instanceof PropertyTag ){
-    		// If this is a top level property with a custom TimePeriodAccessor query that.
-    		return ((TimePeriodExpressionTarget)rec).evaluateOverlapProperty(p, (PropertyTag)e);
-    	}
-    	return getDefaultOverlap(rec, target, start_prop, end_prop, p);
-    }
-    /** property proportional to fraction of record that overlaps period
-     * similar to {@link #getOverlap(ExpressionTarget, NumberReductionTarget, PropExpression, PropExpression, TimePeriod)}
-     * except that it does not check if the {@link ExpressionTarget} implements {@link TimePeriodExpressionTarget}
-	 * @param rec 
-	 * @param target 
-	 * @param start_prop 
-	 * @param end_prop 
-     * @param p_start period start i
-     * @param p_end period end 
-     * @return weighted value of property
-	 * @throws InvalidPropertyException 
-     */
-    public static Number getDefaultOverlap(ExpressionTarget rec,NumberReductionTarget target,PropExpression<Date> start_prop,PropExpression<Date> end_prop,TimePeriod p) throws InvalidExpressionException { 	
     	Number tmp=rec.evaluateExpression(target.getExpression());
     	
     	if( tmp == null ){

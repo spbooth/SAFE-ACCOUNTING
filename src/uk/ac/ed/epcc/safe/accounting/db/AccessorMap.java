@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
-import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.CasePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.EvaluatePropExpressionVisitor;
@@ -38,8 +37,6 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.expr.ResolveCheckVisitor;
-import uk.ac.ed.epcc.safe.accounting.expr.TimePeriodAccessor;
-import uk.ac.ed.epcc.safe.accounting.expr.TimePeriodExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.FixedPropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -85,8 +82,6 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.SQLAndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -201,7 +196,6 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		private Set<PropertyTag> missing;
 		private Map<PropExpression,Object> cache=null;
 		private final boolean use_cache;
-		private TimePeriod period = null;
 		public ExpressionTargetProxy(X r,boolean use_cache){
 			super(r.getContext());
 			this.record=r;
@@ -273,9 +267,6 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 			
 			Accessor a = accessor_map.get(tag);
 			if( a != null ){
-				if(  period != null && a instanceof TimePeriodAccessor){
-					return ((TimePeriodAccessor)a).getOverlap(period, (TimePeriod) record);
-				}
 				return a.getValue(record);
 			}
 			if( missing.contains(tag)){

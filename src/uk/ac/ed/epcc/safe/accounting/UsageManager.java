@@ -600,18 +600,7 @@ public abstract class UsageManager<UR extends UsageRecord> implements
 		}
 		return finder;
 	}
-	public String getImplemenationInfo(PropertyTag<?> tag) {
-		StringBuilder sb = new StringBuilder();
-		boolean seen=false;
-		for(UsageProducer<UR> prod: factories.values()){
-			if( seen ){
-				sb.append(" , ");
-			}
-			sb.append(prod.getImplemenationInfo(tag));
-			seen=true;
-		}
-		return sb.toString();
-	}
+	
 	public ListInput<String,UsageProducer> getInput() {
 		return getProducerInput(true);
 	}

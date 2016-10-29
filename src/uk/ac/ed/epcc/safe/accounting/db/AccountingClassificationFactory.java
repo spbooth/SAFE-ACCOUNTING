@@ -213,9 +213,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 	protected AccountingClassificationTableRegistry makeTableRegistry() {
 		return new AccountingClassificationTableRegistry();
 	}
-	public String getImplemenationInfo(PropertyTag<?> tag) {
-		return getAccessorMap().getImplemenationInfo(tag);
-	}
+	
 	private ReductionHandler<T, AccountingClassificationFactory<T>> getReductionHandler(){
 		return new ReductionHandler<T, AccountingClassificationFactory<T>>(this);
 	}
