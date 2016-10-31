@@ -55,7 +55,11 @@ ReductionProducer<UR>{
 	public <X> boolean hasProperty(PropertyTag<X> tag);
 	
 	    
-    
-	
+    /** Describe implementation of a property.
+     * Used by accounting_properties.jsp
+     * @param tag
+     * @return
+     */
+	public String getImplemenationInfo(PropertyTag<?> tag);
 
 }

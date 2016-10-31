@@ -173,5 +173,8 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	}
 	
 	
-	
+	@Override
+	public final String getImplemenationInfo(PropertyTag<?> tag) {
+		return getAccessorMap().getImplemenationInfo(tag);
+	}
 }

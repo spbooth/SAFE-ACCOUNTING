@@ -245,6 +245,10 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 		reg=null;
 		super.release();
 	}
+	@Override
+	public String getImplemenationInfo(PropertyTag<?> tag) {
+		return getAccessorMap().getImplemenationInfo(tag);
+	}
 	
 	
 }

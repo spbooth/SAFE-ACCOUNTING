@@ -552,4 +552,8 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		property_finder=null;
 		super.release();
 	}
+	@Override
+	public final String getImplemenationInfo(PropertyTag<?> tag) {
+		return getAccessorMap().getImplemenationInfo(tag);
+	}
 }
