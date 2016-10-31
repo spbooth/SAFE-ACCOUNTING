@@ -137,6 +137,7 @@ public abstract class AbstractAccessorMap<X extends ExpressionTarget&Contexed> i
 	
 	protected final String config_tag;
 	protected static final String CONFIG_PREFIX = "accounting.";
+	private final AppContext conn;
 	private Logger log;
 	// derived prop expressions
 	private PropExpressionMap derived;
@@ -514,7 +515,8 @@ public abstract class AbstractAccessorMap<X extends ExpressionTarget&Contexed> i
 	 * @param config_tag 
 	 * 
 	 */
-	public AbstractAccessorMap(Class<? super X> target,String config_tag) {
+	public AbstractAccessorMap(AppContext conn,Class<? super X> target,String config_tag) {
+		this.conn=conn;
 		this.target=target;
 		this.config_tag=config_tag;
 		derived = new PropExpressionMap();
@@ -1059,7 +1061,9 @@ public abstract class AbstractAccessorMap<X extends ExpressionTarget&Contexed> i
     			+ expr+" for "+config_tag);
     }
     
-	public abstract AppContext getContext();
+	public final AppContext getContext(){
+		return conn;
+	}
 	protected Logger getLogger() {
 		if( log == null ){
 			log =getContext().getService(LoggerService.class).getLogger(getClass());

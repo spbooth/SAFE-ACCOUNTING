@@ -173,9 +173,8 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> extends Abstract
 	 * 
 	 */
 	public AccessorMap(Class<? super X> target,Repository res,String config_tag) {
-		super(target,config_tag);
+		super(res.getContext(),target,config_tag);
 		this.res=res;
-		
 	}
 	
 
@@ -449,9 +448,6 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> extends Abstract
     public Map<String,Object> getSelectors(){
     	return new HashMap<String,Object>(selector_map);
     }
-	public AppContext getContext() {
-		return res.getContext();
-	}
 	
 	
 	protected void addSource(StringBuilder sb) {
