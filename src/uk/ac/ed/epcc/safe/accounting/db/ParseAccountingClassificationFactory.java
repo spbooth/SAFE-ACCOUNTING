@@ -79,7 +79,7 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 	
 	@SuppressWarnings("unchecked")
 	private void initAccessorMap(AppContext c, String table) {
-		map = new RepositoryAccessorMap<T>(getTarget(),res,table);
+		map = new RepositoryAccessorMap<T>(this,res);
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(AccountingClassificationFactory.classification);
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);

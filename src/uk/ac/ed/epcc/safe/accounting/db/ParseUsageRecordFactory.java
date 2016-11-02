@@ -175,7 +175,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 		try{
 		MultiFinder finder = new MultiFinder();
 		PropExpressionMap derived = new PropExpressionMap();
-		mapi=new RepositoryAccessorMap<T>(getTarget(),res,table);
+		mapi=new RepositoryAccessorMap<T>(this,res);
 		for(AccessorContributer contrib : getComposites(AccessorContributer.class)){
 			contrib.customAccessors(mapi, finder, derived);
 		}

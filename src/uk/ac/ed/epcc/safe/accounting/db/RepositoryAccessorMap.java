@@ -60,6 +60,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 public class RepositoryAccessorMap<X extends DataObject&ExpressionTarget> extends AccessorMap<X>{
 	
+	private final DataObjectFactory<X> fac;
 	private final Repository res;
 	// additional selectors that cannot be determined directly from repository
 		// These have to be selectors as inputs are not immutable and may have their
@@ -98,8 +99,9 @@ public class RepositoryAccessorMap<X extends DataObject&ExpressionTarget> extend
 	 * @param config_tag 
 	 * 
 	 */
-	public RepositoryAccessorMap(Class<? super X> target,Repository res,String config_tag) {
-		super(res.getContext(),target,config_tag);
+	public RepositoryAccessorMap(DataObjectFactory<X> fac,Repository res) {
+		super(fac.getContext(),fac.getTarget(),fac.getConfigTag());
+		this.fac=fac;
 		this.res=res;
 	}
 	
@@ -355,10 +357,7 @@ public class RepositoryAccessorMap<X extends DataObject&ExpressionTarget> extend
 		
 		ReferenceTag tag=(ReferenceTag) reference_registry.find(IndexedReference.class, res.getTag());
 		if( tag != null && ! selector_map.containsValue(tag)){
-			Class clazz = getContext().getPropertyClass(DataObjectFactory.class, res.getTag());
-			if( clazz != null){
-				put(tag, new SelfSQLValue<X>(target,res, clazz));
-			}
+			put(tag, new SelfSQLValue<X>(fac));
 		}
 				
 	}
