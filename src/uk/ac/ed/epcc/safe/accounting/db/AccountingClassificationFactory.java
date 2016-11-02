@@ -67,7 +67,7 @@ import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 public class AccountingClassificationFactory<T extends AccountingClassification>
 		extends PropertyTargetClassificationFactory<T>  implements UsageProducer<T>,FilterSelector<DataObjectItemInput<T>>{
 	private PropertyFinder reg=null;
-	private AccessorMap<T> map=null;
+	private RepositoryAccessorMap<T> map=null;
 	public static final PropertyRegistry classification = new PropertyRegistry("classification", "Standard properties for a Classification table");
 	public static final PropertyTag<String> NAME_PROP = new PropertyTag<String>(classification,Classification.NAME,String.class);
 	public static final PropertyTag<String> DESCRIPTION_PROP = new PropertyTag<String>(classification,Classification.DESCRIPTION,String.class);
@@ -95,7 +95,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 	}
 	
 	private void initAccessorMap(AppContext c, String tag) {
-		map = new AccessorMap<T>(getTarget(),res,tag);
+		map = new RepositoryAccessorMap<T>(getTarget(),res,tag);
 		MultiFinder finder = new MultiFinder();
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 		map.makeReferences( refs);
@@ -130,7 +130,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 
 	
 
-	public final AccessorMap<T> getAccessorMap(){
+	public final RepositoryAccessorMap<T> getAccessorMap(){
 		if( map == null ){
 			initAccessorMap(getContext(), getConfigTag());
 		}

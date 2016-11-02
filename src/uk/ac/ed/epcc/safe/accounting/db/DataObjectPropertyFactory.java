@@ -73,11 +73,11 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	}
 	
 
-
+	public abstract RepositoryAccessorMap<T> getAccessorMap();
 	@Override
 	protected Map<String, Object> getSelectors() {
 		
-		AccessorMap<T> map = getAccessorMap();
+		RepositoryAccessorMap<T> map = getAccessorMap();
 		return new HashMap<String,Object>(map.getSelectors());
 		
 	}

@@ -32,6 +32,7 @@ import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.db.MapFinder;
 import uk.ac.ed.epcc.safe.accounting.db.PropertyMaker;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
+import uk.ac.ed.epcc.safe.accounting.db.RepositoryAccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
@@ -174,7 +175,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		
 	}
 	
-	private AccessorMap<H> mapi=null;
+	private RepositoryAccessorMap<H> mapi=null;
 	private PropertyFinder property_finder=null;
 	public static final PropertyRegistry history= new PropertyRegistry("history","History table properties");
 	public static final PropertyTag<Date> HISTORY_START = new PropertyTag<Date>(history,START_TIME_FIELD,Date.class,"Start of history period");
@@ -191,7 +192,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 	private void initAccessorMap(AppContext conn, String tag){
 		MultiFinder finder = new MultiFinder();
 		PropExpressionMap derived = new PropExpressionMap();
-		mapi = new AccessorMap<H>(getTarget(),res, tag);
+		mapi = new RepositoryAccessorMap<H>(getTarget(),res, tag);
 		finder.addFinder(StandardProperties.base);
 		
 		
@@ -312,7 +313,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 
 	
 
-	public final AccessorMap<H> getAccessorMap(){
+	public final RepositoryAccessorMap<H> getAccessorMap(){
 		if( mapi == null ){
 			initAccessorMap(getContext(), getConfigTag());
 		}
@@ -322,7 +323,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 	@Override
 	protected Map<String, Object> getSelectors() {
 		
-		AccessorMap<H> map = getAccessorMap();
+		RepositoryAccessorMap<H> map = getAccessorMap();
 		return map.getSelectors();
 		
 	}

@@ -62,7 +62,7 @@ public class ParseAccountingClassificationFactory<T extends AccountingClassifica
 extends PropertyTargetClassificationFactory<T> implements PlugInOwner<R> ,
 ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 	private PropertyFinder reg=null;
-	private AccessorMap<T> map=null;
+	private RepositoryAccessorMap<T> map=null;
 	
 	private PlugInOwner<R> plugin_owner=null;
 	private PropertyTag<String> match_prop=null;
@@ -79,7 +79,7 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 	
 	@SuppressWarnings("unchecked")
 	private void initAccessorMap(AppContext c, String table) {
-		map = new AccessorMap<T>(getTarget(),res,table);
+		map = new RepositoryAccessorMap<T>(getTarget(),res,table);
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(AccountingClassificationFactory.classification);
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
@@ -123,7 +123,7 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 		return reg;
 	}
 	
-	public final AccessorMap<T> getAccessorMap(){
+	public final RepositoryAccessorMap<T> getAccessorMap(){
 		if( map == null ){
 			initAccessorMap(getContext(), getConfigTag());
 		}

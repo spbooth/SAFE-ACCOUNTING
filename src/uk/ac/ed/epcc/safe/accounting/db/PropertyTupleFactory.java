@@ -7,6 +7,7 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -25,46 +26,63 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.TupleFactory;
 import uk.ac.ed.epcc.webapp.time.Period;
-
+/** A property enabled {@link TupleFactory}
+ * The component parts are accessible as references
+ * 
+ * @author spb
+ *
+ * @param <A>
+ * @param <AF>
+ * @param <T>
+ */
 public class PropertyTupleFactory<
 A extends DataObject & ExpressionTarget, 
 AF extends DataObjectFactory<A>&ExpressionTargetFactory<A>,
 T extends PropertyTupleFactory<A,AF,?>.PropertyTuple
 >extends TupleFactory<A,AF,T> implements ExpressionTargetGenerator<T>, ExpressionFilterTarget{
 
-	
+	private final TupleAccessorMap map;
 
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.webapp.model.data.TupleFactory#makeTuple()
+	 */
+	@Override
+	public T makeTuple() {
+		
+		return (T) new PropertyTuple();
+	}
 	public PropertyTupleFactory(AppContext c,AF ...a_fac) {
 		super(c,a_fac);
+		map = new TupleAccessorMap(this, "XXXX");
 	}
 
 	public class PropertyTuple extends TupleFactory.Tuple<A> implements ExpressionTarget{
 
-		
+		 public PropertyTuple() {
+			super();
+			this.proxy = map.getProxy(this);
+		}
+
+		protected final ExpressionTargetContainer proxy;
 
 		@Override
-		public <T> T getProperty(PropertyTag<T> tag, T def) {
-			
-			//TODO
-			return null;
+		public <R> R getProperty(PropertyTag<R> tag, R def) {
+			return proxy.evaluateExpression(tag, def);
 		}
 
 		@Override
 		public Parser getParser() {
-			// TODO Auto-generated method stub
-			return null;
+			return proxy.getParser();
 		}
 
 		@Override
 		public <T> T evaluateExpression(PropExpression<T> expr) throws InvalidExpressionException {
-			// TODO Auto-generated method stub
-			return null;
+			return proxy.evaluateExpression(expr);
 		}
 
 		@Override
 		public <T> T evaluateExpression(PropExpression<T> expr, T def) {
-			// TODO Auto-generated method stub
-			return null;
+			return proxy.evaluateExpression(expr, def);
 		}
 		
 	}
@@ -114,49 +132,44 @@ T extends PropertyTupleFactory<A,AF,?>.PropertyTuple
 
 	@Override
 	public <P> boolean hasProperty(PropertyTag<P> tag) {
-		return false;
+		return map.hasProperty(tag);
 	}
 
 	@Override
 	public <I> boolean compatible(PropExpression<I> expr) {
-		// TODO Auto-generated method stub
-		return false;
+
+		return map.resolves(expr, false);
 	}
 
 	@Override
 	public Class getTarget() {
-		return Object.class;
+		return PropertyTuple.class;
 	}
 
 	@Override
 	public BaseFilter getFilter(PropExpression expr, MatchCondition match, Object value) throws CannotFilterException {
-		// TODO Auto-generated method stub
-		return null;
+		return map.getFilter(expr, match, value);
 	}
 
 	@Override
 	public BaseFilter getNullFilter(PropExpression expr, boolean is_null) throws CannotFilterException {
-		// TODO Auto-generated method stub
-		return null;
+		return map.getNullFilter(expr, is_null);
 	}
 
 	@Override
 	public BaseFilter getRelationFilter(PropExpression left, MatchCondition match, PropExpression right)
 			throws CannotFilterException {
-		// TODO Auto-generated method stub
-		return null;
+		return map.getRelationFilter(left, match, right);
 	}
 
 	@Override
 	public BaseFilter getPeriodFilter(Period period, PropExpression start_prop, PropExpression end_prop,
 			OverlapType type, long cutoff) throws CannotFilterException {
-		// TODO Auto-generated method stub
-		return null;
+		return map.getPeriodFilter(period, start_prop, end_prop, type, cutoff);
 	}
 
 	@Override
 	public BaseSQLFilter getOrderFilter(boolean descending, PropExpression expr) throws CannotFilterException {
-		// TODO Auto-generated method stub
-		return null;
+		return map.getOrderFilter(descending, expr);
 	}
 }

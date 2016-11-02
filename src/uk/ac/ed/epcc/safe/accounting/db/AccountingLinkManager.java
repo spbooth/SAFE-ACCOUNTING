@@ -139,11 +139,11 @@ public abstract static class PropertyTargetLink<L extends DataObject, R extends 
 	}
 
 private PropertyFinder reg=null;
-private AccessorMap<T> map=null;
+private RepositoryAccessorMap<T> map=null;
 private PropExpressionMap expression_map=null;
 
 protected final void initAccessorMap(AppContext c, String table) {
-	map = new AccessorMap<T>(getTarget(),res,table);
+	map = new RepositoryAccessorMap<T>(getTarget(),res,table);
 	MultiFinder finder = new MultiFinder();
 	ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 	map.makeReferences(refs);
@@ -193,7 +193,7 @@ public void resetStructure() {
 	initAccessorMap(getContext(), getConfigTag());
 }
 
-public final AccessorMap<T> getAccessorMap() {
+public final RepositoryAccessorMap<T> getAccessorMap() {
 	if( map == null ){
 		initAccessorMap(getContext(), getTag());
 	}
@@ -215,7 +215,7 @@ public final PropExpressionMap getDerivedProperties() {
 	@Override
 	protected Map<String, Object> getSelectors() {
 		
-		AccessorMap<T> map = getAccessorMap();
+		RepositoryAccessorMap<T> map = getAccessorMap();
 		return map.getSelectors();
 		
 	}
