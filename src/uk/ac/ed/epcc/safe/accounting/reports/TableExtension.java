@@ -53,6 +53,7 @@ import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
+import uk.ac.ed.epcc.safe.accounting.SelectReduction;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
@@ -621,8 +622,12 @@ public class TableExtension extends ReportExtension {
 						}
 					}
 					// printing index
-					IndexReduction red = new IndexReduction(property);
-					red.setAllowNull(isColumn);
+					ReductionTarget red;
+					if( isColumn){
+						red = new SelectReduction(property);
+					}else{
+						red = new IndexReduction(property);
+					}
 					reductions.add(red);
 					col_names.add(col_name);
 					cols.put(col_name,red);

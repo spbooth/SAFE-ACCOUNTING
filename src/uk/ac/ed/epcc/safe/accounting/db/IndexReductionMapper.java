@@ -83,9 +83,10 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 				}
 				if( val != null ){
 					String value_name=null;
-					if( ! (val instanceof FieldValue)){
-						value_name=t.toString();
-					}
+					// Seems safer to just skip all custom names.
+					//if( ! (val instanceof FieldValue)){
+					//	value_name=t.toString();
+					//}
 					if( target.getReduction() == Reduction.INDEX){
 						addKey(val, value_name);
 						indexes++;
@@ -101,6 +102,7 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 								case MIN: addMin(e, value_name);break;
 								case MAX: addMax(e, value_name);break;
 								case AVG: addAverage(e, value_name);break;
+								case SELECT:addClause(val, value_name);break; 
 								default: throw new IllegalReductionException("Bad number reduction");
 								}
 							}else if( Date.class.isAssignableFrom(val.getTarget()) ){
@@ -111,14 +113,23 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 								switch(target.getReduction()){
 								case MIN: addMinDate(e, value_name);break;
 								case MAX: addMaxDate(e, value_name);break;
+								case SELECT:addClause(val, value_name);break; 
 								default: throw new IllegalReductionException("Bad date reduction");
 								}
 
 							}else{
-								throw new IllegalReductionException("Unsupported data type for reduction");
+								if( target.getReduction() == Reduction.SELECT){
+									addClause(val, value_name);
+								}else{
+									throw new IllegalReductionException("Unsupported data type for reduction");
+								}
 							}
 						}else{
-							throw new CannotUseSQLException("Not an SQL Expression");
+							if( target.getReduction() == Reduction.SELECT){
+								addClause(val, value_name);
+							}else{
+								throw new CannotUseSQLException("Not an SQL Expression");
+							}
 						}
 						reductions++;
 					}
@@ -141,6 +152,7 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 						PropExpression tag =  target.getExpression();
 						map.put(tag, getTargetObject(pos, rs));
 					}
+					//TODO a multi field SQLValue SELECT will fail
 					pos++;
 
 			}
@@ -165,6 +177,7 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 						n = default_map.get(t);
 					}
 					map.put(t, n);
+					//TODO multi field SQLValue SELECt will fail
 					pos++;
 				}
 			}

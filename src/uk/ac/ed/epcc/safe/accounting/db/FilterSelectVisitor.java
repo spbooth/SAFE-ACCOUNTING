@@ -115,10 +115,8 @@ public class FilterSelectVisitor<T extends ExpressionTarget> implements Selector
 		AndFilter<T> fil = new AndFilter<T>(target.getTarget());
 		for(ReductionTarget t : r){
 			if( t.getReduction() == Reduction.INDEX ){
-				if( !( t instanceof IndexReduction) || ! ((IndexReduction)t).allowNull() ){
-					// Index must not be null unless explicitly permitted
-					fil.addFilter(target.getNullFilter(t.getExpression(), false));
-				}
+				// Index must not be null unless explicitly permitted
+				fil.addFilter(target.getNullFilter(t.getExpression(), false));
 			}
 		}
 		return fil;
