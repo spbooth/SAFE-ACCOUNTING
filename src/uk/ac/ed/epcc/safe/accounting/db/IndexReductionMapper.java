@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.GeneralMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
@@ -44,6 +45,10 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 		private Set<ReductionTarget> sum;
 		private Set<ReductionTarget> skip;
 		private Map<ReductionTarget,Object> default_map;
+		//
+		// This used to be the behaviour we may need to re-instate if old reports break.
+		//
+		private static final Feature SELECTS_IN_KEY = new Feature("reporting.index_reduction.add_selects_to_key",false,"Include select clauses in IndexedReduction inded");
 		@SuppressWarnings("unchecked")
 		public IndexReductionMapper(AccessorMap map, Set<ReductionTarget> targets,ReductionMapResult defs) throws InvalidPropertyException, IllegalReductionException, CannotUseSQLException{
 			super(map.getContext());
@@ -87,7 +92,7 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 					//if( ! (val instanceof FieldValue)){
 					//	value_name=t.toString();
 					//}
-					if( target.getReduction() == Reduction.INDEX){
+					if( target.getReduction() == Reduction.INDEX || (target.getReduction()==Reduction.SELECT && SELECTS_IN_KEY.isEnabled(getContext()))){
 						addKey(val, value_name);
 						indexes++;
 					}else{

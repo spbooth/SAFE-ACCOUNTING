@@ -169,10 +169,10 @@ SUM(Wall): 140360
 			<fil:Value>Informatics</fil:Value>
 		</fil:EQ>
 	</fil:Filter>
-	<tab:Column>
+	<tab:Index>
 		<tab:Name>Institute</tab:Name>
 		<tab:Property>Institute</tab:Property>
-	</tab:Column>
+	</tab:Index>
 	<tab:SumColumn>
 		<tab:Name>Time</tab:Name>
 		<tab:Property>Wall</tab:Property>
