@@ -148,7 +148,7 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 		@Override
 		protected ExpressionTuple makeKey(ResultSet rs) throws DataException {
 			Map<PropExpression,Object> map = new HashMap<PropExpression, Object>();
-			int pos=0;
+			int pos=0;  // This is expression count NOT fields super-class keeps track
 			for(ReductionTarget target : sum){
 		
 					if( target.getReduction() == Reduction.INDEX){
@@ -156,7 +156,6 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 						PropExpression tag =  target.getExpression();
 						map.put(tag, getTargetObject(pos, rs));
 					}
-					//TODO a multi field SQLValue SELECT will fail
 					pos++;
 
 			}
@@ -168,7 +167,7 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 		@Override
 		protected ReductionMapResult makeResult(ResultSet rs) throws DataException {
 			ReductionMapResult map = new ReductionMapResult();
-			int pos=0;
+			int pos=0; // This is expression count not fields superclass keeps track
 			for(ReductionTarget t : sum){
 				if( skip != null && skip.contains(t)){
 					Object def = t.getDefault();
@@ -181,7 +180,6 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 						n = default_map.get(t);
 					}
 					map.put(t, n);
-					//TODO multi field SQLValue SELECt will fail
 					pos++;
 				}
 			}

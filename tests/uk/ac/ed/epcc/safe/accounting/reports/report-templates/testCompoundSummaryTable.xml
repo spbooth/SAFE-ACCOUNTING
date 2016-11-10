@@ -39,10 +39,10 @@
 			   	<fil:Value>ecdf_baseline</fil:Value>
 			</fil:EQ>
 	    </fil:Filter>  	
-		<tab:Column>				
+		<tab:Index>				
 			<tab:Name>User</tab:Name>		
 			<tab:Property>UserName</tab:Property>
-		</tab:Column>	   				
+		</tab:Index>	   				
 		<tab:SumColumn>
 			<tab:Name>Baseline</tab:Name>
 			<tab:Property>Residency</tab:Property>
