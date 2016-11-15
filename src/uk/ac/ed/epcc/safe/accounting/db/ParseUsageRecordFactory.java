@@ -86,7 +86,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 	
 	  private  PropertyFinder property_finder=null;
 	 
-	  private  AccessorMap<T> mapi=null;
+	  private  RepositoryAccessorMap<T> mapi=null;
 	 
 	  protected static final String TEXT="Text"; // raw text of line
 	protected ParseUsageRecordFactory(AppContext c, String table) {
@@ -175,7 +175,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 		try{
 		MultiFinder finder = new MultiFinder();
 		PropExpressionMap derived = new PropExpressionMap();
-		mapi=new AccessorMap<T>(getTarget(),res,table);
+		mapi=new RepositoryAccessorMap<T>(this,res);
 		for(AccessorContributer contrib : getComposites(AccessorContributer.class)){
 			contrib.customAccessors(mapi, finder, derived);
 		}
@@ -218,7 +218,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 		
 	}
 
-	public final AccessorMap<T> getAccessorMap(){
+	public final RepositoryAccessorMap<T> getAccessorMap(){
 		if( mapi == null ){
 			initAccessorMap(getContext(), getConfigTag());
 		}

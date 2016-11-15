@@ -2,6 +2,7 @@ package uk.ac.ed.epcc.safe.accounting.policy;
 
 import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.db.AccountingUpdater;
+import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordParseTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -43,6 +44,7 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy {
 	PropertyTag<Integer> link_prop;
 	PropertyTag<String> nested_prop;
 	ReferenceTag parent_tag;
+	UsageRecordFactory parent_fac;
 	UsageRecordParseTarget<Use, String> parse_target;
 	
 	public NestedParsePolicy() {
@@ -69,6 +71,7 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy {
 		
 		ReferencePropertyRegistry registry = ReferencePropertyRegistry.getInstance(conn);
 		parent_tag = (ReferenceTag) registry.find(table_name);
+	
 		
 		return prev;
 		
@@ -90,8 +93,7 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy {
 				PropertyMap meta_data = new PropertyMap();      
 			    meta_data.setAll(props);
 			    if (parent_tag != null) {
-			    	IndexedReference parent_ref = ((IndexedProducer) parse_target).makeReference((Indexed) rec);
-			    	meta_data.setProperty(parent_tag, parent_ref);
+			    	parent_tag.set(meta_data, (Indexed)rec);
 			    }
 				
 				AccountingUpdater<Use, String> updater = new AccountingUpdater<Use, String>(conn, meta_data, parse_target);

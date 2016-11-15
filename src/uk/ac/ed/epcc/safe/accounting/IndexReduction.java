@@ -27,16 +27,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 
 
 public class IndexReduction extends ReductionTarget<Object> {
-	private boolean allow_null=false;
-
-	public boolean allowNull() {
-		return allow_null;
-	}
-
-
-	public void setAllowNull(boolean allow_null) {
-		this.allow_null = allow_null;
-	}
 
 
 	public IndexReduction(

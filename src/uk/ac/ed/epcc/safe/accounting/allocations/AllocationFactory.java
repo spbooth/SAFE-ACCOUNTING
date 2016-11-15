@@ -374,7 +374,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		}
 		
 	}
-	protected AllocationPeriodTransitionProvider getTransitionProvider(){
+	public AllocationPeriodTransitionProvider getTransitionProvider(){
 		return new AllocationPeriodTransitionProvider(this);
 	}
 	

@@ -63,6 +63,7 @@ import uk.ac.ed.epcc.webapp.Targetted;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Accessor;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
@@ -78,10 +79,9 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.SQLAndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -91,6 +91,7 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
+import uk.ac.ed.epcc.webapp.model.data.SelfSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DurationInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -130,12 +131,13 @@ import uk.ac.ed.epcc.webapp.time.Period;
  */
 
 
-public class AccessorMap<X extends DataObject&ExpressionTarget> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>{
+public abstract class AccessorMap<X extends ExpressionTarget&Contexed> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>{
 	public static final Feature EVALUATE_CACHE_FEATURE = new Feature("evaluate.cache",true,"cache expression evaluations in ExpressionTargets");
-	private final Class<? super X> target;
-	private final Repository res;
-	private final String config_tag;
-	private static final String CONFIG_PREFIX = "accounting.";
+	protected final Class<? super X> target;
+	
+	protected final String config_tag;
+	protected static final String CONFIG_PREFIX = "accounting.";
+	private final AppContext conn;
 	private Logger log;
 	// derived prop expressions
 	private PropExpressionMap derived;
@@ -146,32 +148,9 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	// SQL expressions for leaf values.
 	private Map<PropertyTag, SQLExpression> expression_map = new HashMap<PropertyTag, SQLExpression>();
 
-	// additional selectors that cannot be determined directly from repository
-	private Map<String,Object> selector_map = new HashMap<String,Object>();
 	
-	/** Encodes the rules for which kind of fields can
-	 * be implemented as a numberif database field.
-	 * 
-	 */
-	public static final TagFilter NumberFilter = new TagFilter() {
-		
-		public boolean accept(PropertyTag tag) {
-			Class clazz = tag.getTarget();
-			if( Number.class.isAssignableFrom(clazz)){
-				// numbers obviously
-				return true;
-			}
-			if( Date.class.isAssignableFrom(clazz)){
-				// dates 
-				return true;
-			}
-			if( tag instanceof IndexedTag){
-				// reference tag
-				return true;
-			}
-			return false;
-		}
-	};
+	
+	
 	/** Class to evaluate a PropExpression on a record.
 	 * 
 	 * This acts as a proxy implementing most of {@link ExpressionTargetContainer} via the Accessors.
@@ -378,14 +357,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		public void reset() {
 			missing.clear();
 		}
-		@Override
-		public SQLExpression<? extends Number> convertDateExpression(SQLExpression<Date> d) {
-			return res.convertDateExpression(d);
-		}
-		@Override
-		public SQLExpression<Date> convertMilliExpression(SQLExpression<? extends Number> d) {
-			return res.convertMilliExpression(d);
-		}
+		
 		public <T> SQLExpression visitCasePropExpression(
 				CasePropExpression<T> expr) throws Exception {
 			return getCaseExpression(expr);
@@ -437,14 +409,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		public <P> boolean includeSelectClause(PropExpression<P> e) {
 			return resolves(e,false);
 		}
-		@Override
-		protected SQLValue convertDateExpression(SQLExpression<Date> de) {
-			return res.convertDateExpression(de);
-		}
-		@Override
-		protected SQLValue convertMilliExpression(SQLExpression<Number> de) {
-			return res.convertMilliExpression(de);
-		}
+		
 		public <T> SQLValue visitCasePropExpression(CasePropExpression<T> expr)
 				throws Exception {
 			return getCaseExpression(expr);
@@ -454,8 +419,8 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	public class ResolveChecker extends ResolveCheckVisitor{
 		private final Set<PropertyTag> missing = new HashSet<PropertyTag>();
 		private final boolean require_sql;
-		public ResolveChecker(Logger log,boolean require_sql) {
-			super(log);
+		public ResolveChecker(AppContext conn,Logger log,boolean require_sql) {
+			super(conn,log);
 			this.require_sql=require_sql;
 		}
 		public boolean getRequreSQL(){
@@ -534,9 +499,9 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @param config_tag 
 	 * 
 	 */
-	public AccessorMap(Class<? super X> target,Repository res,String config_tag) {
+	public AccessorMap(AppContext conn,Class<? super X> target,String config_tag) {
+		this.conn=conn;
 		this.target=target;
-		this.res=res;
 		this.config_tag=config_tag;
 		derived = new PropExpressionMap();
 		log = getContext().getService(LoggerService.class).getLogger(getClass());
@@ -553,7 +518,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 			getLogger().error("Error adding count expression",e);
 		}
 	}
-	public <T> void put(PropertyTag<? extends T> tag, Targetted<T> obj){
+	public final <T> void put(PropertyTag<? extends T> tag, Targetted<T> obj){
 		//log.debug("add accessor "+config_tag+" "+tag.getFullName()+" "+obj.toString()+" class:"+obj.getClass().getCanonicalName());
 		boolean added=false;
 		if( obj instanceof Accessor){
@@ -582,7 +547,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @return boolean
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean possibleCompatible(Class a, Class b) {
+	public final boolean possibleCompatible(Class a, Class b) {
 		return a.isInterface() || b.isInterface() || a.isAssignableFrom(b)
 				|| b.isAssignableFrom(a);
 	}
@@ -593,7 +558,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 
 	private SQLExpressionVisitor sql_expression_visitor = null;
 	@SuppressWarnings("unchecked")
-	public <T> SQLExpression<T> getSQLExpression(PropExpression<T> expr) throws InvalidSQLPropertyException {
+	public final <T> SQLExpression<T> getSQLExpression(PropExpression<T> expr) throws InvalidSQLPropertyException {
 		if( expr instanceof PropertyTag){
 			PropertyTag<T> tag = (PropertyTag<T>) expr;
 			SQLExpression<T> a = expression_map.get(tag);
@@ -625,7 +590,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @throws InvalidSQLPropertyException
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> SQLValue<T> getSQLValue(PropExpression<T> expr) throws InvalidSQLPropertyException{
+	public final <T> SQLValue<T> getSQLValue(PropExpression<T> expr) throws InvalidSQLPropertyException{
 		if( expr instanceof PropertyTag){
 			PropertyTag<T> tag = (PropertyTag<T>) expr;
 			SQLValue<T> a = value_map.get(tag);
@@ -650,7 +615,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	}
 	
 	
-	public boolean writable(PropertyTag t){
+	public final boolean writable(PropertyTag t){
 		Accessor a = accessor_map.get(t);
 //		if( a == null ){
 //			log.debug("writable returns null accessor for "+t.getFullName());
@@ -663,7 +628,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * 
 	 * @return Set,PropertyTag>
 	 */
-	public Set<PropertyTag> getProperties() {
+	public final Set<PropertyTag> getProperties() {
 
 		
 			Set<PropertyTag> defined=new LinkedHashSet<PropertyTag>();
@@ -678,7 +643,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		
 		return defined;
 	}
-	public ExpressionTargetContainer getProxy(X record){
+	public final ExpressionTargetContainer getProxy(X record){
 		return new ExpressionTargetProxy(record);
 	}
 	/** Get the set of defines properties whose resutls may be assigned to the
@@ -687,7 +652,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @param c Class of target type
 	 * @return Set<PropertyTag
 	 */
-	public Set<PropertyTag> getProperties(Class<?> c){
+	public final Set<PropertyTag> getProperties(Class<?> c){
 		LinkedHashSet<PropertyTag> set = new LinkedHashSet<PropertyTag>();
 		for(PropertyTag t : getProperties()){
 			if( c.isAssignableFrom(t.getTarget())){
@@ -703,7 +668,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @param tag
 	 * @return boolean
 	 */
-	public <P> boolean hasProperty(PropertyTag<P> tag) {
+	public final <P> boolean hasProperty(PropertyTag<P> tag) {
 		Boolean result = defined_props_cache.get(tag);
 		if( result != null ){
 			return result;
@@ -712,7 +677,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		defined_props_cache.put(tag, result);
 		return result;
 	}
-	private <P> Boolean testProperty(PropertyTag<P> tag, boolean check_derived){
+	protected final <P> Boolean testProperty(PropertyTag<P> tag, boolean check_derived){
 		if( accessor_map.containsKey(tag)){
 			return Boolean.TRUE;
 		}
@@ -730,7 +695,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		}
 		return Boolean.FALSE;
 	}
-	public <P> boolean isAccessor(PropertyTag<P> tag){
+	public final <P> boolean isAccessor(PropertyTag<P> tag){
 		return accessor_map.containsKey(tag) && ! value_map.containsKey(tag) && ! expression_map.containsKey(tag);
 	}
 	/** Does the property resolve as a derived property only.
@@ -738,7 +703,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @param tag
 	 * @return
 	 */
-	public <P> boolean isDerived(PropertyTag<P> tag){
+	public final <P> boolean isDerived(PropertyTag<P> tag){
 		return hasProperty(tag) && ! testProperty(tag, false);
 	}
 	private ResolveChecker checker=null;
@@ -749,9 +714,9 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @param require_sql 
 	 * @return boolean
 	 */
-	public <T> Boolean resolves(PropExpression<T> e,boolean require_sql){
+	public final  <T> Boolean resolves(PropExpression<T> e,boolean require_sql){
 		if( checker == null || checker.getRequreSQL() != require_sql){
-			checker = new ResolveChecker(log,require_sql);
+			checker = new ResolveChecker(getContext(),log,require_sql);
 		}
 		try {
 			return e.accept(checker);
@@ -764,249 +729,9 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	}
 
 
-	/**
-	 * Populate this AccessorMap for the specified repository using the best
-	 * match to the field name from the PropertyFinder. Basically each database field is mapped to
-	 * a property. The
-	 * default algorithm is to search for a property with the same name as the
-	 * database field. This can be overridden by setting the 
-	 * <b>accounting.</b><em>table-name</em><b>.</b><em>field-name</em> property. As this can
-	 * specify a fully qualified property name then this can also be useful if
-	 * there is more than one property with the same name. Optionally unmatched fields can have
-	 * corresponding properties created.
-	 * 
-	 * Fields that reference have usually already
-	 * been handled by {@link #makeReferences} so these can be safely ignored. However if there
-	 * is a matching reference property then this is processed in case it is a static Property from
-	 * a policy. 
-	 * 
-	 * @param finder PropertyFinder
-	 * @param orphan_registy Optional registry to create tags without binding
-	 * @param warn_orphan
-	 *            boolean set to true to make unmatched fields an error.
-	 */
-	@SuppressWarnings("unchecked")
-	public void populate(PropertyFinder finder,
-			PropertyRegistry orphan_registy,
-			boolean warn_orphan){
-
-		//log.debug("AccessorMap.populate for "+res.getTag());
-		String prefix = CONFIG_PREFIX + res.getTag() + ".";
-		for (String field_name : res.getFields()) {
-			Repository.FieldInfo info = res.getInfo(field_name);
-			String prop_name = getContext().getInitParameter(prefix + field_name,
-					field_name);
-			//log.debug("consider field "+field_name);
 
 
-
-			PropertyTag tag = null;
-			if( finder != null ){  // first try a lookup
-				// use some simple type based disambiguation.
-				// string and date fields must be tags of the corresponding type.
-				// The default is to just do name lookup. Numbers in particular
-				// may get mapped to other types.
-				if(info.isString()){
-					tag = finder.find(String.class,prop_name);
-				}else if( info.isDate()){
-					tag = finder.find(Date.class,prop_name);
-				}else if ( info.isReference()){
-					tag = finder.find(IndexedReference.class,prop_name);
-				}else if( info.isNumeric()){
-					// This could be a date, number or reference 
-					tag = finder.find(NumberFilter,prop_name);
-				}else{
-					tag = finder.find(prop_name);
-				}
-			}
-			//log.debug("Finder returned "+(tag==null?" null ":tag.getFullName()));
-			if( tag == null && orphan_registy != null && ! info.isReference()){ // then try to make the tag
-				boolean force_date = getContext().getBooleanParameter(prefix+field_name+".forceDate", false);
-				if( force_date ){
-					selector_map.put(field_name, new TimeStampInput(res.getResolution()));
-				}
-
-				int idx = prop_name.lastIndexOf(FixedPropertyFinder.PROPERTY_FINDER_SEPERATOR);
-				if (idx >= 0) {
-					// remove any repository name as we always want to create within
-					// the local repository but populate may want to rename.
-					// use the new bare-name in case we want to reference this
-					// renamed property.
-					prop_name = prop_name.substring(idx + 1);
-				}
-
-				if (info.isString()) {
-					tag = new PropertyTag<String>(orphan_registy, prop_name,String.class);
-				} else if (info.isDate() || (info.isNumeric()&&force_date)) {
-					tag = new PropertyTag<Date>(orphan_registy, prop_name,Date.class);
-				} else if (info.isNumeric()) {
-
-					tag = new PropertyTag<Number>(orphan_registy, prop_name,
-							Number.class);
-				}
-				//						if( tag != null ){
-				//							log.debug("made tag "+tag.getFullName()+" "+tag.getTarget().getCanonicalName());
-				//						}
-			}
-			//log.debug("field="+field_name+" prop_name="+prop_name+" tag="+tag.getFullName());
-			if( tag != null && ! testProperty(tag, false)){
-				//log.debug("tag is "+tag.getFullName());
-				Class t = tag.getTarget();
-				if (String.class.isAssignableFrom(t)) {
-					put(tag, res.getStringExpression(target,field_name));
-				} else if (Date.class.isAssignableFrom(t)) {
-					put(tag, res.getDateExpression(target,field_name));
-					selector_map.put(field_name, new TimeStampInput(res.getResolution()));
-				} else if (Number.class.isAssignableFrom(t)) {
-					//Duration is supported at native millisecond resolution.
-					put(tag, res.getNumberExpression(target,t,field_name));
-					if (Duration.class.isAssignableFrom(t)) {
-						// we could support different resolutions using a DurationFieldValue
-						//put(tag, new DurationFieldValue(res.getNumberExpression(target,Number.class,field_name),1L));
-						selector_map.put(field_name, new DurationInput());
-					} 
-				} else if (Boolean.class.isAssignableFrom(t)) {
-					put(tag, res.getBooleanExpression(target,field_name));
-					selector_map.put(field_name,new BooleanInput());
-				} else if( tag instanceof IndexedTag ){
-					// This may be an explicit reference from a policy registry
-					// where the tag has the necessary info to create the TypeProducer
-					// SafePolicy does this.
-					// In this case the repository may or may not have the field recorded as a reference tag.
-					// If we add a type-producer to the registry the field will thereafter become a reference field
-					// so re-check the reference registry. We don't want to have a different result if we subsequently 
-					// create a new AccessorMap from a cached copy of the Repository
-					
-					if( ! (tag.getRegistry() instanceof ReferencePropertyRegistry)){
-						// this is not just an existing ref prop with the field name equal to the remote table
-						IndexedTag ref_tag = (IndexedTag) tag;
-						IndexedFieldValue referenceExpression=null;
-						if( res.hasTypeProducer(field_name)){
-							// known to be a reference field. add the name match tag
-							referenceExpression = res.getReferenceExpression(target, field_name);
-						}else{
-
-							//log.debug("Reference tag "+ref_tag.getFactoryClass().getCanonicalName()+" "+ref_tag.getTable());
-							IndexedTypeProducer prod = new IndexedTypeProducer(field_name, getContext(),ref_tag.getFactoryClass(),ref_tag.getTable());
-
-							res.addTypeProducer(prod);
-							referenceExpression= new IndexedFieldValue(target,res,prod);
-							
-							// Now look for the table tag that might also match 
-							ReferenceTag table_tag = (ReferenceTag) finder.find(IndexedReference.class, ReferencePropertyRegistry.REFERENCE_REGISTRY_NAME+FixedPropertyFinder.PROPERTY_FINDER_SEPERATOR+field_name);
-							if( table_tag != null ){
-								put(table_tag,referenceExpression);
-							}
-						}
-						put( ref_tag, referenceExpression);
-						if( referenceExpression instanceof Selector){
-							selector_map.put(field_name,referenceExpression);
-						}
-					}
-
-				} else {
-					String prob = "Unsupported target class " + t.getCanonicalName()
-							+ " for field " + field_name;
-					//log.debug(prob);
-					if (warn_orphan) {
-						throw new ConsistencyError(prob);
-					}
-					getLogger().error(prob);
-				}
-			}else{
-				if( warn_orphan && ! info.isReference() ){
-					throw new ConsistencyError("No matching tag found for field "+field_name);
-				}
-			}
-
-		}
-
-	}
-	/** Add properties defined as a Relationship between the object and the 
-	 * current user from an external {@link RelationshipProvider}.
-	 * We assume that directly implemented relationships can be added from the implementing class.
-	 * 
-	 * The list of tags corresponding to the {@link RelationshipProvider}s to add should be
-	 * set in:
-	 *  <b><em>factory-tag</em>.relationships</b>
-	 * 
-	 * @param tag 
-	 * @return PropertyFinder
-	 */
-	@SuppressWarnings("unchecked")
-	public PropertyFinder setRelationshipProperties(DataObjectFactory<X> fac){
-		AppContext c = getContext();
-		// Relationship properties
-		String tag = fac.getTag();
-		SessionService serv = c.getService(SessionService.class);
-		MultiFinder finder = new MultiFinder();
-		if( serv != null){
-		String relationships=c.getInitParameter(tag+".relationships");
-		if( relationships != null){
-			String tags[] = relationships.split(",");
-			for(String t : tags){
-			   try{
-				   // If target factory is wrong relationship always returns false
-				RelationshipProvider<?,X> rel = c.makeObject(RelationshipProvider.class, t);
-				if( rel != null ){
-					PropertyRegistry reg = new PropertyRegistry(t,"Relationships via "+t);
-				    for(String role : rel.getRelationships()){
-				    	put(new PropertyTag<Boolean>(reg, role,Boolean.class), new RelationshipAccessor<X>(fac, tag+"."+role));
-				    }
-				    reg.lock();
-				    finder.addFinder(reg);
-				}
-			   }catch(Throwable e){
-				   getLogger().error("Error adding relationship "+t+" to "+tag,e);
-			   }
-			}
-		}
-		}
-		return finder;
-	}
-	/** Register references from the {@link ReferencePropertyRegistry}
-	 * This generates properties named after the target table.
-	 * @param reference_registry
-	 */
-	@SuppressWarnings("unchecked")
-	public void makeReferences(
-			ReferencePropertyRegistry reference_registry) {
-	
-
-
-		for (String field_name : res.getFields()) {
-			Repository.FieldInfo info = res.getInfo(field_name);
-			String ref = info.getReferencedTable();
-			
-				
-				if( ref != null ){
-					// this should be a reference tag. 
-					// look for a reference tag named after the target table
-					// If the tag is not known then we can't make a handler factory so ignore.
-					IndexedTag tag=(IndexedTag) reference_registry.find(IndexedReference.class, ref);
-					if( tag != null ){
-						IndexedFieldValue referenceExpression = res.getReferenceExpression(target,field_name);
-						if( referenceExpression != null ){
-							put(tag, referenceExpression);
-							selector_map.put(referenceExpression.getFieldName(), referenceExpression);
-						}
-					}
-				}
-		}
-//		// Self reference
-//		// only really needed when filtering on a specific recordID
-//		ReferenceTag tag=(ReferenceTag) reference_registry.find(IndexedReference.class, res.getTag());
-//		if( tag != null ){
-//			Class clazz = conn.getPropertyClass(DataObjectFactory.class, res.getTag());
-//			if( clazz != null){
-//				put(tag, new SelfSQLValue(res, clazz));
-//			}
-//		}
-				
-	}
-
-
-	public String getImplemenationInfo(PropertyTag<?> tag) {
+	public final String getImplemenationInfo(PropertyTag<?> tag) {
 		StringBuilder sb = new StringBuilder();
 		try {
 			// The SQLValue should usually be implemented
@@ -1053,20 +778,20 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
  * @param input 
  */
 	
-	public void addDerived(AppContext conn,PropExpressionMap input) {
+	public final void addDerived(AppContext conn,PropExpressionMap input) {
 //		for(PropertyTag<?> t : input.keySet()){
 //			log.debug(config_tag+" add definition "+t.getFullName()+"->"+input.get(t));
 //		}
 		this.derived.getAllFrom(input);
 	}
-	public PropExpressionMap getDerivedProperties(){
+	public final PropExpressionMap getDerivedProperties(){
 		return new PropExpressionMap(derived);
 	}
 	/** clear any PropExpression definitions that cannot be resolved
 	 * 
 	 */
-	public void clearUnresolvableDefinitions(){
-		ResolveChecker checker = new ResolveChecker(null,false);
+	public final void clearUnresolvableDefinitions(){
+		ResolveChecker checker = new ResolveChecker(getContext(),null,false);
 		for(Iterator<PropertyTag> it = derived.keySet().iterator(); it.hasNext();){
 			
 			PropertyTag<?> t = it.next();
@@ -1093,7 +818,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @param t PropertyTag
 	 * @return String or null
 	 */
-	public String getField(PropertyTag t){
+	public final String getField(PropertyTag t){
 		Accessor a = accessor_map.get(t);
 		if( a != null && a instanceof FieldValue){
 			return ((FieldValue)a).getFieldName();
@@ -1105,7 +830,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @param input
 	 * @return Set<String> of field names
 	 */
-    public Set<String> getFieldSet(Set<PropertyTag> input){
+    public final Set<String> getFieldSet(Set<PropertyTag> input){
     	Set<String> result = new HashSet<String>();
     	for(PropertyTag t : input){
     		String name = getField(t);
@@ -1122,7 +847,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
      * @param input Map<PropertyTag,R>
      * @return Map<String,R> map keyed by field names
      */
-    public <R> Map<String,R> getFieldMap(Map<PropertyTag,R> input){
+    public final <R> Map<String,R> getFieldMap(Map<PropertyTag,R> input){
     	Map<String,R> result = new HashMap<String,R>();
     	for(PropertyTag t : input.keySet()){
     		String name = getField(t);
@@ -1141,7 +866,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
      * @throws InvalidPropertyException 
      */
     @SuppressWarnings("unchecked")
-	public PropertyContainer addFormContents(PropertyContainer map,Form f) throws InvalidPropertyException{
+	public final PropertyContainer addFormContents(PropertyContainer map,Form f) throws InvalidPropertyException{
     	for(PropertyTag tag : accessor_map.keySet()){
     		String field = getField(tag);
     		if( field != null){
@@ -1240,11 +965,20 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 				+ expr);
 	}
   
-	public <R> BaseFilter<X> getRelationFilter(PropExpression<R> left,
+	public final <R> BaseFilter<X> getRelationFilter(PropExpression<R> left,
 			MatchCondition match, PropExpression<R> right)
 			throws CannotFilterException {
 		if( left == null || right == null ){
 			throw new CannotFilterException("Cannot filter on null expression");
+		}
+		if( left instanceof ConstPropExpression && right instanceof ConstPropExpression){
+			// Do constant evaluation in properties as we may not be able to make a SQLExpression for them
+			ConstPropExpression<R> left_const = (ConstPropExpression<R>)left;
+			ConstPropExpression<R> right_const = (ConstPropExpression<R>)right;
+			if( match == null ){
+				return new GenericBinaryFilter<>(target, left_const.val.equals(right_const.val));
+			}
+			return new GenericBinaryFilter<>(target,match.compare(left_const.val,right_const.val));
 		}
 		try {
 			SQLExpression<R> exp1 = getSQLExpression(left);
@@ -1310,17 +1044,11 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
     	throw new CannotFilterException("Cannot filter on expression "
     			+ expr+" for "+config_tag);
     }
-    /** Generate default set of form selectors
-     * 
-     * @return Map of seelctors
-     */
-    public Map<String,Object> getSelectors(){
-    	return selector_map;
-    }
-	public AppContext getContext() {
-		return res.getContext();
+    
+	public final AppContext getContext(){
+		return conn;
 	}
-	private Logger getLogger() {
+	protected Logger getLogger() {
 		if( log == null ){
 			log =getContext().getService(LoggerService.class).getLogger(getClass());
 		}
@@ -1337,7 +1065,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 	 * @return BaseFilter
 	 * @throws CannotFilterException
 	 */
-	public BaseFilter<X> getPeriodFilter(Period period,
+	public final BaseFilter<X> getPeriodFilter(Period period,
 			PropExpression<Date> start_prop,
 			PropExpression<Date> end_prop, OverlapType type,long cutoff)
 			throws CannotFilterException {
@@ -1395,7 +1123,7 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
     	}
 		return res;
 	}
-	public <I> SQLFilter<X> getOrderFilter(boolean descending, PropExpression<I> expr)
+	public final <I> SQLFilter<X> getOrderFilter(boolean descending, PropExpression<I> expr)
 			throws CannotFilterException {
 		try {
 			SQLExpression<I> sqlExpression = getSQLExpression(expr);
@@ -1408,15 +1136,12 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		}
 	}
 	
-	protected void addSource(StringBuilder sb) {
-		res.addTable(sb, true);
-		
-	}
+	protected abstract void addSource(StringBuilder sb) ;
 	
-	protected String getDBTag() {
-		return res.getDBTag();
-	}
-	protected <T> CaseExpression<X,T> getCaseExpression(CasePropExpression<T> expr) throws NoSQLFilterException, InvalidSQLPropertyException, Exception{
+	protected abstract String getDBTag() ;
+	
+	
+	protected final <T> CaseExpression<X,T> getCaseExpression(CasePropExpression<T> expr) throws NoSQLFilterException, InvalidSQLPropertyException, Exception{
 		LinkedList<CaseExpression.Clause<X,T>> list = new LinkedList<CaseExpression.Clause<X,T>>();
 		FilterSelectVisitor<X> vis = new FilterSelectVisitor<X>(this);
 		for( CasePropExpression.Case<T> c : expr.getCases()){
@@ -1431,11 +1156,11 @@ public class AccessorMap<X extends DataObject&ExpressionTarget> implements Conte
 		Class<T> clazz = (Class<T>) expr.getTarget();
 		return new CaseExpression<X,T>(clazz, def_sql, list);
 	}
-	public Class<? super X> getTarget() {
+	public final Class<? super X> getTarget() {
 		return target;
 	}
 	
-	public void release(){
+	public final void release(){
 		if( derived != null ){
 			derived.clear();
 			derived=null;

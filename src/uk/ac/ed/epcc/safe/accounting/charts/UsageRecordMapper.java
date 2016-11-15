@@ -29,6 +29,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.strategy.RangeMapper;
+import uk.ac.ed.epcc.webapp.time.Period;
 /** Base class for mapping a UsageRecord to a time range.
  * 
  * 
@@ -61,7 +62,7 @@ public class UsageRecordMapper<D extends Number> implements RangeMapper<UsageRec
 
 	public final float getOverlapp(UsageRecord o, Date p_start, Date p_end) {
 		try {
-			return OverlapHandler.getOverlap(o,NumberReductionTarget.getInstance(op, plot_property), start_prop, end_prop, p_start, p_end).floatValue();
+			return OverlapHandler.getOverlap(o,NumberReductionTarget.getInstance(op, plot_property), start_prop, end_prop, new Period(p_start, p_end)).floatValue();
 		} catch (InvalidExpressionException e) {
 			return 0.0F;
 		} catch (IllegalReductionException e) {

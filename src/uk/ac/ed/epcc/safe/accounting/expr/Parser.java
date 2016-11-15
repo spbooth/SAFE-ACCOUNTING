@@ -36,6 +36,7 @@ public class Parser implements Contexed{
 	
 	AppContext conn;
 	PropertyFinder finder;
+	int debug=0;
 	public Parser(AppContext conn,PropertyFinder reg){
 		this.conn=conn;
 		this.finder=reg;
@@ -52,6 +53,7 @@ public class Parser implements Contexed{
 
 		ExpressionParser parser = new ExpressionParser(new ExpressionLexer(conn,s));
 		parser.init(conn,finder);
+		parser.setDebugLevel(debug);;
 		try {
 			if( parser.parse()){
 				return parser.getExpression();
@@ -68,6 +70,18 @@ public class Parser implements Contexed{
 	}
 	public AppContext getContext() {
 		return conn;
+	}
+	/**
+	 * @return the debug
+	 */
+	public int getDebug() {
+		return debug;
+	}
+	/**
+	 * @param debug the debug to set
+	 */
+	public void setDebug(int debug) {
+		this.debug = debug;
 	}
 
 }

@@ -14,6 +14,7 @@
 package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 /** Class that expands derived properties to generate an implementation string.
  * This is essentially the same as the {@link #toString()} method on the expression
@@ -54,7 +55,7 @@ public abstract class ImplementationPropExpressionVisitor implements
 
 	public String visitBinaryPropExpression(
 			BinaryPropExpression binaryPropExpression) throws Exception {
-		//TODO supress unecessary brackets
+		//TODO suppress unnecessary brackets
 		return "("+binaryPropExpression.a.accept(this)+binaryPropExpression.op.text()+binaryPropExpression.b.accept(this)+")";
 	}
 
@@ -134,5 +135,16 @@ public abstract class ImplementationPropExpressionVisitor implements
 		return "("+expr.e1.accept(this)+(expr.m==null?"==":expr.m.toString())+expr.e2.accept(this)+")";
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitConstReferenceExpression(uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression)
+	 */
+	@Override
+	public <I extends Indexed> String visitConstReferenceExpression(ConstReferenceExpression<I> expr) throws Exception {
+		return visitConstPropExpression(expr);
+	}
 
+	public String visitLocatePropExpression(
+			LocatePropExpression loc) throws Exception {
+		return "Locate("+loc.substr.accept(this)+","+loc.str.accept(this)+","+loc.pos.accept(this)+")";
+	}
 }

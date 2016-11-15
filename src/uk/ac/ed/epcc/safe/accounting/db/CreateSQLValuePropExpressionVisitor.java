@@ -13,6 +13,7 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
 
@@ -20,6 +21,7 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConvertMillisecondToDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DoubleCastPropExpression;
@@ -30,6 +32,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
@@ -42,25 +45,32 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
+import uk.ac.ed.epcc.webapp.Indexed;
+import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
+import uk.ac.ed.epcc.webapp.jdbc.SQLContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinarySQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CompositeIndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.DateSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DateSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DoubleConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DurationSecondConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IntConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LabellerSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LongConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MillisecondSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLSelectValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.StringConvertSQLValue;
+import uk.ac.ed.epcc.webapp.model.data.ConstIndexedSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataError;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationConvertSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.TypeConverterSQLValue;
@@ -79,9 +89,15 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	private static final Feature PARTIAL_JOIN_FEATURE = new Feature("sqlvalue.partial_join",true,"Perform SQL joins to evaluate remote references");
     private final Class target;
 	private final AppContext conn;
+	private final SQLContext sql;
     public CreateSQLValuePropExpressionVisitor(Class target,AppContext c){
     	this.target=target;
     	conn=c;
+    	try {
+			sql=conn.getService(DatabaseService.class).getSQLContext();
+		} catch (SQLException e) {
+			throw new DataError("Error making SQLContext",e);
+		}
     }
     
 	
@@ -141,7 +157,6 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 			return new BinarySQLValue(conn,aa, binaryPropExpression.op, bb);
 		}
 	}
-	
 
 	public SQLValue visitMilliSecondDatePropExpression(
 			MilliSecondDatePropExpression milliSecondDate) throws Exception {
@@ -153,9 +168,16 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		return new MillisecondSQLValue(de);
 		
 	}
-
-	protected abstract SQLValue convertDateExpression(SQLExpression<Date> de);
-
+	public SQLExpression<? extends Number> convertDateExpression(SQLExpression<Date> d){
+		if( d instanceof DateSQLExpression){
+			return ((DateSQLExpression)d).getMillis();
+		}
+		return sql.convertToMilliseconds(d);
+	}
+	public SQLExpression<Date> convertMilliExpression(SQLExpression<? extends Number> d){
+		return sql.convertToDate(d,1L);
+	}	
+	
 	public SQLValue visitConvetMillisecondToDateExpression(
 			ConvertMillisecondToDatePropExpression expr) throws Exception {
 		@SuppressWarnings("unchecked")
@@ -166,8 +188,6 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		return new DateSQLValue(me);
 		
 	}
-
-	protected abstract SQLValue convertMilliExpression(SQLExpression<Number> me);
 
 
 	@SuppressWarnings("unchecked")
@@ -283,4 +303,18 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		return new CompareSQLValue<C>(conn, expr.e1.accept(this), expr.m, expr.e2.accept(this));
 	}
 
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitConstReferenceExpression(uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression)
+	 */
+	@Override
+	public <I extends Indexed> SQLValue visitConstReferenceExpression(ConstReferenceExpression<I> expr)
+			throws Exception {
+		return new ConstIndexedSQLValue(conn, target, expr.val);
+	}
+
+	public SQLValue visitLocatePropExpression(
+			LocatePropExpression expr) throws Exception {
+		return new LocateSQLValue(expr.getSubstring().accept(this), expr.getString().accept(this), expr.getPosition().accept(this));
+	}
 }

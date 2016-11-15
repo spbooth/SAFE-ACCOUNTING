@@ -45,10 +45,13 @@ import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.Classification;
+import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
 import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 /** Factory class for {@link AccountingClassification} objects.
@@ -64,7 +67,7 @@ import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 public class AccountingClassificationFactory<T extends AccountingClassification>
 		extends PropertyTargetClassificationFactory<T>  implements UsageProducer<T>,FilterSelector<DataObjectItemInput<T>>{
 	private PropertyFinder reg=null;
-	private AccessorMap<T> map=null;
+	private RepositoryAccessorMap<T> map=null;
 	public static final PropertyRegistry classification = new PropertyRegistry("classification", "Standard properties for a Classification table");
 	public static final PropertyTag<String> NAME_PROP = new PropertyTag<String>(classification,Classification.NAME,String.class);
 	public static final PropertyTag<String> DESCRIPTION_PROP = new PropertyTag<String>(classification,Classification.DESCRIPTION,String.class);
@@ -92,7 +95,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 	}
 	
 	private void initAccessorMap(AppContext c, String tag) {
-		map = new AccessorMap<T>(getTarget(),res,tag);
+		map = new RepositoryAccessorMap<T>(this,res);
 		MultiFinder finder = new MultiFinder();
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 		map.makeReferences( refs);
@@ -127,7 +130,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 
 	
 
-	public final AccessorMap<T> getAccessorMap(){
+	public final RepositoryAccessorMap<T> getAccessorMap(){
 		if( map == null ){
 			initAccessorMap(getContext(), getConfigTag());
 		}
@@ -159,7 +162,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 		try {
 			if( c.data == null ){
 				// null data implies no match
-				return new FalseFilter<T>(getTarget());
+				return new GenericBinaryFilter<T>(getTarget(),false);
 			}
 			if( c.tag instanceof PropertyTag){
 				return getAccessorMap().getFilter((PropertyTag<I>)c.tag, c.match, c.data);
@@ -168,7 +171,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 			}
 		} catch (CannotFilterException e) {
 			getContext().getService(LoggerService.class).getLogger(getClass()).warn("Cannot filter", e);
-			return new FalseFilter<T>(getTarget());
+			return new GenericBinaryFilter<T>(getTarget(),false);
 		}
 	}
 	public class AddDerivedTransition extends AbstractFormTransition<AccountingClassificationFactory>{
@@ -210,9 +213,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 	protected AccountingClassificationTableRegistry makeTableRegistry() {
 		return new AccountingClassificationTableRegistry();
 	}
-	public String getImplemenationInfo(PropertyTag<?> tag) {
-		return getAccessorMap().getImplemenationInfo(tag);
-	}
+	
 	private ReductionHandler<T, AccountingClassificationFactory<T>> getReductionHandler(){
 		return new ReductionHandler<T, AccountingClassificationFactory<T>>(this);
 	}
@@ -244,5 +245,10 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 		reg=null;
 		super.release();
 	}
+	@Override
+	public String getImplemenationInfo(PropertyTag<?> tag) {
+		return getAccessorMap().getImplemenationInfo(tag);
+	}
+	
 	
 }

@@ -53,7 +53,7 @@ import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 public class ConfigPlugInOwner<T extends TableTransitionTarget & PlugInOwner<R>,R> extends AbstractPlugInOwner<T,R> {
 	public static final String POLICIES_PREFIX = "policies.";
 	public static final String PARSER_PREFIX = "parser.";
-	Class<? extends PropertyContainerParser> default_parser_class;
+	final Class<? extends PropertyContainerParser> default_parser_class;
 	public ConfigPlugInOwner(AppContext c, PropertyFinder prev,String tag,Class<? extends PropertyContainerParser> default_parser_class) {
 		super(c,prev, tag);
 		this.default_parser_class=default_parser_class;

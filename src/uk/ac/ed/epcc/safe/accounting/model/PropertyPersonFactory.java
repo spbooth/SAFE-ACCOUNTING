@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.db.ClassificationParseTarget;
 import uk.ac.ed.epcc.safe.accounting.db.CompatibleSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.db.PropertyMaker;
+import uk.ac.ed.epcc.safe.accounting.db.RepositoryAccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
@@ -106,7 +107,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
     public static final PropertyTag<Date> SIGNUP_PROP = new PropertyTag<Date>(person_registy,SignupDateComposite.SIGNUP_DATE,Date.class,"First access to system");
 	public static final PropertyTag<Boolean> IS_ME_PROP = new PropertyTag<Boolean>(person_registy,"IsMe",Boolean.class,"Is this the current person");
 	private PropertyFinder reg=null;
-	private AccessorMap<P> map=null;
+	private RepositoryAccessorMap<P> map=null;
 	
     private PlugInOwner<String> plugin_owner=null;
     private PropertyTag<? extends String> match_prop=null;
@@ -145,7 +146,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		
 	}
 	private void initAccessorMap(AppContext c, String tag) {
-		map = new AccessorMap<P>(getTarget(),res,tag);
+		map = new RepositoryAccessorMap<P>(this,res);
 		MultiFinder finder = new MultiFinder();
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 		map.makeReferences( refs);
@@ -203,7 +204,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		return getAccessorMap().hasProperty(tag);
 	}
 	
-	public final AccessorMap<P> getAccessorMap(){
+	public final RepositoryAccessorMap<P> getAccessorMap(){
 		if( map == null ){
 			initAccessorMap(getContext(), getConfigTag());
 		}

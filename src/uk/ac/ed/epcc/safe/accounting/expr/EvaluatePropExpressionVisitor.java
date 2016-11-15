@@ -236,6 +236,7 @@ public abstract class EvaluatePropExpressionVisitor implements
 		}
 		return dur.getSeconds();
 	}
+	
 
 	/** Check if a {@link RecordSelector} matches the target object
 	 * 
@@ -270,4 +271,32 @@ public abstract class EvaluatePropExpressionVisitor implements
 		}
 		return expr.m.compare(expr.e1.accept(this), expr.e2.accept(this));
 	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitConstReferenceExpression(uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression)
+	 */
+	@Override
+	public <I extends Indexed> Object visitConstReferenceExpression(ConstReferenceExpression<I> expr) throws Exception {
+		return expr.val;
+	}
+	
+	
+	public Object visitLocatePropExpression(
+			LocatePropExpression l) throws Exception {
+		String str = (String) l.getString().accept(this);
+		String substr = (String) l.getSubstring().accept(this);
+		int pos = ((Number) l.getPosition().accept(this)).intValue();
+		
+		Integer loc = 0;
+		if (pos >= 1 && pos <= str.length()) {
+			// note, pos is converted to zero-based indexing
+			loc = str.indexOf(substr, pos-1);
+
+			// convert loc to one-based indexing
+			loc += 1;
+		}
+				
+		return loc;
+	}
+	
 }

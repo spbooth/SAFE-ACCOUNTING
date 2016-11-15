@@ -340,17 +340,21 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 	}
 @Test
 	public void testReceiveAccounting() throws Exception {
-
-		ParseUsageRecordFactory<R,I> fac = getFactory();
-		if (!fac.isValid()) {
-			return;
-		}
 		String updateText = getUpdateText();
-		System.out.println(updateText);
-		String result = new AccountingUpdater<R,I>(ctx,getDefaults(),fac).receiveAccountingData( updateText, false,false,false);
 		//takeBaseline();
+		receiveAccounting(updateText);
 		//save("tests",getClass().getSimpleName(),fac);
 	}
+
+public void receiveAccounting(String updateText) {
+	ParseUsageRecordFactory<R,I> fac = getFactory();
+	if (!fac.isValid()) {
+		return;
+	}
+	
+	System.out.println(updateText);
+	String result = new AccountingUpdater<R,I>(ctx,getDefaults(),fac).receiveAccountingData( updateText, false,false,false);
+}
 @Test
 	public void testGetPolicies() {
 		ParseUsageRecordFactory<R,I> fac = getFactory();

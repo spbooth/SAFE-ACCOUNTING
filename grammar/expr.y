@@ -17,6 +17,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.model.data.expr.*;
 import uk.ac.ed.epcc.webapp.*;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 @SuppressWarnings({"unchecked","unused"})
 }
@@ -24,7 +25,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 %define lex_throws "LexException"
 %define throws "Exception"
 
-%token NUMBER MULT DIV PLUS MINUS LPAREN RPAREN LBRACE RBRACE LSQR RSQR PROPTAG STRING COMMA KEYWORD MATCH
+%token NUMBER MULT DIV PLUS MINUS LPAREN RPAREN LBRACE RBRACE LSQR RSQR PROPTAG STRING COMMA KEYWORD MATCH REFERENCE
 
 %left  RPAREN
 %left  RSQR
@@ -39,6 +40,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 %type<String> PROPTAG
 %type<Keywords> KEYWORD
 %type<MatchCondition> MATCH
+%type<IndexedReference> REFERENCE
 %type<PropExpression> expr start_deref
 %type<LinkedList> expr_list
 
@@ -131,6 +133,9 @@ expr : start_deref expr end_deref	{
 }
 | NUMBER                      {
   $$=new ConstPropExpression(Number.class,$1);    
+}
+| REFERENCE                      {
+  $$=new ConstReferenceExpression($1);    
 }
 | expr MATCH expr {
   $$= new ComparePropExpression($1,$2,$3);

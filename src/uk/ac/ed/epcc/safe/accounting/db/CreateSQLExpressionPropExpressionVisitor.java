@@ -13,6 +13,7 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -20,6 +21,7 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConvertMillisecondToDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DoubleCastPropExpression;
@@ -30,6 +32,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
@@ -40,18 +43,24 @@ import uk.ac.ed.epcc.safe.accounting.expr.TypeConverterPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Indexed;
+import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
+import uk.ac.ed.epcc.webapp.jdbc.SQLContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CastDoubleSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CastLongSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.DateSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DerefSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.RoundSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.StringConvertSQLExpression;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataError;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLExpression;
 /** get an {@link SQLExpression} from a {@link PropExpression}
  * 
@@ -61,10 +70,15 @@ import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLExpression;
 public abstract class CreateSQLExpressionPropExpressionVisitor implements
 		PropExpressionVisitor<SQLExpression> {
 	
-	private AppContext conn;
-	
+	private final AppContext conn;
+	private final SQLContext sql;
 	public CreateSQLExpressionPropExpressionVisitor(AppContext c){
 		this.conn=c;
+		try {
+			sql=conn.getService(DatabaseService.class).getSQLContext();
+		} catch (SQLException e) {
+			throw new DataError("Error making SQLContext",e);
+		}
 	}
     
 	
@@ -88,10 +102,12 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 		// use round if nested expression is a number
 		Class<?> target = intExpression.exp.getTarget();
 		if( Number.class.isAssignableFrom(target)){
-			if( target == Integer.class){
-				return intExpression.exp.accept(this);
+			SQLExpression inner_sql_expr = intExpression.exp.accept(this);
+			if( target == Integer.class || inner_sql_expr.getTarget() == Integer.class){
+				return inner_sql_expr;
 			}
-			return new RoundSQLExpression(intExpression.exp.accept(this));
+			
+			return new RoundSQLExpression(inner_sql_expr);
 		}
 		throw new InvalidSQLPropertyException("IntPropExpression not representable as SQLExpression");
 		
@@ -230,20 +246,15 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	throws Exception {
 		return new DurationSQLExpression(convertDateExpression(sel.start.accept(this)), convertDateExpression(sel.end.accept(this)));
 	}
-	/** Method to convert a Date expression to milliseconds.
-	 * 
-	 * @param d
-	 * @return SQLExpression
-	 */
-	public abstract SQLExpression<? extends Number> convertDateExpression(SQLExpression<Date> d);
-
-	/** Method to convert a millisecond expression to Date.
-	 * 
-	 * @param d
-	 * @return SQLExpression
-	 */
-	public abstract SQLExpression<Date> convertMilliExpression(SQLExpression<? extends Number> d);
-
+	public SQLExpression<? extends Number> convertDateExpression(SQLExpression<Date> d){
+		if( d instanceof DateSQLExpression){
+			return ((DateSQLExpression)d).getMillis();
+		}
+		return sql.convertToMilliseconds(d);
+	}
+	public SQLExpression<Date> convertMilliExpression(SQLExpression<? extends Number> d){
+		return sql.convertToDate(d,1L);
+	}	
 	public <T,R> SQLExpression visitLabelPropExpression(
 			LabelPropExpression<T,R> expr) throws Exception {
 		throw new InvalidSQLPropertyException("LabelPropExpression not representable as SQLExpression");
@@ -264,7 +275,21 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 		
 		return new CompareSQLExpression<C>(expr.e1.accept(this),expr.m,expr.e2.accept(this));
 	}
-	
-	
 
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitConstReferenceExpression(uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression)
+	 */
+	@Override
+	public <I extends Indexed> SQLExpression visitConstReferenceExpression(ConstReferenceExpression<I> expr)
+			throws Exception {
+		throw new InvalidSQLPropertyException("IndexedReference not representable as SQLExpression");
+	}
+	
+	
+	public SQLExpression visitLocatePropExpression(
+			LocatePropExpression expr) throws Exception {
+		return new LocateSQLExpression(expr.getSubstring().accept(this), expr.getString().accept(this), expr.getPosition().accept(this));
+	}
+	
 }

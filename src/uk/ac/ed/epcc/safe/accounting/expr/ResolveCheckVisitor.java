@@ -13,7 +13,9 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.expr;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.NullSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OrRecordSelector;
@@ -24,6 +26,8 @@ import uk.ac.ed.epcc.safe.accounting.selector.ReductionSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
+import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -35,8 +39,10 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
  *
  */
 public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boolean> {
+	AppContext conn;
 	Logger log;
-	public ResolveCheckVisitor(Logger log){
+	public ResolveCheckVisitor(AppContext conn,Logger log){
+		this.conn=conn;
 		this.log=log;
 	}
 	public ResolveCheckVisitor(){
@@ -80,8 +86,6 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 		return Boolean.TRUE;
 	}
 
-	
-
 	public Boolean visitBinaryPropExpression(
 			BinaryPropExpression binaryPropExpression) throws Exception {
 	
@@ -100,15 +104,23 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 	}
 	public <T extends DataObject & ExpressionTarget> Boolean visitDoubleDeRefExpression(
 			DoubleDeRefExpression<T, ?> deRefExpression) throws Exception {
-		return deRefExpression.getTargetObject().accept(this);
+		return visitDeRefExpression(deRefExpression);
 	}
 	public <T extends DataObject & ExpressionTarget> Boolean visitDeRefExpression(
 			DeRefExpression<T, ?> deRefExpression) throws Exception {
-		return deRefExpression.getTargetObject().accept(this);
+		ReferenceExpression<T> ref = deRefExpression.getTargetObject();
+		Boolean accept = ref.accept(this);
+		if( accept.booleanValue()){
+			if( conn != null ){
+				// ok we now the reference property exists can we check the remote
+				// expression we need an AppContext to do this
+				@SuppressWarnings("unchecked")
+				ExpressionTargetFactory<T> fac  = (ExpressionTargetFactory<T>) ref.getFactory(conn);
+				return fac.getAccessorMap().resolves(deRefExpression.getExpression(), false);
+			}
+		}
+		return accept;
 	}
-
-	
-	
 
 	public Boolean visitSelectPropExpression(SelectPropExpression<?> sel)
 			throws Exception {
@@ -224,5 +236,19 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 			ComparePropExpression<C> expr) throws Exception {
 		return Boolean.valueOf( expr.e1.accept(this) && expr.e2.accept(this));
 	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitConstReferenceExpression(uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression)
+	 */
+	@Override
+	public <I extends Indexed> Boolean visitConstReferenceExpression(ConstReferenceExpression<I> expr)
+			throws Exception {
+		return Boolean.TRUE;
+	}
 
+	
+	public Boolean visitLocatePropExpression(
+			LocatePropExpression expr) throws Exception {
+		return expr.substr.accept(this) && expr.str.accept(this) && expr.pos.accept(this);
+	}
+	
 }

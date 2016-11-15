@@ -278,16 +278,6 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 					return parse(expr,format,text);
 				}
 			}
-	@Override
-	protected <T> SelectClause<T> getSelectClause(PropExpression<T> expr, MatchCondition cond, Element e)
-			throws Exception {
-				T value = getParamExpressionValue(expr, VALUE_ELEMENT, e);
-				if( value == null ){
-					// assume optional form input if no value
-					return null;
-				}
-				return new SelectClause<T>(expr,cond,value);
-			}
 	/** Tests that the element has a parameter node of the specified name and that that
 	 * node has non-trivial content. Use {@link #hasChild(String, Element)} to test
 	 * for a child element without content.
@@ -1038,7 +1028,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	/** Store the table in the parameters list and just reference it
 	 * via a processing instruction. This is to expose the table to a ContentBuilder
 	 * in an embedded report.
-	 * 
+	 * @se {@link XMLBuilderSaxHandler}
 	 * @param val
 	 */
 	public void setUseReference(boolean val) {

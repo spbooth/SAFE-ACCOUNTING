@@ -90,6 +90,7 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 		}
 		
 	}
+	
 	public static final PeriodKey FILTER_KEY = new PeriodKey("Filter", "Change view filter");
 	private static final String FILTER_FORM_PREFIX = "filter.";
 	public class FilterAction extends FormAction{
@@ -153,7 +154,7 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 	}
 	public static PeriodKey INDEX_KEY = new PeriodKey("Index"){
 		@Override
-		public boolean allow(AllocationPeriod target){
+		public boolean allow(SessionService sess,AllocationPeriod target){
 			return target == null;
 		}
 	};
@@ -182,7 +183,7 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 		addTransition(UP_KEY, new UpTransition());
 	}
 
-	private final AllocationManager<K, T> manager;
+	protected final AllocationManager<K, T> manager;
 
 	
 
@@ -192,7 +193,8 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 
 	public boolean allowTransition(AppContext c, AllocationPeriod target,
 			PeriodKey key) {
-		return canView(target, c.getService(SessionService.class)) && key.allow(target);
+		SessionService sess = c.getService(SessionService.class);
+		return canView(target, sess) && key.allow(sess,target);
 	}
 
 	public <X extends ContentBuilder> X getSummaryContent(AppContext c, X cb,
@@ -231,8 +233,10 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 			Table tab = new Table();
 
 			for(Iterator<T> it = manager.getIterator(getSelector(target));it.hasNext();){
-				manager.addIndexTable(tab, it.next(),target);
+				T record = it.next();
+				manager.addIndexTable(tab, record,target);
 			}
+			cb.addText("Dates in red indicate records that cross the time period of the filter");
 			cb.addTable(c, tab);
 		}catch(Exception e){
 			getLogger().error("Error making index table",e);

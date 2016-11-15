@@ -39,6 +39,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.ReferenceProvider;
  * AccountingClassification objects also have properties associated with them which can be accessed
  * in a PropExpression. 
  * 
+ * Note that this can be constructed by both a {@link ParseAccountingClassificationFactory} or an {@link AccountingClassificationFactory} 
  * @author spb
  *
  */

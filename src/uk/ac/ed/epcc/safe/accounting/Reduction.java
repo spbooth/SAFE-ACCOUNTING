@@ -27,6 +27,10 @@ import uk.ac.ed.epcc.webapp.content.Operator;
  * <p>
  * AVG is a mean value except when doing overlap mapping when it becomes a time average
  * </p>
+ * <p>
+ * SELECT just selects a value without adding to the SQL GROUP BY. The expression is assumed to be
+ * derivable from the INDEXs or the same for all records.
+ * </p>
  * @author spb
  *
  */
@@ -35,7 +39,8 @@ public enum Reduction {
   AVG(Operator.AVG),
   MIN(Operator.MIN),
   MAX(Operator.MAX),
-  INDEX(Operator.MERGE);
+  INDEX(Operator.MERGE),
+  SELECT(Operator.MERGE);
   
   private final Operator op;
   private Reduction(Operator o){

@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
+import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 /** A visitor interface for PropExpressions. 
  * 
@@ -24,7 +25,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
  * 
  
  * @author spb
- *
+ * @see BasePropExpressionVisitor
  * @param <R> type returned by visitor
  */
 public interface  PropExpressionVisitor<R> extends BasePropExpressionVisitor<R>{
@@ -52,9 +53,11 @@ public interface  PropExpressionVisitor<R> extends BasePropExpressionVisitor<R>{
   public R visitDurationPropExpression(DurationPropExpression sel) throws Exception;
   public R visitDurationCastPropExpression(DurationCastPropExpression<?> sel) throws Exception;
   public R visitDurationSecondPropExpression(DurationSecondsPropExpression d)throws Exception;
+  public R visitLocatePropExpression(LocatePropExpression expr) throws Exception;
   public <T,D> R visitTypeConverterPropExpression(TypeConverterPropExpression<T,D> sel) throws Exception;
   public <T,X> R visitLabelPropExpression(LabelPropExpression<T,X> expr) throws Exception;
   public <T> R visitCasePropExpression(CasePropExpression<T> expr)  throws Exception;
   public R visitConvetMillisecondToDateExpression(ConvertMillisecondToDatePropExpression expr)throws Exception;
   public <C extends Comparable> R visitCompareExpression(ComparePropExpression<C> expr) throws Exception;
+  public <I extends Indexed> R visitConstReferenceExpression(ConstReferenceExpression<I> expr) throws Exception;
 }

@@ -35,6 +35,7 @@ import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.UsageRecordListener;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
+import uk.ac.ed.epcc.safe.accounting.db.RepositoryAccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
@@ -169,7 +170,7 @@ public abstract class AggregateUsageRecordFactory
 	}
 	private final UsageProducer<Use> master;
 	
-	private  AccessorMap<AggregateRecord> map;
+	private  RepositoryAccessorMap<AggregateRecord> map;
 	private  PropertyFinder finder;
 	private  PropertyTag<Date> end_target_prop;
 	private  PropertyTag<Date> start_target_prop;
@@ -277,7 +278,7 @@ public abstract class AggregateUsageRecordFactory
 	}
 	@SuppressWarnings("unchecked")
 	private void initAccessorMap(AppContext c, String tag) {
-		map = new AccessorMap(getTarget(),res,tag);
+		map = new RepositoryAccessorMap(this,res);
 		Logger log = c.getService(LoggerService.class).getLogger(getClass());
 		ref_registry = ReferencePropertyRegistry.getInstance(c);
 		map.makeReferences(ref_registry);
@@ -454,7 +455,7 @@ public abstract class AggregateUsageRecordFactory
 		
 	}
 
-	public final AccessorMap<AggregateRecord> getAccessorMap() {
+	public final RepositoryAccessorMap<AggregateRecord> getAccessorMap() {
 		return map;
 	}
 

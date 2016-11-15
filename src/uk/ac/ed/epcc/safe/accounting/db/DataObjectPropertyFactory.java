@@ -38,15 +38,11 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
-import uk.ac.ed.epcc.webapp.jdbc.table.GeneralTransitionSource;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecificationTransitionSource;
 import uk.ac.ed.epcc.webapp.model.data.FieldSQLExpression;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 import uk.ac.ed.epcc.webapp.model.data.FilterResult;
@@ -77,11 +73,11 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	}
 	
 
-
+	public abstract RepositoryAccessorMap<T> getAccessorMap();
 	@Override
 	protected Map<String, Object> getSelectors() {
 		
-		AccessorMap<T> map = getAccessorMap();
+		RepositoryAccessorMap<T> map = getAccessorMap();
 		return new HashMap<String,Object>(map.getSelectors());
 		
 	}
@@ -95,7 +91,7 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 			
 		} catch (CannotFilterException e) {
 			getLogger().error("Attempt to filter on illegal property",e);
-			return new FalseFilter<T>(getTarget());
+			return new GenericBinaryFilter<T>(getTarget(),false);
 		}
 	}
 	

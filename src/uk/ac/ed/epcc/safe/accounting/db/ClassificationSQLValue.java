@@ -80,7 +80,7 @@ public class ClassificationSQLValue<H extends DataObject, T extends DataObject> 
 	}
     @SuppressWarnings("unchecked")
 	public SQLFilter<H> getNullFilter(boolean is_null) throws CannotFilterException, NoSQLFilterException {
-		// Name is only null if refernce is null
+		// Name is only null if reference is null
 		if( a instanceof FilterProvider){
 			return ((FilterProvider)a).getNullFilter(is_null );
 		}

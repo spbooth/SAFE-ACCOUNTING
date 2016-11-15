@@ -56,7 +56,7 @@ public String getTagByValue(String value) {
 }
 public String getText(PropertyTag item){
 	if( item != null ){
-		return item.getName()+": "+item.getDescription();
+		return item.getFullName()+": "+item.getDescription();
 	}
 	return null;
 }

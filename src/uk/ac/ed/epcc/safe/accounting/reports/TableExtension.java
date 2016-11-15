@@ -53,6 +53,7 @@ import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
+import uk.ac.ed.epcc.safe.accounting.SelectReduction;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
@@ -555,7 +556,7 @@ public class TableExtension extends ReportExtension {
 		List<String> col_names;
 		Map<String,ReductionTarget> cols;
 		Set<ReductionTarget> reductions;
-		
+		int indexes=0;
 		
 		public SummaryObjectTable(TableExtension extension, 
 				CompoundTable compoundTable,  
@@ -609,7 +610,11 @@ public class TableExtension extends ReportExtension {
 				// use Plot property name as the default
 				String col_name = extension.getParamWithDefault("Name", name, (Element)columnNode);
 				boolean isColumn = columnType.equals("Column");
-				if(isColumn || columnType.equals("Index") ){
+				boolean isIndex = columnType.equals("Index");
+				if( isIndex){
+					indexes++;
+				}
+				if(isColumn || isIndex ){
 					// Optionally use a labeller
 					String labeller = extension.getAttribute("labeller", (Element)columnNode);
 					if( labeller != null && labeller.length() > 0){
@@ -621,8 +626,12 @@ public class TableExtension extends ReportExtension {
 						}
 					}
 					// printing index
-					IndexReduction red = new IndexReduction(property);
-					red.setAllowNull(isColumn);
+					ReductionTarget red;
+					if( isColumn){
+						red = new SelectReduction(property);
+					}else{
+						red = new IndexReduction(property);
+					}
 					reductions.add(red);
 					col_names.add(col_name);
 					cols.put(col_name,red);
@@ -688,8 +697,10 @@ public class TableExtension extends ReportExtension {
 				extension.addError("Selector not compatible with ExpressionTargetFactory", selector.toString());
 				return table;
 			}
-		
-			
+		    if( indexes == 0 ){
+		    	extension.addError("No indexes in compound table", Integer.toString(indexes));
+				return table;
+		    }
 			try{
 				Map<ExpressionTuple,ReductionMapResult> data;
                 

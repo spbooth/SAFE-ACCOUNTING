@@ -1,16 +1,4 @@
-//| Copyright - The University of Edinburgh 2015                            |
-//|                                                                         |
-//| Licensed under the Apache License, Version 2.0 (the "License");         |
-//| you may not use this file except in compliance with the License.        |
-//| You may obtain a copy of the License at                                 |
-//|                                                                         |
-//|    http://www.apache.org/licenses/LICENSE-2.0                           |
-//|                                                                         |
-//| Unless required by applicable law or agreed to in writing, software     |
-//| distributed under the License is distributed on an "AS IS" BASIS,       |
-//| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.|
-//| See the License for the specific language governing permissions and     |
-//| limitations under the License.                                          |
+
 /* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in Java
@@ -65,13 +53,14 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.model.data.expr.*;
 import uk.ac.ed.epcc.webapp.*;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 @SuppressWarnings({"unchecked","unused"})
 
 
 
 /* Line 33 of lalr1.java  */
-/* Line 63 of "expr.java"  */
+/* Line 64 of "expr.java"  */
 
 /**
  * A Bison parser, automatically generated from <tt>expr.y</tt>.
@@ -129,7 +118,9 @@ public class ExpressionParser
   /** Token number, to be returned by the scanner.  */
   public static final int MATCH = 273;
   /** Token number, to be returned by the scanner.  */
-  public static final int NEG = 274;
+  public static final int REFERENCE = 274;
+  /** Token number, to be returned by the scanner.  */
+  public static final int NEG = 275;
 
 
 
@@ -347,7 +338,7 @@ public class ExpressionParser
   if (yyn == 2)
     
 /* Line 353 of lalr1.java  */
-/* Line 89 of "expr.y"  */
+/* Line 91 of "expr.y"  */
     { result = ((PropExpression)(yystack.valueAt (1-(1)))); };
   break;
     
@@ -356,7 +347,7 @@ public class ExpressionParser
   if (yyn == 3)
     
 /* Line 353 of lalr1.java  */
-/* Line 92 of "expr.y"  */
+/* Line 94 of "expr.y"  */
     {
   ReferenceExpression tag = (ReferenceExpression)  ((PropExpression)(yystack.valueAt (3-(1))));
   PropExpression inner = ((PropExpression)(yystack.valueAt (3-(2))));
@@ -374,7 +365,7 @@ public class ExpressionParser
   if (yyn == 4)
     
 /* Line 353 of lalr1.java  */
-/* Line 102 of "expr.y"  */
+/* Line 104 of "expr.y"  */
     {
   yyval = find(((String)(yystack.valueAt (1-(1))))); 
 };
@@ -385,7 +376,7 @@ public class ExpressionParser
   if (yyn == 5)
     
 /* Line 353 of lalr1.java  */
-/* Line 105 of "expr.y"  */
+/* Line 107 of "expr.y"  */
     {
   yyval = new ConstPropExpression(String.class,((String)(yystack.valueAt (1-(1))))); 
 };
@@ -396,7 +387,7 @@ public class ExpressionParser
   if (yyn == 6)
     
 /* Line 353 of lalr1.java  */
-/* Line 108 of "expr.y"  */
+/* Line 110 of "expr.y"  */
     { 
   LinkedList<PropExpression> list =((LinkedList)(yystack.valueAt (3-(2))));
   yyval = SelectPropExpression.makeSelect(list.toArray(new PropExpression[list.size()])); 
@@ -408,7 +399,7 @@ public class ExpressionParser
   if (yyn == 7)
     
 /* Line 353 of lalr1.java  */
-/* Line 112 of "expr.y"  */
+/* Line 114 of "expr.y"  */
     {
   Keywords op = ((Keywords)(yystack.valueAt (4-(1))));
   yyval = op.getExpression(((LinkedList)(yystack.valueAt (4-(3)))));
@@ -420,7 +411,7 @@ public class ExpressionParser
   if (yyn == 8)
     
 /* Line 353 of lalr1.java  */
-/* Line 116 of "expr.y"  */
+/* Line 118 of "expr.y"  */
     { yyval = castNumber(((PropExpression)(yystack.valueAt (3-(2))))); };
   break;
     
@@ -429,7 +420,7 @@ public class ExpressionParser
   if (yyn == 9)
     
 /* Line 353 of lalr1.java  */
-/* Line 117 of "expr.y"  */
+/* Line 119 of "expr.y"  */
     {
   yyval = new BinaryPropExpression(castNumber(((PropExpression)(yystack.valueAt (3-(1))))),Operator.ADD,castNumber(((PropExpression)(yystack.valueAt (3-(3)))))); 
 };
@@ -440,7 +431,7 @@ public class ExpressionParser
   if (yyn == 10)
     
 /* Line 353 of lalr1.java  */
-/* Line 120 of "expr.y"  */
+/* Line 122 of "expr.y"  */
     {
   yyval = new BinaryPropExpression(castNumber(((PropExpression)(yystack.valueAt (3-(1))))),Operator.SUB,castNumber(((PropExpression)(yystack.valueAt (3-(3)))))); 
 };
@@ -451,7 +442,7 @@ public class ExpressionParser
   if (yyn == 11)
     
 /* Line 353 of lalr1.java  */
-/* Line 123 of "expr.y"  */
+/* Line 125 of "expr.y"  */
     {
   yyval = new BinaryPropExpression(castNumber(((PropExpression)(yystack.valueAt (3-(1))))),Operator.MUL, castNumber(((PropExpression)(yystack.valueAt (3-(3)))))); 
 };
@@ -462,7 +453,7 @@ public class ExpressionParser
   if (yyn == 12)
     
 /* Line 353 of lalr1.java  */
-/* Line 126 of "expr.y"  */
+/* Line 128 of "expr.y"  */
     { 
   yyval = new BinaryPropExpression(castNumber(((PropExpression)(yystack.valueAt (3-(1))))),Operator.DIV, castNumber(((PropExpression)(yystack.valueAt (3-(3)))))); 
 };
@@ -473,7 +464,7 @@ public class ExpressionParser
   if (yyn == 13)
     
 /* Line 353 of lalr1.java  */
-/* Line 129 of "expr.y"  */
+/* Line 131 of "expr.y"  */
     {
   yyval = new NegatePropExpression(castNumber(((PropExpression)(yystack.valueAt (2-(2))))));    
 };
@@ -484,7 +475,7 @@ public class ExpressionParser
   if (yyn == 14)
     
 /* Line 353 of lalr1.java  */
-/* Line 132 of "expr.y"  */
+/* Line 134 of "expr.y"  */
     {
   yyval=new ConstPropExpression(Number.class,((Number)(yystack.valueAt (1-(1)))));    
 };
@@ -495,9 +486,9 @@ public class ExpressionParser
   if (yyn == 15)
     
 /* Line 353 of lalr1.java  */
-/* Line 135 of "expr.y"  */
+/* Line 137 of "expr.y"  */
     {
-  yyval= new ComparePropExpression(((PropExpression)(yystack.valueAt (3-(1)))),((MatchCondition)(yystack.valueAt (3-(2)))),((PropExpression)(yystack.valueAt (3-(3)))));
+  yyval=new ConstReferenceExpression(((IndexedReference)(yystack.valueAt (1-(1)))));    
 };
   break;
     
@@ -507,6 +498,17 @@ public class ExpressionParser
     
 /* Line 353 of lalr1.java  */
 /* Line 140 of "expr.y"  */
+    {
+  yyval= new ComparePropExpression(((PropExpression)(yystack.valueAt (3-(1)))),((MatchCondition)(yystack.valueAt (3-(2)))),((PropExpression)(yystack.valueAt (3-(3)))));
+};
+  break;
+    
+
+  case 17:
+  if (yyn == 17)
+    
+/* Line 353 of lalr1.java  */
+/* Line 145 of "expr.y"  */
     {
   if( ((PropExpression)(yystack.valueAt (2-(1)))) instanceof ReferenceExpression ){
   ReferenceExpression tag = (ReferenceExpression)  ((PropExpression)(yystack.valueAt (2-(1))));
@@ -522,25 +524,12 @@ public class ExpressionParser
   break;
     
 
-  case 17:
-  if (yyn == 17)
-    
-/* Line 353 of lalr1.java  */
-/* Line 155 of "expr.y"  */
-    { pop(); };
-  break;
-    
-
   case 18:
   if (yyn == 18)
     
 /* Line 353 of lalr1.java  */
-/* Line 158 of "expr.y"  */
-    {
-  LinkedList list = new LinkedList();
-  list.add(((PropExpression)(yystack.valueAt (1-(1)))));
-  yyval=list;
-};
+/* Line 160 of "expr.y"  */
+    { pop(); };
   break;
     
 
@@ -549,6 +538,19 @@ public class ExpressionParser
     
 /* Line 353 of lalr1.java  */
 /* Line 163 of "expr.y"  */
+    {
+  LinkedList list = new LinkedList();
+  list.add(((PropExpression)(yystack.valueAt (1-(1)))));
+  yyval=list;
+};
+  break;
+    
+
+  case 20:
+  if (yyn == 20)
+    
+/* Line 353 of lalr1.java  */
+/* Line 168 of "expr.y"  */
     {
   LinkedList list = ((LinkedList)(yystack.valueAt (3-(1))));
   list.add(((PropExpression)(yystack.valueAt (3-(3)))));
@@ -560,7 +562,7 @@ public class ExpressionParser
 
 
 /* Line 353 of lalr1.java  */
-/* Line 552 of "expr.java"  */
+/* Line 566 of "expr.java"  */
 	default: break;
       }
 
@@ -913,13 +915,13 @@ public class ExpressionParser
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-  private static final byte yypact_ninf_ = -6;
+  private static final byte yypact_ninf_ = -9;
   private static final byte yypact_[] =
   {
-        -2,    -6,    -2,    -2,    -2,    -6,    -6,    -1,     9,    42,
-      -2,     2,    23,    42,     5,    -2,    -6,    -2,    -2,    -2,
-      -2,    -6,    -2,    32,    -6,    -6,    -2,    -5,    13,    13,
-      47,    47,     2,    -6,    -6,    42,    -6
+        -2,    -9,    -2,    -2,    -2,    -9,    -9,    -1,    -9,     9,
+      43,    -2,     2,    24,    43,    46,    -2,    -9,    -2,    -2,
+      -2,    -2,    -9,    -2,    33,    -9,    -9,    -2,    16,    -8,
+      -8,    48,    48,     2,    -9,    -9,    43,    -9
   };
 
   /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -927,23 +929,23 @@ public class ExpressionParser
      error.  */
   private static final byte yydefact_[] =
   {
-         0,    14,     0,     0,     0,     4,     5,     0,     0,     2,
-       0,    13,     0,    18,     0,     0,     1,     0,     0,     0,
-       0,    16,     0,     0,     8,     6,     0,     0,    11,    12,
-       9,    10,    15,    17,     3,    19,     7
+         0,    14,     0,     0,     0,     4,     5,     0,    15,     0,
+       2,     0,    13,     0,    19,     0,     0,     1,     0,     0,
+       0,     0,    17,     0,     0,     8,     6,     0,     0,    11,
+      12,     9,    10,    16,    18,     3,    20,     7
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   private static final byte yypgoto_[] =
   {
-        -6,    -6,     0,    -6,    -6,     8
+        -9,    -9,     0,    -9,    -9,     6
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
   private static final byte
   yydefgoto_[] =
   {
-        -1,     8,    13,    10,    34,    14
+        -1,     9,    14,    11,    35,    15
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -953,26 +955,26 @@ public class ExpressionParser
   private static final byte
   yytable_[] =
   {
-         9,     1,    11,    12,    36,     2,     3,    15,     4,    16,
-      23,    26,     5,     6,    21,     7,    25,    28,    29,    30,
-      31,    26,    32,    27,     0,    21,    35,    17,    18,    19,
-      20,    22,    24,     0,     0,    21,    17,    18,    19,    20,
-       0,    22,     0,     0,    21,    33,    17,    18,    19,    20,
-      22,    17,    18,     0,    21,     0,     0,     0,     0,    21,
-      22,     0,     0,     0,     0,    22
+        10,     1,    12,    13,    22,     2,     3,    16,     4,    17,
+      23,    24,     5,     6,    22,     7,     0,     8,    29,    30,
+      31,    32,    28,    33,     0,    37,     0,    36,    18,    19,
+      20,    21,    27,    25,     0,     0,    22,    18,    19,    20,
+      21,     0,    23,     0,     0,    22,    34,    18,    19,    20,
+      21,    23,    18,    19,     0,    22,     0,    26,     0,     0,
+      22,    23,    27,     0,     0,     0,    23
   };
 
   /* YYCHECK.  */
   private static final byte
   yycheck_[] =
   {
-         0,     3,     2,     3,     9,     7,     8,     8,    10,     0,
-      10,    16,    14,    15,    12,    17,    11,    17,    18,    19,
-      20,    16,    22,    15,    -1,    12,    26,     4,     5,     6,
-       7,    18,     9,    -1,    -1,    12,     4,     5,     6,     7,
-      -1,    18,    -1,    -1,    12,    13,     4,     5,     6,     7,
-      18,     4,     5,    -1,    12,    -1,    -1,    -1,    -1,    12,
-      18,    -1,    -1,    -1,    -1,    18
+         0,     3,     2,     3,    12,     7,     8,     8,    10,     0,
+      18,    11,    14,    15,    12,    17,    -1,    19,    18,    19,
+      20,    21,    16,    23,    -1,     9,    -1,    27,     4,     5,
+       6,     7,    16,     9,    -1,    -1,    12,     4,     5,     6,
+       7,    -1,    18,    -1,    -1,    12,    13,     4,     5,     6,
+       7,    18,     4,     5,    -1,    12,    -1,    11,    -1,    -1,
+      12,    18,    16,    -1,    -1,    -1,    18
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -980,10 +982,10 @@ public class ExpressionParser
   private static final byte
   yystos_[] =
   {
-         0,     3,     7,     8,    10,    14,    15,    17,    21,    22,
-      23,    22,    22,    22,    25,     8,     0,     4,     5,     6,
-       7,    12,    18,    22,     9,    11,    16,    25,    22,    22,
-      22,    22,    22,    13,    24,    22,     9
+         0,     3,     7,     8,    10,    14,    15,    17,    19,    22,
+      23,    24,    23,    23,    23,    26,     8,     0,     4,     5,
+       6,     7,    12,    18,    23,     9,    11,    16,    26,    23,
+      23,    23,    23,    23,    13,    25,    23,     9
   };
 
   /* TOKEN_NUMBER_[YYLEX-NUM] -- Internal symbol number corresponding
@@ -992,15 +994,17 @@ public class ExpressionParser
   yytoken_number_[] =
   {
          0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273,   274
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275
   };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
   private static final byte
   yyr1_[] =
   {
-         0,    20,    21,    22,    22,    22,    22,    22,    22,    22,
-      22,    22,    22,    22,    22,    22,    23,    24,    25,    25
+         0,    21,    22,    23,    23,    23,    23,    23,    23,    23,
+      23,    23,    23,    23,    23,    23,    23,    24,    25,    26,
+      26
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -1008,7 +1012,8 @@ public class ExpressionParser
   yyr2_[] =
   {
          0,     2,     1,     3,     1,     1,     3,     4,     3,     3,
-       3,     3,     3,     2,     1,     3,     2,     1,     1,     3
+       3,     3,     3,     2,     1,     1,     3,     2,     1,     1,
+       3
   };
 
   /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
@@ -1017,20 +1022,20 @@ public class ExpressionParser
   {
     "$end", "error", "$undefined", "NUMBER", "MULT", "DIV", "PLUS", "MINUS",
   "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LSQR", "RSQR", "PROPTAG",
-  "STRING", "COMMA", "KEYWORD", "MATCH", "NEG", "$accept", "full_expr",
-  "expr", "start_deref", "end_deref", "expr_list", null
+  "STRING", "COMMA", "KEYWORD", "MATCH", "REFERENCE", "NEG", "$accept",
+  "full_expr", "expr", "start_deref", "end_deref", "expr_list", null
   };
 
   /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
   private static final byte yyrhs_[] =
   {
-        21,     0,    -1,    22,    -1,    23,    22,    24,    -1,    14,
-      -1,    15,    -1,    10,    25,    11,    -1,    17,     8,    25,
-       9,    -1,     8,    22,     9,    -1,    22,     6,    22,    -1,
-      22,     7,    22,    -1,    22,     4,    22,    -1,    22,     5,
-      22,    -1,     7,    22,    -1,     3,    -1,    22,    18,    22,
-      -1,    22,    12,    -1,    13,    -1,    22,    -1,    25,    16,
-      22,    -1
+        22,     0,    -1,    23,    -1,    24,    23,    25,    -1,    14,
+      -1,    15,    -1,    10,    26,    11,    -1,    17,     8,    26,
+       9,    -1,     8,    23,     9,    -1,    23,     6,    23,    -1,
+      23,     7,    23,    -1,    23,     4,    23,    -1,    23,     5,
+      23,    -1,     7,    23,    -1,     3,    -1,    19,    -1,    23,
+      18,    23,    -1,    23,    12,    -1,    13,    -1,    23,    -1,
+      26,    16,    23,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -1038,14 +1043,16 @@ public class ExpressionParser
   private static final byte yyprhs_[] =
   {
          0,     0,     3,     5,     9,    11,    13,    17,    22,    26,
-      30,    34,    38,    42,    45,    47,    51,    54,    56,    58
+      30,    34,    38,    42,    45,    47,    49,    53,    56,    58,
+      60
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   private static final short yyrline_[] =
   {
-         0,    89,    89,    92,   102,   105,   108,   112,   116,   117,
-     120,   123,   126,   129,   132,   135,   140,   155,   158,   163
+         0,    91,    91,    94,   104,   107,   110,   114,   118,   119,
+     122,   125,   128,   131,   134,   137,   140,   145,   160,   163,
+     168
   };
 
   // Report on the debug stream that the rule yyrule is going to be reduced.
@@ -1097,7 +1104,7 @@ public class ExpressionParser
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19
+      15,    16,    17,    18,    19,    20
   };
 
   private static final byte yytranslate_ (int t)
@@ -1108,22 +1115,22 @@ public class ExpressionParser
       return yyundef_token_;
   }
 
-  private static final int yylast_ = 65;
+  private static final int yylast_ = 66;
   private static final int yynnts_ = 6;
   private static final int yyempty_ = -2;
-  private static final int yyfinal_ = 16;
+  private static final int yyfinal_ = 17;
   private static final int yyterror_ = 1;
   private static final int yyerrcode_ = 256;
-  private static final int yyntokens_ = 20;
+  private static final int yyntokens_ = 21;
 
-  private static final int yyuser_token_number_max_ = 274;
+  private static final int yyuser_token_number_max_ = 275;
   private static final int yyundef_token_ = 2;
 
 /* User implementation code.  */
 /* Unqualified %code blocks.  */
 
 /* Line 875 of lalr1.java  */
-/* Line 45 of "expr.y"  */
+/* Line 47 of "expr.y"  */
   
   private final Stack<PropertyFinder> registry=new Stack<PropertyFinder>();
   private AppContext conn;
@@ -1166,6 +1173,8 @@ public class ExpressionParser
 
 
 /* Line 875 of lalr1.java  */
-/* Line 1158 of "expr.java"  */
+/* Line 1177 of "expr.java"  */
 
 }
+
+

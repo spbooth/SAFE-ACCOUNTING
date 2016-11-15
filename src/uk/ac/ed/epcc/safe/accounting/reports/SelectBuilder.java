@@ -38,6 +38,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.NullSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OrRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OrderClause;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
@@ -60,6 +61,7 @@ public abstract class SelectBuilder {
 	public static final String FILTER_NOT_NULL_ELEMENT = "NotNull";
 	public static final String FILTER_EQ_ELEMENT = "EQ";
 	public static final String PROPERTY_ELEMENT = "Property";
+	public static final String SECOND_PROPERTY_ELEMENT = "Property2";
 	public static final String VALUE_ELEMENT = "Value";
 	public static final String TIME_BOUNDS_ELEMENT = "TimeBounds";
 	protected final AppContext conn;
@@ -240,7 +242,7 @@ public abstract class SelectBuilder {
 					  if(expr == null ){
 						  throw new FilterParseException("Undefined expression "+getParam(PROPERTY_ELEMENT, e));
 					  }
-					  return getSelectClause(expr, cond, e);
+					  return getSelectClause(up,expr, cond, e);
 				  }
 			  }
 	protected final boolean hasChild(String name,Element elem){
@@ -313,10 +315,21 @@ public abstract class SelectBuilder {
 		return new DateBounds(new PropExpression[0],false);
 				
 	}
-	protected <T> SelectClause<T> getSelectClause(PropExpression<T> expr, MatchCondition cond, Element e)
+	protected <T> RecordSelector getSelectClause(PropertyFinder up,PropExpression<T> expr, MatchCondition cond, Element e)
 			throws Exception {
 				T value = getParamExpressionValue(expr, VALUE_ELEMENT, e);
 				if( value == null ){
+					// look for second expression
+					if( ! hasChild(VALUE_ELEMENT, e)){
+						String string = getParam(SECOND_PROPERTY_ELEMENT,e);
+						if( string != null ){
+							PropExpression<T> expr2=getExpression(up, string);
+							if( expr2 != null ){
+								return new RelationClause<T>(expr, cond,expr2);
+							}
+						}
+						throw new FilterParseException("No value or second property in select clause");
+					}
 					// assume optional form input if no value
 					return null;
 				}
@@ -377,12 +390,30 @@ public abstract class SelectBuilder {
 
 	protected final String getParamNS(String namespace, String name, Element elem)
 			throws ReportException {
+				if( elem == null){
+					return null;
+				}
 				Element v = getParamElementNS(namespace,name, elem);
 				if( v != null ){
-					return getText(v);
+					String result = normalise(getText(v));
+					debug("lookup ["+name+"] in "+elem.getNodeName()+", found ["+result+"]");
+					return result;
 				}
+				debug("lookup ["+name+"] in "+elem.getNodeName()+", no element found");
 				return null;  
 			}
+	/** Map whitespace to normalised form. This is important for configuration elements if
+	 * we want to be able to reformat the XML without braking thisng
+	 * 
+	 * @param value
+	 * @return
+	 */
+	protected final String normalise(String value){
+		if( value == null ){
+			return null;
+		}
+		return value.trim().replaceAll("\\s+", " ");
+	}
 
 	protected final Element getParamElement(String name, Element e) {
 		return getParamElementNS(e.getNamespaceURI(), name, e);
@@ -413,7 +444,7 @@ public abstract class SelectBuilder {
 						}
 					  }
 				  }
-				  debug("lookup ["+name+"] in "+elem.getNodeName()+", found "+result);
+				 
 				  return result;
 			  }
 

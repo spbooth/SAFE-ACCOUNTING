@@ -31,7 +31,7 @@ public class AllocationPeriodTransitionCreator implements
 			try {
 				AllocationManager man = c.makeObject(AllocationManager.class, tag);
 				if(man != null){
-					return new AllocationPeriodTransitionProvider(man);
+					return man.getTransitionProvider();
 				}
 			} catch (Exception e) {
 				c.getService(LoggerService.class).getLogger(getClass()).error("Error making AllocationPeriodTransitionProvider",e);

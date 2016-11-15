@@ -44,7 +44,6 @@ import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.NumberOp;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CaseExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
@@ -119,6 +118,7 @@ public class OverlapHandler<T extends UsageRecord> {
     		return target.getDefault();
     	}
     	AndRecordSelector sel=new AndRecordSelector(o_sel);
+    	final Period period = new Period(start, end);
     	//sel.add(new NullSelector(target.getExpression(), false)); //UsageManager may contain tables without type
     	if( USE_QUERY_MAPPER_FEATURE.isEnabled(conn) ){
     		try{
@@ -127,7 +127,7 @@ public class OverlapHandler<T extends UsageRecord> {
     			if( USE_CASE_OVERLAP.isEnabled(conn)){
     				// do reduction in a single pass using a case statement
     				AndRecordSelector selector = new AndRecordSelector(sel);
-    				final Period period = new Period(start, end);
+    				
     				selector.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,0L));
     				result = prod.getReduction(makeCaseOverlapReductionTarget(target.getReduction(), target.getExpression(), start_prop, end_prop, start, end), selector).doubleValue();
     			}else{
@@ -135,7 +135,6 @@ public class OverlapHandler<T extends UsageRecord> {
     				//       log.debug(proj.getCode()+" "+start_secs+","+end_secs);
     				// First sum jobs totally within the period. 
     				AndRecordSelector inner=new AndRecordSelector(sel);
-    				final Period period = new Period(start, end);
     				inner.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.INNER,0L));
     				if( target.getReduction() == Reduction.AVG){
     					// Do rescale in SQL
@@ -149,7 +148,7 @@ public class OverlapHandler<T extends UsageRecord> {
     				AndRecordSelector sel2=new AndRecordSelector(sel);
     				sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.LOWER,0L));
     				result = addToOverlapSumByIterating(target, start_prop,
-    						end_prop, start, end, result, sel2);
+    						end_prop, period, result, sel2);
     				// log.debug("Front overlapp "+temp);
 
     				// This should be the slowest loop as it cannot use an index on end_prop
@@ -158,7 +157,7 @@ public class OverlapHandler<T extends UsageRecord> {
     				sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.UPPER_OUTER,0L));
 
     				result = addToOverlapSumByIterating(target, start_prop,
-    						end_prop, start, end, result, sel2);
+    						end_prop, period, result, sel2);
     			}
     			return result;
     		}catch(NoSQLFilterException e){
@@ -166,13 +165,12 @@ public class OverlapHandler<T extends UsageRecord> {
     		}
     	}
     	AndRecordSelector select = new AndRecordSelector(sel);
-    	final Period period = new Period(start, end);
     	select.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,0L));
 
     	// fallback result by iterating
     	Number result = target.getDefault();
     	result = addToOverlapSumByIterating(target, start_prop, end_prop,
-				start, end, result, select);
+				period, result, select);
     	return result;
     	
     }
@@ -190,11 +188,11 @@ public class OverlapHandler<T extends UsageRecord> {
 	 */
 	private Number addToOverlapSumByIterating(NumberReductionTarget target,
 			PropExpression<Date> start_prop, PropExpression<Date> end_prop,
-			Date start, Date end, Number result, AndRecordSelector sel2)
+			TimePeriod period, Number result, AndRecordSelector sel2)
 			throws Exception, InvalidPropertyException {
 		for(Iterator<T> it = prod.getIterator(sel2);it.hasNext();){
 			T rec =   it.next();
-			result = combinePartial(target,result, getOverlap(rec,target,start_prop,end_prop,start,end));
+			result = combinePartial(target,result, getOverlap(rec,target,start_prop,end_prop,period));
 		}
 		return result;
 	}
@@ -385,7 +383,7 @@ public class OverlapHandler<T extends UsageRecord> {
 
 
 						addToOverlapReductionMapByIterating(tag, start_prop,
-								end_prop, start, end, target, result, sel2);
+								end_prop, period, target, result, sel2);
 						//log.debug("First loop "+records+" of which "+over+" overlap");
 						if( tim != null ){
 							tim.stopTimer("getOverlapMap-Loop1");
@@ -397,7 +395,7 @@ public class OverlapHandler<T extends UsageRecord> {
 						sel2=new AndRecordSelector(selector);
 						sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.UPPER_OUTER,0L));
 						addToOverlapReductionMapByIterating(tag, start_prop,
-								end_prop, start, end, target, result, sel2);
+								end_prop, period, target, result, sel2);
 						//log.debug("Both loop "+records+" of which "+over+" overlap");
 						if( tim != null ){
 							tim.stopTimer("getOverlapMap-Loop2");
@@ -421,8 +419,8 @@ public class OverlapHandler<T extends UsageRecord> {
 		Map<R,Number> result = new HashMap<R, Number>();
 		AndRecordSelector it_sel = new AndRecordSelector(selector);
 		it_sel.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop));
-		addToOverlapReductionMapByIterating(tag, start_prop, end_prop, start,
-				end, main_target, result, it_sel);
+		addToOverlapReductionMapByIterating(tag, start_prop, end_prop, period,
+				main_target, result, it_sel);
 		return result;
 	}
 
@@ -440,7 +438,7 @@ public class OverlapHandler<T extends UsageRecord> {
 	 */
 	private <R> void addToOverlapReductionMapByIterating(PropExpression<R> tag,
 			PropertyTag<Date> start_prop, PropertyTag<Date> end_prop,
-			Date start, Date end, NumberReductionTarget target,
+			TimePeriod period, NumberReductionTarget target,
 			Map<R, Number> result, AndRecordSelector sel2) throws Exception,
 			InvalidPropertyException {
 		for(Iterator<T> it = prod.getIterator(sel2);it.hasNext();){
@@ -449,8 +447,8 @@ public class OverlapHandler<T extends UsageRecord> {
 			// overlap the period and a record where the overlap value is zero
 			// this gives a true zero when a zero valued record overlaps and
 			// a null if no record overlaps.
-			if( overlaps(rec, start_prop, end_prop, start, end)){
-				Number temp = getOverlap(rec,target,start_prop,end_prop,start,end);
+			if( overlaps(rec, start_prop, end_prop, period.getStart(),period.getEnd())){
+				Number temp = getOverlap(rec,target,start_prop,end_prop,period);
 
 
 				R key = rec.evaluateExpression(tag);
@@ -609,7 +607,7 @@ public class OverlapHandler<T extends UsageRecord> {
 							sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.LOWER,0L));
 
 							int records = addToOverlapIndexedReductionByIterating(property,
-									start_prop, end_prop, start, end, index_set, result,
+									start_prop, end_prop, period, index_set, result,
 									sel2);
 							//log.debug("First loop "+records+" of which "+over+" overlap");
 							if( tim != null ){
@@ -620,7 +618,7 @@ public class OverlapHandler<T extends UsageRecord> {
 							// to locate the end of the select so needs to search to the end of the table.
 							sel2=new AndRecordSelector(selector);
 							sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.UPPER_OUTER,0L));
-							records += addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, start, end, index_set, result, sel2);
+							records += addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, period, index_set, result, sel2);
 
 							//log.debug("Both loop "+records+" of which "+over+" overlap");
 							if( tim != null ){
@@ -636,7 +634,7 @@ public class OverlapHandler<T extends UsageRecord> {
 					result = new HashMap<ExpressionTuple, ReductionMapResult>();
 					AndRecordSelector sel = new AndRecordSelector(selector);
 					sel.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.ANY,0L));
-					addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, start, end, index_set, result, sel);
+					addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, period, index_set, result, sel);
 				}
 
 				if( tim != null ){
@@ -653,7 +651,7 @@ public class OverlapHandler<T extends UsageRecord> {
 		}
 		selector.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop));
 		Map<ExpressionTuple,ReductionMapResult>result = new HashMap<ExpressionTuple, ReductionMapResult>();
-		addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, start, end, index_set, result, selector);
+		addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, period, index_set, result, selector);
 
 		return result;
 	}
@@ -661,7 +659,7 @@ public class OverlapHandler<T extends UsageRecord> {
 	@SuppressWarnings("unchecked")
 	private int addToOverlapIndexedReductionByIterating(
 			Set<ReductionTarget> property, PropExpression<Date> start_prop,
-			PropExpression<Date> end_prop, Date start, Date end,
+			PropExpression<Date> end_prop, TimePeriod period,
 			Set<PropExpression> index_set,
 			Map<ExpressionTuple, ReductionMapResult> result,
 			RecordSelector sel2) throws Exception {
@@ -690,7 +688,7 @@ public class OverlapHandler<T extends UsageRecord> {
 						if( target.getReduction() == Reduction.SUM || target.getReduction() == Reduction.AVG){
 							// Use ADD not combine as NumberAverageReductionTarget uses a special numeric type
 							// to combine averages but we want to weight instead
-							Number temp = getOverlap(rec,(NumberReductionTarget)target, start_prop, end_prop,start, end);
+							Number temp = getOverlap(rec,(NumberReductionTarget)target, start_prop, end_prop,period);
 							res.put(target, NumberOp.add((Number)res.get(target), temp));
 							seen=true;
 						}else{
@@ -720,19 +718,18 @@ public class OverlapHandler<T extends UsageRecord> {
 	 * @param target 
 	 * @param start_prop 
 	 * @param end_prop 
-     * @param p_start period start i
-     * @param p_end period end 
+     * @param p {@link TimePeriod}
      * @return weighted value of property
 	 * @throws InvalidPropertyException 
      */
-    public static Number getOverlap(ExpressionTarget rec,NumberReductionTarget target,PropExpression<Date> start_prop,PropExpression<Date> end_prop,Date p_start, Date p_end) throws InvalidExpressionException {
+    public static Number getOverlap(ExpressionTarget rec,NumberReductionTarget target,PropExpression<Date> start_prop,PropExpression<Date> end_prop,TimePeriod p) throws InvalidExpressionException {
     	Number tmp=rec.evaluateExpression(target.getExpression());
     	
     	if( tmp == null ){
     		return target.getDefault();
     	}
     	
-    	double fac = getOverlappWeight(rec,start_prop,end_prop,p_start, p_end,target.getReduction());
+    	double fac = getOverlappWeight(rec,start_prop,end_prop,p,target.getReduction());
     	assert(fac >= 0.0 && fac <=1.0);
     	if( fac == 0.0 ){
     		return target.getDefault();
@@ -789,13 +786,14 @@ public class OverlapHandler<T extends UsageRecord> {
 	 * @param op   Reduction operation
 	 * @return double fraction
 	 */
-    public static double getOverlappWeight(ExpressionTarget rec,PropExpression<Date> start_prop, PropExpression<Date> end_prop,Date p_start, Date p_end,Reduction op)  {
+    public static double getOverlappWeight(ExpressionTarget rec,PropExpression<Date> start_prop, PropExpression<Date> end_prop,TimePeriod p,Reduction op)  {
     	assert(start_prop != null);
     	assert(end_prop != null);
-    	assert(p_start != null);
-    	assert(p_end != null );
-    	assert(p_end.after(p_start));
-    	if( start_prop==null || end_prop == null || p_start ==  null || p_end == null ){
+    	assert(p != null);
+    	assert(p.getStart() != null);
+    	assert(p.getEnd() != null );
+    	assert(p.getEnd().after(p.getStart()));
+    	if( start_prop==null || end_prop == null || p ==  null ){
 			return 0.0;
 		}
     	
@@ -805,8 +803,8 @@ public class OverlapHandler<T extends UsageRecord> {
     		return 1.0;
     	}
     	try{
-    		long start = p_start.getTime();
-    		long end = p_end.getTime();
+    		long start = p.getStart().getTime();
+    		long end = p.getEnd().getTime();
  
     		long myend = rec.evaluateExpression(end_prop).getTime();
     		long mystart= rec.evaluateExpression(start_prop).getTime();

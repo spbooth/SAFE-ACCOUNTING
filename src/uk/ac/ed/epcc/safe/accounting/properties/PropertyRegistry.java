@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting.properties;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 
@@ -43,7 +44,7 @@ import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 public class PropertyRegistry extends FixedPropertyFinder {
 	private boolean locked=false;
 	public PropertyRegistry(String name,String description){
-		super(name,description,new HashMap<String, PropertyTag>());
+		super(name,description,new LinkedHashMap<String, PropertyTag>());
 	}
 	void register(PropertyTag t){
 		if( locked ){
