@@ -90,7 +90,7 @@ public abstract class ChartExtension extends ReportExtension {
 	}
 	public PlotEntry getPlotEntry(PropertyFinder finder, Element e) throws Exception{
 		String name = getParam("Plot",e);
-		if( name == null ){
+		if( name == null  || name.isEmpty()){
 			addError("No Plot Quantity","No Plot quantity was specified");
 			return null;
 		}
