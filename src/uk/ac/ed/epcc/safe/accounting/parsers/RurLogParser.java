@@ -51,9 +51,9 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@AutoTable(target=Date.class)
 	public static final AttributePropertyTag<Date> STOP_TIMESTAMP = new AttributePropertyTag<Date>(rur_reg, "stop_date_time", null, Date.class, "date time job stopped", new Date());
 	
-	@AutoTable(target=Integer.class)
-	public static final AttributePropertyTag<Integer> ENERGY_USED = new AttributePropertyTag<Integer>(rur_reg, "energy_used", null, Integer.class,
-			"Total energy (in joules) used across all nodes, including accelerators", -1);
+	@AutoTable(target=Long.class)
+	public static final AttributePropertyTag<Long> ENERGY_USED = new AttributePropertyTag<Long>(rur_reg, "energy_used", null, Long.class,
+			"Total energy (in joules) used across all nodes, including accelerators", -1L);
 	@AutoTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> NODES = new AttributePropertyTag<Integer>(rur_reg, "nodes", null, Integer.class,
 			"Number of nodes in job", -1);
@@ -301,7 +301,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	
 	private static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
 	static {
-		STANDARD_ATTRIBUTES.addParser(ENERGY_USED, IntegerParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(ENERGY_USED, LongParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODES, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODES_POWER_CAPPED, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODES_THROTTLED, IntegerParser.PARSER);
