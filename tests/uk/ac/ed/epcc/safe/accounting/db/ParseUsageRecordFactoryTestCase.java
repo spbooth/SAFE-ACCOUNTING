@@ -398,25 +398,5 @@ public void receiveAccounting(String updateText) {
 	}
    
 	
-	/** take and remember a baseline dump of the current database state
-	 * that will be used in a subsequent call to {{@link #checkDiff(String, String)}
-	 * 
-	 * @throws DataFault
-	 * @throws DataException
-	 * @throws ConsistencyError
-	 */
-	public void takeBaseline() throws DataFault, DataException, ConsistencyError{
-		
-		XMLDataUtils utils = new XMLDataUtils(getContext());
-		XMLPrinter baseline = new XMLPrinter();
-		
-		// make a baseline dump
-		baseline.clear();
-		baseline.open("Data");
-		Dumper dmp = new Dumper(getContext(), baseline);
-		utils.dumpAllTables(dmp);
-		baseline.close();
-		
-		System.out.println(baseline.toString());
-	}
+	
 }
