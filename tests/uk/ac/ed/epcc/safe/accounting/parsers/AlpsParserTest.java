@@ -32,11 +32,9 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 		
 	}
 
-	private static final String testDataPath = "./alps-20160720";
+	private static final String testDataPath = "./ALPSData.txt";
 	private static final Collection<RecordText> goodRecords = new ArrayList<RecordText>();
 	private static final Collection<BadRecordText> badTexts = new ArrayList<BadRecordText>();
-	
-	
 	
 	@Test
 	public void testParse() { 	

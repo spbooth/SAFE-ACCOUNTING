@@ -32,7 +32,7 @@ public class RurParserTest extends AbstractRecordTestCase {
 		
 	}
 
-	private static final String testDataPath = "./rur-20161114";
+	private static final String testDataPath = "./RURData.txt";
 	private static final Collection<RecordText> goodRecords = new ArrayList<RecordText>();
 	private static final Collection<BadRecordText> badTexts = new ArrayList<BadRecordText>();
 	
