@@ -123,14 +123,15 @@ public class AttributePropertyTag<T> extends PropertyTag<T> {
 		Iterator<Entry<String, PropertyTag>> props = reg.getIterator();
 		while (!matchFound && props.hasNext()) {
 			PropertyTag prop = props.next().getValue();
-			
-			tag = (AttributePropertyTag<?>) reg.find(prop.getName());
-			if (null != tag) {
-				if (compare_name) {
-					matchFound = tag.compareNames(alias);
-				}
-				if (!matchFound) {
-					matchFound = tag.aliasMatch(alias);
+			if( prop instanceof AttributePropertyTag){
+				tag = (AttributePropertyTag<?>) reg.find(prop.getName());
+				if (null != tag) {
+					if (compare_name) {
+						matchFound = tag.compareNames(alias);
+					}
+					if (!matchFound) {
+						matchFound = tag.aliasMatch(alias);
+					}
 				}
 			}
 		}

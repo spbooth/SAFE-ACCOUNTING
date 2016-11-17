@@ -22,6 +22,7 @@ import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
+import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -45,55 +46,59 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	public static final AttributePropertyTag<Integer> ALPS_ID = new AttributePropertyTag<Integer>(rur_reg, "apid", null, Integer.class,
 			"ALPS log id", -1);
 	
-	@AutoTable(target=Date.class)
+	@AutoTable(target=String.class,length=32,unique=true)
+	public static final PropertyTag<String> PBS_ID = new PropertyTag<String>(rur_reg, "pbs_id",String.class,"PBS Job ID");
+	
+	
+	@OptionalTable(target=Date.class)
 	public static final AttributePropertyTag<Date> START_TIMESTAMP = new AttributePropertyTag<Date>(rur_reg, "start_date_time", null, Date.class, "date time job started", new Date());
 	
-	@AutoTable(target=Date.class)
+	@OptionalTable(target=Date.class)
 	public static final AttributePropertyTag<Date> STOP_TIMESTAMP = new AttributePropertyTag<Date>(rur_reg, "stop_date_time", null, Date.class, "date time job stopped", new Date());
 	
 	@AutoTable(target=Long.class)
 	public static final AttributePropertyTag<Long> ENERGY_USED = new AttributePropertyTag<Long>(rur_reg, "energy_used", null, Long.class,
 			"Total energy (in joules) used across all nodes, including accelerators", -1L);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> NODES = new AttributePropertyTag<Integer>(rur_reg, "nodes", null, Integer.class,
 			"Number of nodes in job", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> NODES_POWER_CAPPED = new AttributePropertyTag<Integer>(rur_reg, "nodes_power_capped", null, Integer.class,
 			"Number of nodes with nonzero power cap", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> NODES_THROTTLED = new AttributePropertyTag<Integer>(rur_reg, "nodes_throttled", null, Integer.class,
 			"Number of nodes that experienced one or more throttled sockets", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> NODES_CHANGED_POWER_CAP = new AttributePropertyTag<Integer>(rur_reg, "nodes_with_changed_power_cap", null, Integer.class,
 			"Number of nodes with power caps that changed during execution, including accelerators", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> MAX_POWER_CAP = new AttributePropertyTag<Integer>(rur_reg, "max_power_cap", null, Integer.class,
 			"Maximum nonzero power cap", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> MAX_POWER_CAP_COUNT = new AttributePropertyTag<Integer>(rur_reg, "max_power_cap_count", null, Integer.class,
 			"Number of nodes with the maximum nonzero power cap", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> MIN_POWER_CAP = new AttributePropertyTag<Integer>(rur_reg, "min_power_cap", null, Integer.class,
 			"Minimum nonzero power cap", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> MIN_POWER_CAP_COUNT = new AttributePropertyTag<Integer>(rur_reg, "min_power_cap_count", null, Integer.class,
 			"Number of nodes with the minimum nonzero power cap", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> ACCEL_ENERGY_USED = new AttributePropertyTag<Integer>(rur_reg, "accel_energy_used", null, Integer.class,
 			"Total accelerator energy (in Joules) used", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> NODES_ACCEL_POWER_CAPPED = new AttributePropertyTag<Integer>(rur_reg, "nodes_accel_power_capped",  null, Integer.class,
 			"Number of accelerators with nonzero power cap", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> MAX_ACCEL_POWER_CAP = new AttributePropertyTag<Integer>(rur_reg, "max_accel_power_cap", null, Integer.class,
 			"Maximum nonzero accelerator power cap", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> MAX_ACCEL_POWER_CAP_COUNT = new AttributePropertyTag<Integer>(rur_reg, "max_accel_power_cap_count", null, Integer.class,
 			"Number of accelerators with the maximum nonzero power cap", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> MIN_ACCEL_POWER_CAP = new AttributePropertyTag<Integer>(rur_reg, "min_accel_power_cap", null, Integer.class,
 			"Minimum nonzero accelerator power cap", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> MIN_ACCEL_POWER_CAP_COUNT = new AttributePropertyTag<Integer>(rur_reg, "min_accel_power_cap_count", null, Integer.class,
 			"Number of accelerators with the minimum nonzero power cap", -1);
 	
@@ -158,72 +163,72 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@AutoTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> CORE_DUMP_FLAG = new AttributePropertyTag<Integer>(rur_reg, "core", null, Integer.class,
 			"Core dump flag", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> PROCESS_EXIT_CODE = new AttributePropertyTag<Integer>(rur_reg, "ecode", null, Integer.class,
 			"Process exit code", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> NODE_SCHEDULING_DISCIPLINE = new AttributePropertyTag<Integer>(rur_reg, "sched", null, Integer.class,
 			"Scheduling discipline used on node", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> POSIX_NICE_VALUE = new AttributePropertyTag<Integer>(rur_reg, "nice", null, Integer.class,
 			"POSIX nice value of process", -1);
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> APPLICATION_ID = new AttributePropertyTag<String>(rur_reg, "appid", new String[]{"apid"}, String.class,
 			"Application ID as defined by application launcher", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> USER_ID = new AttributePropertyTag<String>(rur_reg, "uid", null, String.class,
 			"User ID", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> PROCESS_ID = new AttributePropertyTag<String>(rur_reg, "pid", null, String.class,
 			"Process ID", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> JOB_ID = new AttributePropertyTag<String>(rur_reg, "jid", null, String.class,
 			"Job ID", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> GROUP_ID = new AttributePropertyTag<String>(rur_reg, "gid", null, String.class,
 			"Group ID", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> NODE_ID = new AttributePropertyTag<String>(rur_reg, "nid", null, String.class,
 			"Node ID", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> PARENT_JOB_ID = new AttributePropertyTag<String>(rur_reg, "pjid", null, String.class,
 			"Parent job ID", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> JOB_PROJECT_ID = new AttributePropertyTag<String>(rur_reg, "prid", null, String.class,
 			"Job project ID", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> PARENT_PROCESS_ID = new AttributePropertyTag<String>(rur_reg, "ppid", null, String.class,
 			"Parent process ID", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> PROCESS_NAME = new AttributePropertyTag<String>(rur_reg, "comm", null, String.class,
 			"String containing process name", "");
 	
 	
 	
-	@AutoTable(target=String.class, length=1024)
+	@OptionalTable(target=String.class, length=1024)
 	public static final AttributePropertyTag<String> BOOT_MEM_PERCENTAGE = new AttributePropertyTag<String>(rur_reg, "boot_mem_percent", new String[]{"%_of_boot_mem"}, String.class,
 			"The percentage of boot memory for each order chunk in /proc/buddyinfo summed across all memory zones", "");
-	@AutoTable(target=Long.class)
+	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> BOOT_FREE_MEM_CONTENTS = new AttributePropertyTag<Long>(rur_reg, "boot_freemem", null, Long.class,
 			"Contents of /proc/boot_freemem", -1L);
-	@AutoTable(target=Long.class)
+	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> CURRENT_FREE_MEM_CONTENTS = new AttributePropertyTag<Long>(rur_reg, "current_freemem", null, Long.class,
 			"Contents of /proc/current_freemem", -1L);
 	
 	
-	@AutoTable(target=Long.class)
+	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> ACTIVE_MEM_TOTAL = new AttributePropertyTag<Long>(rur_reg, "meminfo_active_anon", new String[]{"Active(anon)"}, Long.class,
 			"Total amount of memory in active use by the application", -1L);
-	@AutoTable(target=Long.class)
+	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> ACTIVE_FILE_MEM_TOTAL = new AttributePropertyTag<Long>(rur_reg, "meminfo_active_file", new String[]{"Active(file)"}, Long.class,
 			"Total amount of memory in active use by cache and buffers", -1L);
-	@AutoTable(target=Long.class)
+	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> INACTIVE_MEM_TOTAL = new AttributePropertyTag<Long>(rur_reg, "meminfo_inactive_anon", new String[]{"Inactive(anon)"}, Long.class,
 			"Total amount of memory that is candidate to be swapped out", -1L);
-	@AutoTable(target=Long.class)
+	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> INACTIVE_FILE_MEM_TOTAL = new AttributePropertyTag<Long>(rur_reg, "meminfo_inactive_file", new String[]{"Inactive(file)"}, Long.class,
 			"Total amount of memory that is candidate to be dropped from cache", -1L);
-	@AutoTable(target=Long.class)
+	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> KERNEL_MEM_TOTAL = new AttributePropertyTag<Long>(rur_reg, "meminfo_slab", new String[]{"Slab"}, Long.class,
 			"Total amount of memory used by the kernel", -1L);
 	
@@ -231,25 +236,25 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 			"Memory information", "");
 	
 		
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> HUGEPAGES_NAME = new AttributePropertyTag<String>(rur_reg, "hugepagesname", null, String.class,
 			"Hugepages name", "");
-	@AutoTable(target=Long.class)
+	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> HUGEPAGES_SIZE = new AttributePropertyTag<Long>(rur_reg, "hugepagessize", null, Long.class,
 			"Hugepages size", -1L);
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> HUGEPAGES_SIZE_UNIT = new AttributePropertyTag<String>(rur_reg, "hugepagessizeunit", null, String.class,
 			"Number of hugepages that exist at this point", "");
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> HUGEPAGES_COUNT = new AttributePropertyTag<Integer>(rur_reg, "hugepages_nr", new String[]{"nr"}, Integer.class,
 			"Number of hugepages that exist at this point", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> SURPLUS_HUGEPAGES_COUNT = new AttributePropertyTag<Integer>(rur_reg, "hugepages_surplus", new String[]{"surplus"}, Integer.class,
 			"Number of hugepages above nr", -1);
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> UNALLOCATED_HUGEPAGES_COUNT = new AttributePropertyTag<Integer>(rur_reg, "hugepages_free", new String[]{"free"}, Integer.class,
 			"Number of hugepages that are not yet allocated", -1);	
-	@AutoTable(target=Integer.class)
+	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> RESERVED_HUGEPAGES_COUNT = new AttributePropertyTag<Integer>(rur_reg, "hugepages_resv", new String[]{"resv"}, Integer.class,
 			"Number of hugepages committed for allocation, but no allocation has occurred", -1);
 	
@@ -258,16 +263,16 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 			"The hugepages size for the select entries from /sys/kernel/mm/hugepages/hugepages-*B/*", "", true, false);
 	
 	
-	@AutoTable(target=String.class, length=1024)
+	@OptionalTable(target=String.class, length=1024)
 	public static final AttributePropertyTag<String> NODEZONES_NAME = new AttributePropertyTag<String>(rur_reg, "nodezonesname", null, String.class,
 			"Nodezones name", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> NODEZONES_NUMBER = new AttributePropertyTag<String>(rur_reg, "nodezonesnumber", null, String.class,
 			"Nodezones number", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> NODEZONES_TYPE = new AttributePropertyTag<String>(rur_reg, "nodezonestype", null, String.class,
 			"Nodezones type", "");
-	@AutoTable(target=String.class, length=2048)
+	@OptionalTable(target=String.class, length=2048)
 	public static final AttributePropertyTag<String> NODEZONES_DATA = new AttributePropertyTag<String>(rur_reg, "nodezones_data", null, String.class,
 			"Nodezones data", "");
 	
@@ -279,19 +284,19 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	/**
 	 * If a Python exception occurs during the post or staging scripts, the following data is reported for the energy and memory plugins.
 	 */
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> ERROR_TRACEBACK = new AttributePropertyTag<String>(rur_reg, "error_traceback", new String[]{"traceback"}, String.class,
 			"Stack frame list", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> ERROR_TYPE = new AttributePropertyTag<String>(rur_reg, "error_type", new String[]{"type"}, String.class,
 			"Python exception type", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> ERROR_VALUE = new AttributePropertyTag<String>(rur_reg, "error_value", new String[]{"value"}, String.class,
 			"Python exception parameter", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> ERROR_NID = new AttributePropertyTag<String>(rur_reg, "error_nid", new String[]{"nid"}, String.class,
 			"Id of node on which exception occurred", "");
-	@AutoTable(target=String.class)
+	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> ERROR_CNAME = new AttributePropertyTag<String>(rur_reg, "error_cname", new String[]{"cname"}, String.class,
 			"Node on which exception occurred", "");
 	
@@ -448,7 +453,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 			
 			String apid = m.group("APID");
 			map.setProperty(ALPS_ID, Integer.valueOf(apid));		
-						
+			map.setProperty(PBS_ID, m.group("PBSID"));			
 			Matcher plugin_matcher = plugin_pattern.matcher(m.group("PLUGINS"));
 			while (plugin_matcher.find()) {
 				
