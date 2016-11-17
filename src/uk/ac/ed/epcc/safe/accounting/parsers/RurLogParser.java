@@ -38,14 +38,26 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	private static final String TASKSTATS_PLUGIN_NAME = "taskstats";
 	private static final String MEMORY_PLUGIN_NAME = "memory";
 	private static final String TIMESTAMP_PLUGIN_NAME = "timestamp";
-	private static final String[] plugin_name_list = {ENERGY_PLUGIN_NAME, TASKSTATS_PLUGIN_NAME, MEMORY_PLUGIN_NAME, TIMESTAMP_PLUGIN_NAME};
+	//private static final String[] plugin_name_list = {ENERGY_PLUGIN_NAME, TASKSTATS_PLUGIN_NAME, MEMORY_PLUGIN_NAME, TIMESTAMP_PLUGIN_NAME};
 	
 	private static final PropertyRegistry rur_reg = new PropertyRegistry("rur", "Properties from rur log");
+	private static final PropertyRegistry plugin_reg = new PropertyRegistry("rur_plugins", "Plugins seen in rur");
+	
+	@AutoTable(target=String.class, length=1)
+	public static final PropertyTag<String> ENERGY_PLUGIN = new PropertyTag<String>(plugin_reg, ENERGY_PLUGIN_NAME, String.class);
+	@AutoTable(target=String.class, length=1)
+	public static final PropertyTag<String> TASKSTATS_PLUGIN = new PropertyTag<String>(plugin_reg, TASKSTATS_PLUGIN_NAME, String.class);
+	@OptionalTable(target=String.class, length=1)
+	public static final PropertyTag<String> MEMORY_PLUGIN = new PropertyTag<String>(plugin_reg, MEMORY_PLUGIN_NAME, String.class);
+	@OptionalTable(target=String.class, length=1)
+	public static final PropertyTag<String> TIMESTAMP_PLUGIN = new PropertyTag<String>(plugin_reg, TIMESTAMP_PLUGIN_NAME, String.class);
+
 	
 	@AutoTable(target=Integer.class, unique=true)
 	public static final AttributePropertyTag<Integer> ALPS_ID = new AttributePropertyTag<Integer>(rur_reg, "apid", null, Integer.class,
 			"ALPS log id", -1);
 	
+	// This covers us for re-use of alpds ids
 	@AutoTable(target=String.class,length=32,unique=true)
 	public static final PropertyTag<String> PBS_ID = new PropertyTag<String>(rur_reg, "pbs_id",String.class,"PBS Job ID");
 	
@@ -118,7 +130,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@AutoTable(target=Long.class)
 	public static final AttributePropertyTag<Long> TOTAL_IO_DELAY_TIME = new AttributePropertyTag<Long>(rur_reg, "bkiowait", null, Long.class,
 			"Total delay time (ns) waiting for synchronous block I/O to complete", -1L);
-	@AutoTable(target=Long.class)
+	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> HIGH_MEMORY_USED = new AttributePropertyTag<Long>(rur_reg, "rss", null, Long.class,
 			"RSS highwater mark", -1L);
 	@AutoTable(target=Long.class)
@@ -457,19 +469,16 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 			Matcher plugin_matcher = plugin_pattern.matcher(m.group("PLUGINS"));
 			while (plugin_matcher.find()) {
 				
-				boolean plugin_found = false;
+			
 				String name = plugin_matcher.group("PLUGINNAME");
-				for (String plugin_name: plugin_name_list) {
-					if (plugin_name.equals(name)) {
-						plugin_found = true;
-						break;
-					}
-				}
-				if (!plugin_found) {
+				PropertyTag<String> plugin_tag = (PropertyTag<String>) plugin_reg.find(name);
+				
+				
+				if (plugin_tag == null ) {
 					log.debug("plugin " + name + " not supported.");
 					continue;
 				}
-				
+				map.setProperty(plugin_tag, "Y");
 				if (name.equals(TIMESTAMP_PLUGIN_NAME)) {
 					Matcher ts_matcher = timestamp_pattern.matcher(plugin_matcher.group("TIMESTAMP"));
 					if (ts_matcher.find()) {
@@ -570,6 +579,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 		log = ctx.getService(LoggerService.class).getLogger(getClass());
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(rur_reg);
+		finder.addFinder(plugin_reg);
 		finder.addFinder(StandardProperties.time);
 		parse_timezone=ctx.getBooleanParameter(table+".parse_timezone", true);
 		return finder;
@@ -578,7 +588,8 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 
 	@Override
 	public boolean isComplete(UsageRecord record) {
-		PropertyTag<?>[] attrs = {ALPS_ID, START_TIMESTAMP, STOP_TIMESTAMP};
+		// All supported plugins must be parsed
+		PropertyTag<?>[] attrs = {ALPS_ID, ENERGY_PLUGIN,TASKSTATS_PLUGIN,MEMORY_PLUGIN,TIMESTAMP_PLUGIN};
 		return super.isComplete(record, attrs);
 	}
 

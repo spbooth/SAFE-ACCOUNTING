@@ -127,11 +127,13 @@ public abstract class AbstractPropertyContainerParser extends AbstractPropertyCo
 	public boolean isComplete(UsageRecord record, PropertyTag<?>[] attrs) {
 		
 		for (int i = 0; i < attrs.length; i++) {
-			String name = attrs[i].getName();
-			Object value = record.getProperty(attrs[i], null);
-			if (null == value) {
-				
-				return false;
+			if( record.supports(attrs[i])){
+				String name = attrs[i].getName();
+				Object value = record.getProperty(attrs[i], null);
+				if (null == value) {
+
+					return false;
+				}
 			}
 		}
 					
