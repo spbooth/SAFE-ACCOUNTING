@@ -23,6 +23,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.UsageManager;
@@ -800,22 +801,26 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 		   String list = prop.getProperty("list");
 		   if( list != null ){
 			   for(String name : list.split(",")){
-				   try{
-					   set.add(getConfigMapperEntry(c, prop,finder, name));
-				   }catch(Exception e){
-					   c.getService(LoggerService.class).getLogger(MapperEntry.class).error("Error making MapperEntry "+name,e);
+				   ErrorSet e = new ErrorSet();
+				   MapperEntry entry = getConfigMapperEntry(c, e, prop, finder, name);
+				   if( entry != null){
+					   set.add(entry); 
 				   }
+				   if( e.hasError()){
+					   e.report(
+					   c.getService(LoggerService.class).getLogger(MapperEntry.class));
+				   } 
 			   }
 		   }
 		   
 		   
 	   return set;
    }
-   public static MapperEntry getMapperEntry(AppContext conn,PropertyFinder finder,String name) throws Exception{
-       return conn.getService(ChartService.class).getMapperEntry(finder, name);
+   public static MapperEntry getMapperEntry(AppContext conn,ErrorSet errors,PropertyFinder finder,String name) throws Exception{
+       return conn.getService(ChartService.class).getMapperEntry(errors,finder, name);
    }
    	@SuppressWarnings("unchecked")
-	public static MapperEntry getConfigMapperEntry(AppContext conn,FilteredProperties prop,PropertyFinder finder,String name) throws Exception{
+	public static MapperEntry getConfigMapperEntry(AppContext conn,ErrorSet errors,FilteredProperties prop,PropertyFinder finder,String name) {
    	   Logger log = conn.getService(LoggerService.class).getLogger(MapperEntry.class);
 	   name=name.trim();
 	   String tag =name.replaceAll("\\s", "_")+".";
@@ -827,17 +832,13 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 			   Parser parser = new Parser(conn,finder);
 			   group = parser.parse(group_tag);
 		   }catch(Exception e){
-			   log.warn("Error parsing group tag "+name, e);
+			   errors.add("Error parsing group tag/expression", group_tag, e);
 		   }
-	   }else{
-		   // Try just the raw group name
-		   group = finder.find(desc);
 	   }
 	   MapperEntry me=null;
 	   // Cumulative
 	   if (group == null ) {
-		   me= new SetMapperEntry(conn, name,desc);
-		   
+		   me= new SetMapperEntry(conn, name,desc);   
 	   } else {
 		   Labeller lab = null;
 		   String lab_tag = prop.getProperty(tag+"labeller");
@@ -845,13 +846,17 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 			   // Original implementation used class names in the config
 			   Class<? extends Labeller> clazz = conn.getClassFromName(Labeller.class, null, lab_tag);
 			   if( clazz != null){
-				   lab = conn.makeObject(clazz);
+				   try {
+					lab = conn.makeObject(clazz);
+				} catch (Exception e) {
+					errors.add("Error constructing labeller",lab_tag,e);
+				}
 			   }else{
 				   // Try making as a tag
 				   lab=conn.makeObjectWithDefault(Labeller.class, null, lab_tag);
 				   if( lab == null){
 					  // still can't do anything with this tag.
-					  conn.getService(LoggerService.class).getLogger(MapperEntry.class).error("Specified class "+lab_tag+" is not assignable to Labeller");
+					  errors.add("Invalid chart labeller", lab_tag);
 				   }
 			   }
 		   }

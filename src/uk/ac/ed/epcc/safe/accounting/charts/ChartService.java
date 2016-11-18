@@ -13,6 +13,7 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.charts;
 
+import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.AppContextService;
@@ -39,11 +40,11 @@ public class ChartService implements Contexed, AppContextService<ChartService>{
 		this.conn=c;
 	}
 	
-	public PlotEntry getPlotEntry(PropertyFinder finder,String name,String start,String end) throws Exception{
-		return PlotEntry.getConfigPlotEntry(conn, new FilteredProperties(conn.getService(ConfigService.class).getServiceProperties(),"PlotEntry"),finder, name, start, end);
+	public PlotEntry getPlotEntry(ErrorSet errors,PropertyFinder finder,String name,String start,String end) throws Exception{
+		return PlotEntry.getConfigPlotEntry(conn,errors, new FilteredProperties(conn.getService(ConfigService.class).getServiceProperties(),"PlotEntry"),finder, name, start, end);
 	}
-	public MapperEntry getMapperEntry(PropertyFinder finder,String name) throws Exception{
-		return MapperEntry.getConfigMapperEntry(conn,new FilteredProperties(conn.getService(ConfigService.class).getServiceProperties(),MapperEntry.GROUP_ENTRY_BASE), finder, name);
+	public MapperEntry getMapperEntry(ErrorSet errors,PropertyFinder finder,String name) throws Exception{
+		return MapperEntry.getConfigMapperEntry(conn,errors,new FilteredProperties(conn.getService(ConfigService.class).getServiceProperties(),MapperEntry.GROUP_ENTRY_BASE), finder, name);
 	}
 	
 	public void cleanup() {

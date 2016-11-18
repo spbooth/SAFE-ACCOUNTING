@@ -130,6 +130,10 @@ public class ErrorSet
   {
     return reg.size();
   }
+  
+  public boolean hasError(){
+	  return ! reg.isEmpty();
+  }
 
   public void setName(String name){
 	  this.name=name;
