@@ -278,7 +278,7 @@ public abstract class AggregateUsageRecordFactory
 	}
 	@SuppressWarnings("unchecked")
 	private void initAccessorMap(AppContext c, String tag) {
-		map = new RepositoryAccessorMap(getTarget(),res,tag);
+		map = new RepositoryAccessorMap(this,res);
 		Logger log = c.getService(LoggerService.class).getLogger(getClass());
 		ref_registry = ReferencePropertyRegistry.getInstance(c);
 		map.makeReferences(ref_registry);

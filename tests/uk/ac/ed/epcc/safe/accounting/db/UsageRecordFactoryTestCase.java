@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.annotation.processing.SupportedOptions;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
@@ -92,6 +95,7 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 	}
 	
 	 @Test
+	 @Ignore
 	public void testGetMappers() throws Exception {
 
 		UsageRecordFactory<T> fac = getFactory();

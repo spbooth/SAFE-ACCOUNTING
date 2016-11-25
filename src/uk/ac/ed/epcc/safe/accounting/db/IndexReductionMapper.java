@@ -30,13 +30,13 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.GeneralMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
-import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 
 
 
@@ -44,6 +44,10 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 		private Set<ReductionTarget> sum;
 		private Set<ReductionTarget> skip;
 		private Map<ReductionTarget,Object> default_map;
+		//
+		// This used to be the behaviour we may need to re-instate if old reports break.
+		//
+		private static final Feature SELECTS_IN_KEY = new Feature("reporting.index_reduction.add_selects_to_key",false,"Include select clauses in IndexedReduction inded");
 		@SuppressWarnings("unchecked")
 		public IndexReductionMapper(AccessorMap map, Set<ReductionTarget> targets,ReductionMapResult defs) throws InvalidPropertyException, IllegalReductionException, CannotUseSQLException{
 			super(map.getContext());
@@ -83,10 +87,11 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 				}
 				if( val != null ){
 					String value_name=null;
-					if( ! (val instanceof FieldValue)){
-						value_name=t.toString();
-					}
-					if( target.getReduction() == Reduction.INDEX){
+					// Seems safer to just skip all custom names.
+					//if( ! (val instanceof FieldValue)){
+					//	value_name=t.toString();
+					//}
+					if( target.getReduction() == Reduction.INDEX || (target.getReduction()==Reduction.SELECT && SELECTS_IN_KEY.isEnabled(getContext()))){
 						addKey(val, value_name);
 						indexes++;
 					}else{
@@ -101,6 +106,7 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 								case MIN: addMin(e, value_name);break;
 								case MAX: addMax(e, value_name);break;
 								case AVG: addAverage(e, value_name);break;
+								case SELECT:addClause(val, value_name);break; 
 								default: throw new IllegalReductionException("Bad number reduction");
 								}
 							}else if( Date.class.isAssignableFrom(val.getTarget()) ){
@@ -111,14 +117,23 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 								switch(target.getReduction()){
 								case MIN: addMinDate(e, value_name);break;
 								case MAX: addMaxDate(e, value_name);break;
+								case SELECT:addClause(val, value_name);break; 
 								default: throw new IllegalReductionException("Bad date reduction");
 								}
 
 							}else{
-								throw new IllegalReductionException("Unsupported data type for reduction");
+								if( target.getReduction() == Reduction.SELECT){
+									addClause(val, value_name);
+								}else{
+									throw new IllegalReductionException("Unsupported data type for reduction");
+								}
 							}
 						}else{
-							throw new CannotUseSQLException("Not an SQL Expression");
+							if( target.getReduction() == Reduction.SELECT){
+								addClause(val, value_name);
+							}else{
+								throw new CannotUseSQLException("Not an SQL Expression");
+							}
 						}
 						reductions++;
 					}
@@ -133,7 +148,7 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 		@Override
 		protected ExpressionTuple makeKey(ResultSet rs) throws DataException {
 			Map<PropExpression,Object> map = new HashMap<PropExpression, Object>();
-			int pos=0;
+			int pos=0;  // This is expression count NOT fields super-class keeps track
 			for(ReductionTarget target : sum){
 		
 					if( target.getReduction() == Reduction.INDEX){
@@ -152,7 +167,7 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 		@Override
 		protected ReductionMapResult makeResult(ResultSet rs) throws DataException {
 			ReductionMapResult map = new ReductionMapResult();
-			int pos=0;
+			int pos=0; // This is expression count not fields superclass keeps track
 			for(ReductionTarget t : sum){
 				if( skip != null && skip.contains(t)){
 					Object def = t.getDefault();

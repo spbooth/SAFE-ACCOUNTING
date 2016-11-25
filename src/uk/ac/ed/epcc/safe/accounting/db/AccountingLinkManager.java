@@ -143,7 +143,7 @@ private RepositoryAccessorMap<T> map=null;
 private PropExpressionMap expression_map=null;
 
 protected final void initAccessorMap(AppContext c, String table) {
-	map = new RepositoryAccessorMap<T>(getTarget(),res,table);
+	map = new RepositoryAccessorMap<T>(this,res);
 	MultiFinder finder = new MultiFinder();
 	ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 	map.makeReferences(refs);

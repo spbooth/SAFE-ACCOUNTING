@@ -13,34 +13,34 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Map;
-import java.util.Set;
-
-import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
-import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
-import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FilterFinder;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.filter.SetMaker;
+import uk.ac.ed.epcc.webapp.model.data.SetMapper;
 
 
 
-public class IndexReductionFinder<T extends DataObject&ExpressionTarget> extends FilterFinder<T,Map<ExpressionTuple,ReductionMapResult>>{
-	private final AccessorMap<T> map;
-	public IndexReductionFinder(AccessorMap<T> map,Set<ReductionTarget> sum,ReductionMapResult defs) throws InvalidPropertyException, IllegalReductionException, CannotUseSQLException {
-		super(map.getContext(),map.getTarget(),true);
-		setMapper(new IndexReductionMapper<T>(map, sum,defs));
-		this.map=map;
+public class TuplePropertyMaker<T extends PropertyTupleFactory.PropertyTuple,PT> extends SetMaker<T, PT> {
+	private final PropertyTupleFactory fac;
+	public TuplePropertyMaker(AccessorMap<T> map,PropertyTupleFactory fac,PropertyTag<PT> propertyTag, boolean distinct) throws InvalidSQLPropertyException {
+		super(map.getContext(),map.getTarget());			
+		SQLValue<PT> sqlAccessor = map.getSQLValue(propertyTag);
+		if( sqlAccessor == null ){
+			throw new InvalidSQLPropertyException(propertyTag);
+		}
+		SetMapper<PT> mapper = new SetMapper<PT>(sqlAccessor);					
+		setMapper(mapper);			
+		this.fac=fac;
 	}
 	@Override
 	protected void addSource(StringBuilder sb) {
-		map.addSource(sb);
+		fac.addSource(sb);
+		
 	}
 	@Override
 	protected String getDBTag() {
-		return map.getDBTag();
+		return fac.getDBTag();
 	}
+
 }

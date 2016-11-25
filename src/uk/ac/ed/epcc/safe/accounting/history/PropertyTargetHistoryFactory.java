@@ -192,7 +192,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 	private void initAccessorMap(AppContext conn, String tag){
 		MultiFinder finder = new MultiFinder();
 		PropExpressionMap derived = new PropExpressionMap();
-		mapi = new RepositoryAccessorMap<H>(getTarget(),res, tag);
+		mapi = new RepositoryAccessorMap<H>(this,res);
 		finder.addFinder(StandardProperties.base);
 		
 		

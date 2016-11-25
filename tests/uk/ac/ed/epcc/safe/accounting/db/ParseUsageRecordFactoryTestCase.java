@@ -29,8 +29,14 @@ import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
+import uk.ac.ed.epcc.webapp.content.XMLPrinter;
+import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
+import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.model.data.Dumper;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
+import uk.ac.ed.epcc.webapp.model.data.XMLDataUtils;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
 public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecordFactory<R,I>,R extends UsageRecordFactory.Use,I>
 		extends UsageRecordFactoryTestCase<F,R> {
@@ -335,6 +341,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 @Test
 	public void testReceiveAccounting() throws Exception {
 		String updateText = getUpdateText();
+		//takeBaseline();
 		receiveAccounting(updateText);
 		//save("tests",getClass().getSimpleName(),fac);
 	}
@@ -390,5 +397,6 @@ public void receiveAccounting(String updateText) {
 		return a.equals(b);
 	}
    
+	
 	
 }

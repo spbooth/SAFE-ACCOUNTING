@@ -123,7 +123,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	private static SimpleDateFormat altMonthFormat = new SimpleDateFormat("MM-yyyy");
 	private static SimpleDateFormat fmts[] = {altTimestampFormat,timestampFormat,altDateFormat,dateFormat,altMonthFormat,monthFormat};
 	private final Document doc;
-	private final ErrorSet errors;
+	protected final ErrorSet errors;
 	final Logger log;
 	protected final NumberFormat nf; // number format used for final user display
 	protected DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");

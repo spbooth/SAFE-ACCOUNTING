@@ -22,6 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
@@ -282,15 +283,14 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 		   if( list != null && list.trim().length() != 0){
 			   for(String name : list.split(",")){
 				   log.debug("Consider "+name);
-				   try{
-					   PlotEntry entry = getConfigPlotEntry(c,prop, finder, name,null,null);
+				   ErrorSet errors = new ErrorSet();
+					   PlotEntry entry = getConfigPlotEntry(c,errors,prop, finder, name,null,null);
 					   if( entry != null){
 						   set.add(entry);
 					   }
-				   }catch(Exception e){
-					   // Most likely this is just a property not compatible
-					   // with the finder so only a warning
-					   log.warn("Error making PlotEntry "+name,e);
+				   if( errors.hasError()){
+					   errors.report(log);
+					  
 				   }
 			   }
 		   }
@@ -298,9 +298,9 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 		   return set;
    }
   
-   public static PlotEntry getPlotEntry(AppContext c,PropertyFinder finder,String name,String start,String end) throws Exception{
+   public static PlotEntry getPlotEntry(AppContext c,ErrorSet errors,PropertyFinder finder,String name,String start,String end) throws Exception{
 	   try{
-		   return c.getService(ChartService.class).getPlotEntry(finder, name, start, end);
+		   return c.getService(ChartService.class).getPlotEntry(errors,finder, name, start, end);
 	   }catch(Exception e){
 		   c.getService(LoggerService.class).getLogger(PlotEntry.class).error("Error making PlotEntry name=<"+name+">",e);
 		   throw e;
@@ -318,7 +318,7 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
     * @throws Exception
     */
    @SuppressWarnings("unchecked")
-   public static PlotEntry getConfigPlotEntry(AppContext conn,FilteredProperties prop,PropertyFinder finder,String name,String start,String end) throws Exception{
+   public static PlotEntry getConfigPlotEntry(AppContext conn,ErrorSet errors,FilteredProperties prop,PropertyFinder finder,String name,String start,String end) {
 	   //Note that although this code is using the FilteredProperties the
 	   // ChartExtension currently does NOT so The tag/mode should only be used to set the
 	   // list
@@ -341,18 +341,16 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 	   PropExpression plot =null;
 	   if( plot_tag != null && plot_tag.trim().length() > 0){
 		   try{
-			  			   plot = parser.parse(plot_tag);
-		   }catch(ParseException e){
+			  	plot = parser.parse(plot_tag);
+		   }catch(Exception e){
+			   errors.add("Error parsing plot expression", plot_tag,e);
 			   log.warn("Error parsing plot tag", e);
 		   }
-	   }else{
-		   // Try just the raw group name as a property
-		   plot = finder.make(name);
 	   }
 	   PlotEntry norm=null;
 	   String norm_tag =prop.getProperty(tag+"norm");
 	   if( norm_tag != null && norm_tag.trim().length() >0 ){
-		   norm = getConfigPlotEntry(conn, prop, finder, norm_tag, null, null);
+		   norm = getConfigPlotEntry(conn,errors, prop, finder, norm_tag, null, null);
 	   }
 	   // Plot range properties
 	   PropertyTag<Date> start_prop=findDatePropertyTag(conn,finder,prop,tag+"start",start);

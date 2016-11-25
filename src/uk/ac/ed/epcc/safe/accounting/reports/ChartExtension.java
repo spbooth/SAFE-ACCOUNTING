@@ -90,13 +90,13 @@ public abstract class ChartExtension extends ReportExtension {
 	}
 	public PlotEntry getPlotEntry(PropertyFinder finder, Element e) throws Exception{
 		String name = getParam("Plot",e);
-		if( name == null ){
+		if( name == null  || name.isEmpty()){
 			addError("No Plot Quantity","No Plot quantity was specified");
 			return null;
 		}
 		String start_name = getParam("StartProp", e);
 		String end_name = getParam("EndProp",e);
-		PlotEntry result = serv.getPlotEntry( finder, name,start_name,end_name);
+		PlotEntry result = serv.getPlotEntry( errors,finder, name,start_name,end_name);
 		if( start_name != null && start_name.trim().length() > 0 && result.getStartProperty() == null ){
 			addError("Bad property", "StartProp value "+start_name+" failed to parse", e);
 		}
@@ -127,10 +127,10 @@ public abstract class ChartExtension extends ReportExtension {
 		MapperEntry entry;
 		AppContext ctx = getContext();
 		if (hasParam("GroupBy", e)) {
-			entry = serv.getMapperEntry(finder,getParam("GroupBy", e));
+			entry = serv.getMapperEntry(errors,finder,getParam("GroupBy", e));
 			
 		} else {
-			entry = serv.getMapperEntry( finder, "");
+			entry = serv.getMapperEntry(errors, finder, "");
 			if( hasParam("Label", e)){
 				((SetMapperEntry)entry).setLabel(getParam("Label", e));
 			}else{

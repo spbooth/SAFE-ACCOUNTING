@@ -146,7 +146,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		
 	}
 	private void initAccessorMap(AppContext c, String tag) {
-		map = new RepositoryAccessorMap<P>(getTarget(),res,tag);
+		map = new RepositoryAccessorMap<P>(this,res);
 		MultiFinder finder = new MultiFinder();
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 		map.makeReferences( refs);

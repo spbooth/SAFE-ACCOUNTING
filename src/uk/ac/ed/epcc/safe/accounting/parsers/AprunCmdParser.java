@@ -3,11 +3,10 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import uk.ac.ed.epcc.safe.accounting.parsers.value.AprunMemoryParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.BooleanParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
-import uk.ac.ed.epcc.safe.accounting.properties.AprunPropertyTag;
+import uk.ac.ed.epcc.safe.accounting.properties.AttributePropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
@@ -32,80 +31,80 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	private static final PropertyRegistry aprun_reg = new PropertyRegistry("aprun", "Properties from an aprun command");
 	
 	@AutoTable(target=Integer.class, unique=true)
-	public static final AprunPropertyTag<Integer> ALPS_ID = new AprunPropertyTag<Integer>(aprun_reg, "alps_id", new String[]{"apid"}, Integer.class, 0);
+	public static final AttributePropertyTag<Integer> ALPS_ID = new AttributePropertyTag<Integer>(aprun_reg, "alps_id", new String[]{"apid"}, Integer.class, 0);
 	@AutoTable(target=Integer.class, unique=true)
-	public static final AprunPropertyTag<Integer> APRUN_CMD_NUM = new AprunPropertyTag<Integer>(aprun_reg, "aprun_cmd_num", new String[]{"apnum"}, Integer.class, 0);
+	public static final AttributePropertyTag<Integer> APRUN_CMD_NUM = new AttributePropertyTag<Integer>(aprun_reg, "aprun_cmd_num", new String[]{"apnum"}, Integer.class, 0);
 	
 	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> ARCHITECTURE = new AprunPropertyTag<String>(aprun_reg, "architecture", new String[]{"-a", "--architecture"}, String.class, "");
+	public static final AttributePropertyTag<String> ARCHITECTURE = new AttributePropertyTag<String>(aprun_reg, "architecture", new String[]{"-a", "--architecture"}, String.class, "");
 	@AutoTable(target=Boolean.class)
-	public static final AprunPropertyTag<Boolean> BYPASS_APP_TRANSFER = new AprunPropertyTag<Boolean>(aprun_reg, "bypass_app_transfer", new String[]{"-b", "--bypass-app-transfer"}, Boolean.class, false);
+	public static final AttributePropertyTag<Boolean> BYPASS_APP_TRANSFER = new AttributePropertyTag<Boolean>(aprun_reg, "bypass_app_transfer", new String[]{"-b", "--bypass-app-transfer"}, Boolean.class, false);
 	@AutoTable(target=Boolean.class)
-	public static final AprunPropertyTag<Boolean> BATCH_ARGUMENTS = new AprunPropertyTag<Boolean>(aprun_reg, "batch_args", new String[]{"-B", "--batch-args"}, Boolean.class, false);
+	public static final AttributePropertyTag<Boolean> BATCH_ARGUMENTS = new AttributePropertyTag<Boolean>(aprun_reg, "batch_args", new String[]{"-B", "--batch-args"}, Boolean.class, false);
 	@AutoTable(target=Boolean.class)
-	public static final AprunPropertyTag<Boolean> RECONNECT = new AprunPropertyTag<Boolean>(aprun_reg, "reconnect", new String[]{"-C", "--reconnect"}, Boolean.class, false);
+	public static final AttributePropertyTag<Boolean> RECONNECT = new AttributePropertyTag<Boolean>(aprun_reg, "reconnect", new String[]{"-C", "--reconnect"}, Boolean.class, false);
 	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> CPU_BINDING = new AprunPropertyTag<String>(aprun_reg, "cpu_binding", new String[]{"-cc", "--cc", "--cpu-binding"}, String.class, "");
+	public static final AttributePropertyTag<String> CPU_BINDING = new AttributePropertyTag<String>(aprun_reg, "cpu_binding", new String[]{"-cc", "--cc", "--cpu-binding"}, String.class, "");
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> CPU_BINDING_FILE = new AttributePropertyTag<String>(aprun_reg, "cpu_binding_file", new String[]{"-cp", "--cp", "--cpu-binding-file"}, String.class, "");
+	@AutoTable(target=Integer.class)
+	public static final AttributePropertyTag<Integer> CPUS_PER_PE = new AttributePropertyTag<Integer>(aprun_reg, "cpus_per_pe", new String[]{"-d", "--cpus-per-pe"}, Integer.class, 1);
+	@AutoTable(target=Integer.class)
+	public static final AttributePropertyTag<Integer> DEBUG = new AttributePropertyTag<Integer>(aprun_reg, "debug", new String[]{"-D", "--debug"}, Integer.class, 0);
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> ENVIRONMENT = new AttributePropertyTag<String>(aprun_reg, "environment", new String[]{"-e", "env"}, String.class, "");
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> EXCLUDE_NODE_LIST = new AttributePropertyTag<String>(aprun_reg, "exclude_node_list", new String[]{"-E", "--exclude-node-list"}, String.class, "");
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> EXCLUDE_NODE_LIST_FILE = new AttributePropertyTag<String>(aprun_reg, "exclude_node_list_file", new String[]{"--exclude-node-list-file"}, String.class, "");
+	@AutoTable(target=Integer.class)
+	public static final AttributePropertyTag<Integer> CPUS_PER_CU = new AttributePropertyTag<Integer>(aprun_reg, "cpus", new String[]{"-j", "--CPUs"}, Integer.class, 0);
+	@AutoTable(target=Boolean.class)
+	public static final AttributePropertyTag<Boolean> XEON_PHI_PLACEMENT = new AttributePropertyTag<Boolean>(aprun_reg, "xeon_phi_placement", new String[]{"-k"}, Boolean.class, false);
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> NODE_LIST = new AttributePropertyTag<String>(aprun_reg, "node_list", new String[]{"-L", "--node-list"}, String.class, "");
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> NODE_LIST_FILE = new AttributePropertyTag<String>(aprun_reg, "node_list_file", new String[]{"-l", "--node-list-file"}, String.class, "");
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> MEMORY_PER_PE = new AttributePropertyTag<String>(aprun_reg, "memory_per_pe", new String[]{"-m", "--memory-per-pe"}, String.class, "2.6G");
+	@AutoTable(target=Integer.class)
+	public static final AttributePropertyTag<Integer> PE_COUNT = new AttributePropertyTag<Integer>(aprun_reg, "pes", new String[]{"-n", "--pes"}, Integer.class, 1);
+	@AutoTable(target=Integer.class)
+	public static final AttributePropertyTag<Integer> PES_PER_NODE = new AttributePropertyTag<Integer>(aprun_reg, "pes_per_node", new String[]{"-N", "--pes-per-node"}, Integer.class, 24);
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> ACCESS_MODE = new AttributePropertyTag<String>(aprun_reg, "access_mode", new String[]{"F", "--access-mode"}, String.class, "exclusive");
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> PROTECTION_DOMAIN = new AttributePropertyTag<String>(aprun_reg, "protection_domain", new String[]{"-p", "--protection-domain"}, String.class, "");
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> GOVERNOR_NAME = new AttributePropertyTag<String>(aprun_reg, "p_governor", new String[]{"--p-governor"}, String.class, "performance");
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> P_STATE = new AttributePropertyTag<String>(aprun_reg, "p_state", new String[]{"--p-state"}, String.class, "");
+	@AutoTable(target=Boolean.class)
+	public static final AttributePropertyTag<Boolean> QUIET = new AttributePropertyTag<Boolean>(aprun_reg, "quiet", new String[]{"-q", "--quiet", "--silent"}, Boolean.class, false);
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> SPECIALIZED_CPUS = new AttributePropertyTag<String>(aprun_reg, "specialized_cpus", new String[]{"-r", "--specialized-cpus"}, String.class, "");
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> RELAUNCH = new AttributePropertyTag<String>(aprun_reg, "relaunch", new String[]{"-R", "--relaunch"}, String.class, "");
+	@AutoTable(target=Integer.class)
+	public static final AttributePropertyTag<Integer> PES_PER_NUMA_NODE = new AttributePropertyTag<Integer>(aprun_reg, "pes_per_numa_node", new String[]{"-S", "--pes-per-numa-node"}, Integer.class, 12);
+	@AutoTable(target=String.class)
+	public static final AttributePropertyTag<String> NUMA_NODE_LIST = new AttributePropertyTag<String>(aprun_reg, "numa_node_list", new String[]{"-sl", "--sl", "--numa-node-list"}, String.class, "");
+	@AutoTable(target=Integer.class)
+	public static final AttributePropertyTag<Integer> NUMA_NODES_PER_NODE = new AttributePropertyTag<Integer>(aprun_reg, "numa_nodes_per_node", new String[]{"-sn", "--sn", "--numa-nodes-per-node"}, Integer.class, 2);
+	@AutoTable(target=Boolean.class)
+	public static final AttributePropertyTag<Boolean> STRICT_MEMORY_CONTAINMENT = new AttributePropertyTag<Boolean>(aprun_reg, "strict_memory_containment", new String[]{"-ss", "--ss", "--strict-memory-containment"}, Boolean.class, false);
+	@AutoTable(target=Boolean.class)
+	public static final AttributePropertyTag<Boolean> SYNCHRONIZE_OUTPUT = new AttributePropertyTag<Boolean>(aprun_reg, "sync_output", new String[]{"-T", "--sync-output"}, Boolean.class, false);
+	@AutoTable(target=Integer.class)
+	public static final AttributePropertyTag<Integer> CPU_TIME_LIMIT = new AttributePropertyTag<Integer>(aprun_reg, "cpu_time_limit", new String[]{"-t", "--cpu-time-limit"}, Integer.class, 0);
 	@AutoTable(target=String.class, length=512)
-	public static final AprunPropertyTag<String> CPU_BINDING_FILE = new AprunPropertyTag<String>(aprun_reg, "cpu_binding_file", new String[]{"-cp", "--cp", "--cpu-binding-file"}, String.class, "");
-	@AutoTable(target=Integer.class)
-	public static final AprunPropertyTag<Integer> CPUS_PER_PE = new AprunPropertyTag<Integer>(aprun_reg, "cpus_per_pe", new String[]{"-d", "--cpus-per-pe"}, Integer.class, 1);
-	@AutoTable(target=Integer.class)
-	public static final AprunPropertyTag<Integer> DEBUG = new AprunPropertyTag<Integer>(aprun_reg, "debug", new String[]{"-D", "--debug"}, Integer.class, 0);
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> ENVIRONMENT = new AprunPropertyTag<String>(aprun_reg, "environment", new String[]{"-e", "env"}, String.class, "");
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> EXCLUDE_NODE_LIST = new AprunPropertyTag<String>(aprun_reg, "exclude_node_list", new String[]{"-E", "--exclude-node-list"}, String.class, "");
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> EXCLUDE_NODE_LIST_FILE = new AprunPropertyTag<String>(aprun_reg, "exclude_node_list_file", new String[]{"--exclude-node-list-file"}, String.class, "");
-	@AutoTable(target=Integer.class)
-	public static final AprunPropertyTag<Integer> CPUS_PER_CU = new AprunPropertyTag<Integer>(aprun_reg, "cpus", new String[]{"-j", "--CPUs"}, Integer.class, 0);
-	@AutoTable(target=Boolean.class)
-	public static final AprunPropertyTag<Boolean> XEON_PHI_PLACEMENT = new AprunPropertyTag<Boolean>(aprun_reg, "xeon_phi_placement", new String[]{"-k"}, Boolean.class, false);
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> NODE_LIST = new AprunPropertyTag<String>(aprun_reg, "node_list", new String[]{"-L", "--node-list"}, String.class, "");
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> NODE_LIST_FILE = new AprunPropertyTag<String>(aprun_reg, "node_list_file", new String[]{"-l", "--node-list-file"}, String.class, "");
-	@AutoTable(target=Long.class)
-	public static final AprunPropertyTag<Long> MEMORY_PER_PE = new AprunPropertyTag<Long>(aprun_reg, "memory_per_pe", new String[]{"-m", "--memory-per-pe"}, Long.class,null);
-	@AutoTable(target=Integer.class)
-	public static final AprunPropertyTag<Integer> PE_COUNT = new AprunPropertyTag<Integer>(aprun_reg, "pes", new String[]{"-n", "--pes"}, Integer.class, 1);
-	@AutoTable(target=Integer.class)
-	public static final AprunPropertyTag<Integer> PES_PER_NODE = new AprunPropertyTag<Integer>(aprun_reg, "pes_per_node", new String[]{"-N", "--pes-per-node"}, Integer.class, 24);
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> ACCESS_MODE = new AprunPropertyTag<String>(aprun_reg, "access_mode", new String[]{"F", "--access-mode"}, String.class, "exclusive");
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> PROTECTION_DOMAIN = new AprunPropertyTag<String>(aprun_reg, "protection_domain", new String[]{"-p", "--protection-domain"}, String.class, "");
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> GOVERNOR_NAME = new AprunPropertyTag<String>(aprun_reg, "p_governor", new String[]{"--p-governor"}, String.class, "performance");
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> P_STATE = new AprunPropertyTag<String>(aprun_reg, "p_state", new String[]{"--p-state"}, String.class, "");
-	@AutoTable(target=Boolean.class)
-	public static final AprunPropertyTag<Boolean> QUIET = new AprunPropertyTag<Boolean>(aprun_reg, "quiet", new String[]{"-q", "--quiet", "--silent"}, Boolean.class, false);
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> SPECIALIZED_CPUS = new AprunPropertyTag<String>(aprun_reg, "specialized_cpus", new String[]{"-r", "--specialized-cpus"}, String.class, "");
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> RELAUNCH = new AprunPropertyTag<String>(aprun_reg, "relaunch", new String[]{"-R", "--relaunch"}, String.class, "");
-	@AutoTable(target=Integer.class)
-	public static final AprunPropertyTag<Integer> PES_PER_NUMA_NODE = new AprunPropertyTag<Integer>(aprun_reg, "pes_per_numa_node", new String[]{"-S", "--pes-per-numa-node"}, Integer.class, 12);
-	@AutoTable(target=String.class)
-	public static final AprunPropertyTag<String> NUMA_NODE_LIST = new AprunPropertyTag<String>(aprun_reg, "numa_node_list", new String[]{"-sl", "--sl", "--numa-node-list"}, String.class, "");
-	@AutoTable(target=Integer.class)
-	public static final AprunPropertyTag<Integer> NUMA_NODES_PER_NODE = new AprunPropertyTag<Integer>(aprun_reg, "numa_nodes_per_node", new String[]{"-sn", "--sn", "--numa-nodes-per-node"}, Integer.class, 2);
-	@AutoTable(target=Boolean.class)
-	public static final AprunPropertyTag<Boolean> STRICT_MEMORY_CONTAINMENT = new AprunPropertyTag<Boolean>(aprun_reg, "strict_memory_containment", new String[]{"-ss", "--ss", "--strict-memory-containment"}, Boolean.class, false);
-	@AutoTable(target=Boolean.class)
-	public static final AprunPropertyTag<Boolean> SYNCHRONIZE_OUTPUT = new AprunPropertyTag<Boolean>(aprun_reg, "sync_output", new String[]{"-T", "--sync-output"}, Boolean.class, false);
-	@AutoTable(target=Integer.class)
-	public static final AprunPropertyTag<Integer> CPU_TIME_LIMIT = new AprunPropertyTag<Integer>(aprun_reg, "cpu_time_limit", new String[]{"-t", "--cpu-time-limit"}, Integer.class, 0);
-	@AutoTable(target=String.class, length=512)
-	public static final AprunPropertyTag<String> APP_EXE_PATH = new AprunPropertyTag<String>(aprun_reg, "app_exe_path", null, String.class, "");
+	public static final AttributePropertyTag<String> APP_EXE_PATH = new AttributePropertyTag<String>(aprun_reg, "app_exe_path", null, String.class, "");
 	@AutoTable(target=String.class, length=128)
-	public static final AprunPropertyTag<String> APP_EXE_NAME = new AprunPropertyTag<String>(aprun_reg, "app_exe_name", null, String.class, "");
+	public static final AttributePropertyTag<String> APP_EXE_NAME = new AttributePropertyTag<String>(aprun_reg, "app_exe_name", null, String.class, "");
 	@AutoTable(target=String.class, length=512)
-	public static final AprunPropertyTag<String> APP_ATTR_LIST = new AprunPropertyTag<String>(aprun_reg, "app_attrs", null, String.class, "");
+	public static final AttributePropertyTag<String> APP_ATTR_LIST = new AttributePropertyTag<String>(aprun_reg, "app_attrs", null, String.class, "");
 	@AutoTable(target=Integer.class)
-	public static final AprunPropertyTag<Integer> APP_ID = new AprunPropertyTag<Integer>(aprun_reg, "app_id", null, Integer.class, 0);
+	public static final AttributePropertyTag<Integer> APP_ID = new AttributePropertyTag<Integer>(aprun_reg, "app_id", null, Integer.class, 0);
 	
 	private static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
 	static {
@@ -126,7 +125,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 		STANDARD_ATTRIBUTES.addParser(XEON_PHI_PLACEMENT, BooleanParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODE_LIST, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODE_LIST_FILE, StringParser.PARSER);
-		STANDARD_ATTRIBUTES.addParser(MEMORY_PER_PE, AprunMemoryParser.PARSER);
+		STANDARD_ATTRIBUTES.addParser(MEMORY_PER_PE, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(PE_COUNT, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(PES_PER_NODE, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(ACCESS_MODE, StringParser.PARSER);
@@ -148,6 +147,8 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 		STANDARD_ATTRIBUTES.addParser(APP_ATTR_LIST, StringParser.PARSER);
 	}
 	
+	protected Logger log;
+	
 	private static final char CHAR_COLON = ':';
 	private static final char CHAR_SEMICOLON = ';';
 	private static final char CHAR_WHITESPACE = ' ';
@@ -165,7 +166,6 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	
 	public static final String APRUN_CMD_NAME = "aprun ";
 	
-	protected Logger log;
 	/// This attribute is used by the parse and parseNextElement methods only.
     private String cmd = null;
     
@@ -316,32 +316,6 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	}
 	
 	
-	/**
-	 * Iterate through the aprun attribute registry and look for an attribute
-	 * that uses an alias that matches attrAlias.
-	 * 
-	 * @param attrAlias
-	 * @return null if alias not used by any tag in registry, otherwise
-	 * return an appropriately constructed AprunPropertyTag<?> object.
-	 */
-	private AprunPropertyTag<?> findAprunPropertyTag(String attrAlias) {
-		AprunPropertyTag<?> attrTag = null;
-		
-		boolean matchFound = false;
-		Iterator<Entry<String, PropertyTag>> props = aprun_reg.getIterator();
-		while (!matchFound && props.hasNext()) {
-			PropertyTag prop = props.next().getValue();
-			
-			attrTag = (AprunPropertyTag<?>) aprun_reg.find(prop.getName());
-			if (null != attrTag) {
-				matchFound = attrTag.aliasMatch(attrAlias);
-			}
-		}
-		
-		return matchFound ? attrTag : null;
-	}
-	
-	
 	@Override
 	/**
 	 * Parse a single aprun command, extracting the various elements, 
@@ -373,14 +347,14 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 				throw new AccountingParseException("Missing aprun attribute, '" + this.cmd + "'.");
 			}
 			
-			AprunPropertyTag<?> attrTag = findAprunPropertyTag(attrAlias);	
+			AttributePropertyTag<?> attrTag = AttributePropertyTag.findAttribute(aprun_reg, attrAlias);	
 			if (null != attrTag) {
 				String attrName = attrTag.getName();
 				// element is an aprun attribute
 				Boolean attrFlag = new Boolean(true);
 				if (attrTag.allow(attrFlag)) {
 					// aprun attribute is a simple flag
-					map.setProperty((AprunPropertyTag<Boolean>) attrTag, attrFlag);
+					map.setProperty((AttributePropertyTag<Boolean>) attrTag, attrFlag);
 				}
 				else {
 					// aprun attribute has arguments
@@ -388,7 +362,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 						throw new AccountingParseException("Missing argument for aprun attribute, '" + attrName + "'.");
 					}
 					String attrValue = parseNextElement(CHAR_WHITESPACE);					
-					setProperty(map, attrName, attrValue);
+					attrTag.setValue(STANDARD_ATTRIBUTES, map, attrName, attrValue);
 				}
 			}
 			else {
@@ -399,9 +373,9 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 					// names, where the first character is a hyphen
 					String attrValue = attrAlias.substring(2, attrAlias.length());
 					attrAlias = attrAlias.substring(0, 2);
-					attrTag = findAprunPropertyTag(attrAlias);
+					attrTag = AttributePropertyTag.findAttribute(aprun_reg, attrAlias);
 					if (null != attrTag) {
-						setProperty(map, attrTag.getName(), attrValue);
+						attrTag.setValue(STANDARD_ATTRIBUTES, map, attrTag.getName(), attrValue);
 					}
 					else {
 						throw new AccountingParseException("Unrecognised aprun attribute, '" + attrAlias + "'.");
@@ -411,8 +385,8 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 					// assume element is the application executable path
 					String attrValue = attrAlias;
 					String attrName = APP_EXE_PATH.getName();
-					PropertyTag<?> appPathTag = aprun_reg.find(attrName);
-					map.setProperty((PropertyTag<String>) appPathTag, attrValue);
+					AttributePropertyTag<?> appPathTag = AttributePropertyTag.findAttribute(aprun_reg, attrName, true);
+					appPathTag.setValue(STANDARD_ATTRIBUTES, map, attrName, attrValue);
 					
 					int i = attrValue.lastIndexOf(CHAR_FORWARD_SLASH);
 					if (i > 0 && i < attrValue.length()-1) {
@@ -420,19 +394,21 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 						attrValue = attrValue.substring(i+1, attrValue.length());
 					}
 					attrName = APP_EXE_NAME.getName();
-					PropertyTag<?> appNameTag = aprun_reg.find(attrName);
-					map.setProperty((PropertyTag<String>) appNameTag, attrValue);
+					AttributePropertyTag<?> appNameTag = AttributePropertyTag.findAttribute(aprun_reg, attrName, true);
+					appNameTag.setValue(STANDARD_ATTRIBUTES, map, attrName, attrValue);
 					
 					// set the app_id property to zero, which will not be changed,
 					// should RegexLinkParsePolicy be unable to associate the
 					// app_exe_name with an entry in the AprunApplication table
-					PropertyTag<?> appIdTag = aprun_reg.find(APP_ID.getName());
-					map.setProperty((PropertyTag<Integer>) appIdTag, 0);
+					attrName = APP_ID.getName();
+					AttributePropertyTag<?> appIdTag = AttributePropertyTag.findAttribute(aprun_reg, attrName, true);
+					appIdTag.setValue(STANDARD_ATTRIBUTES, map, attrName, "0");
 					
 					// assume that any subsequent elements are application attributes
+					attrName = APP_ATTR_LIST.getName();
 					attrValue = this.cmd.trim();
-					PropertyTag<?> appAttrsTag = aprun_reg.find(APP_ATTR_LIST.getName());
-					map.setProperty((PropertyTag<String>) appAttrsTag, attrValue);
+					AttributePropertyTag<?> appAttrsTag = AttributePropertyTag.findAttribute(aprun_reg, attrName, true);
+					appAttrsTag.setValue(STANDARD_ATTRIBUTES, map, attrName, attrValue);
 					
 					this.cmd = null;
 					parseComplete = true;
@@ -440,20 +416,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 			}
 		}
 		
-		
-		// iterate through the aprun attribute registry and look for those attributes
-		// that have not yet been added to map
-		Iterator<Entry<String, PropertyTag>> props = aprun_reg.getIterator();
-		while (props.hasNext()) {
-			PropertyTag prop = props.next().getValue();
-			if (null == map.getProperty(prop)) {
-				// this aprun attribute was not set on command line
-				AprunPropertyTag<T> attrTag = (AprunPropertyTag<T>) aprun_reg.find(prop.getName());
-				if (null != attrTag) {		
-					map.setProperty(attrTag, attrTag.getDefaultValue());
-				}
-			}
-		}
+		AttributePropertyTag.completePropertyMap(aprun_reg, STANDARD_ATTRIBUTES, map);
 			
 		return true;
 	}
@@ -463,17 +426,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 		log = ctx.getService(LoggerService.class).getLogger(getClass());
 		return aprun_reg;
 	}
-
-	private void setProperty(PropertyMap map, String attrName, String attrValue) throws AccountingParseException {
-		ContainerEntryMaker maker = STANDARD_ATTRIBUTES.get(attrName);
-		if (maker != null) {
-			try {
-				maker.setValue(map, attrValue);
-			} catch (Exception e) {
-				throw new AccountingParseException("Problem with attribute '" + attrName
-						+ "': Unable to set value '" + attrValue + "'", e);
-			}
-		}
-	}
+	
+	
 	
 }

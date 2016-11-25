@@ -1,0 +1,273 @@
+<Diff>
+
+<TableSpecification name='ALPSLog'>
+<apid type='Integer' nullable='true'/>
+<alpsBootTime type='Long' nullable='true'/>
+<aprun_entry_tag type='String' nullable='true' max='32'/>
+<apsys_entry_tag type='String' nullable='true' max='32'/>
+<batch_string_id type='String' nullable='true' max='32'/>
+<batch_id type='Integer' nullable='true'/>
+<batch_array_index type='String' nullable='true' max='32'/>
+<user type='Integer' nullable='true'/>
+<hostname type='String' nullable='true' max='32'/>
+<num_nodes type='Integer' nullable='true'/>
+<node_list type='String' nullable='true' max='5592405'/>
+<aprunStartTime type='Long' nullable='true'/>
+<apsysEndTime type='Long' nullable='true'/>
+<cwd type='String' nullable='true' max='5592405'/>
+<cmd_line type='String' nullable='true' max='5592405'/>
+<exit_code type='String' nullable='true' max='32'/>
+<exitcode_array type='String' nullable='true' max='5592405'/>
+<exitsignal_array type='String' nullable='true' max='5592405'/>
+<duplicate_key type='Index' unique='true'><Column name='apid'/><Column name='alpsBootTime'/></duplicate_key>
+<alps_time type='Index' unique='false'><Column name='aprunStartTime'/><Column name='apsysEndTime'/></alps_time>
+<time type='Index' unique='false'><Column name='apsysEndTime'/></time>
+</TableSpecification>
+
+<ALPSLog id='1'>
+<apid>22542623</apid>
+<alpsBootTime>1466608299</alpsBootTime>
+<aprun_entry_tag>11522</aprun_entry_tag>
+<apsys_entry_tag>11526</apsys_entry_tag>
+<batch_string_id>3827737.sdb</batch_string_id>
+<batch_id>3827737</batch_id>
+<batch_array_index></batch_array_index>
+<user>15031</user>
+<hostname>c2-0c1s1n1</hostname>
+<num_nodes>20</num_nodes>
+<node_list>1405-1406,1458,1460-1463,1467-1469,1472,1492,1495-1497,1614,1647,1723,1729,1733</node_list>
+<aprunStartTime>1468908445</aprunStartTime>
+<apsysEndTime>1468908447</apsysEndTime>
+<cwd>/fs2/e280/e280/gsala280/HSP90/ParallelTempering/A3493916/pt_from_scratch</cwd>
+<cmd_line>/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 480 -N 24 -S 12 -d 1 /work/e280/e280/gsala280/bin/gmx-4.6.7/bin/mdrun_p220 -s re -v -cpi -tunepme -maxh 23.75 -plumed -multi 10 -replex 2000 -noddcheck -rcon 0.7 </cmd_line>
+<exit_code>137</exit_code>
+<exitcode_array>134:0</exitcode_array>
+<exitsignal_array>9:0</exitsignal_array>
+</ALPSLog>
+
+<ALPSLog id='2'>
+<apid>22542637</apid>
+<alpsBootTime>1466608299</alpsBootTime>
+<aprun_entry_tag>26539</aprun_entry_tag>
+<apsys_entry_tag>26543</apsys_entry_tag>
+<batch_string_id>3827741.sdb</batch_string_id>
+<batch_id>3827741</batch_id>
+<batch_array_index></batch_array_index>
+<user>15031</user>
+<hostname>c2-1c0s0n1</hostname>
+<num_nodes>20</num_nodes>
+<node_list>1753,1755,1763,1768,1851-1853,1864-1865,1953-1954,2015,2059-2060,2063,2068-2069,2077-2078,2082</node_list>
+<aprunStartTime>1468908553</aprunStartTime>
+<apsysEndTime>1468908554</apsysEndTime>
+<cwd>/fs2/e280/e280/gsala280/HSP90/ParallelTempering/A3493916/pt_plumed_1</cwd>
+<cmd_line>/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 480 -N 24 -S 12 -d 1 /work/e280/e280/gsala280/bin/gmx-4.5.1/bin/mdrun-tps -s re -v -cpi -tunepme -maxh 23.75 -plumed -multi 10 -replex 2000 -noddcheck -rcon 0.7 </cmd_line>
+<exit_code>137</exit_code>
+<exitcode_array>134:0</exitcode_array>
+<exitsignal_array>9:0</exitsignal_array>
+</ALPSLog>
+
+<ALPSLog id='3'>
+<apid>22543522</apid>
+<alpsBootTime>1466608299</alpsBootTime>
+<aprun_entry_tag>28987</aprun_entry_tag>
+<apsys_entry_tag>28991</apsys_entry_tag>
+<batch_string_id>3830919.sdb</batch_string_id>
+<batch_id>3830919</batch_id>
+<batch_array_index></batch_array_index>
+<user>13875</user>
+<hostname>c0-1c0s0n1</hostname>
+<num_nodes>3</num_nodes>
+<node_list>4627-4629</node_list>
+<aprunStartTime>1468918120</aprunStartTime>
+<apsysEndTime>1468918950</apsysEndTime>
+<cwd>/fs2/n02/n02/jjordan/mitgcm/cases/RESUB/run</cwd>
+<cmd_line>aprun -n 60 -N 20 ./mitgcmuv </cmd_line>
+<exit_code>0</exit_code>
+<exitcode_array>0</exitcode_array>
+<exitsignal_array>0</exitsignal_array>
+</ALPSLog>
+
+<TableSpecification name='AprunCommandLog'>
+<alps_id type='Integer' nullable='true'/>
+<aprun_cmd_num type='Integer' nullable='true'/>
+<architecture type='String' nullable='true' max='32'/>
+<bypass_app_transfer type='Boolean' nullable='false'/>
+<batch_args type='Boolean' nullable='false'/>
+<reconnect type='Boolean' nullable='false'/>
+<cpu_binding type='String' nullable='true' max='32'/>
+<cpu_binding_file type='String' nullable='true' max='32'/>
+<cpus_per_pe type='Integer' nullable='true'/>
+<debug type='Integer' nullable='true'/>
+<environment type='String' nullable='true' max='32'/>
+<exclude_node_list type='String' nullable='true' max='32'/>
+<exclude_node_list_file type='String' nullable='true' max='32'/>
+<cpus type='Integer' nullable='true'/>
+<xeon_phi_placement type='Boolean' nullable='false'/>
+<node_list type='String' nullable='true' max='32'/>
+<node_list_file type='String' nullable='true' max='32'/>
+<memory_per_pe type='String' nullable='true' max='32'/>
+<pes type='Integer' nullable='true'/>
+<pes_per_node type='Integer' nullable='true'/>
+<access_mode type='String' nullable='true' max='32'/>
+<protection_domain type='String' nullable='true' max='32'/>
+<p_governor type='String' nullable='true' max='32'/>
+<p_state type='String' nullable='true' max='32'/>
+<quiet type='Boolean' nullable='false'/>
+<specialized_cpus type='String' nullable='true' max='32'/>
+<relaunch type='String' nullable='true' max='32'/>
+<pes_per_numa_node type='Integer' nullable='true'/>
+<numa_node_list type='String' nullable='true' max='32'/>
+<numa_nodes_per_node type='Integer' nullable='true'/>
+<strict_memory_containment type='Boolean' nullable='false'/>
+<sync_output type='Boolean' nullable='false'/>
+<cpu_time_limit type='Integer' nullable='true'/>
+<app_exe_path type='String' nullable='true' max='5592405'/>
+<app_exe_name type='String' nullable='true' max='128'/>
+<app_attrs type='String' nullable='true' max='5592405'/>
+<app_id type='Integer' nullable='true'/>
+<ParentID reference='ALPSLog'/>
+<AprunApplicationID reference='AprunApplication'/>
+<duplicate_key type='Index' unique='true'><Column name='aprun_cmd_num'/><Column name='alps_id'/></duplicate_key>
+</TableSpecification>
+
+<AprunCommandLog id='1'>
+<alps_id>22542623</alps_id>
+<aprun_cmd_num>-1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>480</pes>
+<pes_per_node>24</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>/work/e280/e280/gsala280/bin/gmx-4.6.7/bin/mdrun_p220</app_exe_path>
+<app_exe_name>mdrun_p220</app_exe_name>
+<app_attrs>-s re -v -cpi -tunepme -maxh 23.75 -plumed -multi 10 -replex 2000 -noddcheck -rcon 0.7</app_attrs>
+<app_id>0</app_id>
+<ParentID>1</ParentID>
+<AprunApplicationID>36</AprunApplicationID>
+</AprunCommandLog>
+
+<AprunCommandLog id='2'>
+<alps_id>22542637</alps_id>
+<aprun_cmd_num>-1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>480</pes>
+<pes_per_node>24</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>/work/e280/e280/gsala280/bin/gmx-4.5.1/bin/mdrun-tps</app_exe_path>
+<app_exe_name>mdrun-tps</app_exe_name>
+<app_attrs>-s re -v -cpi -tunepme -maxh 23.75 -plumed -multi 10 -replex 2000 -noddcheck -rcon 0.7</app_attrs>
+<app_id>0</app_id>
+<ParentID>2</ParentID>
+<AprunApplicationID>36</AprunApplicationID>
+</AprunCommandLog>
+
+<AprunCommandLog id='3'>
+<alps_id>22543522</alps_id>
+<aprun_cmd_num>-1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>60</pes>
+<pes_per_node>20</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>./mitgcmuv</app_exe_path>
+<app_exe_name>mitgcmuv</app_exe_name>
+<app_attrs></app_attrs>
+<app_id>0</app_id>
+<ParentID>3</ParentID>
+<AprunApplicationID>46</AprunApplicationID>
+</AprunCommandLog>
+
+<TableSpecification name='Properties'>
+<Name type='String' nullable='false' max='255'/>
+<Value type='String' nullable='false' max='255'/>
+<name_key type='Index' unique='true'><Column name='Name'/></name_key>
+</TableSpecification>
+<Properties id='1'>
+<Name>reference.AprunCommandLog.ParentID</Name>
+<Value>ALPSLog</Value>
+</Properties>
+<Properties id='2'>
+<Name>reference.AprunCommandLog.AprunApplicationID</Name>
+<Value>AprunApplication</Value>
+</Properties>
+
+</Diff>
