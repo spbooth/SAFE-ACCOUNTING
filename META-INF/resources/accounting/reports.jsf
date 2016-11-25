@@ -44,37 +44,11 @@
 					}
 					%>
 					</td>
-					<%if(conn.isFeatureOn("preselect_report_type", true)){ %>
-					<td title="Generate HTML Report" width="50">
-						<a href="<%=web_path%>/ReportServlet/<%=templateName%>.html">
-							<img src="<%=web_path %>/accounting/html-file-48x48.png" width="48" height="48" border="0" alt="HTML" />
-						</a>
-					</td>	
-					
-					<td title="Generate PDF Report" width="50">
-						<a href="<%=web_path%>/ReportServlet/<%=templateName%>.pdf">
-							<img src="<%=web_path %>/accounting/pdf-file-48x48.png" width="48" height="48" border="0" alt="PDF" />
-						</a>
-					</td>	
-					
-					<td title="Generate CSV Report" width="50">
-						<a href="<%=web_path%>/ReportServlet/<%=templateName%>.csv">
-							<img src="<%=web_path %>/accounting/csv-file-48x48.png" width="48" height="48" border="0" alt="CSV" />
-						</a>
-					</td>	
-					
-					<td title="Generate XML Report" width="50">
-						<a href="<%=web_path%>/ReportServlet/<%=templateName%>.xml">
-							<img src="<%=web_path %>/accounting/xml-file-48x48.png" width="48" height="48" border="0" alt="XML" />
-						</a>
-					</td>
-					<%}else{ %>
 					<td>
 						<a href="<%=web_path%>/ReportServlet/<%=templateName%>">
-							Generate Report
+							Generate
 						</a>
 					</td>
-					<%} %>					
 				</tr>		
 			<%
 						}
