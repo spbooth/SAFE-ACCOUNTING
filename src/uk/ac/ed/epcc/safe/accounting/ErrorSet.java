@@ -220,7 +220,9 @@ public class ErrorSet
 			  for(Detail lines : e.fails)
 			  {
 				  sb.nbs();
+				  sb.open("pre");
 				  sb.clean(lines.text);
+				  sb.close();
 				  sb.open("br");
 				  sb.close();
 				  sb.clean('\n');
@@ -230,7 +232,9 @@ public class ErrorSet
 					  if( message != null ){
 						  sb.nbs();
 						  sb.nbs();
+						  sb.open("pre");
 						  sb.clean(message);
+						  sb.close();
 						  sb.open("br");
 						  sb.close();
 						  sb.clean("\n");
