@@ -401,10 +401,10 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 			if( expr.getTarget().isAssignableFrom(Date.class)){
 				return (PropExpression<Date>) expr;
 			}else{
-				error.add("Property not of type Date",name);
+				error.add("Property not of type Date",string);
 			}
 		} catch (Exception e) {
-			error.add("Cannot parse data property", name, e);
+			error.add("Cannot parse date property", string, e);
 		}
 		
 		return null;
