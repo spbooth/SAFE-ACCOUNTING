@@ -25,7 +25,6 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -51,8 +50,8 @@ public class PlotEntry {
 	  private final String description; // text to be presented to user
 	  private final PropExpression<? extends Number> prop_tag;  // property to plot
 	  private final PlotEntry norm;
-	  private final PropertyTag<Date> start_prop;
-	  private final PropertyTag<Date> end_prop;
+	  private final PropExpression<Date> start_prop;
+	  private final PropExpression<Date> end_prop;
 	  private long cutoff=0L; // max job length to consider
 	  private double scale=1.0;
 	  private double time_scale=1.0;
@@ -63,7 +62,7 @@ public class PlotEntry {
 	 
 	  private Reduction red=Reduction.SUM;
 
-	  public PlotEntry(PropExpression<? extends Number> prop, PlotEntry norm,PropertyTag<Date> start, PropertyTag<Date> end,String name,String desc){
+	  public PlotEntry(PropExpression<? extends Number> prop, PlotEntry norm,PropExpression<Date> start, PropExpression<Date> end,String name,String desc){
 		  this.name=name;
 		  this.description=desc;
 		  this.prop_tag=prop;
@@ -71,11 +70,11 @@ public class PlotEntry {
 		  this.start_prop=start;
 		  this.end_prop=end;
 	  }
-	  public PlotEntry(PropExpression<? extends Number> prop, PropertyTag<Date> start, PropertyTag<Date> end,String name,String desc){
+	  public PlotEntry(PropExpression<? extends Number> prop, PropExpression<Date> start, PropExpression<Date> end,String name,String desc){
 		  this(prop,null,start,end,name,desc);
 	  }
 			
-	  public PlotEntry(PropExpression<? extends Number> prop, PropertyTag<Date> target,String name,String desc){
+	  public PlotEntry(PropExpression<? extends Number> prop, PropExpression<Date> target,String name,String desc){
 		  this(prop,null,target,name,desc);
 	  }
 	  public String getName(){
@@ -104,14 +103,14 @@ public class PlotEntry {
 	   * 
 	   * @return PropertyTag<Date>
 	   */
-	  public PropertyTag<Date> getStartProperty(){
+	  public PropExpression<Date> getStartProperty(){
 		  return start_prop;
 	  }
 	  /** Get PropertyTag<Date> defining the end of the active period for this record.
 	   * 
 	   * @return PropertyTag<Date>
 	   */
-	  public PropertyTag<Date> getEndProperty(){
+	  public PropExpression<Date> getEndProperty(){
 		  return end_prop;
 	  }
 	  /** Get a cutoff length in milliseconds. When using overlap scaling the code can optimise based
@@ -207,9 +206,9 @@ public class PlotEntry {
     	boolean result=true;
     	result = result && (prop_tag == null || ap.compatible(prop_tag));
     	
-    	result = result && (start_prop == null || ap.hasProperty(start_prop));
+    	result = result && (start_prop == null || ap.compatible(start_prop));
     	
-        result = result && ( end_prop == null  || ap.hasProperty(end_prop));
+        result = result && ( end_prop == null  || ap.compatible(end_prop));
        
     	return result;
     }
@@ -353,8 +352,8 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 		   norm = getConfigPlotEntry(conn,errors, prop, finder, norm_tag, null, null);
 	   }
 	   // Plot range properties
-	   PropertyTag<Date> start_prop=findDatePropertyTag(conn,finder,prop,tag+"start",start);
-	   PropertyTag<Date> end_prop=findDatePropertyTag(conn,finder,prop,tag+"end",end);
+	   PropExpression<Date> start_prop=findDatePropExpression(conn,errors,parser,finder,prop,tag+"start",start);
+	   PropExpression<Date> end_prop=findDatePropExpression(conn,errors,parser,finder,prop,tag+"end",end);
 	   if( end_prop == null ){
 		   end_prop = StandardProperties.ENDED_PROP;
 	   }
@@ -388,7 +387,7 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 	   return pe;
 	 
    }
-   private static PropertyTag<Date> findDatePropertyTag(AppContext c,PropertyFinder finder,
+   private static PropExpression<Date> findDatePropExpression(AppContext c,ErrorSet error,Parser parser,PropertyFinder finder,
 		Properties prop, String string,String fallback) {
 	String name = prop.getProperty(string,fallback);
 	if( name == null ){
@@ -397,6 +396,17 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 	@SuppressWarnings("unchecked")
 	PropertyTag<Date> t =  (PropertyTag<Date>) finder.find(Date.class, name);
 	if( t == null ){
+		try {
+			PropExpression<?> expr = parser.parse(name);
+			if( expr.getTarget().isAssignableFrom(Date.class)){
+				return (PropExpression<Date>) expr;
+			}else{
+				error.add("Property not of type Date",name);
+			}
+		} catch (Exception e) {
+			error.add("Cannot parse data property", name, e);
+		}
+		
 		return null;
 	}
 	return t;

@@ -42,12 +42,12 @@ import uk.ac.ed.epcc.webapp.time.Period;
 public class UsageRecordMapper<D extends Number> implements RangeMapper<UsageRecord>{
 	protected final  AppContext conn;
 	protected final PropExpression<D> plot_property;
-	protected final PropertyTag<Date> start_prop; // may be null if we only want to use end point
-	protected final PropertyTag<Date> end_prop;
+	protected final PropExpression<Date> start_prop; // may be null if we only want to use end point
+	protected final PropExpression<Date> end_prop;
 	protected final Reduction op;
 
 	
-	public UsageRecordMapper(AppContext conn,Reduction op,PropExpression<D> plot_property,PropertyTag<Date> start,PropertyTag<Date> end){
+	public UsageRecordMapper(AppContext conn,Reduction op,PropExpression<D> plot_property,PropExpression<Date> start,PropExpression<Date> end){
 		this.conn=conn;
 		this.op=op;
 		this.plot_property = plot_property;

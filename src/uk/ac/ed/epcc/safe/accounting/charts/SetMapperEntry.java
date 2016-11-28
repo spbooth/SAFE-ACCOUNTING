@@ -18,7 +18,6 @@ import java.util.Vector;
 
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.strategy.SetRangeMapper;
@@ -47,21 +46,21 @@ public class SetMapperEntry extends MapperEntry {
     }
 	@SuppressWarnings("unchecked")
 	protected UsageRecordQueryMapper getPointQueryMapper(RecordSelector sel,
-			Reduction red,PropExpression<? extends Number> prop_tag, PropertyTag<Date> end_prop) {
+			Reduction red,PropExpression<? extends Number> prop_tag, PropExpression<Date> end_prop) {
 		return new PointUsageRecordQueryMapper(getContext(), sel,set,red,prop_tag,end_prop,null);
 				
 	}
 	@SuppressWarnings("unchecked")
 	protected UsageRecordQueryMapper getOverlapQueryMapper(
 			RecordSelector s,Reduction red,
-			PropExpression<? extends Number> prop_tag, PropertyTag<Date> start_prop,
-			PropertyTag<Date> end_prop) {
+			PropExpression<? extends Number> prop_tag, PropExpression<Date> start_prop,
+			PropExpression<Date> end_prop) {
 		return new OverlapUsageRecordQueryMapper(getContext(),s,set,red,prop_tag,start_prop,end_prop,null);
 	}
 	@SuppressWarnings("unchecked")
 	protected UsageRecordQueryMapper getInnerQueryMapper(RecordSelector sel,
 			Reduction red,PropExpression<? extends Number> prop_tag,
-			PropertyTag<Date> start_prop, PropertyTag<Date> end_prop) {
+			PropExpression<Date> start_prop, PropExpression<Date> end_prop) {
 		return new InnerUsageRecordQueryMapper(getContext(),sel,set,red,prop_tag,start_prop,end_prop,null);
 	}
 	@Override

@@ -43,11 +43,11 @@ public class OverlapUsageRecordQueryMapper<K,D extends Number> extends UsageReco
 	private final PropExpression<K> key_prop;
     private final PropExpression<D> plot_prop;
     private final int set;
-    private final PropertyTag<Date> start_prop;
-    private final PropertyTag<Date> end_prop;
+    private final PropExpression<Date> start_prop;
+    private final PropExpression<Date> end_prop;
     private final RecordSelector sel;
     private final Reduction red;
-	public OverlapUsageRecordQueryMapper(AppContext conn,RecordSelector sel,PropExpression<K> key_prop, Reduction red,PropExpression<D> plot_prop, PropertyTag<Date> start_prop,PropertyTag<Date> end_prop,PropertyKeyLabeller<K> lab) {
+	public OverlapUsageRecordQueryMapper(AppContext conn,RecordSelector sel,PropExpression<K> key_prop, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,PropertyKeyLabeller<K> lab) {
 		super(lab);
 		this.sel=sel;
 		this.key_prop=key_prop;
@@ -58,7 +58,7 @@ public class OverlapUsageRecordQueryMapper<K,D extends Number> extends UsageReco
 		this.red=red;
 		this.conn=conn;
 	}
-	public OverlapUsageRecordQueryMapper(AppContext conn,RecordSelector sel,int set, Reduction red,PropExpression<D> plot_prop, PropertyTag<Date> start_prop,PropertyTag<Date> end_prop,PropertyKeyLabeller<K> lab) {
+	public OverlapUsageRecordQueryMapper(AppContext conn,RecordSelector sel,int set, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,PropertyKeyLabeller<K> lab) {
 		super(lab);
 		this.sel=sel;
 		this.key_prop=null;

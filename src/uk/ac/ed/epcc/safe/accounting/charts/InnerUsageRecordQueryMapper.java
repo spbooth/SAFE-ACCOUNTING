@@ -30,7 +30,6 @@ import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
@@ -56,11 +55,11 @@ public class InnerUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 	private final int set;
 	private final PropExpression<K> key_prop;
     private final PropExpression<D> plot_prop;
-    private final PropertyTag<Date> start_prop;
-    private final PropertyTag<Date> end_prop;
+    private final PropExpression<Date> start_prop;
+    private final PropExpression<Date> end_prop;
     private final RecordSelector sel;
     private final Reduction red;
-	public InnerUsageRecordQueryMapper(AppContext conn,RecordSelector sel,PropExpression<K> key_prop, Reduction red,PropExpression<D> plot_prop, PropertyTag<Date> start_prop,PropertyTag<Date> end_prop,PropertyKeyLabeller<K> lab) {
+	public InnerUsageRecordQueryMapper(AppContext conn,RecordSelector sel,PropExpression<K> key_prop, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,PropertyKeyLabeller<K> lab) {
 		super(lab);
 		this.sel=sel;
 		this.key_prop=key_prop;
@@ -71,7 +70,7 @@ public class InnerUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 		this.set=0;
 		this.conn=conn;
 	}
-	public InnerUsageRecordQueryMapper(AppContext conn,RecordSelector sel,int set, Reduction red,PropExpression<D> plot_prop, PropertyTag<Date> start_prop,PropertyTag<Date> end_prop,PropertyKeyLabeller<K> lab) {
+	public InnerUsageRecordQueryMapper(AppContext conn,RecordSelector sel,int set, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,PropertyKeyLabeller<K> lab) {
 		super(lab);
 		this.sel=sel;
 		this.key_prop=null;

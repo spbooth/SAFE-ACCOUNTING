@@ -40,7 +40,7 @@ public class UsageRecordTransform<K, D extends Number> extends UsageRecordMapper
 	final private PropertyKeyLabeller<K> labeller;
 	public UsageRecordTransform(AppContext conn, Reduction op,PropExpression<K> key_property,
 			PropExpression<D> plot_property,
-			PropertyTag<Date> start, PropertyTag<Date> end,
+			PropExpression<Date> start, PropExpression<Date> end,
 			PropertyKeyLabeller<K> labeller
 	) {
 		super(conn, op,plot_property, start, end);

@@ -108,7 +108,7 @@ public class OverlapHandler<T extends UsageRecord> {
      * @return sum of quantity
      * @throws Exception 
      */
-    public double getOverlapSum(Reduction op,PropExpression<? extends Number> type,PropExpression<Date> start_prop, PropertyTag<Date> end_prop,RecordSelector sel, Date start, Date end) throws Exception{
+    public double getOverlapSum(Reduction op,PropExpression<? extends Number> type,PropExpression<Date> start_prop, PropExpression<Date> end_prop,RecordSelector sel, Date start, Date end) throws Exception{
     	Number result = getOverlapSum(NumberReductionTarget.getInstance(op, type), start_prop, end_prop, sel, start, end);
     	return result.doubleValue();
     }
@@ -323,7 +323,7 @@ public class OverlapHandler<T extends UsageRecord> {
      */
 	public <R> Map<R, Number> getOverlapReductionMap(NumberReductionTarget main_target,
 			PropExpression<R> tag, 
-			PropertyTag<Date> start_prop, PropertyTag<Date> end_prop,
+			PropExpression<Date> start_prop, PropExpression<Date> end_prop,
 			Date start, Date end, 
 			RecordSelector sel)
 					throws Exception{
@@ -437,7 +437,7 @@ public class OverlapHandler<T extends UsageRecord> {
 	 * @throws InvalidPropertyException
 	 */
 	private <R> void addToOverlapReductionMapByIterating(PropExpression<R> tag,
-			PropertyTag<Date> start_prop, PropertyTag<Date> end_prop,
+			PropExpression<Date> start_prop, PropExpression<Date> end_prop,
 			TimePeriod period, NumberReductionTarget target,
 			Map<R, Number> result, AndRecordSelector sel2) throws Exception,
 			InvalidPropertyException {
