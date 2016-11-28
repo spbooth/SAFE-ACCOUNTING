@@ -70,7 +70,6 @@ import uk.ac.ed.epcc.webapp.content.TableXMLGenerator;
 import uk.ac.ed.epcc.webapp.content.XMLBuilderSaxHandler;
 import uk.ac.ed.epcc.webapp.content.XMLDomBuilder;
 import uk.ac.ed.epcc.webapp.content.XMLGenerator;
-import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
