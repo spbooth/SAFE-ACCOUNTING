@@ -70,6 +70,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CaseExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
+import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpressionFilter;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpressionMatchFilter;
@@ -987,6 +988,23 @@ public abstract class AccessorMap<X extends ExpressionTarget&Contexed> implement
 			
 		} catch (InvalidSQLPropertyException e) {
 			
+			
+		}
+		// Try matching references
+		try{
+			SQLValue<R> val1 = getSQLValue(left);
+			SQLValue<R> val2 = getSQLValue(right);
+			if( val1 != null && val2 != null && val1 instanceof IndexedSQLValue && val2 instanceof IndexedSQLValue){
+				IndexedSQLValue ival1 = (IndexedSQLValue) val1;
+				IndexedSQLValue ival2 = (IndexedSQLValue) val2;
+				if( ival1.getFactory().equals(ival2.getFactory())){
+					return SQLExpressionMatchFilter.getFilter(target, ival1.getIDExpression(),match, ival2.getIDExpression());
+				}else{
+					throw new CannotFilterException("Incompatible reference expressions");
+				}
+			}
+		} catch (Exception e) {
+		
 		}
 		return new ExpressionAcceptMatchFilter<X,R>(target,left, match,right);
 	}
