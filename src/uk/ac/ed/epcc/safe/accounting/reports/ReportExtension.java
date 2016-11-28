@@ -185,7 +185,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		log.debug(details);
 	}
 	public final void addError(String type, String details, Node e){
-		addError(type, details+makeString(e));
+		addError(type, details+"\n"+makeString(e));
 	}
 	/** A debugging method to generate a String version of a Node
 	 * 

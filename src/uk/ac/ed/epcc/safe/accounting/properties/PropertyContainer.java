@@ -75,7 +75,7 @@ public interface PropertyContainer extends PropertyTarget {
 	 * @return Set
 	 */
 	public abstract Set<PropertyTag> getDefinedProperties();
-	/** Copy all compatible properties from one container to another;
+	/** Copy all compatible properties from another container to this one;
 	 * 
 	 * @param source PropertyContainer
 	 */
