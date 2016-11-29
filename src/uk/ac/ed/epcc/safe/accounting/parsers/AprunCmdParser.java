@@ -1,7 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.util.Iterator;
-import java.util.Map.Entry;
 
 import uk.ac.ed.epcc.safe.accounting.parsers.value.BooleanParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
@@ -10,7 +9,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.AttributePropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
