@@ -1,12 +1,17 @@
 package uk.ac.ed.epcc.safe.accounting.policy;
 
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyContainer;
+import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.db.RegexpTarget;
 import uk.ac.ed.epcc.safe.accounting.db.RegexpTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
+import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -18,10 +23,21 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
+import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
+import uk.ac.ed.epcc.webapp.forms.result.FormResult;
+import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
+import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
+import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
+import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
 /** A policy to links to entries in a {@link RegexpTargetFactory}.
@@ -37,7 +53,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  *
  */
 
-public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements SummaryProvider{
+public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements SummaryProvider,TransitionSource<TableTransitionTarget>{
 	private AppContext conn;
 	private String table;
 	private String target_table;
@@ -97,7 +113,20 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 			return;
 		}
 
-		String link_data = rec.getProperty(link_prop);
+		process(rec);
+	}
+
+	/**
+	 * @param rec
+	 * @throws AccountingParseException
+	 */
+	public void process(PropertyContainer rec) throws AccountingParseException {
+		String link_data;
+		try {
+			link_data = rec.getProperty(link_prop);
+		} catch (InvalidExpressionException e1) {
+			throw new AccountingParseException(e1);
+		}
 		if( link_data != null && ! link_data.isEmpty()){
 			for( RegexpTarget tar : targets){
 
@@ -171,6 +200,40 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 		}else{
 			hb.addText("Target property is "+target_prop.getFullName());
 		}
+	}
+	private void relink(){
+		Logger log = getLogger(conn);
+		try{
+			DataObjectFactory<?> fac = conn.makeObjectWithDefault(DataObjectFactory.class, null, table);
+
+			startParse(null);
+			if( link_prop == null || target_prop == null){
+				return;
+			}
+			for(DataObject rec : fac.all()){
+				process((PropertyContainer) rec);
+				rec.commit();
+			}
+		}catch(Exception e){
+			log.debug("error in relink", e);
+		}
+	}
+
+	public class RelinkTransition extends AbstractDirectTransition<TableTransitionTarget>{
+
+	
+		@Override
+		public FormResult doTransition(TableTransitionTarget target, AppContext c) throws TransitionException {
+			relink();
+			return new ViewTableResult(target);
+		}
+		
+	}
+	@Override
+	public Map<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
+		Map<TransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
+		result.put(new AdminOperationKey("Relink","Re-apply regexp links to all records"),new RelinkTransition());
+		return result;
 	}
 	
 
