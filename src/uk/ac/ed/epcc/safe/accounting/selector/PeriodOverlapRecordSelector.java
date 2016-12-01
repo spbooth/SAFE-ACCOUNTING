@@ -112,8 +112,7 @@ public class PeriodOverlapRecordSelector implements RecordSelector {
 		}
 		
 		public long getCutoff(){
-			// extension point
-			return 0L;
+			return cutoff;
 		}
 		@Override
 		public int hashCode() {

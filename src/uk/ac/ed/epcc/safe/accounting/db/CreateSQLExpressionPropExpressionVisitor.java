@@ -51,6 +51,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.CastDoubleSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CastLongSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.DateDerefSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DateSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.DerefSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
@@ -205,6 +206,9 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 		if( a != null && a instanceof IndexedSQLValue ){
 			IndexedSQLValue ifv = (IndexedSQLValue)a;
 			SQLExpression remote = ((ExpressionTargetFactory)ifv.getFactory()).getAccessorMap().getSQLExpression(dre.getExpression());
+			if( remote instanceof DateSQLExpression){
+				return new DateDerefSQLExpression<>(ifv, (DateSQLExpression)remote);
+			}
 			return new DerefSQLExpression(ifv, remote);
 		}else{
 			throw new InvalidSQLPropertyException(dre.getTargetObject());
