@@ -71,7 +71,7 @@ public class BackLinkPolicy extends BaseUsageRecordPolicy {
 		Indexed remote = remote_tag.get(c, rec);
 		if( remote != null && remote instanceof PropertyContainer && remote instanceof DataObject){
 			PropertyContainer container = (PropertyContainer)remote;
-			IndexedReference ref = container.getProperty(back_ref);
+			IndexedReference ref = (IndexedReference) container.getProperty(back_ref);
 			if( ref != null && ref.getID() == ((DataObject)rec).getID()){
 				container.setProperty(back_ref, null);
 				((DataObject)remote).commit();
