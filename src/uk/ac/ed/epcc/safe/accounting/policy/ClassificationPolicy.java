@@ -424,7 +424,7 @@ public FormResult action(Form f)
 				Set<String> values = fac.getValues(name, null);
 				
 				for(String s : values ){
-					DataObject o = nameFinder.findFromString(s);
+					DataObject o = nameFinder.makeFromString(s);
 					if( o != null ){
 						fac.update(ref,ref.makeReference(o),new SelectClause<String>(name, s));
 					}
