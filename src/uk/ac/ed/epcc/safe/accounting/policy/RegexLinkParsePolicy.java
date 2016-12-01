@@ -27,6 +27,7 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
@@ -36,6 +37,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -201,9 +203,10 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 			hb.addText("Target property is "+target_prop.getFullName());
 		}
 	}
-	private void relink(){
-		Logger log = getLogger(conn);
-		try{
+	private void relink() throws Exception{
+		
+		DatabaseService db = conn.getService(DatabaseService.class);
+		
 			DataObjectFactory<?> fac = conn.makeObjectWithDefault(DataObjectFactory.class, null, table);
 
 			startParse(null);
@@ -213,10 +216,9 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 			for(DataObject rec : fac.all()){
 				process((PropertyContainer) rec);
 				rec.commit();
+				db.commitTransaction();
 			}
-		}catch(Exception e){
-			log.debug("error in relink", e);
-		}
+		
 	}
 
 	public class RelinkTransition extends AbstractDirectTransition<TableTransitionTarget>{
@@ -224,7 +226,12 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 	
 		@Override
 		public FormResult doTransition(TableTransitionTarget target, AppContext c) throws TransitionException {
-			relink();
+			try {
+				relink();
+			} catch (Exception e) {
+				getLogger(conn).error("Error in relink",e);
+				throw new TransitionException("internal_error");
+			}
 			return new ViewTableResult(target);
 		}
 		
