@@ -1,8 +1,5 @@
 package uk.ac.ed.epcc.safe.accounting.policy;
 
-import java.util.HashMap;
-import java.util.HashSet;
-
 import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
