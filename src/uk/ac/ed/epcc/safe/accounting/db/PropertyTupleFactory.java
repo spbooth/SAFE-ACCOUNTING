@@ -60,7 +60,7 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 	@Override
 	public T makeTuple() {
 		
-		return (T) new PropertyTuple(map);
+		return (T) new PropertyTuple(getContext(),map);
 	}
 	public PropertyTupleFactory(AppContext c,String config_tag) {
 		super(c);
@@ -84,10 +84,11 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 	}
 
 	public static class PropertyTuple<A extends DataObject> extends TupleFactory.Tuple<A> implements ExpressionTarget,Contexed{
-
-		 public PropertyTuple(TupleAccessorMap map) {
+		private final AppContext conn;
+		 public PropertyTuple(AppContext conn,TupleAccessorMap map) {
 			super();
 			this.proxy = map.getProxy(this);
+			this.conn=conn;
 		}
 
 		protected final ExpressionTargetContainer proxy;
@@ -114,7 +115,7 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 
 		@Override
 		public AppContext getContext() {
-			return PropertyTuple.this.getContext();
+			return conn;
 		}
 		
 	}

@@ -32,6 +32,22 @@ AF extends DataObjectFactory<A>,
 UR extends TupleUsageProducer.TupleUsageRecord<A>
 > extends PropertyTupleFactory<A,AF,UR> implements UsageProducer<UR> {
 
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.PropertyTupleFactory#makeTuple()
+	 */
+	@Override
+	public UR makeTuple() {
+		return (UR) new TupleUsageRecord<A>(getContext(), map);
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.PropertyTupleFactory#getTarget()
+	 */
+	@Override
+	public Class getTarget() {
+		return TupleUsageRecord.class;
+	}
+
 	public TupleUsageProducer(AppContext c, String config_tag) {
 		super(c, config_tag);
 	}
@@ -39,8 +55,8 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 	
 	public static  class TupleUsageRecord<A extends DataObject> extends PropertyTupleFactory.PropertyTuple<A> implements UsageRecord{
 
-		public TupleUsageRecord(TupleAccessorMap map) {
-			super(map);
+		public TupleUsageRecord(AppContext conn,TupleAccessorMap map) {
+			super(conn,map);
 		}
 
 		@Override
