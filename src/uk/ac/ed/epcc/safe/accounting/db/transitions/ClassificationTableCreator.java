@@ -78,7 +78,7 @@ public class ClassificationTableCreator implements FormCreator,Contexed{
 			    	conn.makeObject(target, table_name);
 			    }else{
 			    	// best we can do
-			    	TableSpecification spec = Classification.getTableSpecification(conn);
+			    	TableSpecification spec = Classification.getTableSpecification(conn,table_name);
 					DataBaseHandlerService handler = conn.getService(DataBaseHandlerService.class);
 					if( handler != null ){
 						handler.createTable(table_name, spec);
