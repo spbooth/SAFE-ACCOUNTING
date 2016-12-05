@@ -176,6 +176,8 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 		additionalAttributes.put("requester", new RequesterEntryMaker());
 
 		additionalAttributes.put("exec_host", new ExecHostEntryMaker());
+		
+		additionalAttributes.put("exec_vnode", new ExecVNodeEntryMaker());
 
 		additionalAttributes.put("Resource_List.nodes", new PBSNodesCPUEntryMaker());
 		
@@ -446,6 +448,70 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 		}
 
 		private int getNumCPUs(String execHost) {
+
+			String hosts[] = null;
+			hosts = execHost.split("\\+");
+			if(hosts != null && hosts.length != 0){
+				return hosts.length;
+			}else{
+				return 1;
+			}
+		}
+
+	}
+	
+	/**
+	 * 
+	 * This class is used to parse the exec_vnode field in the PBS logs.
+	 * The field includes an entry for each host used in the job separated by 
+	 * the "+" character.  This class separates the exec_vnode anmd counts the number 
+	 * of separate entries.  It also stores the original exec_vnode string back into 
+	 * the logs.
+	 * 
+	 * @author AdrianJ
+	 *
+	 */
+	private static class ExecVNodeEntryMaker implements ContainerEntryMaker {
+
+		ExecVNodeEntryMaker(){
+			super();
+			
+		}
+
+		
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * uk.ac.ed.epcc.safe.accounting.parsers.ContainerEntryMaker#setValue(uk
+		 * .ac.ed.epcc.safe.accounting.PropertyContainer, java.lang.String)
+		 */
+		public void setValue(PropertyContainer container, String valueString)
+		throws IllegalArgumentException, InvalidPropertyException {
+
+			int numNodes = this.getNumNodes(valueString);
+
+			container.setProperty(PBS_EXEC_HOST_PROP, valueString);
+			container.setProperty(PBS_NUM_CPUS_PROP, numNodes);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * uk.ac.ed.epcc.safe.accounting.parsers.ContainerEntryMaker#setValue(uk
+		 * .ac.ed.epcc.safe.accounting.PropertyMap, java.lang.String)
+		 */
+		public void setValue(PropertyMap map, String valueString)
+		throws IllegalArgumentException {
+
+			int numNodes = this.getNumNodes(valueString);
+
+			map.setProperty(PBS_EXEC_HOST_PROP, valueString);
+			map.setProperty(PBS_NUM_NODES_PROP, numNodes);
+		}
+
+		private int getNumNodes(String execHost) {
 
 			String hosts[] = null;
 			hosts = execHost.split("\\+");

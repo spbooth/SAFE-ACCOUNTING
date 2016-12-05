@@ -241,7 +241,13 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	public static final PropertyTag<String> PBS_EXEC_HOST_PROP = new PropertyTag<String>(
 			PBS_REGISTRY,
 			"exec_host",String.class,
+	"A list of host/cpu-ids (delimiter = plus sign (+)) with the resources used in them.  Format varies depending on the version of PBS used");
+	@OptionalTable(length=1024)
+	public static final PropertyTag<String> PBS_EXEC_VNODE_PROP = new PropertyTag<String>(
+			PBS_REGISTRY,
+			"exec_vnode",String.class,
 	"A list of vnodes (delimiter = plus sign (+)) with the resources used in them.  Format varies depending on the version of PBS used");
+
 	@OptionalTable
 	public static final PropertyTag<Date> PBS_JOB_TIMESTAMP_PROP = new PropertyTag<Date>
 	(
@@ -272,7 +278,9 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	@OptionalTable
 	public static final PropertyTag<Number> PBS_SESSION_PROP = new PropertyTag<Number>(
 			PBS_REGISTRY, "session", Number.class, "The session number of the job");
-
+	@OptionalTable
+	public static final PropertyTag<Number> PBS_SESSION_RUN_COUNT = new PropertyTag<Number>(
+			PBS_REGISTRY, "run_count", Number.class, "The run_count of the job");
     @AutoTable
 	public static final PropertyTag<Number> PBS_TIME_USED_PROP = new PropertyTag<Number>(
 			PBS_REGISTRY, "runtime", Number.class, "The runtime of the job");
