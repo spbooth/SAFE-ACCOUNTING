@@ -18,7 +18,9 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +37,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -162,6 +165,9 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 	public static final PropertyTag<Integer> PBS_PROC_PER_NODE_PROP = new PropertyTag<Integer>(
 			ADDITIONAL_REGISTRY, "ppn", Integer.class, "The number of cpus used per node, derived from the nodes list");
 
+	@AutoTable(target=String.class,length=4)
+	public static final PropertyTag<String> PBS_PLACEMENT = new PropertyTag<String>(ADDITIONAL_REGISTRY,
+			"place",String.class,"Requested placement");
 
 	// //////////////////////////////////////////////////////////////////////////
 	// Standard attributes
@@ -175,13 +181,13 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 		// D, K, S
 		additionalAttributes.put("requester", new RequesterEntryMaker());
 
-		additionalAttributes.put("exec_host", new ExecHostEntryMaker());
+		// Overidding the default handler
+		STANDARD_ATTRIBUTES.put("exec_host", new ExecHostEntryMaker());
 		
-		additionalAttributes.put("exec_vnode", new ExecVNodeEntryMaker());
 
 		additionalAttributes.put("Resource_List.nodes", new PBSNodesCPUEntryMaker());
 		
-		
+		additionalAttributes.put("Resource_List.place", new PlacementEntryMaker());
 	}
 
 	
@@ -400,9 +406,13 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 	 * 
 	 * This class is used to parse the exec_host field in the PBS logs.
 	 * The field includes an entry for each host/cpu used in the job separated by 
-	 * the "+" character.  This class separates the exec_host anmd counts the number 
-	 * of separate entries.  It also stores the original exec_host string back into 
-	 * the logs.
+	 * the "+" character. 
+	 * 
+	 *  Each entry represents an MPi task and is in the form <em>vnodeName/ID[*C]</em>
+	 *  where <em>vnodeName</em> identifies the node, <em>ID</em> is a unique index and <em>C</em>
+	 *  is an optional CPU count.
+	 *  This class separates the exec_host and calculates the number of nodes and cpus.
+	 *    It also stores the original exec_host string back into the container.
 	 * 
 	 * @author AdrianJ
 	 *
@@ -413,7 +423,31 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 			super();
 			
 		}
-
+        private int nodes;
+        private int cpus;
+        private Set<String> node_set = new HashSet<String>();
+        private static Pattern patt = Pattern.compile("(?<VNODE>[A-Za-z0-9\\.]+)/\\d+(?<COUNT>\\*\\d+)?");
+        
+        private void parse(String execHost) throws AccountingParseException{
+        	node_set.clear();
+        	nodes=0;
+        	cpus=0;
+        	for(String vnode : execHost.split("\\+")){
+        		Matcher m = patt.matcher(vnode);
+        		if( m.matches()){
+        			node_set.add(m.group("VNODE"));
+        			String count = m.group("COUNT");
+        			if( count != null && ! count.isEmpty() ){
+        				cpus += Integer.parseInt(count.substring(1));
+        			}{
+        				cpus++;
+        			}
+        		}else{
+        			throw new AccountingParseException("Bad vnode "+vnode);
+        		}
+        	}
+        	nodes=node_set.size();
+        }
 		
 		/*
 		 * (non-Javadoc)
@@ -423,78 +457,18 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 		 * .ac.ed.epcc.safe.accounting.PropertyContainer, java.lang.String)
 		 */
 		public void setValue(PropertyContainer container, String valueString)
-		throws IllegalArgumentException, InvalidPropertyException {
+		throws IllegalArgumentException, InvalidPropertyException, AccountingParseException {
 
-			int numCPUs = this.getNumCPUs(valueString);
-
-			container.setProperty(PBS_EXEC_HOST_PROP, valueString);
-			container.setProperty(PBS_NUM_CPUS_PROP, numCPUs);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * uk.ac.ed.epcc.safe.accounting.parsers.ContainerEntryMaker#setValue(uk
-		 * .ac.ed.epcc.safe.accounting.PropertyMap, java.lang.String)
-		 */
-		public void setValue(PropertyMap map, String valueString)
-		throws IllegalArgumentException {
-
-			int numCPUs = this.getNumCPUs(valueString);
-
-			map.setProperty(PBS_EXEC_HOST_PROP, valueString);
-			map.setProperty(PBS_NUM_CPUS_PROP, numCPUs);
-		}
-
-		private int getNumCPUs(String execHost) {
-
-			String hosts[] = null;
-			hosts = execHost.split("\\+");
-			if(hosts != null && hosts.length != 0){
-				return hosts.length;
-			}else{
-				return 1;
+			synchronized (this) {
+				parse(valueString);
+				container.setProperty(PBS_EXEC_HOST_PROP, valueString);
+				container.setProperty(PBS_NUM_CPUS_PROP, cpus);
+				container.setProperty(PBS_NUM_NODES_PROP, nodes);
 			}
-		}
 
-	}
-	
-	/**
-	 * 
-	 * This class is used to parse the exec_vnode field in the PBS logs.
-	 * The field includes an entry for each host used in the job separated by 
-	 * the "+" character.  This class separates the exec_vnode anmd counts the number 
-	 * of separate entries.  It also stores the original exec_vnode string back into 
-	 * the logs.
-	 * 
-	 * @author AdrianJ
-	 *
-	 */
-	private static class ExecVNodeEntryMaker implements ContainerEntryMaker {
-
-		ExecVNodeEntryMaker(){
-			super();
 			
 		}
 
-		
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * uk.ac.ed.epcc.safe.accounting.parsers.ContainerEntryMaker#setValue(uk
-		 * .ac.ed.epcc.safe.accounting.PropertyContainer, java.lang.String)
-		 */
-		public void setValue(PropertyContainer container, String valueString)
-		throws IllegalArgumentException, InvalidPropertyException {
-
-			int numNodes = this.getNumNodes(valueString);
-
-			container.setProperty(PBS_EXEC_HOST_PROP, valueString);
-			container.setProperty(PBS_NUM_CPUS_PROP, numNodes);
-		}
-
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -503,26 +477,21 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 		 * .ac.ed.epcc.safe.accounting.PropertyMap, java.lang.String)
 		 */
 		public void setValue(PropertyMap map, String valueString)
-		throws IllegalArgumentException {
+		throws IllegalArgumentException, AccountingParseException {
 
-			int numNodes = this.getNumNodes(valueString);
-
-			map.setProperty(PBS_EXEC_HOST_PROP, valueString);
-			map.setProperty(PBS_NUM_NODES_PROP, numNodes);
-		}
-
-		private int getNumNodes(String execHost) {
-
-			String hosts[] = null;
-			hosts = execHost.split("\\+");
-			if(hosts != null && hosts.length != 0){
-				return hosts.length;
-			}else{
-				return 1;
+			synchronized (this) {
+				parse(valueString);
+				map.setProperty(PBS_EXEC_HOST_PROP, valueString);
+				map.setProperty(PBS_NUM_CPUS_PROP, cpus);
+				map.setProperty(PBS_NUM_NODES_PROP, nodes);
 			}
 		}
 
+		
+
 	}
+	
+	
 	/**
 	 * Nodes cpu EntryMaker
 	 * 
@@ -600,7 +569,35 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 		}
 
 	}
-	
+	private static class PlacementEntryMaker implements ContainerEntryMaker{
+
+		private static final String EXCL = "excl";
+
+		@Override
+		public void setValue(PropertyContainer container, String valueString) throws IllegalArgumentException,
+				InvalidPropertyException, NullPointerException, AccountingParseException {
+			container.setProperty(PBS_PLACEMENT, valueString);
+			if( valueString.equals(EXCL)){
+				container.setProperty(BatchParser.EXCLUSIVE, Boolean.TRUE);
+			}else{
+				container.setProperty(BatchParser.EXCLUSIVE, Boolean.FALSE);
+			}
+			
+		}
+
+		@Override
+		public void setValue(PropertyMap map, String valueString)
+				throws IllegalArgumentException, NullPointerException, AccountingParseException {
+			map.setProperty(PBS_PLACEMENT, valueString);
+			if( valueString.equals(EXCL)){
+				map.setProperty(BatchParser.EXCLUSIVE, Boolean.TRUE);
+			}else{
+				map.setProperty(BatchParser.EXCLUSIVE, Boolean.FALSE);
+			}
+			
+		}
+		
+	}
 	@Override
 	protected ContainerEntryMaker getEntryMaker(String attr) {
 		ContainerEntryMaker e = super.getEntryMaker(attr);

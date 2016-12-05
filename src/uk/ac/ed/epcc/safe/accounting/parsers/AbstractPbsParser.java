@@ -44,7 +44,6 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
 import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
-import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
@@ -299,7 +298,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	/**
 	 * All attributes declared in the PBS manuals
 	 */
-	private static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
+	protected static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
 	static {
 		/* The comments list the record types the properties are contained in */
 		// S

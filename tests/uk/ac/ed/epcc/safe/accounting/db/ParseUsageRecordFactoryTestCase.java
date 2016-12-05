@@ -341,9 +341,9 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 @Test
 	public void testReceiveAccounting() throws Exception {
 		String updateText = getUpdateText();
-		//takeBaseline();
+		takeBaseline();
 		receiveAccounting(updateText);
-		//save("tests",getClass().getSimpleName(),fac);
+		save("tests",getClass().getSimpleName(),getFactory());
 	}
 
 public void receiveAccounting(String updateText) {
