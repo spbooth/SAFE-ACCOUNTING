@@ -165,7 +165,7 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 	public static final PropertyTag<Integer> PBS_PROC_PER_NODE_PROP = new PropertyTag<Integer>(
 			ADDITIONAL_REGISTRY, "ppn", Integer.class, "The number of cpus used per node, derived from the nodes list");
 
-	@AutoTable(target=String.class,length=4)
+	@AutoTable(target=String.class,length=16)
 	public static final PropertyTag<String> PBS_PLACEMENT = new PropertyTag<String>(ADDITIONAL_REGISTRY,
 			"place",String.class,"Requested placement");
 

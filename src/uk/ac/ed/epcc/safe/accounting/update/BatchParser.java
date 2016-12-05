@@ -83,6 +83,7 @@ public abstract class BatchParser extends BaseParser {
     public static final PropertyTag<Number> SLOWDOWN_PROP = new PropertyTag<Number>(batch,"Slowdown",Number.class);
     public static final PropertyTag<Number> REQUEST_ACCURACY_PROP = new PropertyTag<Number>(batch,"RequestAccuracy",Number.class);
     public static final PropertyTag<String> BATCH_SCRIPT_PROP = new PropertyTag<String>(batch,"Script",String.class,"The text of the batch script");
+    @OptionalTable(target=Boolean.class)
     public static final PropertyTag<Boolean> EXCLUSIVE = new PropertyTag<Boolean>(batch,"Exclusive",Boolean.class,"Did the job have exclusive use of the nodes");
     static{
     	batch.lock();
