@@ -648,7 +648,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 				try {
 					maker.setValue(pbsMap, attrValue);
 				} catch (IllegalArgumentException e) {
-					this.errors.add("Problem with attribute '" + attrValue
+					this.errors.add("Problem with attribute '" + attrName
 							+ "': Unable to parse value '" + attrValue + "'", record, e);
 				}
 			}
