@@ -29,7 +29,6 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.Tagged;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -178,6 +177,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     					if( replace ){
     						if( target.allowReplace(map, old_record)){
     							target.deleteRecord(old_record);
+    							old_record.release();
     							old_record=null;
     							// new record
     							target.commitRecord(map, record);
@@ -227,6 +227,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     								verify_list.add("Error in augment existing", fmt, t);
     							}
     						}
+    						old_record.release();
     					}
     				}else{
     					if( old_record != null ){
@@ -242,6 +243,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     						}else{
     							duplicate++;
     						}
+    						old_record.release();
     					}else{
     						if(  target.commitRecord(map, record) ){
     							insert++;
@@ -254,6 +256,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     				}
     				record.release();
     			}
+    			map.release();
     		}catch (SkipRecord s){
     			skip_list.add(s.getMessage(),fmt);
     			skip++;
@@ -312,6 +315,9 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     		sb.append(error_text);
     		log.warn("Error in accounting parse\n"+error_text.toString());
     	}
+    	errors.clear();
+    	skip_list.clear();
+    	verify_list.clear();
     	return sb.toString();
 	}
 	/** compares two values, ignoring any differences due to null or

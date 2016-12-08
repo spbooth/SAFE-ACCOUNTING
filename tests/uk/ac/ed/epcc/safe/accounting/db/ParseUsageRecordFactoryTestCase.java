@@ -170,9 +170,14 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		}
 
 		PropertyMap defaults = getDefaults();
+		DerivedPropertyMap meta = new DerivedPropertyMap(getContext());
+		meta.setAll(defaults);
+		PropExpressionMap expr = new PropExpressionMap();
+		expr.addFromProperties(fac.getFinder(), ctx, fac.getTag());
+		meta.addDerived(expr);
 		Iterator<I> lines = parser.splitRecords(updateText);
 		
-		fac.startParse(defaults);
+		fac.startParse(meta);
 
 		Set ignore = getIgnore();
 

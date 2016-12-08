@@ -464,6 +464,7 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 				container.setProperty(PBS_EXEC_HOST_PROP, valueString);
 				container.setProperty(PBS_NUM_CPUS_PROP, cpus);
 				container.setProperty(PBS_NUM_NODES_PROP, nodes);
+				node_set.clear();
 			}
 
 			
@@ -484,6 +485,7 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 				map.setProperty(PBS_EXEC_HOST_PROP, valueString);
 				map.setProperty(PBS_NUM_CPUS_PROP, cpus);
 				map.setProperty(PBS_NUM_NODES_PROP, nodes);
+				node_set.clear();
 			}
 		}
 

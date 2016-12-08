@@ -483,14 +483,24 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 		 * of the parse
 		 */
 		String info = this.info.toString();
-		if (info.length() > 0)
+		
+		if (info.length() > 0){
 			logger.info(info);
-
+		}
+		this.info.clear();
+		this.info=null;
+		
 		String warnings = this.warnings.toString();
-		if (warnings.length() > 0)
+		if (warnings.length() > 0){
 			logger.warn(warnings);
+		}
+		this.warnings.clear();
+		this.warnings=null;
 
-		return this.errors.toString();
+		String error_text = this.errors.toString();
+		this.errors.clear();
+		this.errors=null;
+		return error_text;
 	}
 
 	/*
@@ -653,7 +663,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 				}
 			}
 		}
-	
+	    m=null;
 		// This code address the issue of jobs that report their 
 		// end time as being before their start time, or there 
 		// submitted or eligible times are after there start time (usually because 

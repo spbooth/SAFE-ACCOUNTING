@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -120,6 +122,9 @@ public class ErrorSet
     public Collection<Detail> getDetails()
     {
       return Collections.unmodifiableCollection(fails);
+    }
+    public void clear(){
+    	fails.clear();
     }
   }
   private String name="";
@@ -310,5 +315,13 @@ public class ErrorSet
 	      }
 	    }
 	 
+  }
+  
+  public void clear(){
+	  for(Iterator<Map.Entry<String,Entry>> it = reg.entrySet().iterator(); it.hasNext();){
+		  Map.Entry<String, Entry> e = it.next();
+		  e.getValue().clear();
+		  it.remove();
+	  }
   }
 }

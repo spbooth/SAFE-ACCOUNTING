@@ -155,4 +155,11 @@ public <T> T evaluateExpression(PropExpression<T> expr, T def){
 		throw new ConsistencyError("Error in evaluate", e);
 	}
 }
+public void release() {
+	super.release();
+	if( derived != null ){
+		derived.clear();
+	}
+	
+}
 }
