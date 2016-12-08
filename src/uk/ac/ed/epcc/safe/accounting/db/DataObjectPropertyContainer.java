@@ -98,6 +98,16 @@ public class DataObjectPropertyContainer extends DataObject implements PropertyC
 	public Parser getParser() {
 		return proxy.getParser();
 	}
+	@Override
+	public void clear() {
+		proxy.clear();
+		
+	}
+	@Override
+	public void release(){
+		super.release();
+		clear();
+	}
 
 
 }

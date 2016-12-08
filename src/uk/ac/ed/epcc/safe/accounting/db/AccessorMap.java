@@ -322,6 +322,12 @@ public abstract class AccessorMap<X extends ExpressionTarget&Contexed> implement
 			return sel.visit(match_visitor).booleanValue();
 			
 		}
+		@Override
+		public void clear() {
+			missing.clear();
+			flush();
+			match_visitor=null;
+		}
 		
 	}
 	public class SQLExpressionVisitor extends CreateSQLExpressionPropExpressionVisitor{

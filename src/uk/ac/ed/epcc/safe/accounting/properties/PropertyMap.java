@@ -119,6 +119,11 @@ public class PropertyMap  implements PropertyContainer{
 		return "PropertyMap [data=" + data + "]";
 	}
 	public void release(){
+		clear();
+	}
+	@Override
+	public void clear() {
 		data.clear();
+		
 	}
 }

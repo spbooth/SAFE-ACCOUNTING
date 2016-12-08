@@ -80,4 +80,9 @@ public interface PropertyContainer extends PropertyTarget {
 	 * @param source PropertyContainer
 	 */
 	public abstract void setAll(PropertyContainer source);
+	
+	/** clear all contents
+	 * 
+	 */
+	public void clear();
 }

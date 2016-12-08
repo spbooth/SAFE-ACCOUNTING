@@ -118,6 +118,11 @@ public class PropertyTuple implements PropertyContainer {
 	public void setAll(PropertyContainer source) {
 		throw new ConsistencyError("invalid operation for PropertyTuple");
 	}
+
+	@Override
+	public void clear() {
+		map.clear();
+	}
 	
 	
 }
