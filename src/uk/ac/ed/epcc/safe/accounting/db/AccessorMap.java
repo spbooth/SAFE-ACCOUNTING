@@ -323,9 +323,10 @@ public abstract class AccessorMap<X extends ExpressionTarget&Contexed> implement
 			
 		}
 		@Override
-		public void clear() {
+		public void release() {
 			missing.clear();
 			flush();
+			cache=null;
 			match_visitor=null;
 		}
 		

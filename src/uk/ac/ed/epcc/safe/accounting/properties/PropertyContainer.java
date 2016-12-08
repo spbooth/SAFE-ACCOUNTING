@@ -81,8 +81,8 @@ public interface PropertyContainer extends PropertyTarget {
 	 */
 	public abstract void setAll(PropertyContainer source);
 	
-	/** clear all contents
+	/** clear all contents before disposal
 	 * 
 	 */
-	public void clear();
+	public void release();
 }

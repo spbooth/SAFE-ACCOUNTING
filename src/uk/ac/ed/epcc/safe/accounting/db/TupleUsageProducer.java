@@ -110,6 +110,12 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 			}
 			return sb.toString();
 		}
+
+		@Override
+		public void release() {
+			proxy.release();
+			clear();
+		}
 		
 	}
 

@@ -120,8 +120,8 @@ public class PropertyTuple implements PropertyContainer {
 	}
 
 	@Override
-	public void clear() {
-		map.clear();
+	public void release() {
+		map.release();
 	}
 	
 	

@@ -171,15 +171,11 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 			return getProperty(StandardProperties.STARTED_PROP,null);
 		}
 		
-		@Override
-		public void clear() {
-			proxy.clear();
-			
-		}
+		
 		@Override
 		public void release(){
 			super.release();
-			clear();
+			proxy.release();
 		}
 
 	}

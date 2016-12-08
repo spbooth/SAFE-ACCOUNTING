@@ -193,6 +193,7 @@ public class OverlapHandler<T extends UsageRecord> {
 		for(Iterator<T> it = prod.getIterator(sel2);it.hasNext();){
 			T rec =   it.next();
 			result = combinePartial(target,result, getOverlap(rec,target,start_prop,end_prop,period));
+			rec.release();
 		}
 		return result;
 	}
@@ -462,6 +463,7 @@ public class OverlapHandler<T extends UsageRecord> {
 				result.put(key, n);
 			
 			}
+			rec.release();
 		}
 	}
 	/**
@@ -707,7 +709,7 @@ public class OverlapHandler<T extends UsageRecord> {
 					// have generated any data
 					result.put(key, res);
 				}
-
+				rec.release();
 		}
 		return records;
 	}

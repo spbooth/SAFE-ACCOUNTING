@@ -129,15 +129,11 @@ public class AccountingClassification extends Classification implements Property
 		return fac.makeReference(this);
 	}
 
-	@Override
-	public void clear() {
-		proxy.clear();
-		
-	}
+	
 	@Override
 	public void release(){
 		super.release();
-		clear();
+		proxy.release();
 	}
 
 }

@@ -135,15 +135,11 @@ public abstract static class PropertyTargetLink<L extends DataObject, R extends 
 		public Parser getParser() {
 			return proxy.getParser();
 		}
-		@Override
-		public void clear() {
-			proxy.clear();
-			
-		}
+		
 		@Override
 		public void release(){
 			super.release();
-			clear();
+			proxy.release();
 		}
 
 	}
