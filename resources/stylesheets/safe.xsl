@@ -10,7 +10,7 @@
 	xmlns:plotter="xalan://uk.ac.ed.epcc.webacct.model.reports.ChartExtension"
 	xmlns:period="xalan://uk.ac.ed.epcc.webacct.model.reports.PeriodExtension"
 	xmlns:filter="xalan://uk.ac.ed.epcc.webacct.model.reports.FilterExtension"
-	xmlns:safe="xalan://uk.ac.hpcx.model.report.SafeExtension"
+	xmlns:safe="xalan://uk.ac.hpcx.report.SafeExtension"
 	extension-element-prefixes="plotter period filter safe" >
 	<!-- Import the identity transformation. -->
 	<xsl:import href="identity.xsl" />

@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
+import uk.ac.ed.epcc.webapp.Tagged;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -46,7 +47,8 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 	private UsageRecordParseTarget<T,R> target;
 	private AppContext conn;
-	private PropertyMap meta_data;
+	private DerivedPropertyMap meta_data;
+	private PropExpressionMap expr;
 	/** Create an AccountingUpdater. 
 	 * This sets the ParseTarget class used to parse the records and a set of MetaData 
 	 * properties. These are properties that come from the surrounding code (such as the person performing 
@@ -58,9 +60,19 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 	 * @param meta_data MetaData properties
 	 * @param t ParseTarget
 	 */
-	public AccountingUpdater(AppContext conn,PropertyMap meta_data,UsageRecordParseTarget<T,R> t){
+	public AccountingUpdater(AppContext conn,PropertyMap initial_meta_data,UsageRecordParseTarget<T,R> t){
 		this.conn=conn;
-		this.meta_data=meta_data;
+		meta_data = new DerivedPropertyMap(conn);
+		meta_data.setAll(initial_meta_data);
+		if( t instanceof Tagged){
+			// Add property definitions from target
+			// This is to pick up constant Machine/Resource-Pool properties
+			expr = new PropExpressionMap();
+			expr.addFromProperties(t.getFinder(), conn, ((Tagged)t).getTag());
+			meta_data.addDerived(expr);
+		}else{
+			expr=null;
+		}
 		this.target=t;
 	}
 	/** Parse new accounting data 
@@ -113,6 +125,9 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     			if( meta_data != null ){
     				
     				meta_data.setContainer(map);
+    				if( expr != null ){
+    					map.addDerived(expr);
+    				}
     			}
     			
     			if( target.parse(map, current_line) ){
