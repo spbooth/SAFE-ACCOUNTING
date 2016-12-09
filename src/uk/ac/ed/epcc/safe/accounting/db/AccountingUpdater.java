@@ -101,8 +101,14 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     	Date start=new Date();
     	
     	ErrorSet errors = new ErrorSet();
+    	int max_skip_details = conn.getIntegerParameter("upload.n_skip_to_print", 0);
     	ErrorSet skip_list = new ErrorSet();
+    	skip_list.setMaxDetails(max_skip_details);
+    	
+    	int max_verify_details = conn.getIntegerParameter("upload.n_verify_to_print", 20);
     	ErrorSet verify_list = new ErrorSet();
+    	verify_list.setMaxDetails(max_verify_details);
+    	
     	PropertyContainerParser<R> parser = target.getParser();
     
     	try{
@@ -293,12 +299,13 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
         	sb.append(n_update_dup);
         	sb.append('\n');
     	}
-    	sb.append(skip_list.details(conn.getIntegerParameter("upload.n_skip_to_print", 0)));
+    	sb.append(skip_list.details(max_skip_details));
     	if( verify){
     		sb.append("Bad verify: ");
         	sb.append(n_bad_verify);
         	sb.append('\n');
-        	sb.append(verify_list.details(conn.getIntegerParameter("upload.n_verify_to_print", 20)));
+        	
+			sb.append(verify_list.details(max_verify_details));
     	}
     
     	if( first != null ){

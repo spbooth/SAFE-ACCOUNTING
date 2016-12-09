@@ -82,11 +82,13 @@ public class ErrorSet
   public static class Entry implements Comparable<Entry>
   {
     private int count = 0;
+    private int max_details = 0;
     String text;
 
-    public Entry(String text)
+    public Entry(String text,int max_details)
     {
       this.text = text;
+      this.max_details = max_details;
     }
 
     Set<Detail> fails = new HashSet<Detail>();
@@ -96,7 +98,9 @@ public class ErrorSet
       if(value != null && value.length() > 0)
       {
         count++;
-        fails.add(new Detail(value, t));
+        if( max_details < 0 || fails.size() < max_details){
+        	fails.add(new Detail(value, t));
+        }
       }
     }
 
@@ -131,11 +135,15 @@ public class ErrorSet
 
   private java.util.Map<String, Entry> reg = new TreeMap<String, Entry>();
 
+  private int max_details=-1;
   public int size()
   {
     return reg.size();
   }
   
+  public void setMaxDetails(int i){
+	  max_details=i;
+  }
   public boolean hasError(){
 	  return ! reg.isEmpty();
   }
@@ -164,7 +172,7 @@ public class ErrorSet
       e = reg.get(text);
     } else
     {
-      e = new Entry(text);
+      e = new Entry(text,max_details);
       reg.put(text, e);
     }
     e.add(data, t);
