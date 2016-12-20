@@ -64,7 +64,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Add Owner tables to raw usage data under the control of config parameters.
- * 
+ * This is similar to the {@link ClassificationPolicy} except that it targets a {@link MatcherFinder}
  * For each known String PropertyTag if the config property
  * <b>matcher.<em>table-name</em>.</b><em>property-name</em> is defined then this is taken as a remote
  * table name and the corresponding Reference property is set.
@@ -132,7 +132,7 @@ public class MatcherFinderPolicy extends BasePolicy implements Contexed,Transiti
 	@Override
 	public void startParse(PropertyContainer defaults) throws DataException,
 			InvalidPropertyException {
-		log.debug("ClassificationPolicy: start parse");
+		log.debug("MatcherFinderPolicy: start parse");
 		finders= new HashMap<PropertyTag<String>,MatcherFinder>();
 		for(PropertyTag<String> tag : tagmap.keySet()){
 			ReferenceTag ctag = tagmap.get(tag);

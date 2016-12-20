@@ -52,11 +52,11 @@ public class PointUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 	private final PropExpression<K> key_prop;
     private final int set;
     private final PropExpression<D> plot_prop;
-    private final PropertyTag<Date> point_prop;
+    private final PropExpression<Date> point_prop;
     private final Reduction red;
     private final RecordSelector sel;
     
-	public PointUsageRecordQueryMapper(AppContext conn,RecordSelector sel,PropExpression<K> key_prop,Reduction red, PropExpression<D> plot_prop, PropertyTag<Date> point_prop,PropertyKeyLabeller<K> lab) {
+	public PointUsageRecordQueryMapper(AppContext conn,RecordSelector sel,PropExpression<K> key_prop,Reduction red, PropExpression<D> plot_prop, PropExpression<Date> point_prop,PropertyKeyLabeller<K> lab) {
 		super(lab);
 		this.sel=sel;
 		this.key_prop=key_prop;
@@ -66,7 +66,7 @@ public class PointUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 		this.red=red;
 		this.conn=conn;
 	}
-	public PointUsageRecordQueryMapper(AppContext conn,RecordSelector sel, int set,Reduction red, PropExpression<D> plot_prop, PropertyTag<Date> point_prop,PropertyKeyLabeller<K> lab) {
+	public PointUsageRecordQueryMapper(AppContext conn,RecordSelector sel, int set,Reduction red, PropExpression<D> plot_prop, PropExpression<Date> point_prop,PropertyKeyLabeller<K> lab) {
 		super(lab);
 		this.sel=sel;
 		this.key_prop=null;

@@ -118,7 +118,13 @@ public class PropertyPerson extends AppUser implements PropertyContainer , Expre
 		return proxy.getParser();
 	}
 
-	
+
+	@Override
+	public void release(){
+		super.release();
+		proxy.release();
+	}
+
 
 
 	

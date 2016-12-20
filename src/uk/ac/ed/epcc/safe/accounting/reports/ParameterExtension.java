@@ -72,6 +72,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.LengthInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.LongInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MonthInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.MonthMultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInput;
@@ -301,7 +302,8 @@ public class ParameterExtension extends ReportExtension {
 		} else if (type.equals("Date")) {
 			return new DayMultiInput();	
 		} else if (type.equals("Month")) {
-			return new MonthInput();	
+			return new MonthMultiInput();
+			//return new MonthInput();	
 		} else if (type.equals("TimeStamp")) {
 			return new TimeStampInput();
 

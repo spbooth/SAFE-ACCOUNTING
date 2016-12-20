@@ -34,6 +34,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.FilterSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.ConfigPlugInOwner;
+import uk.ac.ed.epcc.safe.accounting.update.NullParser;
 import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
@@ -85,7 +86,7 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 		map.makeReferences(refs);
 		finder.addFinder(refs);
-		plugin_owner= new ConfigPlugInOwner<ParseAccountingClassificationFactory<T,R>,R>(c,finder ,table);
+		plugin_owner= new ConfigPlugInOwner<ParseAccountingClassificationFactory<T,R>,R>(c,finder ,table,NullParser.class);
 		finder.addFinder(getPluginOwner().getFinder());
 
 
@@ -285,7 +286,7 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 		if( spec != null ){
 			// Don't use anything that needs getContext as this does not work unless
 			// factory is valid.
-			PlugInOwner<R> owner = new ConfigPlugInOwner<ParseAccountingClassificationFactory<T,R>,R>(c,null, table);
+			PlugInOwner<R> owner = new ConfigPlugInOwner<ParseAccountingClassificationFactory<T,R>,R>(c,null, table,NullParser.class);
 			PropertyContainerParser<R> parser=owner.getParser();
 			if( parser == null){
 				return null;

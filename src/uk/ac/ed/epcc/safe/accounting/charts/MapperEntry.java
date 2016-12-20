@@ -143,7 +143,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
      * @return
      */
     protected abstract UsageRecordQueryMapper getPointQueryMapper(RecordSelector sel,
-			Reduction red,PropExpression<? extends Number> prop_tag, PropertyTag<Date> end_prop) throws CannotUseSQLException;
+			Reduction red,PropExpression<? extends Number> prop_tag, PropExpression<Date> end_prop) throws CannotUseSQLException;
     /** Get a Query mapper that combined records based on the overlap of records 
      * defined by a pair of properties as defined in {@link OverlapHandler}
      * @param s
@@ -155,8 +155,8 @@ public abstract class MapperEntry implements Contexed,Cloneable{
      */
     protected abstract UsageRecordQueryMapper getOverlapQueryMapper(
 			RecordSelector s,Reduction red,
-			PropExpression<? extends Number> prop_tag, PropertyTag<Date> start_prop,
-			PropertyTag<Date> end_prop) throws CannotUseSQLException;
+			PropExpression<? extends Number> prop_tag, PropExpression<Date> start_prop,
+			PropExpression<Date> end_prop) throws CannotUseSQLException;
     /** Get a QueryMapper that combined records completely within a specified period
      * This is intended to be used as part of an overlap calculation.
      * 
@@ -169,7 +169,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
      */
     protected abstract UsageRecordQueryMapper getInnerQueryMapper(RecordSelector sel,
 			Reduction red,PropExpression<? extends Number> prop_tag,
-			PropertyTag<Date> start_prop, PropertyTag<Date> end_prop) throws CannotUseSQLException;
+			PropExpression<Date> start_prop, PropExpression<Date> end_prop) throws CannotUseSQLException;
 	
     /** Get the cutoff (longest record length) to use for
 	 * records overlapping a time period.
@@ -351,8 +351,8 @@ public abstract class MapperEntry implements Contexed,Cloneable{
         // create dataset, don't add labels yet as labels
 		// vector may grow as data added
 		PropExpression<? extends Number> prop_tag = e.getPlotProperty();
-		PropertyTag<Date> start_prop = e.getStartProperty();
-		PropertyTag<Date> end_prop = e.getEndProperty();
+		PropExpression<Date> start_prop = e.getStartProperty();
+		PropExpression<Date> end_prop = e.getEndProperty();
 		Reduction red = e.getReduction();
 		long cutoff = getCutoff(e, tc.getPeriod(), ap);
         boolean query_mapper_on = OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn);
@@ -586,8 +586,8 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 	private boolean addTimeChartData(PlotEntry e, TimeChart tc, UsageProducer ap, RecordSelector sel,
 			PeriodSequencePlot ds,boolean allow_overlap) throws InvalidTransformException {
 		PropExpression<? extends Number> prop_tag = e.getPlotProperty();
-		PropertyTag<Date> start_prop = e.getStartProperty();
-		PropertyTag<Date> end_prop = e.getEndProperty();
+		PropExpression<Date> start_prop = e.getStartProperty();
+		PropExpression<Date> end_prop = e.getEndProperty();
 		Reduction red = e.getReduction();
 		long cutoff = getCutoff(e, tc.getPeriod(), ap);
 		boolean data_added=false;

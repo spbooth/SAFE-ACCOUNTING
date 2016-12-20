@@ -118,4 +118,8 @@ public class PropertyMap  implements PropertyContainer{
 	public String toString() {
 		return "PropertyMap [data=" + data + "]";
 	}
+	public void release(){
+		data.clear();
+	}
+	
 }

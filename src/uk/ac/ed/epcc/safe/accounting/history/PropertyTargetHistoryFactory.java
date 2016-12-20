@@ -66,7 +66,6 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -173,6 +172,12 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		}
 		
 		
+		@Override
+		public void release(){
+			super.release();
+			proxy.release();
+		}
+
 	}
 	
 	private RepositoryAccessorMap<H> mapi=null;

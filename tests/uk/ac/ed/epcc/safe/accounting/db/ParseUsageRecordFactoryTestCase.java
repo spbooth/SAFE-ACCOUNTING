@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
@@ -169,9 +170,14 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		}
 
 		PropertyMap defaults = getDefaults();
+		DerivedPropertyMap meta = new DerivedPropertyMap(getContext());
+		meta.setAll(defaults);
+		PropExpressionMap expr = new PropExpressionMap();
+		expr.addFromProperties(fac.getFinder(), ctx, fac.getTag());
+		meta.addDerived(expr);
 		Iterator<I> lines = parser.splitRecords(updateText);
 		
-		fac.startParse(defaults);
+		fac.startParse(meta);
 
 		Set ignore = getIgnore();
 
@@ -343,7 +349,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		String updateText = getUpdateText();
 		//takeBaseline();
 		receiveAccounting(updateText);
-		//save("tests",getClass().getSimpleName(),fac);
+		//save("tests",getClass().getSimpleName(),getFactory());
 	}
 
 public void receiveAccounting(String updateText) {
@@ -354,6 +360,8 @@ public void receiveAccounting(String updateText) {
 	
 	System.out.println(updateText);
 	String result = new AccountingUpdater<R,I>(ctx,getDefaults(),fac).receiveAccountingData( updateText, false,false,false);
+	
+	Assert.assertFalse(result.contains("Error in accounting parse"));
 }
 @Test
 	public void testGetPolicies() {

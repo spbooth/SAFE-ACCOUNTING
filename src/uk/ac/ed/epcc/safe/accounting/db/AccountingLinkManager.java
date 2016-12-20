@@ -136,6 +136,12 @@ public abstract static class PropertyTargetLink<L extends DataObject, R extends 
 			return proxy.getParser();
 		}
 		
+		@Override
+		public void release(){
+			super.release();
+			proxy.release();
+		}
+
 	}
 
 private PropertyFinder reg=null;

@@ -128,4 +128,12 @@ public class AccountingClassification extends Classification implements Property
 	public Object getKey() {
 		return fac.makeReference(this);
 	}
+
+	
+	@Override
+	public void release(){
+		super.release();
+		proxy.release();
+	}
+
 }

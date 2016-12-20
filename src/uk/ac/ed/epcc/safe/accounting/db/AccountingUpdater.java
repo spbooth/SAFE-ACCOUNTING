@@ -29,7 +29,7 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Feature;
+import uk.ac.ed.epcc.webapp.Tagged;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -46,7 +46,8 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 	private UsageRecordParseTarget<T,R> target;
 	private AppContext conn;
-	private PropertyMap meta_data;
+	private DerivedPropertyMap meta_data;
+	private PropExpressionMap expr;
 	/** Create an AccountingUpdater. 
 	 * This sets the ParseTarget class used to parse the records and a set of MetaData 
 	 * properties. These are properties that come from the surrounding code (such as the person performing 
@@ -58,9 +59,19 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 	 * @param meta_data MetaData properties
 	 * @param t ParseTarget
 	 */
-	public AccountingUpdater(AppContext conn,PropertyMap meta_data,UsageRecordParseTarget<T,R> t){
+	public AccountingUpdater(AppContext conn,PropertyMap initial_meta_data,UsageRecordParseTarget<T,R> t){
 		this.conn=conn;
-		this.meta_data=meta_data;
+		meta_data = new DerivedPropertyMap(conn);
+		meta_data.setAll(initial_meta_data);
+		if( t instanceof Tagged){
+			// Add property definitions from target
+			// This is to pick up constant Machine/Resource-Pool properties
+			expr = new PropExpressionMap();
+			expr.addFromProperties(t.getFinder(), conn, ((Tagged)t).getTag());
+			meta_data.addDerived(expr);
+		}else{
+			expr=null;
+		}
 		this.target=t;
 	}
 	/** Parse new accounting data 
@@ -90,8 +101,14 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     	Date start=new Date();
     	
     	ErrorSet errors = new ErrorSet();
+    	int max_skip_details = conn.getIntegerParameter("upload.n_skip_to_print", 0);
     	ErrorSet skip_list = new ErrorSet();
+    	skip_list.setMaxDetails(max_skip_details);
+    	
+    	int max_verify_details = conn.getIntegerParameter("upload.n_verify_to_print", 20);
     	ErrorSet verify_list = new ErrorSet();
+    	verify_list.setMaxDetails(max_verify_details);
+    	
     	PropertyContainerParser<R> parser = target.getParser();
     
     	try{
@@ -113,6 +130,9 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     			if( meta_data != null ){
     				
     				meta_data.setContainer(map);
+    				if( expr != null ){
+    					map.addDerived(expr);
+    				}
     			}
     			
     			if( target.parse(map, current_line) ){
@@ -163,6 +183,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     					if( replace ){
     						if( target.allowReplace(map, old_record)){
     							target.deleteRecord(old_record);
+    							old_record.release();
     							old_record=null;
     							// new record
     							target.commitRecord(map, record);
@@ -212,6 +233,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     								verify_list.add("Error in augment existing", fmt, t);
     							}
     						}
+    						old_record.release();
     					}
     				}else{
     					if( old_record != null ){
@@ -227,6 +249,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     						}else{
     							duplicate++;
     						}
+    						old_record.release();
     					}else{
     						if(  target.commitRecord(map, record) ){
     							insert++;
@@ -239,6 +262,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     				}
     				record.release();
     			}
+    			map.release();
     		}catch (SkipRecord s){
     			skip_list.add(s.getMessage(),fmt);
     			skip++;
@@ -275,12 +299,13 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
         	sb.append(n_update_dup);
         	sb.append('\n');
     	}
-    	sb.append(skip_list.details(conn.getIntegerParameter("upload.n_skip_to_print", 0)));
+    	sb.append(skip_list.details(max_skip_details));
     	if( verify){
     		sb.append("Bad verify: ");
         	sb.append(n_bad_verify);
         	sb.append('\n');
-        	sb.append(verify_list.details(conn.getIntegerParameter("upload.n_verify_to_print", 20)));
+        	
+			sb.append(verify_list.details(max_verify_details));
     	}
     
     	if( first != null ){
@@ -297,6 +322,9 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     		sb.append(error_text);
     		log.warn("Error in accounting parse\n"+error_text.toString());
     	}
+    	errors.clear();
+    	skip_list.clear();
+    	verify_list.clear();
     	return sb.toString();
 	}
 	/** compares two values, ignoring any differences due to null or

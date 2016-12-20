@@ -106,7 +106,7 @@ public class ReductionHandler<E extends DataObject&ExpressionTarget,F extends Ex
 			}
 			return res;
 		}catch(CannotUseSQLException e){
-			return getReduction(type, sel);
+			return super.getReduction(type, sel);
 		}
 	}
 

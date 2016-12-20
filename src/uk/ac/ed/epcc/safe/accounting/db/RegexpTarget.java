@@ -2,9 +2,10 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.util.regex.Pattern;
 
+import uk.ac.ed.epcc.webapp.model.Matcher;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 
-public class RegexpTarget extends AccountingClassification {
+public class RegexpTarget extends AccountingClassification implements Matcher {
 
 	
 
@@ -18,6 +19,10 @@ public class RegexpTarget extends AccountingClassification {
 			patt = Pattern.compile(record.getStringProperty(RegexpTargetFactory.REGEX_FIELD));
 		}
 		return patt;
+	}
+	@Override
+	public boolean matches(String name) {
+		return getRegexp().matcher(name).matches();
 	}
 
 }

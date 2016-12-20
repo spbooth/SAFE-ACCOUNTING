@@ -44,7 +44,6 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
 import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
-import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
@@ -241,7 +240,13 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	public static final PropertyTag<String> PBS_EXEC_HOST_PROP = new PropertyTag<String>(
 			PBS_REGISTRY,
 			"exec_host",String.class,
+	"A list of host/cpu-ids (delimiter = plus sign (+)) with the resources used in them.  Format varies depending on the version of PBS used");
+	@OptionalTable(length=1024)
+	public static final PropertyTag<String> PBS_EXEC_VNODE_PROP = new PropertyTag<String>(
+			PBS_REGISTRY,
+			"exec_vnode",String.class,
 	"A list of vnodes (delimiter = plus sign (+)) with the resources used in them.  Format varies depending on the version of PBS used");
+
 	@OptionalTable
 	public static final PropertyTag<Date> PBS_JOB_TIMESTAMP_PROP = new PropertyTag<Date>
 	(
@@ -272,7 +277,9 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	@OptionalTable
 	public static final PropertyTag<Number> PBS_SESSION_PROP = new PropertyTag<Number>(
 			PBS_REGISTRY, "session", Number.class, "The session number of the job");
-
+	@OptionalTable
+	public static final PropertyTag<Number> PBS_SESSION_RUN_COUNT = new PropertyTag<Number>(
+			PBS_REGISTRY, "run_count", Number.class, "The run_count of the job");
     @AutoTable
 	public static final PropertyTag<Number> PBS_TIME_USED_PROP = new PropertyTag<Number>(
 			PBS_REGISTRY, "runtime", Number.class, "The runtime of the job");
@@ -291,7 +298,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	/**
 	 * All attributes declared in the PBS manuals
 	 */
-	private static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
+	protected static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
 	static {
 		/* The comments list the record types the properties are contained in */
 		// S
@@ -476,14 +483,24 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 		 * of the parse
 		 */
 		String info = this.info.toString();
-		if (info.length() > 0)
+		
+		if (info.length() > 0){
 			logger.info(info);
-
+		}
+		this.info.clear();
+		this.info=null;
+		
 		String warnings = this.warnings.toString();
-		if (warnings.length() > 0)
+		if (warnings.length() > 0){
 			logger.warn(warnings);
+		}
+		this.warnings.clear();
+		this.warnings=null;
 
-		return this.errors.toString();
+		String error_text = this.errors.toString();
+		this.errors.clear();
+		this.errors=null;
+		return error_text;
 	}
 
 	/*
@@ -641,12 +658,12 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 				try {
 					maker.setValue(pbsMap, attrValue);
 				} catch (IllegalArgumentException e) {
-					this.errors.add("Problem with attribute '" + attrValue
+					this.errors.add("Problem with attribute '" + attrName
 							+ "': Unable to parse value '" + attrValue + "'", record, e);
 				}
 			}
 		}
-	
+	    m=null;
 		// This code address the issue of jobs that report their 
 		// end time as being before their start time, or there 
 		// submitted or eligible times are after there start time (usually because 

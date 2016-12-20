@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -80,11 +82,13 @@ public class ErrorSet
   public static class Entry implements Comparable<Entry>
   {
     private int count = 0;
+    private int max_details = 0;
     String text;
 
-    public Entry(String text)
+    public Entry(String text,int max_details)
     {
       this.text = text;
+      this.max_details = max_details;
     }
 
     Set<Detail> fails = new HashSet<Detail>();
@@ -94,7 +98,9 @@ public class ErrorSet
       if(value != null && value.length() > 0)
       {
         count++;
-        fails.add(new Detail(value, t));
+        if( max_details < 0 || fails.size() < max_details){
+        	fails.add(new Detail(value, t));
+        }
       }
     }
 
@@ -121,16 +127,23 @@ public class ErrorSet
     {
       return Collections.unmodifiableCollection(fails);
     }
+    public void clear(){
+    	fails.clear();
+    }
   }
   private String name="";
 
   private java.util.Map<String, Entry> reg = new TreeMap<String, Entry>();
 
+  private int max_details=-1;
   public int size()
   {
     return reg.size();
   }
   
+  public void setMaxDetails(int i){
+	  max_details=i;
+  }
   public boolean hasError(){
 	  return ! reg.isEmpty();
   }
@@ -159,7 +172,7 @@ public class ErrorSet
       e = reg.get(text);
     } else
     {
-      e = new Entry(text);
+      e = new Entry(text,max_details);
       reg.put(text, e);
     }
     e.add(data, t);
@@ -220,7 +233,9 @@ public class ErrorSet
 			  for(Detail lines : e.fails)
 			  {
 				  sb.nbs();
+				  sb.open("pre");
 				  sb.clean(lines.text);
+				  sb.close();
 				  sb.open("br");
 				  sb.close();
 				  sb.clean('\n');
@@ -230,7 +245,9 @@ public class ErrorSet
 					  if( message != null ){
 						  sb.nbs();
 						  sb.nbs();
+						  sb.open("pre");
 						  sb.clean(message);
+						  sb.close();
 						  sb.open("br");
 						  sb.close();
 						  sb.clean("\n");
@@ -306,5 +323,13 @@ public class ErrorSet
 	      }
 	    }
 	 
+  }
+  
+  public void clear(){
+	  for(Iterator<Map.Entry<String,Entry>> it = reg.entrySet().iterator(); it.hasNext();){
+		  Map.Entry<String, Entry> e = it.next();
+		  e.getValue().clear();
+		  it.remove();
+	  }
   }
 }

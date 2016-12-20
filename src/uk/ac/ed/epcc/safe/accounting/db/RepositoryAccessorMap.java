@@ -216,7 +216,8 @@ public class RepositoryAccessorMap<X extends DataObject&ExpressionTarget> extend
 						selector_map.put(field_name, new Selector(){
 							@Override
 							public Input getInput() {
-								return new DurationInput();
+								//Duration is supported at native millisecond resolution.
+								return new DurationInput(1L);
 							}});
 					} 
 				} else if (Boolean.class.isAssignableFrom(t)) {

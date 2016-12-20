@@ -70,7 +70,6 @@ import uk.ac.ed.epcc.webapp.content.TableXMLGenerator;
 import uk.ac.ed.epcc.webapp.content.XMLBuilderSaxHandler;
 import uk.ac.ed.epcc.webapp.content.XMLDomBuilder;
 import uk.ac.ed.epcc.webapp.content.XMLGenerator;
-import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -186,7 +185,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		log.debug(details);
 	}
 	public final void addError(String type, String details, Node e){
-		addError(type, details+makeString(e));
+		addError(type, details+"\n"+makeString(e));
 	}
 	/** A debugging method to generate a String version of a Node
 	 * 

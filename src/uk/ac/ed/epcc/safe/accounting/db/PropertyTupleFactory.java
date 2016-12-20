@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
-import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
@@ -21,6 +20,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.Tagged;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
@@ -29,11 +29,10 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.TupleFactory;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory.FilterIterator;
+import uk.ac.ed.epcc.webapp.model.data.TupleSelfSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.time.Period;
@@ -49,10 +48,11 @@ import uk.ac.ed.epcc.webapp.time.Period;
 public class PropertyTupleFactory<
 A extends DataObject, 
 AF extends DataObjectFactory<A>,
-T extends PropertyTupleFactory<A,AF,?>.PropertyTuple
->extends TupleFactory<A,AF,T> implements ExpressionTargetGenerator<T>, ExpressionFilterTarget{
+T extends PropertyTupleFactory.PropertyTuple<A>
+>extends TupleFactory<A,AF,T> implements ExpressionTargetGenerator<T>, ExpressionFilterTarget,Tagged{
 
-	private final TupleAccessorMap map;
+	protected final TupleAccessorMap map;
+	private final String tag;
 	MultiFinder finder = new MultiFinder();
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.webapp.model.data.TupleFactory#makeTuple()
@@ -60,10 +60,11 @@ T extends PropertyTupleFactory<A,AF,?>.PropertyTuple
 	@Override
 	public T makeTuple() {
 		
-		return (T) new PropertyTuple();
+		return (T) new PropertyTuple(getContext(),map);
 	}
 	public PropertyTupleFactory(AppContext c,String config_tag) {
 		super(c);
+		this.tag=config_tag;
 		String nested = c.getInitParameter(config_tag+".members");
 		if( nested != null){
 			for(String tag : nested.split("\\s*,\\s*")){
@@ -77,16 +78,17 @@ T extends PropertyTupleFactory<A,AF,?>.PropertyTuple
 		for(AF fac : getMemberFactories()){
 			ReferenceTag<A, AF> tag = (ReferenceTag<A, AF>) refs.find(IndexedReference.class,fac.getTag());
 			if( tag != null ){
-				
+				map.put(tag, new TupleSelfSQLValue<A,AF,T>(this, fac));
 			}
 		}
 	}
 
-	public class PropertyTuple extends TupleFactory.Tuple<A> implements ExpressionTarget,Contexed{
-
-		 public PropertyTuple() {
+	public static class PropertyTuple<A extends DataObject> extends TupleFactory.Tuple<A> implements ExpressionTarget,Contexed{
+		private final AppContext conn;
+		 public PropertyTuple(AppContext conn,TupleAccessorMap map) {
 			super();
 			this.proxy = map.getProxy(this);
+			this.conn=conn;
 		}
 
 		protected final ExpressionTargetContainer proxy;
@@ -113,7 +115,7 @@ T extends PropertyTupleFactory<A,AF,?>.PropertyTuple
 
 		@Override
 		public AppContext getContext() {
-			return PropertyTuple.this.getContext();
+			return conn;
 		}
 		
 	}
@@ -227,5 +229,9 @@ T extends PropertyTupleFactory<A,AF,?>.PropertyTuple
 	@Override
 	public BaseSQLFilter getOrderFilter(boolean descending, PropExpression expr) throws CannotFilterException {
 		return map.getOrderFilter(descending, expr);
+	}
+	@Override
+	public final String getTag() {
+		return tag;
 	}
 }
