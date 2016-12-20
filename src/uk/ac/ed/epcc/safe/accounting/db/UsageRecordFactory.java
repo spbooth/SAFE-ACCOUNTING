@@ -18,8 +18,8 @@
 
 import java.util.Date;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -33,7 +33,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
 
 
 /** Base class for different accounting factories.
- * This class defines a base class for all DB persisted {@link UsageRecord}s for normal accounting.
+ * This class defines a base class for all DB persisted {@link ExpressionTargetContainer}s for normal accounting.
  * The assumption being that accounting records need no additional functionality as they are only accessed
  * via the usage producer.
 * Eventually it should be possible to make this a final inner class but currently it is a 
@@ -51,7 +51,7 @@ public abstract class UsageRecordFactory<T extends UsageRecordFactory.Use> exten
 		DefaultUsageProducer<T> {
 	
 
-	public static class Use extends DataObjectPropertyContainer implements UsageRecord, ExpressionTarget, TimePeriod {
+	public static class Use extends DataObjectPropertyContainer implements ExpressionTargetContainer, ExpressionTarget, TimePeriod {
 		
 		protected Use(UsageRecordFactory fac,Record r) {
 			super(fac,r);

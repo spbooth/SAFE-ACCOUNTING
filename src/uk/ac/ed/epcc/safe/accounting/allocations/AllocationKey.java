@@ -16,7 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.allocations;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 
 /** Key object for AllocationFactory transitions
@@ -27,7 +27,7 @@ import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
  */
 
 
-public class AllocationKey<T extends UsageRecord> extends TransitionKey<T> {
+public class AllocationKey<T extends ExpressionTargetContainer> extends TransitionKey<T> {
 
 	public AllocationKey(Class<? super T> t, String name, String help) {
 		super(t, name, help);

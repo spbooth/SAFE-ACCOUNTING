@@ -16,7 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.update;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 
 /** A {@link PropertyContainerParser} for data where the UsageRecordData
  * is composed of multiple event records.
@@ -36,7 +36,7 @@ public interface IncrementalPropertyContainerParser  {
 	 * @param record
 	 * @return boolean true if record is complete
 	 */
-	public boolean isComplete(UsageRecord record);
+	public boolean isComplete(ExpressionTargetContainer record);
 	
 	/** Once record has been marked as complete apply any side effects.
 	 * This occurs immediately before the policy postComplete
@@ -44,5 +44,5 @@ public interface IncrementalPropertyContainerParser  {
 	 * @param record
 	 * @throws Exception 
 	 */
-	public void postComplete(UsageRecord record) throws Exception;
+	public void postComplete(ExpressionTargetContainer record) throws Exception;
 }

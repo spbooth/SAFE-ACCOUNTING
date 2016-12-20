@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting;
 
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 
 /** Interface for factory classes that need to see 
@@ -46,7 +47,7 @@ public interface UsageRecordListener {
 	 * @param rec   The actual committed record
 	 * @throws Exception
 	 */
-	public void postCreate(PropertyContainer props, UsageRecord rec)
+	public void postCreate(PropertyContainer props, ExpressionTargetContainer rec)
 			throws Exception;
 
 	/**
@@ -56,6 +57,6 @@ public interface UsageRecordListener {
 	 * @param rec
 	 * @throws Exception
 	 */
-	public void preDelete(UsageRecord rec) throws Exception;
+	public void preDelete(ExpressionTargetContainer rec) throws Exception;
    
 }

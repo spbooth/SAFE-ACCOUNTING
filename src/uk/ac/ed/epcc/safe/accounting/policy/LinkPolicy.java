@@ -22,10 +22,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
@@ -248,7 +248,7 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void postCreate(PropertyContainer props, UsageRecord r) throws Exception {
+	public void postCreate(PropertyContainer props, ExpressionTargetContainer r) throws Exception {
 		IndexedReference<UsageRecordFactory.Use> peer_ref = (IndexedReference<Use>) props.getProperty(remote_tag, null);
         Use rec = (Use) r;
         

@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.policy.LinkPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
@@ -217,7 +217,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 		return mf;
 	}
 
-	public boolean isComplete(UsageRecord record) {
+	public boolean isComplete(ExpressionTargetContainer record) {
 		// We need the set of properties common to ALL records
 		
 		Date end_date = record.getProperty(GLOBUS_END_DATE,null);
@@ -286,7 +286,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 	}
 
 	@SuppressWarnings("unchecked")
-	public void postComplete(UsageRecord record) throws Exception{
+	public void postComplete(ExpressionTargetContainer record) throws Exception{
 		log.debug("In postComplete");
 		UsageRecordFactory<?> fac = master_factories.get(record.getProperty(GLOBUS_MANAGER));
 		if(fac != null ){

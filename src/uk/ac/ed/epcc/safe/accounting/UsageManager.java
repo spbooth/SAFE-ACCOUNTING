@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -56,7 +57,7 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.NestedIterator;
  * @param <UR>
  */
 
-public abstract class UsageManager<UR extends UsageRecord> implements
+public abstract class UsageManager<UR extends ExpressionTargetContainer> implements
 		UsageProducer<UR> , Selector<ListInput<String, UsageProducer>>, 
 		DerivedPropertyFactory,FormUpdateProducer<UR>{
 
@@ -604,11 +605,13 @@ public abstract class UsageManager<UR extends UsageRecord> implements
 		StringBuilder sb = new StringBuilder();
 		boolean seen=false;
 		for(UsageProducer<UR> prod: factories.values()){
-			if( seen ){
-				sb.append(" , ");
+			if( prod instanceof PropertyImplementationProvider){
+				if( seen ){
+					sb.append(" , ");
+				}
+				sb.append(((PropertyImplementationProvider)prod).getImplemenationInfo(tag));
+				seen=true;
 			}
-			sb.append(prod.getImplemenationInfo(tag));
-			seen=true;
 		}
 		return sb.toString();
 	}

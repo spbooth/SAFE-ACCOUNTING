@@ -11,10 +11,26 @@
 //| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.|
 //| See the License for the specific language governing permissions and     |
 //| limitations under the License.                                          |
+/*******************************************************************************
+ * Copyright (c) - The University of Edinburgh 2010
+ *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.expr;
 
+
+
+import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 
-public interface ExpressionTargetContainer extends PropertyContainer, ExpressionTarget {
 
+/** Interface for records targeted by the report generator.
+ * 
+ * This is a simple combination of {@link PropertyContainer} and {@link ExpressionTarget}.
+ * so all {@link DataObjectPropertyContainer}s implement it.
+ * 
+ * @author spb
+ *
+ */
+public interface ExpressionTargetContainer extends PropertyContainer, ExpressionTarget{
+	
+    
 }

@@ -18,14 +18,14 @@ package uk.ac.ed.epcc.safe.accounting.charts;
 import java.util.Date;
 
 import uk.ac.ed.epcc.safe.accounting.Reduction;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.strategy.SetRangeMapper;
 
 
 
-public class UsageRecordSetTransform<D extends Number> extends UsageRecordMapper<D> implements SetRangeMapper<UsageRecord>{
+public class UsageRecordSetTransform<D extends Number> extends UsageRecordMapper<D> implements SetRangeMapper<ExpressionTargetContainer>{
 	public UsageRecordSetTransform(AppContext conn,int set,Reduction op,
 			PropExpression<D> plot_property, PropExpression<Date> start, PropExpression<Date> end) {
 		super(conn, op,plot_property, start, end);
@@ -33,7 +33,7 @@ public class UsageRecordSetTransform<D extends Number> extends UsageRecordMapper
 	
 	}
 	private final int set;
-	public int getSet(UsageRecord o) {
+	public int getSet(ExpressionTargetContainer o) {
 		return set;
 	}
 

@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
+import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.CasePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.EvaluatePropExpressionVisitor;
@@ -37,22 +38,15 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.expr.ResolveCheckVisitor;
-import uk.ac.ed.epcc.safe.accounting.properties.FixedPropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
-import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.SetPropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
-import uk.ac.ed.epcc.safe.accounting.properties.TagFilter;
 import uk.ac.ed.epcc.safe.accounting.reference.IndexedTag;
-import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
-import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -62,9 +56,6 @@ import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.Targetted;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.forms.Form;
-import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.Input;
-import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Accessor;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CaseExpression;
@@ -87,18 +78,8 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
-import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
-import uk.ac.ed.epcc.webapp.model.data.SelfSQLValue;
-import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
-import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DurationInput;
-import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
-import uk.ac.ed.epcc.webapp.model.data.reference.IndexedTypeProducer;
-import uk.ac.ed.epcc.webapp.model.relationship.RelationshipProvider;
-import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 /** Common {@link PropExpression} logic that can be incorporated (by composition) into factory classes for {@link DataObject}s that implement {@link ExpressionTarget}.
@@ -132,7 +113,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  */
 
 
-public abstract class AccessorMap<X extends ExpressionTarget&Contexed> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>{
+public abstract class AccessorMap<X extends ExpressionTarget&Contexed> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
 	public static final Feature EVALUATE_CACHE_FEATURE = new Feature("evaluate.cache",true,"cache expression evaluations in ExpressionTargets");
 	protected final Class<? super X> target;
 	

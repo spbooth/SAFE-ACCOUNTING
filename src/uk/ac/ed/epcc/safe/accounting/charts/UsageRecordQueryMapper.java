@@ -19,18 +19,18 @@ package uk.ac.ed.epcc.safe.accounting.charts;
 import java.util.Vector;
 
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.webapp.charts.strategy.KeyLabeller;
 import uk.ac.ed.epcc.webapp.charts.strategy.LabelledQueryMapper;
 
 public abstract class UsageRecordQueryMapper<K> implements LabelledQueryMapper<UsageProducer<?>> {
 
 	
-	final protected KeyLabeller<UsageRecord,K> labeller;
+	final protected KeyLabeller<ExpressionTargetContainer,K> labeller;
 
 
 	public UsageRecordQueryMapper(
-			KeyLabeller<UsageRecord,K> lab){
+			KeyLabeller<ExpressionTargetContainer,K> lab){
 		labeller=lab;
 	}
 	
@@ -42,7 +42,7 @@ public abstract class UsageRecordQueryMapper<K> implements LabelledQueryMapper<U
 		return labeller.nSets();
 	}
 
-	public int getSet(UsageRecord o) {
+	public int getSet(ExpressionTargetContainer o) {
 		return labeller.getSet(o);
 	}
 	

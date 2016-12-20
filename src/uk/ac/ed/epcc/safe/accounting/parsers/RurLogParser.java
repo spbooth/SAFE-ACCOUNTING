@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.LongParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
@@ -587,7 +587,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 
 
 	@Override
-	public boolean isComplete(UsageRecord record) {
+	public boolean isComplete(ExpressionTargetContainer record) {
 		// All supported plugins must be parsed
 		PropertyTag<?>[] attrs = {ALPS_ID, ENERGY_PLUGIN,TASKSTATS_PLUGIN,MEMORY_PLUGIN,TIMESTAMP_PLUGIN};
 		return super.isComplete(record, attrs);
@@ -595,7 +595,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 
 
 	@Override
-	public void postComplete(UsageRecord record) throws Exception {
+	public void postComplete(ExpressionTargetContainer record) throws Exception {
 		// do nothing
 	}
 	

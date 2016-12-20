@@ -19,12 +19,13 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
+import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -45,12 +46,12 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 /** Common base class for turning a {@link DataObjectPropertyFactory} into a {@link UsageProducer}
  * This class implements most of the query logic needed to implement UsageProducer
- * but down not constrain the class of the {@link UsageRecord} more than is required to implement {@link UsageProducer}
+ * but down not constrain the class of the {@link ExpressionTargetContainer} more than is required to implement {@link UsageProducer}
  * @author spb
  * @param <T> class of UsageRecord
  *
  */ 
-public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContainer & UsageRecord>  extends DataObjectPropertyFactory<T> implements UsageProducer<T> {
+public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContainer & ExpressionTargetContainer>  extends DataObjectPropertyFactory<T> implements UsageProducer<T> ,PropertyImplementationProvider{
 	 protected Logger log;
 	    
 		protected DefaultUsageProducer(){

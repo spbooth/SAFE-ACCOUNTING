@@ -35,7 +35,7 @@ import java.io.FileWriter;
 
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
 import uk.ac.ed.epcc.safe.accounting.UsageManager;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.formatters.UsageRecordFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.UsageRecordWriter;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -249,7 +249,7 @@ public class UsageRecordWriterFromDBApp implements Command {
 		// get the default accounting setup, we dont want to know the gory details
 		AccountingService ac = conn.getService(AccountingService.class);
 		@SuppressWarnings("unchecked")
-		UsageManager<? extends UsageRecord> um = ac.getUsageManager();
+		UsageManager<? extends ExpressionTargetContainer> um = ac.getUsageManager();
 		
 		
 		// construct a data-based query from the default accounting table
@@ -284,8 +284,8 @@ public class UsageRecordWriterFromDBApp implements Command {
 		
 		
 		try {
-			for(Iterator<? extends UsageRecord> it = um.getIterator(sel); it.hasNext();){
-				UsageRecord rec = it.next();
+			for(Iterator<? extends ExpressionTargetContainer> it = um.getIterator(sel); it.hasNext();){
+				ExpressionTargetContainer rec = it.next();
 						
 				String formattedRecord = urf.format(rec);
 				

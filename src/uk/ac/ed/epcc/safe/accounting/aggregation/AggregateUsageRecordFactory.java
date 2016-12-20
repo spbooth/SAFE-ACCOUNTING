@@ -32,12 +32,12 @@ import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.UsageRecordListener;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.RepositoryAccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
@@ -401,7 +401,7 @@ public abstract class AggregateUsageRecordFactory
 			}
 		}
 	}
-	public boolean aggregate(UsageRecord rec) throws InvalidExpressionException,
+	public boolean aggregate(ExpressionTargetContainer rec) throws InvalidExpressionException,
 			DataException, CannotFilterException, NoSQLFilterException {
 
 		// commit as we go along for safety.
@@ -420,7 +420,7 @@ public abstract class AggregateUsageRecordFactory
 	 */
 	
 	@SuppressWarnings("unchecked")
-	private Use aggregateNoCommit(UsageRecord rec, boolean add)
+	private Use aggregateNoCommit(ExpressionTargetContainer rec, boolean add)
 			throws InvalidExpressionException, DataException, CannotFilterException, NoSQLFilterException {
 		
 		raw_counter++;
@@ -448,7 +448,7 @@ public abstract class AggregateUsageRecordFactory
 		return agg;
 	}
 
-	public void deAggregate(UsageRecord rec) throws InvalidExpressionException,
+	public void deAggregate(ExpressionTargetContainer rec) throws InvalidExpressionException,
 			DataException, CannotFilterException, NoSQLFilterException {
 		Use last = aggregateNoCommit(rec,false);
 		last.commit();
@@ -728,12 +728,12 @@ public abstract class AggregateUsageRecordFactory
 		sb.append("\n");
 		return sb.toString();
 	}
-	public void postCreate(PropertyContainer props, UsageRecord rec)
+	public void postCreate(PropertyContainer props, ExpressionTargetContainer rec)
 			throws Exception {
 		aggregate(rec);
 		
 	}
-	public void preDelete(UsageRecord rec) throws Exception {
+	public void preDelete(ExpressionTargetContainer rec) throws Exception {
 		
 		deAggregate(rec);
 	}

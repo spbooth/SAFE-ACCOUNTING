@@ -22,7 +22,7 @@ import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -39,7 +39,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  */
 
 
-public class UsageRecordMapper<D extends Number> implements RangeMapper<UsageRecord>{
+public class UsageRecordMapper<D extends Number> implements RangeMapper<ExpressionTargetContainer>{
 	protected final  AppContext conn;
 	protected final PropExpression<D> plot_property;
 	protected final PropExpression<Date> start_prop; // may be null if we only want to use end point
@@ -60,7 +60,7 @@ public class UsageRecordMapper<D extends Number> implements RangeMapper<UsageRec
 	}
 	
 
-	public final float getOverlapp(UsageRecord o, Date p_start, Date p_end) {
+	public final float getOverlapp(ExpressionTargetContainer o, Date p_start, Date p_end) {
 		try {
 			return OverlapHandler.getOverlap(o,NumberReductionTarget.getInstance(op, plot_property), start_prop, end_prop, new Period(p_start, p_end)).floatValue();
 		} catch (InvalidExpressionException e) {
@@ -70,7 +70,7 @@ public class UsageRecordMapper<D extends Number> implements RangeMapper<UsageRec
 		}
 	}
 
-	public final  boolean overlapps(UsageRecord o, Date start, Date end) {
+	public final  boolean overlapps(ExpressionTargetContainer o, Date start, Date end) {
 		return OverlapHandler.overlaps(o, start_prop, end_prop, start, end);
 	}
     

@@ -22,7 +22,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTuple;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
-/** Interface for class that supports reductioins.
+/** Interface for class that supports reductions.
  * 
  * Any {@link ExpressionTargetFactory} can implement this interface by using a {@link ReductionHandler}
  * 

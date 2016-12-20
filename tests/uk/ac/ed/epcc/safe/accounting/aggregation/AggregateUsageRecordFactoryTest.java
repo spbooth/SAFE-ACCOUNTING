@@ -19,8 +19,8 @@ import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.NumberSumReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.db.ConfigUsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -120,8 +120,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 			System.out.println("Supress line by line regenerate, too many records");
 			return;
 		}
-		for(Iterator<? extends UsageRecord> it = raw_fac.getIterator(sel); it.hasNext();){
-			UsageRecord rec = it.next();
+		for(Iterator<? extends ExpressionTargetContainer> it = raw_fac.getIterator(sel); it.hasNext();){
+			ExpressionTargetContainer rec = it.next();
 			fac.aggregate(rec);
 		}
 		

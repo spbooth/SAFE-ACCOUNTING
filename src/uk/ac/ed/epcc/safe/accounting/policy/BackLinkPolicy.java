@@ -1,7 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.policy;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -47,7 +47,7 @@ public class BackLinkPolicy extends BaseUsageRecordPolicy {
 	 * @see uk.ac.ed.epcc.safe.accounting.policy.BaseUsageRecordPolicy#postCreate(uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer, uk.ac.ed.epcc.safe.accounting.UsageRecord)
 	 */
 	@Override
-	public void postCreate(PropertyContainer props, UsageRecord rec) throws Exception {
+	public void postCreate(PropertyContainer props, ExpressionTargetContainer rec) throws Exception {
 		if( remote_tag == null || back_ref == null ){
 			return;
 		}
@@ -61,7 +61,7 @@ public class BackLinkPolicy extends BaseUsageRecordPolicy {
 	 * @see uk.ac.ed.epcc.safe.accounting.policy.BaseUsageRecordPolicy#preDelete(uk.ac.ed.epcc.safe.accounting.UsageRecord)
 	 */
 	@Override
-	public void preDelete(UsageRecord rec) throws Exception {
+	public void preDelete(ExpressionTargetContainer rec) throws Exception {
 		if( remote_tag == null || back_ref == null ){
 			return;
 		}
