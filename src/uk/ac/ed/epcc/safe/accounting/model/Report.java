@@ -16,6 +16,7 @@ public class Report {
 	}
 
 	public Report(ReportTemplate template, Map<String, Object> parameters) {
+		System.out.println("CREATING REPORT, parameters=" + parameters);
 		this.reportTemplate = template;
 		this.parameters = parameters;
 	}

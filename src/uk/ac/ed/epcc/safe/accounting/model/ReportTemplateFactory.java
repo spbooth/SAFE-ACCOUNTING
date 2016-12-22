@@ -33,10 +33,13 @@ import org.xml.sax.SAXException;
 
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.content.Link;
+import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
+import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderClause;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
@@ -48,6 +51,7 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataNotFoundException;
 import uk.ac.ed.epcc.webapp.model.data.filter.SQLValueFilter;
 import uk.ac.ed.epcc.webapp.model.data.table.TableStructureDataObjectFactory;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 
@@ -88,9 +92,13 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	}
 	
 	public FilterResult<R> getTemplatesInGroup(String group) {
-		if (!res.hasField(ReportTemplate.REPORT_GROUP)) return null;
 		try {
-			return getResult(new SQLValueFilter<R>(getTarget(), res, ReportTemplate.REPORT_GROUP, group));
+			if (group == null || !res.hasField(ReportTemplate.REPORT_GROUP)) {
+				return all();
+			}
+			else {
+				return getResult(new SQLValueFilter<R>(getTarget(), res, ReportTemplate.REPORT_GROUP, group));
+			}
 		} catch (DataFault e) {
 			return null;
 		}	
@@ -177,5 +185,38 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 			return null;
 		}
 	}
+	
+	public Table<String,ReportTemplate> getIndexTable() throws DataFault
+	{
+		return getReportGroupTable(null);
+	}
+
+	public Table<String,ReportTemplate> getReportGroupTable(String group) throws DataFault
+	{
+		Table<String,ReportTemplate> t = new Table<String,ReportTemplate>();
+		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(getContext());
+		SessionService sess = getContext().getService(SessionService.class);
+
+		FilterResult<R> reportTemplates = getTemplatesInGroup(group);
+		if (reportTemplates == null) {
+			getLogger().debug("Problem listing report templates");
+		}
+		else {
+			for (ReportTemplate reportTemplate : reportTemplates) {	
+				if (reportTemplate.canUse(sess))
+				{
+					String reportName = reportTemplate.getReportName();
+					String reportDescription = reportTemplate.getReportDescription();
+					t.put("Name", reportTemplate, reportName);
+					t.put("Description", reportTemplate, reportDescription);
+					t.put("Generate", reportTemplate, new Link(getContext(), "Generate", 
+							new ChainedTransitionResult<Report, ReportTemplateKey>(
+									prov, new Report(reportTemplate), null)));
+				}
+			}
+		}
+		return t;
+	}
+
 	
 }
