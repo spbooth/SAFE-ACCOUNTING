@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,6 +32,7 @@ import uk.ac.ed.epcc.webapp.content.SimpleXMLBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.BaseForm;
 import uk.ac.ed.epcc.webapp.forms.Form;
+import uk.ac.ed.epcc.webapp.forms.MapForm;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
@@ -120,29 +122,6 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 		}
 	};
 
-	public class GeneratePreviewTransition extends AbstractDirectTransition<Report>{
-
-		@Override
-		public FormResult doTransition(Report target, AppContext c)
-				throws TransitionException {
-			return new ViewTransitionResult<Report, ReportTemplateKey>(
-					ReportTemplateTransitionProvider.this, target);
-		}
-		
-	}
-
-	public class BackTransition extends AbstractDirectTransition<Report>{
-
-		@Override
-		public FormResult doTransition(Report target, AppContext c)
-				throws TransitionException 
-		{
-			return new ViewTransitionResult<Report, ReportTemplateKey>(
-					ReportTemplateTransitionProvider.this, new Report(null));
-		}
-		
-	}
-	
 	public class ExportTransition extends AbstractDirectTransition<Report>{
 		
 		private String extension;
@@ -200,27 +179,17 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 
 		public class PreviewAction extends FormAction{
 			private Report target;
-			private ReportBuilder builder;
+			
 
-			public PreviewAction(Report target, ReportBuilder builder) {
+			public PreviewAction(Report target) {
 				super();
 				this.target = target;
-				this.builder = builder;
+				
 			}
 
 			@Override
 			public FormResult action(Form f) throws ActionException {
-				Map<String, Object> reportParameters = target.getParameters(); 
-//				builder.parseReportParametersForm(f, reportParameters);
-				System.out.println("TARGET PARAMETERS : " + reportParameters);
-				Iterator<String> fields = f.getFieldIterator();
-				while (fields.hasNext()) {
-					String field = fields.next();
-					Input input = f.getInput(field);
-					setInputValue(reportParameters, input);
-				}
-				System.out.println("PREVIEW PARAMETERS : " + reportParameters);
-				return new ViewResult(target);
+				return new ViewResult(getTargetReport(f,target));
 			}
 			
 		}
@@ -255,7 +224,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 						return new ServeDataResult(producer, producer.setData(msd));
 					}
 					else {
-						return new ViewResult(target);
+						return new ViewResult(getTargetReport(f,target));
 					}
 				} catch (ParserConfigurationException e) {
 					// TODO Auto-generated catch block
@@ -275,25 +244,23 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 			try {
 				ReportBuilder builder = ReportBuilder.getInstance(conn);
 				ReportBuilder.setTemplate(conn, builder, target.getReportTemplate().getTemplateName());
-				builder.buildReportParametersForm(f, target.getParameters());
-//				Iterator<String> fields = f.getFieldIterator();
-////				Map<String, Object> params = new HashMap<String, Object>();
-//				while (fields.hasNext()) {
-//					String field = fields.next();
-//					Input input = f.getInput(field);
-//					setParameters(target.getParameters(), input);
-////					if (value != null) {
-////						params.put(input.getKey(), value);
-////					}
-//				}
+				Map<String, Object> parameters = target.getParameters();
+				builder.buildReportParametersForm(f, parameters);
+				((MapForm)f).parsePost(null, parameters, true,true);
+				
 				f.addAction("CSV", new ExportAction(target, builder, builder.getReportType("csv")));
 				f.addAction("PDF", new ExportAction(target, builder, builder.getReportType("pdf")));
 				f.addAction("HTML", new ExportAction(target, builder, builder.getReportType("html")));
-				f.addAction("Preview", new PreviewAction(target, builder));
+				f.addAction("Preview", new PreviewAction(target));
 			}
 			catch (Exception e) {
 //				e.printStackTrace();
 			}
+		}
+		public Report getTargetReport(Form f,Report orig){
+			LinkedHashMap<String,Object> new_param = new LinkedHashMap<String, Object>();
+			((MapForm)f).addStringMap(new_param);
+			return new Report(orig.getReportTemplate(),new_param);
 		}
 
 		@Override
@@ -398,32 +365,6 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 		return params;
 	}
 
-	private void setInputValue(Map<String, Object> params, Input input) 
-	{
-		Object data = null;
-//		if (input instanceof ItemInput ) {
-//			data = ((ItemInput) input).getItem();
-//		} else {
-			data = input.getValue();
-//		}
-		System.out.println("INPUT: " + input.getKey() + " = " + data);
-		// do explicit remove for null value as this might
-		// be the result of a parse of a non-null string.
-		if( data == null ){
-			params.remove(input.getKey());
-		}else{
-			if(input instanceof MultiInput){
-				MultiInput<?,?> multi=(MultiInput) input;
-				for(String sub_key : multi.getSubKeys()){
-					setInputValue(params, multi.getInput(sub_key));
-				}
-			}
-			else {
-				params.put(input.getKey(), data);
-			}
-		}
-	}
-
 	private Object setParameters(Map<String, Object> params, Input input) {
 		Object data = params.get(input.getKey());
 		if(input instanceof MultiInput)
@@ -464,7 +405,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 				ReportBuilder builder = ReportBuilder.getInstance(context);
 				ReportBuilder.setTemplate(context, builder, target.getReportTemplate().getTemplateName());
 				Map<String,Object> params = getParameters(target.getParameters(), context, builder);
-				System.out.println("TARGET: PARAMETERS=" + params);
+				System.out.println("TARGET: PARAMETERS=" + target.getParameters());
 				if (!target.getParameters().isEmpty()) {
 					builder.renderContent(params, (SimpleXMLBuilder)cb);
 				}

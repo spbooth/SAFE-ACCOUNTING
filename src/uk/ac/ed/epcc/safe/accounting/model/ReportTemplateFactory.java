@@ -93,8 +93,11 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	
 	public FilterResult<R> getTemplatesInGroup(String group) {
 		try {
-			if (group == null || !res.hasField(ReportTemplate.REPORT_GROUP)) {
+			if (group == null) {
 				return all();
+			}
+			else if (!res.hasField(ReportTemplate.REPORT_GROUP)) {
+				return null;
 			}
 			else {
 				return getResult(new SQLValueFilter<R>(getTarget(), res, ReportTemplate.REPORT_GROUP, group));
@@ -193,6 +196,11 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 
 	public Table<String,ReportTemplate> getReportGroupTable(String group) throws DataFault
 	{
+		return getReportGroupTable(group, null);
+	}
+	
+	public Table<String,ReportTemplate> getReportGroupTable(String group, Map<String, Object> params) throws DataFault
+	{
 		Table<String,ReportTemplate> t = new Table<String,ReportTemplate>();
 		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(getContext());
 		SessionService sess = getContext().getService(SessionService.class);
@@ -205,13 +213,14 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 			for (ReportTemplate reportTemplate : reportTemplates) {	
 				if (reportTemplate.canUse(sess))
 				{
+					Report report = new Report(reportTemplate, params);
 					String reportName = reportTemplate.getReportName();
 					String reportDescription = reportTemplate.getReportDescription();
 					t.put("Name", reportTemplate, reportName);
 					t.put("Description", reportTemplate, reportDescription);
 					t.put("Generate", reportTemplate, new Link(getContext(), "Generate", 
 							new ChainedTransitionResult<Report, ReportTemplateKey>(
-									prov, new Report(reportTemplate), null)));
+									prov, report, null)));
 				}
 			}
 		}

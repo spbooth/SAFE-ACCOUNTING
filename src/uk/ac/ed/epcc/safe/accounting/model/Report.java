@@ -1,6 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.model;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import uk.ac.ed.epcc.webapp.forms.Form;
@@ -8,13 +9,12 @@ import uk.ac.ed.epcc.webapp.forms.Form;
 public class Report {
 	
 	private ReportTemplate reportTemplate;
-	private Map<String, Object> parameters;
-	private Form form;
+	private LinkedHashMap<String, Object> parameters;
 	private String extension;
 	private String name;
 	
 	public Report(ReportTemplate template) {
-		this(template, new HashMap<String, Object>());
+		this(template, null);
 	}
 
 	public Report(ReportTemplate template, Map<String, Object> parameters) {
@@ -29,24 +29,21 @@ public class Report {
 				this.name = templateName;
 			}
 		}
-		this.parameters = parameters;
+		if (parameters != null) {
+			this.parameters = new LinkedHashMap<String, Object>();
+			this.parameters.putAll(parameters);
+		}
+		else {
+			this.parameters = new LinkedHashMap<String, Object>();
+		}
 	}
 	
-	public Report(ReportTemplate template, Form form) {
-		this.reportTemplate = template;
-		this.form = form;
-	}
-
 	public ReportTemplate getReportTemplate() {
 		return reportTemplate;
 	}
 	
 	public Map<String, Object> getParameters() {
-		return parameters;
-	}
-	
-	public Form getForm() {
-		return form;
+		return new LinkedHashMap(parameters);
 	}
 	
 	public String getExtension() {
