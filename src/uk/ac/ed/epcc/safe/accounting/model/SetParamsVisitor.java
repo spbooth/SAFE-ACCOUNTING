@@ -43,6 +43,10 @@ public class SetParamsVisitor implements InputVisitor<Object> {
 	}
 	@Override
 	public <V, I extends Input> Object visitMultiInput(MultiInput<V, I> multiInput) throws Exception {
+		if( multiInput instanceof ParseInput){
+			// input will accept a single param
+			return visitBaseInput(multiInput);
+		}
 		for(Iterator<I> it = multiInput.getInputs(); it.hasNext();){
 			I i = it.next();
 			i.accept(this);
