@@ -27,7 +27,6 @@ import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
 import uk.ac.ed.epcc.safe.accounting.NumberSumReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.UsageRecordListener;
 import uk.ac.ed.epcc.safe.accounting.allocations.AllocationFactory;
 import uk.ac.ed.epcc.safe.accounting.allocations.AllocationKey;
@@ -36,6 +35,7 @@ import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
@@ -83,7 +83,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * The property <b>master.<em>table-name</em></b> defines the name of the {@link UsageProducer} where aggregated values come from.
  * </p>
  * <p>
- * The index properties and completion time are used to tie {@link UsageRecord}s from the master table to {@link ChargedAllocationRecord}s
+ * The index properties and completion time are used to tie {@link ExpressionTargetContainer}s from the master table to {@link ChargedAllocationRecord}s
  * </p>
  * <p>
  * Fields that match properties in the master producer generate accumulation properties (with the same property tag) other fields are normal
@@ -413,13 +413,13 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		return null;
 	}
 
-	public final void postCreate(PropertyContainer props, UsageRecord rec)
+	public final void postCreate(PropertyContainer props, ExpressionTargetContainer rec)
 			throws Exception {
 		aggregate(rec, true);
 		
 	}
 
-	public void preDelete(UsageRecord rec) throws Exception {
+	public void preDelete(ExpressionTargetContainer rec) throws Exception {
 		aggregate(rec, false);
 	}
 	public class RegenerateAllTransition extends AbstractDirectTransition<ChargedAllocationFactory<T,R>>{

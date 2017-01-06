@@ -26,6 +26,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.CasePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
@@ -78,7 +79,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  */
 
 
-public class OverlapHandler<T extends UsageRecord> {
+public class OverlapHandler<T extends ExpressionTargetContainer> {
 	private final AppContext conn;
     private final UsageProducer<T> prod;
     private Logger log=null;

@@ -19,7 +19,6 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
@@ -45,7 +44,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.ReferenceProvider;
  */
 
 
-public class AccountingClassification extends Classification implements PropertyContainer, ExpressionTarget , ReferenceProvider, UsageRecord{
+public class AccountingClassification extends Classification implements PropertyContainer, ExpressionTarget , ReferenceProvider, ExpressionTargetContainer{
     protected final PropertyTargetClassificationFactory fac;
     protected final ExpressionTargetContainer proxy;
 	@SuppressWarnings("unchecked")

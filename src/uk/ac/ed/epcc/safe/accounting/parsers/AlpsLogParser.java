@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
@@ -271,7 +271,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	}
 
 	@Override
-	public boolean isComplete(UsageRecord record) {
+	public boolean isComplete(ExpressionTargetContainer record) {
 		// set of minimal required properties from both record types, aprun and apsys
 		// Don't include the batch ids as testing apruns not run from batch won't complete
 		PropertyTag<?>[] attrs = {APRUN_TAG, APSYS_TAG,  ALPS_ID,
@@ -286,7 +286,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	}
 	
 	@Override
-	public void postComplete(UsageRecord record) throws Exception {
+	public void postComplete(ExpressionTargetContainer record) throws Exception {
 		// do nothing
 	}
 

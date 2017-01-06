@@ -19,8 +19,7 @@ package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.db.GeneratorReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.webapp.Tagged;
 
 /** Interface implemented by classes that can provide Usage information to the reports.
@@ -33,33 +32,15 @@ import uk.ac.ed.epcc.webapp.Tagged;
  * @param <UR> 
  *
  */
-public interface UsageProducer<UR extends UsageRecord> extends 
+public interface UsageProducer<UR extends ExpressionTargetContainer> extends 
 ExpressionTargetGenerator<UR>, 
 Tagged, 
 ReductionProducer<UR>{
 
 	
 	
-	/** Does this class support the specified property. A false return 
-	 * value is a definitive statement that the property will not be available in any records 
-	 * this UsageProducer retrieves from the database though the properties may exist during the
-	 * parse phase.
-	 * 
-	 * A true return value indicates that some of the records returned may contain the specified property.
-	 * Also the meanings from {@link PropertyTargetFactory}
-	 * 
-	 * @param tag
-	 * @return boolean
-	 */
-	@Override
-	public <X> boolean hasProperty(PropertyTag<X> tag);
 	
 	    
-    /** Describe implementation of a property.
-     * Used by accounting_properties.jsp
-     * @param tag
-     * @return
-     */
-	public String getImplemenationInfo(PropertyTag<?> tag);
+   
 
 }

@@ -18,7 +18,9 @@ package uk.ac.ed.epcc.safe.accounting;
 
 import java.util.List;
 
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.forms.Identified;
 /** Class to build a table of per-job information.
  * 
  * @author spb
@@ -26,7 +28,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  */
 
 
-public class JobTableMaker<UR extends UsageRecord> extends ExpressionTargetTableMaker<UR, UsageProducer<UR>>{
+public class JobTableMaker<UR extends ExpressionTargetContainer> extends ExpressionTargetTableMaker<UR, UsageProducer<UR>>{
 	
 	public JobTableMaker(AppContext c,UsageProducer up){
 		super(c,up);
@@ -42,7 +44,10 @@ public class JobTableMaker<UR extends UsageRecord> extends ExpressionTargetTable
 	
 	@Override
 	protected Object makeKey(UR t) {
-		return t.getKey();
+		if( t instanceof Identified ){
+			return ((Identified)t).getIdentifier();
+		}
+		return t;
 	}
     
 }

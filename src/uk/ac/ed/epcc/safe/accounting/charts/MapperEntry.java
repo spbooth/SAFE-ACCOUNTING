@@ -28,7 +28,7 @@ import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.UsageManager;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -638,7 +638,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     						// (make sure we don't overcount)
 
     						try {
-    							Iterator<UsageRecord> iter = ap.getIterator(selector);
+    							Iterator<ExpressionTargetContainer> iter = ap.getIterator(selector);
     							if( iter.hasNext()){
     								tc.addDataIterator(ds, map, iter);
     								data_added=true;
@@ -654,7 +654,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     					selector.add(new PeriodOverlapRecordSelector(new Period(tc.getPeriod()), start_prop, end_prop, OverlapType.UPPER_OUTER, cutoff));
 
     					try {
-    						Iterator<UsageRecord> iter = ap.getIterator(selector);
+    						Iterator<ExpressionTargetContainer> iter = ap.getIterator(selector);
     						if( iter.hasNext()){
     							tc.addDataIterator(ds, map, iter);
     							data_added=true;

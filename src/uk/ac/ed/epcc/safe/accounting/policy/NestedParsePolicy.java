@@ -1,9 +1,9 @@
 package uk.ac.ed.epcc.safe.accounting.policy;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.db.AccountingUpdater;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordParseTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -74,7 +74,7 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy {
 
 	
 	@Override
-	public void postCreate(PropertyContainer props, UsageRecord rec) throws Exception {
+	public void postCreate(PropertyContainer props, ExpressionTargetContainer rec) throws Exception {
 		
 		if( nested_prop != null && parse_target != null){
 			

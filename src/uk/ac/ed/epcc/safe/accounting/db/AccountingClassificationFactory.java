@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
@@ -62,7 +63,9 @@ import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 
 
 public class AccountingClassificationFactory<T extends AccountingClassification>
-		extends PropertyTargetClassificationFactory<T>  implements UsageProducer<T>,FilterSelector<DataObjectItemInput<T>>{
+		extends PropertyTargetClassificationFactory<T>  implements UsageProducer<T>,
+		FilterSelector<DataObjectItemInput<T>>,
+		PropertyImplementationProvider{
 	private PropertyFinder reg=null;
 	private RepositoryAccessorMap<T> map=null;
 	public static final PropertyRegistry classification = new PropertyRegistry("classification", "Standard properties for a Classification table");

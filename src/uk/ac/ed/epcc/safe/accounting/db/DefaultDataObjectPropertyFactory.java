@@ -13,11 +13,20 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.Map;
+import java.util.Set;
+
+import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
+import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
+import uk.ac.ed.epcc.safe.accounting.UsageProducer;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
+import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 /** Default implementation of the DataObjectPropertyFactory logic.
  * 
@@ -28,7 +37,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  * @param <T>
  */
 public abstract  class DefaultDataObjectPropertyFactory<T extends DataObjectPropertyContainer> extends
-		DataObjectPropertyFactory<T> {
+		DataObjectPropertyFactory<T> implements UsageProducer<T>{
 	private PropertyFinder reg=null;
 	private RepositoryAccessorMap<T> map=null;
 	private PropExpressionMap expression_map=null;
@@ -112,6 +121,33 @@ public abstract  class DefaultDataObjectPropertyFactory<T extends DataObjectProp
 		reg=null;
 		super.release();
 	}
+	private ReductionHandler<T, DefaultDataObjectPropertyFactory<T>> getReductionHandler(){
+		return new ReductionHandler<T, DefaultDataObjectPropertyFactory<T>>(this);
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ReductionProducer#getReduction(uk.ac.ed.epcc.safe.accounting.ReductionTarget, uk.ac.ed.epcc.safe.accounting.selector.RecordSelector)
+	 */
+	@Override
+	final public <T> T getReduction(ReductionTarget<T> target, RecordSelector sel) throws Exception {
+		return getReductionHandler().getReduction(target, sel);
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ReductionProducer#getIndexedReductionMap(java.util.Set, uk.ac.ed.epcc.safe.accounting.selector.RecordSelector)
+	 */
+	@Override
+	final public Map<ExpressionTuple, ReductionMapResult> getIndexedReductionMap(Set<ReductionTarget> property,
+			RecordSelector selector) throws Exception {
+		return getReductionHandler().getIndexedReductionMap(property, selector);
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ReductionProducer#getReductionMap(uk.ac.ed.epcc.safe.accounting.properties.PropExpression, uk.ac.ed.epcc.safe.accounting.ReductionTarget, uk.ac.ed.epcc.safe.accounting.selector.RecordSelector)
+	 */
+	@Override
+	final public <I> Map<I, Number> getReductionMap(PropExpression<I> index, ReductionTarget<Number> property,
+			RecordSelector selector) throws Exception {
+		return getReductionHandler().getReductionMap(index, property, selector);
+	}
+	
 	
 	
 	

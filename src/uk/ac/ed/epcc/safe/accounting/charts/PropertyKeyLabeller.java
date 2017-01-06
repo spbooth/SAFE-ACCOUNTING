@@ -16,7 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.charts;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -31,7 +31,7 @@ import uk.ac.ed.epcc.webapp.content.Labeller;
  */
 
 
-public class PropertyKeyLabeller<K> extends KeyLabeller<UsageRecord, K> {
+public class PropertyKeyLabeller<K> extends KeyLabeller<ExpressionTargetContainer, K> {
     final private Labeller<K,?> labeller;
     final private PropExpression<K> key_property;
 	public PropertyKeyLabeller(AppContext c,PropExpression<K> key_property, Labeller<K,?> l) {
@@ -53,7 +53,7 @@ public class PropertyKeyLabeller<K> extends KeyLabeller<UsageRecord, K> {
 	}
 
 	@Override
-	public K getKey(UsageRecord r) {
+	public K getKey(ExpressionTargetContainer r) {
 		try {
 			return r.evaluateExpression(key_property);
 		} catch (InvalidExpressionException e) {

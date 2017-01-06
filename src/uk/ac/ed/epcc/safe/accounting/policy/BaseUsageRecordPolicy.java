@@ -16,25 +16,25 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.policy;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.update.UsageRecordPolicy;
 
 public abstract class BaseUsageRecordPolicy extends BasePolicy implements
 		UsageRecordPolicy {
 
-	public void postCreate(PropertyContainer props, UsageRecord rec)
+	public void postCreate(PropertyContainer props, ExpressionTargetContainer rec)
 			throws Exception {
 		
 
 	}
 
-	public void preDelete(UsageRecord rec) throws Exception {
+	public void preDelete(ExpressionTargetContainer rec) throws Exception {
 		
 
 	}
 
-	public boolean allowReplace(PropertyContainer props, UsageRecord rec) {
+	public boolean allowReplace(PropertyContainer props, ExpressionTargetContainer rec) {
 		return true;
 	}
 

@@ -17,9 +17,9 @@
 
 package uk.ac.ed.epcc.safe.accounting.policy;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.aggregation.AggregateUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.aggregation.DailyAggregateUsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -53,7 +53,7 @@ public class AggregationPolicy extends BaseUsageRecordPolicy{
     private int updates;
 
 	@Override
-	public void postCreate(PropertyContainer props, UsageRecord rec)
+	public void postCreate(PropertyContainer props, ExpressionTargetContainer rec)
 			throws Exception {
 		
 		for(AggregateUsageRecordFactory fac : aggregators){
@@ -65,7 +65,7 @@ public class AggregationPolicy extends BaseUsageRecordPolicy{
 		}
 	}
 	@Override
-	public void preDelete(UsageRecord rec) throws Exception {
+	public void preDelete(ExpressionTargetContainer rec) throws Exception {
 		for(AggregateUsageRecordFactory fac : aggregators){
 			if( fac != null ){
 				fac.deAggregate(rec);

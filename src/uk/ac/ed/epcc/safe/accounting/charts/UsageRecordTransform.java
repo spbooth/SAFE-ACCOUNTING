@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Vector;
 
 import uk.ac.ed.epcc.safe.accounting.Reduction;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -35,7 +35,7 @@ import uk.ac.ed.epcc.webapp.charts.strategy.LabelledSetRangeMapper;
 
 
 public class UsageRecordTransform<K, D extends Number> extends UsageRecordMapper<D> implements
-		LabelledSetRangeMapper<UsageRecord> {
+		LabelledSetRangeMapper<ExpressionTargetContainer> {
 	
 	final private PropertyKeyLabeller<K> labeller;
 	public UsageRecordTransform(AppContext conn, Reduction op,PropExpression<K> key_property,
@@ -55,7 +55,7 @@ public class UsageRecordTransform<K, D extends Number> extends UsageRecordMapper
 		return labeller.nSets();
 	}
 
-	public int getSet(UsageRecord o) {
+	public int getSet(ExpressionTargetContainer o) {
 		return labeller.getSet(o);
 	}
 }

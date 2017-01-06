@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -124,7 +124,7 @@ public abstract class AbstractPropertyContainerParser extends AbstractPropertyCo
 	
 	
 	
-	public boolean isComplete(UsageRecord record, PropertyTag<?>[] attrs) {
+	public boolean isComplete(ExpressionTargetContainer record, PropertyTag<?>[] attrs) {
 		
 		for (int i = 0; i < attrs.length; i++) {
 			if( record.supports(attrs[i])){

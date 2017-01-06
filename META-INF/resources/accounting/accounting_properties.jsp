@@ -115,8 +115,10 @@ for(UsageProducer prod : man.getProducers(UsageProducer.class)){
 					String propertyFullName = property.getFullName();
 					String propertyDescription = property.getDescription();
 					String propertyType = property.getTarget().getSimpleName();
-					String propertyImplementationInfo = 
-						usage_producer.getImplemenationInfo(property);
+					String propertyImplementationInfo = "";
+					if( usage_producer instanceof PropertyImplementationProvider){
+						propertyImplementationInfo =((PropertyImplementationProvider)usage_producer).getImplemenationInfo(property);
+					}
 				%>
 				<tr>				
 					<td title="<%=propertyDescription%>"><%=propertyFullName%></td>					

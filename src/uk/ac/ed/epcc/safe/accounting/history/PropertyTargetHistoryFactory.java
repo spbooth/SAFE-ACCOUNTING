@@ -22,10 +22,10 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.CompatibleSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
@@ -91,7 +91,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
 
 
 public class PropertyTargetHistoryFactory<T extends DataObject , F extends DataObjectFactory<T>, H extends PropertyTargetHistoryFactory.HistoryUse<T>> 
-extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<H>,ExpressionFilterTarget<H>{
+extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<H>,ExpressionFilterTarget<H>,PropertyImplementationProvider{
 
 	/** HistoryRecord extended to be an ExpressionTarget
 	 * 
@@ -99,7 +99,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 	 *
 	 * @param <T>
 	 */
-	public static  class HistoryUse<T extends DataObject> extends HistoryFactory.HistoryRecord<T> implements UsageRecord,ExpressionTarget,TimePeriod{
+	public static  class HistoryUse<T extends DataObject> extends HistoryFactory.HistoryRecord<T> implements ExpressionTargetContainer,ExpressionTarget,TimePeriod{
 		private final ExpressionTargetContainer proxy;
 		@SuppressWarnings("unchecked")
 		public HistoryUse(PropertyTargetHistoryFactory<T,?,?> fac,Record res) {
@@ -301,7 +301,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		}
 		return property_finder;
 	}
-	/** Should the history time bounds be used as the {@link UsageRecord} time bounds
+	/** Should the history time bounds be used as the {@link ExpressionTargetContainer} time bounds
 	 * 
 	 * This defaults to true but should be overridden if the peer is itself a UsageRecord
 	 * and the history table is being used to view reports as seen from the past.
@@ -542,7 +542,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		sb.append(r.getStartTimeAsDate().getTime()); // start is enough as sequence and end may change
 		return sb.toString();
 	}
-	public boolean isMyRecord(UsageRecord record) {
+	public boolean isMyRecord(ExpressionTargetContainer record) {
 		if( getTarget().isAssignableFrom(record.getClass())){
 			return isMine((DataObject) record);
 		}

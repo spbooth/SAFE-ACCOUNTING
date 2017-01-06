@@ -100,10 +100,10 @@ In order to support multiple accounting schemes at the same time we need a {@lin
 class to present a unified view of the tables from the different schemes.
 </p>
 <p>
-Standard accounting only uses the functionality of {@link  uk.ac.ed.epcc.safe.accounting.UsageRecord}. 
+Standard accounting only uses the functionality of {@link  uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer}. 
 Accounting data is queried via the {@link uk.ac.ed.epcc.safe.accounting.UsageProducer} interface. 
  {@link uk.ac.ed.epcc.safe.accounting.UsageManager}  has to implement this interface.
-The Factory classes for the various sub-classes of {@link uk.ac.ed.epcc.safe.accounting.UsageRecord} also need to present 
+The Factory classes for the various sub-classes of {@link uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer} also need to present 
 a standard interface for the {@link uk.ac.ed.epcc.safe.accounting.UsageManager} to use. This is also {@link uk.ac.ed.epcc.safe.accounting.UsageProducer} 
 interface. 
 </p>

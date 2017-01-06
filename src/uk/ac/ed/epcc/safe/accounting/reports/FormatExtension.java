@@ -32,7 +32,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
@@ -100,7 +100,7 @@ public class FormatExtension extends ReportExtension {
 			}
 		}
 		
-		Iterator<? extends UsageRecord> it=null;
+		Iterator<? extends ExpressionTargetContainer> it=null;
 		try {
 			if( start == -1 && count == -1){
 				it = prod.getIterator(sel);
@@ -113,7 +113,7 @@ public class FormatExtension extends ReportExtension {
 		}
 		
 		while(it.hasNext()){
-			UsageRecord rec = it.next();
+			ExpressionTargetContainer rec = it.next();
 			expander.setExpressionTarget(rec);
 			for(int i=0;i<template.getLength();i++){
 				Node new_n = copyNode(expander,doc, template.item(i));

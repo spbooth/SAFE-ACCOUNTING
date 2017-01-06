@@ -16,7 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.update;
 
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 
 /** Policy for augmenting the basic accounting data
@@ -39,17 +39,17 @@ public interface UsageRecordPolicy extends PropertyContainerPolicy{
 	 * @param rec   The actual committed record
 	 * @throws Exception
 	 */
-	public void postCreate(PropertyContainer props, UsageRecord rec)
+	public void postCreate(PropertyContainer props, ExpressionTargetContainer rec)
 			throws Exception;
 
 	/**
 	 * perform any operations required prior to an existing record being
-	 * deleted, such as budget refunds. This should be the opposite of {@link #postCreate(PropertyContainer, UsageRecord)}.
+	 * deleted, such as budget refunds. This should be the opposite of {@link #postCreate(PropertyContainer, ExpressionTargetContainer)}.
 	 * 
 	 * @param rec
 	 * @throws Exception
 	 */
-	public void preDelete(UsageRecord rec) throws Exception;
+	public void preDelete(ExpressionTargetContainer rec) throws Exception;
    
    
 	/** Allow a veto on record replacement
@@ -58,6 +58,6 @@ public interface UsageRecordPolicy extends PropertyContainerPolicy{
 	 * @param rec old record
 	 * @return boolean
 	 */
-	public boolean allowReplace(PropertyContainer props, UsageRecord rec);
+	public boolean allowReplace(PropertyContainer props, ExpressionTargetContainer rec);
    
 }

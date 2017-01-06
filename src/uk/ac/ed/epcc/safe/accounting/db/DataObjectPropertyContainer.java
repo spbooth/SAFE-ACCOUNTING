@@ -19,7 +19,6 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
@@ -39,7 +38,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  */
 
 
-public class DataObjectPropertyContainer extends DataObject implements PropertyContainer, ExpressionTarget{
+public class DataObjectPropertyContainer extends DataObject implements ExpressionTargetContainer{
     private final DataObjectPropertyFactory<?> fac;
     private final ExpressionTargetContainer proxy;
 	@SuppressWarnings("unchecked")

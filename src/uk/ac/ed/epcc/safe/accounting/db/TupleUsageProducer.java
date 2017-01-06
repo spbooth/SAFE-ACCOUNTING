@@ -3,10 +3,11 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.UsageRecord;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -15,6 +16,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.forms.Identified;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 
@@ -30,7 +32,7 @@ public class TupleUsageProducer<
 A extends DataObject, 
 AF extends DataObjectFactory<A>,
 UR extends TupleUsageProducer.TupleUsageRecord<A>
-> extends PropertyTupleFactory<A,AF,UR> implements UsageProducer<UR> {
+> extends PropertyTupleFactory<A,AF,UR> implements UsageProducer<UR>, PropertyImplementationProvider {
 
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.PropertyTupleFactory#makeTuple()
@@ -53,7 +55,7 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 	}
 
 	
-	public static  class TupleUsageRecord<A extends DataObject> extends PropertyTupleFactory.PropertyTuple<A> implements UsageRecord{
+	public static  class TupleUsageRecord<A extends DataObject> extends PropertyTupleFactory.PropertyTuple<A> implements ExpressionTargetContainer, Identified{
 
 		public TupleUsageRecord(AppContext conn,TupleAccessorMap map) {
 			super(conn,map);
@@ -94,10 +96,6 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 			proxy.setAll(source);
 		}
 
-		@Override
-		public Object getKey() {
-			return getIdentifier();
-		}
 
 		@Override
 		public String getIdentifier() {
@@ -115,6 +113,11 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 		public void release() {
 			proxy.release();
 			clear();
+		}
+
+		@Override
+		public String getIdentifier(int max_length) {
+			return getIdentifier();
 		}
 		
 	}
