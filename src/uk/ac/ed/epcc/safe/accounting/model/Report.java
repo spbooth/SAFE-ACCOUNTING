@@ -10,14 +10,25 @@ public class Report {
 	private ReportTemplate reportTemplate;
 	private Map<String, Object> parameters;
 	private Form form;
+	private String extension;
+	private String name;
 	
 	public Report(ReportTemplate template) {
 		this(template, new HashMap<String, Object>());
 	}
 
 	public Report(ReportTemplate template, Map<String, Object> parameters) {
-		System.out.println("CREATING REPORT, parameters=" + parameters);
 		this.reportTemplate = template;
+		if (reportTemplate != null) {
+			String templateName = reportTemplate.getTemplateName();
+			int i = templateName.indexOf(".");
+			if (i >= 0) {
+				this.name = templateName.substring(0, i);
+			}
+			else {
+				this.name = templateName;
+			}
+		}
 		this.parameters = parameters;
 	}
 	
@@ -37,5 +48,21 @@ public class Report {
 	public Form getForm() {
 		return form;
 	}
+	
+	public String getExtension() {
+		return extension;
+	}
 
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String toString() {
+		return "Report(template=" + getName() + ", parameters=" + getParameters() + ")";
+	}
 }

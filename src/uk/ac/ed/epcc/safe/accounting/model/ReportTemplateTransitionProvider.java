@@ -13,11 +13,15 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.model;
 
-import java.util.Date;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
@@ -25,21 +29,26 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.SimpleXMLBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
-import uk.ac.ed.epcc.webapp.content.XMLGenerator;
 import uk.ac.ed.epcc.webapp.forms.BaseForm;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
+import uk.ac.ed.epcc.webapp.forms.inputs.Input;
+import uk.ac.ed.epcc.webapp.forms.inputs.ItemInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
+import uk.ac.ed.epcc.webapp.forms.result.ServeDataResult;
 import uk.ac.ed.epcc.webapp.forms.result.ViewTransitionResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraContent;
-import uk.ac.ed.epcc.webapp.forms.transition.ScriptTransitionFactory;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
 import uk.ac.ed.epcc.webapp.model.data.transition.AbstractViewPathTransitionProvider;
+import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
+import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
 /**
@@ -47,119 +56,70 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 public class ReportTemplateTransitionProvider 
 extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey> 
-implements ScriptTransitionFactory<ReportTemplateKey>
 {
-	private static boolean canAdd(AppContext c, Report target) {
+	private static boolean canPreview(AppContext c, Report target) {
 		SessionService sess = c.getService(SessionService.class);
 		boolean result = true;
 		return result;
 	}
 
-	private static boolean canUpdateDelete(AppContext c, Report target) {
-		SessionService sess = c.getService(SessionService.class);
-		boolean result = true;
-		return result;
-	}
-
-	public static final ReportTemplateKey BACK = new ReportTemplateKey("Back","Return to the previous page")
-	{
-		
-		@Override
-		public boolean allow(AppContext c, Report target) 
-		{
-			return target != null;
-		}
-	};
-
-	public static final ReportTemplateKey GENERATE = new ReportTemplateKey("Generate","Generate report")
-	{
-		
-		@Override
-		public boolean allow(AppContext c, Report target) 
-		{
-			return target != null && canAdd(c, target);
-		}
-	};
-	
-	public static final ReportTemplateKey UPDATE = new ReportTemplateKey("Update","Fetch and update the publication metadata")
-	{
-		
-		@Override
-		public boolean allow(AppContext c, Report target) 
-		{
-			return target != null && canUpdateDelete(c, target);
-		}
-	};
-	
-	public static final ReportTemplateKey DELETE = new ReportTemplateKey("Delete","Remove the publication from the project")
-	{
-		
-		@Override
-		public boolean allow(AppContext c, Report target) 
-		{
-			return target != null && canUpdateDelete(c, target);
-		}
-	};
-
-	public static final ReportTemplateKey DEFAULT = new ReportTemplateKey("List","Select a report template")
-	{
-		
-		@Override
-		public boolean allow(AppContext c, Report target) 
-		{
-			return target == null || target.getReportTemplate() == null;
-		}
-	};
-	
-//	public class GenerateReportTemplateTransition 
-//	extends AbstractFormTransition<Report> implements ExtraContent<Report>
+//	public static final ReportTemplateKey BACK = new ReportTemplateKey("Back", "Return to the previous page")
 //	{
-//
-//		public class CreateAction extends FormAction{
-//			private Report target;
-//
-//			public CreateAction(Report target) {
-//				super();
-//				this.target = target;
-//			}
-//			
-//			@Override
-//			public FormResult action(Form f) throws ActionException {
-//				return new ViewTransitionResult<Report, ReportTemplateKey>(
-//						ReportTemplateTransitionProvider.this, new Report(target.getReportTemplate(), f.getContents()));
-//			}
-//			
-//		}
-//
-//		@Override
-//		public void buildForm(Form f, Report target, AppContext conn)
-//				throws TransitionException {
-//			try {
-//			ReportBuilder builder = ReportBuilder.getInstance(conn);
-//			Map<String,Object> report_params = new HashMap<String, Object>();
-//			builder.setTemplate(target.getReportTemplate().getTemplateName());
-//			builder.buildReportParametersForm(f, report_params);
-////			HTMLReportParametersForm form = 
-////					new HTMLReportParametersForm(builder, report_params, null);	
-////			boolean valid = form.parseForm(req);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//
-//			f.addAction("Generate", new CreateAction(target));
-//		}
-//
-//		@Override
-//		public <X extends ContentBuilder> X getExtraHtml(X cb, SessionService<?> op, Report target) {
-//	 		cb.addHeading(3, target.getReportTemplate().getReportName());
-//	 		cb.addText(target.getReportTemplate().getReportDescription());
-//			return cb;
-//		}
-//
 //		
+//		@Override
+//		public boolean allow(AppContext c, Report target) 
+//		{
+//			return target != null;
+//		}
+//	};
 //
-//	}
-//
+	public static final ReportTemplateKey GENERATE = new ReportTemplateKey("Update", "Update report parameters")
+	{
+		
+		@Override
+		public boolean allow(AppContext c, Report target) 
+		{
+			return target != null && canPreview(c, target);
+		}
+	};
+	
+	public static final ReportTemplateKey EXPORT_TO_PDF = new ReportTemplateKey("PDF", "Generate PDF Report")
+	{
+		@Override
+		public boolean allow(AppContext c, Report target) 
+		{
+			return target != null && target.getParameters() != null && !target.getParameters().isEmpty();
+		}
+	};
+	
+	public static final ReportTemplateKey EXPORT_TO_CSV = new ReportTemplateKey("CSV", "Generate CSV Report")
+	{
+		@Override
+		public boolean allow(AppContext c, Report target) 
+		{
+			return target != null && target.getParameters() != null && !target.getParameters().isEmpty();
+		}
+	};
+	
+	public static final ReportTemplateKey EXPORT_TO_HTML = new ReportTemplateKey("HTML", "Generate HTML Report")
+	{
+		@Override
+		public boolean allow(AppContext c, Report target) 
+		{
+			return target != null && target.getParameters() != null && !target.getParameters().isEmpty();
+		}
+	};
+
+	public static final ReportTemplateKey EXPORT_TO_XML = new ReportTemplateKey("XML", "Generate XML Report")
+	{
+		
+		@Override
+		public boolean allow(AppContext c, Report target) 
+		{
+			return target != null && target.getParameters() != null && !target.getParameters().isEmpty();
+		}
+	};
+
 	public class GeneratePreviewTransition extends AbstractDirectTransition<Report>{
 
 		@Override
@@ -182,25 +142,67 @@ implements ScriptTransitionFactory<ReportTemplateKey>
 		}
 		
 	}
-	public class UpdateReportTemplateTransition extends AbstractDirectTransition<Report>{
+	
+	public class ExportTransition extends AbstractDirectTransition<Report>{
+		
+		private String extension;
+
+		public ExportTransition(String reportType) {
+			this.extension = reportType;
+		}
 
 		@Override
 		public FormResult doTransition(Report target, AppContext c)
-				throws TransitionException {
+				throws TransitionException 
+		{
+			try {
+				target.setExtension(extension);
+				ReportBuilder builder = ReportBuilder.getInstance(c);
+				ReportBuilder.setTemplate(c, builder, target.getReportTemplate().getTemplateName());
+				ReportType reportType = builder.getReportType(extension);
+				Map<String, Object> params = getParameters(target.getParameters(), c, builder);
+				System.out.println("TARGET: PARAMETERS=" + params);
+				if( ! builder.hasErrors()){
+					builder.setupExtensions(reportType, params);
+					params.put(ReportBuilder.REPORT_TYPE_PARAM, reportType);
+					OutputStream out = new ByteArrayOutputStream();
+					builder.renderXML(params, out);
+					ByteArrayMimeStreamData msd = new ByteArrayMimeStreamData(((ByteArrayOutputStream)out).toByteArray());
+					msd.setMimeType(reportType.getMimeType());
+					msd.setName(target.getName() + "."+reportType.getExtension());
+					SettableServeDataProducer producer = getContext().makeObjectWithDefault(SettableServeDataProducer.class, SessionDataProducer.class, "ServeData");
+					return new ServeDataResult(producer, producer.setData(msd));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			return new ViewTransitionResult<Report, ReportTemplateKey>(
 					ReportTemplateTransitionProvider.this, target);
 		}
 		
 	}
+	
+//	public class PreviewTransition extends AbstractDirectTransition<Report>{
+//
+//		@Override
+//		public FormResult doTransition(Report target, AppContext c)
+//				throws TransitionException {
+//			return new ViewTransitionResult<Report, ReportTemplateKey>(
+//					ReportTemplateTransitionProvider.this, target);
+//		}
+//		
+//	}
+	
 	public class PreviewTransition 
 	extends AbstractFormTransition<Report> 	implements ExtraContent<Report>
 	{
 
-		public class CreateAction extends FormAction{
+		public class PreviewAction extends FormAction{
 			private Report target;
 			private ReportBuilder builder;
 
-			public CreateAction(Report target, ReportBuilder builder) {
+			public PreviewAction(Report target, ReportBuilder builder) {
 				super();
 				this.target = target;
 				this.builder = builder;
@@ -208,8 +210,61 @@ implements ScriptTransitionFactory<ReportTemplateKey>
 
 			@Override
 			public FormResult action(Form f) throws ActionException {
-				System.out.println("GENERATE WITH PARAMETERS: ");
+				Map<String, Object> reportParameters = target.getParameters(); 
+//				builder.parseReportParametersForm(f, reportParameters);
+				System.out.println("TARGET PARAMETERS : " + reportParameters);
+				Iterator<String> fields = f.getFieldIterator();
+				while (fields.hasNext()) {
+					String field = fields.next();
+					Input input = f.getInput(field);
+					setInputValue(reportParameters, input);
+				}
+				System.out.println("PREVIEW PARAMETERS : " + reportParameters);
 				return new ViewResult(target);
+			}
+			
+		}
+
+		public class ExportAction extends FormAction{
+			private Report target;
+			private ReportBuilder builder;
+			private ReportType reportType;
+
+			public ExportAction(Report target, ReportBuilder builder, ReportType format) {
+				super();
+				this.target = target;
+				this.builder = builder;
+				this.reportType = format;
+			}
+
+			@Override
+			public FormResult action(Form f) throws ActionException {
+				Map<String, Object> reportParameters = target.getParameters(); 
+				builder.parseReportParametersForm(f, reportParameters);
+				System.out.println("EXPORT PARAMETERS : " + reportParameters);
+				try {
+					if( ! builder.hasErrors()){
+						builder.setupExtensions(reportType, reportParameters);
+						reportParameters.put(ReportBuilder.REPORT_TYPE_PARAM, reportType);
+						OutputStream out = new ByteArrayOutputStream();
+						builder.renderXML(reportParameters, out);
+						ByteArrayMimeStreamData msd = new ByteArrayMimeStreamData(((ByteArrayOutputStream)out).toByteArray());
+						msd.setMimeType(reportType.getMimeType());
+						msd.setName(target.getName() + "."+reportType.getExtension());
+						SettableServeDataProducer producer = getContext().makeObjectWithDefault(SettableServeDataProducer.class, SessionDataProducer.class, "ServeData");
+						return new ServeDataResult(producer, producer.setData(msd));
+					}
+					else {
+						return new ViewResult(target);
+					}
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
 			}
 			
 		}
@@ -219,19 +274,33 @@ implements ScriptTransitionFactory<ReportTemplateKey>
 				throws TransitionException {
 			try {
 				ReportBuilder builder = ReportBuilder.getInstance(conn);
-				Map<String,Object> report_params = target.getParameters();
 				ReportBuilder.setTemplate(conn, builder, target.getReportTemplate().getTemplateName());
-				builder.buildReportParametersForm(f, new HashMap<String, Object>());
-				f.addAction("Generate", new CreateAction(target, builder));
+				builder.buildReportParametersForm(f, target.getParameters());
+//				Iterator<String> fields = f.getFieldIterator();
+////				Map<String, Object> params = new HashMap<String, Object>();
+//				while (fields.hasNext()) {
+//					String field = fields.next();
+//					Input input = f.getInput(field);
+//					setParameters(target.getParameters(), input);
+////					if (value != null) {
+////						params.put(input.getKey(), value);
+////					}
+//				}
+				f.addAction("CSV", new ExportAction(target, builder, builder.getReportType("csv")));
+				f.addAction("PDF", new ExportAction(target, builder, builder.getReportType("pdf")));
+				f.addAction("HTML", new ExportAction(target, builder, builder.getReportType("html")));
+				f.addAction("Preview", new PreviewAction(target, builder));
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 
 		@Override
 		public <X extends ContentBuilder> X getExtraHtml(X cb, SessionService<?> op, Report target) {
-			cb.addText("Generate a report"); 
+			ReportTemplate template = target.getReportTemplate();
+			cb.addHeading(3, template.getReportName());
+			cb.addText(template.getReportDescription());
 			return cb;
 		}
 	}
@@ -242,8 +311,12 @@ implements ScriptTransitionFactory<ReportTemplateKey>
 	public ReportTemplateTransitionProvider(AppContext conn){
 		super(conn);
 		this.fac = new ReportTemplateFactory<ReportTemplate>(conn);
-    	addTransition(GENERATE, new GeneratePreviewTransition());
-    	addTransition(BACK, new BackTransition());
+     	addTransition(EXPORT_TO_PDF, new ExportTransition("pdf"));
+     	addTransition(EXPORT_TO_CSV, new ExportTransition("csv"));
+     	addTransition(EXPORT_TO_HTML, new ExportTransition("html"));
+//     	addTransition(EXPORT_TO_XML, new ExportTransition("xml"));
+     	addTransition(GENERATE, new PreviewTransition());
+//    	addTransition(BACK, new BackTransition());
     }
 
 	@Override
@@ -251,7 +324,13 @@ implements ScriptTransitionFactory<ReportTemplateKey>
 	{
 		Logger logger = getLogger();
 		String templateFileName = id.removeLast();
-		String templateName =  ReportBuilder.getTemplateName(templateFileName);
+		int i = templateFileName.indexOf(".");
+		String extension = null;
+		if (i >= 0) {
+			extension = templateFileName.substring(i+1);
+			templateFileName = templateFileName.substring(0, i);
+		}
+		templateFileName = templateFileName + ".xml";
 		Report report = new Report(null);
 		try {
 			ReportTemplate reportTemplate = fac.findByFileName(templateFileName);
@@ -261,10 +340,11 @@ implements ScriptTransitionFactory<ReportTemplateKey>
 				parameters.put(param[0], param[1]);
 			}
 			report = new Report(reportTemplate, parameters);
+			report.setExtension(extension);
 		} catch (DataException e) {
 			getLogger().debug("Error retrieving template file name");
 		}
-		System.out.println("TARGET " + report.getReportTemplate());
+		System.out.println("TARGET " + report);
 		return report;
 	}
 
@@ -274,14 +354,15 @@ implements ScriptTransitionFactory<ReportTemplateKey>
 		if (target.getParameters() != null) {
 			for (Entry<String, Object> entry : target.getParameters().entrySet()) {
 				Object value = entry.getValue();
-				if (value instanceof Date) {
-					value = ((Date)value).getTime();
-				}
-				result.add(entry.getKey() + "=" + value);
+				result.add(entry.getKey() + "=" + ParameterFormatter.format(value));
 			}
 		}
 		if (target.getReportTemplate() != null) { 
-			result.add(target.getReportTemplate().getTemplateName());
+			String name = target.getName();
+			if (target.getExtension() != null) {
+				name += "." + target.getExtension();
+			}
+			result.add(name);
 		}
 		System.out.println("ID = " + result);
 		return result;
@@ -299,6 +380,69 @@ implements ScriptTransitionFactory<ReportTemplateKey>
 		Table<String,String> t = new Table<String,String>();
 		return cb;
 	}
+	
+	private Map<String, Object> getParameters(Map<String, Object> reportParameters, AppContext c, ReportBuilder builder) throws Exception 
+	{
+		Form form = new BaseForm(c);
+		builder.buildReportParametersForm(form, reportParameters);
+		Map<String, Object> params = new HashMap<String, Object>();
+		Iterator<String> fields = form.getFieldIterator();
+		while (fields.hasNext()) {
+			String field = fields.next();
+			Input input = form.getInput(field);
+			Object value = setParameters(reportParameters, input);
+			if (value != null) {
+				params.put(input.getKey(), value);
+			}
+		}
+		return params;
+	}
+
+	private void setInputValue(Map<String, Object> params, Input input) 
+	{
+		Object data = null;
+//		if (input instanceof ItemInput ) {
+//			data = ((ItemInput) input).getItem();
+//		} else {
+			data = input.getValue();
+//		}
+		System.out.println("INPUT: " + input.getKey() + " = " + data);
+		// do explicit remove for null value as this might
+		// be the result of a parse of a non-null string.
+		if( data == null ){
+			params.remove(input.getKey());
+		}else{
+			if(input instanceof MultiInput){
+				MultiInput<?,?> multi=(MultiInput) input;
+				for(String sub_key : multi.getSubKeys()){
+					setInputValue(params, multi.getInput(sub_key));
+				}
+			}
+			else {
+				params.put(input.getKey(), data);
+			}
+		}
+	}
+
+	private Object setParameters(Map<String, Object> params, Input input) {
+		Object data = params.get(input.getKey());
+		if(input instanceof MultiInput)
+		{
+			MultiInput<?,?> multi=(MultiInput) input;
+			for(String sub_key : multi.getSubKeys()){
+				setParameters(params, multi.getInput(sub_key));
+			}
+		}
+		else {
+			if (data != null) {
+				input.setValue(input.convert(data));
+			}
+		}
+		if (input instanceof ItemInput) {
+			return ((ItemInput) input).getItem();
+		}
+		return input.getValue();
+	}
 
 	@Override
 	public <X extends ContentBuilder> X getLogContent(X cb, Report target,
@@ -314,33 +458,16 @@ implements ScriptTransitionFactory<ReportTemplateKey>
 		}
 		else {
 			try {
-				cb.addHeading(3, target.getReportTemplate().getReportName());
+				ReportTemplate template = target.getReportTemplate();
+				cb.addHeading(3, template.getReportName());
+				cb.addText(template.getReportDescription());
 				ReportBuilder builder = ReportBuilder.getInstance(context);
-				Map<String,Object> report_params = target.getParameters();
-				String templateName = target.getReportTemplate().getTemplateName();
 				ReportBuilder.setTemplate(context, builder, target.getReportTemplate().getTemplateName());
-				ReportType reportType = ReportBuilder.HTML;
-				Form form = new BaseForm(context);
-				builder.buildReportParametersForm(form, new HashMap<String, Object>());
-				System.out.println("PARAMETERS: " + report_params);
-//				builder.parseReportParametersForm(form, report_params);
-				if (!report_params.isEmpty()) {
-					builder.renderContent(report_params, (SimpleXMLBuilder)cb);
+				Map<String,Object> params = getParameters(target.getParameters(), context, builder);
+				System.out.println("TARGET: PARAMETERS=" + params);
+				if (!target.getParameters().isEmpty()) {
+					builder.renderContent(params, (SimpleXMLBuilder)cb);
 				}
-				cb.addFormTable(context, form);
-						
-//				OutputStream out = new ByteArrayOutputStream();
-//				builder.renderXML(report_params, out);
-//				ByteArrayMimeStreamData msd = new ByteArrayMimeStreamData(((ByteArrayOutputStream)out).toByteArray());
-//				if( reportType != null){
-//					msd.setMimeType(reportType.getMimeType());
-//					msd.setName(templateName+"."+reportType.getExtension());
-//				}else{
-//					msd.setName(templateName);
-//				}
-
-
-	//			boolean valid = form.parseForm(req);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -348,25 +475,6 @@ implements ScriptTransitionFactory<ReportTemplateKey>
 		return result;
 	}
 	
-	public class PreformattedTextGenerator implements XMLGenerator {
-
-		private String text;
-
-		public PreformattedTextGenerator(String text) {
-			this.text = text;
-		}
-		
-		@Override
-		public SimpleXMLBuilder addContent(SimpleXMLBuilder builder) 
-		{
-			builder.open("pre");
-			builder.clean(text);
-			builder.close();
-			return builder;
-		}
-		
-	}
-
 	@Override
 	public boolean canView(Report target, SessionService<?> sess) {
 		return true;
@@ -376,19 +484,4 @@ implements ScriptTransitionFactory<ReportTemplateKey>
 		return "ReportTemplate";
 	}
 
-	@Override
-	public String getAdditionalCSS(ReportTemplateKey key) {
-		return "//cdn.datatables.net/1.10.5/css/jquery.dataTables.css,//cdn.datatables.net/colvis/1.1.1/css/dataTables.colVis.css,//cdn.datatables.net/colreorder/1.1.2/css/dataTables.colReorder.css";
-		//return "//cdn.datatables.net/1.10.5/css/jquery.dataTables.css";
-	}
-
-	@Override
-	public String getAdditionalScript(ReportTemplateKey key) {
-		//return "//code.jquery.com/jquery-1.10.2.min.js,//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js,"+
-		//		"$(document).ready( function(){ $('#datatable').DataTable();";
-
-		return "//code.jquery.com/jquery-1.10.2.min.js,//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js,//cdn.datatables.net/colvis/1.1.1/js/dataTables.colVis.min.js,//cdn.datatables.net/colreorder/1.1.2/js/dataTables.colReorder.min.js,"+
-		"$(document).ready( function(){ $('#datatable').DataTable({ stateSave: true \\, stateDuration: 3600\\, pageLength: 50 \\, lengthMenu: [[ 10\\, 25\\, 50\\, 100\\, -1 ]\\,[ 10\\, 25\\, 50\\, 100\\, 'All'] ] \\, paging: true \\,  order: [[ 0\\, 'desc' ]] \\, dom: 'C<\"clear\">Rlfrtip'   });});";
-	}
-	
 }
