@@ -31,6 +31,7 @@ import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.SimpleXMLBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.BaseForm;
+import uk.ac.ed.epcc.webapp.forms.Field;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.MapForm;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
@@ -246,7 +247,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 				ReportBuilder.setTemplate(conn, builder, target.getReportTemplate().getTemplateName());
 				Map<String, Object> parameters = target.getParameters();
 				builder.buildReportParametersForm(f, parameters);
-				((MapForm)f).parsePost(null, parameters, true,true);
+				setMap(parameters, f, false);
 				
 				f.addAction("CSV", new ExportAction(target, builder, builder.getReportType("csv")));
 				f.addAction("PDF", new ExportAction(target, builder, builder.getReportType("pdf")));
@@ -257,11 +258,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 //				e.printStackTrace();
 			}
 		}
-		public Report getTargetReport(Form f,Report orig){
-			LinkedHashMap<String,Object> new_param = new LinkedHashMap<String, Object>();
-			((MapForm)f).addStringMap(new_param);
-			return new Report(orig.getReportTemplate(),new_param);
-		}
+		
 
 		@Override
 		public <X extends ContentBuilder> X getExtraHtml(X cb, SessionService<?> op, Report target) {
@@ -303,7 +300,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 			ReportTemplate reportTemplate = fac.findByFileName(templateFileName);
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			for (String p : id) {
-				String[] param = p.split("=");
+				String[] param = p.split(":");
 				parameters.put(param[0], param[1]);
 			}
 			report = new Report(reportTemplate, parameters);
@@ -321,7 +318,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 		if (target.getParameters() != null) {
 			for (Entry<String, Object> entry : target.getParameters().entrySet()) {
 				Object value = entry.getValue();
-				result.add(entry.getKey() + "=" + ParameterFormatter.format(value));
+				result.add(entry.getKey() + ":" + ParameterFormatter.format(value));
 			}
 		}
 		if (target.getReportTemplate() != null) { 
@@ -424,5 +421,28 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 	public String getTargetName() {
 		return "ReportTemplate";
 	}
-
+	
+	/** Add/sets form contents to a map
+	 * 
+	 * @param p
+	 * @param f
+	 * @param set_map
+	 * @throws Exception 
+	 */
+	public void setMap(Map<String,Object> p,Form f, boolean set_map) throws ActionException{
+		SetParamsVisitor vis = new SetParamsVisitor(set_map, p);
+		for(Field field : f){
+			try {
+				field.getInput().accept(vis);
+			} catch (Exception e) {
+				throw new ActionException("Error in setMap", e);
+			}
+		}
+	}
+	public Report getTargetReport(Form f,Report orig) throws ActionException{
+		LinkedHashMap<String,Object> new_param = new LinkedHashMap<String, Object>();
+		setMap(new_param,f,true);
+		
+		return new Report(orig.getReportTemplate(),new_param);
+	}
 }
