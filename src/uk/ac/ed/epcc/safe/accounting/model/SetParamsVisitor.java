@@ -56,12 +56,12 @@ public class SetParamsVisitor implements InputVisitor<Object> {
 	@Override
 	public <V, T> Object visitListInput(ListInput<V, T> listInput) throws Exception {
 		if( set_map){
-		V value = listInput.getValue();
-		if( value != null ){
-			params.put(listInput.getKey(), listInput.getTagByValue(value));
-		}
+			V value = listInput.getValue();
+			if( value != null ){
+				params.put(listInput.getKey(), listInput.getTagByValue(value));
+			}
 		}else{
-			
+			visitBaseInput(listInput);
 		}
 		return null;
 	}
@@ -88,10 +88,10 @@ public class SetParamsVisitor implements InputVisitor<Object> {
 	
 	private <T> Object visitBaseInput(Input<T> input) throws ParseException{
 		if( set_map){
-		T value = input.getValue();
-		if( value != null ){
-			params.put(input.getKey(),input.getString(value));
-		}
+			T value = input.getValue();
+			if( value != null ){
+				params.put(input.getKey(),input.getString(value));
+			}
 		}else{
 			String s = (String) params.get(input.getKey());
 			if( s != null ){

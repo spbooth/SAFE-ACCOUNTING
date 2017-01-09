@@ -31,6 +31,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.xml.sax.SAXException;
 
+import uk.ac.ed.epcc.safe.accounting.model.ReportTemplateTransitionProvider.PreviewTransition;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.Link;
@@ -202,7 +203,6 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	public Table<String,ReportTemplate> getReportGroupTable(String group, Map<String, Object> params) throws DataFault
 	{
 		Table<String,ReportTemplate> t = new Table<String,ReportTemplate>();
-		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(getContext());
 		SessionService sess = getContext().getService(SessionService.class);
 
 		FilterResult<R> reportTemplates = getTemplatesInGroup(group);
@@ -210,6 +210,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 			getLogger().debug("Problem listing report templates");
 		}
 		else {
+			ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(getContext());
 			for (ReportTemplate reportTemplate : reportTemplates) {	
 				if (reportTemplate.canUse(sess))
 				{
@@ -220,7 +221,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 					t.put("Description", reportTemplate, reportDescription);
 					t.put("Generate", reportTemplate, new Link(getContext(), "Generate", 
 							new ChainedTransitionResult<Report, ReportTemplateKey>(
-									prov, report, null)));
+									prov, report, ReportTemplateTransitionProvider.PREVIEW)));
 				}
 			}
 		}
