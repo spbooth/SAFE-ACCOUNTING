@@ -15,6 +15,9 @@ package uk.ac.ed.epcc.safe.accounting.model;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -280,8 +283,12 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 			ReportTemplate reportTemplate = fac.findByFileName(templateFileName);
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			for (String p : id) {
-				String[] param = p.split(":");
-				parameters.put(param[0], param[1]);
+				int ind = p.indexOf(":");
+				if (ind >= 0) {
+					String key = p.substring(0, ind);
+					String value = decodeParameter(key, p.substring(ind+1));
+					parameters.put(key, value);
+				}
 			}
 			report = new Report(reportTemplate, parameters);
 			report.setExtension(extension);
@@ -296,7 +303,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 		LinkedList<String> result = new LinkedList<String>();
 		if (target.getParameters() != null) {
 			for (Entry<String, Object> entry : target.getParameters().entrySet()) {
-				Object value = entry.getValue();
+				String value = encodeParameter(entry);
 				result.add(entry.getKey() + ":" + value);
 			}
 		}
@@ -307,7 +314,6 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 			}
 			result.add(name);
 		}
-		System.out.println("ID = " + result);
 		return result;
 	}
 
@@ -499,6 +505,25 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 		return person != null && person.hasRole(ReportBuilder.REPORT_DEVELOPER);
 	}
 	
+	private String encodeParameter(Entry<String, Object> parameter) {
+		String value = String.valueOf(parameter.getValue());
+		try {
+			value = URLEncoder.encode(value, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			getLogger().debug("Failed to encode parameter: " + parameter.getKey() + "=" + parameter.getValue(), e);
+		}
+		return value;
+	}
+	
+	private String decodeParameter(String key, String value) {
+		try {
+			return URLDecoder.decode(value, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			getLogger().debug("Failed to decode parameter: " + key + "=" + value, e);
+			return value;
+		}
+	}
+
 	private static class DeveloperResults 
 	{
 
