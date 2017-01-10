@@ -26,11 +26,11 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
+import uk.ac.ed.epcc.safe.accounting.servlet.DeveloperResult;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.config.OverrideConfigService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.SimpleXMLBuilder;
-import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.BaseForm;
 import uk.ac.ed.epcc.webapp.forms.Field;
 import uk.ac.ed.epcc.webapp.forms.Form;
@@ -45,7 +45,6 @@ import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraContent;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
-import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.buffer.BufferLoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
@@ -155,20 +154,37 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 			
 		}
 
-		public class ExportAction extends FormAction{
-			private Report target;
-			private ReportBuilder builder;
-			private ReportType reportType;
+		public class ExportAction extends FormAction 
+		{
+			private final Report target;
+			private final ReportBuilder builder;
+			private final ReportType reportType;
+			private final AppContext context;
 
-			public ExportAction(Report target, ReportBuilder builder, ReportType format) {
+			public ExportAction(AppContext context, Report target, ReportBuilder builder, ReportType format) {
 				super();
 				this.target = target;
 				this.builder = builder;
 				this.reportType = format;
+				this.context = context;
 			}
 
 			@Override
-			public FormResult action(Form f) throws ActionException {
+			public FormResult action(Form f) throws ActionException 
+			{
+				boolean isReportDev = isReportDeveloper(context.getService(SessionService.class));
+				boolean hasErrors = false;
+				BufferLoggerService logService = null;
+				FormResult result = null;
+				if (isReportDev) 
+				{
+					logService = new BufferLoggerService(context);
+					context.setService(logService);
+					Properties props = new Properties();
+					props.setProperty("service.feature.log_query", "on");
+					context.setService(new OverrideConfigService(props, context));
+				}
+
 				Map<String, Object> reportParameters = target.getParameters(); 
 				builder.parseReportParametersForm(f, reportParameters);
 				try {
@@ -180,16 +196,22 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 						ByteArrayMimeStreamData msd = new ByteArrayMimeStreamData(((ByteArrayOutputStream)out).toByteArray());
 						msd.setMimeType(reportType.getMimeType());
 						msd.setName(target.getName() + "."+reportType.getExtension());
-						SettableServeDataProducer producer = getContext().makeObjectWithDefault(SettableServeDataProducer.class, SessionDataProducer.class, "ServeData");
-						return new ServeDataResult(producer, producer.setData(msd));
+						SettableServeDataProducer producer = getContext().makeObjectWithDefault(
+								SettableServeDataProducer.class, SessionDataProducer.class, SERVE_DATA_DEFAULT_TAG);
+						result = new ServeDataResult(producer, producer.setData(msd));
 					}
 					else {
-						return new ViewResult(getTargetReport(f,target));
+						hasErrors = true;
 					}
 				} catch (Exception e) {
 					getLogger().error("Error generating report for type " + reportType, e);
+					hasErrors = true;
 				}
-				return null;
+				if (isReportDev) {
+					DeveloperResults devResults = developerResults(getContext(), logService, builder, hasErrors, reportParameters);
+					result = new DeveloperResult(devResults.getResult(), devResults.getLogs(), devResults.getErrors(), hasErrors);
+				}
+				return result;
 			}
 			
 		}
@@ -205,13 +227,13 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 				builder.buildReportParametersForm(f, parameters);
 				setMap(parameters, f, false);
 				
-				f.addAction("CSV", new ExportAction(target, builder, builder.getReportType("csv")));
-				f.addAction("PDF", new ExportAction(target, builder, builder.getReportType("pdf")));
-				f.addAction("HTML", new ExportAction(target, builder, builder.getReportType("html")));
+				f.addAction("CSV", new ExportAction(conn, target, builder, builder.getReportType("csv")));
+				f.addAction("PDF", new ExportAction(conn, target, builder, builder.getReportType("pdf")));
+				f.addAction("HTML", new ExportAction(conn, target, builder, builder.getReportType("html")));
 				f.addAction("Preview", new PreviewAction(target));
 			}
 			catch (Exception e) {
-//				e.printStackTrace();
+				getLogger().error("Error creating report form", e);
 			}
 		}
 		
@@ -245,7 +267,6 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 	@Override
 	public Report getTarget(LinkedList<String> id) 
 	{
-		Logger logger = getLogger();
 		String templateFileName = id.removeLast();
 		int i = templateFileName.indexOf(".");
 		String extension = null;
@@ -267,7 +288,6 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 		} catch (DataException e) {
 			getLogger().debug("Error retrieving template file name");
 		}
-		System.out.println("TARGET " + report);
 		return report;
 	}
 
@@ -298,9 +318,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 	}
 
 	@Override
-	public <X extends ContentBuilder> X getSummaryContent(AppContext c, X cb,
-			Report target) {
-		Table<String,String> t = new Table<String,String>();
+	public <X extends ContentBuilder> X getSummaryContent(AppContext c, X cb, Report target) {
 		return cb;
 	}
 	
@@ -343,11 +361,11 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 	 * @param p
 	 * @param f
 	 * @param set_map
-	 * @throws Exception 
+	 * @throws ActionException 
 	 */
 	public void setMap(Map<String,Object> p,Form f, boolean set_map) throws ActionException{
 		SetParamsVisitor vis = new SetParamsVisitor(set_map, p);
-		for(Field field : f){
+		for(Field<?> field : f){
 			try {
 				field.getInput().accept(vis);
 			} catch (Exception e) {
@@ -376,10 +394,10 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 	}
 
 	
-	private <X extends ContentBuilder> void addPreview(AppContext context, X cb, Report target) throws Exception 
+	private <X extends ContentBuilder> void addPreview(AppContext context, X cb, Report target) 
 	{
 		boolean isReportDev = isReportDeveloper(context.getService(SessionService.class));
-		BufferLoggerService logService=null;
+		BufferLoggerService logService = null;
 		if (isReportDev) 
 		{
 			logService = new BufferLoggerService(context);
@@ -389,38 +407,54 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 			context.setService(new OverrideConfigService(props, context));
 		}
 
-		ReportBuilder builder = ReportBuilder.getInstance(context);
-		ReportBuilder.setTemplate(context, builder, target.getReportTemplate().getTemplateName());
-		Map<String,Object> params = getParameters(target.getParameters(), context, builder);
-		if (params != null && !target.getParameters().isEmpty()) {
-			cb.addHeading(4, "Report Preview");
-			builder.renderContent(params, (SimpleXMLBuilder)cb);
+		ReportBuilder builder = null;
+		Map<String,Object> params = null;
+		boolean hasErrors = false;
+		try {
+			builder = ReportBuilder.getInstance(context);
+			ReportBuilder.setTemplate(context, builder, target.getReportTemplate().getTemplateName());
+			params = getParameters(target.getParameters(), context, builder);
+			if (params != null && !target.getParameters().isEmpty()) {
+				cb.addHeading(4, "Report Preview");
+				builder.renderContent(params, (SimpleXMLBuilder)cb);
+			}
+		} catch (Exception e) {
+			hasErrors = true;
+			cb.addText("An error ocurred when generating the report.");
+		}			
 			
-			if (isReportDev) {
-				DeveloperResults devResults = developerResults(context, logService, builder, isReportDev, params);
-				cb.addHeading(4, "Report Developer Information");
-				cb.addText("You have the ReportDeveloper role active. The links below give access to additional information to aid in debugging the reports.");
-				if( devResults.getLogs() != null ){
-					cb.addLink(context, "Logs from report generation", devResults.getLogs());
+		if (params != null && !target.getParameters().isEmpty() && isReportDev)
+		{
+			DeveloperResults devResults = developerResults(context, logService, builder, hasErrors, params);
+			cb.addHeading(4, "Report Developer Information");
+			cb.addText("You have the ReportDeveloper role active. The links below give access to additional information to aid in debugging the reports.");
+			if( devResults.hasErrors() )
+			{
+				cb.addText("This report resulted in an error.");
+				if( devResults.getResult() != null){
+					cb.addLink(context, "Processed template", devResults.getResult());
 				}
-				if( devResults.hasErrors() ){
-					cb.addText("This report resulted in an error");
-					Set<ErrorSet> errors = devResults.getErrors();
-					if( errors != null){
-						for(ErrorSet error : errors){
-							error.addContent(cb, -1);
-						}
+				if( devResults.getErrors() != null){
+					for(ErrorSet error : devResults.getErrors()){
+						error.addContent(cb, -1);
 					}
 				}
-				else {
-					cb.addText("No errors.");
-				}
 			}
-
+			else {
+				cb.addText("This report completed without error.");
+			}
+			if( devResults.getLogs() != null ){
+				cb.addLink(context, "Logs from report generation", devResults.getLogs());
+			}
 		}
 	}
 	
-	private DeveloperResults developerResults(AppContext conn, BufferLoggerService logService, ReportBuilder builder, boolean isReportDeveloper, Map<String, Object> reportParameters) 
+	private DeveloperResults developerResults(
+			AppContext conn, 
+			BufferLoggerService logService, 
+			ReportBuilder builder, 
+			boolean hasErrors, 
+			Map<String, Object> reportParameters) 
 	{
 		SettableServeDataProducer producer = conn.makeObjectWithDefault(SettableServeDataProducer.class, SessionDataProducer.class, SERVE_DATA_DEFAULT_TAG);
         FormResult result=null;
@@ -437,29 +471,28 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
     	}
         Set<ErrorSet> errors=null;
 
-		boolean has_errors = builder.hasErrors();
+		hasErrors = hasErrors || builder.hasErrors();
 
 		// errors from the builder
 		errors = builder.getErrors();
 		for(ErrorSet es : errors){
 			es.report(conn);
 			if(es.size() > 0){
-				has_errors=true;
+				hasErrors=true;
 			}
 		}
-		if( has_errors){
-			try{
-				
+		if( hasErrors) {
+			try {
 				ByteArrayMimeStreamData raw = new ByteArrayMimeStreamData();
 				raw.setMimeType("text/xml");
 				ReportType type = builder.getReportType("RXML");
 				builder.renderXML(type, reportParameters, type.getResult(conn,raw.getOutputStream()));
 				result = new ServeDataResult(producer, producer.setData(raw));
-			}catch(Throwable t){
-//					getLogger(conn).error("Error generating raw XML",t);
+			} catch(Throwable t) {
+				getLogger().error("Error generating raw XML", t);
 			}
 		}
-		return new DeveloperResults(result, logs, errors, has_errors);
+		return new DeveloperResults(result, logs, errors, hasErrors);
 	}
 	
 	private boolean isReportDeveloper(SessionService<?> person) {
