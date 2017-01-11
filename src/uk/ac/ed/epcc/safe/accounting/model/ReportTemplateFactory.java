@@ -31,7 +31,6 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.xml.sax.SAXException;
 
-import uk.ac.ed.epcc.safe.accounting.model.ReportTemplateTransitionProvider.PreviewTransition;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.Link;
@@ -207,7 +206,8 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 
 		FilterResult<R> reportTemplates = getTemplatesInGroup(group);
 		if (reportTemplates == null) {
-			getLogger().debug("Problem listing report templates");
+			getLogger().debug("No report templates for group: " + group);
+			return null;
 		}
 		else {
 			ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(getContext());
