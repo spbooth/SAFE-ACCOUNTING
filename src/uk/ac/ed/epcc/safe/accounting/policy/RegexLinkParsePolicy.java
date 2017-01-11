@@ -94,7 +94,7 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 			if( prop != null && prop instanceof ReferenceTag){
 				target_prop = (ReferenceTag) prop;
 			}else{
-				getLogger(conn).error("No target_prop found");
+				getLogger(conn).error("No target_prop found  for "+target_table);
 			}
 			
 		} catch (Exception e) {

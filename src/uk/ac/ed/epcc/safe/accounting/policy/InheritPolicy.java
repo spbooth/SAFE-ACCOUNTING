@@ -46,8 +46,12 @@ public class InheritPolicy extends BasePolicy implements SummaryProvider {
 
 			String parent_names = ctx.getInitParameter("InheritPolicy."+table+".parent");
 			for(String parent_name : parent_names.split("\\s*,\\s*")){
-				if( parent_name != null ){
+				if( parent_name != null && ! parent_name.trim().isEmpty()){
 					ReferenceTag parent = (ReferenceTag) prev.find(IndexedReference.class, parent_name);
+					if( parent == null ){
+						getLogger(ctx).error("No parent found for "+table+":"+parent_name);
+						continue;
+					}
 					if( parents == null ){
 						parents = new LinkedHashSet<ReferenceTag>();
 					}
