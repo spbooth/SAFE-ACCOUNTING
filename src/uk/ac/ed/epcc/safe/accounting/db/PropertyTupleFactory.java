@@ -129,12 +129,23 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 			return false;
 		}
 	}
+	
+	/** Augment the filter generated from the {@link RecordSelector} with a standard set of additional filter
+	 * 
+	 * This is to add a mandatory set of filters to restrict the join.
+	 * 
+	 * @param fil
+	 * @return
+	 */
+	protected BaseFilter<T> addMandatoryFilter(BaseFilter<T> fil){
+		return fil;
+	}
 	protected final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
 		if( selector == null ){
-			return null;
+			return addMandatoryFilter(null);
 		}
 		try {
-			return selector.visit(new FilterSelectVisitor<T>(this));
+			return addMandatoryFilter(selector.visit(new FilterSelectVisitor<T>(this)));
 		}catch(CannotFilterException e){
 			throw e;
 		} catch (Exception e) {
