@@ -20,7 +20,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
  * 
  * @author spb
  *
- * @param <T>
+ * @param <T> type of expression
  */
 
 
