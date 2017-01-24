@@ -147,4 +147,25 @@ public abstract class ImplementationPropExpressionVisitor implements
 			LocatePropExpression loc) throws Exception {
 		return "Locate("+loc.substr.accept(this)+","+loc.str.accept(this)+","+loc.pos.accept(this)+")";
 	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitArrayFuncPropExpression(uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression)
+	 */
+	@Override
+	public <T extends Comparable> String visitArrayFuncPropExpression(ArrayFuncPropExpression<T> expr)
+			throws Exception {
+		StringBuilder sb = new StringBuilder();
+		sb.append(expr.getFunc().name());
+		sb.append("(");
+		boolean seen=false;
+		for(PropExpression e: expr){
+			if(seen){
+				sb.append(",");
+			}
+			sb.append(e.accept(this));
+			seen=true;
+		}
+		sb.append(")");
+		return sb.toString();
+	}
 }

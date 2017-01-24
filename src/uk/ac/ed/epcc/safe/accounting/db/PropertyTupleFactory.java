@@ -87,8 +87,9 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 		private final AppContext conn;
 		 public PropertyTuple(AppContext conn,TupleAccessorMap map) {
 			super();
+			this.conn=conn;  // set first next line will use
 			this.proxy = map.getProxy(this);
-			this.conn=conn;
+			
 		}
 
 		protected final ExpressionTargetContainer proxy;

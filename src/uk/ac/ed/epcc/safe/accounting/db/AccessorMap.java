@@ -161,6 +161,7 @@ public abstract class AccessorMap<X extends ExpressionTarget&Contexed> implement
 		}
 		public ExpressionTargetProxy(X r){
 			this(r,EVALUATE_CACHE_FEATURE.isEnabled(r.getContext()));
+			assert(r.getContext() != null);
 		}
 		@SuppressWarnings("unchecked")
 		public <R> R evaluateExpression(PropExpression<R> expr) throws InvalidExpressionException{
@@ -314,7 +315,7 @@ public abstract class AccessorMap<X extends ExpressionTarget&Contexed> implement
 	}
 	public class SQLExpressionVisitor extends CreateSQLExpressionPropExpressionVisitor{
 		public SQLExpressionVisitor(AppContext c) {
-			super(c);
+			super(target,c);
 		}
 		private Set<PropertyTag> missing = new HashSet<PropertyTag>();
 		public SQLExpression visitPropertyTag(PropertyTag<?> tag)

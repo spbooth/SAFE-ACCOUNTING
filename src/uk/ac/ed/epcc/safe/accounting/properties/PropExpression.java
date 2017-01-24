@@ -51,4 +51,8 @@ public interface PropExpression<T> extends Targetted<T>{
      */
     public abstract PropExpression<T> copy();
     
+    public abstract boolean equals(Object obj); 
+    
+    public abstract int hashCode();
+    
 }

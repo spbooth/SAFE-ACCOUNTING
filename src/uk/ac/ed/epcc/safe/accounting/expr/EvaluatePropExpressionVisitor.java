@@ -26,6 +26,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.Indexed;
+import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFunc;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -297,6 +298,19 @@ public abstract class EvaluatePropExpressionVisitor implements
 		}
 				
 		return loc;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitArrayFuncPropExpression(uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression)
+	 */
+	@Override
+	public <T extends Comparable> Object visitArrayFuncPropExpression(ArrayFuncPropExpression<T> expr) throws Exception {
+		ArrayFunc func = expr.getFunc();
+		T result=null;
+		for(PropExpression<T> x : expr){
+			result = (T) func.combine(result, (T)x.accept(this));
+		}
+		return result;
 	}
 	
 }

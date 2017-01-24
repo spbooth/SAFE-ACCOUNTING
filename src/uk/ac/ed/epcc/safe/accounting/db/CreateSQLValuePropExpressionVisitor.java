@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
@@ -48,6 +49,7 @@ import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.SQLContext;
+import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFuncValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinarySQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLValue;
@@ -316,5 +318,20 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	public SQLValue visitLocatePropExpression(
 			LocatePropExpression expr) throws Exception {
 		return new LocateSQLValue(expr.getSubstring().accept(this), expr.getString().accept(this), expr.getPosition().accept(this));
+	}
+
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitArrayFuncPropExpression(uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression)
+	 */
+	@Override
+	public <T extends Comparable> SQLValue visitArrayFuncPropExpression(ArrayFuncPropExpression<T> expr)
+			throws Exception {
+		SQLValue<T> arr[] = new SQLValue[expr.length()];
+		int i=0;
+		for(PropExpression<T> e: expr ){
+			arr[i++]= e.accept(this);
+		}
+		return new ArrayFuncValue(target,expr.getFunc(),expr.getTarget(),arr);
 	}
 }
