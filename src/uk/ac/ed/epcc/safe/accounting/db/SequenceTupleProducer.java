@@ -55,6 +55,7 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 		try {
 			expr.put(StandardProperties.STARTED_PROP, ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.GREATEST, starts));
 			expr.put(StandardProperties.ENDED_PROP, ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.LEAST, ends));
+			map.addDerived(c, expr);
 		} catch (PropertyCastException e) {
 			getLogger().error("Error setting time expressions", e);
 		}
@@ -83,13 +84,13 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 				if( tag_a != tag_b ){
 					
 					try {
-						m.addFilter(getFilter(
+						m.addFilter(getRawFilter(
 						  new RelationClause<Date>(
 							new DeRefExpression<>(tag_a, StandardProperties.STARTED_PROP),
 							MatchCondition.LT, 
 							new DeRefExpression<>(tag_b, StandardProperties.ENDED_PROP))));
 						for(PropExpression common : getCommonProperties()){
-							m.addFilter(getFilter(
+							m.addFilter(getRawFilter(
 								new RelationClause<>(
 										new DeRefExpression<>(tag_a, common), 
 										new DeRefExpression<>(tag_b,common)

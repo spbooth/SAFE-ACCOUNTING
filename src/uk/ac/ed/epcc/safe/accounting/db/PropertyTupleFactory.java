@@ -154,11 +154,14 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 		return fil;
 	}
 	protected final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
+		return addMandatoryFilter(getRawFilter(selector));
+	}
+	protected final BaseFilter<T> getRawFilter(RecordSelector selector) throws CannotFilterException {
 		if( selector == null ){
-			return addMandatoryFilter(null);
+			return null;
 		}
 		try {
-			return addMandatoryFilter(selector.visit(new FilterSelectVisitor<T>(this)));
+			return selector.visit(new FilterSelectVisitor<T>(this));
 		}catch(CannotFilterException e){
 			throw e;
 		} catch (Exception e) {
