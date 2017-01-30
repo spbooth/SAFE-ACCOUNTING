@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
@@ -46,6 +47,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.SQLContext;
+import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFuncExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFuncValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CastDoubleSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CastLongSQLExpression;
@@ -73,7 +76,9 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	
 	private final AppContext conn;
 	private final SQLContext sql;
-	public CreateSQLExpressionPropExpressionVisitor(AppContext c){
+	 private final Class target;
+	public CreateSQLExpressionPropExpressionVisitor(Class target,AppContext c){
+		this.target=target;
 		this.conn=c;
 		try {
 			sql=conn.getService(DatabaseService.class).getSQLContext();
@@ -295,5 +300,14 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 			LocatePropExpression expr) throws Exception {
 		return new LocateSQLExpression(expr.getSubstring().accept(this), expr.getString().accept(this), expr.getPosition().accept(this));
 	}
-	
+	@Override
+	public <T extends Comparable> SQLExpression visitArrayFuncPropExpression(ArrayFuncPropExpression<T> expr)
+			throws Exception {
+		SQLExpression<T> arr[] = new SQLExpression[expr.length()];
+		int i=0;
+		for(PropExpression<T> e: expr ){
+			arr[i++]= e.accept(this);
+		}
+		return new ArrayFuncExpression(target,expr.getFunc(),expr.getTarget(),arr);
+	}
 }

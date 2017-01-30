@@ -62,6 +62,9 @@ public class DNNameFinder<AU extends AppUser> extends FieldNameFinder<AU, DNName
 	}
 	@Override
 	public String normalizeName(String name){
+		if( name == null){
+			return null;
+		}
 		return toWebFormat(name);
 	}
 }

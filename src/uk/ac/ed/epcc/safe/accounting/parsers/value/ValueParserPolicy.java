@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.CasePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
@@ -266,6 +267,11 @@ public class ValueParserPolicy implements
 	}
 	@Override
 	public ValueParser visitLocatePropExpression(LocatePropExpression expr) throws Exception {
+		return getValueParser(expr.getTarget());
+	}
+	@Override
+	public ValueParser visitArrayFuncPropExpression(ArrayFuncPropExpression expr) throws Exception {
+		
 		return getValueParser(expr.getTarget());
 	}
 

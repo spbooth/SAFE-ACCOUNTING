@@ -18,6 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.expr.parse;
 
 import java.util.LinkedList;
 
+import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
@@ -26,6 +27,8 @@ import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
 import uk.ac.ed.epcc.safe.accounting.expr.StringPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFunc;
+
 
 /** Conversion functions on propexpressions.
  * 
@@ -85,6 +88,16 @@ public enum Keywords {
 		public PropExpression getExpression(LinkedList<PropExpression> inner)
 				throws ParseException {
 			return new LocatePropExpression(inner.getFirst(),inner.get(1),inner.getLast());
+		}
+	},
+	GREATEST{
+		public PropExpression getExpression(LinkedList<PropExpression> inner){
+			return ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.GREATEST,inner );
+		}
+	},
+	LEAST {
+		public PropExpression getExpression(LinkedList<PropExpression> inner){
+			return ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.LEAST,inner );
 		}
 	};
 

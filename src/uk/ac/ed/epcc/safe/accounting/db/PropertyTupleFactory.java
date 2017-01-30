@@ -1,7 +1,9 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
@@ -53,7 +55,8 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 
 	protected final TupleAccessorMap map;
 	private final String tag;
-	MultiFinder finder = new MultiFinder();
+	protected MultiFinder finder = new MultiFinder();
+	private LinkedList<ReferenceTag<A,AF>> member_tags;
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.webapp.model.data.TupleFactory#makeTuple()
 	 */
@@ -65,20 +68,29 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 	public PropertyTupleFactory(AppContext c,String config_tag) {
 		super(c);
 		this.tag=config_tag;
-		String nested = c.getInitParameter(config_tag+".members");
-		if( nested != null){
-			for(String tag : nested.split("\\s*,\\s*")){
-				AF fac = (AF) c.makeObject(DataObjectFactory.class, tag);
-				addFactory(fac);
-			}
-		}
+		addMembers(c, config_tag);
 		map = new TupleAccessorMap(this, config_tag);
+		member_tags = new LinkedList<>();
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 		finder.addFinder(refs);
 		for(AF fac : getMemberFactories()){
 			ReferenceTag<A, AF> tag = (ReferenceTag<A, AF>) refs.find(IndexedReference.class,fac.getTag());
 			if( tag != null ){
+				member_tags.add(tag);
 				map.put(tag, new TupleSelfSQLValue<A,AF,T>(this, fac));
+			}
+		}
+	}
+	/**
+	 * @param c
+	 * @param config_tag
+	 */
+	protected void addMembers(AppContext c, String config_tag) {
+		String nested = c.getInitParameter(config_tag+".members");
+		if( nested != null){
+			for(String tag : nested.split("\\s*,\\s*")){
+				AF fac = (AF) c.makeObject(DataObjectFactory.class, tag);
+				addFactory(fac);
 			}
 		}
 	}
@@ -87,8 +99,9 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 		private final AppContext conn;
 		 public PropertyTuple(AppContext conn,TupleAccessorMap map) {
 			super();
+			this.conn=conn;  // set first next line will use
 			this.proxy = map.getProxy(this);
-			this.conn=conn;
+			
 		}
 
 		protected final ExpressionTargetContainer proxy;
@@ -129,7 +142,21 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 			return false;
 		}
 	}
+	
+	/** Augment the filter generated from the {@link RecordSelector} with a standard set of additional filter
+	 * 
+	 * This is to add a mandatory set of filters to restrict the join.
+	 * 
+	 * @param fil
+	 * @return
+	 */
+	protected BaseFilter<T> addMandatoryFilter(BaseFilter<T> fil){
+		return fil;
+	}
 	protected final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
+		return addMandatoryFilter(getRawFilter(selector));
+	}
+	protected final BaseFilter<T> getRawFilter(RecordSelector selector) throws CannotFilterException {
 		if( selector == null ){
 			return null;
 		}
@@ -233,5 +260,9 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 	@Override
 	public final String getTag() {
 		return tag;
+	}
+	
+	protected Collection<ReferenceTag<A,AF>> getMemberTags(){
+		return (Collection<ReferenceTag<A,AF>>) member_tags.clone();
 	}
 }

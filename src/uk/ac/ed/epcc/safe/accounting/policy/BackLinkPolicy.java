@@ -1,6 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.policy;
 
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -9,15 +10,17 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.update.UsageRecordPolicy;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 /** A {@link UsageRecordPolicy} that adds a reverse reference to the created object from one of the records 
  * it references.
  * 
  * @author spb
  *
  */
-public class BackLinkPolicy extends BaseUsageRecordPolicy {
+public class BackLinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider{
 
 	
 	private AppContext c;
@@ -74,5 +77,19 @@ public class BackLinkPolicy extends BaseUsageRecordPolicy {
 				((DataObject)remote).commit();
 			}
 		}
+	}
+	@Override
+	public void getTableTransitionSummary(ContentBuilder hb, SessionService operator) {
+		if( remote_tag == null ){
+			hb.addText("Remote tag not set");
+		}else{
+			hb.addText("Sets reference in "+remote_tag.getFullName());
+		}
+		if( back_ref == null ){
+			hb.addText("Remote table does not have reference here");
+		}else{
+			hb.addText("Remote property is "+back_ref.getFullName());
+		}
+		
 	}
 }

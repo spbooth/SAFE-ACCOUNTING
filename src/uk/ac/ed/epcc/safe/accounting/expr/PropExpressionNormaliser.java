@@ -214,4 +214,11 @@ public class PropExpressionNormaliser implements PropExpressionVisitor<PropExpre
 		return expr;
 	}
 
+
+	@Override
+	public <T extends Comparable> PropExpression visitArrayFuncPropExpression(ArrayFuncPropExpression<T> expr)
+			throws Exception {
+		return expr;
+	}
+
 }

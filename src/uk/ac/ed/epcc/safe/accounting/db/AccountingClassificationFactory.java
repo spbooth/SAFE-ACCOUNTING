@@ -137,14 +137,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 		return map;
 	}
 
-	@Override
-	protected PropExpressionMap getDerivedProperties() {
-		if( expression_map == null){
-			initAccessorMap(getContext(), getConfigTag());
-		}
-		return expression_map;
-		
-	};
+	
 
 	@Override
 	public void resetStructure() {

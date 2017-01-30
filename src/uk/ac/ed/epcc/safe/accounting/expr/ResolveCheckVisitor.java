@@ -42,6 +42,7 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 	AppContext conn;
 	Logger log;
 	public ResolveCheckVisitor(AppContext conn,Logger log){
+		assert(conn != null);
 		this.conn=conn;
 		this.log=log;
 	}
@@ -249,6 +250,20 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 	public Boolean visitLocatePropExpression(
 			LocatePropExpression expr) throws Exception {
 		return expr.substr.accept(this) && expr.str.accept(this) && expr.pos.accept(this);
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitArrayFuncPropExpression(uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression)
+	 */
+	@Override
+	public <T extends Comparable> Boolean visitArrayFuncPropExpression(ArrayFuncPropExpression<T> expr)
+			throws Exception {
+		for(PropExpression e : expr){
+			Boolean res = (Boolean) e.accept(this);
+			if( ! res ){
+				return Boolean.FALSE;
+			}
+		}
+		return Boolean.TRUE;
 	}
 	
 }
