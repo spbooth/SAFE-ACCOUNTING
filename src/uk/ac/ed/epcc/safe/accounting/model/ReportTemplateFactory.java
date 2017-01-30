@@ -215,6 +215,9 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 				if (reportTemplate.canUse(sess))
 				{
 					Report report = new Report(reportTemplate, params);
+					if (params != null) {
+						report.setContextParameters(params.keySet());
+					}
 					String reportName = reportTemplate.getReportName();
 					String reportDescription = reportTemplate.getReportDescription();
 					t.put("Name", reportTemplate, reportName);

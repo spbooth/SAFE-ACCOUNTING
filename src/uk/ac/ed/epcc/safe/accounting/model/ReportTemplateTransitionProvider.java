@@ -18,7 +18,9 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -105,7 +107,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 				ReportBuilder builder = ReportBuilder.getInstance(c);
 				ReportBuilder.setTemplate(c, builder, target.getReportTemplate().getTemplateName());
 				ReportType reportType = builder.getReportType(extension);
-				Map<String, Object> params = getParameters(target.getParameters(), c, builder);
+				Map<String, Object> params = getParameters(target, c, builder);
 
 				if( params != null && ! builder.hasErrors())
 				{
@@ -188,7 +190,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 					context.setService(new OverrideConfigService(props, context));
 				}
 
-				Map<String, Object> reportParameters = target.getParameters(); 
+				Map<String, Object> reportParameters = target.getParameters();
 				builder.parseReportParametersForm(f, reportParameters);
 				try {
 					if( ! builder.hasErrors()){
@@ -228,7 +230,8 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 				ReportBuilder.setTemplate(conn, builder, target.getReportTemplate().getTemplateName());
 				Map<String, Object> parameters = target.getParameters();
 				builder.buildReportParametersForm(f, parameters);
-				setMap(parameters, f, false);
+				System.out.println("SET MAP: parameters=" + parameters + " context parameters=" + target.getContextParameters());
+				setMap(parameters, target.getContextParameters(), f, false);
 				
 				f.addAction("CSV", new ExportAction(conn, target, builder, builder.getReportType("csv")));
 				f.addAction("PDF", new ExportAction(conn, target, builder, builder.getReportType("pdf")));
@@ -282,16 +285,26 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 		try {
 			ReportTemplate reportTemplate = fac.findByFileName(templateFileName);
 			Map<String, Object> parameters = new HashMap<String, Object>();
+			Set<String> contextParameters = new HashSet<String>();
 			for (String p : id) {
+				boolean isContextParam = false; 
+				if (p.startsWith("__")) {
+					p = p.substring(2);
+					isContextParam = true;
+				}
 				int ind = p.indexOf(":");
 				if (ind >= 0) {
 					String key = p.substring(0, ind);
 					String value = decodeParameter(key, p.substring(ind+1));
 					parameters.put(key, value);
+					if (isContextParam) {
+						contextParameters.add(key);
+					}
 				}
 			}
 			report = new Report(reportTemplate, parameters);
 			report.setExtension(extension);
+			report.setContextParameters(contextParameters);
 		} catch (DataException e) {
 			getLogger().debug("Error retrieving template file name");
 		}
@@ -301,10 +314,16 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 	@Override
 	public LinkedList<String> getID(Report target) {
 		LinkedList<String> result = new LinkedList<String>();
-		if (target.getParameters() != null) {
-			for (Entry<String, Object> entry : target.getParameters().entrySet()) {
+		Map<String, Object> parameters = target.getParameters();
+		Collection<String> contextParameters = target.getContextParameters();
+		if (parameters != null) {
+			for (Entry<String, Object> entry : parameters.entrySet()) {
 				String value = encodeParameter(entry);
-				result.add(entry.getKey() + ":" + value);
+				String prefix = "";
+				if (contextParameters != null && contextParameters.contains(entry.getKey())) {
+					prefix = "__";
+				}
+				result.add(prefix + entry.getKey() + ":" + value);
 			}
 		}
 		if (target.getReportTemplate() != null) { 
@@ -364,33 +383,60 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 	
 	/** Add/sets form contents to a map
 	 * 
-	 * @param p
-	 * @param f
-	 * @param set_map
+	 * @param parameters parameters
+	 * @param f form to populate or extract values
+	 * @param set_map <code>true</code> to add the form contents to the map, or <code>false</code> to populate the form from the map values
 	 * @throws ActionException 
 	 */
-	public void setMap(Map<String,Object> p,Form f, boolean set_map) throws ActionException{
+	public void setMap(Map<String,Object> parameters, Form f, boolean set_map) throws ActionException{
+		setMap(parameters, null, f, set_map);
+	}
+
+	/**
+	 * Add/set form contents to a map
+	 * @param p parameters
+	 * @param locked keys of input forms that are locked
+	 * @param f form
+	 * @param set_map <code>true</code> to add the form contents to the map, or <code>false</code> to populate the form from the map values
+	 * @return 
+	 * @throws ActionException
+	 */
+	public boolean setMap(Map<String,Object> p, Collection<String> locked, Form f, boolean set_map) throws ActionException
+	{
 		SetParamsVisitor vis = new SetParamsVisitor(set_map, p);
 		for(Field<?> field : f){
 			try {
 				field.getInput().accept(vis);
+				if (locked != null && locked.contains(field.getKey())) {
+					field.lock();
+				}
 			} catch (Exception e) {
 				throw new ActionException("Error in setMap", e);
 			}
 		}
+		return vis.getMissing();
 	}
 	public Report getTargetReport(Form f,Report orig) throws ActionException{
 		LinkedHashMap<String,Object> new_param = new LinkedHashMap<String, Object>();
-		setMap(new_param,f,true);
-		
-		return new Report(orig.getReportTemplate(),new_param);
+		Map<String, Object> param = orig.getParameters();
+		Collection<String> contextParameters = orig.getContextParameters();
+		setMap(new_param, orig.getContextParameters(), f, true);
+		for (String c : contextParameters) {
+			new_param.put(c, param.get(c));
+		}
+		return new Report(orig.getReportTemplate(), new_param, orig.getContextParameters());
 	}
 	
-	private Map<String, Object> getParameters(Map<String, Object> reportParameters, AppContext c, ReportBuilder builder) throws Exception 
+	private Map<String, Object> getParameters(Report target, AppContext c, ReportBuilder builder) throws Exception 
 	{
+		Map<String, Object> reportParameters = target.getParameters();
 		Form form = new BaseForm(c);
 		builder.buildReportParametersForm(form, reportParameters);
-		setMap(reportParameters, form, false);
+		// don't set any context parameters locking inputs in this form
+		// because parseReportParameters below won't retrieve the values for locked input forms
+		if (setMap(reportParameters, null, form, false)) {
+			return null;
+		}
 		Map<String, Object> params = new HashMap<String, Object>(reportParameters);
 		boolean isValid = builder.parseReportParametersForm(form, params);
 		if (!isValid) {
@@ -419,7 +465,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 		try {
 			builder = ReportBuilder.getInstance(context);
 			ReportBuilder.setTemplate(context, builder, target.getReportTemplate().getTemplateName());
-			params = getParameters(target.getParameters(), context, builder);
+			params = getParameters(target, context, builder);
 			if (params != null && !target.getParameters().isEmpty()) {
 				cb.addHeading(4, "Report Preview");
 				builder.renderContent(params, (SimpleXMLBuilder)cb);

@@ -1,15 +1,15 @@
 package uk.ac.ed.epcc.safe.accounting.model;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import uk.ac.ed.epcc.webapp.forms.Form;
 
 public class Report {
 	
 	private ReportTemplate reportTemplate;
 	private LinkedHashMap<String, Object> parameters;
+	private Collection<String> contextParameters;
 	private String extension;
 	private String name;
 	
@@ -38,6 +38,14 @@ public class Report {
 		}
 	}
 	
+	public Report(ReportTemplate reportTemplate,
+			LinkedHashMap<String, Object> parameters,
+			Collection<String> contextParameters) 
+	{
+		this(reportTemplate, parameters);
+		setContextParameters(contextParameters);
+	}
+
 	public ReportTemplate getReportTemplate() {
 		return reportTemplate;
 	}
@@ -61,5 +69,16 @@ public class Report {
 	@Override
 	public String toString() {
 		return "Report(template=" + getName() + ", parameters=" + getParameters() + ")";
+	}
+	
+	public void setContextParameters(Collection<String> contextParameters) {
+		this.contextParameters = new HashSet<String>(contextParameters);
+	}
+	
+	public Collection<String> getContextParameters() {
+		if (contextParameters == null) {
+			return null;
+		}
+		return new HashSet<String>(contextParameters);
 	}
 }
