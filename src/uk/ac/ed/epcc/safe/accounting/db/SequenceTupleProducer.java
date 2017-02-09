@@ -47,6 +47,7 @@ UR extends SequenceTupleProducer.PeriodTuple<A>
 		super(c, config_tag);
 		finder.addFinder(StandardProperties.time);
 		PropExpressionMap expr = new PropExpressionMap();
+		customiseAccessors(map, expr);
 		LinkedList<PropExpression> starts = new LinkedList<>();
 		LinkedList<PropExpression> ends = new LinkedList<>();
 		for(ReferenceTag<A, AF> tag : getMemberTags()){
@@ -60,8 +61,12 @@ UR extends SequenceTupleProducer.PeriodTuple<A>
 		} catch (PropertyCastException e) {
 			getLogger().error("Error setting time expressions", e);
 		}
+		
 	}
 
+	protected void customiseAccessors(TupleAccessorMap map,PropExpressionMap expr){
+		
+	}
 	/** collections of properties that must match in all members of the tuple. 
 	 * 
 	 * @return
