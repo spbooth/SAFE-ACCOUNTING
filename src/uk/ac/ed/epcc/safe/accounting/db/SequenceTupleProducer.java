@@ -23,6 +23,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.time.Period;
+import uk.ac.ed.epcc.webapp.time.TimePeriod;
 /** A {@link TupleUsageProducer} that represents a time-sequence join
  * 
  * All records in the nested factories are assumes to implement
@@ -39,7 +40,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
 public class SequenceTupleProducer<
 A extends DataObject & ExpressionTarget, 
 AF extends DataObjectFactory<A> & ExpressionTargetFactory<A>,
-UR extends TupleUsageProducer.TupleUsageRecord<A>
+UR extends SequenceTupleProducer.PeriodTuple<A>
 > extends TupleUsageProducer<A,AF,UR> {
 
 	public SequenceTupleProducer(AppContext c, String config_tag) {
@@ -116,4 +117,22 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 		return super.getPeriodFilter(period, start_prop, end_prop, type, cutoff);
 	}
 
+	public static  class PeriodTuple<A extends DataObject & ExpressionTarget> extends TupleUsageProducer.TupleUsageRecord<A> implements TimePeriod{
+
+		public PeriodTuple(AppContext conn, TupleAccessorMap map) {
+			super(conn, map);
+		}
+
+		@Override
+		public Date getStart() {
+			
+			return getProperty(StandardProperties.STARTED_PROP,null);
+		}
+
+		@Override
+		public Date getEnd() {
+			return getProperty(StandardProperties.ENDED_PROP,null);
+		}
+		
+	}
 }
