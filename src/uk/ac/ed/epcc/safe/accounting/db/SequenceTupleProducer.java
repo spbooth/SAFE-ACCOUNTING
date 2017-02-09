@@ -10,6 +10,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
+import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
@@ -47,7 +48,7 @@ UR extends SequenceTupleProducer.PeriodTuple<A>
 		super(c, config_tag);
 		finder.addFinder(StandardProperties.time);
 		PropExpressionMap expr = new PropExpressionMap();
-		customiseAccessors(map, expr);
+		customiseAccessors(finder,map, expr);
 		LinkedList<PropExpression> starts = new LinkedList<>();
 		LinkedList<PropExpression> ends = new LinkedList<>();
 		for(ReferenceTag<A, AF> tag : getMemberTags()){
@@ -64,7 +65,7 @@ UR extends SequenceTupleProducer.PeriodTuple<A>
 		
 	}
 
-	protected void customiseAccessors(TupleAccessorMap map,PropExpressionMap expr){
+	protected void customiseAccessors(MultiFinder finder,TupleAccessorMap map,PropExpressionMap expr){
 		
 	}
 	/** collections of properties that must match in all members of the tuple. 
