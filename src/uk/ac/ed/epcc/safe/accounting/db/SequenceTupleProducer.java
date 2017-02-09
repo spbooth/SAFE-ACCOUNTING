@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.db.TupleUsageProducer.TupleUsageRecord;
 import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
@@ -140,5 +141,21 @@ UR extends SequenceTupleProducer.PeriodTuple<A>
 			return getProperty(StandardProperties.ENDED_PROP,null);
 		}
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.TupleUsageProducer#makeTuple()
+	 */
+	@Override
+	public UR makeTuple() {
+		return (UR) new PeriodTuple<A>(getContext(), map);
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.TupleUsageProducer#getTarget()
+	 */
+	@Override
+	public Class getTarget() {
+		return PeriodTuple.class;
 	}
 }
