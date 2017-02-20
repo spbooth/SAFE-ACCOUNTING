@@ -38,9 +38,9 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 			new PropertyRegistry("oxfordslurm","The SLURM batch properties");
 
 	@AutoTable(unique=true)
-	public static final PropertyTag<Integer> JOB_ID = new PropertyTag<Integer>(slurm, "JobID", Integer.class,"Slurm JOB id");
+	public static final PropertyTag<String> JOB_ID = new PropertyTag<String>(slurm, "JobID", String.class,"Slurm JOB id");
 	@AutoTable
-	public static final PropertyTag<Integer> JOB_ID_RAW = new PropertyTag<Integer>(slurm, "JobIDRaw", Integer.class,"RAW Slurm JOB id");
+	public static final PropertyTag<String> JOB_ID_RAW = new PropertyTag<String>(slurm, "JobIDRaw", String.class,"RAW Slurm JOB id");
 	@AutoTable
 	public static final PropertyTag<String> UserName = new PropertyTag<String>(slurm, "User", String.class,"User name");
 	@AutoTable
@@ -64,7 +64,7 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 	@AutoTable
 	public static final PropertyTag<Integer> ALLOC_CPUS = new PropertyTag<Integer>(slurm, "AllocCPUS", Integer.class,"Allocated cpus");
 	@AutoTable
-	public static final PropertyTag<Integer> ALLOC_GRES = new PropertyTag<Integer>(slurm, "AllocGRES", Integer.class,"Allocated GRES");
+	public static final PropertyTag<String> ALLOC_GRES = new PropertyTag<String>(slurm, "AllocGRES", String.class,"Allocated GRES");
 	@AutoTable
 	public static final PropertyTag<Integer> NNODE = new PropertyTag<Integer>(slurm, "NNodes", Integer.class,"Nodes");
 	@AutoTable
@@ -84,26 +84,26 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 	    	throw new AccountingParseException("Wrong number of fields "+fields.length);
 	    }
 	    // check for header line
-	    if( fields[0] == "JobID"){
+	    if( fields[0].equals("JobID")){
 	    	return false;
 	    }
 	    try{
-		map.setProperty(JOB_ID,new Integer(fields[pos++]));
-		map.setProperty(JOB_ID_RAW,new Integer(fields[pos++]));
+		map.setProperty(JOB_ID,fields[pos++]);
+		map.setProperty(JOB_ID_RAW,fields[pos++]);
 		map.setProperty(UserName, fields[pos++]);
 		map.setProperty(GroupName, fields[pos++]);
 		map.setProperty(AccountName, fields[pos++]);
 		map.setProperty(JobName, fields[pos++]);
 		map.setProperty(Partition, fields[pos++]);
 		map.setProperty(QOS, fields[pos++]);
-		map.setProperty(Start, SLURM_DATE_PARSER.parse(fields[pos++]));
-		map.setProperty(End, SLURM_DATE_PARSER.parse(fields[pos++]));
-		map.setProperty(Submit, SLURM_DATE_PARSER.parse(fields[pos++]));
-		map.setProperty(ALLOC_CPUS,new Integer(fields[pos++]));
-		map.setProperty(ALLOC_GRES,new Integer(fields[pos++]));
-		map.setProperty(NNODE,new Integer(fields[pos++]));
-		map.setProperty(ELAPSED_PROP,SlurmDurationParser.PARSER.parse(fields[pos++]));
-		map.setProperty(TIMELIMIT_PROP,SlurmDurationParser.PARSER.parse(fields[pos++]));
+		parseDate(map,Start, fields[pos++]);
+		parseDate(map,End, fields[pos++]);
+		parseDate(map,Submit, fields[pos++]);
+		parseInteger(map,ALLOC_CPUS,fields[pos++]);
+		map.setProperty(ALLOC_GRES,fields[pos++]);
+		parseInteger(map,NNODE,fields[pos++]);
+		parseDuration(map,ELAPSED_PROP,fields[pos++]);
+		parseDuration(map,TIMELIMIT_PROP,fields[pos++]);
 		map.setProperty(STATE_PROP, fields[pos++]);
 	    }catch(NumberFormatException e){
 	    	throw new AccountingParseException(e);
@@ -113,6 +113,21 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 	    	throw new AccountingParseException(e3);
 	    }
 		return true;
+	}
+	private void parseInteger(PropertyMap map, PropertyTag<Integer> tag, String field){
+		if( field.length() > 0 ){
+			map.setProperty(tag, new Integer(field));
+		}
+	}
+	private void parseDate(PropertyMap map, PropertyTag<Date> tag, String field) throws ValueParseException{
+		if( field.length() > 0 ){
+			map.setProperty(tag, SLURM_DATE_PARSER.parse(field));
+		}
+	}
+	private void parseDuration(PropertyMap map, PropertyTag<Duration> tag, String field) throws ValueParseException{
+		if( field.length() > 0 ){
+			map.setProperty(tag, SlurmDurationParser.PARSER.parse(field));
+		}
 	}
 	@Override
 	public AppContext getContext() {

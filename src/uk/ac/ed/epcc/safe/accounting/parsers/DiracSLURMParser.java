@@ -34,7 +34,7 @@ import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 
-public class DiracSLUMParser extends AbstractKeyPairParser {
+public class DiracSLURMParser extends AbstractKeyPairParser {
 	
 	public static final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
 	
@@ -115,7 +115,7 @@ public class DiracSLUMParser extends AbstractKeyPairParser {
 		SLURM_ATTRIBUTES.addParser(STATE_PROP, StringParser.PARSER);
 	}
     
-    public DiracSLUMParser(AppContext conn) {
+    public DiracSLURMParser(AppContext conn) {
 		super(conn);
 	}
 
