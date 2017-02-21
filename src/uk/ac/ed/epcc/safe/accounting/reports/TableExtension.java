@@ -1242,6 +1242,12 @@ public class TableExtension extends ReportExtension {
 	 * @return
 	 */
 	protected Transform makeTableTransform(Element inst, String type) {
+	    if( type.equals("TotalTransform")){
+	    	// inner class so implement explicitly
+	    	// we need to support this to have a CompountTable that
+	    	// augments the total rows
+	    	return new TotalTransform();
+	    }
 		Transform transform;
 		transform= getContext().makeObjectWithDefault(Transform.class, null,type);
 		if( transform == null ){
