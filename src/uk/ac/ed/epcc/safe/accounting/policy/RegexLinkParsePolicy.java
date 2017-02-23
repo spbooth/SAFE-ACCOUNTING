@@ -29,6 +29,7 @@ import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
@@ -234,9 +235,9 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 		
 	}
 	@Override
-	public Map<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
-		result.put(new AdminOperationKey("Relink","Re-apply regexp links to all records"),new RelinkTransition());
+	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
+		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
+		result.put(new AdminOperationKey(TableTransitionTarget.class,"Relink","Re-apply regexp links to all records"),new RelinkTransition());
 		return result;
 	}
 	

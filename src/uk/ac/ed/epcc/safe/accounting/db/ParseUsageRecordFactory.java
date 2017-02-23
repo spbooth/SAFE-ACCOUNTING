@@ -49,6 +49,7 @@ import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.result.MessageResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraFormTransition;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.DataBaseHandlerService;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
@@ -56,7 +57,6 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 
@@ -372,7 +372,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 					addTransitionSource((TransitionSource<ParseUsageRecordFactory<T,R>>)owner);
 				}
 				if( hasProperty(StandardProperties.TEXT_PROP) && hasProperty(StandardProperties.ENDED_PROP)){
-					addTableTransition(new TransitionKey<ParseUsageRecordFactory>(ParseUsageRecordFactory.class, "Rescan", "Rescan all records stored as text"), new RescanTableTransition());
+					addTableTransition(new AdminOperationKey<ParseUsageRecordFactory>(ParseUsageRecordFactory.class, "Rescan", "Rescan all records stored as text"), new RescanTableTransition());
 				}
 			}
 		}

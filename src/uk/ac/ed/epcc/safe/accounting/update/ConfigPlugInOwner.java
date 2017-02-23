@@ -34,11 +34,12 @@ import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 
 /** A {@link PlugInOwner} configured from the config-service.
  * 
@@ -246,14 +247,15 @@ public class ConfigPlugInOwner<T extends TableTransitionTarget & PlugInOwner<R>,
 			}
 			
 		}
+		
 		@Override
-		public Map<TransitionKey<T>, Transition<T>> getTransitions() {
+		public Map<TableTransitionKey<T>, Transition<T>> getTransitions() {
 			
-			Map<TransitionKey<T>, Transition<T>> res = super.getTransitions();
-			res.put(new TransitionKey<T>(PlugInOwner.class, "DeletePolicy"), new DeletePolicyTransition());
-			res.put(new TransitionKey<T>(PlugInOwner.class, "AddPolicy"), new AddPolicyTransition());
+			Map<TableTransitionKey<T>, Transition<T>> res = super.getTransitions();
+			res.put(new AdminOperationKey(PlugInOwner.class,"DeletePolicy","Remove one of the configured policies"), new DeletePolicyTransition());
+			res.put(new AdminOperationKey<T>(PlugInOwner.class,"AddPolicy","Add a new policy"), new AddPolicyTransition());
 			if( getParser().getClass() == default_parser_class){
-				res.put(new TransitionKey<T>(PlugInOwner.class, "SetParser"), new SetParserTransition());
+				res.put(new AdminOperationKey(PlugInOwner.class,"SetParser","Set a table parser"), new SetParserTransition());
 			}
 
 			return res;

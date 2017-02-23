@@ -23,12 +23,14 @@ import uk.ac.ed.epcc.safe.accounting.db.PropertyTargetClassificationFactory;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.factory.FormCreator;
 import uk.ac.ed.epcc.webapp.forms.inputs.ClassInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
+import uk.ac.ed.epcc.webapp.forms.transition.ExtraContent;
 import uk.ac.ed.epcc.webapp.jdbc.table.DataBaseHandlerService;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableListResult;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
@@ -36,6 +38,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 
 /** Class to create ConfigUsageRecordFactory accounting tables
  * 
@@ -44,7 +47,7 @@ import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
  */
 
 
-public class ClassificationTableCreator implements FormCreator,Contexed{
+public class ClassificationTableCreator implements FormCreator,Contexed, ExtraContent{
 
 
 	private static final String TYPE = "Type";
@@ -91,6 +94,15 @@ public class ClassificationTableCreator implements FormCreator,Contexed{
 			}
 		}
 		
+	}
+	@Override
+	public ContentBuilder getExtraHtml(ContentBuilder cb, SessionService op, Object target) {
+		cb.addText("This form creates a new classification table. "+
+	"A classification table is a table that represents a set of strings or names. "+
+				"These can be manually created using forms. If a reference to a classification table is added to another table the field will present as a pull-down menu. "+
+	"Classifications can also be generated on-the fly by a ClassificationPolicy as part of a data parse. This is for data like Queue names where the values come from a restricted set and it it better to "+
+				"store a reference to a classification table rather than a string field");
+		return cb;
 	}
 
 }

@@ -21,15 +21,18 @@ package uk.ac.ed.epcc.safe.accounting.allocations;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.factory.FormCreator;
 import uk.ac.ed.epcc.webapp.forms.inputs.ClassInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
+import uk.ac.ed.epcc.webapp.forms.transition.ExtraContent;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableListResult;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 
 /** Class to create {@link AllocationManager} accounting tables
  * 
@@ -38,7 +41,7 @@ import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
  */
 
 
-public class AllocationTableCreator implements FormCreator,Contexed{
+public class AllocationTableCreator implements FormCreator,Contexed, ExtraContent{
 
 
 	private static final String TYPE = "Type";
@@ -75,6 +78,12 @@ public class AllocationTableCreator implements FormCreator,Contexed{
 			}
 		}
 		
+	}
+	@Override
+	public ContentBuilder getExtraHtml(ContentBuilder cb, SessionService op, Object target) {
+	    cb.addText("This form creates a new allocation table. Allocation tables are populated by forms and hold some resource allocation. "+
+	    		"Policies then decrement allocation as accounting data is loaded.");
+		return cb;
 	}
 
 }

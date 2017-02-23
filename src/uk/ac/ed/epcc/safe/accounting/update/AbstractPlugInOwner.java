@@ -29,11 +29,11 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Base class for implementing {@link PlugInOwner}.
  * 
@@ -145,8 +145,8 @@ public abstract class AbstractPlugInOwner<T extends PlugInOwner<R> & TableTransi
 	}
 
 @SuppressWarnings("unchecked")
-public Map<TransitionKey<T>, Transition<T>> getTransitions() {
-	Map<TransitionKey<T>, Transition<T>> res = new HashMap<TransitionKey<T>, Transition<T>>();
+public Map<TableTransitionKey<T>, Transition<T>> getTransitions() {
+	Map<TableTransitionKey<T>, Transition<T>> res = new HashMap<TableTransitionKey<T>, Transition<T>>();
 	PropertyContainerParser parser = getParser();
 	if( parser != null && parser instanceof TransitionSource){
 		res.putAll(((TransitionSource) parser).getTransitions());

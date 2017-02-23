@@ -70,6 +70,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLAndFilter;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
@@ -80,7 +81,6 @@ import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.filter.FilterDelete;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** A UsageRecordFactory that generates aggregate records from a separate class.
  * The tables in the master {@link UsageProducer} will require a {@link ListenerPolicy} to populate the aggregate records if data 
@@ -109,7 +109,7 @@ public abstract class AggregateUsageRecordFactory
 		extends UsageRecordFactory<AggregateUsageRecordFactory.AggregateRecord> implements UsageRecordListener{
 	private static final String COMPLETED_TIMESTAMP = "CompletedTimestamp";
 	private static final String STARTED_TIMESTAMP = "StartedTimestamp";
-	public static final TransitionKey<AggregateUsageRecordFactory> REGENERATE = new TransitionKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "Regenerate");
+	public static final AdminOperationKey<AggregateUsageRecordFactory> REGENERATE = new AdminOperationKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "Regenerate");
 	public static final PropertyRegistry aggregate = new PropertyRegistry("aggregate","Time bounds for aggregate records");
 	public static final PropertyTag<Date> AGGREGATE_STARTED_PROP = new PropertyTag<Date>(aggregate,STARTED_TIMESTAMP,Date.class);
 	public static final PropertyTag<Date> AGGREGATE_ENDED_PROP = new PropertyTag<Date>(aggregate,COMPLETED_TIMESTAMP,Date.class);
