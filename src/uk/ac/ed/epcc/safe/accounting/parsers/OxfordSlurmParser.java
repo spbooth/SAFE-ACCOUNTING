@@ -9,6 +9,8 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.DateParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.SlurmDurationParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParseException;
+import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -77,7 +79,7 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 	public static final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
 	@Override
 	public boolean parse(PropertyMap map, String record) throws AccountingParseException {
-		String fields[] = record.split("\\|");
+		String fields[] = record.trim().split("\\|");
 		
 		int pos=0;
 	    if( fields.length != 17){
@@ -154,5 +156,18 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 			getLogger(getContext()).error("Error setting standard derived props",e);
 		}
 		return derv;
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.update.BaseParser#initFinder(uk.ac.ed.epcc.webapp.AppContext, uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder, java.lang.String)
+	 */
+	@Override
+	public PropertyFinder initFinder(AppContext conn, PropertyFinder prev, String table) {
+		MultiFinder finder = new MultiFinder();
+		
+		finder.addFinder(slurm);
+		finder.addFinder(batch);
+		finder.addFinder(StandardProperties.time);
+		finder.addFinder(StandardProperties.base);
+		return finder;
 	}
 }
