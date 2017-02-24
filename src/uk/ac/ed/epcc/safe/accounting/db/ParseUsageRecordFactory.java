@@ -49,6 +49,7 @@ import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.result.MessageResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraFormTransition;
+import uk.ac.ed.epcc.webapp.jdbc.table.AddClassificationReferenceTransition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.DataBaseHandlerService;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
@@ -375,6 +376,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 					addTableTransition(new AdminOperationKey<ParseUsageRecordFactory>(ParseUsageRecordFactory.class, "Rescan", "Rescan all records stored as text"), new RescanTableTransition());
 				}
 			}
+			addTableTransition(new AdminOperationKey<ParseUsageRecordFactory>(ParseUsageRecordFactory.class, "AddClassificationReference","Add a reference to a classification"), new AddClassificationReferenceTransition(res));
 		}
 
 		@Override
