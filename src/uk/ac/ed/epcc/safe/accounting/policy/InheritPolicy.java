@@ -32,19 +32,22 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 public class InheritPolicy extends BasePolicy implements SummaryProvider {
 
+	private static final String PARENT_SUFFIX = ".parent";
+	private static final String INHERIT_POLICY_PREFIX = "InheritPolicy.";
 	public InheritPolicy() {
 		
 	}
 
 	Set<ReferenceTag> parents=null;
 	PropExpressionMap map=null;
+	String table=null;
 	@Override
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
 		
 		MultiFinder finder =null;
 		try{
-
-			String parent_names = ctx.getInitParameter("InheritPolicy."+table+".parent");
+			this.table=table;
+			String parent_names = ctx.getInitParameter(INHERIT_POLICY_PREFIX+table+PARENT_SUFFIX);
 			for(String parent_name : parent_names.split("\\s*,\\s*")){
 				if( parent_name != null && ! parent_name.trim().isEmpty()){
 					ReferenceTag parent = (ReferenceTag) prev.find(IndexedReference.class, parent_name);
@@ -112,7 +115,7 @@ public class InheritPolicy extends BasePolicy implements SummaryProvider {
 			
 			para.clean("Parent table is not defiend set the property ");
 			para.open("b");
-			para.clean("InheritPolicy.");
+			para.clean(INHERIT_POLICY_PREFIX);
 			para.open("em");
 			para.clean("table-name");
 			para.close();

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.UsageRecordListener;
+import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -60,7 +61,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * 
  * Configuration Properties:
  * <ul>
- * <li> <b>ListenerPolicy.target.<i>table-name</i></b> defines a comma separated list of 
+ * <li> <b>UsageRecordListener.<i>table-name</i></b> defines a comma separated list of 
  * remote tables we are updating.</li>
  * 
  * </ul>
@@ -72,7 +73,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 
-public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProvider,TransitionSource<TableTransitionTarget>{
+public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProvider,TransitionSource<TableTransitionTarget>,ConfigParamProvider{
     private static final String PREFIX = "UsageRecordListener.";
 	Logger log;
     protected AppContext ctx;
@@ -306,6 +307,11 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 	}
 	protected final Logger getLogger(){
 		return ctx.getService(LoggerService.class).getLogger(getClass());
+	}
+	@Override
+	public void addConfigParameters(Set<String> params) {
+		params.add(PREFIX+table);
+		
 	}
 
 }

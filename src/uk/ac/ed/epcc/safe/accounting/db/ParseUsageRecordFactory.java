@@ -464,4 +464,19 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 	}
 
 
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#getConfigProperties()
+	 */
+	@Override
+	public Set<String> getConfigProperties() {
+		PlugInOwner<R> owner = getPlugInOwner();
+		
+		Set<String> props = super.getConfigProperties();
+		if( owner instanceof ConfigParamProvider){
+			((ConfigParamProvider)owner).addConfigParameters(props);
+		}
+		return props;
+	}
+
+
 }

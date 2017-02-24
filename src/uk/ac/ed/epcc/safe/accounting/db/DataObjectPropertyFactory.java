@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +34,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
@@ -43,6 +46,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.model.data.FieldSQLExpression;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 import uk.ac.ed.epcc.webapp.model.data.FilterResult;
@@ -50,6 +54,7 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.filter.FilterUpdate;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.model.data.table.TableStructureDataObjectFactory;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 /** Base class for DataObjectFactories that hold accounting properties
@@ -66,12 +71,41 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	protected class DataObjectTableRegistry extends TableRegistry{
 		public DataObjectTableRegistry(){
 			super(res,getFinalTableSpecification(getContext(), getTag()),getProperties(),getAccessorMap());
+			Set<String> configs = getConfigProperties();
+			if( configs != null && ! configs.isEmpty()){
+				addTableTransition(new AdminOperationKey(getTarget(), "Configure"), new ConfigTransition(getContext(), configs));
+			}
+		}
+
+		/* (non-Javadoc)
+		 * @see uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry#getTableTransitionSummary(uk.ac.ed.epcc.webapp.content.ContentBuilder, uk.ac.ed.epcc.webapp.session.SessionService)
+		 */
+		@Override
+		public void getTableTransitionSummary(ContentBuilder hb, SessionService operator) {
+			super.getTableTransitionSummary(hb, operator);
+			Set<String> configs = getConfigProperties();
+			if( configs != null && ! configs.isEmpty()){
+				hb.addHeading(3, "Configuration parameters");
+				Table t = new Table();
+				for(String param : configs){
+					t.put("Value",param, getContext().getInitParameter(param, "Not-set"));
+				}
+				t.setKeyName("Parameter");
+				hb.addTable(getContext(), t);
+			}
 		}
 	}
 	protected DataObjectTableRegistry makeTableRegistry() {
 		return new DataObjectTableRegistry();
 	}
-	
+	/** get a set of configuration parameters that configure this object.
+	 * This is used to produce a generic configuration table transtition.
+	 * 
+	 * @return
+	 */
+	public Set<String> getConfigProperties(){
+		return new LinkedHashSet<>();
+	}
 
 	public abstract RepositoryAccessorMap<T> getAccessorMap();
 	@Override

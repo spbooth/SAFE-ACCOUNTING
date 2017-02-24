@@ -260,4 +260,13 @@ public class ConfigPlugInOwner<T extends TableTransitionTarget & PlugInOwner<R>,
 
 			return res;
 		}
+		/* (non-Javadoc)
+		 * @see uk.ac.ed.epcc.safe.accounting.update.AbstractPlugInOwner#addConfigParameters(java.util.Set)
+		 */
+		@Override
+		public void addConfigParameters(Set<String> params) {
+			params.add(AppContext.CLASS_PREFIX+PARSER_PREFIX+getTag());
+			params.add(POLICIES_PREFIX+getTag());
+			super.addConfigParameters(params);
+		}
 }

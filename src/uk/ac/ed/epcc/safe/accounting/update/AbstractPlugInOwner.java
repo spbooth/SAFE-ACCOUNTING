@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -44,7 +45,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * @param <T> target type for {@link TransitionSource}
  * @param <R> {@link PropertyContainerParser} IR type
  */
-public abstract class AbstractPlugInOwner<T extends PlugInOwner<R> & TableTransitionTarget,R> implements Contexed, PlugInOwner<R>, SummaryProvider, TransitionSource<T> {
+public abstract class AbstractPlugInOwner<T extends PlugInOwner<R> & TableTransitionTarget,R> implements Contexed, PlugInOwner<R>, SummaryProvider, TransitionSource<T>, ConfigParamProvider {
   
 	private final AppContext c;
     private final String tag;
@@ -161,5 +162,21 @@ public Map<TableTransitionKey<T>, Transition<T>> getTransitions() {
 
 	protected Logger getLogger(){
 		return c.getService(LoggerService.class).getLogger(getClass());
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider#addConfigParameters(java.util.Set)
+	 */
+	@Override
+	public void addConfigParameters(Set<String> params) {
+		
+		PropertyContainerParser parser = getParser();
+		if( parser != null && parser instanceof ConfigParamProvider){
+			((ConfigParamProvider)parser).addConfigParameters(params);
+		}
+		for(PropertyContainerPolicy pol : getPolicies()){
+			if( pol instanceof ConfigParamProvider){
+				((ConfigParamProvider)pol).addConfigParameters(params);
+			}
+		}
 	}
 }
