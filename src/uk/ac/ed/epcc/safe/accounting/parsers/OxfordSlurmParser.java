@@ -89,6 +89,13 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 	    if( fields[0].equals("JobID")){
 	    	return false;
 	    }
+	    
+	    // Skip sub-jobs
+	    if( fields[0].contains(".")){
+	    	// its a sub-job
+	    	return false;
+	    }
+	    
 	    try{
 		map.setProperty(JOB_ID,fields[pos++]);
 		map.setProperty(JOB_ID_RAW,fields[pos++]);
