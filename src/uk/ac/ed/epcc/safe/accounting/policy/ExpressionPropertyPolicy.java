@@ -95,11 +95,19 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSo
 		
 		return props;
 	}
+	/** Add a property definition
+	 * 
+	 */
 	@Override
 	public PropExpressionMap getDerivedProperties(PropExpressionMap previous){
 		previous.getAllFrom(defs);
 	    return previous;
 	}
+	/** Transition to define a new property
+	 * 
+	 * @author spb
+	 *
+	 */
 	public class AddPropertyTransition extends AbstractFormTransition<TableTransitionTarget>{
 
 		public final class AddPropertyAction extends FormAction {
@@ -168,8 +176,8 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSo
 	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
 		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
 		// add transitions here
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddDefinition"),new AddDerivedTransition());
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddProperty"),new AddPropertyTransition());
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddDefinition","Add a new property definition"),new AddDerivedTransition());
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddProperty","Define a new property"),new AddPropertyTransition());
 		return result;
 	}
 	protected final Logger getLogger(){

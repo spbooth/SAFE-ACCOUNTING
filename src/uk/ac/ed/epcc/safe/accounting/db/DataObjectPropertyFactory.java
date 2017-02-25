@@ -73,7 +73,7 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 			super(res,getFinalTableSpecification(getContext(), getTag()),getProperties(),getAccessorMap());
 			Set<String> configs = getConfigProperties();
 			if( configs != null && ! configs.isEmpty()){
-				addTableTransition(new AdminOperationKey(getTarget(), "Configure"), new ConfigTransition(getContext(), configs));
+				addTableTransition(new AdminOperationKey(getTarget(), "Configure","Edit configuration parameters directly"), new ConfigTransition(getContext(), configs));
 			}
 		}
 

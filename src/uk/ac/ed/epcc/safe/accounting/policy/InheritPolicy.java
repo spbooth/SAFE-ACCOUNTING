@@ -3,6 +3,7 @@ package uk.ac.ed.epcc.safe.accounting.policy;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -30,7 +31,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * @author spb
  *
  */
-public class InheritPolicy extends BasePolicy implements SummaryProvider {
+public class InheritPolicy extends BasePolicy implements SummaryProvider,ConfigParamProvider {
 
 	private static final String PARENT_SUFFIX = ".parent";
 	private static final String INHERIT_POLICY_PREFIX = "InheritPolicy.";
@@ -126,6 +127,11 @@ public class InheritPolicy extends BasePolicy implements SummaryProvider {
 			para.clean("Parents are: "+parents.toString());
 		}
 		para.appendParent();
+	}
+	@Override
+	public void addConfigParameters(Set<String> params) {
+		params.add(INHERIT_POLICY_PREFIX+table+PARENT_SUFFIX);
+		
 	}
 
 }

@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,6 +41,8 @@ import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.content.Table;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.model.Classification;
@@ -131,13 +134,30 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 		return map;
 	}
 	
-
+	/** get a set of configuration parameters that configure this object.
+	 * This is used to produce a generic configuration table transtition.
+	 * 
+	 * @return
+	 */
+	public Set<String> getConfigProperties(){
+		LinkedHashSet<String> p = new LinkedHashSet<>();
+		PlugInOwner<R> owner = getPluginOwner();
+		if( owner instanceof ConfigParamProvider){
+			((ConfigParamProvider)owner).addConfigParameters(p);
+		}
+		return p;
+	}
 
 
 	public class ParseClassificationRegistry extends PropertyTargetClassificationTableRegistry{
 
 		@SuppressWarnings("unchecked")
 		public ParseClassificationRegistry() {
+			super();
+			Set<String> configs = getConfigProperties();
+			if( configs != null && ! configs.isEmpty()){
+				addTableTransition(new AdminOperationKey(getTarget(), "Configure","Edit configuration parameters directly"), new ConfigTransition(getContext(), configs));
+			}
 			if( getPluginOwner() instanceof TransitionSource){
 				addTransitionSource((TransitionSource) getPluginOwner());
 			}
@@ -147,6 +167,16 @@ ClassificationParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 		@Override
 		public void getTableTransitionSummary(ContentBuilder hb, SessionService operator) {
 			super.getTableTransitionSummary(hb, operator);
+			Set<String> configs = getConfigProperties();
+			if( configs != null && ! configs.isEmpty()){
+				hb.addHeading(3, "Configuration parameters");
+				Table t = new Table();
+				for(String param : configs){
+					t.put("Value",param, getContext().getInitParameter(param, "Not-set"));
+				}
+				t.setKeyName("Parameter");
+				hb.addTable(getContext(), t);
+			}
 			if( getPluginOwner() instanceof SummaryProvider){
 				((SummaryProvider) getPluginOwner()).getTableTransitionSummary(hb, operator);
 			}

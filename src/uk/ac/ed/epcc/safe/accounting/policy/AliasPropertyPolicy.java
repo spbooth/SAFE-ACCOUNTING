@@ -16,12 +16,17 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.policy;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
+import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionInput;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
+import uk.ac.ed.epcc.safe.accounting.expr.PropertyTagInput;
+import uk.ac.ed.epcc.safe.accounting.policy.DerivedPropertyPolicy.AddDerivedTransition;
+import uk.ac.ed.epcc.safe.accounting.policy.DerivedPropertyPolicy.AddDerivedTransition.AddDerivedAction;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -31,6 +36,20 @@ import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.BaseParser;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.config.ConfigService;
+import uk.ac.ed.epcc.webapp.forms.Form;
+import uk.ac.ed.epcc.webapp.forms.action.FormAction;
+import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
+import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
+import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
+import uk.ac.ed.epcc.webapp.forms.result.FormResult;
+import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
+import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
+import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 
 /**
  * <p>
@@ -60,7 +79,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  */
 
 
-public class AliasPropertyPolicy extends BasePolicy {
+public class AliasPropertyPolicy extends BasePolicy implements TransitionSource<TableTransitionTarget> {
 
 	/*
 	 * TODO consider merging this class with DerivedPropertyPolicy - there
@@ -70,8 +89,11 @@ public class AliasPropertyPolicy extends BasePolicy {
 	 * derivation.
 	 */
 
+	private static final String ALIAS_PREFIX = "alias.";
 	private PropExpressionMap aliases = new PropExpressionMap();
-
+    private PropertyFinder cached_finder;
+	private String table;
+	private AppContext c;
 	@SuppressWarnings("unchecked")
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder origFinder,
 			String table) {
@@ -81,7 +103,7 @@ public class AliasPropertyPolicy extends BasePolicy {
 		finder.addFinder(StandardProperties.base);
 		finder.addFinder(BatchParser.batch);
 
-		String prefix = "alias." + table + ".";
+		String prefix = ALIAS_PREFIX + table + ".";
 		int prefixLength = prefix.length();
 		Parser parser = new Parser(ctx, finder);
 		Map<String, String> derived_properties = ctx.getInitParameters(prefix);
@@ -116,7 +138,9 @@ public class AliasPropertyPolicy extends BasePolicy {
 				getLogger(ctx).error("Property not found ",e);
 			}
 		}
-
+		cached_finder=finder.copy();
+		this.table=table;
+		this.c=ctx;
 		return finder;
 	}
 
@@ -124,6 +148,42 @@ public class AliasPropertyPolicy extends BasePolicy {
 	public PropExpressionMap getDerivedProperties(PropExpressionMap previous) {
 		previous.getAllFrom(aliases);
 		return previous;
+	}
+	public class AddDerivedTransition extends AbstractFormTransition<TableTransitionTarget>{
+
+		private static final String EXPR_INPUT = "Expr";
+		private static final String PROPERTY_INPUT = "Property";
+
+		public final class AddDerivedAction extends FormAction {
+			private final TableTransitionTarget target;
+			public AddDerivedAction(TableTransitionTarget target){
+				this.target=target;
+			}
+			@Override
+			public FormResult action(Form f)
+					throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
+
+				PropertyTag tag = (PropertyTag) f.getItem(PROPERTY_INPUT);
+				ConfigService cfg = c.getService(ConfigService.class);
+				cfg.setProperty(ALIAS_PREFIX+table+"."+tag.getFullName(),(String) f.get(EXPR_INPUT));
+
+
+				return new ViewTableResult(target);
+			}
+		}
+
+		public void buildForm(Form f, TableTransitionTarget target,
+				AppContext ctx) throws TransitionException {
+			f.addInput(PROPERTY_INPUT, "Property to define", new PropertyTagInput(cached_finder));
+			f.addInput(EXPR_INPUT, "Definition", new PropExpressionInput(c,cached_finder));
+			f.addAction("Add", new AddDerivedAction(target));
+		}
+	}
+	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
+		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
+		// add transitions here
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddDerivedProperty"),new AddDerivedTransition());
+		return result;
 	}
 
 }
