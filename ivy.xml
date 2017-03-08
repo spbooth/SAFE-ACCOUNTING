@@ -50,10 +50,6 @@
     		<artifact name="mysql-connector-java" ext="jar"/>
 		</dependency>
 		
-		<dependency org="net.sourceforge" name="Chart2D" rev="1.0">
-    		<artifact name="Chart2D" m:classifier="epcc" ext="jar"/>
-		</dependency>
-		
 		<dependency org="com.sun" name="activation" rev="1.1.1">
     		<artifact name="activation" ext="jar"/>
 		</dependency>
