@@ -59,5 +59,4 @@ public class ChartService implements Contexed, AppContextService<ChartService>{
 		return conn;
 	}
 
-	
 }
