@@ -62,7 +62,9 @@
     		<artifact name="avalon-framework-impl" ext="jar"/>
 		</dependency>
 		
-		
+		<dependency org="org.jfree" name="jfreechart" rev="1.0.19">
+    		<artifact name="jfreechart" ext="jar"/>
+		</dependency>
 		
 		<dependency org="org.apache" name="commons-io" rev="2.4">
     		<artifact name="commons-io" ext="jar"/>
