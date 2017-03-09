@@ -376,7 +376,7 @@ public class ParameterExtension extends ReportExtension {
 					role=role.substring(1);
 				}else{
 					//narrow the default selector by default
-					fil.addFilter(fac.getSelectFilter());
+					fil.addFilter(fac.getFinalSelectFilter());
 				}
 				BaseFilter fil2 = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
 				if( fil2 == null ){
