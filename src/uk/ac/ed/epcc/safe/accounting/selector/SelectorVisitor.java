@@ -16,7 +16,8 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.selector;
 
-
+import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 
 /** Visitor class for RecordSelector
  * 
@@ -35,7 +36,7 @@ package uk.ac.ed.epcc.safe.accounting.selector;
  * @see AndRecordSelector
  * @see OrRecordSelector
  * @see RelationClause
- * 
+ * @see RelationshipClause
  * @author spb
  *
  * @param <R>
@@ -49,4 +50,5 @@ public interface SelectorVisitor<R> {
 	public R visitPeriodOverlapRecordSelector(PeriodOverlapRecordSelector o) throws Exception;
 	public <I> R visitOrderClause(OrderClause<I> o ) throws Exception;
 	public R visitReductionSelector(ReductionSelector r) throws Exception;
+	public <D extends DataObject, F extends DataObjectFactory<D>> R visitRelationshipClause(RelationshipClause<D, F> r) throws Exception;
 }

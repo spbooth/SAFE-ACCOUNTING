@@ -32,6 +32,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.ReductionSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
+import uk.ac.ed.epcc.safe.accounting.selector.RelationshipClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
@@ -39,6 +40,8 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLOrFilter;
+import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 
 
@@ -120,6 +123,13 @@ public class FilterSelectVisitor<T extends ExpressionTarget> implements Selector
 			}
 		}
 		return fil;
+	}
+
+	@Override
+	public <D extends DataObject, F extends DataObjectFactory<D>> BaseFilter<T> visitRelationshipClause(
+			RelationshipClause<D, F> r) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
