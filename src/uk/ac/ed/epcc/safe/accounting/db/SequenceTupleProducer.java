@@ -5,11 +5,13 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.db.TupleUsageProducer.TupleUsageRecord;
 import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
+import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
@@ -23,6 +25,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.time.Period;
+import uk.ac.ed.epcc.webapp.time.TimePeriod;
 /** A {@link TupleUsageProducer} that represents a time-sequence join
  * 
  * All records in the nested factories are assumes to implement
@@ -39,13 +42,14 @@ import uk.ac.ed.epcc.webapp.time.Period;
 public class SequenceTupleProducer<
 A extends DataObject & ExpressionTarget, 
 AF extends DataObjectFactory<A> & ExpressionTargetFactory<A>,
-UR extends TupleUsageProducer.TupleUsageRecord<A>
+UR extends SequenceTupleProducer.PeriodTuple<A>
 > extends TupleUsageProducer<A,AF,UR> {
 
 	public SequenceTupleProducer(AppContext c, String config_tag) {
 		super(c, config_tag);
 		finder.addFinder(StandardProperties.time);
 		PropExpressionMap expr = new PropExpressionMap();
+		customiseAccessors(finder,map, expr);
 		LinkedList<PropExpression> starts = new LinkedList<>();
 		LinkedList<PropExpression> ends = new LinkedList<>();
 		for(ReferenceTag<A, AF> tag : getMemberTags()){
@@ -59,8 +63,12 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 		} catch (PropertyCastException e) {
 			getLogger().error("Error setting time expressions", e);
 		}
+		
 	}
 
+	protected void customiseAccessors(MultiFinder finder,TupleAccessorMap map,PropExpressionMap expr){
+		
+	}
 	/** collections of properties that must match in all members of the tuple. 
 	 * 
 	 * @return
@@ -116,4 +124,38 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 		return super.getPeriodFilter(period, start_prop, end_prop, type, cutoff);
 	}
 
+	public static  class PeriodTuple<A extends DataObject & ExpressionTarget> extends TupleUsageProducer.TupleUsageRecord<A> implements TimePeriod{
+
+		public PeriodTuple(AppContext conn, TupleAccessorMap map) {
+			super(conn, map);
+		}
+
+		@Override
+		public Date getStart() {
+			
+			return getProperty(StandardProperties.STARTED_PROP,null);
+		}
+
+		@Override
+		public Date getEnd() {
+			return getProperty(StandardProperties.ENDED_PROP,null);
+		}
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.TupleUsageProducer#makeTuple()
+	 */
+	@Override
+	public UR makeTuple() {
+		return (UR) new PeriodTuple<A>(getContext(), map);
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.TupleUsageProducer#getTarget()
+	 */
+	@Override
+	public Class getTarget() {
+		return PeriodTuple.class;
+	}
 }

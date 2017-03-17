@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -29,11 +30,11 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Base class for implementing {@link PlugInOwner}.
  * 
@@ -44,7 +45,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * @param <T> target type for {@link TransitionSource}
  * @param <R> {@link PropertyContainerParser} IR type
  */
-public abstract class AbstractPlugInOwner<T extends PlugInOwner<R> & TableTransitionTarget,R> implements Contexed, PlugInOwner<R>, SummaryProvider, TransitionSource<T> {
+public abstract class AbstractPlugInOwner<T extends PlugInOwner<R> & TableTransitionTarget,R> implements Contexed, PlugInOwner<R>, SummaryProvider, TransitionSource<T>, ConfigParamProvider {
   
 	private final AppContext c;
     private final String tag;
@@ -145,8 +146,8 @@ public abstract class AbstractPlugInOwner<T extends PlugInOwner<R> & TableTransi
 	}
 
 @SuppressWarnings("unchecked")
-public Map<TransitionKey<T>, Transition<T>> getTransitions() {
-	Map<TransitionKey<T>, Transition<T>> res = new HashMap<TransitionKey<T>, Transition<T>>();
+public Map<TableTransitionKey<T>, Transition<T>> getTransitions() {
+	Map<TableTransitionKey<T>, Transition<T>> res = new HashMap<TableTransitionKey<T>, Transition<T>>();
 	PropertyContainerParser parser = getParser();
 	if( parser != null && parser instanceof TransitionSource){
 		res.putAll(((TransitionSource) parser).getTransitions());
@@ -161,5 +162,21 @@ public Map<TransitionKey<T>, Transition<T>> getTransitions() {
 
 	protected Logger getLogger(){
 		return c.getService(LoggerService.class).getLogger(getClass());
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider#addConfigParameters(java.util.Set)
+	 */
+	@Override
+	public void addConfigParameters(Set<String> params) {
+		
+		PropertyContainerParser parser = getParser();
+		if( parser != null && parser instanceof ConfigParamProvider){
+			((ConfigParamProvider)parser).addConfigParameters(params);
+		}
+		for(PropertyContainerPolicy pol : getPolicies()){
+			if( pol instanceof ConfigParamProvider){
+				((ConfigParamProvider)pol).addConfigParameters(params);
+			}
+		}
 	}
 }

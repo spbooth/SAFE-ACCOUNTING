@@ -34,6 +34,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  * 
  * @author spb
  * @param <T> type of usage record
+ * @param <R> type of parser IR
  *
  */
 
@@ -49,10 +50,6 @@ public class ConfigUsageRecordFactory<T extends UsageRecordFactory.Use,R> extend
 	
 	
 	
-	@Deprecated
-	public String getDescription(){
-    	return getContext().getInitParameter("description."+getConfigTag(),getConfigTag());
-    }
 	@Override
 	protected PlugInOwner<R> makePlugInOwner(AppContext c,PropertyFinder prev, String tag) {
 		// For accounting record tables default to no parser

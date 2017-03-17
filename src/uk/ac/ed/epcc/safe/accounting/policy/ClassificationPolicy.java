@@ -58,8 +58,12 @@ import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
+import uk.ac.ed.epcc.webapp.jdbc.table.AddClassificationReferenceTransition;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureTransitionTarget;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
@@ -70,7 +74,6 @@ import uk.ac.ed.epcc.webapp.model.data.DataCache;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Add Classification tables to raw usage data under the control of config parameters.
  * 
@@ -298,7 +301,7 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,Transit
 			f.addInput("Name", "String to classify", name_input);
 			SetInput<ReferenceTag> ref_input = new SetInput<ReferenceTag>();
 			for(ReferenceTag t : available_refs){
-				if( fac.hasProperty(t)){
+				if( fac.hasProperty(t) && ! target.getTableTransitionID().equals(t.getTable())){
 					// Only allow supported references.
 					ref_input.addChoice(t);
 				}
@@ -388,11 +391,11 @@ public FormResult action(Form f)
 			f.addAction("Regenerate", new RegenerateClassifierAction(target));	
 		}
 	}
-	public Map<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
-		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "AddClassifier"), new AddClassifierTransition());
-		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "RemoveClassifier"), new DeleteClassifierTransition());
-		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class,"RegenerateClassifier","Regenenerate classifications references"),new RegenerateClassifierTransition());
+	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
+		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddClassifier"), new AddClassifierTransition());
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "RemoveClassifier"), new DeleteClassifierTransition());
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class,"RegenerateClassifier","Regenenerate classifications references"),new RegenerateClassifierTransition());
 		return result;
 	}
 	public void getTableTransitionSummary(ContentBuilder hb,

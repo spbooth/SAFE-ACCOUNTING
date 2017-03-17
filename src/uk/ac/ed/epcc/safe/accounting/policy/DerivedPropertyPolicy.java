@@ -34,10 +34,11 @@ import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 /** This policy generates new derived properties 
  * which are defined as expressions over other properties that
  * are already in scope.
@@ -106,10 +107,10 @@ public class DerivedPropertyPolicy extends BasePolicy implements TransitionSourc
 			f.addAction("Add", new AddDerivedAction(target));
 		}
 	}
-	public Map<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
+	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
+		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
 		// add transitions here
-		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "AddDerivedProperty"),new AddDerivedTransition());
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddDerivedProperty"),new AddDerivedTransition());
 		return result;
 	}
 

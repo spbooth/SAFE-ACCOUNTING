@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.UsageRecordListener;
+import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -42,13 +43,14 @@ import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.TableInput;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
 /** The AccountingListenerPolicy forwards record create and delete operations
@@ -59,7 +61,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * 
  * Configuration Properties:
  * <ul>
- * <li> <b>ListenerPolicy.target.<i>table-name</i></b> defines a comma separated list of 
+ * <li> <b>UsageRecordListener.<i>table-name</i></b> defines a comma separated list of 
  * remote tables we are updating.</li>
  * 
  * </ul>
@@ -71,7 +73,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 
-public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProvider,TransitionSource<TableTransitionTarget>{
+public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProvider,TransitionSource<TableTransitionTarget>,ConfigParamProvider{
     private static final String PREFIX = "UsageRecordListener.";
 	Logger log;
     protected AppContext ctx;
@@ -295,16 +297,21 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 				
 		}
 	}
-	public Map<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>>();
-		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "Add Listener"),new AddListenerTransition());
+	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
+		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>>();
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "Add Listener"),new AddListenerTransition());
 		if( list != null  && list.length() > 0){
-			result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "Remove Listener"),new DeleteListenerTransition());
+			result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "Remove Listener"),new DeleteListenerTransition());
 		}
 		return result;
 	}
 	protected final Logger getLogger(){
 		return ctx.getService(LoggerService.class).getLogger(getClass());
+	}
+	@Override
+	public void addConfigParameters(Set<String> params) {
+		params.add(PREFIX+table);
+		
 	}
 
 }

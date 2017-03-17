@@ -38,13 +38,14 @@ import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** This policy allows derived property expressions to be defined for 
  * properties in scope. It also provides a mechanism for {@link ConfigPropertyRegistry} objects to
@@ -94,11 +95,19 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSo
 		
 		return props;
 	}
+	/** Add a property definition
+	 * 
+	 */
 	@Override
 	public PropExpressionMap getDerivedProperties(PropExpressionMap previous){
 		previous.getAllFrom(defs);
 	    return previous;
 	}
+	/** Transition to define a new property
+	 * 
+	 * @author spb
+	 *
+	 */
 	public class AddPropertyTransition extends AbstractFormTransition<TableTransitionTarget>{
 
 		public final class AddPropertyAction extends FormAction {
@@ -164,11 +173,11 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSo
 			f.addAction("Add", new AddDerivedAction(target));
 		}
 	}
-	public Map<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
+	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
+		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
 		// add transitions here
-		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "AddDefinition"),new AddDerivedTransition());
-		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "AddProperty"),new AddPropertyTransition());
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddDefinition","Add a new property definition"),new AddDerivedTransition());
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddProperty","Define a new property"),new AddPropertyTransition());
 		return result;
 	}
 	protected final Logger getLogger(){

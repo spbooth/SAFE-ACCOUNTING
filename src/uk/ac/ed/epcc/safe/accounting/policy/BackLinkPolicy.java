@@ -1,5 +1,8 @@
 package uk.ac.ed.epcc.safe.accounting.policy;
 
+import java.util.Set;
+
+import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
@@ -20,13 +23,14 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * @author spb
  *
  */
-public class BackLinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider{
+public class BackLinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider, ConfigParamProvider{
 
 	
 	private AppContext c;
 	private ReferenceTag remote_tag=null;
 	private ReferenceTag back_ref=null;
 	private UsageRecordFactory<?> remote_fac=null;
+	private String table;
 	private static final String BACKLINK_POLICY_TARGET = "BackLinkPolicy.target.";
 	@Override
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
@@ -43,6 +47,7 @@ public class BackLinkPolicy extends BaseUsageRecordPolicy implements SummaryProv
 			 
 			}
 		}
+		this.table=table;
 		// this policy defines no new properties.
 		return null;
 	}
@@ -80,6 +85,7 @@ public class BackLinkPolicy extends BaseUsageRecordPolicy implements SummaryProv
 	}
 	@Override
 	public void getTableTransitionSummary(ContentBuilder hb, SessionService operator) {
+		hb.addText("This policy edits a referenced object (reference set by parser or previous policy) to set a return reference pointing this object"); 
 		if( remote_tag == null ){
 			hb.addText("Remote tag not set");
 		}else{
@@ -90,6 +96,11 @@ public class BackLinkPolicy extends BaseUsageRecordPolicy implements SummaryProv
 		}else{
 			hb.addText("Remote property is "+back_ref.getFullName());
 		}
+		
+	}
+	@Override
+	public void addConfigParameters(Set<String> params) {
+		params.add(BACKLINK_POLICY_TARGET+table);
 		
 	}
 }

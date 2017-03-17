@@ -63,6 +63,7 @@ import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -70,7 +71,6 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.model.period.MergeTransition;
 import uk.ac.ed.epcc.webapp.model.period.MoveDateTransition;
 import uk.ac.ed.epcc.webapp.model.period.SequenceTransition;
@@ -459,7 +459,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		}
 
 		public ChargedAllocationTableRegistry() {
-			addTableTransition(new TransitionKey<ChargedAllocationFactory<T,R>>(ChargedAllocationFactory.class, "Regenerate"), new RegenerateAllTransition());
+			addTableTransition(new AdminOperationKey<ChargedAllocationFactory<T,R>>(ChargedAllocationFactory.class, "Regenerate"), new RegenerateAllTransition());
 		}
 		
 	}

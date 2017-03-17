@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.db.RegexpTarget;
 import uk.ac.ed.epcc.safe.accounting.db.RegexpTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
@@ -29,6 +30,7 @@ import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
@@ -36,7 +38,6 @@ import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
 /** A policy to links to entries in a {@link RegexpTargetFactory}.
@@ -52,7 +53,9 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  *
  */
 
-public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements SummaryProvider,TransitionSource<TableTransitionTarget>{
+public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements SummaryProvider,TransitionSource<TableTransitionTarget>,ConfigParamProvider{
+	private static final String REGEX_LINK_PARSE_TABLE_PREFIX = "regex_link_parse.table.";
+	private static final String REGEX_LINK_PARSE_LINK_PREFIX = "regex_link_parse.link.";
 	private AppContext conn;
 	private String table;
 	private String target_table;
@@ -72,9 +75,9 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 		ReferencePropertyRegistry finder = ReferencePropertyRegistry.getInstance(conn);
 		try {
 				
-			String link_name = conn.getInitParameter("regex_link_parse.link." + table);
+			String link_name = conn.getInitParameter(REGEX_LINK_PARSE_LINK_PREFIX + table);
 			if (null == link_name) {
-				throw new AccountingParseException("Error, regex_link_parse.link." + table + " not set.");
+				throw new AccountingParseException("Error, "+REGEX_LINK_PARSE_LINK_PREFIX + table + " not set.");
 			}
 			link_prop = (PropertyTag<String>) prev.find(String.class, link_name);
 			if (null == link_prop) {
@@ -85,9 +88,9 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 			
 			
 			
-			target_table = conn.getInitParameter("regex_link_parse.table." + table);
+			target_table = conn.getInitParameter(REGEX_LINK_PARSE_TABLE_PREFIX + table);
 			if (null == target_table) {
-				log.error("Error, regex_link_parse.table." + table + " not set.");
+				log.error("Error, "+REGEX_LINK_PARSE_TABLE_PREFIX + table + " not set.");
 				return prev;
 			}	
 			PropertyTag prop = finder.find(IndexedReference.class, target_table);
@@ -161,7 +164,7 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 	public TableSpecification modifyDefaultTableSpecification(AppContext c, TableSpecification spec,
 			PropExpressionMap map, String table_name) {
 		TableSpecification ss = super.modifyDefaultTableSpecification(c, spec, map, table_name);
-		String target_table = c.getInitParameter("regex_link_parse.table." + table_name);
+		String target_table = c.getInitParameter(REGEX_LINK_PARSE_TABLE_PREFIX + table_name);
 		if( target_table != null ){
 			ss.setField(target_table+"ID", new ReferenceFieldType(target_table));
 		}
@@ -175,7 +178,7 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 			ExtendedXMLBuilder text = hb.getText();
 			text.clean("linking property not set. Set the configuration parameter ");
 			text.open("b");
-			text.clean("regex_link_parse.link.");
+			text.clean(REGEX_LINK_PARSE_LINK_PREFIX);
 			text.open("em");
 			text.clean("table-name");
 			text.close();
@@ -189,7 +192,7 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 			ExtendedXMLBuilder text = hb.getText();
 			text.clean("target property not set. Set the configuration parameter ");
 			text.open("b");
-			text.clean("regex_link_parse.table.");
+			text.clean(REGEX_LINK_PARSE_TABLE_PREFIX);
 			text.open("em");
 			text.clean("table-name");
 			text.close();
@@ -234,10 +237,17 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 		
 	}
 	@Override
-	public Map<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
-		result.put(new AdminOperationKey("Relink","Re-apply regexp links to all records"),new RelinkTransition());
+	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
+		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
+		result.put(new AdminOperationKey(TableTransitionTarget.class,"Relink","Re-apply regexp links to all records"),new RelinkTransition());
 		return result;
+	}
+
+	@Override
+	public void addConfigParameters(Set<String> params) {
+		params.add(REGEX_LINK_PARSE_LINK_PREFIX+table);
+		params.add(REGEX_LINK_PARSE_TABLE_PREFIX+table);
+		
 	}
 	
 

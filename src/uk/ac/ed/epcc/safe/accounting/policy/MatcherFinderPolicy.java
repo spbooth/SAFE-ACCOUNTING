@@ -50,8 +50,10 @@ import uk.ac.ed.epcc.webapp.forms.result.MessageResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
@@ -61,7 +63,6 @@ import uk.ac.ed.epcc.webapp.model.Matcher;
 import uk.ac.ed.epcc.webapp.model.MatcherFinder;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Add Owner tables to raw usage data under the control of config parameters.
  * This is similar to the {@link ClassificationPolicy} except that it targets a {@link MatcherFinder}
@@ -306,11 +307,11 @@ public FormResult action(Form f)
 			
 		}
 	}
-	public Map<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
-		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "AddMatcher"), new AddOwnerTransition());
-		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class, "RemoveMatcher"), new DeleteOwnerTransition());
-		result.put(new TransitionKey<TableTransitionTarget>(TableTransitionTarget.class,"RegenerateMatcher","Regenenerate matcher references"),new RegenerateOwnerTransition());
+	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
+		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddMatcher"), new AddOwnerTransition());
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "RemoveMatcher"), new DeleteOwnerTransition());
+		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class,"RegenerateMatcher","Regenenerate matcher references"),new RegenerateOwnerTransition());
 		return result;
 	}
 	public void getTableTransitionSummary(ContentBuilder hb,

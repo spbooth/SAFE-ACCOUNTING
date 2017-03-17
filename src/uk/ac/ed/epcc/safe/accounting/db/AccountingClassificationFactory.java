@@ -47,11 +47,11 @@ import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
-import uk.ac.ed.epcc.webapp.model.data.transition.TransitionKey;
 /** Factory class for {@link AccountingClassification} objects.
  * 
  * By default the properties are generated from the Database fields but additional properties can be
@@ -194,7 +194,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
     public class AccountingClassificationTableRegistry extends PropertyTargetClassificationTableRegistry{
 
 		public AccountingClassificationTableRegistry() {
-			addTableTransition(new TransitionKey<AccountingClassificationFactory>(AccountingClassificationFactory.class, "Add derived property"), new AddDerivedTransition());
+			addTableTransition(new AdminOperationKey<AccountingClassificationFactory>(AccountingClassificationFactory.class, "Add derived property"), new AddDerivedTransition());
 		}
     	
     }

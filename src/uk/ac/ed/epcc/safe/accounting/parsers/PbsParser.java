@@ -426,7 +426,7 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
         private int nodes;
         private int cpus;
         private Set<String> node_set = new HashSet<String>();
-        private static Pattern patt = Pattern.compile("(?<VNODE>[A-Za-z0-9\\.]+)/\\d+(?<COUNT>\\*\\d+)?");
+        private static Pattern patt = Pattern.compile("(?<VNODE>[A-Za-z0-9\\.\\-]+)/\\d+(?<COUNT>\\*\\d+)?");
         
         private void parse(String execHost) throws AccountingParseException{
         	node_set.clear();
