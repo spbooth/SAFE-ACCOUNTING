@@ -311,6 +311,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>
 	@Override
 	public Report getTarget(LinkedList<String> id) 
 	{
+		if( id == null || id.isEmpty()){
+			return null;
+		}
 		String templateFileName = id.removeLast();
 		int i = templateFileName.indexOf(".");
 		String extension = null;
