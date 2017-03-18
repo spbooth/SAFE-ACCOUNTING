@@ -35,6 +35,7 @@ import uk.ac.ed.epcc.safe.accounting.servlet.DeveloperResult;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.config.OverrideConfigService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.content.Icon;
 import uk.ac.ed.epcc.webapp.content.SimpleXMLBuilder;
 import uk.ac.ed.epcc.webapp.forms.BaseForm;
 import uk.ac.ed.epcc.webapp.forms.Field;
@@ -49,6 +50,7 @@ import uk.ac.ed.epcc.webapp.forms.result.ViewTransitionResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraContent;
+import uk.ac.ed.epcc.webapp.forms.transition.TitleTransitionFactory;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.logging.buffer.BufferLoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
@@ -63,7 +65,9 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 public class ReportTemplateTransitionProvider 
 extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey> 
+implements TitleTransitionFactory<ReportTemplateKey, Report>
 {
+	private static final String FORM_PARAMETER_PREFIX = "__";
 	private static final String SERVE_DATA_DEFAULT_TAG = "ServeData";
 
 	private static boolean canView(AppContext c, Report target) {
@@ -80,7 +84,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 		}
 	}
 
-	public static final ReportTemplateKey PREVIEW = new ReportTemplateKey("Update", "Update report parameters")
+	public static final ReportTemplateKey PREVIEW = new ReportTemplateKey("View", "Update report parameters")
 	{
 		
 		@Override
@@ -123,7 +127,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 					return new ServeDataResult(producer, producer.setData(msd));
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				getLogger().error("Error making report", e);
 			}
 
 			return new ViewTransitionResult<Report, ReportTemplateKey>(
@@ -138,9 +142,10 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 
 		public class PreviewAction extends FormAction{
 			private Report target;
-
-			public PreviewAction(Report target) {
+			private Object text;
+			public PreviewAction(Object text,Report target) {
 				super();
+				this.text=text;
 				this.target = target;
 			}
 
@@ -156,18 +161,35 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 					}
 				};
 			}
+			/* (non-Javadoc)
+			 * @see uk.ac.ed.epcc.webapp.forms.action.FormAction#getText()
+			 */
+			@Override
+			public Object getText() {
+				return text;
+			}
+
+			/* (non-Javadoc)
+			 * @see uk.ac.ed.epcc.webapp.forms.action.FormAction#getHelp()
+			 */
+			@Override
+			public String getHelp() {
+				return "Generate "+text;
+			}
 			
 		}
 
 		public class ExportAction extends FormAction 
 		{
+			private final Object text;
 			private final Report target;
 			private final ReportBuilder builder;
 			private final ReportType reportType;
 			private final AppContext context;
 
-			public ExportAction(AppContext context, Report target, ReportBuilder builder, ReportType format) {
+			public ExportAction(AppContext context, Object text,Report target, ReportBuilder builder, ReportType format) {
 				super();
+				this.text=text;
 				this.target = target;
 				this.builder = builder;
 				this.reportType = format;
@@ -218,6 +240,22 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 				}
 				return result;
 			}
+
+			/* (non-Javadoc)
+			 * @see uk.ac.ed.epcc.webapp.forms.action.FormAction#getText()
+			 */
+			@Override
+			public Object getText() {
+				return text;
+			}
+
+			/* (non-Javadoc)
+			 * @see uk.ac.ed.epcc.webapp.forms.action.FormAction#getHelp()
+			 */
+			@Override
+			public String getHelp() {
+				return "Generate "+text;
+			}
 			
 		}
 		
@@ -232,11 +270,10 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 				builder.buildReportParametersForm(f, parameters);
 				System.out.println("SET MAP: parameters=" + parameters + " context parameters=" + target.getContextParameters());
 				setMap(parameters, target.getContextParameters(), f, false);
-				
-				f.addAction("CSV", new ExportAction(conn, target, builder, builder.getReportType("csv")));
-				f.addAction("PDF", new ExportAction(conn, target, builder, builder.getReportType("pdf")));
-				f.addAction("HTML", new ExportAction(conn, target, builder, builder.getReportType("html")));
-				f.addAction("Preview", new PreviewAction(target));
+				f.addAction("CSV", new ExportAction(conn, new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, builder, builder.getReportType("csv")));
+				f.addAction("PDF", new ExportAction(conn, new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target, builder, builder.getReportType("pdf")));
+				f.addAction("HTML", new ExportAction(conn, new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, builder, builder.getReportType("html")));
+				f.addAction("Preview", new PreviewAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target));
 			}
 			catch (Exception e) {
 				getLogger().error("Error creating report form", e);
@@ -247,7 +284,8 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 		@Override
 		public <X extends ContentBuilder> X getExtraHtml(X cb, SessionService<?> op, Report target) {
 			ReportTemplate template = target.getReportTemplate();
-			cb.addHeading(3, template.getReportName());
+			// name now shown in primary header
+			//cb.addHeading(3, template.getReportName());
 			cb.addText(template.getReportDescription());
 			try {
 				addPreview(getContext(), cb, target);
@@ -288,7 +326,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 			Set<String> contextParameters = new HashSet<String>();
 			for (String p : id) {
 				boolean isContextParam = false; 
-				if (p.startsWith("__")) {
+				if (p.startsWith(FORM_PARAMETER_PREFIX)) {
 					p = p.substring(2);
 					isContextParam = true;
 				}
@@ -321,7 +359,7 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 				String value = encodeParameter(entry);
 				String prefix = "";
 				if (contextParameters != null && contextParameters.contains(entry.getKey())) {
-					prefix = "__";
+					prefix = FORM_PARAMETER_PREFIX;
 				}
 				result.add(prefix + entry.getKey() + ":" + value);
 			}
@@ -468,7 +506,9 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 			params = getParameters(target, context, builder);
 			if (params != null && !target.getParameters().isEmpty()) {
 				cb.addHeading(4, "Report Preview");
-				builder.renderContent(params, (SimpleXMLBuilder)cb);
+				ContentBuilder report = cb.getPanel("report");
+				builder.renderContent(params, (SimpleXMLBuilder)report);
+				report.addParent();
 			}
 		} catch (Exception e) {
 			hasErrors = true;
@@ -602,5 +642,20 @@ extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey>
 			return hasErrors;
 		}
 	}
+
+	@Override
+	public String getTitle(ReportTemplateKey key, Report target) {
+		if( target != null ){
+			return key.toString()+" "+target.getReportTemplate().getReportName();
+		}
+		return key.toString()+" Report";
+	}
+
+	@Override
+	public String getHeading(ReportTemplateKey key, Report target) {
+		return getTitle(key, target);
+	}
+
+	
 
 }

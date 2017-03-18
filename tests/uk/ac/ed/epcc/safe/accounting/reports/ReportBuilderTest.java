@@ -63,7 +63,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		int errors=0;
 		for(ErrorSet es : eset){
 			errors += es.size();
-			es.traceback(System.out);
+			es.traceback(System.err);
 		}
 		assertEquals(0,errors);
 	}

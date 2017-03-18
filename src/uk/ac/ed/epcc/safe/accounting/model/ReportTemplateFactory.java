@@ -220,11 +220,11 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 					}
 					String reportName = reportTemplate.getReportName();
 					String reportDescription = reportTemplate.getReportDescription();
-					t.put("Name", reportTemplate, reportName);
-					t.put("Description", reportTemplate, reportDescription);
-					t.put("Generate", reportTemplate, new Link(getContext(), "Generate", 
+					t.put("Name", reportTemplate, new Link(getContext(), reportName, 
 							new ChainedTransitionResult<Report, ReportTemplateKey>(
 									prov, report, ReportTemplateTransitionProvider.PREVIEW)));
+					t.put("Description", reportTemplate, reportDescription);
+					
 				}
 			}
 		}
