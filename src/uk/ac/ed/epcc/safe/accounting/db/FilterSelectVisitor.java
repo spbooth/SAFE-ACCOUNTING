@@ -126,10 +126,9 @@ public class FilterSelectVisitor<T extends ExpressionTarget> implements Selector
 	}
 
 	@Override
-	public <D extends DataObject, F extends DataObjectFactory<D>> BaseFilter<T> visitRelationshipClause(
-			RelationshipClause<D, F> r) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public  BaseFilter<T> visitRelationshipClause(
+			RelationshipClause r) throws Exception {
+		return target.getRelationshipFilter(r.getRelationship());
 	}
 	
 }

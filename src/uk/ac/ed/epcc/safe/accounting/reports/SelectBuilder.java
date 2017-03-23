@@ -39,6 +39,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.OrRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OrderClause;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
+import uk.ac.ed.epcc.safe.accounting.selector.RelationshipClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
@@ -54,6 +55,7 @@ public abstract class SelectBuilder {
 	public static final String FORMAT_ATTR = "format";
 	public static final String DESCENDING_ATTR = "descending";
 	public static final String FILTER_ORDER_BY_ELEMENT = "OrderBy";
+	public static final String RELATIONSHIP_ELEMENT = "Relationship";
 	public static final String FILTER_PRODUCER_ELEMENT = "Producer";
 	public static final String FILTER_AND_ELEMENT = "And";
 	public static final String FILTER_OR_ELEMENT = "Or";
@@ -223,6 +225,8 @@ public abstract class SelectBuilder {
 						  descending= Boolean.parseBoolean(e.getAttribute(DESCENDING_ATTR));
 					  }
 					  return new OrderClause(descending,expr);
+				  }else if( name.equals(RELATIONSHIP_ELEMENT)){
+					  return new RelationshipClause(normalise(getText(e)));
 				  }else{
 					  MatchCondition cond;
 					  if(name.equals(FILTER_EQ_ELEMENT)){
@@ -403,7 +407,7 @@ public abstract class SelectBuilder {
 				return null;  
 			}
 	/** Map whitespace to normalised form. This is important for configuration elements if
-	 * we want to be able to reformat the XML without braking thisng
+	 * we want to be able to reformat the XML without breaking things
 	 * 
 	 * @param value
 	 * @return

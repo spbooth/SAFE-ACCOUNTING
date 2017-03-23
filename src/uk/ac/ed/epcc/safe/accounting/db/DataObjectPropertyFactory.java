@@ -55,6 +55,7 @@ import uk.ac.ed.epcc.webapp.model.data.filter.FilterUpdate;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.model.data.table.TableStructureDataObjectFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 /** Base class for DataObjectFactories that hold accounting properties
@@ -200,6 +201,17 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 		}catch(CannotFilterException e){
 			throw e;
 		} catch (Exception e) {
+			throw new CannotFilterException(e);
+		}
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
+	 */
+	@Override
+	public BaseFilter<T> getRelationshipFilter(String relationship) throws CannotFilterException {
+		try {
+			return getContext().getService(SessionService.class).getRelationshipRoleFilter(this, relationship);
+		} catch (UnknownRelationshipException e) {
 			throw new CannotFilterException(e);
 		}
 	}

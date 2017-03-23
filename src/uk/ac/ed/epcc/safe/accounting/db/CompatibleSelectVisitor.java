@@ -27,6 +27,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.ReductionSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
+import uk.ac.ed.epcc.safe.accounting.selector.RelationshipClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
@@ -233,6 +234,18 @@ public class CompatibleSelectVisitor implements SelectorVisitor<Boolean>{
 			return skip < seen;
 		}
 		return true;
+	}
+	@Override
+	public Boolean visitRelationshipClause(RelationshipClause r) throws Exception {
+		try{
+			eft.getRelationshipFilter(r.getRelationship());
+			return true;
+		}catch(CannotFilterException e){
+			if( log != null ){
+				log.debug("cannot make relationship filter"+e.getMessage());
+			}
+			return false;
+		}
 	}
 
 }

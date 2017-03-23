@@ -35,7 +35,9 @@ import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
+import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
+import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
@@ -48,6 +50,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedTypeProducer;
 import uk.ac.ed.epcc.webapp.model.relationship.RelationshipProvider;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 
 /** A {@link AccessorMap} for {@link DataObjectFactory}s
  * 
@@ -383,6 +386,17 @@ public class RepositoryAccessorMap<X extends DataObject&ExpressionTarget> extend
 	
 	protected String getDBTag() {
 		return res.getDBTag();
+	}
+
+
+	@Override
+	public BaseFilter<X> getRelationshipFilter(String relationship) throws CannotFilterException {
+
+		try {
+			return getContext().getService(SessionService.class).getRelationshipRoleFilter(fac, relationship);
+		} catch (UnknownRelationshipException e) {
+			throw new CannotFilterException(e);
+		}
 	}
 
 

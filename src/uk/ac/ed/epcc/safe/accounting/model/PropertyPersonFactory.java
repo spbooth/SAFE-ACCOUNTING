@@ -364,6 +364,14 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 	}
 
 
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
+	 */
+	@Override
+	public BaseFilter<P> getRelationshipFilter(String relationship) throws CannotFilterException {
+		return getAccessorMap().getRelationshipFilter(relationship);
+	}
+
 	@Override
 	protected TableSpecification getDefaultTableSpecification(AppContext c,String table) {
 		TableSpecification spec = super.getDefaultTableSpecification(c,table);

@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.ReductionSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
+import uk.ac.ed.epcc.safe.accounting.selector.RelationshipClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -206,6 +207,11 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 		public Boolean visitReductionSelector(ReductionSelector r)
 				throws Exception {
 			throw new CannotFilterException("Cannot use ReductionSelector in CaseExpression");
+		}
+
+		@Override
+		public Boolean visitRelationshipClause(RelationshipClause r) throws Exception {
+			throw new CannotFilterException("Cannot use RelationshipClause in CaseExpression");
 		}
 		
 	}

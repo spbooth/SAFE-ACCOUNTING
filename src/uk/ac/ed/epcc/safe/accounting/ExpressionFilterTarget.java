@@ -86,8 +86,17 @@ public interface ExpressionFilterTarget<T extends ExpressionTarget> extends Targ
 	 * This will contain an {@link OrderFilter} but will also contain any required filters.
 	 * @param descending
 	 * @param expr
-	 * @return
+	 * @return {@link BaseSQLFilter}
 	 * @throws CannotFilterException
 	 */
 	public <I> BaseSQLFilter<T> getOrderFilter(boolean descending, PropExpression<I> expr) throws CannotFilterException;
+	
+	/** get a {@link BaseFilter} which matches records where the current person
+	 * has the specified named relationship with the record.
+	 * 
+	 * @param relationship
+	 * @return {@link BaseFilter}
+	 * @throws CannotFilterException
+	 */
+	public BaseFilter<T> getRelationshipFilter(String relationship) throws CannotFilterException;
 }

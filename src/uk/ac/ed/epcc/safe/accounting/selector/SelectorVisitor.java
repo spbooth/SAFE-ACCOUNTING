@@ -50,5 +50,5 @@ public interface SelectorVisitor<R> {
 	public R visitPeriodOverlapRecordSelector(PeriodOverlapRecordSelector o) throws Exception;
 	public <I> R visitOrderClause(OrderClause<I> o ) throws Exception;
 	public R visitReductionSelector(ReductionSelector r) throws Exception;
-	public <D extends DataObject, F extends DataObjectFactory<D>> R visitRelationshipClause(RelationshipClause<D, F> r) throws Exception;
+	public R visitRelationshipClause(RelationshipClause r) throws Exception;
 }

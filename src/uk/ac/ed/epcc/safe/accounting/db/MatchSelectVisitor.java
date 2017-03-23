@@ -25,6 +25,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.ReductionSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
+import uk.ac.ed.epcc.safe.accounting.selector.RelationshipClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
@@ -115,6 +116,12 @@ public class MatchSelectVisitor<T extends ExpressionTarget> implements SelectorV
 
 	public Boolean visitReductionSelector(ReductionSelector r) throws Exception {
 		// Ignore these
+		return null;
+	}
+
+	@Override
+	public Boolean visitRelationshipClause(RelationshipClause r) throws Exception {
+		// TODO Could do more with this if factory was available
 		return null;
 	}
 

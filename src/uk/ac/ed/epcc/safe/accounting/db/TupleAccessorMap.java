@@ -1,5 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
+import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.model.data.TupleFactory;
 
 public class TupleAccessorMap extends AccessorMap {
@@ -17,6 +19,10 @@ public class TupleAccessorMap extends AccessorMap {
 	@Override
 	protected String getDBTag() {
 		return fac.getDBTag();
+	}
+	@Override
+	public BaseFilter getRelationshipFilter(String relationship) throws CannotFilterException {
+		throw new CannotFilterException("No relationship filters on Tuples");
 	}
 
 }

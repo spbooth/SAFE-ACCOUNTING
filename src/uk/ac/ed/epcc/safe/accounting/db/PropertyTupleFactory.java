@@ -257,6 +257,13 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 	public BaseSQLFilter getOrderFilter(boolean descending, PropExpression expr) throws CannotFilterException {
 		return map.getOrderFilter(descending, expr);
 	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
+	 */
+	@Override
+	public BaseFilter getRelationshipFilter(String relationship) throws CannotFilterException {
+		return map.getRelationshipFilter(relationship);
+	}
 	@Override
 	public final String getTag() {
 		return tag;

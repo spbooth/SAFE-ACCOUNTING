@@ -88,18 +88,19 @@
 	<xsd:annotation><xsd:documentation>
 	A single filter clause. The value of the property expression must be in the specified relationship with the associated value.
 	</xsd:documentation></xsd:annotation>
-		<xsd:choice>
-			<xsd:element name="EQ" type="PropertyFilterType" />
-			<xsd:element name="NE" type="PropertyFilterType" />
-			<xsd:element name="LT" type="PropertyFilterType" />
-			<xsd:element name="GT" type="PropertyFilterType" />
-			<xsd:element name="LE" type="PropertyFilterType" />
-			<xsd:element name="GE" type="PropertyFilterType" />
-			<xsd:element name="And" type="OperationsType" />
-			<xsd:element name="Or" type="OperationsType" />
-			<xsd:element name="Null" type="NullType" />
-			<xsd:element name="NotNull" type="NullType" />
-		</xsd:choice>
+	<xsd:choice>
+		<xsd:element name="EQ" type="PropertyFilterType" />
+		<xsd:element name="NE" type="PropertyFilterType" />
+		<xsd:element name="LT" type="PropertyFilterType" />
+		<xsd:element name="GT" type="PropertyFilterType" />
+		<xsd:element name="LE" type="PropertyFilterType" />
+		<xsd:element name="GE" type="PropertyFilterType" />
+		<xsd:element name="And" type="OperationsType" />
+		<xsd:element name="Or" type="OperationsType" />
+		<xsd:element name="Null" type="NullType" />
+		<xsd:element name="NotNull" type="NullType" />
+		<xsd:element name="Relationship" type="xsd:string"></xsd:element>
+	</xsd:choice>
 	</xsd:group>
 
 	<xsd:complexType name="FilterType">

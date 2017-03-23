@@ -381,6 +381,13 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 
 	
 	
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
+	 */
+	@Override
+	public BaseFilter<H> getRelationshipFilter(String relationship) throws CannotFilterException {
+		return getAccessorMap().getRelationshipFilter(relationship);
+	}
 	/** Get a filter from a PropertyMap selector
 	 * 
 	 * @param selector

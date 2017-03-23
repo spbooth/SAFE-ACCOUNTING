@@ -296,6 +296,13 @@ public final PropExpressionMap getDerivedProperties() {
 		return getAccessorMap().getOrderFilter(descending, expr);
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
+	 */
+	@Override
+	public BaseFilter<T> getRelationshipFilter(String relationship) throws CannotFilterException {
+		return getAccessorMap().getRelationshipFilter(relationship);
+	}
 	public <I> boolean compatible(PropExpression<I> expr) {
 		return getAccessorMap().resolves(expr,false);
 	}

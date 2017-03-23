@@ -45,6 +45,8 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
+import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 public abstract class PropertyTargetClassificationFactory<T extends AccountingClassification> extends
@@ -184,5 +186,16 @@ public abstract class PropertyTargetClassificationFactory<T extends AccountingCl
 	}
 	public final T find(RecordSelector sel) throws DataException, CannotFilterException {
 		return find(getFilter(sel));
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
+	 */
+	@Override
+	public BaseFilter<T> getRelationshipFilter(String relationship) throws CannotFilterException {
+		try {
+			return getContext().getService(SessionService.class).getRelationshipRoleFilter(this, relationship);
+		} catch (UnknownRelationshipException e) {
+			throw new CannotFilterException(e);
+		}
 	}
 }
