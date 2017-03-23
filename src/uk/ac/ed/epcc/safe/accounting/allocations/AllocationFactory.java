@@ -74,6 +74,7 @@ import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFormFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
@@ -424,6 +425,19 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		Map<String,Object>res = super.getSelectors();
 		res.put(StandardProperties.STARTED_TIMESTAMP, getDateInput());
 		res.put(StandardProperties.COMPLETED_TIMESTAMP, getDateInput());
+		AccessorMap map = getAccessorMap();
+		SessionService sess = getContext().getService(SessionService.class);
+		for(ReferenceTag tag : getIndexProperties()){
+			String field = map.getField(tag);
+			if( field != null ){
+				IndexedProducer prod = tag.getFactory(getContext());
+				if( prod instanceof DataObjectFactory){
+					DataObjectFactory dof = (DataObjectFactory) prod;
+					res.put(field, dof.getInput(sess.getRelationshipRoleFilter(dof, AllocationPeriodTransitionProvider.ALLOCATION_ADMIN_RELATIONSHIP, dof.getFinalSelectFilter())));
+					
+				}
+			}
+		}
 		return res;
 	}
 

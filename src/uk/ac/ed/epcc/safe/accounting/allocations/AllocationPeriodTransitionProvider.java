@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
+import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ShortTextPeriodFormatter;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
@@ -46,12 +48,12 @@ import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.IndexTransitionFactory;
 import uk.ac.ed.epcc.webapp.forms.transition.PathTransitionProvider;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryCreator;
-import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryVisitor;
+import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.model.data.transition.AbstractViewPathTransitionProvider;
-import uk.ac.ed.epcc.webapp.model.data.transition.AbstractViewTransitionFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Provide a filtered view of allocations from a nested
  * {@link AllocationManager}. Transitions only implement changes to the filter
@@ -69,6 +71,11 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 
 	public static final String ALLOCATION_PERIOD_PREFIX = "AllocationPeriod";
 
+	/** Relationship with index property targets that (if defined) will restrict the selcted
+	 * index properties and narrow the index view
+	 * 
+	 */
+	public static final String ALLOCATION_ADMIN_RELATIONSHIP = "AllocationAdmin";
 
 
 	public static PeriodKey UP_KEY = new PeriodKey(">>>", "Go to next period");
@@ -122,9 +129,11 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 	}
 	public class FilterTransition extends AbstractFormTransition<AllocationPeriod>{
 
+		
 		public void buildForm(Form f, AllocationPeriod target, AppContext conn)
 				throws TransitionException {
 			CalendarFieldPeriodInput input = new CalendarFieldPeriodInput(Calendar.MONTH);
+			SessionService sess = conn.getService(SessionService.class);
 			input.setValue(target.getPeriod());
 			f.addInput("Period", "Period", input );
 			// If we have any references then allow filter on these.
@@ -136,7 +145,14 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 					IndexedProducer prod = tag.getFactory(conn);
 					if( prod instanceof Selector){
 						Selector sel = (Selector)  prod;
-						Input<Integer> i = (Input<Integer>)sel.getInput();
+						Input<Integer> i=null; 
+						if( prod instanceof DataObjectFactory){
+							DataObjectFactory fac = (DataObjectFactory) prod;
+							i = fac.getInput(sess.getRelationshipRoleFilter(fac, ALLOCATION_ADMIN_RELATIONSHIP,fac.getFinalSelectFilter()));
+						}
+						if( i == null){
+							i  = (Input<Integer>)sel.getInput();
+						}
 						if( i instanceof OptionalInput){
 							((OptionalInput)i).setOptional(true);
 						}
@@ -232,7 +248,7 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 		try{
 			Table tab = new Table();
 
-			for(Iterator<T> it = manager.getIterator(getSelector(target));it.hasNext();){
+			for(Iterator<T> it = getIndexIterator(target);it.hasNext();){
 				T record = it.next();
 				manager.addIndexTable(tab, record,target);
 			}
@@ -242,6 +258,31 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 			getLogger().error("Error making index table",e);
 		}
 		return cb;
+	}
+
+	/**
+	 * @param target
+	 * @return
+	 * @throws Exception
+	 */
+	public Iterator<T> getIndexIterator(AllocationPeriod target) throws Exception {
+		if( manager instanceof DataObjectPropertyFactory ){
+			SessionService sess = getContext().getService(SessionService.class);
+			DataObjectPropertyFactory fac = (DataObjectPropertyFactory) manager;
+			AccessorMap map = fac.getAccessorMap();
+			AndFilter fil = new AndFilter(fac.getTarget());
+			fil.addFilter(fac.getFilter(getSelector(target)));
+			// Now narrow selection using relationships
+			for(ReferenceTag ref : manager.getIndexProperties()){
+				IndexedProducer prod = ref.getFactory(getContext());
+				if( prod instanceof DataObjectFactory){
+					DataObjectFactory dof = (DataObjectFactory) prod;
+					fil.addFilter(fac.getRemoteFilter(dof,map.getField(ref), sess.getRelationshipRoleFilter(dof, ALLOCATION_ADMIN_RELATIONSHIP, dof.getFinalSelectFilter())));
+				}
+			}
+			return fac.getResult(fil).iterator();
+		}
+		return manager.getIterator(getSelector(target));
 	}
 
 	public boolean canView(AllocationPeriod target, SessionService<?> sess) {

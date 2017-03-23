@@ -18,6 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.allocations;
 
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
@@ -27,6 +28,8 @@ import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.transition.ViewTransitionProvider;
+import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
+import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.model.period.SplitManager;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** AllocationManagers are the UsageProducer classes for Allocations and
@@ -37,8 +40,10 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * @param <K> transition key
  * @param <T> type of {@link Allocation}
  */
-public interface AllocationManager<K,T extends Allocation> extends UsageProducer<T>, ViewTransitionProvider<K,T>,SplitManager<T> {
- public static final String ALLOCATION_ADMIN = "AllocationAdmin";
+public interface AllocationManager<K,T extends Allocation> extends UsageProducer<T>, ViewTransitionProvider<K,T>,SplitManager<T> ,ExpressionFilterTarget<T>{
+
+
+	public static final String ALLOCATION_ADMIN = "AllocationAdmin";
 
  /** Add record to a table of allocations.
   * 
@@ -79,4 +84,5 @@ public interface AllocationManager<K,T extends Allocation> extends UsageProducer
  public void buildCreationForm(Form f, Period p, PropertyMap defaults) throws TransitionException;
  
  public AllocationPeriodTransitionProvider getTransitionProvider();
+ 
 }

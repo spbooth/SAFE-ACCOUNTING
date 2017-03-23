@@ -192,7 +192,7 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	 * @throws CannotFilterException 
 	 */
 	
-	protected final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
+	public final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
 		if( selector == null ){
 			return null;
 		}
