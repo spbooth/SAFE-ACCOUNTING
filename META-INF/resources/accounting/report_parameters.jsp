@@ -85,7 +85,16 @@ may be omitted.
   <input type="hidden" name="form_url" value="<%=HTMLForm.getFormURL(request)%>">
   <%=form.getFormAsHTML(request)%>
   <div class="action_buttons">
-  <input type="submit" name="submit" value="Generate Report">
+
+  <%
+	Iterator<ReportType> items = form.getReportTypes();
+	while(items.hasNext()) {
+		ReportType rep = items.next();
+		%>
+		<input type="submit" name="submit" value="Export as <%=rep.toString()%>">
+	<%}%>
+	
+  <input type="submit" name="submit" value="Preview Report">
   </div>
   </form>
 </div>

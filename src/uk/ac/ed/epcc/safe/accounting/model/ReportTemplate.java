@@ -37,7 +37,8 @@ public class ReportTemplate extends DataObject implements Retirable{
 	static final String REPORT_NAME = "ReportName";
 	static final String REPORT_DESCRIPTION = "ReportDescription";
 	static final String TEMPLATE_NAME = "TemplateName";
-
+	static final String REPORT_GROUP = "ReportGroup";
+	
 	private ReportBuilder builder=null;
 	
 	
@@ -91,6 +92,10 @@ public class ReportTemplate extends DataObject implements Retirable{
 		
 	}
 	
+	public String getReportGroup() {
+		return record.getStringProperty(REPORT_GROUP, null);
+	}
+	
 	public String getTemplateName() {
 		return record.getStringProperty(TEMPLATE_NAME);
 		
@@ -101,6 +106,7 @@ public class ReportTemplate extends DataObject implements Retirable{
 		s.setField(REPORT_NAME, new StringFieldType(false, null, c.getIntegerParameter("report.template.name.length", 64)));
 		s.setField(TEMPLATE_NAME, new StringFieldType(false, null, c.getIntegerParameter("report.template.path.length", 128)));
 		s.setField(REPORT_DESCRIPTION, new StringFieldType(false, null, c.getIntegerParameter("report.template.description.length", 255)));
+		s.setField(REPORT_GROUP, new StringFieldType(true, null, 32));
 		s.setOptionalField(ReportTemplateFactory.SORT_PRIORITY, new IntegerFieldType(false, 50));
 	
 		return s;

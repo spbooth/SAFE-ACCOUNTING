@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.reports.forms.html;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,13 +48,18 @@ public class HTMLReportParametersForm {
 			// force a type parameter if we don't already have a type
 			ReportTypeInput input = reportBuilder.new ReportTypeInput();
 			input.setOptional(false);
-			htmlForm.addInput(ReportBuilder.REPORT_TYPE_PARAM, "Display Format",input );
+//			htmlForm.addInput(ReportBuilder.REPORT_TYPE_PARAM, "Display Format",input );
 		}
 	}
 
 	public HTMLForm getForm() {
 		
 		return htmlForm;
+	}
+	
+	public Iterator<ReportType> getReportTypes() {
+		ReportTypeInput input = reportBuilder.new ReportTypeInput();
+		return input.getItems();
 	}
 	
 	public final String getFormAsHTML(HttpServletRequest req) {
@@ -65,8 +71,6 @@ public class HTMLReportParametersForm {
 				return htmlForm.getHtmlFieldTable(req)
 					+ "\n" + htmlForm.getActionButtons();
 			}
-			
-		
 	}
 
 	public boolean parseForm(HttpServletRequest req) 

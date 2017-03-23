@@ -111,14 +111,23 @@ public class ReportServlet extends SessionServlet {
 			templateName =  ReportBuilder.getTemplateName(templateFileName);
 			builder = ReportBuilder.getInstance(conn);
 			report_params.put("TemplateName", templateName);
-			Object type = report_params.get(ReportBuilder.REPORT_TYPE_PARAM);
-			if( type != null ){
-				if( type instanceof ReportType ){
-					reportType=(ReportType)type;
-				}else{
-					reportType=builder.getReportType(type.toString());
+//			Object type = report_params.get(ReportBuilder.REPORT_TYPE_PARAM);
+			Object type = report_params.get("submit");
+			if (type instanceof String) {
+				if (((String)type).startsWith("Preview")) {
+					reportType = builder.HTML;
+				}
+				else {
+					reportType = builder.getReportType(((String)type).replace("Export as ", ""));
 				}
 			}
+//			if( type != null ){
+//				if( type instanceof ReportType ){
+//					reportType=(ReportType)type;
+//				}else{
+//					reportType=builder.getReportType(type.toString());
+//				}
+//			}
 
 			if( reportType == null ){
 				reportType = builder.getTemplateType(templateFileName);
