@@ -28,8 +28,6 @@ import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.transition.ViewTransitionProvider;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.model.period.SplitManager;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** AllocationManagers are the UsageProducer classes for Allocations and
@@ -42,7 +40,10 @@ import uk.ac.ed.epcc.webapp.time.Period;
  */
 public interface AllocationManager<K,T extends Allocation> extends UsageProducer<T>, ViewTransitionProvider<K,T>,SplitManager<T> ,ExpressionFilterTarget<T>{
 
-
+/** Role needed to modify allocations.
+ *    Can restrict which index properties a user can set by defining a
+ *    relationship {@link AllocationPeriodTransitionProvider#ALLOCATION_ADMIN_RELATIONSHIP} on the index prop.
+ */
 	public static final String ALLOCATION_ADMIN = "AllocationAdmin";
 
  /** Add record to a table of allocations.
