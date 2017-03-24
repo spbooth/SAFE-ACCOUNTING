@@ -40,7 +40,7 @@ public class AllocationList implements UIGenerator, Contexed {
 		return conn.getService(LoggerService.class).getLogger(getClass());
 	}
 	public ContentBuilder addContent(ContentBuilder builder) {
-		if( getContext().getService(SessionService.class).hasRole(AllocationManager.ALLOCATION_ADMIN)){
+		if( getContext().getService(SessionService.class).hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE)){
 			ContentBuilder div = builder.getPanel("block");
 			div.addHeading(2, "View Allocations");
 			div.addText("This page lists all of the configured types of allocation.");

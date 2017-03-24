@@ -451,7 +451,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	@SuppressWarnings("unchecked")
 	public boolean allowTransition(AppContext c, T target, AllocationKey<T> key) {
 		SessionService service = c.getService(SessionService.class);
-		if( service.hasRole(ALLOCATION_ADMIN)){
+		if( service.hasRole(ALLOCATION_ADMIN_ROLE)){
 			Transition<T> t = getTransition(target, key);
 			if( t != null){
 				if( t instanceof TargetLessTransition){
@@ -764,7 +764,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 
 	
 	public boolean canView(T target, SessionService<?> sess) {
-		return sess.hasRole(AllocationManager.ALLOCATION_ADMIN);
+		return sess.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE);
 	}
 
 	public <X extends ContentBuilder> X getLogContent(X cb,T target, SessionService<?> sess) {

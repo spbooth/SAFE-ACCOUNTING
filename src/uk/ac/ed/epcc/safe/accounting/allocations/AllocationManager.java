@@ -44,7 +44,7 @@ public interface AllocationManager<K,T extends Allocation> extends UsageProducer
  *    Can restrict which index properties a user can set by defining a
  *    relationship {@link AllocationPeriodTransitionProvider#ALLOCATION_ADMIN_RELATIONSHIP} on the index prop.
  */
-	public static final String ALLOCATION_ADMIN = "AllocationAdmin";
+	public static final String ALLOCATION_ADMIN_ROLE = "AllocationAdmin";
 
  /** Add record to a table of allocations.
   * 

@@ -180,7 +180,17 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 		}
 		
 	}
-	public static PeriodKey CREATE_KEY = new PeriodKey("Create", "Create a new allocation");
+	public static PeriodKey CREATE_KEY = new PeriodKey("Create", "Create a new allocation"){
+
+		/* (non-Javadoc)
+		 * @see uk.ac.ed.epcc.safe.accounting.allocations.PeriodKey#allow(uk.ac.ed.epcc.webapp.session.SessionService, uk.ac.ed.epcc.safe.accounting.allocations.AllocationPeriod)
+		 */
+		@Override
+		public boolean allow(SessionService sess, AllocationPeriod target) {
+			return sess.hasRole(AllocationFactory.ALLOCATION_ADMIN_ROLE);
+		}
+		
+	};
 	public class CreateTransition extends AbstractFormTransition<AllocationPeriod>{
 
 		public void buildForm(Form f, AllocationPeriod target, AppContext conn)
@@ -286,7 +296,7 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 	}
 
 	public boolean canView(AllocationPeriod target, SessionService<?> sess) {
-		return sess.hasRole(AllocationManager.ALLOCATION_ADMIN);
+		return sess.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE);
 	}
 
 	@SuppressWarnings("unchecked")
