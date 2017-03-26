@@ -16,6 +16,7 @@ import uk.ac.ed.epcc.safe.accounting.db.ClassificationUpdater;
 import uk.ac.ed.epcc.safe.accounting.parsers.PasswdParser;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
+import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 public class ParsePersonTest extends PersonTest {
 	
@@ -26,9 +27,10 @@ public class ParsePersonTest extends PersonTest {
 	 * 
 	 * @throws InvalidPropertyException
 	 * @throws DataException
+	 * @throws ParseException 
 	 */
 	@Test
-	public void testUpload() throws InvalidExpressionException, DataException{
+	public void testUpload() throws InvalidExpressionException, DataException, ParseException{
 		PropertyPersonFactory<PropertyPerson> fac = new PropertyPersonFactory<PropertyPerson>(ctx);
 		ClassificationUpdater<PropertyPerson,String> updater = new ClassificationUpdater<PropertyPerson,String>(ctx, fac);
 		

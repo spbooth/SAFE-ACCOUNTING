@@ -44,7 +44,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
-import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.selector.FilterSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
@@ -66,16 +65,12 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderClause;
-import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.CompositeTableTransitionRegistry;
-import uk.ac.ed.epcc.webapp.jdbc.table.GeneralTransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecificationTransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionRegistry;
 import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
-import uk.ac.ed.epcc.webapp.model.NameFinder;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.TableStructureContributer;
@@ -97,7 +92,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * @param <P>
  */
 
-public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFactory<P> implements NameFinder<P>, ExpressionTargetFactory<P>, TableStructureTransitionTarget, ClassificationParseTarget<P,String>, PlugInOwner<String>, FilterSelector<DataObjectItemInput<P>>{
+public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFactory<P> implements ExpressionTargetFactory<P>, TableStructureTransitionTarget, ClassificationParseTarget<P,String>, PlugInOwner<String>, FilterSelector<DataObjectItemInput<P>>{
 
 	
 	public static final Feature MAKE_ON_UPLOAD_FEATURE = new Feature("person.make_on_upload",true,"On a person upload unknown users will be created as well as existing ones updated");
@@ -272,7 +267,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 	private final boolean makeOnUpload(){
 		return MAKE_ON_UPLOAD_FEATURE.isEnabled(getContext());
 	}
-	public P make(PropertyContainer value) throws AccountingParseException {
+	public P make(PropertyContainer value) throws AccountingParseException{
 		if( match_prop == null ){
 			throw new AccountingParseException("No match property specified for "+getTag());
 		}
@@ -283,7 +278,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		if( makeOnUpload()){
 			try {
 				return makeFromString(name);
-			} catch (DataFault e) {
+			} catch (Exception e) {
 				throw new AccountingParseException("Cannot make new record",e);
 			}
 		}

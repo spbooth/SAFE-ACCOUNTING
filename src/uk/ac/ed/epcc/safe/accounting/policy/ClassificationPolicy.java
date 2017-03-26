@@ -48,6 +48,7 @@ import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
+import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
@@ -418,7 +419,7 @@ public FormResult action(Form f)
 	}
 	@SuppressWarnings("unchecked")
 	private void regenerate(PropertyTag<String> name) throws DataException,
-			DataFault, InvalidExpressionException, CannotFilterException {
+			DataFault, InvalidExpressionException, CannotFilterException, ParseException {
 		DataObjectPropertyFactory fac = getContext().makeObjectWithDefault(DataObjectPropertyFactory.class, null, table);
 		if( fac != null ){
 			

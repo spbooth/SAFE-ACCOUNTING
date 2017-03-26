@@ -31,6 +31,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.relationship.Relationship;
@@ -118,7 +119,7 @@ public class  DEISARolesUploadParser<P extends PropertyPerson> implements Upload
     
     // update a user based on DN and username
     @SuppressWarnings("unchecked")
-	private void updateUser(String DN, String userName) throws DataFault, InvalidExpressionException
+	private void updateUser(String DN, String userName) throws DataFault, InvalidExpressionException, ParseException
     {
     	
     	P p = mPersonFactory.makeFromString(DN);
@@ -161,7 +162,7 @@ public class  DEISARolesUploadParser<P extends PropertyPerson> implements Upload
     }
     
     // update a project based on DN and project name
-    private void updateProject(String DN, String projectName) throws DataFault
+    private void updateProject(String DN, String projectName) throws DataFault, ParseException
     {
     	
     	P p = mPersonFactory.makeFromString(DN);
@@ -179,7 +180,7 @@ public class  DEISARolesUploadParser<P extends PropertyPerson> implements Upload
     // siteName is either a name like "EPCC" or ALL.
     // If the siteName is "ALL", set a global role.
     // Otherwise, update person/site relationship
-    private void updateSite(String DN, String siteName) throws DataFault
+    private void updateSite(String DN, String siteName) throws DataFault, ParseException
     {
     	
     	
@@ -317,7 +318,7 @@ public class  DEISARolesUploadParser<P extends PropertyPerson> implements Upload
 		return conn;
 	}
 	
-	public boolean parse(String record) throws DataFault, InvalidExpressionException
+	public boolean parse(String record) throws DataFault, InvalidExpressionException, ParseException
 	{
 
 		// ignore lines beginning with #
@@ -357,7 +358,7 @@ public class  DEISARolesUploadParser<P extends PropertyPerson> implements Upload
 		if ( roleInfo.indexOf("project-")>-1)
 		{
 			String projectName = roleInfo.replace("project-","");
-			updateProject(dn, projectName);;
+			updateProject(dn, projectName);
 		} // site or site admin role 
 		else if ( roleInfo.indexOf("site-")>-1)
 		{

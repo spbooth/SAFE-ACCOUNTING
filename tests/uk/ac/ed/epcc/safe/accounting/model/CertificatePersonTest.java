@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 
@@ -22,7 +23,7 @@ public class CertificatePersonTest extends PersonTest {
 	}
 
 	@Test
-	public void testGetName() throws DataException{
+	public void testGetName() throws DataException, ParseException{
 		CertificatePersonFactory<?> fac = (CertificatePersonFactory) getFactory();
 		
 		CertificatePerson p = fac.makeFromString("/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=stephen booth");
@@ -30,7 +31,7 @@ public class CertificatePersonTest extends PersonTest {
 		
 	}
 	@Test
-	public void testNormalise() throws DataException{
+	public void testNormalise() throws DataException, ParseException{
 	CertificatePersonFactory<?> fac = (CertificatePersonFactory) getFactory();
 		
 		CertificatePerson p = fac.makeFromString("/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=stephen booth");
