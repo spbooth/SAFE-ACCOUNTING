@@ -113,7 +113,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	public static final String STYLESHEET_GROUP = "stylesheets";
 
 	public static final Feature CHECK_PARAMETER_NAMES = new Feature("reports.check_parameter_names",true,"Check that report parameter names come from the valid set");
-	public static final Feature EMBEDDED_USE_REFERENCE = new Feature("reports.embedded.use_reference",true,"XMLGenerators (e.g. tables) are added directly to the final XMLBuilder to allow links etc");
+	public static final Feature EMBEDDED_USE_REFERENCE = new Feature("reports.embedded.use_reference",false,"XMLGenerators (e.g. tables) are added directly to the final XMLBuilder to allow links etc");
 	public class Resolver implements URIResolver {
 
 		public Source resolve(String href, String base)
@@ -784,6 +784,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	 */
 	public void renderContent(Map<String,Object> params,SimpleXMLBuilder builder) throws Exception{
 		setupExtensions(EHTML,params);
+		//setupExtensions(HTML,params);
 		for(Object o : params.values()){
 			if( o instanceof ReportExtension){
 				// XMLGenerators are added to parameters and added to the output as processing instructions

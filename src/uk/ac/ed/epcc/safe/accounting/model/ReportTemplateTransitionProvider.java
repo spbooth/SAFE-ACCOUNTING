@@ -57,6 +57,7 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
 import uk.ac.ed.epcc.webapp.model.data.transition.AbstractViewPathTransitionProvider;
 import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
+import uk.ac.ed.epcc.webapp.servlet.ServletService;
 import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
@@ -213,6 +214,12 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>
 				}
 
 				Map<String, Object> reportParameters = target.getParameters();
+				ServletService ss = getContext().getService(ServletService.class);
+				String css_path = getContext().getInitParameter("css.path","css/webapp.css");
+				if( ss != null){
+					css_path = ss.encodeURL("/"+css_path);
+				}
+				reportParameters.put("CssPath", css_path);
 				builder.parseReportParametersForm(f, reportParameters);
 				try {
 					if( ! builder.hasErrors()){
@@ -270,10 +277,13 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>
 				builder.buildReportParametersForm(f, parameters);
 				System.out.println("SET MAP: parameters=" + parameters + " context parameters=" + target.getContextParameters());
 				setMap(parameters, target.getContextParameters(), f, false);
-				f.addAction("CSV", new ExportAction(conn, new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, builder, builder.getReportType("csv")));
-				f.addAction("PDF", new ExportAction(conn, new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target, builder, builder.getReportType("pdf")));
-				f.addAction("HTML", new ExportAction(conn, new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, builder, builder.getReportType("html")));
 				f.addAction("Preview", new PreviewAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target));
+				f.addAction("HTML", new ExportAction(conn, new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, builder, builder.getReportType("html")));
+				f.addAction("PDF", new ExportAction(conn, new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target, builder, builder.getReportType("pdf")));
+				f.addAction("CSV", new ExportAction(conn, new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, builder, builder.getReportType("csv")));
+				
+				
+				
 			}
 			catch (Exception e) {
 				getLogger().error("Error creating report form", e);
