@@ -66,6 +66,10 @@
     		<artifact name="avalon-framework-impl" ext="jar"/>
 		</dependency>
 		
+		<dependency org="org.jfree" name="jcommon" rev="1.0.23">
+    		<artifact name="jcommon" ext="jar"/>
+		</dependency>
+		
 		<dependency org="org.jfree" name="jfreechart" rev="1.0.19">
     		<artifact name="jfreechart" ext="jar"/>
 		</dependency>
