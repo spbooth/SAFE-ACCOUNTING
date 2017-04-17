@@ -77,7 +77,7 @@ public class ChartExtensionTest extends ExtensionTestCase {
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
-	public void testCSVTimeChartCumilative() throws Exception {
+	public void testCSVTimeChartCumulative() throws Exception {
 		testChart("csv", new File(getOutputDir()+"TimeChartCumulative.csv"));
 	}
 	@Test
