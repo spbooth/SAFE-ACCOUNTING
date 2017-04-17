@@ -8,6 +8,4 @@ It is used by:
 * and a number of internal tools and projects.
 
 Dependencies are mostly managed via ivy. The ivysettings.xml file points to our local development repository
-you can remove this file to resolve against the default repositories but You will have to 
-Download Chart2D explicitly from http://chart2d.sourceforge.net/ (and remove it from ivy.xml) 
-as it is not in public repositories.
+you can remove this file to resolve against the default repositories.
