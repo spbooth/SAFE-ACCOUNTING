@@ -60,6 +60,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.content.FormatProvider;
 import uk.ac.ed.epcc.webapp.content.Labeller;
@@ -871,6 +872,9 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			setTime(start, start_string);
 	
 		} else {
+			// for debugging use CurrentTimeService
+			CurrentTimeService ct = getContext().getService(CurrentTimeService.class);
+			start.setTime(ct.getCurrentTime());
 			// default setting to start of previous month
 			start.add(Calendar.MONTH, -1);
 			start.set(Calendar.DAY_OF_MONTH, 1);

@@ -14,7 +14,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
+import uk.ac.ed.epcc.webapp.TestTimeService;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
 public class PeriodExtensionTest extends ExtensionTestCase {
@@ -23,10 +25,19 @@ public class PeriodExtensionTest extends ExtensionTestCase {
 	
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
-	public void testDefaultPeriod() throws Exception {	
+	public void testDefaultPeriod() throws Exception {
+		
+		// Has to resolve data in period
+		TestTimeService serv = new TestTimeService();
+		Calendar start = Calendar.getInstance();
+		start.set(Calendar.YEAR, 2008);
+		start.set(Calendar.MONTH,Calendar.NOVEMBER);
+		serv.setResult(start.getTime());
+		ctx.setService(serv);
+		
 		String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
 				"Aug", "Sep", "Oct", "Nov", "Dec"};
-		Calendar start = Calendar.getInstance();	
+		//Calendar start = Calendar.getInstance();	
 		
 		start.add(Calendar.MONTH, -1);
 		String defaultPeriod = 

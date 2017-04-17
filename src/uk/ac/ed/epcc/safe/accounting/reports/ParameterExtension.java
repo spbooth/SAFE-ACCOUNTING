@@ -71,7 +71,6 @@ import uk.ac.ed.epcc.webapp.forms.inputs.IntegerInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.LengthInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.LongInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.MonthInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MonthMultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
