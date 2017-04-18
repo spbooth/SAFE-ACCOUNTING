@@ -11,6 +11,7 @@
 <%--| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |--%>
 <%--| See the License for the specific language governing permissions and      |--%>
 <%--| limitations under the License.                                           |--%>
+<%@page import="uk.ac.ed.epcc.webapp.tags.WebappHeadTag"%>
 <%@ page
 	import="java.util.*,uk.ac.ed.epcc.webapp.*,uk.ac.ed.epcc.webapp.model.*,uk.ac.ed.epcc.webapp.forms.html.*,uk.ac.ed.epcc.safe.accounting.reports.*,uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder.*,uk.ac.ed.epcc.safe.accounting.reports.forms.html.*"%>
 
@@ -60,8 +61,8 @@
 		return;
 	}
 	String page_title = builder.getTitle();
-	extra_css = "service_desk.css";
 %>
+<wb:css url="service_desk.css"/>
 <%@ include file="/std_header.jsf"%>
 <%@ include file="/back.jsf"%>
 <%@ include file="/scripts/form_context.jsf"%>
