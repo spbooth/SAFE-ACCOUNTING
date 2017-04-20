@@ -115,8 +115,9 @@ public class LSFParser extends BatchParser implements  Contexed {
 	@AutoTable(target=Integer.class)
 	public static final PropertyTag<Integer> LSF_NUMPROCESSORS_PROP = new PropertyTag<Integer>(lsf,"NumProcessors",Integer.class,"LSF number of processors used");
 	
-	
+	@OptionalTable(target=Integer.class)
 	public static final PropertyTag<Integer> LSF_NUM_EXECHOSTS_PROP = new PropertyTag<Integer>(lsf,"NumExecHosts",Integer.class,"LSF number of exec hosts");
+	@OptionalTable(length=4096)
 	public static final PropertyTag<String> LSF_EXEC_HOSTS_PROP = new PropertyTag<String>(lsf,"ExecHosts",String.class,"LSF Exec Hosts");
 
 	
@@ -706,6 +707,7 @@ public class LSFParser extends BatchParser implements  Contexed {
 			addAlias(result, LSF_CPU_TIME_PROP,StandardProperties.CPU_TIME_PROP);
 			addAlias(result, LSF_MAXPROCESSORS_PROP, BatchParser.REQUESTED_CPUS_PROP);
 			addAlias(result,LSF_NUMPROCESSORS_PROP,BatchParser.PROC_COUNT_PROP);
+			addAlias(result, LSF_NUM_EXECHOSTS_PROP, BatchParser.NODE_COUNT_PROP);
 			addAlias(result, LSF_PROJECT_PROP, BatchParser.ACCOUNT_PROP);
 			addAlias(result,LSF_BATCH_COMMAND_PROP,BatchParser.BATCH_SCRIPT_PROP);
 			
