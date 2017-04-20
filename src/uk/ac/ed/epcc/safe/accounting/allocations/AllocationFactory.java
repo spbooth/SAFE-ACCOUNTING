@@ -164,9 +164,13 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		String list = c.getInitParameter(table+".allocation_listeners");
 		if( list != null ){
 			for(String name : list.split("\\s,\\s")){
-				AllocationListener l = c.makeObject(AllocationListener.class, name);
-				if( l != null ){
-					result.add(l);
+				try{
+					AllocationListener l = c.makeObject(AllocationListener.class, name);
+					if( l != null ){
+						result.add(l);
+					}
+				}catch(Throwable t){
+					getLogger().error("Error making allocation listener "+name, t);
 				}
 			}
 		}
