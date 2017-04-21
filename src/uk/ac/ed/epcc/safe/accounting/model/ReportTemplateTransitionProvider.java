@@ -244,7 +244,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>
 				}
 				if (isReportDev) {
 					DeveloperResults devResults = developerResults(getContext(), logService, builder, hasErrors, reportParameters);
-					result = new DeveloperResult(devResults.getResult(), devResults.getLogs(), devResults.getErrors(), hasErrors);
+					result = new DeveloperResult(hasErrors ? devResults.getResult() : result , devResults.getLogs(), devResults.getErrors(), hasErrors);
 				}
 				return result;
 			}

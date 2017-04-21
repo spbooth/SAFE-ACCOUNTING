@@ -18,10 +18,10 @@
 	<xsl:output method="text" indent="no" />
 	
 	<!-- Remove the newlines for the stripped out ParamererDef etc. -->
-	<xsl:strip-space elements="rep:Report rep:table rep:tr"/>
+	<xsl:strip-space elements="rep:Report rep:Title rep:Heading rep:table rep:tr rep:Text text p para Title title heading Heading"/>
 	
 	<!-- Makes sure the elements which can remain do perserve their spaces -->
-	<xsl:preserve-space elements="rep:Title rep:Heading rep:Text rep:td rep:th title heading p para text th td"/>
+	<xsl:preserve-space elements="rep:td rep:th th td"/>
 	
 	<!-- generate csv skeleton on root element using the identity transformation -->
 	<xsl:template match="@*|node()">
@@ -31,14 +31,20 @@
 	</xsl:template>
 
 	<!-- Convert  adding newline after each one-->	
-	<xsl:template match="rep:Title|rep:Heading|rep:Section|rep:SubSection|rep:Text|Title|Heading|Section|Subsection|P|p|Para|Text">
+	<xsl:template match="rep:Section|rep:SubSection|Section|Subsection">
 		<xsl:apply-templates />	
 		<xsl:text>&#xA;</xsl:text>
 	</xsl:template>
-
+	<!--  remove commas from text -->
+<xsl:template match="rep:Title|rep:Heading|rep:Text|P|p|Para|Text|Title|Heading">
+        <xsl:text></xsl:text>
+		<xsl:value-of select="translate(normalize-space(text()),',','')"/>
+		<xsl:text>&#xA;</xsl:text>
+	</xsl:template>
 	<!-- tables map onto csv tables as one might expect -->
 	<xsl:template match="rep:table|Table|table">
 		<xsl:apply-templates />
+		<xsl:text>&#xA;</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="rep:tr|Tr|tr">
