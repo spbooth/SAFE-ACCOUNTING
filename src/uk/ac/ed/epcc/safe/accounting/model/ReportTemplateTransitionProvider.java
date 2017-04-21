@@ -45,8 +45,8 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
+import uk.ac.ed.epcc.webapp.forms.result.MessageResult;
 import uk.ac.ed.epcc.webapp.forms.result.ServeDataResult;
-import uk.ac.ed.epcc.webapp.forms.result.ViewTransitionResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.DefaultingTransitionFactory;
@@ -56,7 +56,7 @@ import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.logging.buffer.BufferLoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
-import uk.ac.ed.epcc.webapp.model.data.transition.AbstractViewPathTransitionProvider;
+import uk.ac.ed.epcc.webapp.model.data.transition.AbstractPathTransitionProvider;
 import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
 import uk.ac.ed.epcc.webapp.servlet.ServletService;
 import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
@@ -66,8 +66,8 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * Publications 
  */
 public class ReportTemplateTransitionProvider 
-extends AbstractViewPathTransitionProvider<Report, ReportTemplateKey> 
-implements TitleTransitionFactory<ReportTemplateKey, Report>
+extends AbstractPathTransitionProvider<Report, ReportTemplateKey> 
+implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransitionFactory<ReportTemplateKey, Report>
 {
 	private static final String FORM_PARAMETER_PREFIX = "__";
 	private static final String SERVE_DATA_DEFAULT_TAG = "ServeData";
@@ -130,10 +130,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>
 				}
 			} catch (Exception e) {
 				getLogger().error("Error making report", e);
+				return new MessageResult("internal_error");
 			}
-
-			return new ViewTransitionResult<Report, ReportTemplateKey>(
-					ReportTemplateTransitionProvider.this, target);
+			return new ChainedTransitionResult<Report, ReportTemplateKey>(ReportTemplateTransitionProvider.this, target, PREVIEW);
 		}
 		
 	}
@@ -399,35 +398,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>
 		return cb;
 	}
 	
-	@Override
-	public <X extends ContentBuilder> X getLogContent(X cb, Report target,
-			SessionService<?> sess) 
-	{
-		X result = super.getLogContent(cb, target, sess);
-		AppContext context = getContext();
 
-		if (target.getReportTemplate() == null)
-		{
-			cb.addHeading(3, "Report Templates");
-			cb.addText("Unknown report template");
-		}
-		else {
-			ReportTemplate template = target.getReportTemplate();
-			cb.addHeading(3, template.getReportName());
-			cb.addText(template.getReportDescription());
-			try {
-				addPreview(context, cb, target);
-			} catch (Exception e) {
-				getLogger().error("Error creating preview", e);
-			}
-		}
-		return result;
-	}
-
-	@Override
-	public boolean canView(Report target, SessionService<?> sess) {
-		return true;
-	}
 
 	public String getTargetName() {
 		return "ReportTemplate";
@@ -676,6 +647,11 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>
 	@Override
 	public String getHeading(ReportTemplateKey key, Report target) {
 		return getTitle(key, target);
+	}
+
+	@Override
+	public ReportTemplateKey getDefaultTransition(Report target) {
+		return PREVIEW;
 	}
 
 	
