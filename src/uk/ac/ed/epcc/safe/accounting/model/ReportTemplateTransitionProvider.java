@@ -49,6 +49,7 @@ import uk.ac.ed.epcc.webapp.forms.result.ServeDataResult;
 import uk.ac.ed.epcc.webapp.forms.result.ViewTransitionResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
+import uk.ac.ed.epcc.webapp.forms.transition.DefaultingTransitionFactory;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraContent;
 import uk.ac.ed.epcc.webapp.forms.transition.TitleTransitionFactory;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
@@ -658,10 +659,18 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>
 
 	@Override
 	public String getTitle(ReportTemplateKey key, Report target) {
-		if( target != null ){
-			return key.toString()+" "+target.getReportTemplate().getReportName();
+		
+		String operation="View";
+		if( key != null){
+			operation = key.toString();
 		}
-		return key.toString()+" Report";
+		if( target != null ){
+			ReportTemplate reportTemplate = target.getReportTemplate();
+			if( reportTemplate != null && reportTemplate.getReportName() != null ){
+				return operation+" "+reportTemplate.getReportName();
+			}
+		}
+		return operation+" Report";
 	}
 
 	@Override
