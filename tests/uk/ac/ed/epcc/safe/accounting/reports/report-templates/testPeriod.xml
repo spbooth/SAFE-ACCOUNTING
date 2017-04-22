@@ -127,13 +127,12 @@
 <per:StartTime>2008-10-01 04:00:00</per:StartTime>
 <per:EndTime>2008-10-01 12:00:00</per:EndTime>
 </per:Period>
-<Text>
-Start Day <per:StartDate format="dd-MM-yyyy"/>
-Start Time <per:StartDate format="dd-MM-yyyy HH:mm:ss"/>
-Start raw <per:StartDate/>
-End Day <per:EndDate format="dd-MM-yyyy"/>
-End Time <per:EndDate format="dd-MM-yyyy HH:mm:ss"/>
-End raw <per:EndDate/>
+<Text>Start Day <per:StartDate format="dd-MM-yyyy"/></Text>
+<Text>Start Time <per:StartDate format="dd-MM-yyyy HH:mm:ss"/></Text>
+<Text>Start raw <per:StartDate/></Text>
+<Text>End Day <per:EndDate format="dd-MM-yyyy"/></Text>
+<Text>End Time <per:EndDate format="dd-MM-yyyy HH:mm:ss"/></Text>
+<Text>End raw <per:EndDate/>
 </Text>
 </Section>
 </Report>
