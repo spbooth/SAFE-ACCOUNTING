@@ -874,7 +874,9 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		} else {
 			// for debugging use CurrentTimeService
 			CurrentTimeService ct = getContext().getService(CurrentTimeService.class);
-			start.setTime(ct.getCurrentTime());
+			if( ct != null ){
+				start.setTime(ct.getCurrentTime());
+			}
 			// default setting to start of previous month
 			start.add(Calendar.MONTH, -1);
 			start.set(Calendar.DAY_OF_MONTH, 1);

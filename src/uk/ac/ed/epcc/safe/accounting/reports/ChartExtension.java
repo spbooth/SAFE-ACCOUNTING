@@ -173,55 +173,58 @@ public abstract class ChartExtension extends ReportExtension {
 	public Chart<TimeChart> makeTimeChart(Period period, Node node) {
 		startTimer("makeTimeChart");
 		try{
-		if (node.getNodeType() != Node.ELEMENT_NODE) {
-			addError("Bad Plot", "Non element fragment passed to makeTimeChart");
-			return null;
-		}
-		
-		
-		Element e = (Element) node;
-		AppContext ctx = getContext();
-		
-		int timeBlocks = getContext().getIntegerParameter("timechart.default.NumberOfTimeBlocks", 10);
-		try {
-			timeBlocks = getIntParam("NumberOfTimeBlocks",timeBlocks , e);
-		} catch (Exception e1) {
-			addError("Bad Plot", "Error setting NumberOfTimeBlocks", e1);
-		}	
-		
-		
-		
-		try {
-			TimeChart chart;
-			if( period instanceof SplitPeriod ){
-				// This is the normal operation periods should normally be 
-				// SplitPeriods
-				chart = TimeChart.getInstance(ctx, (SplitPeriod) period,timeBlocks);
-			}else{
-				// fallback operation. This should not happen normally but
-				// might happen for example the SAFE legacy public reports
-				// might use a non SplitPeriod
-				int nSplits = ctx.getIntegerParameter("timechart.default.NumberOfSplits", 10);
-				chart = TimeChart.getInstance(ctx, period.getStart(), period.getEnd(), nSplits, timeBlocks);
+			if (node.getNodeType() != Node.ELEMENT_NODE) {
+				addError("Bad Plot", "Non element fragment passed to makeTimeChart");
+				return null;
 			}
-			chart.getChartData().setGraphical(graphOutput());
-			try{
-			if( hasParam("WarningLevel", e)){
-				chart.addWarningLevel(getNumberParam("WarningLevel", 0.0, e).doubleValue());
+
+
+			Element e = (Element) node;
+			AppContext ctx = getContext();
+
+			int timeBlocks = getContext().getIntegerParameter("timechart.default.NumberOfTimeBlocks", 10);
+			try {
+				timeBlocks = getIntParam("NumberOfTimeBlocks",timeBlocks , e);
+			} catch (Exception e1) {
+				addError("Bad Plot", "Error setting NumberOfTimeBlocks", e1);
+			}	
+
+
+
+			try {
+				TimeChart chart;
+				if( period instanceof SplitPeriod ){
+					// This is the normal operation periods should normally be 
+					// SplitPeriods
+					chart = TimeChart.getInstance(ctx, (SplitPeriod) period,timeBlocks);
+				}else{
+					// fallback operation. This should not happen normally but
+					// might happen for example the SAFE legacy public reports
+					// might use a non SplitPeriod
+					int nSplits = ctx.getIntegerParameter("timechart.default.NumberOfSplits", 10);
+					chart = TimeChart.getInstance(ctx, period.getStart(), period.getEnd(), nSplits, timeBlocks);
+				}
+				chart.getChartData().setGraphical(graphOutput());
+				try{
+					if( hasParam("WarningLevel", e)){
+						chart.addWarningLevel(getNumberParam("WarningLevel", 0.0, e).doubleValue());
+					}
+				}catch(Exception e3){
+					addError("Bad Timechart specification", "Error setting WarningLevel",e3);
+				}
+				return setChartOptions(chart,e);
+			} catch (InvalidArgument e2) {
+				addError("Bad Timechart specification", e2.getClass().getCanonicalName(),e2);
+				return null;
 			}
-			}catch(Exception e3){
-				addError("Bad Timechart specification", "Error setting WarningLevel",e3);
-			}
-			return setChartOptions(chart,e);
-		} catch (InvalidArgument e2) {
-			addError("Bad Timechart specification", e2.getClass().getCanonicalName(),e2);
-			return null;
-		}
-		
+		} catch(Throwable t){
+			addError("internal error", "Error making TimeChart", t);
+
 		}finally{
 			stopTimer("makeTimeChart");
 		}
-	}
+		return null;
+		}
 //	public boolean addPlot(RecordSet set, Chart chart, Node node ){
 //		if (node.getNodeType() != Node.ELEMENT_NODE) {
 //			addError("Bad Plot", "Non element fragment passed to makeTimeChart");
@@ -307,13 +310,17 @@ public abstract class ChartExtension extends ReportExtension {
 		}
 		
 		AppContext ctx = getContext();
-	
-		PieTimeChart chart = PieTimeChart.getInstance(ctx, (SplitPeriod) period);
-		chart.getChartData().setGraphical(graphOutput());
-		return  setChartOptions(chart,(Element) node);
-		
-		
-		
+
+		try{
+			PieTimeChart chart = PieTimeChart.getInstance(ctx, (SplitPeriod) period);
+			chart.getChartData().setGraphical(graphOutput());
+			return  setChartOptions(chart,(Element) node);
+
+
+		}catch(Throwable t){
+			addError("Error in makePieTimeChart", t.getClass().getCanonicalName(), t);
+			return null;
+		}
 
 	}
 	
@@ -333,7 +340,7 @@ public abstract class ChartExtension extends ReportExtension {
 			BarTimeChart chart = BarTimeChart.getInstance(ctx,  period);
 			chart.getChartData().setGraphical(graphOutput());
 			return  setChartOptions(chart,(Element) node);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			addError("Bad Plot", "Error making BarChart", e);
 			return null;
 		}
