@@ -39,6 +39,7 @@ import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
+import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
@@ -59,6 +60,9 @@ import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 /** Base class for DataObjectFactories that hold accounting properties
+ * 
+ * If the property <b><i>config-tag</i>.default_filter_relationship</b> is defined
+ * then the corresponding filter is added to any filter created from a {@link RecordSelector} via the {@link #getFilter(RecordSelector)} method.
  * 
  * @author spb
  *
@@ -194,15 +198,31 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	
 	public final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
 		if( selector == null ){
-			return null;
+			return addDefaultFilter(null);
 		}
 		try {
-			return selector.visit(new FilterSelectVisitor<T>(this));
+			return addDefaultFilter(selector.visit(new FilterSelectVisitor<T>(this)));
 		}catch(CannotFilterException e){
 			throw e;
 		} catch (Exception e) {
 			throw new CannotFilterException(e);
 		}
+	}
+	/** extension method to augment
+	 * 
+	 * @param fil {@link BaseFilter} may be null
+	 * @return
+	 */
+	private final BaseFilter<T> addDefaultFilter(BaseFilter<T> fil){
+		String default_relationship = getContext().getInitParameter(getConfigTag()+".default_filter_relationship");
+		if( default_relationship != null){
+			try {
+				return new AndFilter<>(getTarget(),getRelationshipFilter(default_relationship), fil);
+			} catch (CannotFilterException e) {
+				getLogger().error("Error adding default relationship", e);
+			}
+		}
+		return fil;
 	}
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)

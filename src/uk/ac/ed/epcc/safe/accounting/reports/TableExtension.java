@@ -584,7 +584,7 @@ public class TableExtension extends ReportExtension {
 		/**
 		 * Add a single column of data to a SummaryTable In principle we can have
 		 * different RecordSet objects for different columns so each column has to
-		 * be added seperatly.
+		 * be added separately.
 		 * @param columnNode 
 		 * @return String
 		 */
