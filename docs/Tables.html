@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<link href='docs.css' rel='stylesheet' type='text/css' media='screen' />
+</head>
+<body>
+<div id='wrapper'>
+  <div id='wrapper2'>
+    <div id='header'>
+      <div id='logo'>
+      <h1>TABLES</h1>
+      </div>
+      </div>
+           <div id="page">
+      <div id="content"> 
+          <h2 id="Tables">Tables</h2>
+<p>
+As with <a href='Charts.html' >Charts</a> a set of Usage Records can also be represented as a table. To incorporate charts into a report the <tt>table</tt> namespace is defined in the Report. 
+</p>
+<div class="code"><pre>&lt;rep:Report 
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"&gt;
+
+</pre></div><p>
+A simple Table might look like this: 
+</p>
+<div class="code"><pre>&lt;tab:Table&gt;              
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Job Name&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;JobName&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;User&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;Person&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Project&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;Project&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Submitted Time&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;SubmittedTimestamp&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;           
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Start Time&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;StartedTimestamp&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;                   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Completed Time&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;CompletedTimestamp&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;                   
+&lt;/tab:Table&gt;            
+</pre></div><p>
+This table prints a row containing the <tt>Job Name</tt>, <tt>User</tt>, <tt>Project</tt>, <tt>Submitted Time</tt>, <tt>Start Time</tt> and <tt>Completed Time</tt> for each record that is selected. Looking more closely at the first column to be printed, the column name is <tt>Job Name</tt>, and the property to be output is <tt>JobName</tt>. This table would be:
+</p>
+<table cellpadding="4" cellspacing="2" border="1">
+<tr>
+<th>Job Name</th><th>User</th><th>Project</th><th>Submitted Time</th><th>Start Time</th><th>Completed Time</th>
+</tr>
+<tr>
+<td align="right">myjob</td><td align="right">fred</td><td align="right">inf_hcrc_cstr_emime</td><td align="right">29/12/08 17:20</td><td align="right">31/12/08 23:27</td><td align="right">01/01/09 00:00</td>
+</tr>
+<tr>
+<td align="right">myjob</td><td align="right">fred</td><td align="right">inf_hcrc_cstr_emime</td><td align="right">29/12/08 17:20</td><td align="right">31/12/08 23:28</td><td align="right">01/01/09 00:00</td>
+</tr>
+<tr>
+<td align="right">STDIN</td><td align="right">prdatlas014</td><td align="right">prdatlas</td><td align="right">31/12/08 23:58</td><td align="right">31/12/08 23:58</td><td align="right">01/01/09 00:00</td>
+</tr>
+<tr>
+<td align="right">myjob</td><td align="right">fred</td><td align="right">inf_hcrc_cstr_emime</td><td align="right">29/12/08 17:20</td><td align="right">31/12/08 23:27</td><td align="right">01/01/09 00:00</td>
+</tr>
+<tr>
+<td align="right">myjob</td><td align="right">fred</td><td align="right">inf_hcrc_cstr_emime</td><td align="right">29/12/08 17:20</td><td align="right">31/12/08 23:27</td><td align="right">01/01/09 00:01</td>
+</tr>
+</table>
+<h3 id="Periods">Periods</h3>
+<p>
+As with most reports you need set the reporting period by adding a <a hewd="Period.html">Period</a> element to you report definition. For example:
+</p>
+<div class="code"><pre>&lt;tab:Table&gt;     
+        &lt;per:Period&gt;
+                &lt;per:StartTime&gt;2009-02-01&lt;/per:StartTime&gt;
+                &lt;per:EndTime&gt;2009-03-01&lt;/per:EndTime&gt;
+        &lt;/per:Period&gt;    
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Job Name&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;JobName&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;User&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;Person&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Project&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;Project&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Submitted Time&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;SubmittedTimestamp&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;           
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Start Time&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;StartedTimestamp&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;                   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Completed Time&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;CompletedTimestamp&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;                   
+&lt;/tab:Table&gt;            
+</pre></div><p>
+This table would be:
+</p>
+<table cellpadding="4" cellspacing="2" border="1">
+<tr>
+<th>Job Name</th><th>User</th><th>Project</th><th>Submitted Time</th><th>Start Time</th><th>Completed Time</th>
+</tr>
+<tr>
+<td align="right">STDIN</td><td align="right">prdatlas014</td><td align="right">prdatlas</td><td align="right">31/01/09 22:00</td><td align="right">31/01/09 23:58</td><td align="right">01/02/09 00:00</td>
+</tr>
+<tr>
+<td align="right">STDIN</td><td align="right">prdatlas014</td><td align="right">prdatlas</td><td align="right">31/01/09 22:00</td><td align="right">31/01/09 23:58</td><td align="right">01/02/09 00:00</td>
+</tr>
+<tr>
+<td align="right">myjob-4</td><td align="right">fred</td><td align="right">ecdf_baseline</td><td align="right">29/01/09 23:16</td><td align="right">31/01/09 23:58</td><td align="right">01/02/09 00:00</td>
+</tr>
+<tr>
+<td align="right">myjob-4</td><td align="right">fred</td><td align="right">ecdf_baseline</td><td align="right">29/01/09 23:16</td><td align="right">31/01/09 23:56</td><td align="right">01/02/09 00:00</td>
+</tr>
+<tr>
+<td align="right">student-job</td><td align="right">s0000111</td><td align="right">ecdf_baseline</td><td align="right">31/01/09 09:33</td><td align="right">31/01/09 11:27</td><td align="right">01/02/09 00:00</td>
+</tr>
+</table>
+<p>
+In fact the period does not have to be defined within the table. In the example below the period used for the table will be from 2009-01-01 to 2010-01-01 as defined for the whole report.
+</p>
+<div class="code"><pre>&lt;rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"&gt;
+  
+        &lt;per:Period&gt;
+                &lt;per:StartTime&gt;2009-01-01&lt;/per:StartTime&gt;
+                &lt;per:EndTime&gt;2010-01-01&lt;/per:EndTime&gt;
+        &lt;/per:Period&gt;
+
+        &lt;tab:Table&gt;             
+                &lt;tab:Column&gt;
+                        &lt;tab:Name&gt;Job Name&lt;/tab:Name&gt;
+                        &lt;tab:Property&gt;JobName&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;   
+                &lt;tab:Column&gt;
+                        &lt;tab:Name&gt;User&lt;/tab:Name&gt;
+                        &lt;tab:Property&gt;Person&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;           
+        &lt;/tab:Table&gt;    
+
+&lt;/rep:Report&gt;
+
+</pre></div><p>
+The table will pick up the last defined period defined as a child of the table itself or an ancestor XML element. In the example below there are two periods defined. The period used in the chart will the one from 2009-02-01 to 2009-03-01.
+</p>
+<div class="code"><pre>&lt;rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"&gt;
+  
+        &lt;per:Period&gt;
+                &lt;per:StartTime&gt;2009-01-01&lt;/per:StartTime&gt;
+                &lt;per:EndTime&gt;2010-01-01&lt;/per:EndTime&gt;
+        &lt;/per:Period&gt;
+
+        &lt;tab:Table&gt;             
+                &lt;per:Period&gt;
+                        &lt;per:StartTime&gt;2009-02-01&lt;/per:StartTime&gt;
+                        &lt;per:EndTime&gt;2009-03-01&lt;/per:EndTime&gt;
+                &lt;/per:Period&gt; 
+                &lt;tab:Column&gt;
+                        &lt;tab:Name&gt;Job Name&lt;/tab:Name&gt;
+                        &lt;tab:Property&gt;JobName&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;   
+                &lt;tab:Column&gt;
+                        &lt;tab:Name&gt;User&lt;/tab:Name&gt;
+                        &lt;tab:Property&gt;Person&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;   
+        &lt;/tab:Table&gt;    
+
+&lt;/rep:Report&gt;
+</pre></div><h3 id="Filters">Filters</h3>
+<p>
+The tables above show the job details over the whole data set. A filter could be defined to narrow the selection of usage records, say down to only one project, <tt>ecdf_baseline</tt> for example. You may wish to group by <tt>User</tt>. This plot would look like: 
+</p>
+<div class="code"><pre>&lt;tab:Table&gt;             
+        &lt;fil:Filter&gt;
+                &lt;fil:EQ&gt;
+                        &lt;fil:Property&gt;Project&lt;/fil:Property&gt;
+                        &lt;fil:Value&gt;ecdf_baseline&lt;/fil:Value&gt;
+                &lt;/fil:EQ&gt;
+        &lt;/sel:Filter&gt;   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Job Name&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;JobName&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;User&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;Person&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Project&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;Project&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Submitted Time&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;SubmittedTimestamp&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;           
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Start Time&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;StartedTimestamp&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;                   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Completed Time&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;CompletedTimestamp&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;                   
+&lt;/tab:Table&gt;    
+</pre></div><p>
+As with Periods <tt>Filters</tt> do not have to be defined within the table. All of the <tt>Filters</tt> defined within the table or as direct children of ancestor elements will be combined. So in the case of this table:
+</p>
+<div class="code"><pre>&lt;rep:Report 
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:plo="http://safe.epcc.ed.ac.uk/plot"&gt;
+
+        &lt;sel:Filter&gt;
+                &lt;sel:Match&gt;
+                        &lt;sel:Property&gt;Project&lt;/sel:Property&gt;
+                        &lt;sel:Value&gt;ecdfbaseline&lt;/sel:Value&gt;
+                &lt;sel:Match&gt;
+        &lt;/sel:Filter&gt;
+
+        &lt;tab:Table&gt;             
+                &lt;fil:Filter&gt;
+                        &lt;fil:EQ&gt;
+                                &lt;fil:Property&gt;User&lt;/fil:Property&gt;
+                                &lt;fil:Value&gt;paddymurphy&lt;/fil:Value&gt;
+                        &lt;fil:Match&gt;
+                &lt;/fil:Filter&gt;
+                &lt;tab:Column&gt;
+                        &lt;tab:Name&gt;Job Name&lt;/tab:Name&gt;
+                        &lt;tab:Property&gt;JobName&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;   
+                &lt;tab:Column&gt;
+                        &lt;tab:Name&gt;User&lt;/tab:Name&gt;
+                        &lt;tab:Property&gt;Person&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;   
+                &lt;tab:Column&gt;
+                        &lt;tab:Name&gt;Project&lt;/tab:Name&gt;
+                        &lt;tab:Property&gt;Project&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;   
+                &lt;tab:Column&gt;
+                        &lt;tab:Name&gt;Submitted Time&lt;/tab:Name&gt;
+                        &lt;tab:Property&gt;SubmittedTimestamp&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;           
+                &lt;tab:Column&gt;
+                        &lt;tab:Name&gt;Start Time&lt;/tab:Name&gt;
+                        &lt;tab:Property&gt;StartedTimestamp&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;                   
+                &lt;tab:Column&gt;
+                        &lt;tab:Name&gt;Completed Time&lt;/tab:Name&gt;
+                        &lt;tab:Property&gt;CompletedTimestamp&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;                   
+        &lt;/tab:Table&gt;    
+&lt;/rep:Report&gt;
+
+</pre></div><p>
+The selection used will be only those of the <tt>User</tt> <tt>paddymurphy</tt> for the <tt>Project</tt> <tt>ecdf_baseline</tt>.
+</p>
+<h3 id="SummaryTables">Summary Tables</h3>
+<p>
+So far the tables have been outputting one row per <tt>UsageRecord</tt> selected, however you can use <tt>SummaryTables</tt> to group rows together and perform operations on them. For example, to group all the selected records by project and output a sum of the <tt>Wall</tt> for all the records a index of type <tt>Project</tt> is defined and a <tt>SumColumn</tt> of Wall is included. 
+</p>
+<div class="code"><pre>&lt;tab:SummaryTable&gt;
+        &lt;tab:Index&gt;                             
+                &lt;tab:Name&gt;Project&lt;/tab:Name&gt;            
+                &lt;tab:Property&gt;Project&lt;/tab:Property&gt;
+        &lt;/tab:Index&gt;                                    
+        &lt;tab:SumColumn&gt;                         
+                &lt;tab:Name&gt;Time&lt;/tab:Name&gt;               
+                &lt;tab:Property&gt;Wall&lt;/tab:Property&gt;
+        &lt;/tab:SumColumn&gt;                
+&lt;/tab:SummaryTable&gt;     
+</pre></div><p>
+The table above would look like:
+</p>
+<table cellpadding="4" cellspacing="2" border="1">
+<tr>
+<th>Project</th><th>Time</th>
+</tr>
+<tr>
+<td align="right">see_imp_costa_02</td><td align="right">103221</td>
+</tr>
+<tr>
+<td align="right">ngsadmin</td><td align="right">3022</td>
+</tr>
+<tr>
+<td align="right">inf_hcrc_cstr_ephones</td><td align="right">2048193</td>
+</tr>
+<tr>
+<td align="right">biology_ieb_belswort_01</td><td align="right">1983717</td>
+</tr>
+<tr>
+<td align="right">inf_hcrc_cstr_emime</td><td align="right">28036599</td>
+</tr>
+</table>
+<p>It is possible to specify multiple Index columns, in which case a new row will be generated for
+each unique combination of index values.</p>
+
+
+<h3 id="PercentColumn"><tt>PercentColumn</tt></h3>
+<p>
+It is possible to have percentage columns. The example below get the <tt>PercentColumn</tt> for the <tt>Column</tt> <tt>Time</tt>, and the name of the column is set to <tt>Percent Use</tt>.
+</p>
+<div class="code"><pre>&lt;tab:Table&gt;             
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Job Name&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;JobName&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;                   
+        &lt;tab:Column&gt;                            
+                &lt;tab:Name&gt;Time&lt;/tab:Name&gt;                               
+                &lt;tab:Property&gt;Wall&lt;/tab:Property&gt;                               
+        &lt;/tab:Column&gt;   
+        &lt;tab:PercentColumn&gt;                             
+                &lt;tab:Name&gt;Percent Use&lt;/tab:Name&gt;                                
+                &lt;tab:Column&gt;Time&lt;/tab:Column&gt;                           
+        &lt;/tab:PercentColumn&gt;            
+&lt;/tab:Table&gt;    
+
+</pre></div><p>
+The table above would look like:
+</p>
+<table cellpadding="4" cellspacing="2" border="1">
+<tr>
+<th>Job Name</th><th>Time</th><th>Percent Use</th>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">1971</td><td align="right">24.5%</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">1908</td><td align="right">23.7%</td>
+</tr>
+<tr>
+<td align="right">STDIN</td><td align="right">107</td><td align="right">1.3%</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">1997</td><td align="right">24.8%</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">2060</td><td align="right">25.6%</td>
+</tr>
+</table>
+<h3 id="TotalColumn"><tt>TotalColumn</tt></h3>
+<div class="code"><pre>&lt;tab:Table&gt;             
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Job Name&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;JobName&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;                   
+        &lt;tab:Column&gt;                            
+                &lt;tab:Name&gt;Time&lt;/tab:Name&gt;                               
+                &lt;tab:Property&gt;Wall&lt;/tab:Property&gt;                               
+        &lt;/tab:Column&gt;   
+        &lt;tab:TotalColumn&gt;                               
+                &lt;tab:Name&gt;Total&lt;/tab:Name&gt;                      
+                &lt;tab:Column&gt;Time&lt;/tab:Column&gt;                           
+        &lt;/tab:TotalColumn&gt;              
+&lt;/tab:Table&gt;            
+</pre></div><p>
+The table above would look like:
+</p>
+<table cellpadding="4" cellspacing="2" border="1">
+<tr>
+<th>Job Name</th><th>Time</th>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">1971</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">1908</td>
+</tr>
+<tr>
+<td align="right">STDIN</td><td align="right">107</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">1997</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">2060</td>
+</tr>
+<tr>
+<td align="right"></td><td align="right">8043</td>
+</tr>
+</table>
+<h3 id="MaxRows"><tt>MaxRows</tt></h3>
+<p>
+The number of records select can be limited by using the <tt>MaxRows</tt>. 
+</p>
+<div class="code"><pre>&lt;tab:Table&gt;             
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Job Name&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;JobName&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;           
+        &lt;tab:MaxRows&gt;2&lt;/tab:MaxRows&gt;            
+&lt;/tab:Table&gt;    
+</pre></div><p>
+The table above would look like:
+</p>
+<table cellpadding="4" cellspacing="2" border="1">
+<tr>
+<th>Job Name</th>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td>
+</tr>
+</table>
+<h3 id="SortBy"><tt>SortBy</tt></h3>
+<p>
+The table can be sorted by using the <tt>SortBy</tt> tag. The example below sort the rows first by <tt>User</tt> and then by <tt>Time</tt>, in reverse.
+</p>
+<div class="code"><pre>&lt;tab:Table&gt;             
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;Job Name&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;JobName&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;   
+        &lt;tab:Column&gt;
+                &lt;tab:Name&gt;User&lt;/tab:Name&gt;
+                &lt;tab:Property&gt;Person&lt;/tab:Property&gt;
+        &lt;/tab:Column&gt;                           
+        &lt;tab:Column&gt;                            
+                &lt;tab:Name&gt;Time&lt;/tab:Name&gt;                               
+                &lt;tab:Property&gt;Wall&lt;/tab:Property&gt;                               
+        &lt;/tab:Column&gt;
+        &lt;tab:SortBy&gt;
+                &lt;tab:Columns&gt;User,Time&lt;/tab:Columns&gt;
+                &lt;tab:Reverse&gt;true&lt;/tab:Reverse&gt;
+        &lt;/tab:SortBy&gt;                           
+&lt;/tab:Table&gt;    
+                
+</pre></div><p>
+The table above would look like:
+</p>
+<table cellpadding="4" cellspacing="2" border="1">
+<tr>
+<th>Job Name</th><th>User</th><th>Time</th>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">jyamagis</td><td align="right">2118</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">jyamagis</td><td align="right">2107</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">jyamagis</td><td align="right">2090</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">jyamagis</td><td align="right">2060</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">jyamagis</td><td align="right">1997</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">jyamagis</td><td align="right">1971</td>
+</tr>
+<tr>
+<td align="right">wsjcam0-recmllr1-3</td><td align="right">jyamagis</td><td align="right">1908</td>
+</tr>
+<tr>
+<td align="right">STDIN</td><td align="right">prdatlas014</td><td align="right">110</td>
+</tr>
+<tr>
+<td align="right">STDIN</td><td align="right">prdatlas014</td><td align="right">109</td>
+</tr>
+<tr>
+<td align="right">STDIN</td><td align="right">prdatlas014</td><td align="right">107</td>
+</tr>
+</table>
+<h3 id="Formatting">Formatting</h3>
+<p>
+The order in which the columns and rows appear is that in which they are specified. Generally this is sufficient, but there are circumstances in which this might be limiting. For example to output a <tt>PercentColumn</tt> before the <tt>Column</tt> it's a percent of. To do this there are special formatting tags which can be used. 
+</p>
+<p>
+They are defined as follows:
+</p>
+<ul><li><tt>SetColumnAt</tt> - Put this column at position 4.
+<div class="code"><pre>        &lt;tab:SetColumnAt&gt;
+                &lt;tab:Column&gt;Percent Residency&lt;/tab:Column&gt;
+                &lt;tab:At&gt;4&lt;/tab:At&gt;
+        &lt;/tab:SetColumnAt&gt;
+</pre></div></li></ul><ul><li><tt>SetColumnAfter</tt> - Put this column after the column called <tt>Percent Time</tt>.
+<div class="code"><pre>        &lt;tab:SetColumnAfter&gt;
+                &lt;tab:Column&gt;Percent Residency&lt;/tab:Column&gt;
+                &lt;tab:After&gt;Percent Time&lt;/tab:After&gt;
+        &lt;/tab:SetColumnAfter&gt;
+</pre></div></li><li><tt>SetColumnLast</tt> - Make this column the last one.
+<div class="code"><pre>        &lt;tab:SetColumnLast&gt;
+                &lt;tab:Column&gt;Job ID&lt;/tab:Column&gt;
+        &lt;/tab:SetColumnLast&gt;
+</pre></div></li><li><tt>SetRowAt</tt> - Put this row at position 5.
+<pre class="wiki">	&lt;tab:SetRowAt&gt;
+		&lt;tab:Row&gt;SubTotal Time&lt;/tab:Row&gt;
+		&lt;tab:At&gt;5&lt;/tab:At&gt;
+	&lt;/tab:SetRowAt&gt;
+</pre></li></ul><ul><li><tt>SetRowAfter</tt> - Put this row after the row called <tt>SubTotal Time</tt>.
+<div class="code"><pre>        &lt;tab:SetRowAfter&gt;
+                &lt;tab:Row&gt;SubTotal Residency&lt;/tab:Row&gt;
+                &lt;tab:After&gt;SubTotal Time&lt;/tab:After&gt;
+        &lt;/tab:SetRowAfter&gt;
+</pre></div></li></ul><ul><li><tt>SetRowLast</tt> - Make this row the last one.
+<div class="code"><pre>        &lt;tab:SetRowLast&gt;
+                &lt;tab:Row&gt;Total&lt;/tab:Row&gt;
+        &lt;/tab:SetRowLast&gt;
+</pre></div></li></ul>
+<p>In most cases a default format for columns will be generated based on the type of
+the property expression being generated. In most cases these default formats will be adequate but it is also possible to fine-tune the formatting.</p>
+<ul>
+<li><tt>NumberFormat</tt> - control the formatting of a numeric column.
+<pre>
+  &lt;tab:NumberFormat&gt;
+    &lt;tab:Column&gt;Numbers&lt;/tab:Column&gt;
+    &lt;tab:MaximumIntegerDigits&gt;3&lt;/tab:MaximumIntegerDigits&gt;
+    &lt;tab:MinimumIntegerDigits&gt;3&lt;/tab:MinimumIntegerDigits&gt;
+    &lt;tab:MaximumFractionDigits&gt;3&lt;/tab:MaximumFractionDigits&gt;
+    &lt;tab:MinimumFractionDigits&gt;3&lt;/tab:MinimumFractionDigits&gt;
+  &lt;/tab:NumberFormat&gt;      
+</pre>
+</li>
+<li><tt>PercentFormat</tt> - format a numeric column as a percentage.
+<pre>
+  &lt;tab:PercentFormat&gt;
+    &lt;tab:Column&gt;Numbers&lt;/tab:Column&gt;
+    &lt;tab:MaximumFractionDigits&gt;3&lt;/tab:MaximumFractionDigits&gt;
+    &lt;tab:MinimumFractionDigits&gt;3&lt;/tab:MinimumFractionDigits&gt;
+  &lt;/tab:PercentFormat&gt;      
+</pre>
+</li>
+<li><tt>DateFormat</tt> - format a date column. Formats are defined as the Java DateFormat class.
+<pre>
+  &lt;tab:DateFormat&gt;
+    &lt;tab:Column&gt;Numbers&lt;/tab:Column&gt;
+    &lt;tab:Format&gt;YYYY-MM-dd&lt;/tab:Format&gt;
+  &lt;/tab:DateFormat&gt;      
+</pre>
+</li>
+<li><tt>Format</tt> - specify a custom formatter written in java.
+<pre>
+  &lt;tab:Format&gt;
+    &lt;tab:Column&gt;Things&lt;/tab:Column&gt;
+    &lt;tab:Type&gt;ThingFormatter&lt;/tab:Type&gt;
+  &lt;/tab:Format&gt;      
+</pre>
+</li>
+</ul>
+<p>New columns can be generated as combinations of existing columns</p>
+
+<ul>
+<li><tt>CombineColumn</tt> - combine two columns numerically.
+<pre>
+  &lt;tab:CombineColumn&gt;
+    &lt;tab:Dest&gt;Difference&lt;/tab:Dest&gt;
+    &lt;tab:Arg1&gt;Expected&lt;/tab:Arg1&gt;
+    &lt;tab:Arg2&gt;Actual&lt;/tab:Arg2&gt;
+    &lt;tab:Operator&gt;SUB&lt;/tab:Operator&gt;
+  &lt;/tab:CombineColumn&gt;  
+</pre>
+</li>
+<li><tt>Remove</tt> - Remove a column (for example if the column is needed for a combine operation but should not be displayed.)
+<pre>
+  &lt;tab:Remove&gt;
+    &lt;tab:Column&gt;Temp&lt;/tab:Column&gt;
+  &lt;/tab:Remove&gt;  
+</pre>
+</li>
+</ul>
+<p>
+All the processing and formatting tags for <tt>Table</tt> also apply to <tt>SummaryTable</tt> with the exception of <tt>MaxRows</tt>.
+</p>
+<h3 id="CompoundTables">Compound Tables</h3>
+<p>
+The <tt>Filters</tt> and <tt>Periods</tt> are applied at the <tt>Table</tt> level, hence you can not have a table where one column shows the Wall for January and the next for February and so on. This type of functionality can be achieved through <tt>CompoundTables</tt>. A <tt>CompoundTable</tt> is simply the aggregation of two or more tables of the same type. The example below shows a <tt>CompoundTable</tt> of three <tt>SummaryTables</tt>.
+</p>
+<div class="code"><pre>&lt;tab:CompoundTable&gt;
+    
+        &lt;tab:SummaryTable&gt;
+                &lt;per:Period&gt;
+                        &lt;per:StartTime&gt;01-01-2009&lt;/per:StartTime&gt;
+                        &lt;per:EndTime&gt;01-02-2009&lt;/per:EndTime&gt;
+                &lt;/per:Period&gt;
+                &lt;tab:Index&gt;                             
+                        &lt;tab:Property&gt;Project&lt;/tab:Property&gt;
+                &lt;/tab:Index&gt;            
+                &lt;tab:Column&gt;                            
+                        &lt;tab:Name&gt;Project&lt;/tab:Name&gt;            
+                        &lt;tab:Property&gt;Project&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;   
+                &lt;tab:SumColumn&gt;                         
+                        &lt;tab:Name&gt;January&lt;/tab:Name&gt;            
+                        &lt;tab:Property&gt;Wall&lt;/tab:Property&gt;
+                &lt;/tab:SumColumn&gt;                        
+        &lt;/tab:SummaryTable&gt;     
+
+        &lt;tab:SummaryTable&gt;
+                &lt;per:Period&gt;
+                        &lt;per:StartTime&gt;01-02-2009&lt;/per:StartTime&gt;
+                        &lt;per:EndTime&gt;01-03-2009&lt;/per:EndTime&gt;
+                &lt;/per:Period&gt;
+                &lt;tab:Index&gt;                             
+                        &lt;tab:Property&gt;Project&lt;/tab:Property&gt;
+                &lt;/tab:Index&gt;
+                &lt;tab:Column&gt;                            
+                        &lt;tab:Name&gt;Project&lt;/tab:Name&gt;            
+                        &lt;tab:Property&gt;Project&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;                   
+                &lt;tab:SumColumn&gt;                         
+                        &lt;tab:Name&gt;February&lt;/tab:Name&gt;           
+                        &lt;tab:Property&gt;Wall&lt;/tab:Property&gt;
+                &lt;/tab:SumColumn&gt;                
+        &lt;/tab:SummaryTable&gt;             
+
+        &lt;tab:SummaryTable&gt;
+                &lt;per:Period&gt;
+                        &lt;per:StartTime&gt;01-03-2009&lt;/per:StartTime&gt;
+                        &lt;per:EndTime&gt;01-04-2009&lt;/per:EndTime&gt;
+                &lt;/per:Period&gt;
+                &lt;tab:Index&gt;                             
+                        &lt;tab:Property&gt;Project&lt;/tab:Property&gt;
+                &lt;/tab:Index&gt;    
+                &lt;tab:Column&gt;                            
+                        &lt;tab:Name&gt;Project&lt;/tab:Name&gt;            
+                        &lt;tab:Property&gt;Project&lt;/tab:Property&gt;
+                &lt;/tab:Column&gt;           
+                &lt;tab:SumColumn&gt;                         
+                        &lt;tab:Name&gt;March&lt;/tab:Name&gt;              
+                        &lt;tab:Property&gt;Wall&lt;/tab:Property&gt;
+                &lt;/tab:SumColumn&gt;                
+        &lt;/tab:SummaryTable&gt;     
+
+&lt;/tab:CompoundTable&gt;
+</pre></div><p>
+The table above would look like:
+</p>
+<table cellpadding="4" cellspacing="2" border="1">
+<tr>
+<th>Project</th><th>January</th><th>February</th><th>March</th>
+</tr>
+<tr>
+<td align="right">see_imp_costa_02</td><td align="right">103221</td><td align="right"></td><td align="right"></td>
+</tr>
+<tr>
+<td align="right">ngsadmin</td><td align="right">3022</td><td align="right">9497</td><td align="right">4195</td>
+</tr>
+<tr>
+<td align="right">inf_hcrc_cstr_ephones</td><td align="right">2048193</td><td align="right">2584037</td><td align="right">18432107</td>
+</tr>
+<tr>
+<td align="right">biology_ieb_belswort_01</td><td align="right">1983717</td><td align="right">1370863</td><td align="right">28093</td>
+</tr>
+<tr>
+<td align="right">inf_hcrc_cstr_emime</td><td align="right">28036599</td><td align="right">9242315</td><td align="right">15060853</td>
+</tr>
+</table>
+
+<p>It is possible to use the parameter <b>For</b> and <b>Repeat</b> elements to generate a set of tables that are then combined into a single compound table.<br>Take care to ensure the index definintions for the sub-tables are compatible or different rows will be generated by each sub-table.</p>        
+</div>
+</div>
+</div>
+</div>  
+</body>
+</html>

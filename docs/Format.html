@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<link href='docs.css' rel='stylesheet' type='text/css' media='screen' />
+</head>
+<body>
+<div id='wrapper'>
+  <div id='wrapper2'>
+    <div id='header'>
+      <div id='logo'>
+      <h1>FORMAT</h1>
+      </div>
+      </div>
+      <div id="page">
+      <div id="content">  
+          <h2 id="FormattedSections">Formatted Sections</h2>
+<p>
+Though in most cases per-record information can be presented using 
+<a href='Tables.html' >Tables</a> you can use
+the <strong>Format</strong> element to fine tune the way records are presented.
+</p>
+<pre class="wiki">&lt;?xml version="1.0"?&gt;
+&lt;rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:fmt="http://safe.epcc.ed.ac.uk/format"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom"&gt;
+  
+&lt;per:Period&gt;
+	&lt;per:StartTime&gt;29-09-2008&lt;/per:StartTime&gt;
+	&lt;per:EndTime&gt;29-10-2008&lt;/per:EndTime&gt;
+&lt;/per:Period&gt;
+	
+&lt;Title&gt;Test Format&lt;/Title&gt;
+
+&lt;Heading&gt;Format Section&lt;/Heading&gt;
+
+&lt;fmt:Format&gt;
+	&lt;Stuff&gt;Some ${JobID} stuff&lt;/Stuff&gt;&lt;Queue&gt;${Queue}&lt;/Queue&gt; &lt;Start&gt;${StartedTimestamp}&lt;/Start&gt;
+&lt;/fmt:Format&gt;
+
+&lt;fmt:Format&gt;
+	&lt;fmt:IfDef required="JobID"&gt;&lt;Required&gt;Some ${JobID} stuff&lt;/Required&gt;&lt;/fmt:IfDef&gt;&lt;Queue&gt;${Queue}&lt;/Queue&gt; &lt;Start&gt;${StartedTimestamp}&lt;/Start&gt;
+&lt;/fmt:Format&gt;
+
+&lt;/rep:Report&gt;
+</pre><p>
+The contents of a Format section act as a template which is duplicated for each record selected by the current Filter and Period with variable
+names in the template replaced by the value of the corresponding property.
+</p>
+<p>
+Within a Format section an <b>IfDef</b> element can be used to disable sections of the template if the corresponding property is not defined for the record being expanded.
+</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

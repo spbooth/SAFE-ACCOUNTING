@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Access Control</title>
+<link href='docs.css' rel='stylesheet' type='text/css' media='screen' />
+</head>
+<body>
+<div id='wrapper'>
+  <div id='wrapper2'>
+    <div id='header'>
+      <div id='logo'>
+      <h1>ACCOUNTING</h1>
+      </div>
+      </div>
+<h1>Access Control</h1>
+Access control elements control the overall visibility of a report 
+and can be used to enable or disable certain parts of the report 
+based on the permissions of the current user.
+Access control elements come from the <i>restrict</i> XML namespace.
+Permissions are defined using the <i>role</i> and <i>relationship</i> system from the <b>WEBAPP</b>
+library.
+<h2>Report visibility</h2>
+These elements control who is allowed to run a report. Report indexes should only show those reports
+where the current user is allowed to run a report. By default reports can be run by any user unless the <b>report.default_allow</b> feature is disabled.
+The report visibility elements are as follows:
+<ul>
+<li>Role based access:
+   <ul>
+   <li><b>RequireRole</b></li>
+   <li><b>SufficientRole</b></li>
+   </ul>
+   The contents of the element is the name of the role being tested. To access a report the user must either have all of the required roles or one of the sufficient roles.
+</li>
+<li>Relationship based access uses the same  elements but with the addition of a <b>type</b> attribute.
+
+The type attribute value is used to construct a <b>DataObjectFactory</b> and instead of testing a role the element tests the current user has the named <i>relationship</i> (specified in the same way as the <b>role</b>)
+with at least one of the objects from the factory.
+</li>
+</ul>
+
+<h2>Section visibility</h2>
+Different areas of the report can also be turned on and off based on roles and relationships. For example:<br><br><br>
+<pre>
+&lt;rep:Report 
+  xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+   xsi:schemaLocation=&quot;http://safe.epcc.ed.ac.uk/report ../schema/report.xsd&quot;
+  xmlns:rep=&quot;http://safe.epcc.ed.ac.uk/report&quot;
+  xmlns:acc=&quot;http://safe.epcc.ed.ac.uk/restrict&quot;&gt;
+  
+&lt;acc:RestrictedSection&gt;<br>&lt;acc:Roles&gt;
+  &lt;acc:Required&gt;<i>role-name</i>&lt;/acc:Required&gt;
+  &lt;acc:Sufficient&gt;<i>role-name</i>&lt;/acc:Sufficient&gt; 
+                 <b>...</b><br>&lt;/acc:Roles&gt;<br>&lt;acc:Content&gt;<br><br>    <b>Content if requirements met</b>
+<br>&lt;/acc:Content&gt;<br>&lt;acc:Fallback&gt;<br><br>    <b>Content if requirements not met</b><br><br>&lt;/acc:Fallback&gt;<br>&lt;/acc:RestrictedSection&gt; <br><br>&lt;/rep:Report&gt;<br>
+</pre>
+The <b>Required</b> and <b>Sufficient</b> elements have the same format and meaning as the <b>RequiredRole</b> and<b>SufficientRole</b> elements but control access to
+the contents of the <b>RestrictedSection</b>. If the conditions are met the <b>Content</b> element is expanded in the report.
+If the conditions are not met the optional <b>Fallback</b> element is expanded (if it exists).
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Parameters</title>
+<link href='docs.css' rel='stylesheet' type='text/css' media='screen' />
+</head>
+<body>
+<div id='wrapper'>
+  <div id='wrapper2'>
+    <div id='header'>
+      <div id='logo'>
+      <h1>Parameters</h1>
+      </div>
+      </div>
+           <div id="page">
+      <div id="content"> 
+<h2>Parameters</h2>
+ Report Templates can be parameterised. For example, a report which shows the detail of a particular project would be very useful, especially if you could select the project from a list of possible projects. 
+ Report <b>Parameter</b> elements can be used to solve this problem.
+The 'par' namespace needs to be defined in the Report.
+
+<pre>
+&lt;rep:Report 
+  xmlns:rep=&quot;http://safe.epcc.ed.ac.uk/report&quot;
+   xmlns:par=&quot;http://safe.epcc.ed.ac.uk/parameter&quot;&gt;
+</pre>
+
+Explanatory text to be shown with the generated parameter form can be specified using a Text tag (from the parameter namespace).
+<pre>
+  &lt;par:Text&gt;This form allows you to select the project.&lt;/par:Text&gt;
+</pre>
+Parameters are defined at the top of a report. Below show how a Project parameter is defined using the <b>ParameterDef</b> tag.
+<pre>
+&lt;par:ParameterDef name=&quot;MyProject&quot; type=&quot;Project&quot; value=&quot;1&quot;/&gt;
+</pre>
+Finally parameters can be substituted into the report using the <b>Parameter</b> or <b>ParameterRef</b> tags. 
+Expansion of <b>Parameter</b> elements is performed in the first report processing stage so that parameter values can be used to control later processing steps.
+<pre>
+&lt;par:Parameter name=&quot;MyProject&quot;/&gt;
+</pre>
+The following report:
+<pre>
+&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;rep:Report 
+  xmlns:rep=&quot;http://safe.epcc.ed.ac.uk/report&quot;
+  xmlns:par=&quot;http://safe.epcc.ed.ac.uk/parameter&quot;&gt;
+
+&lt;par:ParameterDef name=&quot;MyProject&quot; type=&quot;Project&quot; value=&quot;1&quot;/&gt;
+
+&lt;Text&gt;My Project is &lt;par:Parameter name=&quot;MyProject&quot;/&gt;.&lt;/Text&gt;
+
+&lt;/rep:Report&gt;
+</pre>
+Would generate a parameter form allowing you to select a project. When run the name of the project would be substituted into the report text. 
+A <b>ParameterDef</b> element adds an input to the form.  
+The <b>type</b> parameter defines what kind of input should be added to the form. There are a number of build-in types. If the type name does not map any of these standard names then the code will attempt to use the name to dynamically construct a class that can generate an input. 
+
+<h3>Basic types</h3>
+
+The built in  types include:
+<ul>
+<li>    Boolean</li>
+<li>    String</li>
+<li>    LongString</li>
+<li>    Integer</li>
+<li>    Long</li>
+<li>    Float</li>
+<li>    Double</li>
+<li>    Date</li>
+<li>    TimeStamp</li> 
+</ul>
+Here are some examples below:
+<pre>
+&lt;par:ParameterDef name=&quot;MyBoolean&quot; type=&quot;Boolean&quot;/&gt;
+&lt;par:ParameterDef name=&quot;MyString&quot; type=&quot;String&quot;/&gt;
+&lt;par:ParameterDef name=&quot;MyInteger&quot; type=&quot;Integer&quot;/&gt;  
+&lt;par:ParameterDef name=&quot;MyLong&quot; type=&quot;Long&quot;/&gt;  
+&lt;par:ParameterDef name=&quot;MyFloat&quot; type=&quot;Float&quot;/&gt;
+&lt;par:ParameterDef name=&quot;MyDouble&quot; type=&quot;Double&quot;/&gt;
+&lt;par:ParameterDef name=&quot;MyDate&quot; type=&quot;Date&quot;/&gt;
+&lt;par:ParameterDef name=&quot;MyTimeStamp&quot; type=&quot;TimeStamp&quot;/&gt;
+</pre>
+
+There's a List type which allows you to select a string from a list of options. Here is an example:
+<pre>
+&lt;par:ParameterDef name=&quot;Fruit&quot; type=&quot;List&quot; value=&quot;bar&quot; &gt;
+        &lt;par:Choice&gt;Apple&lt;/par:Choice&gt;  
+        &lt;par:Choice&gt;Bananna&lt;/par:Choice&gt;
+        &lt;par:Choice&gt;Orange&lt;/par:Choice&gt;
+&lt;/par:ParameterDef&gt;
+</pre>
+<h3>Dynamically generated types</h3>
+
+The previous example, <b>Project</b> is the name of a <b>DataObjectFactory</b> that is the handler class for a database table. All <b>DataObjectFactory</b> classes implement the <b>Selector</b> interface so they can be used to generate form inputs where the choice of values is taken from the underlying table.  <br>
+<br>When using a <b>DataObjectFactory</b> so specify an input type you can also specify an optional <b>role</b> attribute on the 
+<b>Parameter</b> element. This will restrict the possible selections to entries where the current user has the specified <i>relationship</i> with the target entry.
+
+<br>
+<pre>
+&lt;par:ParameterDef name=&quot;Project&quot; type=&quot;Project&quot; role=&quot;manager&quot;/&gt;
+</pre>
+
+<br>Any user who does not manage any projects will be unable to fill-in the parameter form so this is usually combined with a
+corresponding <a href="AccessControl.html"><b>RequireRole</b></a> element. 
+<h3>Filtered inputs</h3>
+
+If the <b>DataObjectFactory</b> implements <b>ExpressionTargetFactory</b> the set of possible results can also be specified by
+nesting a <a href="Filter.html"><b>Filter</b></a> element inside the <b>Parameter</b> element.
+You can specify both a <b>role</b> attribute and a <b>Filter</b> element.
+
+<h3>Period inputs</h3>
+Most reports target a specific reporting period so
+a special set of input types exist for selecting the time periods of reports
+<ul>
+<li> <b>Period</b> is a simple period between two dates</li>
+
+<li> <b>RegularSplitPeriod</b> a period split into a series of regular intervals</li>
+
+<li> <b>CalendarPeriod</b>a period split on units of the calendar (day/week/month etc.)</li>
+
+<li> <b>DayCalendarPeriod</b>A CalendarPeriod only showing full days</li>
+
+<li> <b>MonthCalendarPeriod</b> A CalendarPeriod only showing full months.</li>
+</ul>
+<h3>Labels</h3>
+
+By default the label for a parameter in it's name, but a name can't have spaces in it so may look ugly in the parameter form. The parameter label this can be overridden using the label attribute in <b>ParameterDef</b>. In this example the label is set to <i>&quot;Number of fruit&quot;</i> instead of <i>FruitCount</i>:
+<pre>
+&lt;par:ParameterDef label=&quot;Number of fruit&quot; name=&quot;FruitCount&quot; type=&quot;Integer&quot; /&gt;
+</pre>
+
+
+Default values can be set for a parameter. For example, the
+<pre>
+&lt;par:ParameterDef Label=&quot;Start Date&quot; name=&quot;StartDate&quot; type=&quot;Date&quot; value=&quot;2017-01-01&quot; /&gt;
+</pre>
+
+Because it is quite common to want default date values relative to the current date there is also a special syntax for specifying default dates relative to the current time.
+<ul>
+<li> <b>Now</b>[+-]<i>number</i>[dmy]</li>
+</ul>
+which translates to the current time plus or minus the specified number of days,weeks,months,years. The time is also rounded depending on the specified unit so
+<ul>
+<li> <b>Now+0y</b> is midnight at the start of the current year</li>
+<li> <b>Now-1m</b> is midnight at the start of the previous month </li>
+</ul>
+<h3>Optional parameters</h3>
+
+By default all parameters are required for a form, but a parameter can be made optional by setting the <b>ParameterDef</b> attribute <i>optional</i> to true. 
+Here's an example:
+<pre>
+&lt;par:ParameterDef name=&quot;PlanB&quot; type=&quot;String&quot; optional=&quot;true&quot; /&gt;
+</pre>
+Length
+
+The size of the text area generated for a String parameter is controlled by the length attribute. The example below shows several String parameters defined with differing lengths:
+<pre>
+&lt;par:ParameterDef name=&quot;Little&quot; type=&quot;String&quot; length=&quot;8&quot;/&gt;
+&lt;par:ParameterDef name=&quot;Medium&quot; type=&quot;String&quot; length=&quot;256&quot;/&gt;
+&lt;par:ParameterDef name=&quot;Big&quot; type=&quot;String&quot; length=&quot;1024&quot;/&gt;
+</pre>
+
+<h3>ReadOnly Paremeters</h3>
+
+In some cases a read-only parameter may be required. This can be accomplished by using a <i>ReadOnly</i> parameter type. Below is an example:
+<pre>
+&lt;par:ParameterDef name=&quot;Username&quot; type=&quot;ReadOnly&quot; value=&quot;bob&quot; /&gt;
+</pre>
+
+
+<h2>Formatting Parameters</h2>
+
+The way parameter elements are expanded into the report can be fine tuned by adding a format parameter to Parameter element.
+<ul>
+<li> <b>Date</b> forces the value to be formatted as a date/time.</li>
+<li> <b>Id</b> formats a classifier object as its integer Id. This is useful when parameters are used in filters.</li>
+<li> <b>Name</b> formats a classifier object as its default Name</li>
+<li> <b>expression:<i>expr</i></b> evaluates the expression <i>expr</i> on the target object.</li>
+<li> <b>Period</b> formats a period object as the XML needed to configure the reporting period of the report.</li>
+<li> <b>ConcisePeriod</b> formats a period object as concise human readable text.</li>
+</ul>
+You can provide a custom formatting object (that implements <b>uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter</b>) by setting the <b>class.Formatter.<i>format-name</i></b> configuration property.
+
+If a parameter is going to be used to configure a different reporting element rather than provide user visible output directly then this requires the format of the Parameter element to match the parse format of the configuration element. In these cases it is frequently possible to use a <b>ParameterRef</b> element instead of Parameter and omit the formatting.
+Instead of being expanded <b>ParamterRef</b> elements are read directly by subsequent processing steps and the result of the parameter form is retrieved directly. 
+
+<h2>Complex Formatting</h2>
+A parameter object that supports expressions can be formatted using a template region e.g.
+<pre>
+&lt;par:FormatParameter name=&quot;project&quot;&gt;
+&lt;rep:table&gt;
+&lt;rep:tr&gt;&lt;rep:th&gt;Project Start&lt;/rep:th&gt;&lt;rep:td&gt;$[Date]{StartedTimestamp}&lt;/rep:td&gt;&lt;/rep:tr&gt;
+&lt;rep:tr&gt;&lt;rep:th&gt;Project End&lt;/rep:th&gt;&lt;rep:td&gt;$[Date]{CompletedTimestamp}&lt;/rep:td&gt;&lt;/rep:tr&gt;
+&lt;rep:tr&gt;&lt;rep:th&gt;Project Manager&lt;/rep:th&gt;&lt;rep:td&gt;${@NAME(PersonID)}&lt;/rep:td&gt;&lt;/rep:tr&gt;
+&lt;rep:tr&gt;&lt;rep:th&gt;Project Executive&lt;/rep:th&gt;&lt;rep:td&gt;${@NAME(ProjectPI)}&lt;/rep:td&gt;&lt;/rep:tr&gt;
+&lt;rep:tr&gt;&lt;rep:th&gt;Funding Body&lt;/rep:th&gt;&lt;rep:td&gt;${@NAME(FundingBodyID)}&lt;/rep:td&gt;&lt;/rep:tr&gt;
+&lt;rep:tr&gt;&lt;rep:th&gt;Funding details&lt;/rep:th&gt;&lt;rep:td&gt;${FundingDetails}&lt;/rep:td&gt;&lt;/rep:tr&gt;
+&lt;rep:tr&gt;&lt;rep:th&gt;Grant Code(s)&lt;/rep:th&gt;&lt;rep:td&gt;${GrantCode}&lt;/rep:td&gt;&lt;/rep:tr&gt;
+&lt;rep:tr&gt;&lt;rep:th&gt;Review Date&lt;/rep:th&gt;&lt;rep:td&gt;$[Date]{ReviewDate}&lt;/rep:td&gt;&lt;/rep:tr&gt;
+&lt;/rep:table&gt;
+&lt;/par:FormatParameter&gt; 
+</pre>
+Within the template region multiple expressions (with optional formats) can be evaluated on the parameter object.
+<h3>Repeating parameters</h3>
+The parameter expansion phase can be used to perform loops where a section of the original document is expanded multiple times.
+In each iteration a loop parameter takes different values. 
+For example you can select a set of objects from the database using a filter and loop over the set formatting each one.
+<pre>
+&lt;par:For var=&quot;project&quot; source=&quot;Project&quot;&gt;
+&lt;fil:EQ&gt;&lt;fil:Property&gt;Status&lt;/fil:Property&gt;&lt;fil:Value&gt;A&lt;/fil:Value&gt;&lt;/fil:EQ&gt;
+&lt;par:Content&gt;
+
+&lt;rep:Text&gt; Project &lt;par:Parameter name=&quot;project&quot;/&gt; %lt;/Text&gt;
+  
+&lt;/par:Content&gt;
+&lt;/par:For&gt;
+</pre>
+The source attribute defines the type of object to be selected. For each value selected by the filter the Content section is expanded setting the parameter named in var to the selected object. Note that repeated parameters generated in this way cannot be retrieved using a ParameterRef. 
+<p>
+It is also possible to define a Splitter class to split one of the original form parameter into a set of sub-values. This uses a plug-in splitter class. One of the most common uses of this syntax generate sub-periods from the results of a period-input. e.g.
+<pre>
+&lt;par:Repeat name=&quot;PeriodParameter&quot; var=&quot;SubPeriod&quot; split=&quot;Period&quot;&gt;
+Sub-Period is &lt;par:Parameter name=&quot;SubPeriod&quot; format=&quot;ConcisePeriod&quot;/&gt;
+&lt;/par:Repeat&gt;
+</pre>
+
+New splitter classes can be defined by setting the <b>class.Splitter.<i>name</i></b> configuration parameter. 
+<h2>Conditional expansion</h2>
+Sometimes it is necessary to enable or disable certain sections of a report
+depending on the value of form parameters.
+<p>
+The simplest operation is to test if an optional parameter has been set or not.
+
+<pre>
+&lt;par:IfSet name=&quot;param-name&quot;&gt;<br>&lt;par:Content&gt;<br>    &lt;rep:Text&gt;Parameter was &lt;par:Parameter name=&quot;param-name&quot;/&gt;&lt;/rep:Text&gt;<br>&lt;/par:Content&gt;<br>&lt;par:Fallback&gt;<br>    &lt;rep:Text&gt; No parameter was set.&lt;/rep:Text&gt;<br>&lt;/par:Fallback&gt;<br>&lt;/par:IfSet&gt;</pre>
+
+The parameter is considered un-set if it is not defined, is a boolean false value or a zero length string.
+<p>
+It is also possible to enable or disable content based on the expanded value of a parameter:
+
+<pre>
+&lt;par:Optional&gt;<br>&lt;par:Value name=&quot;param-name&quot;/&gt;<br>&lt;par:Target&gt;expected content&lt;/par:Target&gt;<br>&lt;par:Content&gt;<br>    &lt;rep:Text&gt; We saw the expected content&lt;/rep:Text&gt;<br>&lt;/par:Content&gt;<br>&lt;/par:Optional&gt;
+</pre>
+The <b>Value</b> element takes the same possible attributes as the <b>Parameter</b> element. If when expanded in the same way as the corresponding <b>Parameter</b> element it generates the contents of the <b>Target</b> element the <b>Content</b> element will be expanded in
+future processing stages. Otherwise it will be omitted.
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

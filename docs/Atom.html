@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Atoms</title>
+<link href='docs.css' rel='stylesheet' type='text/css' media='screen' />
+</head>
+<body>
+<div id='wrapper'>
+  <div id='wrapper2'>
+    <div id='header'>
+      <div id='logo'>
+      <h1>ATOMS</h1>
+      </div>
+      </div>
+           <div id="page">
+      <div id="content"> 
+         <h2 id="Atoms">Atoms</h2>
+<p>
+<tt>Atoms</tt> can be used to add information from a set of selected records into the report text. To incorporate <tt>Atoms</tt> into a report the <tt>ato</tt> namespace is defined in the Report. 
+</p>
+<div class="code"><pre>&lt;rep:Report 
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom"&gt;
+</pre></div><h3 id="Count">Count</h3>
+<p>
+The number of selected record can be output using the <tt>Count</tt> tag.
+</p>
+<div class="code"><pre>
+The user ran &lt;ato:Count/&gt; jobs.
+
+</pre></div>
+<h3 id="Sum">Sum</h3>
+<p>
+The sum of a numeric property of the selected records can be output using the <tt>Sum</tt> tag.
+</p>
+<div class="code"><pre>
+The user ran used &lt;ato:Sum&gt;Wall&lt;/ato:Sum&gt; seconds.
+
+</pre></div>
+<h3 id="Average">Average</h3>
+<p>
+The average of a numeric property of the selected records can be output using the <tt>Average</tt> tag.
+If both upper and lower time bounds have been specified in the filter
+this will be a time average of the quantity. Otherwise it will be a simple average over the matching records.
+
+</p>
+<div class="code"><pre>
+The user ran an average of &lt;ato:Average&gt;Wall&lt;/ato:Average&gt; seconds. 
+</pre></div>
+<h3 id="Minimum">Minimum</h3>
+<p>
+The minimum value of a numeric or date property of the selected records can be output using the <tt>Minimum</tt> tag.
+</p>
+<div class="code"><pre>
+The user used a minimum of &lt;ato:Minimum&gt;Wall&lt;/ato:Minimum&gt; seconds. 
+</pre></div>
+<h3 id="Maximum">Maximum</h3>
+<p>
+The maximum value of a numeric or date property of the selected records can be output using the <tt>Maximum</tt> tag.
+</p>
+<div class="code"><pre>
+The user used a maximum of &lt;ato:Maximum&gt;Wall&lt;/ato:Maximum&gt; seconds. 
+</pre></div>
+
+<h3 id="Atom">Atom</h3>
+<p>The Atom element can be used to add filter elements.</p>
+<div class="code"><pre>
+Your project used a maximum of 
+&lt;ato:Atom&gt;
+&lt;fil:Filter&gt;  
+        &lt;fil:EQ&gt;
+                &lt;fil:Property&gt;Project&lt;/fil:Property&gt;
+                &lt;fil:Value&gt;myproject&lt;/fil:Value&gt;
+        &lt;/fil:EQ&gt;               
+&lt;/fil:Filter&gt;
+&lt;ato:Maximum&gt;Wall&lt;/ato:Maximum&gt; 
+&lt;/ato:Atom&gt;
+seconds. 
+</pre>
+<p> The AtomValue element behaves the same as Atom except that the default
+formatting of the result is suppressed. This makes it more suitable for generating values that are 
+used as arguments to the Table or Chart elements.  </p>
+
+</div>
+
+<p>Each bottom level atom element generates a single value using a separate query
+to the underlying data. These can be combined using the <em>Add</em>,
+	<em>Sub</em>,<em>Mul</em> and <em>Div</em> elements. Constant
+	values can be introduced into these expressions using the
+	<em>Number</em> element.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

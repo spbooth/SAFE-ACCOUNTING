@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Report Templates</title>
+<link href='docs.css' rel='stylesheet' type='text/css' media='screen' />
+</head>
+<body>
+<div id='wrapper'>
+  <div id='wrapper2'>
+    <div id='header'>
+      <div id='logo'>
+      <h1>ACCOUNTING</h1>
+      </div>
+      </div>
+<div id="page">
+      <div id="content">      
+<h1>Report Templates</h1>
+Reports are defined using XML documents called templates.
+<p>
+For example:
+<pre>
+<br>&lt;rep:Report 
+  xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+   xsi:schemaLocation=&quot;http://safe.epcc.ed.ac.uk/report ../schema/report.xsd&quot;
+  xmlns:rep=&quot;http://safe.epcc.ed.ac.uk/report&quot;&gt;
+	&lt;rep:Title&gt;Service Usage&lt;/rep:Title&gt;
+	&lt;rep:Section&gt;
+	&lt;rep:Title&gt;Section title&lt;/rep:Title&gt;
+	
+	&lt;rep:Text&gt;This is some text. &lt;/rep:Text&gt;
+	
+	&lt;rep:Comment&gt;This is a comment&lt;/rep:Comment&gt;
+	&lt;table&gt;<br>        &lt;tr&gt;&lt;th&gt;First col  &lt;/th&gt;&lt;th&gt;Second col  &lt;/th&gt;<br>        &lt;tr&gt;&lt;td&gt;Blah.      &lt;/td&gt;&lt;td&gt;Blah.       &lt;/td&gt;&lt;/tr&gt;<br>        &lt;/table&gt;<br>        &lt;rep:SubSection&gt;
+	&lt;rep:Title&gt;Subsection title&lt;/rep:Title&gt;
+		&lt;rep:Text&gt;This is some more text.&lt;/rep:Text&gt;	
+	 &lt;rep:Heading&gt;A sub-heading&lt;/rep:Heading&gt;<br>                &lt;rep:Text&gt;More text.&lt;/rep:Text&gt;<br>                &lt;Figure&gt;<br>                &lt;NoData&gt;<br>                &lt;Caption&gt;A figure with no data&lt;/Caption&gt;<br>                &lt;/Figure&gt;<br>&lt;/rep:SubSection&gt;
+&lt;/rep:Section&gt;
+	
+&lt;/rep:Report&gt;<br>
+</pre>
+The XML elements of the report specification language are divided into a number of different XML namespaces. The above example  demonstrates the elements from the <i>report</i> namespace that controls 
+the overall structure of a report.
+<p>
+
+To generate a report the template undergoes a series of transformations. 
+Each transformation phase is controlled by a different part of the template language (identified by namespace) and generates a new intermediate XML document that is used as the input of the next phase.
+Control elements from namespaces other than <i>report</i> are progressively removed during these transformations and replaced by generated content. This generated content can modify the control elements used in later stages. 
+The final transformation phase converts the XML document into the desired output format (e.g. html, pdf, csv etc.) 
+<p>
+A <b>Report</b> consists of a series of <b>Section</b>s which in turn may contain <b>SubSection</b>s. Reports, Sections and SubSections may start with an optional <b>Title</b> element and contain
+<b>Text</b> paragraphs, <b>table</b>s and <b>Figure</b>s. Tables follow the same syntax as a simple html table though in most cases tables will be generated dynamically. 
+Figure elements ususally contain dynamically generated charts. Unlike tables charts can only be added dynamically (with the exception of the <b>NoData</b> element that corresponds to an empty chart).
+<b>Comment</b> elements (and their contents) are removed from the report before the final formatting phase.
+<p>
+The report generation phases are as follows:
+<ol>
+<li> Initial phase:
+  <ul>
+    <li><a href="AccessControl.html">Access control</a></li>
+    <li><a href="Parameters.html">Parameter specification and expansion</a></li>
+  </ul>
+</li>
+<li> <a href="Macros.html">Macro expansion</a></li>
+<li> <a href="Atom.htm">Single values queries</a> These make use of the <a href="Filter.html">Filter</a> and <a href="Period.html">Period</a> elements.</li>
+<li> Main phase:
+   <ul>
+   <li> <a href="Tables.html">Dynamic tables</a></li>
+   <li> <a href="Charts.html">Dynamic charts</a></li>
+   <li> <a href="Format.html">Formatted objects</a></li>
+   </ul>
+   This phase also makes use of the <a href="Filter.html">Filter</a> and <a href="Period.html">Period</a> elements.
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<link href='docs.css' rel='stylesheet' type='text/css' media='screen' />
+</head>
+<body>
+<div id='wrapper'>
+  <div id='wrapper2'>
+    <div id='header'>
+      <div id='logo'>
+      <h1>CHARTS</h1>
+      </div>
+      </div>
+          <h2 id="Charts">Charts</h2>
+<p>
+One of the main features of the report is their ability to draw charts. To incorporate charts into a report the <tt>cha</tt> namespace is defined in the Report. 
+</p>
+<div class="code"><pre>&lt;rep:Report 
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"&gt;
+</pre></div><p>
+In the most simple terms a chart plots one of the numeric properties of a group of selected records. The record are selected using <a href='Filter.html' >Filters</a> and a <a href='Period.html' >Period</a>.
+</p>
+<h3 id="Plot">Plot</h3>
+<p>
+A chart showing the usage (Wall) of a machine could be done as shown.
+</p>
+<div class="code"><pre>&lt;cha:TimeChart&gt;
+        &lt;cha:Plot&gt;Residency&lt;/cha:Plot&gt;
+&lt;/cha:TimeChart&gt;
+</pre></div><p>
+This chart would be:
+</p>
+<p>
+<a href='ResidencyTimeChart.png' ><img src='ResidencyTimeChart.png'/></a>. 
+</p>
+<p>
+Any numeric property can be plotted, however it requires a corresponding PlotEntry to be defined.
+</p>
+<h3 id="Group">Group</h3>
+<p>
+In order to draw a chart which shows the <tt>Residency</tt> of each Project, you need to <tt>GroupBy</tt> Project. The following chart 
+</p>
+<div class="code"><pre>&lt;cha:TimeChart&gt;
+        &lt;cha:Plot&gt;Residency&lt;/cha:Plot&gt;
+        &lt;cha:GroupBy&gt;Project&lt;/cha:GroupBy&gt;
+&lt;/cha:TimeChart&gt;
+</pre></div><p>
+This chart would be:
+</p>
+<p>
+<a href='ResidencyByProjectTimeChart.png' ><img src='ResidencyByProjectTimeChart.png'/></a>. 
+</p>
+<p>
+Any property can be use in group a plot, numeric or string, however it requires a corresponding <a href='../../ReportingPlotAndGroupProperties/index.html#GroupEntry' >GroupEntry</a> to be defined.
+</p>
+<h3 id="Periods">Periods</h3>
+<p>
+The charts above show the Residency for a certain time period. In their case the default time period is used, which is from the start to the end of the current month. You can explicitly set the period by adding a period to you chart definition. For example:
+</p>
+<div class="code"><pre>&lt;cha:TimeChart&gt;
+        &lt;per:Period&gt;
+                &lt;per:StartTime&gt;01-01-2009&lt;/per:StartTime&gt;
+                &lt;per:EndTime&gt;01-03-2009&lt;/per:EndTime&gt;
+        &lt;/per:Period&gt;
+        &lt;cha:Plot&gt;Residency&lt;/cha:Plot&gt;
+        &lt;cha:GroupBy&gt;Project&lt;/cha:GroupBy&gt;
+&lt;/cha:TimeChart&gt;
+</pre></div><p>
+As you can see from the name all of these charts are <a href='../Plots/index.html#TimeChart' >TimeCharts</a>, and they expect a Period to be defined which they will operate over. Period can be defined anywhere in a reports, but the Period used for the chart is the closest one. For example, in the following report
+</p>
+<p>
+This chart would be:
+</p>
+<p>
+<a href='ResidencyTimeChartWithPeriod.png' ><img src='ResidencyTimeChartWithPeriod.png'/></a>. 
+</p>
+<p>
+In fact the period does not have to be defined within the plot. The example below the period used for the plot will be from 01-01-2009 to 01-01-2010 as defined for the whole report.
+</p>
+<div class="code"><pre>&lt;rep:Report 
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:cho="http://safe.epcc.ed.ac.uk/chart"&gt;
+
+        &lt;per:Period&gt;
+                &lt;per:StartTime&gt;01-01-2009&lt;/per:StartTime&gt;
+                &lt;per:EndTime&gt;01-01-2010&lt;/per:EndTime&gt;
+        &lt;/per:Period&gt;
+
+        &lt;cha:TimeChart&gt;
+                &lt;cha:Plot&gt;Residency&lt;/cha:Plot&gt;
+                &lt;cha:GroupBy&gt;Project&lt;/cha:GroupBy&gt;
+        &lt;/cha:TimeChart&gt;
+
+&lt;/rep:Report&gt;
+
+</pre></div><p>
+The plot will pick up the nearest period. In the example below there are two periods defined. The period used in the chart will the one from 01-01-2009 to 01-03-2009.
+</p>
+<div class="code"><pre>&lt;rep:Report 
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filters"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"&gt;
+
+        &lt;per:Period&gt;
+                &lt;per:StartTime&gt;01-01-2009&lt;/per:StartTime&gt;
+                &lt;per:EndTime&gt;01-01-2010&lt;/per:EndTime&gt;
+        &lt;/per:Period&gt;
+
+        &lt;cha:TimeChart&gt;
+                &lt;per:Period&gt;
+                        &lt;per:StartTime&gt;01-01-2009&lt;/per:StartTime&gt;
+                        &lt;per:EndTime&gt;01-03-2009&lt;/per:EndTime&gt;
+                &lt;/per:Period&gt;
+                &lt;cha:Plot&gt;Residency&lt;/cha:Plot&gt;
+                &lt;cha:GroupBy&gt;Project&lt;/cha:GroupBy&gt;
+        &lt;/cha:TimeChart&gt;
+
+&lt;/rep:Report&gt;
+
+</pre></div><h3 id="Filters">Filters</h3>
+<p>
+The charts above show the Residency over the whole data set. A filter could be defined to narrow the selection of usage records, say down to only one project, <tt>ecdf_baseline</tt> for example. The you may wish to group by <tt>User</tt>. This plot would look like: 
+</p>
+<div class="code"><pre>&lt;cha:TimeChart&gt;
+        &lt;fil:Filter&gt;
+                &lt;fil:EQ&gt;
+                        &lt;fil:Property&gt;Project&lt;/fil:Property&gt;
+                        &lt;fil:Value&gt;ecdfbaseline&lt;/fil:Value&gt;
+                &lt;fil:EQ&gt;
+        &lt;/fil:Filter&gt;
+        &lt;cha:Plot&gt;Residency&lt;/cha:Plot&gt;
+        &lt;cha:GroupBy&gt;User&lt;/cha:GroupBy&gt;
+&lt;/cha:TimeChart&gt;
+</pre></div><p>
+This chart would be:
+</p>
+<p>
+<a href='ResidencybyUserForBaselineTimeChart.png' ><img src='ResidencybyUserForBaselineTimeChart.png'/></a>. 
+</p>
+<p>
+As with Periods <tt>Filters</tt> do not have to be defined within the plot. All of the <tt>Filters</tt> defined within chart or one of its parent XML elements will be combined. So in the case of this chart:
+</p>
+<div class="code"><pre>&lt;rep:Report 
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filters"
+  xmlns:chart="http://safe.epcc.ed.ac.uk/chart"&gt;
+
+        &lt;fil:Filter&gt;
+                &lt;fil:EQ&gt;
+                        &lt;fil:Property&gt;Project&lt;/fil:Property&gt;
+                        &lt;fil:Value&gt;ecdfbaseline&lt;/fil:Value&gt;
+                &lt;fil:EQ&gt;
+        &lt;/fil:Filter&gt;
+
+        &lt;cha:TimeChart&gt;         
+                &lt;fil:Filter&gt;
+                        &lt;fil:EQ&gt;
+                                &lt;fil:Property&gt;User&lt;/fil:Property&gt;
+                                &lt;fil:Value&gt;paddymurphy&lt;/fil:Value&gt;
+                        &lt;/fil:EQ&gt;
+                &lt;/fil:Filter&gt;
+                &lt;cha:Plot&gt;Residency&lt;/cha:Plot&gt;
+        &lt;/cha:TimeChart&gt;
+
+&lt;/rep:Report&gt;
+</pre></div><p>
+The selection used will be only those of the <tt>User</tt> <tt>paddymurphy</tt> for the <tt>Project</tt> <tt>ecdf_baseline</tt>.
+</p>
+<h3 id="TimeChart">TimeChart</h3>
+<p>
+So far all the charts we've been looking at have been TimeCharts. There are other chart types supported: <a href='../Plots/index.html#PieTimeChart' >PieTimeChart</a> and <a href='../Plots/index.html#BarTimeChart' >BarTimeChart</a>, but first lets look at a feature unique to TimeCharts, namely <tt>NumberOfTimeBlocks</tt> which dictates how many time slices there are in the chart. By default it is 10, but this can be changed using the <tt>NumberOfTimeBlocks</tt> tag. For example:
+</p>
+<div class="code"><pre>&lt;cha:TimeChart&gt;
+        &lt;cha:Plot&gt;Residency&lt;/cha:Plot&gt;
+        &lt;cha:NumberOfTimeBlocks&gt;20&lt;/cha:NumberOfTimeBlocks&gt;
+&lt;/cha:TimeChart&gt;
+</pre></div><p>
+would result in the following chart:
+</p>
+<p>
+<a href='ResidencyTimeChartWithTwentyTimeBlocks.png' ><img src='ResidencyTimeChartWithTwentyTimeBlocks.png'/></a>
+</p>
+<h3 id="PieTimeChart">PieTimeChart</h3>
+<p>
+As mentioned previously PieTimeCharts are also available. The following xml: 
+</p>
+<div class="code"><pre>&lt;cha:PieTimeChart&gt;
+        &lt;cha:Plot&gt;Residency&lt;/cha:Plot&gt;
+        &lt;cha:Group&gt;Project&lt;/cha:Group&gt;
+&lt;/cha:PieTimeChart&gt;
+</pre></div><p>
+would produce the following chart:
+</p>
+<p>
+<a href='PieTimeChart.png' ><img src='PieTimeChart.png'/></a>
+</p>
+<h3 id="BarTimeChart">BarTimeChart</h3>
+<p>
+For a BarTimeChart the following xml: 
+</p>
+<div class="code"><pre>&lt;cha:BarTimeChart&gt;
+        &lt;cha:Plot&gt;Residency&lt;/cha:Plot&gt;
+        &lt;cha:Group&gt;Project&lt;/cha:Group&gt;
+&lt;/cha:BarTimeChart&gt;
+</pre></div><p>
+would produce the following chart:
+</p>
+<p>
+<a href='BarTimeChart.png' ><img src='BarTimeChart.png'/></a>
+</p>
+</body>
+</html>

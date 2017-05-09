@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Filters</title>
+<link href='docs.css' rel='stylesheet' type='text/css' media='screen' />
+</head>
+<body>
+<div id='wrapper'>
+  <div id='wrapper2'>
+    <div id='header'>
+      <div id='logo'>
+      <h1>FILTER</h1>
+      </div>
+      </div>
+           <div id="page">
+      <div id="content"> 
+<h1 id="Filters">Filters</h1>
+<p>
+Every report uses data from some sub-set of the available usage records in the system.
+You can control which records to include in the report using <b>Filter</b>s.
+</p>
+<p>
+The 'filter' namespace needs to be defined in the Report. 
+</p>
+<div class="code"><pre>&lt;rep:Report 
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"&gt;
+</pre></div>
+<h3 id="Filters1">Filters</h3>
+<p>
+The most basic and useful type of Filter is a <b>EQ</b>, equals, Filter where all the usage records where a string <b>Property</b> matches a certain <b>Value</b> are selected. The example below selects all the usage records where the Institute is Digital Communications.
+</p>
+<div class="code"><pre>&lt;fil:Filter&gt;
+        &lt;fil:EQ&gt;
+                &lt;fil:Property&gt;Institute&lt;/fil:Property&gt;
+                &lt;fil:Value&gt;Digital Communications&lt;/fil:Value&gt;
+        &lt;/fil:EQ&gt;
+&lt;/fil:Filter&gt;
+</pre></div><p>
+There are also filters types.
+</p>
+<ul><li> <tt>NE</tt> - not equal to
+</li><li> <tt>GT</tt> - greater than
+</li><li> <tt>LT</tt> - less than
+</li><li> <tt>GE</tt> - greater than or equal to 
+</li><li> <tt>LE</tt> - less than or equal to
+</li>
+</ul>
+If you want to compare two property expressions rather than compare one property expression with a constant value use a <b>Property2</b>
+element instead of <b>Value</b>
+<p>
+You can also test if a property expression generates a value. These elements only contain a single <b>Property</b> element
+<ul><li> <tt>Null</tt> - test for Null
+</li><li> <tt>NotNull</tt> - test for non-Null
+</li>
+</ul>
+Finally you can speficy a filter based on a relationship.
+<ul><li> <tt>Relationship</tt> - element contains a string that is interpreted as a relationship that the current user must have with the target objects.
+</li>
+</ul><p>
+Below show a show a numeric filter which select all the records where the jobs waited for longer than 30 minutes.
+</p>
+<div class="code"><pre>&lt;fil:Filter&gt;
+        &lt;fil:GT&gt;
+                &lt;fil:Property&gt;CPUWait&lt;/fil:Property&gt;
+                &lt;fil:Value&gt;1800&lt;/fil:Value&gt;
+        &lt;/fil:GT&gt;
+&lt;/fil:Filter&gt;
+</pre>
+
+
+</div><h3 id="CombiningFilters">Combining Filters</h3>
+<p>
+Filters can be combined using <tt>And</tt> and <tt>Or</tt> tags. The example below selects all the records where the jobs were submitted by someone who's Institute is Digital Communications and waited for longer than 30 minutes but less than 60 minutes.
+</p>
+<div class="code"><pre>&lt;fil:Filter&gt;
+        &lt;fil:And&gt;
+                &lt;fil:EQ&gt;
+                        &lt;fil:Property&gt;Institute&lt;/fil:Property&gt;
+                        &lt;fil:Value&gt;Digital Communications&lt;/fil:Value&gt;
+                &lt;/fil:EQ&gt;
+                &lt;fil:GT&gt;
+                        &lt;fil:Property&gt;CPUWait&lt;/fil:Property&gt;
+                        &lt;fil:Value&gt;1800&lt;/sel:Value&gt;
+                &lt;/fil:GT&gt;
+                &lt;fil:LT&gt;
+                        &lt;fil:Property&gt;CPUWait&lt;/fil:Property&gt;
+                        &lt;fil:Value&gt;3600&lt;/sel:Value&gt;
+                &lt;/fil:LT&gt;
+        &lt;/fil:And&gt;
+&lt;/fil:Filter&gt;
+
+</pre></div><p>
+Multiple filters may exist in a report. The record set active at any point in their report is defined by an AND combination of the filters directly inside the current XML element or any of its ancestors.
+</p>
+<div class="code"><pre>&lt;fil:Filter&gt;
+
+                &lt;fil:EQ&gt;
+                        &lt;fil:Property&gt;Institute&lt;/fil:Property&gt;
+                        &lt;fil:Value&gt;Digital Communications&lt;/fil:Value&gt;
+                &lt;/fil:EQ&gt;
+&lt;/fil:Filter&gt;
+         &lt;section&gt;
+&lt;fil:Filter&gt;
+
+                &lt;fil:GT&gt;
+                        &lt;fil:Property&gt;CPUWait&lt;/fil:Property&gt;
+                        &lt;fil:Value&gt;1800&lt;/sel:Value&gt;
+                &lt;/fil:GT&gt;
+&lt;/fil:Filter&gt;
+         &lt;/section&gt;
+
+         &lt;section&gt;
+&lt;fil:Filter&gt;
+
+                &lt;fil:LT&gt;
+                        &lt;fil:Property&gt;CPUWait&lt;/fil:Property&gt;
+                        &lt;fil:Value&gt;1800&lt;/sel:Value&gt;
+                &lt;/fil:LT&gt; 
+&lt;/fil:Filter&gt;
+          &lt;/section&gt;
+
+
+</pre></div><p>
+In the above example both sections will see the first filter, but the first section will select wait time greater than 1800 seconds while the second section will select wait time less than 1800 seconds.
+</p>
+<h3 id="Producers">Producers</h3>
+<p>
+By default the usage records tables are pulled from the <tt>accounting.tables</tt> property set in the <tt>service-config.properties</tt> file. Reports can select records from other tables by means of the <tt>Producer</tt> tag.
+</p>
+<div class="code"><pre>&lt;fil:Filter&gt;
+        &lt;fil:Producer&gt;allocation&lt;/fil:Producer&gt;         
+        &lt;fil:EQ&gt;
+                &lt;fil:Property&gt;Project&lt;/fil:Property&gt;
+                &lt;fil:Value&gt;prdatlas&lt;/fil:Value&gt;
+        &lt;/fil:EQ&gt;               
+&lt;/fil:Filter&gt;
+</pre></div><p>
+The example above uses the <tt>allocation</tt> producer. There is an <tt>allocation.tables</tt> property defined in <tt>service-config.properties</tt> which signifies the tables manager by this producer.
+If you only need data from a single table you can put the table name in the <b>Producer</b> element.
+</p>
+<h3 id="TimeBounds">TimeBounds</h3>
+<p>Most data-generation elements (e.g. tables and graphs) also apply
+an implicit filter based on the reporting time-period that is
+currently in scope. <br><b>UsageRecord</b>s are assumed to each represent a period of time<br>This defaults to a filter that selects records
+where the property <em>CompletedTimestamp</em> occurs within the
+period. This behaviour can be customised using the <b>TimeBounds</b> element.
+</p>
+
+<div class="code"><pre>&lt;fil:Filter&gt;
+        &lt;fil:TimeBounds&gt;&lt;fil:Alltimes/&gt;&lt;/fil:TimeBounds&gt;         
+&lt;/fil:Filter&gt;
+</pre></div>
+<p>This disables the implicit filter.</p>
+
+<div class="code"><pre>&lt;fil:Filter&gt;
+        &lt;fil:TimeBounds&gt;&lt;fil:Property&gt;MyTime&lt;/fil:Property&gt;&lt;/fil:TimeBounds&gt;         
+&lt;/fil:Filter&gt;
+</pre></div>
+<p>This selects records where the property <em>MyTime</em> occurs
+        within the period</p>
+
+<div class="code"><pre>&lt;fil:Filter&gt;
+        &lt;fil:TimeBounds&gt;
+           &lt;fil:StartProperty&gt;MyStart&lt;/fil:StartProperty&gt;
+           &lt;fil:EndProperty&gt;MyEnd&lt;/fil:EndProperty&gt;
+        &lt;/fil:TimeBounds&gt;         
+&lt;/fil:Filter&gt;
+</pre></div>
+<p>This selects records which overlap with the period.
+<em>MyStart</em> is the property that defines the start of the record.
+<em>MyEnd</em> is the property that defines the end of the record.
+For most data-generation elements this also enables overlap
+calculations where values are scaled based on the degree of overlap
+between the record and the period. This is important for
+reports where the record lengths are comparable to the length of the reporting
+period but is less intuitive than selecting on a single property value.   
+</p>
+The filter syntax for selecting types of record that are not <b>UsageRecord</b>s is essentially the same. Except that 
+
+there is no implicit time filter. Instead of a <b>Producer</b> element the table to be queried is specified using a <b>Target</b> element.
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

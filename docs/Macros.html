@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Macros</title>
+<link href='docs.css' rel='stylesheet' type='text/css' media='screen' />
+</head>
+<body>
+<div id='wrapper'>
+  <div id='wrapper2'>
+    <div id='header'>
+      <div id='logo'>
+      <h1>MACROS</h1>
+      </div>
+      </div>
+           <div id="page">
+      <div id="content"> 
+         <h1 id="Macros">Macros</h1>
+<p>
+Some reports require the same xml fragment to be re-used in multiple places (for example filter definitions).
+Macros allow you to define these fragments once then re-use them.
+</p>
+<div class="code"><pre>&lt;?xml version="1.0"?&gt;
+&lt;rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:mac="http://safe.epcc.ed.ac.uk/macro"&gt;
+
+        &lt;mac:MacroDef name="macro_a"&gt;&lt;bracket&gt;igor&lt;/bracket&gt;&lt;/mac:MacroDef&gt;
+        &lt;mac:MacroDef name="macro_b"&gt;&lt;bracket&gt;cuddles&lt;/bracket&gt;&lt;/mac:MacroDef&gt;
+        &lt;mac:MacroDef name="macro_c"&gt;fred&lt;/mac:MacroDef&gt;
+        
+        &lt;Heading&gt;Macro A&lt;/Heading&gt;
+        &lt;mac:Macro name="macro_a"/&gt;
+        
+        &lt;Heading&gt;Macro B&lt;/Heading&gt;
+        &lt;mac:Macro name="macro_b"/&gt; 
+
+        &lt;Heading&gt;Macro C&lt;/Heading&gt;
+        &lt;mac:Macro name="macro_c"/&gt;
+&lt;/rep:Report&gt;
+</pre></div><p>
+Macros are defined using the <strong>MacroDef</strong> element and referenced using the <strong>Macro</strong> element.
+</p>
+<p>
+Macro expansion takes place after parameter substitution.
+</p>
+
+        
+        
+</div>
+</div>
+</div>
+</div>  
+</body>
+</html>

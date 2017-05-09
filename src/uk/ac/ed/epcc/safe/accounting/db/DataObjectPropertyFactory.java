@@ -229,6 +229,9 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	 */
 	@Override
 	public BaseFilter<T> getRelationshipFilter(String relationship) throws CannotFilterException {
+		return getRelationshipFilter(relationship,null);
+	}
+	public BaseFilter<T> getRelationshipFilter(String relationship,BaseFilter<T> fallback) throws CannotFilterException {
 		try {
 			return getContext().getService(SessionService.class).getRelationshipRoleFilter(this, relationship);
 		} catch (UnknownRelationshipException e) {
