@@ -571,8 +571,7 @@ public class ParameterExtension extends ReportExtension {
 /** Generate a copy of the element. May return null if element is to be 
  * omitted from output.
  * 
- * @param finder
- * @param r
+ * @param expander
  * @param doc
  * @param e
  * @return copy of Node or null

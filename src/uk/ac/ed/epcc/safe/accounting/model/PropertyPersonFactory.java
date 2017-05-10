@@ -112,9 +112,8 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 	}
 
 	public PropertyPersonFactory(AppContext ctx, String table) {
-		super(ctx, table);
-		//defer creation
-		//initAccessorMap(ctx, table);
+		this();
+		setContext(ctx, table);
 	}
 
 	public PropertyPersonFactory(AppContext ctx){

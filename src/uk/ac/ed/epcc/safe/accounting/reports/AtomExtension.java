@@ -46,7 +46,6 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
-import uk.ac.ed.epcc.webapp.session.Hash;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 /**

@@ -27,6 +27,7 @@ public class CertificatePersonTest extends PersonTest {
 		CertificatePersonFactory<?> fac = (CertificatePersonFactory) getFactory();
 		
 		CertificatePerson p = fac.makeFromString("/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=stephen booth");
+		assertNotNull(p);
 		assertEquals( "stephen booth", p.getName());
 		
 	}
@@ -35,6 +36,7 @@ public class CertificatePersonTest extends PersonTest {
 	CertificatePersonFactory<?> fac = (CertificatePersonFactory) getFactory();
 		
 		CertificatePerson p = fac.makeFromString("/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=stephen booth");
+		assertNotNull(p);
 	     p.commit();
 	     
 	     CertificatePerson q = fac.findFromString("CN=stephen booth,L=NeSC,OU=Edinburgh,O=eScience,C=UK");
