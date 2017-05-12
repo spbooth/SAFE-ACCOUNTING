@@ -40,6 +40,7 @@ import uk.ac.ed.epcc.webapp.content.SimpleXMLBuilder;
 import uk.ac.ed.epcc.webapp.forms.BaseForm;
 import uk.ac.ed.epcc.webapp.forms.Field;
 import uk.ac.ed.epcc.webapp.forms.Form;
+import uk.ac.ed.epcc.webapp.forms.RegularSplitPeriodInputTest;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
@@ -53,6 +54,7 @@ import uk.ac.ed.epcc.webapp.forms.transition.DefaultingTransitionFactory;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraContent;
 import uk.ac.ed.epcc.webapp.forms.transition.TitleTransitionFactory;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.logging.buffer.BufferLoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
@@ -77,15 +79,17 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		try {
 			ReportBuilder builder = ReportBuilder.getInstance(c);
 			Map<String, Object> parameters = target.getParameters(); 
-			ReportBuilder.setTemplate(c, builder, target.getReportTemplate().getTemplateName());
+			ReportBuilder.setTemplate(c, builder, target.getName());
 			builder.setupExtensions(parameters);
 			return builder.canUse(sess, parameters);
 		}
 		catch (Exception e) {
+			c.getService(LoggerService.class).getLogger(ReportTemplateTransitionProvider.class).error("Error checking access", e);
 			return false;
 		}
 	}
 
+	
 	public static final ReportTemplateKey PREVIEW = new ReportTemplateKey("View", "Update report parameters")
 	{
 		
@@ -111,7 +115,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			try {
 				target.setExtension(extension);
 				ReportBuilder builder = ReportBuilder.getInstance(c);
-				ReportBuilder.setTemplate(c, builder, target.getReportTemplate().getTemplateName());
+				ReportBuilder.setTemplate(c, builder, target.getName());
 				ReportType reportType = builder.getReportType(extension);
 				Map<String, Object> params = getParameters(target, c, builder);
 
@@ -272,7 +276,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			try 
 			{
 				ReportBuilder builder = ReportBuilder.getInstance(conn);
-				ReportBuilder.setTemplate(conn, builder, target.getReportTemplate().getTemplateName());
+				ReportBuilder.setTemplate(conn, builder, target.getName());
 				Map<String, Object> parameters = target.getParameters();
 				builder.buildReportParametersForm(f, parameters);
 				System.out.println("SET MAP: parameters=" + parameters + " context parameters=" + target.getContextParameters());
@@ -293,10 +297,12 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 
 		@Override
 		public <X extends ContentBuilder> X getExtraHtml(X cb, SessionService<?> op, Report target) {
-			ReportTemplate template = target.getReportTemplate();
+			ReportTemplate template = getReportTemplate(target);
 			// name now shown in primary header
 			//cb.addHeading(3, template.getReportName());
-			cb.addText(template.getReportDescription());
+			if( template != null){
+				cb.addText(template.getReportDescription());
+			}
 			try {
 				addPreview(getContext(), cb, target);
 			} catch (Exception e) {
@@ -331,10 +337,10 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			extension = templateFileName.substring(i+1);
 			templateFileName = templateFileName.substring(0, i);
 		}
-		templateFileName = templateFileName + ".xml";
-		Report report = new Report(null);
-		try {
-			ReportTemplate reportTemplate = fac.findByFileName(templateFileName);
+		//templateFileName = templateFileName + ".xml";
+		
+		
+			
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			Set<String> contextParameters = new HashSet<String>();
 			for (String p : id) {
@@ -353,13 +359,12 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 					}
 				}
 			}
-			report = new Report(reportTemplate, parameters);
+			Report report = new Report(templateFileName, parameters);
 			report.setExtension(extension);
 			report.setContextParameters(contextParameters);
-		} catch (DataException e) {
-			getLogger().debug("Error retrieving template file name");
-		}
-		return report;
+			return report;
+		
+		
 	}
 
 	@Override
@@ -377,8 +382,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				result.add(prefix + entry.getKey() + ":" + value);
 			}
 		}
-		if (target.getReportTemplate() != null) { 
-			String name = target.getName();
+		String name = target.getName();
+		if (name != null) { 
+			
 			if (target.getExtension() != null) {
 				name += "." + target.getExtension();
 			}
@@ -447,7 +453,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		for (String c : contextParameters) {
 			new_param.put(c, param.get(c));
 		}
-		return new Report(orig.getReportTemplate(), new_param, orig.getContextParameters());
+		return new Report(orig.getName(), new_param, orig.getContextParameters());
 	}
 	
 	private Map<String, Object> getParameters(Report target, AppContext c, ReportBuilder builder) throws Exception 
@@ -487,7 +493,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		boolean hasErrors = false;
 		try {
 			builder = ReportBuilder.getInstance(context);
-			ReportBuilder.setTemplate(context, builder, target.getReportTemplate().getTemplateName());
+			ReportBuilder.setTemplate(context, builder, target.getName());
 			params = getParameters(target, context, builder);
 			if (params != null && !target.getParameters().isEmpty()) {
 				cb.addHeading(4, "Report Preview");
@@ -636,14 +642,32 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			operation = key.toString();
 		}
 		if( target != null ){
-			ReportTemplate reportTemplate = target.getReportTemplate();
+			ReportTemplate reportTemplate = getReportTemplate(target);
 			if( reportTemplate != null && reportTemplate.getReportName() != null ){
 				return operation+" "+reportTemplate.getReportName();
 			}
 		}
 		return operation+" Report";
 	}
-
+	/** Get the {@link ReportTemplate} corresponding to a report.
+	 * 
+	 * As reports CAN be run on unregistered reports this can return null for
+	 * a valid report
+	 * @param r
+	 * @return
+	 */
+    public ReportTemplate getReportTemplate(Report r){
+    	if( r == null ){
+    		return null;
+    	}
+    	ReportTemplateFactory fac = new ReportTemplateFactory<>(getContext());
+    	try {
+			return fac.findByFileName(r.getName()+".xml");
+		} catch (DataException e) {
+			getLogger().error("Error looking up report template",e);
+		}
+    	return null;
+    }
 	@Override
 	public String getHeading(ReportTemplateKey key, Report target) {
 		return getTitle(key, target);

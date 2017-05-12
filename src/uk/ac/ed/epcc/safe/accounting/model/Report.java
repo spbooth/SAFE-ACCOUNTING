@@ -7,20 +7,19 @@ import java.util.Map;
 
 public class Report {
 	
-	private ReportTemplate reportTemplate;
+	//private ReportTemplate reportTemplate;
 	private LinkedHashMap<String, Object> parameters;
 	private Collection<String> contextParameters;
 	private String extension;
 	private String name;
 	
-	public Report(ReportTemplate template) {
+	public Report(String template) {
 		this(template, null);
 	}
 
-	public Report(ReportTemplate template, Map<String, Object> parameters) {
-		this.reportTemplate = template;
-		if (reportTemplate != null) {
-			String templateName = reportTemplate.getTemplateName();
+	public Report(String template, Map<String, Object> parameters) {
+		if (template != null) {
+			String templateName = template;
 			int i = templateName.indexOf(".");
 			if (i >= 0) {
 				this.name = templateName.substring(0, i);
@@ -38,7 +37,7 @@ public class Report {
 		}
 	}
 	
-	public Report(ReportTemplate reportTemplate,
+	public Report(String reportTemplate,
 			LinkedHashMap<String, Object> parameters,
 			Collection<String> contextParameters) 
 	{
@@ -46,9 +45,7 @@ public class Report {
 		setContextParameters(contextParameters);
 	}
 
-	public ReportTemplate getReportTemplate() {
-		return reportTemplate;
-	}
+	
 	
 	public Map<String, Object> getParameters() {
 		return new LinkedHashMap(parameters);
@@ -65,7 +62,7 @@ public class Report {
 	public String getName() {
 		return name;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Report(template=" + getName() + ", parameters=" + getParameters() + ")";

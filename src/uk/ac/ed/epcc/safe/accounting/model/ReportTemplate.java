@@ -39,13 +39,13 @@ public class ReportTemplate extends DataObject implements Retirable{
 	static final String TEMPLATE_NAME = "TemplateName";
 	static final String REPORT_GROUP = "ReportGroup";
 	
-	private ReportBuilder builder=null;
+	
 	
 	
 	public ReportTemplate(Repository.Record res) {
 		super(res);
 	}
-	
+	private ReportBuilder builder=null;
 	private ReportBuilder getBuilder() throws Exception{
 		if( builder == null ){
 			AppContext conn = getContext();
