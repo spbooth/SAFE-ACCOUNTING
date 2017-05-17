@@ -44,7 +44,8 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
 public class SgeParser extends BatchParser implements Contexed {
-	private AppContext c;
+	private final AppContext c;
+	private String table;
 	private static final boolean DEFAULT_SKIP_SLAVE=true;
 	private static final boolean DEFAULT_SKIP_FAILED=false;
 	private static final boolean DEFAULT_SKIP_SUBTASK=true;
@@ -308,6 +309,7 @@ public class SgeParser extends BatchParser implements Contexed {
 		finder.addFinder(StandardProperties.base);
 		finder.addFinder(batch);
 		finder.addFinder(sge);
+		this.table=table;
 		return finder;
 	}
 
@@ -324,7 +326,11 @@ public class SgeParser extends BatchParser implements Contexed {
 			addAlias(result, StandardProperties.GROUPNAME_PROP, SGE_GROUPNAME_PROP);
 			addAlias(result, SGE_USERNAME_PROP, StandardProperties.USERNAME_PROP);
 			addAlias(result, SGE_JOBNAME_PROP, JOB_NAME_PROP);
-			addAlias(result, SGE_ACCOUNT_PROP, ACCOUNT_PROP);
+			if( getContext().getBooleanParameter("sge_parser.account_via_project", false)){
+				addAlias(result,SGE_PROJECT_PROP,ACCOUNT_PROP);
+			}else{
+				addAlias(result, SGE_ACCOUNT_PROP, ACCOUNT_PROP);
+			}
 			addAlias(result, SGE_SUBMITTED_PROP, SUBMITTED_PROP);
 			addAlias(result,SGE_STARTED_PROP,StandardProperties.STARTED_PROP);
 			addAlias(result, SGE_ENDED_PROP, StandardProperties.ENDED_PROP);
