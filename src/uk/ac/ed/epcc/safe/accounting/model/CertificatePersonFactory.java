@@ -35,7 +35,7 @@ public class CertificatePersonFactory<P extends CertificatePerson> extends Prope
 	
 	
 	@Override
-	protected String getDefaultRealm() {
+	public String getDefaultRealm() {
 		return WebNameFinder.WEB_NAME;
 	}
 
