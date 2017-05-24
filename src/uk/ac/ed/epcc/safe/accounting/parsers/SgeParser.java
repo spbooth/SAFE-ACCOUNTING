@@ -18,6 +18,8 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.util.Date;
 
+import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.expr.StringPropExpression;
@@ -39,6 +41,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
@@ -326,11 +329,17 @@ public class SgeParser extends BatchParser implements Contexed {
 			addAlias(result, StandardProperties.GROUPNAME_PROP, SGE_GROUPNAME_PROP);
 			addAlias(result, SGE_USERNAME_PROP, StandardProperties.USERNAME_PROP);
 			addAlias(result, SGE_JOBNAME_PROP, JOB_NAME_PROP);
-			if( getContext().getBooleanParameter("sge_parser.account_via_project", false)){
+			if( getContext().getBooleanParameter("sge_parser.account_via_project."+table, false)){
 				addAlias(result,SGE_PROJECT_PROP,ACCOUNT_PROP);
 			}else{
 				addAlias(result, SGE_ACCOUNT_PROP, ACCOUNT_PROP);
 			}
+			if( getContext().getBooleanParameter("sge_parser.wallclock_runtime."+table, true)){
+				// Use the SGE computed wallclock for charging calc
+				result.put( StandardProperties.RUNTIME_PROP, new BinaryPropExpression(SGE_WALLCLOCK_PROP, Operator.MUL,
+						new ConstPropExpression<Long>(Long.class,1000L)));
+			}
+
 			addAlias(result, SGE_SUBMITTED_PROP, SUBMITTED_PROP);
 			addAlias(result,SGE_STARTED_PROP,StandardProperties.STARTED_PROP);
 			addAlias(result, SGE_ENDED_PROP, StandardProperties.ENDED_PROP);
