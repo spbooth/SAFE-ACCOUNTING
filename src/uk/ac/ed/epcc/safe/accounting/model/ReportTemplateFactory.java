@@ -239,7 +239,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	@Override
 	protected void postCreateTableSetup(AppContext c, String table) {
 		String list = c.getInitParameter("initial_reports."+table);
-		if( list != null ){
+		if( list != null && ! list.trim().isEmpty()){
 			for(String base : list.split(",")){
 				try{
 					String template = base;
