@@ -56,6 +56,8 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 public class ReportTemplateFactory<R extends ReportTemplate> extends TableStructureDataObjectFactory<R> {
+	
+
 	static final String SORT_PRIORITY = "SortPriority";
 	private final ReportGroups reportGroups;
 
@@ -231,5 +233,36 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 		return t;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.webapp.model.data.DataObjectFactory#postCreateTableSetup(uk.ac.ed.epcc.webapp.AppContext, java.lang.String)
+	 */
+	@Override
+	protected void postCreateTableSetup(AppContext c, String table) {
+		String list = c.getInitParameter("initial_reports."+table);
+		if( list != null ){
+			for(String base : list.split(",")){
+				try{
+					String template = base;
+					if( ! template.endsWith(".xml")){
+						template=template+".xml";
+					}
+					if( base.endsWith(".xml")){
+						base = base.substring(0, base.indexOf(".xml"));
+					}
+					String name = c.getInitParameter(base+".name", base);
+					String desc = c.getInitParameter(base+".description");
+					String group = c.getInitParameter(base+".group");
+					ReportTemplate temp = makeBDO();
+					temp.setName(name);
+					temp.setDescription(desc);
+					temp.setTemplate(template);
+					temp.setGroup(group);
+					temp.commit();
+				}catch(Throwable t){
+					getLogger().error("Error bootstrapping report "+base, t);
+				}
+			}
+		}
+		
+	}
 }

@@ -127,5 +127,20 @@ public class ReportTemplate extends DataObject implements Retirable{
 	public void retire() throws Exception {
 		delete();
 	}
+	public void setName(String name) {
+		record.setProperty(REPORT_NAME, name);
+		
+	}
+	public void setDescription(String desc) {
+		record.setProperty(REPORT_DESCRIPTION, desc);
+		
+	}
+	public void setTemplate(String template) {
+		record.setProperty(TEMPLATE_NAME, template);
+		
+	}
+	public void setGroup(String group){
+		record.setOptionalProperty(REPORT_GROUP, group);
+	}
 	
 }
