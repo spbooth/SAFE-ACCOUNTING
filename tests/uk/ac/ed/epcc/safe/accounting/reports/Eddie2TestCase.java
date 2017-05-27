@@ -52,7 +52,7 @@ public class Eddie2TestCase extends WebappTestBase {
 		builder.renderXML(params, out);
 		assertTrue(out.size()>0);
 		//assertFalse(builder.hasErrors());
-		System.out.println(out.toString());
+		//System.out.println(out.toString());
 		ReportBuilderTest.checkErrors(builder.getErrors());
 		
 	}

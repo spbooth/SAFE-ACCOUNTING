@@ -30,7 +30,7 @@ public class TransformTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		transformer.transform(input, new StreamResult(out));
 		String result=out.toString();
-		System.out.println(result);
+		//System.out.println(result);
 		assertTrue(result.contains("Test 1 fred"));
 		assertTrue(result.contains("Test 2 boris"));
 		assertTrue(result.contains("Test 1 tim"));

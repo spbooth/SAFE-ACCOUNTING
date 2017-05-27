@@ -183,10 +183,10 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 
 		while (lines.hasNext()) {
 			I current_line = lines.next();
-			System.out.println(parser.formatRecord(current_line));
+			//System.out.println(parser.formatRecord(current_line));
 			try {
-				System.out.println("parse "
-						+ fac.getParser().getClass().getCanonicalName());
+				//System.out.println("parse "
+				//		+ fac.getParser().getClass().getCanonicalName());
 				DerivedPropertyMap map = new DerivedPropertyMap(ctx);
 				if (defaults != null) {
 					defaults.setContainer(map);
@@ -214,7 +214,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 					 * parsed everything correctly
 					 */
 					if (old != null) {
-						System.out.println("Found old record");
+						//System.out.println("Found old record");
 						// System.out.println("Parser Charge "+record.getProperty(SafePolicy.SU_PROP,0L)+" "+old.getProperty(SafePolicy.SU_PROP,0L));
 						// assertEquals("Charge mismatch ",old.getProperty(SafePolicy.SU_PROP,0L).longValue(),
 						// record.getProperty(SafePolicy.SU_PROP,0L).longValue());
@@ -239,7 +239,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 						StringBuilder prob = new StringBuilder();
 						for (Object key : old_map.keySet()) {
 							if (!ignore.contains(key)) {
-								//System.out.println(key.toString()+" "+record_map.get(key).toString()+" "+old_map.get(key).toString());
+								System.out.println(key.toString()+" "+record_map.get(key).toString()+" "+old_map.get(key).toString());
 								if (old_map.get(key) != null) {
 									// incremental are allowed to have null values
 									// as each input only specifies part of the input
@@ -313,9 +313,9 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		while (lines.hasNext()) {
 			I rec = lines.next();
 			String current_line = parser.formatRecord(rec);
-			System.out.println(current_line);
-			System.out.println("parse "
-					+ parser.getClass().getCanonicalName());
+			//System.out.println(current_line);
+			//System.out.println("parse "
+			//		+ parser.getClass().getCanonicalName());
 			DerivedPropertyMap map = new DerivedPropertyMap(ctx);
 			if (defaults != null) {
 				defaults.setContainer(map);
@@ -358,7 +358,7 @@ public void receiveAccounting(String updateText) {
 		return;
 	}
 	
-	System.out.println(updateText);
+	//System.out.println(updateText);
 	String result = new AccountingUpdater<R,I>(ctx,getDefaults(),fac).receiveAccountingData( updateText, false,false,false);
 	
 	Assert.assertFalse(result.contains("Error in accounting parse"));

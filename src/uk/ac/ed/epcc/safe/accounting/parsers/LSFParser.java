@@ -431,7 +431,7 @@ public class LSFParser extends BatchParser implements  Contexed {
 		while(it.hasNext())
 		{
 			String value = it.next();
-			System.out.println(i + " " + value);
+			//System.out.println(i + " " + value);
 			i++;
 		}
 	}

@@ -134,7 +134,7 @@ public class AltPeriodExtensionTest extends ExtensionTestCase {
 		// Look for errors
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 
-		System.out.println(out.toString());
+		//System.out.println(out.toString());
 		
 		// Check it was correctly formatted.		
 		assertTrue("Table wasn't correctly formatted:\n"+

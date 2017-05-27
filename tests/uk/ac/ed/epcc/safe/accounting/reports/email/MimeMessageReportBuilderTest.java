@@ -140,7 +140,7 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 		
 		MimeMultipart mp = (MimeMultipart) m.getContent();
 		String toptype = mp.getContentType();
-		System.out.println("toptype="+toptype);
+		//System.out.println("toptype="+toptype);
 		assertTrue(toptype.contains("mixed"));
 		
 		mp = (MimeMultipart) mp.getBodyPart(0).getContent();
@@ -152,15 +152,15 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 
 	protected void checkRelated(MimeMultipart mp) throws MessagingException {
 		String innertype = mp.getContentType();
-		System.out.println("innertype="+innertype);
+		//System.out.println("innertype="+innertype);
 		assertTrue(innertype.contains("related"));
 		
 		assertTrue(mp.getCount()>1);
 		MimeBodyPart part1 = (MimeBodyPart) mp.getBodyPart(0);
 		String type1=part1.getContentType();
 		String id1 = part1.getContentID();
-		System.out.println("part1 id="+id1);
-		System.out.println("part1 type="+type1);
+		//System.out.println("part1 id="+id1);
+		//System.out.println("part1 type="+type1);
 		assertTrue(type1.startsWith("text/html"));
 		assertNull(part1.getFileName());
 		assertEquals(Part.INLINE, part1.getDisposition());
@@ -168,8 +168,8 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 			MimeBodyPart part2 = (MimeBodyPart) mp.getBodyPart(i);
 			String type2=part2.getContentType();
 			String id2 = part2.getContentID();
-			System.out.println("part"+i+" id="+id2);
-			System.out.println("part"+i+" type="+type2);
+			//System.out.println("part"+i+" id="+id2);
+			//System.out.println("part"+i+" type="+type2);
 			assertNotNull(part2.getFileName());
 			assertTrue(type2.startsWith("image/png"));
 			assertEquals(Part.INLINE, part2.getDisposition());

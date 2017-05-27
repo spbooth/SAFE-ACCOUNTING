@@ -138,7 +138,7 @@ public class TableExtensionTest extends ExtensionTestCase {
 	}
 	
 	protected void testTables(String reportType, String templateName,File outputFile) throws Exception {
-		System.out.println("Type="+reportType+" template="+templateName+" expected output in "+outputFile);
+		//System.out.println("Type="+reportType+" template="+templateName+" expected output in "+outputFile);
 		
 		testTable(reportType,templateName ,TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n", ""));
 		
@@ -169,7 +169,7 @@ public class TableExtensionTest extends ExtensionTestCase {
 //	    tmp.close();
 		// Look for errors
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
-		System.out.println(out.toString());
+		//System.out.println(out.toString());
 		for(String s : expectedOutput.replace("><",">\n<").split("\n")){
 			assertTrue("Output did not contain \n"+s.trim()+"\n",
 					out.toString().contains(s.trim()));

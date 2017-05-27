@@ -209,7 +209,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		reportBuilder.renderXML(params, out);
-		System.out.println(out.toString());
+		//System.out.println(out.toString());
 
 		// Look for errors
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
@@ -324,7 +324,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		builder.renderXML(params, out);
 		assertTrue(out.size()>0);
 		assertFalse(builder.hasErrors());
-		System.out.println(out.toString());
+		//System.out.println(out.toString());
 		ReportBuilderTest.checkErrors(builder.getErrors());
 		
 	}

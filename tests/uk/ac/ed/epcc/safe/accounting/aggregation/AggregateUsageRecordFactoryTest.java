@@ -62,13 +62,13 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		for(PropertyTag t : orig.keySet()){
 			PropExpression orig_expr = orig.get(t);
 			assertNotNull(orig_expr);
-			System.out.println(orig_expr.toString());
+			//System.out.println(orig_expr.toString());
 			if( orig_expr.getTarget() != Date.class){
 			PropExpression agg_expr = agg.get(t);
 			
 			if( agg_expr != null ){ 
 			
-			System.out.println(agg_expr.toString());
+			//System.out.println(agg_expr.toString());
 			
 				assertTrue(orig_expr.equals(agg_expr));
 			}else{
@@ -128,8 +128,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		verify(fac, raw_fac, sel);
 		
 		long count = fac.getRecordCount(sel);
-		System.out.println("Raw count "+raw_count);
-		System.out.println("Agregate count "+count);
+		//System.out.println("Raw count "+raw_count);
+		//System.out.println("Agregate count "+count);
 		assertTrue("has aggreagated", count < raw_count);
 		assertTrue("has differentiated", count > 1L);
 		
@@ -137,8 +137,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		
 		Date aggregate_start = fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.STARTED_PROP),sel);
 		Date raw_first = raw_fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.ENDED_PROP), sel);
-		System.out.println("Aggregate starts "+aggregate_start.toString());
-		System.out.println("First end of raw "+raw_first.toString());
+		//System.out.println("Aggregate starts "+aggregate_start.toString());
+		//System.out.println("First end of raw "+raw_first.toString());
 		assertTrue("Start before first end", ! aggregate_start.after(raw_first));
 		Date aggregate_end = fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP), sel);
 		Date raw_last = raw_fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP), sel);
@@ -171,8 +171,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		verify(fac, raw_fac, sel);
 		
 		long count = fac.getRecordCount(sel);
-		System.out.println("Raw count "+raw_count);
-		System.out.println("Agregate count "+count);
+		//System.out.println("Raw count "+raw_count);
+		//System.out.println("Agregate count "+count);
 		assertTrue("has aggreagated", count < raw_count);
 		assertTrue("has differentiated", count > 1L);
 		
@@ -180,8 +180,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		
 		Date aggregate_start = fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.STARTED_PROP),sel);
 		Date raw_first = raw_fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.ENDED_PROP), sel);
-		System.out.println("Aggregate starts "+aggregate_start.toString());
-		System.out.println("First end of raw "+raw_first.toString());
+		//System.out.println("Aggregate starts "+aggregate_start.toString());
+		//System.out.println("First end of raw "+raw_first.toString());
 		assertTrue("Start before first end", ! aggregate_start.after(raw_first));
 		Date aggregate_end = fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP),sel);
 		Date raw_last = raw_fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP), sel);
@@ -200,8 +200,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 			// nothing to regenerate
 			return;
 		}
-		System.out.println("Start is "+start);
-		System.out.println("End is "+end);
+		//System.out.println("Start is "+start);
+		//System.out.println("End is "+end);
 		fac.regenerate(start,end);
 		
 		
@@ -211,8 +211,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		verify(fac, raw_fac, sel);
 		long count = fac.getRecordCount(sel);
 		long raw_count = raw_fac.getRecordCount(sel);
-		System.out.println("Raw count "+raw_count);
-		System.out.println("Agregate count "+count);
+		//System.out.println("Raw count "+raw_count);
+		//System.out.println("Agregate count "+count);
 		assertTrue("has aggreagated", count < raw_count);
 		assertTrue("has differentiated", count > 1L);
 		
@@ -220,8 +220,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		
 		Date aggregate_start = fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.STARTED_PROP),sel);
 		Date raw_first = raw_fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.ENDED_PROP), sel);
-		System.out.println("Aggregate starts "+aggregate_start.toString());
-		System.out.println("First end of raw "+raw_first.toString());
+		//System.out.println("Aggregate starts "+aggregate_start.toString());
+		//System.out.println("First end of raw "+raw_first.toString());
 		assertTrue("Start before first end", ! aggregate_start.after(raw_first));
 		Date aggregate_end = fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP),sel);
 		Date raw_last = raw_fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP), sel);
@@ -244,15 +244,15 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 			if( Number.class.isAssignableFrom(t.getTarget())){
 				
 				Number agg_sum = fac.getReduction(new NumberSumReductionTarget(t), sel);
-				System.out.println("Aggregated "+t.getName()+" = "+agg_sum);
+				//System.out.println("Aggregated "+t.getName()+" = "+agg_sum);
 				Number raw_sum = raw_fac.getReduction(new NumberSumReductionTarget( t),sel);
-				System.out.println("raw "+t.getName()+" = "+raw_sum);
+				//System.out.println("raw "+t.getName()+" = "+raw_sum);
 				if( raw_sum.getClass() == Double.class || raw_sum.getClass() == Float.class){
 				  double diff = agg_sum.doubleValue() - raw_sum.doubleValue();
-				  System.out.println("Diff "+t.getName()+" = "+diff);
+				  //System.out.println("Diff "+t.getName()+" = "+diff);
 				  if( raw_sum.doubleValue() > 0.0){
 					  diff = (diff*diff)/raw_sum.doubleValue();
-					  System.out.println("Diff "+t.getName()+" = "+diff);
+					  //System.out.println("Diff "+t.getName()+" = "+diff);
 					  assertTrue("Diff "+t.getName()+" "+diff, diff < 1.0e-5);
 				  }
 				}else{
@@ -273,8 +273,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 			// nothing to regenerate
 			return;
 		}
-		System.out.println("Start is "+start);
-		System.out.println("End is "+end);
+		//System.out.println("Start is "+start);
+		//System.out.println("End is "+end);
 		fac.regenerate(start,end);
 		
 		
@@ -284,8 +284,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		verify(fac, raw_fac, sel);
 		long count = fac.getRecordCount(sel);
 		long raw_count = raw_fac.getRecordCount(sel);
-		System.out.println("Raw count "+raw_count);
-		System.out.println("Agregate count "+count);
+		//System.out.println("Raw count "+raw_count);
+		//System.out.println("Agregate count "+count);
 		assertTrue("has aggreagated", count < raw_count);
 		assertTrue("has differentiated", count > 1L);
 		
@@ -293,8 +293,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		
 		Date aggregate_start = fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.STARTED_PROP),sel);
 		Date raw_first = raw_fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.ENDED_PROP), sel);
-		System.out.println("Aggregate starts "+aggregate_start.toString());
-		System.out.println("First end of raw "+raw_first.toString());
+		//System.out.println("Aggregate starts "+aggregate_start.toString());
+		//System.out.println("First end of raw "+raw_first.toString());
 		assertTrue("Start before first end", ! aggregate_start.after(raw_first));
 		Date aggregate_end = fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP),sel);
 		Date raw_last = raw_fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP), sel);

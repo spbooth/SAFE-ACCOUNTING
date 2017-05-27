@@ -75,7 +75,7 @@ public class StyleSheetExtensionTest extends ExtensionTestCase {
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 
 		String result = out.toString().replaceAll("<!--.*-->\\s*\n?", "");
-		System.out.println(result);
+		//System.out.println(result);
 
 		// Check it was correctly formatted.
 		String output = result.replace(ctx.getInitParameter("java.io.tmpdir","/tmp"), "/tmp");

@@ -58,9 +58,9 @@ public class ParserTest extends WebappTestBase{
 		
 	  };
 	  for( String t : tests){
-		  System.out.println(t);
+		  //System.out.println(t);
 		  PropExpression e = p.parse(t);
-		  System.out.println("  ->"+e.toString());
+		  //System.out.println("  ->"+e.toString());
 
 	  }
   }

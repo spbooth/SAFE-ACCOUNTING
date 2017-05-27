@@ -171,7 +171,7 @@ public class ChartExtensionTest extends ExtensionTestCase {
 		// Look for errors
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 
-		System.out.println(out.toString());
+		//System.out.println(out.toString());
 
 		// Check it was correctly formatted.
 		String output = out.toString().replace(ctx.getInitParameter("java.io.tmpdir","/tmp"), "/tmp");

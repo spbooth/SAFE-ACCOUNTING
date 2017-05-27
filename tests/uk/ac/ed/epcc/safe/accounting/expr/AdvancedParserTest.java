@@ -59,11 +59,11 @@ public class AdvancedParserTest extends WebappTestBase{
 		prop_con.commit(); // Need to have one record
 		
 		for( LocateData d : data){
-			System.out.println(d.getConstExpression());
+			//System.out.println(d.getConstExpression());
 			PropExpression expr = p.parse(d.getConstExpression());
 			Object res = prop_con.evaluateExpression(expr);
 			assertEquals(d.expected,((Number)res).intValue());
-			System.out.println("  ->"+d.getConstExpression()+"="+res.toString());
+			//System.out.println("  ->"+d.getConstExpression()+"="+res.toString());
 			
 			SQLExpression sql_expr = prop_fac.getAccessorMap().getSQLExpression(expr);
 			res = prop_fac.evaluate(null, sql_expr);
@@ -107,7 +107,7 @@ public class AdvancedParserTest extends WebappTestBase{
 			
 			Object res = prop_con.evaluateExpression(expr);
 			assertEquals(d.expected,((Number)res).intValue());
-			System.out.println("  ->"+expr_text+"="+res.toString());
+			//System.out.println("  ->"+expr_text+"="+res.toString());
 			
 			// Filter to select the target record in SQL
 			SQLFilter<DummyPropertyContainer> fil = prop_fac.getReferenceFilter(prop_fac.makeReference(prop_con));
@@ -151,7 +151,7 @@ public class AdvancedParserTest extends WebappTestBase{
 			
 			Object res = prop_con.evaluateExpression(expr);
 			assertEquals(d.expected,((Number)res).intValue());
-			System.out.println("  ->"+expr_text+"="+res.toString());
+			//System.out.println("  ->"+expr_text+"="+res.toString());
 			
 			// Filter to select the target record in SQL
 			SQLFilter<DummyPropertyContainer> fil = prop_fac.getReferenceFilter(prop_fac.makeReference(prop_con));

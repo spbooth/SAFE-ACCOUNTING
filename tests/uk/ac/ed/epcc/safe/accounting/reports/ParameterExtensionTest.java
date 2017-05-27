@@ -65,7 +65,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		reportBuilder.renderXML(params, out);
-		System.out.println(out.toString());
+		//System.out.println(out.toString());
 		// Check it was correctly formatted.
 		assertTrue("Report wasn't correctly formatted", 
 				out.toString().contains("My Long is 123456789."));
@@ -382,7 +382,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		// Look for errors
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 		
-		System.out.println(out.toString());
+		//System.out.println(out.toString());
 		// Check it was correctly formatted.
 		assertTrue("Report wasn't correctly formatted", 
 				out.toString().contains("My Machine is Eddie."));

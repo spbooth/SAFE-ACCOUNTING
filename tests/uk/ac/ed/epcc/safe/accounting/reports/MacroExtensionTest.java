@@ -60,10 +60,10 @@ public class MacroExtensionTest extends ExtensionTestCase {
 		
 	
 		String result = out.toString().replaceAll("<!--.*-->\\s*\n?", "");
-		System.out.println(result);
+		//System.out.println(result);
 		
-		System.out.println("Expecting");
-		System.out.println(expectedOutput);
+		//System.out.println("Expecting");
+		//System.out.println(expectedOutput);
 		// Check it was correctly formatted.
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, result),

@@ -278,7 +278,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				ReportBuilder.setTemplate(conn, builder, target.getName());
 				Map<String, Object> parameters = target.getParameters();
 				builder.buildReportParametersForm(f, parameters);
-				System.out.println("SET MAP: parameters=" + parameters + " context parameters=" + target.getContextParameters());
+				//System.out.println("SET MAP: parameters=" + parameters + " context parameters=" + target.getContextParameters());
 				setMap(parameters, target.getContextParameters(), f, false);
 				f.addAction("Preview", new PreviewAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target));
 				f.addAction("HTML", new ExportAction(conn, new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, builder, builder.getReportType("html")));

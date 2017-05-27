@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 
@@ -66,7 +66,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 			return;
 		}
 		String updateText = getUpdateText();
-		System.out.println(updateText);
+		//System.out.println(updateText);
 		ErrorSet errors = new ErrorSet();
 		ErrorSet skips = new ErrorSet();
 		ClassificationUpdater<R,I> updater = new ClassificationUpdater<R,I>(ctx, fac);
@@ -74,7 +74,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		//TestDataHelper.saveDataSet("NGSRecord", "NGSRecord", "lsf");
 		Assert.assertEquals(0,errors.size());
 		Assert.assertEquals(0,skips.size());
-		System.out.println(result);
+		//System.out.println(result);
 	}
 @Test
 	public void testGetPolicies() {

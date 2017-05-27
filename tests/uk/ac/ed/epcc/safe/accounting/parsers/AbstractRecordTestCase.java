@@ -195,7 +195,7 @@ public abstract class AbstractRecordTestCase<R> extends
 			while(lines.hasNext()){
 				R rec = lines.next();
 				String line = parser.formatRecord(rec);
-				System.out.println("hash="+line.hashCode()+" text=["+line+"]");
+				//System.out.println("hash="+line.hashCode()+" text=["+line+"]");
 				recordTable.put(line.hashCode(), record);
 			}
 		}
@@ -236,7 +236,7 @@ public abstract class AbstractRecordTestCase<R> extends
 		 */
 		for (ErrorSet.Detail details : failedRecords.getAllErrorDetails()) {
 			String record = details.getText();
-			System.out.println("look for hash="+record.hashCode()+" text=["+record+"]");
+			//System.out.println("look for hash="+record.hashCode()+" text=["+record+"]");
 			RecordText thisRecord = recordTable.get(record.hashCode());
 
 			assertNotNull("Didn't recognise record : [" + record+"]", thisRecord);

@@ -49,7 +49,7 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 				
 				Date d = fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.STARTED_PROP),selector);
 				assertNotNull(d);
-				System.out.println("Reduction "+d.toString());
+				//System.out.println("Reduction "+d.toString());
 				assertTrue("after epoch", d.after(new Date(0L)));
 				assertTrue(" before now", d.before(new Date()));
 				
@@ -71,7 +71,7 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 			if( iter.hasNext()){
 				d = fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP),selector);
 				assertNotNull(d);
-				System.out.println(d.toString());
+				//System.out.println(d.toString());
 				assertTrue("after epoch", d.after(new Date(0L)));
 				assertTrue(" before now", d.before(new Date()));
 			}
@@ -105,12 +105,12 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 		Set<PlotEntry> pset = PlotEntry.getMappers(ctx, fac);
 		assertNotNull(pset);
 		for (PlotEntry pe : pset) {
-			System.out.println("Consider plot " + pe.getDescription());
+			//System.out.println("Consider plot " + pe.getDescription());
 			Set<MapperEntry> set = MapperEntry.getMappers(ctx, fac);
 			assertNotNull(set);
 			for (MapperEntry e : set) {
 				assertTrue(e.compatible(fac));
-				System.out.println(pe.getDescription() + "-" + e.getDescription());
+				//System.out.println(pe.getDescription() + "-" + e.getDescription());
 				SetRangeMapper m = e.getMapper(pe);
 				assertNotNull(m);
 				Calendar start = getDataStart();
