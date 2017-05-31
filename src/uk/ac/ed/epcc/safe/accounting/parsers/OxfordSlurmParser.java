@@ -46,10 +46,10 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 	@AutoTable
 	public static final PropertyTag<String> UserName = new PropertyTag<String>(slurm, "User", String.class,"User name");
 	@AutoTable
-	public static final PropertyTag<String> GroupName = new PropertyTag<String>(slurm, "Group", String.class,"Group name");
-	@AutoTable
+	public static final PropertyTag<String> GroupName = new PropertyTag<String>(slurm, "GroupName", String.class,"Group name");
+	@AutoTable(length=64)
 	public static final PropertyTag<String> AccountName = new PropertyTag<String>(slurm, "Account", String.class,"Account name");
-	@AutoTable(unique=true)
+	@AutoTable(unique=true,length=200)
 	public static final PropertyTag<String> JobName = new PropertyTag<String>(slurm, "JobName", String.class,"Job name");
 	@AutoTable
 	public static final PropertyTag<String> Partition = new PropertyTag<String>(slurm, "Partition", String.class);
@@ -149,15 +149,15 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 			derv.peer(StandardProperties.STARTED_PROP, Start);
 			derv.peer(StandardProperties.ENDED_PROP, End);
 			derv.peer(BatchParser.SUBMITTED_PROP, Submit);
-			derv.peer(BatchParser.ACCOUNT_PROP,ACCOUNT_PROP);
-			derv.peer(BatchParser.JOB_ID_PROP, JOB_ID_PROP);
+			derv.peer(BatchParser.ACCOUNT_PROP,AccountName);
+			derv.peer(BatchParser.JOB_ID_PROP, JOB_ID);
 			derv.peer(StandardProperties.USERNAME_PROP, UserName);
 			derv.peer(StandardProperties.GROUPNAME_PROP, GroupName);
-			derv.peer(BatchParser.JOB_ID_PROP, JOB_ID_PROP);
-			derv.peer(BatchParser.PARTITION_PROP, PARTITION_PROP);
+			
+			derv.peer(BatchParser.PARTITION_PROP, Partition);
 			derv.peer(BatchParser.NODE_COUNT_PROP, NNODE);
 			derv.peer(BatchParser.PROC_COUNT_PROP, ALLOC_CPUS);
-			derv.peer(BatchParser.JOB_NAME_PROP, JOB_NAME_PROP);
+			derv.peer(BatchParser.JOB_NAME_PROP, JobName);
 			derv.put(BatchParser.WALLCLOCK_PROP, new DurationSecondsPropExpression(ELAPSED_PROP));
 		} catch (PropertyCastException e) {
 			getLogger(getContext()).error("Error setting standard derived props",e);

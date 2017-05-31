@@ -562,7 +562,11 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 				
 					return Integer.toString(((Indexed)value).getID());
 				}else if ( IndexedReference.class.isAssignableFrom(target)){
-					Indexed obj = ((IndexedReference)value).getIndexed(getContext());
+					IndexedReference ref = (IndexedReference)value;
+					if( ref.isNull()){
+						return "";
+					}
+					Indexed obj = ref.getIndexed(getContext());
 					return displayByClass(obj.getClass(), obj);
 				}
 		ValueParser<T> vp = getValueParser(target);
