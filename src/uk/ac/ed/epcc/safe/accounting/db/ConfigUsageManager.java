@@ -42,7 +42,7 @@ public class ConfigUsageManager extends UsageRecordUsageManager {
 	@Override
 	protected void populate(String tag) {
 		AppContext c = getContext();
-		String tables=c.getInitParameter(tag+".tables",tag);
+		String tables=c.getExpandedProperty(tag+".tables",tag);
 		Logger log = c.getService(LoggerService.class).getLogger(getClass());
 		if( tables != null ){
 			for(String tab : tables.split(",")){
