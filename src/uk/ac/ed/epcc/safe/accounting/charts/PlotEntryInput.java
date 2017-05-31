@@ -23,6 +23,7 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseAbstractInput;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Form Input for selecting a PlotEntry
  *  
  * @author spb
@@ -33,12 +34,16 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 	private final Map<String,PlotEntry> items;
 	
 	public PlotEntryInput(AppContext conn,UsageProducer producer,String tag){
-		
+
 		items = new LinkedHashMap<String, PlotEntry>();
-		for( PlotEntry e : PlotEntry.getPlotSet(producer.getFinder(),conn, tag)){
-			if( e.compatible(producer)){
-				items.put(e.getName(),e);
+		if( producer != null){
+			for( PlotEntry e : PlotEntry.getPlotSet(producer.getFinder(),conn, tag)){
+				if( e.compatible(producer)){
+					items.put(e.getName(),e);
+				}
 			}
+		}else{
+			conn.getService(LoggerService.class).getLogger(getClass()).warn("No UsageProducer in PlotEntryInput");
 		}
 	}
 	

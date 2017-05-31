@@ -23,6 +23,7 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseAbstractInput;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Form Input for selecting a MapperEntry
  *  
  * @author spb
@@ -34,8 +35,12 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 	public MapperEntryInput(AppContext conn,UsageProducer producer,String tag){
 		
 		items = new LinkedHashMap<String, MapperEntry>();
-		for( MapperEntry e : MapperEntry.getMappers(conn, producer, tag)){
-			items.put(e.getName(),e);
+		if( producer != null){
+			for( MapperEntry e : MapperEntry.getMappers(conn, producer, tag)){
+				items.put(e.getName(),e);
+			}
+		}else{
+			conn.getService(LoggerService.class).getLogger(getClass()).warn("No UsageProducer in MapperEntryInput");
 		}
 	}
 	

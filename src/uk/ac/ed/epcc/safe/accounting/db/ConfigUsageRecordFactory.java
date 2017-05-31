@@ -21,15 +21,8 @@ import uk.ac.ed.epcc.safe.accounting.update.ConfigPlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 import uk.ac.ed.epcc.webapp.AppContext;
 /** A generic UsageRecordFactory configured from the Config properties
- * <ul>
- * <li> policies.<i>table</i> - list of policy class names </li>
- * <li> class.parser.<i>table</i> - parser class name </li>
- * <li> unique-properties.<i>table</i> - list of property names </li>
- * </ul>
- * If two records have all the unique properties the same they are considered to be
- * duplicates. If the property is not set the parser may be able to provide a default
- * set of properties. 
- * @see UsageRecordParseTargetPlugIn
+
+ * @see ConfigPlugInOwner
  *  
  * 
  * @author spb
