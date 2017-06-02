@@ -44,7 +44,7 @@ public class ConfigUsageManager extends UsageRecordUsageManager {
 		AppContext c = getContext();
 		String tables=c.getExpandedProperty(tag+".tables",tag);
 		Logger log = c.getService(LoggerService.class).getLogger(getClass());
-		if( tables != null ){
+		if( tables != null && ! tables.isEmpty()){
 			for(String tab : tables.split(",")){
 				tab=tab.trim();
 				log.debug("consider "+tab);

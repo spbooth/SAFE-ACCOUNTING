@@ -89,7 +89,7 @@ public abstract class ChartExtension extends ReportExtension {
 		serv=c.getService(ChartService.class);
 	}
 	public PlotEntry getPlotEntry(PropertyFinder finder, Element e) throws Exception{
-		String name = getParam("Plot",e);
+		String name = getExpandedParam("Plot",e);
 		if( name == null  || name.isEmpty()){
 			addError("No Plot Quantity","No Plot quantity was specified");
 			return null;
@@ -117,7 +117,7 @@ public abstract class ChartExtension extends ReportExtension {
 				addError("Bad Reduction", red, t);
 			}
 		}
-		String label = getParam("PlotLabel", e);
+		String label = getExpandedParam("PlotLabel", e);
 		if( label != null ){
 			result.setLabel(label);
 		}
@@ -132,7 +132,7 @@ public abstract class ChartExtension extends ReportExtension {
 		} else {
 			entry = serv.getMapperEntry(errors, finder, "");
 			if( hasParam("Label", e)){
-				((SetMapperEntry)entry).setLabel(getParam("Label", e));
+				((SetMapperEntry)entry).setLabel(getExpandedParam("Label", e));
 			}else{
 				// multiple plots need labels gor each set
 				// so always set these

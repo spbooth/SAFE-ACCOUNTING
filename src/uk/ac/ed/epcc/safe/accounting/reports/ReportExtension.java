@@ -436,7 +436,21 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public <T> T getValue(PropExpression<T> tag, Element element) throws  Exception{
 		return parse(tag,getAttribute(FORMAT_ATTR, element),getText(element));
 	}
-	
+	/** get a template param with config-parameter expansion
+	 * 
+	 * @param name
+	 * @param elem
+	 * @return
+	 * @throws ReportException
+	 */
+	protected final String getExpandedParam(String name, Element elem)
+			throws ReportException {
+		String param = getParam(name, elem);
+		if( param != null){
+			param = getContext().expandText(param);
+		}
+		return param;
+	}
 	public <T> PropertyTag<? extends T> getTag(PropertyTargetFactory up,Class<? extends T> target, String name) {
 		return getTag(up.getFinder(),target,name);
 	}

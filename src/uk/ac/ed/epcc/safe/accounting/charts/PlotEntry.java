@@ -334,9 +334,9 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 	   Parser parser = new Parser(conn,finder);
 
 	   // long form description defaults to the name (with spaces)
-	   String desc=prop.getProperty(tag+"description",name);
+	   String desc=conn.expandText(prop.getProperty(tag+"description",name));
 	   // get the plot expression string (default to name again)
-	   String plot_tag=prop.getProperty(tag+"plot",name);
+	   String plot_tag=conn.expandText(prop.getProperty(tag+"plot",name));
 	   PropExpression plot =null;
 	   if( plot_tag != null && plot_tag.trim().length() > 0){
 		   try{
@@ -371,7 +371,7 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 	   // legacy scale value better to do this with a PropExpression
 	   pe.setScale(prop.getDoubleProperty(tag+"scale", pe.getScale()));
 	  
-	   pe.setLabel(prop.getProperty(tag+"label", pe.getLabel()));
+	   pe.setLabel(conn.expandText(prop.getProperty(tag+"label", pe.getLabel())));
       
 	   // Plot range properties
 	   pe.setCutoff(prop.getLongProperty(tag+"cutoff", pe.getCutoff()));	   
@@ -379,7 +379,7 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 	   // Rate scale plots
 	   pe.setRateScale(prop.getBooleanProperty(tag+"ratescale", pe.isRateScale()));	   
 	   pe.setTimeScale(prop.getDoubleProperty(tag+"ratescale.scale",pe.getTimeScale()));
-	   pe.setTimeUnit(prop.getProperty(tag+"ratescale.label", pe.getTimeUnit()));
+	   pe.setTimeUnit(conn.expandText(prop.getProperty(tag+"ratescale.label", pe.getTimeUnit())));
 	   
 	  
 	  
