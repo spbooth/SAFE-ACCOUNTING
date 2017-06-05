@@ -29,7 +29,13 @@
 	</info>
 	
 	<dependencies>
-	
+		 <dependency org="com.sun.mail" name="javax.mail" rev="1.4.7">
+    		<artifact name="javax.mail" ext="jar"/>
+		</dependency>
+		<dependency org="org.apache.xmlgraphics" name="fop" rev="2.2">
+		   <artifact name="fop" ext="jar"/>
+		</dependency>
+		<!--
 	    <dependency org="org.apache" name="batik-all" rev="1.8">
     		<artifact name="batik-all" ext="jar"/>
 		</dependency>
@@ -38,23 +44,19 @@
     		<artifact name="fop" ext="jar"/>
 		</dependency>
 		
-		<dependency org="com.sun" name="mail" rev="1.4.5">
-    		<artifact name="mail" ext="jar"/>
+		<dependency org="com.sun.mail" name="javax.mail" rev="1.4.5">
+    		<artifact name="javax.mail" ext="jar"/>
 		</dependency>
 		
 		<dependency org="org.apache" name="xmlgraphics-commons" rev="2.1">
     		<artifact name="xmlgraphics-commons" ext="jar"/>
 		</dependency>
 		
-		<dependency org="com.mysql" name="mysql-connector-java" rev="5.1.39">
+		<dependency org="mysql" name="mysql-connector-java" rev="5.1.39">
     		<artifact name="mysql-connector-java" ext="jar"/>
 		</dependency>
-		<!--
-		<dependency org="net.sourceforge" name="Chart2D" rev="1.0">
-    		<artifact name="Chart2D" m:classifier="epcc" ext="jar"/>
-		</dependency>
-		-->
-		<dependency org="com.sun" name="activation" rev="1.1.1">
+		
+		<dependency org="javax.activation" name="activation" rev="1.1.1">
     		<artifact name="activation" ext="jar"/>
 		</dependency>
 		
@@ -117,7 +119,7 @@
 		<dependency org="org.junit" name="junit" rev="4.11">
     		<artifact name="junit" ext="jar"/>
 		</dependency>
-		
+		-->
 	</dependencies>
 	
 </ivy-module>

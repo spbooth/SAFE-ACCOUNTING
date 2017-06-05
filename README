@@ -7,5 +7,4 @@ It is used by:
 * SAFE
 * and a number of internal tools and projects.
 
-Dependencies are mostly managed via ivy. The ivysettings.xml file points to our local development repository
-you can remove this file to resolve against the default repositories.
+Dependencies are mostly managed via ivy. 
