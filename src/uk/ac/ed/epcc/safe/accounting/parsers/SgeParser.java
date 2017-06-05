@@ -80,12 +80,16 @@ public class SgeParser extends BatchParser implements Contexed {
 	public static final PropertyTag<Date> SGE_SUBMITTED_PROP = new PropertyTag<Date>(sge,"SubmittedTimestamp",Date.class,"Time job was submitted");
 	@AutoTable
 	public static final PropertyTag<Date> SGE_STARTED_PROP = new PropertyTag<Date>(sge,"StartedTimestamp",Date.class,"Time job was started");
-	@AutoTable(unique=true)
-	public static final PropertyTag<Date> SGE_ENDED_PROP = new PropertyTag<Date>(sge,"CompletedTimestamp",Date.class,"Time job completed");
+	// In field order ended goes here but we want to force order in auto-created table index.
 	@AutoTable(target=Integer.class,unique=true)
 	public static final PropertyTag<Number> SGE_JOB_ID = new PropertyTag<Number>(sge,"SgeId",Number.class,"Integer Job id used by SGE");
 	@AutoTable(target=Integer.class,unique=true)
 	public static final PropertyTag<Number> SGE_TASK_PROP = new PropertyTag<Number>(sge,"Task",Number.class,"SGE Task id, this is the index of this task within an array job");
+
+	@AutoTable(unique=true)
+	public static final PropertyTag<Date> SGE_ENDED_PROP = new PropertyTag<Date>(sge,"CompletedTimestamp",Date.class,"Time job completed");
+	
+	
 	@OptionalTable
 	public static final PropertyTag<Integer> SGE_EXIT_PROP = new PropertyTag<Integer>(sge,"Exit",Integer.class,"Numerical exit status of job or command");
 	@OptionalTable
@@ -316,41 +320,44 @@ public class SgeParser extends BatchParser implements Contexed {
 		return finder;
 	}
 
+	private PropExpressionMap derived=null;
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.parsers.BatchParser#getDerivedProperties()
 	 */
 	@Override
 	public PropExpressionMap getDerivedProperties(PropExpressionMap previous) {
-		PropExpressionMap result = super.getDerivedProperties(previous);
-		// convert SGE_JOB_ID to string for JOB_ID
-		try {
-			result.put(JOB_ID_PROP, new StringPropExpression<Number>(SGE_JOB_ID));
-			addAlias(result,SGE_QUEUE_PROP,QUEUE_PROP);
-			addAlias(result, StandardProperties.GROUPNAME_PROP, SGE_GROUPNAME_PROP);
-			addAlias(result, SGE_USERNAME_PROP, StandardProperties.USERNAME_PROP);
-			addAlias(result, SGE_JOBNAME_PROP, JOB_NAME_PROP);
-			if( getContext().getBooleanParameter("sge_parser.account_via_project."+table, false)){
-				addAlias(result,SGE_PROJECT_PROP,ACCOUNT_PROP);
-			}else{
-				addAlias(result, SGE_ACCOUNT_PROP, ACCOUNT_PROP);
-			}
-			if( getContext().getBooleanParameter("sge_parser.wallclock_runtime."+table, true)){
-				// Use the SGE computed wallclock for charging calc
-				result.put( StandardProperties.RUNTIME_PROP, new BinaryPropExpression(SGE_WALLCLOCK_PROP, Operator.MUL,
-						new ConstPropExpression<Long>(Long.class,1000L)));
-			}
+		if( derived == null){
+			derived = super.getDerivedProperties(previous);
+			// convert SGE_JOB_ID to string for JOB_ID
+			try {
+				derived.put(JOB_ID_PROP, new StringPropExpression<Number>(SGE_JOB_ID));
+				addAlias(derived,SGE_QUEUE_PROP,QUEUE_PROP);
+				addAlias(derived, StandardProperties.GROUPNAME_PROP, SGE_GROUPNAME_PROP);
+				addAlias(derived, SGE_USERNAME_PROP, StandardProperties.USERNAME_PROP);
+				addAlias(derived, SGE_JOBNAME_PROP, JOB_NAME_PROP);
+				if( getContext().getBooleanParameter("sge_parser.account_via_project."+table, false)){
+					addAlias(derived,SGE_PROJECT_PROP,ACCOUNT_PROP);
+				}else{
+					addAlias(derived, SGE_ACCOUNT_PROP, ACCOUNT_PROP);
+				}
+				if( getContext().getBooleanParameter("sge_parser.wallclock_runtime."+table, true)){
+					// Use the SGE computed wallclock for charging calc
+					derived.put( StandardProperties.RUNTIME_PROP, new BinaryPropExpression(SGE_WALLCLOCK_PROP, Operator.MUL,
+							new ConstPropExpression<Long>(Long.class,1000L)));
+				}
 
-			addAlias(result, SGE_SUBMITTED_PROP, SUBMITTED_PROP);
-			addAlias(result,SGE_STARTED_PROP,StandardProperties.STARTED_PROP);
-			addAlias(result, SGE_ENDED_PROP, StandardProperties.ENDED_PROP);
-			addAlias(result, SGE_EXIT_PROP, StandardProperties.EXIT_PROP);
-			addAlias(result, SGE_WALLCLOCK_PROP, WALLCLOCK_PROP);
-			addAlias(result, SGE_SLOTS, PROC_COUNT_PROP);
-			addAlias(result, SGE_CPU_TIME_PROP,StandardProperties.CPU_TIME_PROP);
-		} catch (PropertyCastException e) {
-			throw new ConsistencyError("Error aliasing JOB_ID to SGE_JOB_ID",e);
+				addAlias(derived, SGE_SUBMITTED_PROP, SUBMITTED_PROP);
+				addAlias(derived,SGE_STARTED_PROP,StandardProperties.STARTED_PROP);
+				addAlias(derived, SGE_ENDED_PROP, StandardProperties.ENDED_PROP);
+				addAlias(derived, SGE_EXIT_PROP, StandardProperties.EXIT_PROP);
+				addAlias(derived, SGE_WALLCLOCK_PROP, WALLCLOCK_PROP);
+				addAlias(derived, SGE_SLOTS, PROC_COUNT_PROP);
+				addAlias(derived, SGE_CPU_TIME_PROP,StandardProperties.CPU_TIME_PROP);
+			} catch (PropertyCastException e) {
+				throw new ConsistencyError("Error aliasing JOB_ID to SGE_JOB_ID",e);
+			}
 		}
-		return result;
+		return new PropExpressionMap(derived);
 	}
 
 	private <T> void addAlias(PropExpressionMap result,PropertyTag<T> a, PropertyTag<T> b)

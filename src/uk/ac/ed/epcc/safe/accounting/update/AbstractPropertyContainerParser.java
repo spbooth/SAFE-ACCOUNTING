@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.update;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
@@ -50,7 +51,7 @@ public abstract class AbstractPropertyContainerParser extends AbstractPropertyCo
 	 */
 	public  TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpecification spec,PropExpressionMap map,String table_name) {
 		
-		unique = new HashSet<String>();
+		unique = new LinkedHashSet<String>();
 		TableSpecification result = super.modifyDefaultTableSpecification(c, spec,map, table_name);
 		if( result == null ){
 			return result;
