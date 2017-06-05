@@ -18,7 +18,7 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.odeprg/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd"
        xmlns:m="http://ant.apache.org/ivy/maven">
     
@@ -35,91 +35,6 @@
 		<dependency org="org.apache.xmlgraphics" name="fop" rev="2.2">
 		   <artifact name="fop" ext="jar"/>
 		</dependency>
-		<!--
-	    <dependency org="org.apache" name="batik-all" rev="1.8">
-    		<artifact name="batik-all" ext="jar"/>
-		</dependency>
-				
-		<dependency org="org.apache" name="fop" rev="2.1">
-    		<artifact name="fop" ext="jar"/>
-		</dependency>
-		
-		<dependency org="com.sun.mail" name="javax.mail" rev="1.4.5">
-    		<artifact name="javax.mail" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.apache" name="xmlgraphics-commons" rev="2.1">
-    		<artifact name="xmlgraphics-commons" ext="jar"/>
-		</dependency>
-		
-		<dependency org="mysql" name="mysql-connector-java" rev="5.1.39">
-    		<artifact name="mysql-connector-java" ext="jar"/>
-		</dependency>
-		
-		<dependency org="javax.activation" name="activation" rev="1.1.1">
-    		<artifact name="activation" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.apache.avalon.framework" name="avalon-framework-api" rev="4.3.1">
-    		<artifact name="avalon-framework-api" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.apache.avalon.framework" name="avalon-framework-impl" rev="4.3.1">
-    		<artifact name="avalon-framework-impl" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.jfree" name="jcommon" rev="1.0.23">
-    		<artifact name="jcommon" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.jfree" name="jfreechart" rev="1.0.19">
-    		<artifact name="jfreechart" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.apache" name="commons-io" rev="2.4">
-    		<artifact name="commons-io" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.apache" name="log4j" rev="1.2.15">
-    		<artifact name="log4j" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.apache" name="serializer" rev="2.7.1">
-    		<artifact name="serializer" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.apache" name="xalan" rev="2.7.2">
-    		<artifact name="xalan" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.apache" name="xercesImpl" rev="2.9.1">
-    		<artifact name="xercesImpl" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.apache" name="xml-apis" rev="1.3.04">
-    		<artifact name="xml-apis" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.w3c" name="xml-apis-ext" rev="1.3.04">
-    		<artifact name="xml-apis-ext" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.incava" name="java-diff" rev="1.0.5">
-    		<artifact name="java-diff" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.apache" name="commons-logging" rev="1.0.4">
-    		<artifact name="commons-logging" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.hamcrest" name="hamcrest-core" rev="1.3">
-    		<artifact name="hamcrest-core" ext="jar"/>
-		</dependency>
-		
-		<dependency org="org.junit" name="junit" rev="4.11">
-    		<artifact name="junit" ext="jar"/>
-		</dependency>
-		-->
 	</dependencies>
 	
 </ivy-module>
