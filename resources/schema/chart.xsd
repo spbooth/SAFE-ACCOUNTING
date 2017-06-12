@@ -127,7 +127,7 @@
 				Flag to enable rate-scaling (divide by the number of milliseconds in each plot)
 				</xsd:documentation></xsd:annotation>
 			</xsd:element>
-			<xsd:element name="NPlots" type="xsd:integer"
+			<xsd:element name="NPlots" type="par:NumberOrParameterType"
 				maxOccurs="1" minOccurs="0">
 				<xsd:annotation>
 				<xsd:documentation>

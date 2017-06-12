@@ -288,7 +288,7 @@ public abstract class ChartExtension extends ReportExtension {
 			MapperEntry entry = getMapperEntry(plot,finder, e);
 
 
-			int nPlots = getIntParam("NPlots", 10, e);
+			int nPlots = getNumberParam("NPlots", 10, e).intValue();
 			boolean overlap = getBooleanParam("Overlap", true, e);
 			RecordSelector sel = set.getRecordSelector();
 			
