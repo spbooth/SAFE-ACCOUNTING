@@ -3,6 +3,8 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +15,7 @@ import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
 import uk.ac.ed.epcc.safe.accounting.properties.AttributePropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.DynamicAttributePropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
@@ -169,6 +172,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@AutoTable(target=String.class, length=1024)
 	public static final AttributePropertyTag<String> EXIT_CODE_LIST = new AttributePropertyTag<String>(rur_reg, "exitcode_signal", new String[]{"exitcode:signal"}, String.class,
 			"Exit code list", "");
+	
 	@AutoTable(target=String.class, length=1024)
 	public static final AttributePropertyTag<String> ABORT_INFO = new AttributePropertyTag<String>(rur_reg, "abortinfo", null, String.class,
 			"If abnormal termination occurs, a list of abort_info fields is reported", "");
@@ -426,7 +430,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
     
     private static final Pattern sub_attribute_pattern = Pattern.compile("['\"](?<SUBATTRNAME>\\S+)['\"][,:] (['\"]{1}(?<SUBATTRSTRING>[^\"]+)|(?<SUBATTRVALUE>[^,]+))");
     		
-    
+    private Set<String> unrecognised_attr;
 	@Override
 	/**
 	 * Parse a single entry from the RUR log.
@@ -531,7 +535,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 						tag.setValue(STANDARD_ATTRIBUTES, map, name, value);
 					}
 					else {
-						throw new AccountingParseException("Unrecognised attribute name '" + alias + "'.");
+						unrecognised_attr.add(alias);
 					}
 				}
 			}
@@ -597,6 +601,33 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@Override
 	public void postComplete(ExpressionTargetContainer record) throws Exception {
 		// do nothing
+	}
+
+
+
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerUpdater#endParse()
+	 */
+	@Override
+	public String endParse() {
+		StringBuilder sb = new StringBuilder();
+		if( ! unrecognised_attr.isEmpty()){
+			sb.append("Unrecognised attributes: ");
+			sb.append(String.join(",", unrecognised_attr));
+		}
+		return sb.toString();
+	}
+
+
+
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerUpdater#startParse(uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer)
+	 */
+	@Override
+	public void startParse(PropertyContainer staticProps) throws Exception {
+		unrecognised_attr = new HashSet<>();
 	}
 	
 	
