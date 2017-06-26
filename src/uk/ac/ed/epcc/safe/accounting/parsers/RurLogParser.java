@@ -614,7 +614,14 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 		StringBuilder sb = new StringBuilder();
 		if( ! unrecognised_attr.isEmpty()){
 			sb.append("Unrecognised attributes: ");
-			sb.append(String.join(",", unrecognised_attr));
+			boolean seen=false;
+			for(String s : unrecognised_attr){
+				if( seen){
+					sb.append(",");
+				}
+				sb.append(s);
+				seen=true;
+			}
 		}
 		return sb.toString();
 	}
