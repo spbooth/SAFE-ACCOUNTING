@@ -592,7 +592,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 
 	@Override
 	public boolean isComplete(ExpressionTargetContainer record) {
-		// All supported plugins must be parsed
+		// All supported (That is persisted into DB) plugins must be parsed
 		PropertyTag<?>[] attrs = {ALPS_ID, ENERGY_PLUGIN,TASKSTATS_PLUGIN,MEMORY_PLUGIN,TIMESTAMP_PLUGIN};
 		return super.isComplete(record, attrs);
 	}
