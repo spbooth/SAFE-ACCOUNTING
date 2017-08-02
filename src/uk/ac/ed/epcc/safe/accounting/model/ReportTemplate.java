@@ -84,11 +84,11 @@ public class ReportTemplate extends DataObject implements Retirable{
 		return true;
 	}
 	public String getReportName() {
-		return record.getStringProperty(REPORT_NAME);
+		return getContext().expandText(record.getStringProperty(REPORT_NAME));
 	}
 	
 	public String getReportDescription() {
-		return record.getStringProperty(REPORT_DESCRIPTION);
+		return getContext().expandText(record.getStringProperty(REPORT_DESCRIPTION));
 		
 	}
 	
