@@ -37,7 +37,7 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 		this.conn=conn;
 	}
 	public static  final PropertyRegistry slurm = 
-			new PropertyRegistry("oxfordslurm","The SLURM batch properties");
+			new PropertyRegistry("slurm","The SLURM batch properties");
 
 	@AutoTable(unique=true)
 	public static final PropertyTag<String> JOB_ID = new PropertyTag<String>(slurm, "JobID", String.class,"Slurm JOB id");
