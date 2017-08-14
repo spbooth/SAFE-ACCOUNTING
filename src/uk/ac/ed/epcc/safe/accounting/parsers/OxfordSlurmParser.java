@@ -80,7 +80,7 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 	@Override
 	public boolean parse(PropertyMap map, String record) throws AccountingParseException {
 		String fields[] = record.trim().split("\\|");
-		
+		String state;
 		int pos=0;
 	    if( fields.length != 17){
 	    	throw new AccountingParseException("Wrong number of fields "+fields.length);
@@ -113,7 +113,15 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 		parseInteger(map,NNODE,fields[pos++]);
 		parseDuration(map,ELAPSED_PROP,fields[pos++]);
 		parseDuration(map,TIMELIMIT_PROP,fields[pos++]);
-		map.setProperty(STATE_PROP, fields[pos++]);
+		map.setProperty(STATE_PROP, state=fields[pos++]);
+		
+		// Illegal states
+		if( state.startsWith("RUNNING")){
+			return false;
+		}
+		if( state.startsWith("CANCELLED")){
+			return false;
+		}
 	    }catch(NumberFormatException e){
 	    	throw new AccountingParseException(e);
 	    }catch( IllegalArgumentException e2){
