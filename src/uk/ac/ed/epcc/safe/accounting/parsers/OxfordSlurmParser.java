@@ -2,7 +2,9 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
@@ -32,7 +34,9 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
  * @author spb
  *
  */
-public class OxfordSlurmParser extends BatchParser implements  Contexed {
+public class OxfordSlurmParser extends BatchParser implements  Contexed,ConfigParamProvider {
+	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
+
 	private AppContext conn;
 	public OxfordSlurmParser(AppContext conn) {
 		this.conn=conn;
@@ -80,7 +84,7 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 	public static final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
 	
 	private boolean skip_cancelled=false;
-	
+	private String table;
 	
 	@Override
 	public boolean parse(PropertyMap map, String record) throws AccountingParseException {
@@ -188,8 +192,13 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 		finder.addFinder(batch);
 		finder.addFinder(StandardProperties.time);
 		finder.addFinder(StandardProperties.base);
-		
-		skip_cancelled = conn.getBooleanParameter(table+".skip_cancelled", false);
+		this.table=table;
+		skip_cancelled = conn.getBooleanParameter(table+SKIP_CANCELLED_SUFFIX, false);
 		return finder;
+	}
+	@Override
+	public void addConfigParameters(Set<String> params) {
+		params.add(table+SKIP_CANCELLED_SUFFIX);
+		
 	}
 }
