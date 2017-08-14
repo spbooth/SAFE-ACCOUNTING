@@ -10,6 +10,7 @@ import uk.ac.ed.epcc.safe.accounting.parsers.value.DateParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.SlurmDurationParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParseException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
@@ -77,6 +78,10 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 	public static final PropertyTag<String> STATE_PROP = new PropertyTag<String>(slurm, "State", String.class);
 
 	public static final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+	
+	private boolean skip_cancelled=false;
+	
+	
 	@Override
 	public boolean parse(PropertyMap map, String record) throws AccountingParseException {
 		String fields[] = record.trim().split("\\|");
@@ -119,7 +124,7 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 		if( state.startsWith("RUNNING")){
 			return false;
 		}
-		if( state.startsWith("CANCELLED")){
+		if( skip_cancelled && state.startsWith("CANCELLED")){
 			return false;
 		}
 	    }catch(NumberFormatException e){
@@ -183,6 +188,8 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed {
 		finder.addFinder(batch);
 		finder.addFinder(StandardProperties.time);
 		finder.addFinder(StandardProperties.base);
+		
+		skip_cancelled = conn.getBooleanParameter(table+".skip_cancelled", false);
 		return finder;
 	}
 }
