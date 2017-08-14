@@ -33,6 +33,7 @@ import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableListResult;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
 
 /** Class to create ConfigUsageRecordFactory accounting tables
@@ -79,10 +80,15 @@ public class AccountingTableCreator implements FormCreator,Contexed{
 				serv.setProperty("class."+table_name, handler_tag);
 				
 				// Note that the following step is only needed if auto_table is not enabled.
-				PropertyContainerParser parser = conn.makeObject(input.getItem());
-				TableSpecification spec = parser.modifyDefaultTableSpecification(conn,new TableSpecification(),null,table_name);
-				if( spec != null ){
-					ParseUsageRecordFactory.bootstrapTable(conn, table_name, spec);
+				if( ! DataObjectFactory.AUTO_CREATE_TABLES_FEATURE.isEnabled(getContext())){
+					// This assumes that the ConfigPlugInOwner does not add any additional
+					// table specification e.g. by adding standard policies.
+					// safer to auto-create if enabled.
+					PropertyContainerParser parser = conn.makeObject(input.getItem());
+					TableSpecification spec = parser.modifyDefaultTableSpecification(conn,new TableSpecification(),null,table_name);
+					if( spec != null ){
+						ParseUsageRecordFactory.bootstrapTable(conn, table_name, spec);
+					}
 				}
 				return new TableListResult();
 			}catch(Exception e){

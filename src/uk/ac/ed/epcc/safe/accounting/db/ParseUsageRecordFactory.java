@@ -155,7 +155,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 
 		if( spec == null ){
 			Logger log = c.getService(LoggerService.class).getLogger(ParseUsageRecordFactory.class);
-			log.error("No table specificaiton in bootstrapTable");
+			log.error("No table specification in bootstrapTable");
 			return;
 		}
 		DataBaseHandlerService dbh = c.getService(DataBaseHandlerService.class);
