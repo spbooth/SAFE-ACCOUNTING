@@ -21,6 +21,7 @@ import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Labeller;
 import uk.ac.ed.epcc.webapp.content.UIGenerator;
+import uk.ac.ed.epcc.webapp.content.UIProvider;
 import uk.ac.ed.epcc.webapp.forms.Identified;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
@@ -111,6 +112,9 @@ public class ReferenceLabeller<D extends Indexed> implements Labeller<IndexedRef
 	public Object getLabel(AppContext conn,D val){
 		if( val instanceof UIGenerator){
 			return new UIWrapper((UIGenerator)val);
+		}
+		if( val instanceof UIProvider){
+			return new UIWrapper(((UIProvider)val).getUIGenerator());
 		}
 		if( val instanceof Identified){
 			return ((Identified)val).getIdentifier(conn.getIntegerParameter("referencelabeller.max_identified", 64));
