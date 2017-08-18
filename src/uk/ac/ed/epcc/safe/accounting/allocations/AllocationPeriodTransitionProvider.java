@@ -282,14 +282,23 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 			AccessorMap map = fac.getAccessorMap();
 			AndFilter fil = new AndFilter(fac.getTarget());
 			fil.addFilter(fac.getFilter(getSelector(target)));
+			
 			// Now narrow selection using relationships
 			for(ReferenceTag ref : manager.getIndexProperties()){
 				IndexedProducer prod = ref.getFactory(getContext());
 				if( prod instanceof DataObjectFactory){
 					DataObjectFactory dof = (DataObjectFactory) prod;
 					fil.addFilter(fac.getRemoteFilter(dof,map.getField(ref), sess.getRelationshipRoleFilter(dof, ALLOCATION_ADMIN_RELATIONSHIP, dof.getFinalSelectFilter())));
+//					try{
+//						fil.addFilter(map.getOrderFilter(false, new NamePropExpression(ref)));
+//					}catch(Throwable t){
+//						getLogger().error("error adding index order", t);
+//					}
 				}
+				//
 			}
+			// Add order filter (by time at the least)
+			fil.addFilter(map.getOrderFilter(false,StandardProperties.STARTED_PROP));
 			return fac.getResult(fil).iterator();
 		}
 		return manager.getIterator(getSelector(target));
