@@ -262,6 +262,7 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 				T record = it.next();
 				manager.addIndexTable(tab, record,target);
 			}
+			manager.finishIndexTable(tab, target);
 			cb.addText("Dates in red indicate records that cross the time period of the filter");
 			cb.addTable(c, tab);
 		}catch(Exception e){

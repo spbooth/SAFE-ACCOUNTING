@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -108,6 +109,8 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
 public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends ConfigUsageRecordFactory<T,R> implements
 		AllocationManager<AllocationKey<T>,T> {
 
+	private static final String END_DATE_COL = "End date";
+	private static final String START_DATE_COL = "Start date";
 	protected static final String VALUE_COL = "Value";
 	@SuppressWarnings("unchecked")
 	public static final AllocationKey UPDATE = new AllocationKey(AllocationRecord.class, "Update");
@@ -682,14 +685,23 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	}
 
 	
-
+	public void finishIndexTable(Table<String,T> tab, PropertyTarget template) {
+		LinkedList<String> order = new LinkedList<>();
+		
+		for(PropertyTag tag : getIndexProperties()){
+			order.add(getLabel(tag));
+		}
+		order.add(START_DATE_COL);
+		tab.sortRows(order.toArray(new String[order.size()]), false);
+	}
+		
 	
 	@SuppressWarnings("unchecked")
 	public   Table<String,T> addIndexTable(Table<String,T> tab, T target, PropertyTarget template) {
 		
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		tab.put("View", target, new Link(getContext(), "View", target.getViewTransition()));
-		String start_date = "Start date";
+		String start_date = START_DATE_COL;
 		tab.put(start_date, target, df.format(target.getStart()));
 
 		Date period_start = null;
@@ -701,7 +713,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			tab.addAttribute(start_date, target, "class", "warn");
 		}
 
-		String end_date = "End date";
+		String end_date = END_DATE_COL;
 		tab.put(end_date, target,df.format(target.getEnd())); 
 
 		Date period_end = null;

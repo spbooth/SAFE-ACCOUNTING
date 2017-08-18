@@ -55,6 +55,12 @@ public interface AllocationManager<K,T extends Allocation> extends UsageProducer
   */
  public Table<String,T>  addIndexTable(Table<String,T>  tab, T allocation, PropertyTarget template);
  
+ /** Apply final formatting to index table
+  * 
+  * @param tab
+  * @param template
+  */
+ public void finishIndexTable(Table<String,T>  tab,  PropertyTarget template);
  /** Build a form for filtering the Allocations in an index page 
   * only used by view_allocations.jsp
   * @param f
