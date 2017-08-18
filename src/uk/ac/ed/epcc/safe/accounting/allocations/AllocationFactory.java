@@ -689,7 +689,9 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		LinkedList<String> order = new LinkedList<>();
 		
 		for(PropertyTag tag : getIndexProperties()){
-			order.add(getLabel(tag));
+			if( template == null || template.getProperty(tag, null)==null){
+				order.add(getLabel(tag));
+			}
 		}
 		order.add(START_DATE_COL);
 		tab.sortRows(order.toArray(new String[order.size()]), false);
@@ -726,8 +728,9 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		}
 
 		for(PropertyTag tag : getListProperties()){
-		
-			addValueToTable(target, tab,getLabel(tag),target, tag);			
+			if( template == null || template.getProperty(tag, null)==null){
+				addValueToTable(target, tab,getLabel(tag),target, tag);			
+			}
 		}
 		
 		return tab;
