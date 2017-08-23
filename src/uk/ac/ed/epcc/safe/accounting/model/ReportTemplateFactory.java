@@ -43,6 +43,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderClause;
+import uk.ac.ed.epcc.webapp.jdbc.filter.SQLOrFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.IntegerFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
@@ -102,13 +103,21 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	public Set<String> getReportGroups() {
 		return reportGroups.getGroups();
 	}
-	
+	/** Get {@link ReportTemplate}s that match specified groups
+	 * 
+	 * @param group comma separated list of groups.
+	 * @return {@link FilterResult}
+	 */
 	public FilterResult<R> getTemplatesInGroup(String group) {
 		try {
-			if (group == null || !res.hasField(ReportTemplate.REPORT_GROUP)) {
+			if (group == null || group.isEmpty()|| !res.hasField(ReportTemplate.REPORT_GROUP)) {
 				return all();
 			} else {
-				return getResult(new SQLValueFilter<R>(getTarget(), res, ReportTemplate.REPORT_GROUP, group));
+				SQLOrFilter<R> fil = new SQLOrFilter<R>(getTarget());
+				for(String g : group.split("\\s*,\\s*")){
+					fil.addFilter(new SQLValueFilter<R>(getTarget(), res, ReportTemplate.REPORT_GROUP, g));
+				}
+				return getResult(fil);
 			}
 		} catch (DataFault e) {
 			return null;
@@ -160,17 +169,22 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	
 	public static class ReportGroups {
 		
+		private static final String REPORT_GROUP_INDEX_CONFIG = "report_group_index";
 		private static final String DEFAULT_GROUP_CONFIG = "default_report_group";
 		private static final String REPORT_GROUPS_CONFIG = "report_groups";
 		private final Set<String> groups = new HashSet<String>();
 		private final String default_group;
+		private final String index_list;
 		
+		
+
 		public ReportGroups(AppContext conn) {
 			String names = conn.getInitParameter(REPORT_GROUPS_CONFIG);
 			if (names != null && names.trim().length() != 0) {
 				Collections.addAll(groups, names.trim().split("\\s*,\\s*"));
 			}
 			default_group= conn.getInitParameter(DEFAULT_GROUP_CONFIG);
+			index_list = conn.getInitParameter(REPORT_GROUP_INDEX_CONFIG, default_group);
 		}
 		
 		public Set<String> getGroups() {
@@ -182,6 +196,12 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 		}
 		public String getDefaultGroup(){
 			return default_group;
+		}
+		/**
+		 * @return the index_list
+		 */
+		public String getIndexList() {
+			return index_list;
 		}
 	}
 	
@@ -206,7 +226,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	
 	public Table<String,ReportTemplate> getIndexTable() throws DataFault
 	{
-		return getReportGroupTable(reportGroups.getDefaultGroup());
+		return getReportGroupTable(reportGroups.getIndexList());
 	}
 
 	public Table<String,ReportTemplate> getReportGroupTable(String group) throws DataFault
