@@ -280,7 +280,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				builder.buildReportParametersForm(f, parameters);
 				//System.out.println("SET MAP: parameters=" + parameters + " context parameters=" + target.getContextParameters());
 				setMap(parameters, target.getContextParameters(), f, false);
-				f.addAction("Preview", new PreviewAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target));
+				if( builder.hasReportParameters()){
+					f.addAction("Preview", new PreviewAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target));
+				}
 				f.addAction("HTML", new ExportAction(conn, new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, builder, builder.getReportType("html")));
 				f.addAction("PDF", new ExportAction(conn, new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target, builder, builder.getReportType("pdf")));
 				f.addAction("CSV", new ExportAction(conn, new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, builder, builder.getReportType("csv")));
@@ -493,8 +495,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		try {
 			builder = ReportBuilder.getInstance(context);
 			ReportBuilder.setTemplate(context, builder, target.getName());
+			boolean has_form = builder.hasReportParameters();
 			params = getParameters(target, context, builder);
-			if (params != null && !target.getParameters().isEmpty()) {
+			if (! has_form || (params != null && !target.getParameters().isEmpty())) {
 				cb.addHeading(4, "Report Preview");
 				ContentBuilder report = cb.getPanel("report");
 				builder.renderContent(params, (SimpleXMLBuilder)report);
