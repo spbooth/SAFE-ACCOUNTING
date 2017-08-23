@@ -38,10 +38,13 @@ import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
+import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderClause;
+import uk.ac.ed.epcc.webapp.jdbc.table.IntegerFieldType;
+import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -65,12 +68,19 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 		this(c, "ReportTemplate");
 	}
 	public ReportTemplateFactory(AppContext c,String table) {
-		setContext(c, table);
 		reportGroups = new ReportGroups(c);
+		setContext(c, table);
 	}
 	@Override
 	protected TableSpecification getDefaultTableSpecification(AppContext c,String table){
-		return ReportTemplate.getDefaultTableSpecification(c);
+		TableSpecification s = new TableSpecification();
+		s.setField(ReportTemplate.REPORT_NAME, new StringFieldType(false, null, c.getIntegerParameter("report.template.name.length", 64)));
+		s.setField(ReportTemplate.TEMPLATE_NAME, new StringFieldType(false, null, c.getIntegerParameter("report.template.path.length", 128)));
+		s.setField(ReportTemplate.REPORT_DESCRIPTION, new StringFieldType(false, null, c.getIntegerParameter("report.template.description.length", 255)));
+		s.setField(ReportTemplate.REPORT_GROUP, new StringFieldType(true, reportGroups.getDefaultGroup(), 32));
+		s.setOptionalField(ReportTemplateFactory.SORT_PRIORITY, new IntegerFieldType(false, 50));
+		
+		return s;
 	}
 	@Override
 	protected ReportTemplate makeBDO(Record res) throws DataFault {
@@ -95,13 +105,9 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	
 	public FilterResult<R> getTemplatesInGroup(String group) {
 		try {
-			if (group == null) {
+			if (group == null || !res.hasField(ReportTemplate.REPORT_GROUP)) {
 				return all();
-			}
-			else if (!res.hasField(ReportTemplate.REPORT_GROUP)) {
-				return null;
-			}
-			else {
+			} else {
 				return getResult(new SQLValueFilter<R>(getTarget(), res, ReportTemplate.REPORT_GROUP, group));
 			}
 		} catch (DataFault e) {
@@ -152,15 +158,19 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 		
 	}
 	
-	public class ReportGroups {
+	public static class ReportGroups {
 		
-		private Set<String> groups = new HashSet<String>(); 
+		private static final String DEFAULT_GROUP_CONFIG = "default_report_group";
+		private static final String REPORT_GROUPS_CONFIG = "report_groups";
+		private final Set<String> groups = new HashSet<String>();
+		private final String default_group;
 		
 		public ReportGroups(AppContext conn) {
-			String names = conn.getInitParameter("report_groups");
+			String names = conn.getInitParameter(REPORT_GROUPS_CONFIG);
 			if (names != null && names.trim().length() != 0) {
 				Collections.addAll(groups, names.trim().split("\\s*,\\s*"));
 			}
+			default_group= conn.getInitParameter(DEFAULT_GROUP_CONFIG);
 		}
 		
 		public Set<String> getGroups() {
@@ -170,13 +180,16 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 		public boolean isGroup(String name) {
 			return groups.contains(name);
 		}
-		
+		public String getDefaultGroup(){
+			return default_group;
+		}
 	}
 	
 	@Override
 	protected Map<String, Object> getSelectors() {
 		Map<String,Object>result = new HashMap<String,Object>();
 		result.put(ReportTemplate.TEMPLATE_NAME, new TemplateNameInput());
+		result.put(ReportTemplate.REPORT_GROUP, new SetInput<String>(reportGroups.getGroups()));
 		return result;
 	}
 	public R findByFileName(String fileName) throws DataException {
@@ -193,7 +206,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	
 	public Table<String,ReportTemplate> getIndexTable() throws DataFault
 	{
-		return getReportGroupTable(null);
+		return getReportGroupTable(reportGroups.getDefaultGroup());
 	}
 
 	public Table<String,ReportTemplate> getReportGroupTable(String group) throws DataFault

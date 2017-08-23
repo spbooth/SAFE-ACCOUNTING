@@ -101,17 +101,6 @@ public class ReportTemplate extends DataObject implements Retirable{
 		
 	}
 
-	public static TableSpecification getDefaultTableSpecification(AppContext c){
-		TableSpecification s = new TableSpecification();
-		s.setField(REPORT_NAME, new StringFieldType(false, null, c.getIntegerParameter("report.template.name.length", 64)));
-		s.setField(TEMPLATE_NAME, new StringFieldType(false, null, c.getIntegerParameter("report.template.path.length", 128)));
-		s.setField(REPORT_DESCRIPTION, new StringFieldType(false, null, c.getIntegerParameter("report.template.description.length", 255)));
-		s.setField(REPORT_GROUP, new StringFieldType(true, null, 32));
-		s.setOptionalField(ReportTemplateFactory.SORT_PRIORITY, new IntegerFieldType(false, 50));
-	
-		return s;
-	}
-
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.webapp.model.data.DataObject#getIdentifier()
 	 */
