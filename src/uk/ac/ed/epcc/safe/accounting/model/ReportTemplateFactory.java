@@ -110,7 +110,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	 */
 	public FilterResult<R> getTemplatesInGroup(String group) {
 		try {
-			if (group == null || group.isEmpty()|| !res.hasField(ReportTemplate.REPORT_GROUP)) {
+			if (group == null || group.isEmpty()|| !useGroups()) {
 				return all();
 			} else {
 				SQLOrFilter<R> fil = new SQLOrFilter<R>(getTarget());
@@ -122,6 +122,12 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 		} catch (DataFault e) {
 			return null;
 		}	
+	}
+	/**
+	 * @return
+	 */
+	public boolean useGroups() {
+		return res.hasField(ReportTemplate.REPORT_GROUP);
 	}
 	
 	public class TemplateNameInput extends TextInput{
