@@ -110,9 +110,12 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	 */
 	public FilterResult<R> getTemplatesInGroup(String group) {
 		try {
-			if (group == null || group.isEmpty()|| !useGroups()) {
+			if (group == null || group.isEmpty()) {
 				return all();
 			} else {
+				if( ! useGroups()){
+					return null;
+				}
 				SQLOrFilter<R> fil = new SQLOrFilter<R>(getTarget());
 				for(String g : group.split("\\s*,\\s*")){
 					fil.addFilter(new SQLValueFilter<R>(getTarget(), res, ReportTemplate.REPORT_GROUP, g));
