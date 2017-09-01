@@ -235,7 +235,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	
 	public Table<String,ReportTemplate> getIndexTable() throws DataFault
 	{
-		return getReportGroupTable(reportGroups.getIndexList());
+		return getReportGroupTable(useGroups() ? reportGroups.getIndexList() : null);
 	}
 
 	public Table<String,ReportTemplate> getReportGroupTable(String group) throws DataFault
