@@ -91,7 +91,7 @@ public class HTMLReportParametersForm {
 		}
 		
 		// next we ...
-		return reportBuilder.parseReportParametersForm(form, conn.getService(ServletService.class).getParams());
+		return reportBuilder.extractReportParametersFromForm(form, conn.getService(ServletService.class).getParams());
 		
 	}
 

@@ -219,7 +219,7 @@ public class ReportGeneratorApp implements Command {
 					if( result == null ){
 						CommandLauncher.die("Form parse failed");
 					}
-					reportBuilder.parseReportParametersForm(f, params);
+					reportBuilder.extractReportParametersFromForm(f, params);
 					frame.dispose();
 				}else{
 					CommandLineForm f = new CommandLineForm(getContext());
@@ -237,7 +237,7 @@ public class ReportGeneratorApp implements Command {
 					if( verbose ){
 						System.err.println(f.showTable(null, null));
 					}
-					reportBuilder.parseReportParametersForm(f, params);
+					reportBuilder.extractReportParametersFromForm(f, params);
 				}
 			}
 			ByteArrayOutputStream out = new ByteArrayOutputStream();

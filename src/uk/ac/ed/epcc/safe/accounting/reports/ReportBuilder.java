@@ -588,9 +588,9 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		}
 	}
 
-	public boolean parseReportParametersForm(Form form,
+	public boolean extractReportParametersFromForm(Form form,
 			Map<String, Object> params) {
-		if (form == null) {
+		if (form == null || ! form.validate()) {
 			return false;
 		}
 

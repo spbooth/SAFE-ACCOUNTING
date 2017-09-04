@@ -382,6 +382,13 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		}
 		return vis.getMissing();
 	}
+	/** make an updated report object based on form params
+	 * 
+	 * @param f
+	 * @param orig
+	 * @return
+	 * @throws ActionException
+	 */
 	public Report getTargetReport(Form f,Report orig) throws ActionException{
 		LinkedHashMap<String,Object> new_param = new LinkedHashMap<String, Object>();
 		Map<String, Object> param = orig.getParameters();
@@ -392,7 +399,14 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		}
 		return new Report(orig.getName(), new_param, orig.getContextParameters());
 	}
-	
+	/** convert the target into the equivalent of the parse
+	 * 
+	 * @param target
+	 * @param c
+	 * @param builder
+	 * @return
+	 * @throws Exception
+	 */
 	private Map<String, Object> getParameters(Report target, AppContext c, ReportBuilder builder) throws Exception 
 	{
 		Map<String, Object> reportParameters = target.getParameters();
@@ -403,8 +417,13 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		if (setMap(reportParameters, null, form, false)) {
 			return null;
 		}
+		if( ! form.validate()){
+			// important check the target params would validate otherwise we bypass
+			// access control
+			return null;
+		}
 		Map<String, Object> params = new HashMap<String, Object>(reportParameters);
-		boolean isValid = builder.parseReportParametersForm(form, params);
+		boolean isValid = builder.extractReportParametersFromForm(form, params);
 		if (!isValid) {
 			return null;
 		}

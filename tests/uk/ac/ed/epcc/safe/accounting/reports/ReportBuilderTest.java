@@ -115,7 +115,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		assertTrue(form.validate());
 		
 		// Get the params values from the Form
-		reportBuilder.parseReportParametersForm(form, params);
+		reportBuilder.extractReportParametersFromForm(form, params);
 		
 		// render the form
 		params.put("ReportType", "html");
@@ -173,7 +173,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		
 		assertTrue(form.validate());
 		// Get the params values from the Form
-		reportBuilder.parseReportParametersForm(form, params);
+		reportBuilder.extractReportParametersFromForm(form, params);
 		
 		// render the form
 		params.put("ReportType", "html");
