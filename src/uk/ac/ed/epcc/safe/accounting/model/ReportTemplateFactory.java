@@ -188,12 +188,13 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 		
 
 		public ReportGroups(AppContext conn) {
-			String names = conn.getInitParameter(REPORT_GROUPS_CONFIG);
+			String names = conn.getExpandedProperty(REPORT_GROUPS_CONFIG);
 			if (names != null && names.trim().length() != 0) {
 				Collections.addAll(groups, names.trim().split("\\s*,\\s*"));
 			}
 			default_group= conn.getInitParameter(DEFAULT_GROUP_CONFIG);
-			index_list = conn.getInitParameter(REPORT_GROUP_INDEX_CONFIG, default_group);
+			index_list = conn.getExpandedProperty(REPORT_GROUP_INDEX_CONFIG, default_group);
+			
 		}
 		
 		public Set<String> getGroups() {
@@ -282,7 +283,8 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	protected void postCreateTableSetup(AppContext c, String table) {
 		String list = c.getInitParameter("initial_reports."+table);
 		if( list != null && ! list.trim().isEmpty()){
-			for(String base : list.split(",")){
+			for(String base : list.split("\\s*,\\s*")){
+				if( ! base.isEmpty()){
 				try{
 					String template = base;
 					if( ! template.endsWith(".xml")){
@@ -302,6 +304,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 					temp.commit();
 				}catch(Throwable t){
 					getLogger().error("Error bootstrapping report "+base, t);
+				}
 				}
 			}
 		}
