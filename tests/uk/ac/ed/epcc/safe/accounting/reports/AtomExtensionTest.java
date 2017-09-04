@@ -51,7 +51,7 @@ public class AtomExtensionTest extends WebappTestBase {
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
-		reportBuilder.setupExtensions(reportBuilder.getReportType("XML"),params);
+		reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
 		reportBuilder.buildReportParametersForm(form, params);
 		
 		// render the form
@@ -81,7 +81,7 @@ public class AtomExtensionTest extends WebappTestBase {
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
-		reportBuilder.setupExtensions(reportBuilder.getReportType("XML"),params);
+		reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
 		reportBuilder.buildReportParametersForm(form, params);
 		
 		// render the form
@@ -111,7 +111,7 @@ public class AtomExtensionTest extends WebappTestBase {
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
-		reportBuilder.setupExtensions(reportBuilder.getReportType("XML"),params);
+		reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
 		reportBuilder.buildReportParametersForm(form, params);
 		
 		// render the form
@@ -141,7 +141,7 @@ public class AtomExtensionTest extends WebappTestBase {
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
-		reportBuilder.setupExtensions(reportBuilder.getReportType("XML"),params);
+		reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
 		reportBuilder.buildReportParametersForm(form, params);
 		
 		// render the form
@@ -171,7 +171,7 @@ public class AtomExtensionTest extends WebappTestBase {
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
-		reportBuilder.setupExtensions(reportBuilder.getReportType("XML"),params);
+		reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
 		reportBuilder.buildReportParametersForm(form, params);
 		
 		// render the form
@@ -202,7 +202,7 @@ public class AtomExtensionTest extends WebappTestBase {
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
-		reportBuilder.setupExtensions(reportBuilder.getReportType("XML"),params);
+		reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
 		reportBuilder.buildReportParametersForm(form, params);
 		
 		// render the form
@@ -230,7 +230,7 @@ public class AtomExtensionTest extends WebappTestBase {
 				ReportBuilderTest.setupParams(ctx,params);
 				
 				ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
-				reportBuilder.setupExtensions(reportBuilder.getReportType("XML"),params);
+				reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
 				reportBuilder.buildReportParametersForm(form, params);
 				
 				// render the form
@@ -258,7 +258,7 @@ public class AtomExtensionTest extends WebappTestBase {
 				ReportBuilderTest.setupParams(ctx,params);
 				
 				ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
-				reportBuilder.setupExtensions(reportBuilder.getReportType("XML"),params);
+				reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
 				reportBuilder.buildReportParametersForm(form, params);
 				
 				// render the form

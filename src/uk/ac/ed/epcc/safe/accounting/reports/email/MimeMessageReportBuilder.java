@@ -40,6 +40,7 @@ import uk.ac.ed.epcc.safe.accounting.reports.DeveloperReportType;
 import uk.ac.ed.epcc.safe.accounting.reports.EmbeddedExtension;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
+import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
@@ -57,11 +58,7 @@ import uk.ac.ed.epcc.webapp.model.data.stream.MimeStreamDataWrapper;
  *
  */
 public class MimeMessageReportBuilder extends ReportBuilder{
-	// email embedded html. Don't change the mime type as some email clients 
-	// only recognise text/html content.
-	public static final ReportType	MHTML = new DeveloperReportType("MHTML","html","text/html","HTML email part");
-	public static final ReportType	MTXT = new DeveloperReportType("MTXT","txt","text/plain","Text email part");
-//  
+	
 	
 	/* Having real trouble getting a mime structure that works in outlook
 	 * 
@@ -91,7 +88,7 @@ public class MimeMessageReportBuilder extends ReportBuilder{
 	private final Logger log;
 	private final Map<String,Object> params;
 	public MimeMessageReportBuilder(AppContext conn,String report_template,Map<String,Object> params) throws URISyntaxException, ParserConfigurationException, DataFault, InvalidArgument, TransformerFactoryConfigurationError, TransformerException {
-		super(conn);
+		super(new MailReportTypeRegistry(conn));
 		
 		log = getContext().getService(LoggerService.class).getLogger(getClass());
 		this.report_template=report_template;
@@ -189,7 +186,7 @@ public class MimeMessageReportBuilder extends ReportBuilder{
 		MimeMultipart alternatives = new MimeMultipart("alternative");
 		
 		for( String type : reportTypes){
-			ReportType reportType = getReportType(type);
+			ReportType reportType = getReportTypeReg().getReportType(type);
 			if( reportType == null ){
 				log.error("Unknown report type "+type);
 			}else{
@@ -209,7 +206,7 @@ public class MimeMessageReportBuilder extends ReportBuilder{
 	 */
 	public void addAttachments(MimeMultipart mp, String ... reportTypes) throws Exception{
 		for( String type : reportTypes){
-			ReportType reportType = getReportType(type);
+			ReportType reportType = getReportTypeReg().getReportType(type);
 			
 			MimeBodyPart rep = makeReport(reportType,Part.ATTACHMENT);
 			mp.addBodyPart(rep);
@@ -229,12 +226,23 @@ public class MimeMessageReportBuilder extends ReportBuilder{
 		return frag;
 	}
 	
-	@Override
-	protected Set<ReportType> getSpecialReportTypes() {
-		Set<ReportType> s = super.getSpecialReportTypes();
-		s.add(MHTML);
-		s.add(MTXT);
-		return s;
+	
+	public static class MailReportTypeRegistry extends ReportTypeRegistry{
+		// email embedded html. Don't change the mime type as some email clients 
+		// only recognise text/html content.
+		public static final ReportType	MHTML = new DeveloperReportType("MHTML","html","text/html","HTML email part");
+		public static final ReportType	MTXT = new DeveloperReportType("MTXT","txt","text/plain","Text email part");
+	//  
+		public MailReportTypeRegistry(AppContext conn) {
+			super(conn);
+		}
+		@Override
+		protected Set<ReportType> getSpecialReportTypes() {
+			Set<ReportType> s = super.getSpecialReportTypes();
+			s.add(MHTML);
+			s.add(MTXT);
+			return s;
+		}
 	}
 
 }

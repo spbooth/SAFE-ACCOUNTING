@@ -205,7 +205,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		reportBuilder.buildReportParametersForm(form, params);
 		
 		// render the form
-		params.put(ReportBuilder.REPORT_TYPE_PARAM, reportBuilder.getReportType("html"));
+		params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, reportBuilder.getReportTypeReg().getReportType("html"));
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		reportBuilder.renderXML(params, out);
@@ -269,7 +269,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		reportBuilder.buildReportParametersForm(form, params);
 
 		// render the form
-		params.put(ReportBuilder.REPORT_TYPE_PARAM, reportBuilder.getReportType("pdf"));
+		params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, reportBuilder.getReportTypeReg().getReportType("pdf"));
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		reportBuilder.renderXML(params,out);
@@ -299,7 +299,7 @@ public class ReportBuilderTest extends WebappTestBase {
 
 		// render the form
 	
-		params.put(ReportBuilder.REPORT_TYPE_PARAM, reportBuilder.getReportType("csv"));
+		params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, reportBuilder.getReportTypeReg().getReportType("csv"));
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		reportBuilder.renderXML(params, out);

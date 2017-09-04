@@ -800,7 +800,7 @@ public void testParameterUserExpression() throws Exception {
 
 		// Get the params values from the Form
 		reportBuilder.parseReportParametersForm(form, params);	
-		params.put("ReportType", reportBuilder.HTML);
+		params.put("ReportType", ReportTypeRegistry.HTML);
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		reportBuilder.renderXML(params, out);
@@ -834,7 +834,7 @@ public void testParameterReportType2() throws Exception {
 
 		// Get the params values from the Form
 		reportBuilder.parseReportParametersForm(form, params);	
-		params.put("ReportType", reportBuilder.getReportType("XML"));
+		params.put("ReportType", reportBuilder.getReportTypeReg().getReportType("XML"));
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		reportBuilder.renderXML(params, out);
@@ -870,7 +870,7 @@ public void testParameterReportType3() throws Exception {
 
 	// Get the params values from the Form
 	reportBuilder.parseReportParametersForm(form, params);	
-	params.put("ReportType", reportBuilder.getReportType("CSV"));
+	params.put("ReportType", reportBuilder.getReportTypeReg().getReportType("CSV"));
 	// render the form
 	ByteArrayOutputStream out = new ByteArrayOutputStream();
 	reportBuilder.renderXML(params, out);

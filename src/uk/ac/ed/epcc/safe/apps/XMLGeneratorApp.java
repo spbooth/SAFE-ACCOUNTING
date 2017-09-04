@@ -39,6 +39,7 @@ import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.ogf.ur.XMLSplitter;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
+import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.apps.Command;
@@ -219,8 +220,8 @@ public class XMLGeneratorApp implements Command {
 			Logger log = conn.getService(LoggerService.class).getLogger(getClass());
 			ReportBuilder reportBuilder = ReportBuilder.getInstance(conn);
 			ReportBuilder.setTemplate(conn, reportBuilder, reportTemplateFileName);
-			ReportType reportType =reportBuilder.getReportType("OGFXML");
-			params.put(ReportBuilder.REPORT_TYPE_PARAM, reportType);
+			ReportType reportType =reportBuilder.getReportTypeReg().getReportType("OGFXML");
+			params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, reportType);
 			
 			int skip=0;
 			int count=100;

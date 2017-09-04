@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
+import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
 import uk.ac.ed.epcc.safe.accounting.reports.forms.html.HTMLReportParametersForm;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
@@ -115,10 +116,10 @@ public class ReportServlet extends SessionServlet {
 			Object type = report_params.get("submit");
 			if (type instanceof String) {
 				if (((String)type).startsWith("Preview")) {
-					reportType = builder.HTML;
+					reportType = ReportTypeRegistry.HTML;
 				}
 				else {
-					reportType = builder.getReportType(((String)type).replace("Export as ", ""));
+					reportType = builder.getReportTypeReg().getReportType(((String)type).replace("Export as ", ""));
 				}
 			}
 //			if( type != null ){
@@ -130,10 +131,10 @@ public class ReportServlet extends SessionServlet {
 //			}
 
 			if( reportType == null ){
-				reportType = builder.getTemplateType(templateFileName);
+				reportType = builder.getReportTypeReg().getTemplateType(templateFileName);
 			}
 			if (reportType == null && DEFAULT_REPORT_TYPE_FEATURE.isEnabled(conn)) {
-				reportType=builder.HTML;
+				reportType=ReportTypeRegistry.HTML;
 			}
 			if( reportType != null){
 				report_params.put("ReportType", reportType);
@@ -231,7 +232,7 @@ public class ReportServlet extends SessionServlet {
 						
 						ByteArrayMimeStreamData raw = new ByteArrayMimeStreamData();
 						raw.setMimeType("text/xml");
-						ReportType type = builder.getReportType("RXML");
+						ReportType type = builder.getReportTypeReg().getReportType("RXML");
 						builder.renderXML(type, report_params, type.getResult(conn,raw.getOutputStream()));
 						result = new ServeDataResult(producer, producer.setData(raw));
 					}catch(Throwable t){

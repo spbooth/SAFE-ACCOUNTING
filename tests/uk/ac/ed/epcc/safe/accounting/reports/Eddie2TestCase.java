@@ -44,7 +44,7 @@ public class Eddie2TestCase extends WebappTestBase {
 		ReportBuilder builder = new ReportBuilder(ctx,"ProjectUsage.xml","report.xsd");
 		Map<String,Object> params=new HashMap<String,Object>();	
 	    setupParams(ctx, params);
-	    builder.setupExtensions(builder.getReportType("XML"),params);
+	    builder.setupExtensions(builder.getReportTypeReg().getReportType("XML"),params);
 	    params.put("StartDate", new Date(110,9,1));
 	    params.put("EndDate", new Date(110,10,1));
 	    params.put("Project","ecdf_physics");

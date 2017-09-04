@@ -31,6 +31,7 @@ import javax.swing.JFrame;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
+import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.apps.Command;
 import uk.ac.ed.epcc.webapp.apps.CommandLauncher;
@@ -185,8 +186,8 @@ public class ReportGeneratorApp implements Command {
 		try {			
 			ReportBuilder reportBuilder = ReportBuilder.getInstance(conn);
 			ReportBuilder.setTemplate(conn, reportBuilder, reportTemplateFileName);
-			ReportType reportType =reportBuilder.getReportType(type);
-			params.put(ReportBuilder.REPORT_TYPE_PARAM, reportType);
+			ReportType reportType =reportBuilder.getReportTypeReg().getReportType(type);
+			params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, reportType);
 			reportBuilder.setupExtensions(reportType,params);
 			if( reportBuilder.hasReportParameterDefs()){
 				if( gui){

@@ -1,21 +1,19 @@
 // Copyright - The University of Edinburgh 2015
 package uk.ac.ed.epcc.safe.accounting.reports.email;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Scanner;
 
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -29,7 +27,6 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.junit.Test;
 
-import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.WebappTestBase;
 import uk.ac.ed.epcc.webapp.content.TemplateFile;
 import uk.ac.ed.epcc.webapp.email.Emailer;
@@ -44,8 +41,8 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 		Map params = new HashMap();
 		MimeMessageReportBuilder builder = new MimeMessageReportBuilder(ctx, "complex", params);
 		
-		assertEquals(builder.getReportType("MHTML"),MimeMessageReportBuilder.MHTML);
-		assertEquals(builder.getReportType("MTXT"),MimeMessageReportBuilder.MTXT);
+		assertEquals(builder.getReportTypeReg().getReportType("MHTML"),MimeMessageReportBuilder.MailReportTypeRegistry.MHTML);
+		assertEquals(builder.getReportTypeReg().getReportType("MTXT"),MimeMessageReportBuilder.MailReportTypeRegistry.MTXT);
 	}
 	
 	
@@ -62,7 +59,7 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 //		MimeBodyPart text = new MimeBodyPart();
 //		text.setText("Here is some text\nSome more text\n");
 //		mp.addBodyPart(text);
-		mp.addBodyPart(builder.makeReport(MimeMessageReportBuilder.MHTML, Part.INLINE));
+		mp.addBodyPart(builder.makeReport(MimeMessageReportBuilder.MailReportTypeRegistry.MHTML, Part.INLINE));
 		message.setContent(mp);
 		
 		

@@ -160,8 +160,8 @@ public class ChartExtensionTest extends ExtensionTestCase {
 
 		ReportBuilder reportBuilder = new ReportBuilder(ctx, templateName,
 				"report.xsd");
-		ReportType reportType=reportBuilder.getReportType(type);
-		params.put(ReportBuilder.REPORT_TYPE_PARAM, reportType);
+		ReportType reportType=reportBuilder.getReportTypeReg().getReportType(type);
+		params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, reportType);
 		reportBuilder.setupExtensions(reportType,params);
 		reportBuilder.buildReportParametersForm(form, params);
 

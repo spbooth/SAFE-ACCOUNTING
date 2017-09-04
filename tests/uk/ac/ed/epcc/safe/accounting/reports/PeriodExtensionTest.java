@@ -125,7 +125,7 @@ public class PeriodExtensionTest extends ExtensionTestCase {
 		ReportBuilderTest.setupParams(ctx, params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
-		ReportType reportType = reportBuilder.getReportType(type);
+		ReportType reportType = reportBuilder.getReportTypeReg().getReportType(type);
 		params.put("ReportType", reportType);
 		reportBuilder.setupExtensions(reportType,params);
 		reportBuilder.buildReportParametersForm(form, params);

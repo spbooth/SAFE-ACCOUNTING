@@ -31,6 +31,7 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
+import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
 import uk.ac.ed.epcc.safe.accounting.servlet.DeveloperResult;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.config.OverrideConfigService;
@@ -89,22 +90,29 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	}
 
 	
-	public static final ReportTemplateKey PREVIEW = new ReportTemplateKey("View", "Update report parameters")
-	{
-		
+	public static final ReportTemplateKey PREVIEW = new ReportTemplateViewKey("View", "Update report parameters");
+	public static final ReportTemplateKey HTML = new ReportTemplateViewKey("HTML", "Generate HTML");
+	public static final ReportTemplateKey PDF = new ReportTemplateViewKey("PDF", "Generate PDF");
+	public static final ReportTemplateKey CSV = new ReportTemplateViewKey("CSV", "Generate CSV");
+
+	private static final class ReportTemplateViewKey extends ReportTemplateKey {
+		private ReportTemplateViewKey(String name, String help) {
+			super(name, help);
+		}
+
 		@Override
 		public boolean allow(AppContext c, Report target) 
 		{
 			return target != null && canView(c, target);
 		}
-	};
+	}
 
 	public class ExportTransition extends AbstractDirectTransition<Report>{
 		
-		private String extension;
+		private ReportType type;
 
-		public ExportTransition(String reportType) {
-			this.extension = reportType;
+		public ExportTransition(ReportType reportType) {
+			this.type = reportType;
 		}
 
 		@Override
@@ -112,21 +120,26 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				throws TransitionException 
 		{
 			try {
-				target.setExtension(extension);
+				target.setExtension(type.getExtension());
 				ReportBuilder builder = ReportBuilder.getInstance(c);
 				ReportBuilder.setTemplate(c, builder, target.getName());
-				ReportType reportType = builder.getReportType(extension);
+		
 				Map<String, Object> params = getParameters(target, c, builder);
-
+				ServletService ss = getContext().getService(ServletService.class);
+				String css_path = getContext().getInitParameter("css.path","css/webapp.css");
+				if( ss != null){
+					css_path = ss.encodeURL("/"+css_path);
+				}
+				params.put("CssPath", css_path);
 				if( params != null && ! builder.hasErrors())
 				{
-					builder.setupExtensions(reportType, params);
-					params.put(ReportBuilder.REPORT_TYPE_PARAM, reportType);
+					builder.setupExtensions(type, params);
+					params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, type);
 					OutputStream out = new ByteArrayOutputStream();
 					builder.renderXML(params, out);
 					ByteArrayMimeStreamData msd = new ByteArrayMimeStreamData(((ByteArrayOutputStream)out).toByteArray());
-					msd.setMimeType(reportType.getMimeType());
-					msd.setName(target.getName() + "."+reportType.getExtension());
+					msd.setMimeType(type.getMimeType());
+					msd.setName(target.getName() + "."+type.getExtension());
 					SettableServeDataProducer producer = getContext().makeObjectWithDefault(
 							SettableServeDataProducer.class, SessionDataProducer.class, SERVE_DATA_DEFAULT_TAG);
 					return new ServeDataResult(producer, producer.setData(msd));
@@ -143,14 +156,15 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	public class PreviewTransition 
 	extends AbstractFormTransition<Report> implements ExtraContent<Report>
 	{
-
-		public class PreviewAction extends FormAction{
+		public class NextAction extends FormAction{
 			private Report target;
 			private Object text;
-			public PreviewAction(Object text,Report target) {
+			private ReportTemplateKey next_transition;
+			public NextAction(Object text,Report target,ReportTemplateKey next_transition) {
 				super();
 				this.text=text;
 				this.target = target;
+				this.next_transition=next_transition;
 			}
 
 			@Override
@@ -158,7 +172,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				return new ChainedTransitionResult<Report, ReportTemplateKey>(
 						ReportTemplateTransitionProvider.this, 
 						getTargetReport(f,target), 
-						ReportTemplateTransitionProvider.PREVIEW) {
+						next_transition) {
 					@Override
 					public boolean useURL() {
 						return true;
@@ -183,91 +197,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			
 		}
 
-		public class ExportAction extends FormAction 
-		{
-			private final Object text;
-			private final Report target;
-			private final ReportBuilder builder;
-			private final ReportType reportType;
-			private final AppContext context;
-
-			public ExportAction(AppContext context, Object text,Report target, ReportBuilder builder, ReportType format) {
-				super();
-				this.text=text;
-				this.target = target;
-				this.builder = builder;
-				this.reportType = format;
-				this.context = context;
-			}
-
-			@Override
-			public FormResult action(Form f) throws ActionException 
-			{
-				boolean isReportDev = isReportDeveloper(context.getService(SessionService.class));
-				boolean hasErrors = false;
-				BufferLoggerService logService = null;
-				FormResult result = null;
-				if (isReportDev) 
-				{
-					logService = new BufferLoggerService(context);
-					context.setService(logService);
-					Properties props = new Properties();
-					props.setProperty("service.feature.log_query", "on");
-					context.setService(new OverrideConfigService(props, context));
-				}
-
-				Map<String, Object> reportParameters = target.getParameters();
-				ServletService ss = getContext().getService(ServletService.class);
-				String css_path = getContext().getInitParameter("css.path","css/webapp.css");
-				if( ss != null){
-					css_path = ss.encodeURL("/"+css_path);
-				}
-				reportParameters.put("CssPath", css_path);
-				builder.parseReportParametersForm(f, reportParameters);
-				try {
-					if( ! builder.hasErrors()){
-						builder.setupExtensions(reportType, reportParameters);
-						reportParameters.put(ReportBuilder.REPORT_TYPE_PARAM, reportType);
-						OutputStream out = new ByteArrayOutputStream();
-						builder.renderXML(reportParameters, out);
-						ByteArrayMimeStreamData msd = new ByteArrayMimeStreamData(((ByteArrayOutputStream)out).toByteArray());
-						msd.setMimeType(reportType.getMimeType());
-						msd.setName(target.getName() + "."+reportType.getExtension());
-						SettableServeDataProducer producer = getContext().makeObjectWithDefault(
-								SettableServeDataProducer.class, SessionDataProducer.class, SERVE_DATA_DEFAULT_TAG);
-						result = new ServeDataResult(producer, producer.setData(msd));
-					}
-					else {
-						hasErrors = true;
-					}
-				} catch (Exception e) {
-					getLogger().error("Error generating report for type " + reportType, e);
-					hasErrors = true;
-				}
-				if (isReportDev) {
-					DeveloperResults devResults = developerResults(getContext(), logService, builder, hasErrors, reportParameters);
-					result = new DeveloperResult(hasErrors ? devResults.getResult() : result , devResults.getLogs(), devResults.getErrors(), hasErrors);
-				}
-				return result;
-			}
-
-			/* (non-Javadoc)
-			 * @see uk.ac.ed.epcc.webapp.forms.action.FormAction#getText()
-			 */
-			@Override
-			public Object getText() {
-				return text;
-			}
-
-			/* (non-Javadoc)
-			 * @see uk.ac.ed.epcc.webapp.forms.action.FormAction#getHelp()
-			 */
-			@Override
-			public String getHelp() {
-				return "Generate "+text;
-			}
-			
-		}
+		
 		
 		@Override
 		public void buildForm(Form f, Report target, AppContext conn)
@@ -281,13 +211,15 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				//System.out.println("SET MAP: parameters=" + parameters + " context parameters=" + target.getContextParameters());
 				setMap(parameters, target.getContextParameters(), f, false);
 				if( builder.hasReportParameters()){
-					f.addAction("Preview", new PreviewAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target));
+					f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,PREVIEW));
 				}
-				f.addAction("HTML", new ExportAction(conn, new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, builder, builder.getReportType("html")));
-				f.addAction("PDF", new ExportAction(conn, new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target, builder, builder.getReportType("pdf")));
-				f.addAction("CSV", new ExportAction(conn, new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, builder, builder.getReportType("csv")));
+				//f.addAction("HTML", new ExportAction(conn, new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, builder, builder.getReportTypeReg().getReportType("html")));
+				//f.addAction("PDF", new ExportAction(conn, new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target, builder, builder.getReportTypeReg().getReportType("pdf")));
+				//f.addAction("CSV", new ExportAction(conn, new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, builder, builder.getReportTypeReg().getReportType("csv")));
 				
-				
+				f.addAction("HTML", new NextAction(new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, HTML));
+				f.addAction("PDF", new NextAction(new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target,PDF));
+				f.addAction("CSV", new NextAction(new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, CSV));
 				
 			}
 			catch (Exception e) {
@@ -321,8 +253,12 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	
 	public ReportTemplateTransitionProvider(AppContext conn){
 		super(conn);
+		ReportTypeRegistry reg = new ReportTypeRegistry(conn);
 		this.fac = new ReportTemplateFactory<ReportTemplate>(conn);
      	addTransition(PREVIEW, new PreviewTransition());
+     	addTransition(HTML, new ExportTransition(ReportTypeRegistry.HTML));
+     	addTransition(PDF, new ExportTransition(reg.getReportType("pdf")));
+     	addTransition(CSV, new ExportTransition(reg.getReportType("csv")));
     }
 
 	@Override
@@ -570,7 +506,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			try {
 				ByteArrayMimeStreamData raw = new ByteArrayMimeStreamData();
 				raw.setMimeType("text/xml");
-				ReportType type = builder.getReportType("RXML");
+				ReportType type = builder.getReportTypeReg().getReportType("RXML");
 				builder.renderXML(type, reportParameters, type.getResult(conn,raw.getOutputStream()));
 				result = new ServeDataResult(producer, producer.setData(raw));
 			} catch(Throwable t) {

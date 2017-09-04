@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
-import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder.ReportTypeInput;
+import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry.ReportTypeInput;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
@@ -46,7 +46,7 @@ public class HTMLReportParametersForm {
 		reportBuilder.buildReportParametersForm(htmlForm, params);
 		if( type == null ){
 			// force a type parameter if we don't already have a type
-			ReportTypeInput input = reportBuilder.new ReportTypeInput();
+			ReportTypeInput input = reportBuilder.getReportTypeReg().new ReportTypeInput();
 			input.setOptional(false);
 //			htmlForm.addInput(ReportBuilder.REPORT_TYPE_PARAM, "Display Format",input );
 		}
@@ -58,7 +58,7 @@ public class HTMLReportParametersForm {
 	}
 	
 	public Iterator<ReportType> getReportTypes() {
-		ReportTypeInput input = reportBuilder.new ReportTypeInput();
+		ReportTypeInput input = reportBuilder.getReportTypeReg().new ReportTypeInput();
 		return input.getItems();
 	}
 	
