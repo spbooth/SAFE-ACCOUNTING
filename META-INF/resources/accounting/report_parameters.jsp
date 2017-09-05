@@ -32,7 +32,7 @@
 			if (type instanceof ReportType) {
 				reportType = (ReportType) type;
 			} else {
-				reportType = builder.getReportType(type.toString());
+				reportType = builder.getReportTypeReg().getReportType(type.toString());
 			}
 		}
 
