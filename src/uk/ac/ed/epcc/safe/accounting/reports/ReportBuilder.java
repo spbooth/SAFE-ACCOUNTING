@@ -472,8 +472,19 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		params.put("User", user);
 	}
 	public void register(ReportExtension re){
-		error_sets.add(re.getErrors());
+		ErrorSet errors = re.getErrors();
+		if( errors != null){
+			error_sets.add(errors);
+		}else{
+			getLogger().error("Adding null ErrorSet from "+re.getClass().getSimpleName());
+		}
 		validators.add(re);
+	}
+	/**
+	 * @return
+	 */
+	private Logger getLogger() {
+		return getContext().getService(LoggerService.class).getLogger(getClass());
 	}
 	public void setupExtensions(Map<String,Object> params) throws ParserConfigurationException{
 		setupExtensions(ReportTypeRegistry.HTML, params);
@@ -798,7 +809,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		// We capture these to an ErrorSet 
 		// arguably we could just re-throw to prevent the errors being captured
 		// however this does allow us to capture multple errors and display them together
-		Logger log =getContext().getService(LoggerService.class).getLogger(getClass());
+		Logger log =getLogger();
 		ErrorSet error_set = new ErrorSet();
 		ErrorSetErrorListener listener = new ErrorSetErrorListener(name!=null?name:"identity", log, error_set);
 		error_sets.add(error_set);
