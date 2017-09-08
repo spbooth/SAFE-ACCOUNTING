@@ -254,9 +254,8 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		}
 		// Get the stylesheets to use the local URIs to find resources.
 		tFactory.setURIResolver(new Resolver());
-		error_sets=new HashSet<ErrorSet>();
-		general_error=new ErrorSet();
-		error_sets.add(general_error);
+		resetErrors();
+		
 		validators=new LinkedHashSet<TemplateValidator>();
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
 		.newInstance();
@@ -286,6 +285,16 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 				log.error("Error making ReportType "+name,t);
 			}
 		}
+	}
+	/**
+	 * 
+	 */
+	private void resetErrors() {
+		error_sets=new HashSet<ErrorSet>();
+		general_error=new ErrorSet();
+		general_error.setMaxDetails(16);
+		general_error.setMaxEntry(16);
+		error_sets.add(general_error);
 	}
 
 	/** Constructor for tests
@@ -326,6 +335,10 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			ParserConfigurationException, InvalidArgument,
 			TransformerFactoryConfigurationError, TransformerException {
 
+		if( template != null){
+			resetErrors();
+			param_document=null;
+		}
 		if (template_name == null || template_name.trim().length() == 0) {
 			throw new InvalidArgument("null template specified");
 		}

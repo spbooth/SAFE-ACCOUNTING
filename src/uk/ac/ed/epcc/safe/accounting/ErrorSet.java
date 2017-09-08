@@ -136,6 +136,7 @@ public class ErrorSet
   private java.util.Map<String, Entry> reg = new TreeMap<String, Entry>();
 
   private int max_details=-1;
+  private int max_entry=-1;
   public int size()
   {
     return reg.size();
@@ -166,16 +167,20 @@ public class ErrorSet
 
   public void add(String text, String data, Throwable t)
   {
-    Entry e;
+    Entry e=null;
     if(reg.containsKey(text))
     {
       e = reg.get(text);
     } else
     {
-      e = new Entry(text,max_details);
-      reg.put(text, e);
+      if( reg.size() < max_entry){
+    	  e = new Entry(text,max_details);
+    	  reg.put(text, e);
+      }
     }
-    e.add(data, t);
+    if(e != null){
+    	e.add(data, t);
+    }
   }
 
   @Override
@@ -332,4 +337,11 @@ public class ErrorSet
 		  it.remove();
 	  }
   }
+
+/**
+ * @param max_entry the max_entry to set
+ */
+public void setMaxEntry(int max_entry) {
+	this.max_entry = max_entry;
+}
 }

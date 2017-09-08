@@ -143,6 +143,8 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		doc = builder.newDocument();
 		errors=new ErrorSet();
 		errors.setName(getClass().getName());
+		errors.setMaxDetails(16);
+		errors.setMaxEntry(16);
 		LoggerService loggin_serv = conn.getService(LoggerService.class);
 		if( loggin_serv == null){
 			log=null;
