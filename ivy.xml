@@ -35,7 +35,9 @@
 		<dependency org="org.apache.xmlgraphics" name="fop" rev="2.2">
 		   <artifact name="fop" ext="jar"/>
 		</dependency>
-		
+		<dependency org="mysql" name="mysql-connector-java" rev="5.1.42">
+    		<artifact name="mysql-connector-java" ext="jar"/>
+		</dependency>
 		<dependency org="junit" name="junit" rev="4.11">
     		<artifact name="junit" ext="jar"/>
 		</dependency>
