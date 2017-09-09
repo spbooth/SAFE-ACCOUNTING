@@ -38,6 +38,9 @@
 		<dependency org="mysql" name="mysql-connector-java" rev="5.1.42">
     		<artifact name="mysql-connector-java" ext="jar"/>
 		</dependency>
+		<dependency org="org.jfree" name="jfreechart" rev="1.0.19">
+    		<artifact name="jfreechart" ext="jar"/>
+		</dependency>
 		<dependency org="junit" name="junit" rev="4.11">
     		<artifact name="junit" ext="jar"/>
 		</dependency>
