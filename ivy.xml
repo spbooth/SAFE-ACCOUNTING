@@ -41,6 +41,12 @@
 		<dependency org="org.jfree" name="jfreechart" rev="1.0.19">
     		<artifact name="jfreechart" ext="jar"/>
 		</dependency>
+		<dependency org="org.jfree" name="jcommon" rev="1.0.24">
+    		<artifact name="jcommon" ext="jar"/>
+		</dependency>
+		<dependency org="org.incava" name="java-diff" rev="1.1">
+    		<artifact name="java-diff" ext="jar"/>
+		</dependency>
 		<dependency org="junit" name="junit" rev="4.11">
     		<artifact name="junit" ext="jar"/>
 		</dependency>
