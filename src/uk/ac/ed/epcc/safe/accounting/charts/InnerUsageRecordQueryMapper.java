@@ -38,8 +38,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** QueryMapper that plots property data based on the record being entirely within
- * the target range. note that this will net generate sensible plots by itself it
- * Any records overlapping the ends of the target period need to be added using a transform.
+ * the target range. note that this will not generate sensible plots by itself,
+ * any records overlapping the ends of the target period need to be added using a transform.
  * 
  * We are using the convention from {@link OverlapHandler} that AVG means a time average so that
  * in that case records need to be scaled by the fraction of the period they overlap. 
@@ -59,24 +59,27 @@ public class InnerUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
     private final PropExpression<Date> end_prop;
     private final RecordSelector sel;
     private final Reduction red;
-	public InnerUsageRecordQueryMapper(AppContext conn,RecordSelector sel,PropExpression<K> key_prop, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,PropertyKeyLabeller<K> lab) {
+    private final long cutoff;
+	public InnerUsageRecordQueryMapper(AppContext conn,RecordSelector sel,PropExpression<K> key_prop, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,long cutoff,PropertyKeyLabeller<K> lab) {
 		super(lab);
 		this.sel=sel;
 		this.key_prop=key_prop;
 		this.plot_prop=plot_prop;
 		this.start_prop=start_prop;
 		this.end_prop=end_prop;
+		this.cutoff=cutoff;
 		this.red=red;
 		this.set=0;
 		this.conn=conn;
 	}
-	public InnerUsageRecordQueryMapper(AppContext conn,RecordSelector sel,int set, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,PropertyKeyLabeller<K> lab) {
+	public InnerUsageRecordQueryMapper(AppContext conn,RecordSelector sel,int set, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,long cutoff,PropertyKeyLabeller<K> lab) {
 		super(lab);
 		this.sel=sel;
 		this.key_prop=null;
 		this.plot_prop=plot_prop;
 		this.start_prop=start_prop;
 		this.end_prop=end_prop;
+		this.cutoff=cutoff;
 		this.red=red;
 		this.set=set;
 		this.conn=conn;
@@ -86,7 +89,7 @@ public class InnerUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 			Date end) {
 		
 		AndRecordSelector selector = new AndRecordSelector(sel);
-		selector.add(new PeriodOverlapRecordSelector(new Period(start,end), start_prop, end_prop,OverlapType.INNER,0L));
+		selector.add(new PeriodOverlapRecordSelector(new Period(start,end), start_prop, end_prop,OverlapType.INNER,cutoff));
 		
 		Map<Integer,Number> res = new HashMap<Integer,Number>();
 		try{

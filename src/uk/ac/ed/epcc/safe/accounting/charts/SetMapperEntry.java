@@ -54,14 +54,14 @@ public class SetMapperEntry extends MapperEntry {
 	protected UsageRecordQueryMapper getOverlapQueryMapper(
 			RecordSelector s,Reduction red,
 			PropExpression<? extends Number> prop_tag, PropExpression<Date> start_prop,
-			PropExpression<Date> end_prop) {
-		return new OverlapUsageRecordQueryMapper(getContext(),s,set,red,prop_tag,start_prop,end_prop,null);
+			PropExpression<Date> end_prop,long cutoff) {
+		return new OverlapUsageRecordQueryMapper(getContext(),s,set,red,prop_tag,start_prop,end_prop,cutoff,null);
 	}
 	@SuppressWarnings("unchecked")
 	protected UsageRecordQueryMapper getInnerQueryMapper(RecordSelector sel,
 			Reduction red,PropExpression<? extends Number> prop_tag,
-			PropExpression<Date> start_prop, PropExpression<Date> end_prop) {
-		return new InnerUsageRecordQueryMapper(getContext(),sel,set,red,prop_tag,start_prop,end_prop,null);
+			PropExpression<Date> start_prop, PropExpression<Date> end_prop,long cutoff) {
+		return new InnerUsageRecordQueryMapper(getContext(),sel,set,red,prop_tag,start_prop,end_prop,cutoff,null);
 	}
 	@Override
 	protected Vector<String> getLabels() {

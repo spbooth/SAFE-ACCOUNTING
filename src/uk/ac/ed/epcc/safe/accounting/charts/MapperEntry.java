@@ -24,10 +24,12 @@ import java.util.Set;
 import java.util.Vector;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.UsageManager;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
+import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -61,8 +63,10 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
+import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 /** MapperEntry represents the mapping of UsageRecords to plot set in a chart
  * 
@@ -79,7 +83,8 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  *
  */
 public abstract class MapperEntry implements Contexed,Cloneable{
-	private static final Feature USE_OVERLAP_HANDLER_IN_TIMECHART = new Feature("use_overlap_handler_in_timechart", false, "Use the OverlapHandler for timecharts instead of ierating over overlaps");
+	private static final Feature USE_OVERLAP_HANDLER_IN_TIMECHART = new Feature("use_overlap_handler_in_timechart", false, "Use the OverlapHandler for timecharts instead of iterating over overlaps");
+	private static final Feature NARROW_CUTOFF_IN_TIMECHART = new Feature("narrow_cutoff_in_timechart",true,"Run additional query to reduce cutoff in timechart");
 	public static final String GROUP_ENTRY_BASE = "GroupEntry";
 	private final String name;
 	private final String description;
@@ -156,7 +161,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     protected abstract UsageRecordQueryMapper getOverlapQueryMapper(
 			RecordSelector s,Reduction red,
 			PropExpression<? extends Number> prop_tag, PropExpression<Date> start_prop,
-			PropExpression<Date> end_prop) throws CannotUseSQLException;
+			PropExpression<Date> end_prop,long cutoff) throws CannotUseSQLException;
     /** Get a QueryMapper that combined records completely within a specified period
      * This is intended to be used as part of an overlap calculation.
      * 
@@ -169,7 +174,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
      */
     protected abstract UsageRecordQueryMapper getInnerQueryMapper(RecordSelector sel,
 			Reduction red,PropExpression<? extends Number> prop_tag,
-			PropExpression<Date> start_prop, PropExpression<Date> end_prop) throws CannotUseSQLException;
+			PropExpression<Date> start_prop, PropExpression<Date> end_prop,long cutoff) throws CannotUseSQLException;
 	
     /** Get the cutoff (longest record length) to use for
 	 * records overlapping a time period.
@@ -179,10 +184,38 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 	 * @param prod
 	 * @return
 	 */
-	private long getCutoff(PlotEntry e,TimePeriod period,UsageProducer<?> prod){
+	private long getCutoff(PlotEntry e,TimePeriod period,RecordSelector sel,UsageProducer<?> prod){
 		
-			// use cutoff configured into PlotEntry if nay
-			return e.getCutoff();
+			// use cutoff configured into PlotEntry if any
+			long cutoff = e.getCutoff();
+			if( NARROW_CUTOFF_IN_TIMECHART.isEnabled(getContext()) ) {
+				TimerService timer = getContext().getService(TimerService.class);
+				if( timer != null) {
+					timer.startTimer("narrow_cutoff");
+				}
+				try {
+					PropExpression<Date> start = e.getStartProperty();
+					PropExpression<Date> end = e.getEndProperty();
+					if( start != null && end != null) {
+						
+						final DurationPropExpression duration = new DurationPropExpression(start, end);
+						// This may be a very long query but the hope is that
+						// we can save the time back by narrowing the cutoff based on the filter
+						AndRecordSelector fil = new AndRecordSelector(sel);
+						fil.add(new PeriodOverlapRecordSelector(period, start,end,OverlapType.ANY,cutoff));
+						fil.add(new SelectClause<Duration>(duration,MatchCondition.GT,new Duration(0L,1L)));
+						fil.add(new SelectClause<Date>(start,MatchCondition.GT,new Date(0L)));
+						cutoff = prod.getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), fil).longValue()+1L;
+					}
+				}catch(Exception ex) {
+					getLogger().error("Error narrowing cutoff",ex);
+				}finally {
+					if( timer != null) {
+						timer.stopTimer("narrow_cutoff");
+					}
+				}
+			}
+			return cutoff;
 	
 	}
 	
@@ -354,7 +387,9 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 		PropExpression<Date> start_prop = e.getStartProperty();
 		PropExpression<Date> end_prop = e.getEndProperty();
 		Reduction red = e.getReduction();
-		long cutoff = getCutoff(e, tc.getPeriod(), ap);
+		// We can't necessarily afford an additional query here
+		// may be a single additional query so just use any cutoff from the config
+		long cutoff = e.getCutoff();
         boolean query_mapper_on = OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn);
        
         if( query_mapper_on ){
@@ -367,7 +402,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
         	UsageRecordQueryMapper fmapper;
         	if( start_prop != null && allow_overlap){
         		fmapper = getOverlapQueryMapper(s,red, prop_tag, start_prop,
-						end_prop);
+						end_prop,cutoff);
         	}else{
         		fmapper = getPointQueryMapper(sel, red,prop_tag, end_prop);
         	}
@@ -589,7 +624,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 		PropExpression<Date> start_prop = e.getStartProperty();
 		PropExpression<Date> end_prop = e.getEndProperty();
 		Reduction red = e.getReduction();
-		long cutoff = getCutoff(e, tc.getPeriod(), ap);
+		long cutoff = getCutoff(e, tc.getPeriod(), sel,ap);
 		boolean data_added=false;
         Logger log = conn.getService(LoggerService.class).getLogger(getClass());
         log.debug(" params end="+tc.getEndDate()+" start="+tc.getStartDate());
@@ -614,7 +649,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     					// in place 
     					UsageRecordQueryMapper fmapper;
     					fmapper = getOverlapQueryMapper( sel,red, prop_tag,
-    							start_prop,end_prop);
+    							start_prop,end_prop,cutoff);
     					data_added = tc.addMapData(ds, fmapper, ap);
     				}else{
     					// Because we have adjacent sequences, 
@@ -624,7 +659,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     					// start with just the inner regions
     					UsageRecordQueryMapper fmapper;
     					fmapper = getInnerQueryMapper(sel, red,prop_tag, start_prop,
-    							end_prop);
+    							end_prop,cutoff);
     					data_added = tc.addMapData(ds, fmapper, ap);
     					// overlap with sub-region start
     					SetRangeMapper map = getMapper(e); // note this uses same pkl as previous step

@@ -76,15 +76,15 @@ public class KeyMapperEntry<K> extends MapperEntry {
 			RecordSelector s,
 			Reduction red,
 			PropExpression<? extends Number> prop_tag, PropExpression<Date> start_prop,
-			PropExpression<Date> end_prop) {
-		return new OverlapUsageRecordQueryMapper(getContext(),s,key_tag,red,prop_tag,start_prop,end_prop,pkl);
+			PropExpression<Date> end_prop,long cutoff) {
+		return new OverlapUsageRecordQueryMapper(getContext(),s,key_tag,red,prop_tag,start_prop,end_prop,cutoff,pkl);
 	}
     @SuppressWarnings("unchecked")
 	protected UsageRecordQueryMapper getInnerQueryMapper(RecordSelector sel,
 			Reduction red,
 			PropExpression<? extends Number> prop_tag,
-			PropExpression<Date> start_prop, PropExpression<Date> end_prop) {
-		return new InnerUsageRecordQueryMapper(getContext(),sel,key_tag,red,prop_tag,start_prop,end_prop,pkl);
+			PropExpression<Date> start_prop, PropExpression<Date> end_prop,long cutoff) {
+		return new InnerUsageRecordQueryMapper(getContext(),sel,key_tag,red,prop_tag,start_prop,end_prop,cutoff,pkl);
 	}
     @SuppressWarnings("unchecked")
 	@Override

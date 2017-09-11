@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
@@ -43,6 +44,7 @@ import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.time.Period;
+import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 /** Common base class for turning a {@link DataObjectPropertyFactory} into a {@link UsageProducer}
  * This class implements most of the query logic needed to implement UsageProducer
@@ -123,31 +125,57 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 		if( start == null || end == null || start.equals(end)){
 			cutoff=0L;
 		}else if(AUTO_CUTOFF_FEATURE.isEnabled(getContext())){
+			if( cutoff <= 0L) {
 			if( cutoffs == null ){
 				cutoffs=new HashMap<DefaultUsageProducer.CutoffKey, Long>();
 			}
 			CutoffKey key = new CutoffKey(start, end);
 			Long calc_cutoff = cutoffs.get(key);
 			if(calc_cutoff ==null){
+				TimerService timer = getContext().getService(TimerService.class);
+				if( timer != null ) {
+					timer.startTimer("auto_cutoff."+getTag()+"_"+start.toString()+"_"+end.toString());
+				}
 				try {
-					final DurationPropExpression duration = new DurationPropExpression(start, end);
-					// go for global max length. More likely to cache
-					// answer in Sql level and independent of period so can cheaply cache
-					// at this level. Alternative would need map keyed by props and period.
-					AndRecordSelector sel = new AndRecordSelector();
-					sel.add(new SelectClause<Duration>(duration,MatchCondition.GT,new Duration(0L,1L)));
-					sel.add(new SelectClause<Date>(start,MatchCondition.GT,new Date(0L)));
-					calc_cutoff = new Long(getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), sel).longValue()+1L);
+					
+					calc_cutoff = getCutoff(null,start, end);
 					if( log !=null) log.debug(getTag()+": calculated cutoff for "+start+","+end+" as "+cutoff);
 					cutoffs.put(key,calc_cutoff);
 				} catch (Exception e) {
 					getLogger().error("Error making cutoff",e);
 					calc_cutoff=0L;
+				}finally {
+					if( timer != null ) {
+						timer.stopTimer("auto_cutoff."+getTag()+"_"+start.toString()+"_"+end.toString());
+					}
 				}
 			}
 			cutoff=calc_cutoff;
+			}
 		}
 		return super.getPeriodFilter(period, start, end,type,cutoff);
+	}
+
+	/**
+	 * @param start
+	 * @param end
+	 * @return
+	 * @throws Exception
+	 * @throws IllegalReductionException
+	 */
+	public Long getCutoff(RecordSelector narrow,PropExpression<Date> start, PropExpression<Date> end)
+			throws Exception{
+		Long calc_cutoff;
+		final DurationPropExpression duration = new DurationPropExpression(start, end);
+		// go for global max length. More likely to cache
+		// answer in Sql level and independent of period so can cheaply cache
+		// at this level. Alternative would need map keyed by props and period.
+		AndRecordSelector sel = new AndRecordSelector(narrow);
+		sel.add(new SelectClause<Duration>(duration,MatchCondition.GT,new Duration(0L,1L)));
+		sel.add(new SelectClause<Date>(start,MatchCondition.GT,new Date(0L)));
+		long l = getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), sel).longValue()+1L;
+		calc_cutoff = new Long(l);
+		return calc_cutoff;
 	}
 
 	

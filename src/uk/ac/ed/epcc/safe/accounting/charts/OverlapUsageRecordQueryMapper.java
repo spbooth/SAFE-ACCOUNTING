@@ -47,7 +47,8 @@ public class OverlapUsageRecordQueryMapper<K,D extends Number> extends UsageReco
     private final PropExpression<Date> end_prop;
     private final RecordSelector sel;
     private final Reduction red;
-	public OverlapUsageRecordQueryMapper(AppContext conn,RecordSelector sel,PropExpression<K> key_prop, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,PropertyKeyLabeller<K> lab) {
+    private final long cutoff;
+	public OverlapUsageRecordQueryMapper(AppContext conn,RecordSelector sel,PropExpression<K> key_prop, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,long cutoff,PropertyKeyLabeller<K> lab) {
 		super(lab);
 		this.sel=sel;
 		this.key_prop=key_prop;
@@ -56,9 +57,10 @@ public class OverlapUsageRecordQueryMapper<K,D extends Number> extends UsageReco
 		this.start_prop=start_prop;
 		this.end_prop=end_prop;
 		this.red=red;
+		this.cutoff=cutoff;
 		this.conn=conn;
 	}
-	public OverlapUsageRecordQueryMapper(AppContext conn,RecordSelector sel,int set, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,PropertyKeyLabeller<K> lab) {
+	public OverlapUsageRecordQueryMapper(AppContext conn,RecordSelector sel,int set, Reduction red,PropExpression<D> plot_prop, PropExpression<Date> start_prop,PropExpression<Date> end_prop,long cutoff,PropertyKeyLabeller<K> lab) {
 		super(lab);
 		this.sel=sel;
 		this.key_prop=null;
@@ -67,6 +69,7 @@ public class OverlapUsageRecordQueryMapper<K,D extends Number> extends UsageReco
 		this.start_prop=start_prop;
 		this.end_prop=end_prop;
 		this.red=red;
+		this.cutoff=cutoff;
 		this.conn=conn;
 	}
 
@@ -78,7 +81,7 @@ public class OverlapUsageRecordQueryMapper<K,D extends Number> extends UsageReco
 		try{
 			if( key_prop != null ){
 				Map<K,? extends Number> dat= handler.getOverlapReductionMap(NumberReductionTarget.getInstance(red, plot_prop),key_prop
-						, start_prop, end_prop, start, end, sel);
+						, start_prop, end_prop, start, end, sel,cutoff);
 				if( dat != null ){
 					for(K key : dat.keySet()){
 						int set = labeller.getSetByKey( key);
@@ -91,7 +94,7 @@ public class OverlapUsageRecordQueryMapper<K,D extends Number> extends UsageReco
 					}
 				}
 			}else{
-				res.put(set, handler.getOverlapSum(red,plot_prop, start_prop, end_prop, sel, start, end));
+				res.put(set, handler.getOverlapSum(red,plot_prop, start_prop, end_prop, sel, start, end,cutoff));
 			}
 		} catch (Exception e) {
 			conn.getService(LoggerService.class).getLogger(getClass()).error("error in PropertyQueryMapper",e);

@@ -17,9 +17,13 @@
 package uk.ac.ed.epcc.safe.accounting;
 
 
+import java.util.Date;
+
 import uk.ac.ed.epcc.safe.accounting.db.GeneratorReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
+import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.Tagged;
 
 /** Interface implemented by classes that can provide Usage information to the reports.
@@ -35,12 +39,7 @@ import uk.ac.ed.epcc.webapp.Tagged;
 public interface UsageProducer<UR extends ExpressionTargetContainer> extends 
 ExpressionTargetGenerator<UR>, 
 Tagged, 
-ReductionProducer<UR>{
-
-	
-	
-	
-	    
+ReductionProducer<UR>{	    
    
 
 }

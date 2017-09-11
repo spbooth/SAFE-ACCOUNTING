@@ -110,11 +110,17 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
      * @throws Exception 
      */
     public double getOverlapSum(Reduction op,PropExpression<? extends Number> type,PropExpression<Date> start_prop, PropExpression<Date> end_prop,RecordSelector sel, Date start, Date end) throws Exception{
-    	Number result = getOverlapSum(NumberReductionTarget.getInstance(op, type), start_prop, end_prop, sel, start, end);
+    	return getOverlapSum(op, type, start_prop, end_prop, sel, start, end,0L);
+    }
+    public double getOverlapSum(Reduction op,PropExpression<? extends Number> type,PropExpression<Date> start_prop, PropExpression<Date> end_prop,RecordSelector sel, Date start, Date end,long cutoff) throws Exception{
+    	Number result = getOverlapSum(NumberReductionTarget.getInstance(op, type), start_prop, end_prop, sel, start, end,cutoff);
     	return result.doubleValue();
     }
     public Number getOverlapSum(NumberReductionTarget target,PropExpression<Date> start_prop, PropExpression<Date> end_prop,RecordSelector o_sel, Date start, Date end) throws Exception{
-    	
+    	return getOverlapSum(target, start_prop, end_prop, o_sel, start, end,0L);
+    }
+    public Number getOverlapSum(NumberReductionTarget target,PropExpression<Date> start_prop, PropExpression<Date> end_prop,RecordSelector o_sel, Date start, Date end,long cutoff) throws Exception{
+    		     	
     	if( ! prod.compatible(target.getExpression()) || ! prod.compatible(o_sel)){
     		return target.getDefault();
     	}
@@ -129,14 +135,14 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
     				// do reduction in a single pass using a case statement
     				AndRecordSelector selector = new AndRecordSelector(sel);
     				
-    				selector.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,0L));
+    				selector.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,cutoff));
     				result = prod.getReduction(makeCaseOverlapReductionTarget(target.getReduction(), target.getExpression(), start_prop, end_prop, start, end), selector).doubleValue();
     			}else{
 
     				//       log.debug(proj.getCode()+" "+start_secs+","+end_secs);
     				// First sum jobs totally within the period. 
     				AndRecordSelector inner=new AndRecordSelector(sel);
-    				inner.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.INNER,0L));
+    				inner.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.INNER,cutoff));
     				if( target.getReduction() == Reduction.AVG){
     					// Do rescale in SQL
     					result = prod.getReduction(makeInnerAverageReductionTarget(target.getExpression(), start_prop, end_prop, start,
@@ -147,7 +153,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 
     				// Now overlapps from the beginning
     				AndRecordSelector sel2=new AndRecordSelector(sel);
-    				sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.LOWER,0L));
+    				sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.LOWER,cutoff));
     				result = addToOverlapSumByIterating(target, start_prop,
     						end_prop, period, result, sel2);
     				// log.debug("Front overlapp "+temp);
@@ -155,7 +161,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
     				// This should be the slowest loop as it cannot use an index on end_prop
     				// to locate the end of the select so needs to search to the end of the table.
     				sel2=new AndRecordSelector(sel);
-    				sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.UPPER_OUTER,0L));
+    				sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.UPPER_OUTER,cutoff));
 
     				result = addToOverlapSumByIterating(target, start_prop,
     						end_prop, period, result, sel2);
@@ -166,7 +172,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
     		}
     	}
     	AndRecordSelector select = new AndRecordSelector(sel);
-    	select.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,0L));
+    	select.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,cutoff));
 
     	// fallback result by iterating
     	Number result = target.getDefault();
@@ -329,6 +335,14 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 			Date start, Date end, 
 			RecordSelector sel)
 					throws Exception{
+		return getOverlapReductionMap(main_target, tag, start_prop, end_prop, start, end, sel,0L);
+	}
+	public <R> Map<R, Number> getOverlapReductionMap(NumberReductionTarget main_target,
+			PropExpression<R> tag, 
+			PropExpression<Date> start_prop, PropExpression<Date> end_prop,
+			Date start, Date end, 
+			RecordSelector sel, long cutoff)
+					throws Exception{
 		AndRecordSelector selector=new AndRecordSelector(sel);
 		selector.add(new NullSelector(tag, false));
 		selector.add(new NullSelector(main_target.getExpression(), false));
@@ -351,7 +365,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 					// do reduction in a single pass using a case statement
 					AndRecordSelector qs = new AndRecordSelector(selector);
 
-					qs.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,0L));
+					qs.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,cutoff));
 					result = prod.getReductionMap(tag,makeCaseOverlapReductionTarget(main_target.getReduction(), main_target.getExpression(), start_prop, end_prop, start, end), qs);
 				}else{
 					
@@ -359,7 +373,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 
 					AndRecordSelector inner=new AndRecordSelector();
 					inner.add(selector);
-					inner.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.INNER,0L));
+					inner.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.INNER,cutoff));
 
 
 					NumberReductionTarget target;
@@ -381,7 +395,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 							tim.startTimer("getOverlapMap-Loop1");
 						}
 						AndRecordSelector sel2=new AndRecordSelector(selector);
-						sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.LOWER,0L));
+						sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.LOWER,cutoff));
 
 
 						addToOverlapReductionMapByIterating(tag, start_prop,
@@ -395,7 +409,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 						// to locate the end of the select so needs to search to the end of the table.
 						// unless end is constrained by the outer selector.
 						sel2=new AndRecordSelector(selector);
-						sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.UPPER_OUTER,0L));
+						sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.UPPER_OUTER,cutoff));
 						addToOverlapReductionMapByIterating(tag, start_prop,
 								end_prop, period, target, result, sel2);
 						//log.debug("Both loop "+records+" of which "+over+" overlap");
@@ -420,13 +434,13 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 		//fallback by iterating
 		Map<R,Number> result = new HashMap<R, Number>();
 		AndRecordSelector it_sel = new AndRecordSelector(selector);
-		it_sel.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop));
+		it_sel.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,cutoff));
 		addToOverlapReductionMapByIterating(tag, start_prop, end_prop, period,
 				main_target, result, it_sel);
 		return result;
 	}
 
-	/** terate over records adding results to a reduction map.
+	/** Iterate over records adding results to a reduction map.
 	 * @param tag
 	 * @param start_prop
 	 * @param end_prop
@@ -486,8 +500,12 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 			Set<ReductionTarget> property,
 			PropExpression<Date> start_prop, PropExpression<Date> end_prop, Date start, Date end,
 			RecordSelector input_selector) throws Exception {
-
-
+		return getOverlapIndexedReductionMap(property, start_prop, end_prop, start, end, input_selector,0L);
+	}
+	public Map<ExpressionTuple, ReductionMapResult> getOverlapIndexedReductionMap(
+				Set<ReductionTarget> property,
+				PropExpression<Date> start_prop, PropExpression<Date> end_prop, Date start, Date end,
+				RecordSelector input_selector,long cutoff) throws Exception {
 		Period period = new Period(start,end);
 		
 		
@@ -540,7 +558,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 						}
 						AndRecordSelector inner=new AndRecordSelector();
 						inner.add(selector);
-						inner.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.ANY,0L));
+						inner.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.ANY,cutoff));
 						result = new HashMap<ExpressionTuple, ReductionMapResult>();
 						Map<ExpressionTuple, ReductionMapResult>scratch = prod.getIndexedReductionMap(inner_properties, inner);
 						//copy over to correct keys
@@ -580,7 +598,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 
 						AndRecordSelector inner=new AndRecordSelector();
 						inner.add(selector);
-						inner.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.INNER,0L));
+						inner.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.INNER,cutoff));
 
 						if( has_avg){
 							result = new HashMap<ExpressionTuple, ReductionMapResult>();
@@ -607,7 +625,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 								tim.startTimer("getOverlapMap-Loop1");
 							}
 							AndRecordSelector sel2=new AndRecordSelector(selector);
-							sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.LOWER,0L));
+							sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.LOWER,cutoff));
 
 							int records = addToOverlapIndexedReductionByIterating(property,
 									start_prop, end_prop, period, index_set, result,
@@ -620,7 +638,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 							// This should be the slowest loop as it cannot use an index on end_prop
 							// to locate the end of the select so needs to search to the end of the table.
 							sel2=new AndRecordSelector(selector);
-							sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.UPPER_OUTER,0L));
+							sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.UPPER_OUTER,cutoff));
 							records += addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, period, index_set, result, sel2);
 
 							//log.debug("Both loop "+records+" of which "+over+" overlap");
@@ -636,7 +654,7 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 					// DO it all by iteration
 					result = new HashMap<ExpressionTuple, ReductionMapResult>();
 					AndRecordSelector sel = new AndRecordSelector(selector);
-					sel.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.ANY,0L));
+					sel.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.ANY,cutoff));
 					addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, period, index_set, result, sel);
 				}
 
