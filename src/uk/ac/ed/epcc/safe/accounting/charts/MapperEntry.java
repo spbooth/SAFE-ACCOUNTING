@@ -18,8 +18,10 @@ package uk.ac.ed.epcc.safe.accounting.charts;
 
 import java.awt.Color;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -34,7 +36,6 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.NullSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
@@ -64,6 +65,8 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
+import uk.ac.ed.epcc.webapp.preferences.Preference;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 import uk.ac.ed.epcc.webapp.timer.TimerService;
@@ -84,7 +87,9 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  */
 public abstract class MapperEntry implements Contexed,Cloneable{
 	private static final Feature USE_OVERLAP_HANDLER_IN_TIMECHART = new Feature("use_overlap_handler_in_timechart", false, "Use the OverlapHandler for timecharts instead of iterating over overlaps");
-	private static final Feature NARROW_CUTOFF_IN_TIMECHART = new Feature("narrow_cutoff_in_timechart",true,"Run additional query to reduce cutoff in timechart");
+	private static final Feature NARROW_CUTOFF_IN_TIMECHART = new Preference("reports.narrow_cutoff_in_timechart",true,"Run additional query to reduce cutoff in timechart");
+	private static final Feature CACHE_NARROWED_CUTOFFS = new Preference("reporting.cache_narrowed_cutoff",true,"Cache the narrowed cutoffs in session");
+
 	public static final String GROUP_ENTRY_BASE = "GroupEntry";
 	private final String name;
 	private final String description;
@@ -191,7 +196,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 			if( NARROW_CUTOFF_IN_TIMECHART.isEnabled(getContext()) ) {
 				TimerService timer = getContext().getService(TimerService.class);
 				if( timer != null) {
-					timer.startTimer("narrow_cutoff");
+					timer.startTimer("narrow_cutoff."+prod.getTag());
 				}
 				try {
 					PropExpression<Date> start = e.getStartProperty();
@@ -205,13 +210,32 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 						fil.add(new PeriodOverlapRecordSelector(period, start,end,OverlapType.ANY,cutoff));
 						fil.add(new SelectClause<Duration>(duration,MatchCondition.GT,new Duration(0L,1L)));
 						fil.add(new SelectClause<Date>(start,MatchCondition.GT,new Date(0L)));
-						cutoff = prod.getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), fil).longValue()+1L;
+						
+						Number calc_cutoff = null;
+						
+						if(CACHE_NARROWED_CUTOFFS.isEnabled(getContext())) {
+							String name="narrowed_cutoffs."+prod.getTag();
+							SessionService sess = getContext().getService(SessionService.class);
+							Map<RecordSelector,Number> values = (Map<RecordSelector, Number>) sess.getAttribute(name);
+							if( values == null) {
+								values=new HashMap<>();
+							}
+							calc_cutoff = values.get(fil);
+							if( calc_cutoff ==null) {
+								calc_cutoff = prod.getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), fil);
+								values.put(fil,calc_cutoff);
+								sess.setAttribute(name, values);
+							}
+						}else {
+							calc_cutoff = prod.getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), fil);
+						}
+						cutoff = calc_cutoff.longValue()+1L;
 					}
 				}catch(Exception ex) {
 					getLogger().error("Error narrowing cutoff",ex);
 				}finally {
 					if( timer != null) {
-						timer.stopTimer("narrow_cutoff");
+						timer.stopTimer("narrow_cutoff."+prod.getTag());
 					}
 				}
 			}

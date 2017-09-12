@@ -43,6 +43,8 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
+import uk.ac.ed.epcc.webapp.preferences.Preference;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.timer.TimerService;
 
@@ -54,7 +56,10 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  *
  */ 
 public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContainer & ExpressionTargetContainer>  extends DataObjectPropertyFactory<T> implements UsageProducer<T> ,PropertyImplementationProvider{
-	 protected Logger log;
+	
+	private static final Feature CACHE_CUTOFFS = new Preference("reporting.cache_cutoff",true,"Cache the cutoffs in session");
+
+	protected Logger log;
 	    
 		protected DefaultUsageProducer(){
 			
@@ -131,23 +136,36 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 			}
 			CutoffKey key = new CutoffKey(start, end);
 			Long calc_cutoff = cutoffs.get(key);
+			SessionService sess=null;
 			if(calc_cutoff ==null){
 				TimerService timer = getContext().getService(TimerService.class);
-				if( timer != null ) {
-					timer.startTimer("auto_cutoff."+getTag()+"_"+start.toString()+"_"+end.toString());
-				}
-				try {
-					
-					calc_cutoff = getCutoff(null,start, end);
-					if( log !=null) log.debug(getTag()+": calculated cutoff for "+start+","+end+" as "+cutoff);
-					cutoffs.put(key,calc_cutoff);
-				} catch (Exception e) {
-					getLogger().error("Error making cutoff",e);
-					calc_cutoff=0L;
-				}finally {
-					if( timer != null ) {
-						timer.stopTimer("auto_cutoff."+getTag()+"_"+start.toString()+"_"+end.toString());
+				String cutoff_name = "auto_cutoff."+getTag()+"_"+start.toString()+"_"+end.toString();
+				if(CACHE_CUTOFFS.isEnabled(getContext())) {
+					sess = getContext().getService(SessionService.class);
+					if(sess !=null) {
+						calc_cutoff=(Long) sess.getAttribute(cutoff_name);
 					}
+				}
+				if(calc_cutoff==null) {
+					if( timer != null ) {
+						timer.startTimer(cutoff_name);
+					}
+					try {
+
+						calc_cutoff = getCutoff(null,start, end);
+						if( log !=null) log.debug(getTag()+": calculated cutoff for "+start+","+end+" as "+cutoff);
+						cutoffs.put(key,calc_cutoff);
+					} catch (Exception e) {
+						getLogger().error("Error making cutoff",e);
+						calc_cutoff=0L;
+					}finally {
+						if( timer != null ) {
+							timer.stopTimer(cutoff_name);
+						}
+					}
+				}
+				if(sess !=null ) {
+					sess.setAttribute(cutoff_name, calc_cutoff);
 				}
 			}
 			cutoff=calc_cutoff;
@@ -163,7 +181,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	 * @throws Exception
 	 * @throws IllegalReductionException
 	 */
-	public Long getCutoff(RecordSelector narrow,PropExpression<Date> start, PropExpression<Date> end)
+	private Long getCutoff(RecordSelector narrow,PropExpression<Date> start, PropExpression<Date> end)
 			throws Exception{
 		Long calc_cutoff;
 		final DurationPropExpression duration = new DurationPropExpression(start, end);
