@@ -57,6 +57,7 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.NumberOp;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
@@ -107,6 +108,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 public abstract class AggregateUsageRecordFactory
 		extends UsageRecordFactory<AggregateUsageRecordFactory.AggregateRecord> implements UsageRecordListener{
+	public static final String MASTER_PREFIX = "master.";
 	private static final String COMPLETED_TIMESTAMP = "CompletedTimestamp";
 	private static final String STARTED_TIMESTAMP = "StartedTimestamp";
 	public static final AdminOperationKey<AggregateUsageRecordFactory> REGENERATE = new AdminOperationKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "Regenerate");
@@ -205,7 +207,7 @@ public abstract class AggregateUsageRecordFactory
 		setContext(c,table);
 		Logger log = c.getService(LoggerService.class).getLogger(getClass());
 		log.debug("table is " + table);
-		master_producer = c.getInitParameter("master." + table);
+		master_producer = c.getInitParameter(MASTER_PREFIX + table);
 		log.debug("Master tag is " + master_producer);
 		assert (master_producer != null);
 		if( master_factory == null ){
@@ -221,6 +223,15 @@ public abstract class AggregateUsageRecordFactory
 		initAccessorMap(c, table);
 		
 		
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#getConfigProperties()
+	 */
+	@Override
+	public Set<String> getConfigProperties() {
+		Set<String> props = super.getConfigProperties();
+		props.add(MASTER_PREFIX+getTag());
+		return props;
 	}
 	public class AggregateTableRegistry extends DataObjectTableRegistry{
 		
@@ -367,24 +378,19 @@ public abstract class AggregateUsageRecordFactory
 		if( val == null ){
 			return old;
 		}
+		
 		if (old instanceof BigInteger) {
 			if( add ){
 				return ((BigInteger) old).add(BigInteger.valueOf(val.longValue()));
 			}else{
 				return ((BigInteger) old).subtract(BigInteger.valueOf(val.longValue()));
 			}
-		} else if (old instanceof Long) {
-			if( add ){
-				return Long.valueOf(old.longValue() + val.longValue());
-			}else{
-				return Long.valueOf(old.longValue() - val.longValue());
-			}
-		}
+		} 
 		
 		if( add ){
-			return Double.valueOf(old.doubleValue() + val.doubleValue());
+			return NumberOp.add(old, val);
 		}else{
-			return Double.valueOf(old.doubleValue() - val.doubleValue());
+			return NumberOp.sub(old, val);
 		}
 	}
 

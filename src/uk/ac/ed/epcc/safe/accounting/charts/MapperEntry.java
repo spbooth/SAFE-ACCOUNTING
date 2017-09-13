@@ -87,7 +87,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  */
 public abstract class MapperEntry implements Contexed,Cloneable{
 	private static final Feature USE_OVERLAP_HANDLER_IN_TIMECHART = new Feature("use_overlap_handler_in_timechart", false, "Use the OverlapHandler for timecharts instead of iterating over overlaps");
-	private static final Feature NARROW_CUTOFF_IN_TIMECHART = new Preference("reports.narrow_cutoff_in_timechart",true,"Run additional query to reduce cutoff in timechart");
+	private static final Feature NARROW_CUTOFF_IN_TIMECHART = new Preference("reports.narrow_cutoff_in_timechart",false,"Run additional query to reduce cutoff in timechart");
 	private static final Feature CACHE_NARROWED_CUTOFFS = new Preference("reporting.cache_narrowed_cutoff",true,"Cache the narrowed cutoffs in session");
 
 	public static final String GROUP_ENTRY_BASE = "GroupEntry";
