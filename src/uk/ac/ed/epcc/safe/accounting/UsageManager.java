@@ -507,7 +507,7 @@ public abstract class UsageManager<UR extends ExpressionTargetContainer> impleme
 		return new ProducerInput(allow_all);
 	}
 	@SuppressWarnings("unchecked")
-	public <C extends UsageProducer> Vector<C> getProducers(Class<C> target) {
+	public <C> Vector<C> getProducers(Class<C> target) {
 		Vector<C> res = new Vector<C>();
 		for (UsageProducer p : factories.values()) {
 			if (target.isAssignableFrom(p.getClass())) {

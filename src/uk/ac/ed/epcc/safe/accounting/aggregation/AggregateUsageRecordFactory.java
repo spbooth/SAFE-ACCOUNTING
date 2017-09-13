@@ -31,6 +31,7 @@ import uk.ac.ed.epcc.safe.accounting.NumberSumReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
+import uk.ac.ed.epcc.safe.accounting.UsageManager;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.UsageRecordListener;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
@@ -57,6 +58,7 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.NumberOp;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
@@ -65,6 +67,7 @@ import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
+import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
@@ -73,11 +76,13 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLAndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
+import uk.ac.ed.epcc.webapp.jdbc.table.FieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.filter.FilterDelete;
@@ -111,6 +116,7 @@ public abstract class AggregateUsageRecordFactory
 	public static final String MASTER_PREFIX = "master.";
 	private static final String COMPLETED_TIMESTAMP = "CompletedTimestamp";
 	private static final String STARTED_TIMESTAMP = "StartedTimestamp";
+	private static final Feature USE_FAST_REGENERATE = new Feature("aggregate.use_fast_regenerate",true,"Use reductions to speed up regenerate");
 	public static final AdminOperationKey<AggregateUsageRecordFactory> REGENERATE = new AdminOperationKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "Regenerate");
 	public static final PropertyRegistry aggregate = new PropertyRegistry("aggregate","Time bounds for aggregate records");
 	public static final PropertyTag<Date> AGGREGATE_STARTED_PROP = new PropertyTag<Date>(aggregate,STARTED_TIMESTAMP,Date.class);
@@ -194,6 +200,24 @@ public abstract class AggregateUsageRecordFactory
     	TableSpecification spec = new TableSpecification();
 		spec.setField(STARTED_TIMESTAMP, new DateFieldType(true, null));
 		spec.setField(COMPLETED_TIMESTAMP, new DateFieldType(true, null));
+		UsageProducer prod = master;
+		if( prod instanceof UsageManager) {
+			for(DataObjectFactory fac : ((UsageManager<?>)master).getProducers(DataObjectFactory.class)) {
+				prod=(UsageProducer) fac;
+				break;
+			}
+		}
+		if( prod != null  && prod instanceof DataObjectFactory) {
+			TableSpecification master_spec = ((DataObjectFactory)prod).getFinalTableSpecification(getContext(), master.getTag());
+			if( master_spec != null) {
+				for( String name : master_spec.getFieldNames()) {
+					FieldType f = master_spec.getField(name);
+					if( f.geTarget() != Date.class && ! spec.hasField(name)) {
+						spec.setOptionalField(name, f);
+					}
+				}
+			}
+		}
 		try {
 			// Note lots of entries will have duplicate values
 			spec.new Index("end_key", false, COMPLETED_TIMESTAMP);
@@ -243,7 +267,11 @@ public abstract class AggregateUsageRecordFactory
 				public FormResult doTransition(AggregateUsageRecordFactory target,
 						AppContext c) throws TransitionException {
 					try {
-						target.fastRegenerate();
+						if( USE_FAST_REGENERATE.isEnabled(getContext())) {
+							target.fastRegenerate();
+						}else {
+							target.regenerate();
+						}
 					} catch (Exception e) {
 						getLogger().error("Error regenerating table",e);
 						throw new TransitionException("Regenerate failed");
@@ -569,16 +597,21 @@ public abstract class AggregateUsageRecordFactory
 		if(master == null ){
 			return;
 		}
+		DatabaseService db = getContext().getService(DatabaseService.class);
 		FilterDelete<AggregateRecord> del = new FilterDelete<AggregateRecord>(res);
 		del.delete(null);
 		Iterator<Use> it = master.getIterator(new AndRecordSelector());
-		
+		int i=0;
 		while (it.hasNext()) {
 			Use rec = it.next();
 			// This could be such a large and expensive operation that it is worth
 			// supressing the record by record update operations.
 			aggregateNoCommit(rec,true);
 			rec.release();
+			i++;
+			if(0 ==  i % 1000 ) {
+				db.commitTransaction();
+			}
 		}
 		clear(); // commit final changes
 	}
@@ -588,7 +621,7 @@ public abstract class AggregateUsageRecordFactory
 			return;
 		}
 		AndRecordSelector sel = new AndRecordSelector();
-		// end_target_prop is correct as regenerate argumetns specify end dates.
+		// end_target_prop is correct as regenerate arguments specify end dates.
 		Date start = master.getReduction(new DateReductionTarget(Reduction.MIN, end_target_prop), sel);
 		Date end = master.getReduction(new DateReductionTarget(Reduction.MAX,end_target_prop), sel);
 		if( start != null && end != null && end.after(start)){
@@ -615,6 +648,7 @@ public abstract class AggregateUsageRecordFactory
 		end = mapEnd(end);
 		log.debug("regenerate aggregate range "+start+" to "+end);
 		FilterDelete<AggregateRecord> del = new FilterDelete<AggregateRecord>(res);
+		DatabaseService db = getContext().getService(DatabaseService.class);
 
 		Set<ReductionTarget> targets = new LinkedHashSet<ReductionTarget>();
 		
@@ -677,6 +711,8 @@ public abstract class AggregateUsageRecordFactory
 					rec.release();
 				}
 				clear(); // commit cached records
+				// flush this part of the transaction.
+				db.commitTransaction();
 			}
 			p_end=p_start;
 			p_start=mapStart(p_end);
