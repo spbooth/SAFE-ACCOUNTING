@@ -45,8 +45,9 @@ public class HourlyAggregateUsageRecordFactory extends
 		scratch.set(Calendar.MILLISECOND,0);
 		scratch.set(Calendar.SECOND,0);
 		scratch.set(Calendar.MINUTE, 0);
-		if( scratch.getTime().before(point)){
-		   scratch.add(Calendar.HOUR,1);
+		// use while for hour changes
+		while( scratch.getTime().before(point)){
+		   scratch.add(Calendar.HOUR_OF_DAY,1);
 		}
 		return scratch.getTime();
 	}
@@ -57,8 +58,9 @@ public class HourlyAggregateUsageRecordFactory extends
 		scratch.set(Calendar.MILLISECOND,0);
 		scratch.set(Calendar.SECOND,0);
 		scratch.set(Calendar.MINUTE, 0);
-		if( ! scratch.getTime().before(point)){
-			scratch.add(Calendar.HOUR,-1);
+		// use while for hour changes
+		while( ! scratch.getTime().before(point)){
+			scratch.add(Calendar.HOUR_OF_DAY,-1);
 		}
 		return scratch.getTime();
 	}

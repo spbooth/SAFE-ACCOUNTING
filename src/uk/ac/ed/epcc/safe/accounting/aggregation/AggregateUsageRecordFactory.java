@@ -197,7 +197,6 @@ public abstract class AggregateUsageRecordFactory
 	// target the same aggregate record so we cache the last used values.
     private static final int CACHE_SIZE=16;
     private int replace=0;
-    int propsize=0;
 	private AggregateRecord cache[] = new AggregateRecord[CACHE_SIZE];
     private ReferencePropertyRegistry ref_registry;
     private final String master_producer;
@@ -240,11 +239,11 @@ public abstract class AggregateUsageRecordFactory
 		log.debug("table is " + table);
 		master_producer = c.getInitParameter(MASTER_PREFIX + table);
 		log.debug("Master tag is " + master_producer);
-		assert (master_producer != null);
+
 		if( master_factory == null ){
 			if( master_producer != null){
 				master = c.getService(AccountingService.class).getUsageManager(master_producer);
-				
+
 			}else{
 				master=null;
 			}
@@ -252,10 +251,10 @@ public abstract class AggregateUsageRecordFactory
 			master=master_factory;
 		}
 		initAccessorMap(c, table);
-		
-		
 	}
-	/* (non-Javadoc)
+
+
+/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#getConfigProperties()
 	 */
 	@Override
@@ -368,59 +367,60 @@ public abstract class AggregateUsageRecordFactory
 		}
 		assert(aggregate.hasProperty(AGGREGATE_STARTED_PROP));
 		mf.addFinder(aggregate); // match these in preference we don't want date properties
-				                 // from the master binding to the date fields
-		        
-		
+		// from the master binding to the date fields
+
+
 
 		finder = mf;
 		map.populate(finder, null,false);
 
-	
+
 		assert(hasProperty(AGGREGATE_STARTED_PROP));
 		assert(hasProperty(AGGREGATE_ENDED_PROP));
 
 		if( c.getBooleanParameter(tag+".aggregate_using_end", false)){
-		    // Use just end date to define aggregate limits
+			// Use just end date to define aggregate limits
 			start_target_prop = StandardProperties.ENDED_PROP;
 		}else{
 			start_target_prop = StandardProperties.STARTED_PROP;
 		}
-		
+
 		end_target_prop = StandardProperties.ENDED_PROP;
-		
+
 		sum_set =new HashSet<PropertyTag<? extends Number>>();
 		key_set =new HashSet<PropertyTag>();
 		if( master != null ){
-		for(PropertyTag t : map.getProperties()){
-			log.debug("consider aggregation of "+t.getFullName());
-			if( map.writable(t)){
-		
-			if( master.hasProperty(t) && t.getTarget() != Date.class){
-				
-				if (Number.class.isAssignableFrom(t.getTarget()) && ! c.getBooleanParameter("key."+tag+"."+t.getName(), false)) {
-					sum_set.add( t);
-					
+			for(PropertyTag t : map.getProperties()){
+				log.debug("consider aggregation of "+t.getFullName());
+				if( map.writable(t)){
+
+					if( master.hasProperty(t) && t.getTarget() != Date.class){
+
+						if (Number.class.isAssignableFrom(t.getTarget()) && ! c.getBooleanParameter("key."+tag+"."+t.getName(), false)) {
+							sum_set.add( t);
+
+						}else{
+							key_set.add(t);
+
+						}
+					}
+				}
+
+				// add derived properties from master but we don't want any that use the 
+				// date values as the definitions may not be correct. so we add the alises to
+				// base start/end  after clearing expressions that don't resolve
+
+				if( master instanceof DerivedPropertyFactory){
+					PropExpressionMap props = ((DerivedPropertyFactory)master).getDerivedProperties();
+					log.debug(tag+" got derived props from master "+props.size());
+					map.addDerived(c, props);
+					map.clearUnresolvableDefinitions();
+					int propsize=map.getDerivedProperties().size();
+					log.debug(tag+" after clear number of definitions is "+propsize);
 				}else{
-					key_set.add(t);
-					
+					log.debug(tag+" master not a derived property factory");
 				}
 			}
-			}
-		}
-		// add derived properties from master but we don't want any that use the 
-		// date values as the definitions may not be correct. so we add the alises to
-		// base start/end  after clearing expressions that don't resolve
-		
-		if( master instanceof DerivedPropertyFactory){
-			PropExpressionMap props = ((DerivedPropertyFactory)master).getDerivedProperties();
-			log.debug(tag+" got derived props from master "+props.size());
-			map.addDerived(c, props);
-			map.clearUnresolvableDefinitions();
-			propsize=map.getDerivedProperties().size();
-			log.debug(tag+" after clear number of definitions is "+propsize);
-		}else{
-			log.debug(tag+" master not a derived property factory");
-		}
 		}
 		PropExpressionMap tmp = new PropExpressionMap();
 		try{
@@ -430,8 +430,7 @@ public abstract class AggregateUsageRecordFactory
 		}catch(PropertyCastException e){
 			getLogger().error("Failed to make time aliases",e);
 		}
-		assert(map.getDerivedProperties().size()==(propsize+2));
-		propsize+=2;
+		
 		assert(hasProperty(AGGREGATE_STARTED_PROP));
 		assert(hasProperty(AGGREGATE_ENDED_PROP));
 		// Add explicit expressions for this table
@@ -679,8 +678,8 @@ public abstract class AggregateUsageRecordFactory
 		if( master == null){
 			return;
 		}
-		if( end.before(start)){
-			throw new ConsistencyError("date parameters reversed");
+		if( ! end.after(start) ){
+			throw new ConsistencyError("date parameters reversed/duplicated");
 		}
 		Logger log = getLogger();
 		start = mapStart(start);
@@ -702,6 +701,9 @@ public abstract class AggregateUsageRecordFactory
 		Date p_end=end;
 		Date p_start=mapStart(p_end);
 		while(p_end.after(start)){
+			if( ! p_start.before(p_end)) {
+				throw new ConsistencyError("Invalid regenerate period "+p_start+" "+p_end);
+			}
 			log.debug("Period is "+p_start+" to "+p_end+" epoch "+start);
 			AndRecordSelector sel = new AndRecordSelector();
 			sel.add(new SelectClause(end_target_prop, MatchCondition.GT, p_start));
@@ -753,8 +755,9 @@ public abstract class AggregateUsageRecordFactory
 				// flush this part of the transaction.
 				db.commitTransaction();
 			}
-			p_end=p_start;
+			Date old_start = p_end=p_start;
 			p_start=mapStart(p_end);
+			
 			log.debug("Next Period is "+p_start+" to "+p_end+" epoch "+start);
 		}
 		
