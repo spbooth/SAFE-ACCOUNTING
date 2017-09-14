@@ -18,12 +18,8 @@ package uk.ac.ed.epcc.safe.accounting.db.transitions;
 
 
 
-import sun.reflect.generics.repository.ConstructorRepository;
 import uk.ac.ed.epcc.safe.accounting.aggregation.AggregateUsageRecordFactory;
-import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
-import uk.ac.ed.epcc.safe.accounting.update.ConfigPlugInOwner;
-import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
@@ -36,9 +32,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.ConstructedObjectInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInputWrapper;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableListResult;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
 
 /** Class to create Aggregation tables
