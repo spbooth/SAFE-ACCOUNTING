@@ -110,7 +110,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	 */
 	public FilterResult<R> getTemplatesInGroup(String group) {
 		try {
-			if (group == null || group.isEmpty()) {
+			if (group == null || group.trim().isEmpty()) {
 				return all();
 			} else {
 				if( ! useGroups()){

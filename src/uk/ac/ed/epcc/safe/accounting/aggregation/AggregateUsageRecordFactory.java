@@ -64,9 +64,14 @@ import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
+import uk.ac.ed.epcc.webapp.forms.Form;
+import uk.ac.ed.epcc.webapp.forms.action.FormAction;
+import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
+import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
+import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
@@ -88,6 +93,7 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.filter.FilterDelete;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.time.TimePeriod;
 /** A UsageRecordFactory that generates aggregate records from a separate class.
  * The tables in the master {@link UsageProducer} will require a {@link ListenerPolicy} to populate the aggregate records if data 
  * is ever loaded into them. Any "rolled" tables of old data do not need the policy but have to be in the master UsageProducer for
@@ -118,6 +124,7 @@ public abstract class AggregateUsageRecordFactory
 	private static final String STARTED_TIMESTAMP = "StartedTimestamp";
 	private static final Feature USE_FAST_REGENERATE = new Feature("aggregate.use_fast_regenerate",true,"Use reductions to speed up regenerate");
 	public static final AdminOperationKey<AggregateUsageRecordFactory> REGENERATE = new AdminOperationKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "Regenerate");
+	public static final AdminOperationKey<AggregateUsageRecordFactory> REGENERATE_RANGE = new AdminOperationKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "RegenerateRange");
 	public static final PropertyRegistry aggregate = new PropertyRegistry("aggregate","Time bounds for aggregate records");
 	public static final PropertyTag<Date> AGGREGATE_STARTED_PROP = new PropertyTag<Date>(aggregate,STARTED_TIMESTAMP,Date.class);
 	public static final PropertyTag<Date> AGGREGATE_ENDED_PROP = new PropertyTag<Date>(aggregate,COMPLETED_TIMESTAMP,Date.class);
@@ -259,6 +266,8 @@ public abstract class AggregateUsageRecordFactory
 	}
 	public class AggregateTableRegistry extends DataObjectTableRegistry{
 		
+		
+
 		public AggregateTableRegistry() {
 			
 			if( master_producer != null){
@@ -279,6 +288,36 @@ public abstract class AggregateUsageRecordFactory
 					return new ViewTableResult(target);
 				}
 			});
+			addTableTransition(REGENERATE_RANGE, new AbstractFormTransition<AggregateUsageRecordFactory>() {
+				private static final String RANGE = "Range";
+				final class RangeAction extends FormAction{
+					public RangeAction(AggregateUsageRecordFactory target) {
+						super();
+						this.target = target;
+					}
+					private final AggregateUsageRecordFactory target;
+					@Override
+					public FormResult action(Form f) throws ActionException {
+						TimePeriod period = (TimePeriod) f.get(RANGE);
+						try {
+							target.regenerate(period.getStart(),period.getEnd());
+						} catch (Exception e) {
+							throw new ActionException("Error in regenerate", e);
+						}
+						return new ViewTableResult(target);
+					}
+					
+				}
+				
+				@Override
+				public void buildForm(Form f, AggregateUsageRecordFactory target, AppContext conn)
+						throws TransitionException {
+					f.addInput(RANGE, "Time range to regenerate", new SimplePeriodInput());
+					f.addAction("Regenerate", new RangeAction(target));
+				}
+
+					
+				});	
 			}
 		}
 
