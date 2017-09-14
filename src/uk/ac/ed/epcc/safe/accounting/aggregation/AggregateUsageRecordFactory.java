@@ -91,7 +91,6 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.filter.FilterDelete;
-import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 /** A UsageRecordFactory that generates aggregate records from a separate class.
@@ -123,8 +122,8 @@ public abstract class AggregateUsageRecordFactory
 	private static final String COMPLETED_TIMESTAMP = "CompletedTimestamp";
 	private static final String STARTED_TIMESTAMP = "StartedTimestamp";
 	private static final Feature USE_FAST_REGENERATE = new Feature("aggregate.use_fast_regenerate",true,"Use reductions to speed up regenerate");
-	public static final AdminOperationKey<AggregateUsageRecordFactory> REGENERATE = new AdminOperationKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "Regenerate");
-	public static final AdminOperationKey<AggregateUsageRecordFactory> REGENERATE_RANGE = new AdminOperationKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "RegenerateRange");
+	public static final AdminOperationKey<AggregateUsageRecordFactory> REGENERATE = new AdminOperationKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "Regenerate","Repopulate all contents from master table");
+	public static final AdminOperationKey<AggregateUsageRecordFactory> REGENERATE_RANGE = new AdminOperationKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "RegenerateRange","Repopulate contents for a specified time period");
 	public static final PropertyRegistry aggregate = new PropertyRegistry("aggregate","Time bounds for aggregate records");
 	public static final PropertyTag<Date> AGGREGATE_STARTED_PROP = new PropertyTag<Date>(aggregate,STARTED_TIMESTAMP,Date.class);
 	public static final PropertyTag<Date> AGGREGATE_ENDED_PROP = new PropertyTag<Date>(aggregate,COMPLETED_TIMESTAMP,Date.class);
@@ -261,6 +260,17 @@ public abstract class AggregateUsageRecordFactory
 	public Set<String> getConfigProperties() {
 		Set<String> props = super.getConfigProperties();
 		props.add(MASTER_PREFIX+getTag());
+		// props to force/reset key/sum
+		for( PropertyTag t : getKeyProperties()) {
+			if( Number.class.isAssignableFrom(t.getTarget())) {
+				props.add(getConfigName(t));
+			}
+		}
+		for( PropertyTag t : getSumProperties()) {
+			if( Number.class.isAssignableFrom(t.getTarget())) {
+				props.add(getConfigName(t));
+			}
+		}
 		return props;
 	}
 	public class AggregateTableRegistry extends DataObjectTableRegistry{
@@ -353,6 +363,9 @@ public abstract class AggregateUsageRecordFactory
 	protected AggregateTableRegistry makeTableRegistry(){
 		return new AggregateTableRegistry();
 	}
+	private String getConfigName(PropertyTag t) {
+		return "key."+getConfigTag()+"."+t.getName();
+	}
 	@SuppressWarnings("unchecked")
 	private void initAccessorMap(AppContext c, String tag) {
 		map = new RepositoryAccessorMap(this,res);
@@ -396,7 +409,7 @@ public abstract class AggregateUsageRecordFactory
 
 					if( master.hasProperty(t) && t.getTarget() != Date.class){
 
-						if (Number.class.isAssignableFrom(t.getTarget()) && ! c.getBooleanParameter("key."+tag+"."+t.getName(), false)) {
+						if (Number.class.isAssignableFrom(t.getTarget()) && ! c.getBooleanParameter(getConfigName(t), false)) {
 							sum_set.add( t);
 
 						}else{
@@ -825,27 +838,5 @@ public abstract class AggregateUsageRecordFactory
 		raw_counter=0;
 		fetch_counter=0;
 	}
-	@SuppressWarnings("unchecked")
-	public String getUniqueID(AggregateRecord r) throws Exception {
-			StringBuilder sb = new StringBuilder();
-			sb.append(getTag());
-			sb.append("-");
-			sb.append(r.getStart().getTime());
-			sb.append("-");
-			sb.append(r.getEnd().getTime());
-			for(PropertyTag t : getKeyProperties()){
-				Object o = r.getProperty(t, null);
-				if( o != null ){
-					sb.append("-");
-					if(o instanceof IndexedReference){
-						sb.append(((IndexedReference)o).getID());
-					}else if( o instanceof Date){
-						sb.append(((Date)o).getTime());
-					}else{
-						sb.append(o.toString());
-					}
-				}
-			}
-			return sb.toString();
-	}
+	
 }
