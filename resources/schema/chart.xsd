@@ -79,6 +79,7 @@
 			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
 			<xsd:group ref="PlotGroup"></xsd:group>
 		</xsd:sequence>
+		<xsd:attribute name="quiet" type="xsd:boolean" use="optional" default="false"></xsd:attribute>
 	</xsd:complexType>
 
 	<!-- Options for all chart types -->

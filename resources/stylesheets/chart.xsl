@@ -33,7 +33,9 @@
 	<xsl:copy-of select="plotter:addChart($ChartExtension,$chart,$caption)"/>
 	</xsl:when>
 	<xsl:otherwise>
+	<xsl:if test="not(@quiet)">
 	<xsl:element name="NoData"/>
+	</xsl:if>
 	</xsl:otherwise>
 	</xsl:choose>
 	</xsl:template>
@@ -55,7 +57,9 @@
 	</xsl:if>
 	</xsl:when>
 	<xsl:otherwise>
+	<xsl:if test="not(@quiet)">
 	<xsl:element name="NoData"/>
+	</xsl:if>
 	</xsl:otherwise>
 	</xsl:choose>
 	</xsl:template>
@@ -79,7 +83,9 @@
 	</xsl:if>
 	</xsl:when>
 	<xsl:otherwise>
+	<xsl:if test="not(@quiet)">
 	<xsl:element name="NoData"/>
+	</xsl:if>
 	</xsl:otherwise>
 	</xsl:choose>
 	</xsl:template>
