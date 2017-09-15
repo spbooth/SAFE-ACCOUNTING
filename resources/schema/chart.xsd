@@ -53,7 +53,9 @@
 		type="par:TextOrParameterType" >
 	<xsd:annotation><xsd:documentation>Set the number of plot points within each major sub-division of the chart.</xsd:documentation></xsd:annotation>
 	</xsd:element>
-	<xsd:element name="Caption" type="par:TextOrParameterType" />
+	<xsd:element name="Caption" type="par:TextOrParameterType" >
+	<xsd:annotation><xsd:documentation>Chart caption text. Only added if chart has data.</xsd:documentation></xsd:annotation>
+	</xsd:element>
 	<xsd:element name="TimeChart" type="TimeChartType" />
 
 	<xsd:complexType name="PieTimeChartType">
@@ -79,7 +81,9 @@
 			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
 			<xsd:group ref="PlotGroup"></xsd:group>
 		</xsd:sequence>
-		<xsd:attribute name="quiet" type="xsd:boolean" use="optional" default="false"></xsd:attribute>
+		<xsd:attribute name="quiet" type="xsd:boolean" use="optional" default="false">
+		<xsd:annotation><xsd:documentation>Suppress content entirely if no data</xsd:documentation></xsd:annotation>
+		</xsd:attribute>
 	</xsd:complexType>
 
 	<!-- Options for all chart types -->
