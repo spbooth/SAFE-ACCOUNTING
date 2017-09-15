@@ -46,8 +46,12 @@ public class HourlyAggregateUsageRecordFactory extends
 		scratch.set(Calendar.SECOND,0);
 		scratch.set(Calendar.MINUTE, 0);
 		// use while for hour changes
-		while( scratch.getTime().before(point)){
+		// calendar seen to switch time-zones rather than actually
+		// 
+		int i=0;
+		while( scratch.getTime().before(point) && i < 5){
 		   scratch.add(Calendar.HOUR_OF_DAY,1);
+		   i++;
 		}
 		return scratch.getTime();
 	}
@@ -59,8 +63,10 @@ public class HourlyAggregateUsageRecordFactory extends
 		scratch.set(Calendar.SECOND,0);
 		scratch.set(Calendar.MINUTE, 0);
 		// use while for hour changes
-		while( ! scratch.getTime().before(point)){
+		int i=0;
+		while( ! scratch.getTime().before(point) && i < 5){
 			scratch.add(Calendar.HOUR_OF_DAY,-1);
+			i++;
 		}
 		return scratch.getTime();
 	}
