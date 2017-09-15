@@ -259,7 +259,8 @@ public abstract class AggregateUsageRecordFactory
 	@Override
 	public Set<String> getConfigProperties() {
 		Set<String> props = super.getConfigProperties();
-		props.add(MASTER_PREFIX+getTag());
+		props.add(MASTER_PREFIX+getConfigTag());
+		props.add(getConfigTag()+".aggregate_using_end");
 		// props to force/reset key/sum
 		for( PropertyTag t : getKeyProperties()) {
 			if( Number.class.isAssignableFrom(t.getTarget())) {
