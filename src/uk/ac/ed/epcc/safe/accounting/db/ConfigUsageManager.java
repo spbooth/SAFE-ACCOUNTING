@@ -67,8 +67,9 @@ public class ConfigUsageManager extends UsageRecordUsageManager {
 					getLogger().error("Error making UsageProducer "+tag,e);
 				}
 			}
-		}else{
-			getLogger().error("No tables specified for ConfigUsageManager tag "+tag+".tables");
+		// Too chatty when default producer not defined
+		//}else{
+		//	getLogger().error("No tables specified for ConfigUsageManager tag "+tag+".tables");
 		}
 
 	}
