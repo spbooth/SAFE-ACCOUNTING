@@ -19,19 +19,18 @@ import uk.ac.ed.epcc.webapp.session.AppUserFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
 public class ReportTemplateLog extends DataObjectPropertyContainer {
-	
+    
     public ReportTemplateLog(DataObjectPropertyFactory<?> fac, Record r) {
         super(fac, r);
     }
     
     public static class ReportLogFactory extends DefaultDataObjectPropertyFactory<ReportTemplateLog> {
 
-    	public static final String DEFAULT_TABLE = "ReportTemplateLog";
+        public static final String DEFAULT_TABLE = "ReportTemplateLog";
 
         private static final String TIMESTAMP = "Timestamp";    
         private static final String PERSON_ID = "PersonID";
         private static final String REPORT_TEMPLATE_ID = "ReportTemplateID";
-        private static final String REPORT_TYPE = "ReportType";
         private static final String PARAMETERS = "Parameters";
         private AppUserFactory<?> userFac;
         private ReportTemplateFactory<?> templateFac;
@@ -49,8 +48,8 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
         @Override
         public TableSpecification getDefaultTableSpecification(AppContext ctx,
                  String homeTable) {
-        	userFac = ctx.getService(SessionService.class).getLoginFactory();
-        	templateFac = new ReportTemplateFactory<ReportTemplate>(ctx);
+            userFac = ctx.getService(SessionService.class).getLoginFactory();
+            templateFac = new ReportTemplateFactory<ReportTemplate>(ctx);
             TableSpecification spec = new TableSpecification();
             spec.setField(TIMESTAMP, new DateFieldType(true, null));
             spec.setField(PERSON_ID, new ReferenceFieldType(userFac.getTag()));
@@ -65,14 +64,16 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
         }
         
         public void logReport(AppUser user, ReportTemplate template, LinkedList<String> parameters) throws DataFault {
-        	ReportTemplateLog log = makeBDO();
-        	log.record.setProperty(TIMESTAMP, new Date());
-        	log.record.setProperty(REPORT_TEMPLATE_ID, template);
-        	log.record.setProperty(PERSON_ID, user);
-        	if (parameters != null) {
-        		log.record.setProperty(PARAMETERS, String.join("/", parameters));
-        	}
-        	log.commit();
+            ReportTemplateLog log = makeBDO();
+            log.record.setProperty(TIMESTAMP, new Date());
+            log.record.setProperty(REPORT_TEMPLATE_ID, template);
+            if (user != null) {
+                log.record.setProperty(PERSON_ID, user);
+            }
+            if (parameters != null) {
+                log.record.setProperty(PARAMETERS, String.join("/", parameters));
+            }
+            log.commit();
         }
 
     }
