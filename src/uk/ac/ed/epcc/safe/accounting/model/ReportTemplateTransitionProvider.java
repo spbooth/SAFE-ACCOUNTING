@@ -29,10 +29,10 @@ import java.util.Properties;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.model.ReportTemplateLog.ReportLogFactory;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
-import uk.ac.ed.epcc.safe.accounting.servlet.DeveloperResult;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.config.OverrideConfigService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
@@ -126,6 +126,10 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		
 				Map<String, Object> params = getParameters(target, c, builder);
 				ServletService ss = getContext().getService(ServletService.class);
+				logFac.logReport(
+						c.getService(SessionService.class).getCurrentPerson(), 
+						getReportTemplate(target),
+						getID(target));
 				String css_path = getContext().getInitParameter("css.path","css/webapp.css");
 				if( ss != null){
 					css_path = ss.encodeURL("/"+css_path);
@@ -196,7 +200,6 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			}
 			
 		}
-
 		
 		
 		@Override
@@ -208,15 +211,11 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				ReportBuilder.setTemplate(conn, builder, target.getName());
 				Map<String, Object> parameters = target.getParameters();
 				builder.buildReportParametersForm(f, parameters);
-				//System.out.println("SET MAP: parameters=" + parameters + " context parameters=" + target.getContextParameters());
 				setMap(parameters, target.getContextParameters(), f, false);
 				if( builder.hasReportParameters()){
 					f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,PREVIEW));
 				}
-				//f.addAction("HTML", new ExportAction(conn, new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, builder, builder.getReportTypeReg().getReportType("html")));
-				//f.addAction("PDF", new ExportAction(conn, new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target, builder, builder.getReportTypeReg().getReportType("pdf")));
-				//f.addAction("CSV", new ExportAction(conn, new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, builder, builder.getReportTypeReg().getReportType("csv")));
-				
+
 				f.addAction("HTML", new NextAction(new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, HTML));
 				f.addAction("PDF", new NextAction(new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target,PDF));
 				f.addAction("CSV", new NextAction(new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, CSV));
@@ -249,12 +248,13 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	}
 
 	private ReportTemplateFactory fac;
-	
+	private ReportLogFactory logFac;
 	
 	public ReportTemplateTransitionProvider(AppContext conn){
 		super(conn);
 		ReportTypeRegistry reg = new ReportTypeRegistry(conn);
 		this.fac = new ReportTemplateFactory<ReportTemplate>(conn);
+		this.logFac = new ReportLogFactory(conn, conn.getService(SessionService.class).getLoginFactory(), fac);
      	addTransition(PREVIEW, new PreviewTransition());
      	addTransition(HTML, new ExportTransition(ReportTypeRegistry.HTML));
      	addTransition(PDF, new ExportTransition(reg.getReportType("pdf")));
@@ -453,6 +453,16 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			boolean has_form = builder.hasReportParameters();
 			params = getParameters(target, context, builder);
 			if (! has_form || (params != null && !target.getParameters().isEmpty())) {
+
+				try {
+					logFac.logReport(
+							getContext().getService(SessionService.class).getCurrentPerson(), 
+							getReportTemplate(target),
+							getID(target));
+				} catch (DataFault e) {
+					getLogger().error("Error logging report use", e);
+				}
+
 				cb.addHeading(4, "Report Preview");
 				ContentBuilder report = cb.getPanel("report");
 				builder.renderContent(params, (SimpleXMLBuilder)report);
