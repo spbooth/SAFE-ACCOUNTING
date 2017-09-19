@@ -69,7 +69,6 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
         }
         
         public void logReport(AppUser user, ReportTemplate template, LinkedList<String> parameters) throws DataFault {
-        	System.out.println("LOGGING REPORT : " + user + " " + template + " " + parameters);
         	ReportTemplateLog log = makeBDO();
         	log.record.setProperty(TIMESTAMP, new Date());
         	log.record.setProperty(REPORT_TEMPLATE_ID, template);
