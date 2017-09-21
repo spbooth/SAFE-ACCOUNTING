@@ -29,7 +29,7 @@
 	</info>
 	
 	<dependencies>
-		 <dependency org="com.sun.mail" name="javax.mail" rev="1.4.7">
+		 <dependency org="com.sun.mail" name="javax.mail" rev="1.6.0">
     		<artifact name="javax.mail" ext="jar"/>
 		</dependency>
 		<dependency org="org.apache.xmlgraphics" name="fop" rev="2.2">
