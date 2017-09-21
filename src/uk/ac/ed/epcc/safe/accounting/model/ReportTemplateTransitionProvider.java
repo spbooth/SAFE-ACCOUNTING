@@ -34,6 +34,7 @@ import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.config.OverrideConfigService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Icon;
@@ -73,6 +74,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 {
 	private static final String FORM_PARAMETER_PREFIX = "__";
 	private static final String SERVE_DATA_DEFAULT_TAG = "ServeData";
+	public static final Feature LOG_REPORT_USE = new Feature("reports.log_report_use",
+			false,
+			"Log reporting: user, template and parameters are logged every time a report is built");
 
 	private static boolean canView(AppContext c, Report target) {
 		SessionService sess = c.getService(SessionService.class);
@@ -126,10 +130,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		
 				Map<String, Object> params = getParameters(target, c, builder);
 				ServletService ss = getContext().getService(ServletService.class);
-				logFac.logReport(
-						c.getService(SessionService.class).getCurrentPerson(), 
-						getReportTemplate(target),
-						getID(target));
+				logReport(target);
 				String css_path = getContext().getInitParameter("css.path","css/webapp.css");
 				if( ss != null){
 					css_path = ss.encodeURL("/"+css_path);
@@ -254,7 +255,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		super(conn);
 		ReportTypeRegistry reg = new ReportTypeRegistry(conn);
 		this.fac = new ReportTemplateFactory<ReportTemplate>(conn);
-		this.logFac = new ReportLogFactory(conn, conn.getService(SessionService.class).getLoginFactory(), fac);
+		if (LOG_REPORT_USE.isEnabled(conn)) {
+			this.logFac = new ReportLogFactory(conn, conn.getService(SessionService.class).getLoginFactory(), fac);
+		}
      	addTransition(PREVIEW, new PreviewTransition());
      	addTransition(HTML, new ExportTransition(ReportTypeRegistry.HTML));
      	addTransition(PDF, new ExportTransition(reg.getReportType("pdf")));
@@ -452,17 +455,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			ReportBuilder.setTemplate(context, builder, target.getName());
 			boolean has_form = builder.hasReportParameters();
 			params = getParameters(target, context, builder);
-			if (! has_form || (params != null && !target.getParameters().isEmpty())) {
-
-				try {
-					logFac.logReport(
-							getContext().getService(SessionService.class).getCurrentPerson(), 
-							getReportTemplate(target),
-							getID(target));
-				} catch (DataFault e) {
-					getLogger().error("Error logging report use", e);
-				}
-
+			if (! has_form || (params != null && !target.getParameters().isEmpty())) 
+			{
+				logReport(target);
 				cb.addHeading(4, "Report Preview");
 				ContentBuilder report = cb.getPanel("report");
 				builder.renderContent(params, (SimpleXMLBuilder)report);
@@ -499,6 +494,19 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		}
 	}
 	
+	private void logReport(Report target) {
+		if (logFac != null) {
+			try {
+				logFac.logReport(
+						getContext().getService(SessionService.class).getCurrentPerson(), 
+						getReportTemplate(target),
+						getID(target));
+			} catch (DataFault e) {
+				getLogger().error("Error logging report use", e);
+			}
+		}
+	}
+
 	private DeveloperResults developerResults(
 			AppContext conn, 
 			BufferLoggerService logService, 
