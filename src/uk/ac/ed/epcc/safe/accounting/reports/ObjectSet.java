@@ -56,7 +56,7 @@ public class ObjectSet<F extends ExpressionTargetGenerator> {
 	}
 	@Override
 	public final String toString(){
-		return "["+generator==null?"no-generator":generator.toString()+","+sel==null?"no-selector":sel.toString()+"]";
+		return "["+(generator==null?"no-generator":generator.toString())+","+(sel==null?"no-selector":sel.toString())+"]";
 	}
 	@Override
 	public int hashCode() {
