@@ -41,7 +41,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	public static final AttributePropertyTag<Boolean> BATCH_ARGUMENTS = new AttributePropertyTag<Boolean>(aprun_reg, "batch_args", new String[]{"-B", "--batch-args"}, Boolean.class, false);
 	@AutoTable(target=Boolean.class)
 	public static final AttributePropertyTag<Boolean> RECONNECT = new AttributePropertyTag<Boolean>(aprun_reg, "reconnect", new String[]{"-C", "--reconnect"}, Boolean.class, false);
-	@AutoTable(target=String.class)
+	@AutoTable(target=String.class,length=128)
 	public static final AttributePropertyTag<String> CPU_BINDING = new AttributePropertyTag<String>(aprun_reg, "cpu_binding", new String[]{"-cc", "--cc", "--cpu-binding"}, String.class, "");
 	@AutoTable(target=String.class)
 	public static final AttributePropertyTag<String> CPU_BINDING_FILE = new AttributePropertyTag<String>(aprun_reg, "cpu_binding_file", new String[]{"-cp", "--cp", "--cpu-binding-file"}, String.class, "");
@@ -51,7 +51,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	public static final AttributePropertyTag<Integer> DEBUG = new AttributePropertyTag<Integer>(aprun_reg, "debug", new String[]{"-D", "--debug"}, Integer.class, 0);
 	@AutoTable(target=String.class)
 	public static final AttributePropertyTag<String> ENVIRONMENT = new AttributePropertyTag<String>(aprun_reg, "environment", new String[]{"-e", "env"}, String.class, "");
-	@AutoTable(target=String.class)
+	@AutoTable(target=String.class,length=128)
 	public static final AttributePropertyTag<String> EXCLUDE_NODE_LIST = new AttributePropertyTag<String>(aprun_reg, "exclude_node_list", new String[]{"-E", "--exclude-node-list"}, String.class, "");
 	@AutoTable(target=String.class)
 	public static final AttributePropertyTag<String> EXCLUDE_NODE_LIST_FILE = new AttributePropertyTag<String>(aprun_reg, "exclude_node_list_file", new String[]{"--exclude-node-list-file"}, String.class, "");
@@ -59,7 +59,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	public static final AttributePropertyTag<Integer> CPUS_PER_CU = new AttributePropertyTag<Integer>(aprun_reg, "cpus", new String[]{"-j", "--CPUs"}, Integer.class, 0);
 	@AutoTable(target=Boolean.class)
 	public static final AttributePropertyTag<Boolean> XEON_PHI_PLACEMENT = new AttributePropertyTag<Boolean>(aprun_reg, "xeon_phi_placement", new String[]{"-k"}, Boolean.class, false);
-	@AutoTable(target=String.class)
+	@AutoTable(target=String.class,length=128)
 	public static final AttributePropertyTag<String> NODE_LIST = new AttributePropertyTag<String>(aprun_reg, "node_list", new String[]{"-L", "--node-list"}, String.class, "");
 	@AutoTable(target=String.class)
 	public static final AttributePropertyTag<String> NODE_LIST_FILE = new AttributePropertyTag<String>(aprun_reg, "node_list_file", new String[]{"-l", "--node-list-file"}, String.class, "");
