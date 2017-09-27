@@ -5,10 +5,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.db.DefaultDataObjectPropertyFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
+import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
+import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
@@ -31,7 +35,8 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
     public static class ReportLogFactory extends DefaultDataObjectPropertyFactory<ReportTemplateLog> {
 
         public static final PropertyRegistry reportlog_reg = new PropertyRegistry("reportlog", "report log properties");
-        public static final ReferenceTag<AppUser, AppUserFactory<AppUser>> person_tag = new ReferenceTag<AppUser, AppUserFactory<AppUser>>(reportlog_reg, "Person", (Class<? extends AppUserFactory<AppUser>>) AppUserFactory.class, "Person");
+        public static final ReferenceTag<AppUser, AppUserFactory<AppUser>> person_tag = 
+        		new ReferenceTag<AppUser, AppUserFactory<AppUser>>(reportlog_reg, "Person", (Class<? extends AppUserFactory<AppUser>>) AppUserFactory.class, "Person");
 
         public static final String DEFAULT_TABLE = "ReportTemplateLog";
 
@@ -77,7 +82,18 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
         protected DataObject makeBDO(Record res) throws DataFault {
             return new ReportTemplateLog(this, res);
         }
-        
+
+        @Override
+        protected void customAccessors(
+                AccessorMap<ReportTemplateLog> mapi,
+                MultiFinder finder,
+                PropExpressionMap derived) {
+            super.customAccessors(mapi, finder, derived);
+
+            finder.addFinder(StandardProperties.time);
+            mapi.put(StandardProperties.ENDED_PROP, res.getDateExpression(getTarget(), TIMESTAMP));
+        }
+
         public void logReport(AppUser user, ReportTemplate template, List<String> parameters) throws DataFault {
             ReportTemplateLog log = makeBDO();
             log.record.setProperty(TIMESTAMP, new Date());
