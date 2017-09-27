@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:res="http://safe.epcc.ed.ac.uk/restrict"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<rep:Title>Report usage statistics</rep:Title>
+<res:RequireRole>RootMember</res:RequireRole>
+<par:ParameterDef label="Report period" name="Period" type="MonthCalendarPeriod" >
+	<par:Value name="start" value="Now+0m"/>
+	<par:Value name="splits" value="1"/>
+	<par:Value name="count" value="1"/>
+	<par:Value name="field" value="Months" />
+	</par:ParameterDef>	
+	<par:Parameter name="Period"/>
+<par:Parameter name="Period"/>
+<rep:Section>
+<rep:Title>Report usage statistics</rep:Title>
+<fil:Filter>
+<fil:Producer>ReportTemplateLog</fil:Producer>
+<fil:LT><fil:Property>time:CompletedTimestamp</fil:Property><fil:Value><par:Parameter name="Period" format="PeriodEnd"></par:Parameter></fil:Value></fil:LT>
+<fil:GT><fil:Property>time:CompletedTimestamp</fil:Property><fil:Value><par:Parameter name="Period" format="PeriodStart"></par:Parameter></fil:Value></fil:GT>
+
+</fil:Filter>
+<tab:SummaryTable>
+<tab:Index><tab:Name>Report</tab:Name><tab:Property>table:ReportTemplate</tab:Property></tab:Index>
+<tab:Index><tab:Name>User</tab:Name><tab:Property>table:Person</tab:Property></tab:Index>
+<tab:Index><tab:Name>When</tab:Name><tab:Property>time:CompletedTimestamp</tab:Property></tab:Index>
+<tab:SortBy><tab:Columns>Report,When</tab:Columns></tab:SortBy>
+</tab:SummaryTable>
+</rep:Section>
+</rep:Report>
+
