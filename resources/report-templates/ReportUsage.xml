@@ -30,6 +30,7 @@
 </fil:Filter>
 <tab:SummaryTable>
 <tab:Index><tab:Name>Report</tab:Name><tab:Property>table:ReportTemplate</tab:Property></tab:Index>
+<tab:Index><tab:Name>Parameters</tab:Name><tab:Property>ReportTemplateLog:Parameters</tab:Property></tab:Index>
 <tab:Index><tab:Name>User</tab:Name><tab:Property>table:Person</tab:Property></tab:Index>
 <tab:Index><tab:Name>When</tab:Name><tab:Property>time:CompletedTimestamp</tab:Property></tab:Index>
 <tab:SortBy><tab:Columns>Report,When</tab:Columns></tab:SortBy>
