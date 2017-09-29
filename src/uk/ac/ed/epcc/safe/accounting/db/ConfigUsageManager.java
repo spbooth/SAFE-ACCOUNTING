@@ -61,15 +61,19 @@ public class ConfigUsageManager extends UsageRecordUsageManager {
 						}
 						addProducer(desc, producer);
 					}else{
+						if( c.getInitParameter(AppContext.CLASS_PREFIX+tab) == null) {
+							getLogger().error("Property "+AppContext.CLASS_PREFIX+tab+" not set");
+						}
 						getLogger().error("No valid producer for "+tab);
 					}
 				}catch(Throwable e){
 					getLogger().error("Error making UsageProducer "+tag,e);
 				}
 			}
-		// Too chatty when default producer not defined
-		//}else{
-		//	getLogger().error("No tables specified for ConfigUsageManager tag "+tag+".tables");
+		
+		}else{
+			// Only warn as often triggered by safe default producer
+			getLogger().warn("No tables specified for ConfigUsageManager tag "+tag+".tables");
 		}
 
 	}
