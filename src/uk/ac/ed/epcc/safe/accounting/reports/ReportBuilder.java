@@ -323,11 +323,14 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	}
 	private Set<String> getParameterDefNames(){
 		Set<String> names = new HashSet<String>();
-		NodeList paramNodes = getParameterDocument().getElementsByTagNameNS(
-				PARAMETER_LOC, "ParameterDef");
-		for(int i=0 ; i < paramNodes.getLength(); i++){
-			Element e = (Element) paramNodes.item(i);
-			names.add(e.getAttribute("name"));
+		Document pdoc = getParameterDocument();
+		if( pdoc != null ) {
+			NodeList paramNodes = pdoc.getElementsByTagNameNS(
+					PARAMETER_LOC, "ParameterDef");
+			for(int i=0 ; i < paramNodes.getLength(); i++){
+				Element e = (Element) paramNodes.item(i);
+				names.add(e.getAttribute("name"));
+			}
 		}
 		return names;
 	}
