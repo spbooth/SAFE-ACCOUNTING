@@ -247,7 +247,7 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 	 * Returns the non-standard attributes that this parser uses. These are
 	 * attributes not explicitly and completely defined in the PBS specification
 	 * but may be used by PBS records. These can be attributes of the form
-	 * <code>Resorce_List.RESOURCE_NAME</code> or
+	 * <code>Resource_List.RESOURCE_NAME</code> or
 	 * <code>resources_used.RESOURCE_NAME</code> as allowed by the PBS
 	 * specification, however they may be other types of attributes.
 	 * 
