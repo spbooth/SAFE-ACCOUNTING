@@ -31,6 +31,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
+import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 
@@ -92,7 +93,21 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
     
     @AutoTable
 	public static final PropertyTag<String> STATE_PROP = new PropertyTag<String>(slurm_reg, "State", String.class);
-        
+    
+    @OptionalTable
+    public static final PropertyTag<String> CLUSTER_PROP = new PropertyTag<String>(slurm_reg,"Cluster", String.class);
+    
+    @OptionalTable(target=Long.class)
+    private static final PropertyTag<Number> CPU_TIME_RAW_PROP = new PropertyTag<Number>(slurm_reg,"CPUTimeRaw",Number.class,"Residency seconds from SLURM");
+    @OptionalTable
+    private static final PropertyTag<Integer> ALOCTRES_CPU_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTREScpu",Integer.class,"cpu field from AllocTRES");
+    @OptionalTable(target=Long.class)
+    private static final PropertyTag<Number> ALOCTRES_MEM_PROP = new PropertyTag<Number>(slurm_reg,"AllocTRESmem",Number.class,"mem field from AllocTRES");
+    @OptionalTable
+    private static final PropertyTag<Integer> ALOCTRES_NODE_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTRESnode",Integer.class,"node field from AllocTRES");
+    @OptionalTable
+    private static final PropertyTag<Integer> ALOCTRES_GPU_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTRESgpu",Integer.class,"gres/gpu field from AllocTRES");
+              
     private static final MakerMap SLURM_ATTRIBUTES = new MakerMap();
 	static {
 		SLURM_ATTRIBUTES.addParser(JOB_ID_PROP, StringParser.PARSER);
@@ -113,6 +128,15 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
 		SLURM_ATTRIBUTES.addParser(USED_MEM_PROP, SlurmMemoryParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(EXIT_CODE_PROP, StringParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(STATE_PROP, StringParser.PARSER);
+		SLURM_ATTRIBUTES.addParser(CLUSTER_PROP, StringParser.PARSER);
+		SLURM_ATTRIBUTES.addParser(CPU_TIME_RAW_PROP, IntegerParser.PARSER);
+		// Nested attributes from AllocTRES
+        MakerMap AllocTRES = new MakerMap();
+        AllocTRES.addParser("cpu",ALOCTRES_CPU_PROP, IntegerParser.PARSER);
+        AllocTRES.addParser("mem",ALOCTRES_MEM_PROP, SlurmMemoryParser.PARSER);
+        AllocTRES.addParser("node",ALOCTRES_NODE_PROP, IntegerParser.PARSER);
+        AllocTRES.addParser("gpu", ALOCTRES_GPU_PROP, IntegerParser.PARSER);
+        SLURM_ATTRIBUTES.put("AllocTRES", new NestedContainerEntryMaker(AllocTRES));
 	}
     
     public DiracSLURMParser(AppContext conn) {
