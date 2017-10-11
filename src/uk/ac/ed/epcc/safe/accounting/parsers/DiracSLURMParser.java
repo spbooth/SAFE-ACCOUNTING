@@ -98,15 +98,15 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
     public static final PropertyTag<String> CLUSTER_PROP = new PropertyTag<String>(slurm_reg,"Cluster", String.class);
     
     @OptionalTable(target=Long.class)
-    private static final PropertyTag<Number> CPU_TIME_RAW_PROP = new PropertyTag<Number>(slurm_reg,"CPUTimeRaw",Number.class,"Residency seconds from SLURM");
+    public static final PropertyTag<Number> CPU_TIME_RAW_PROP = new PropertyTag<Number>(slurm_reg,"CPUTimeRaw",Number.class,"Residency seconds from SLURM");
     @OptionalTable
-    private static final PropertyTag<Integer> ALOCTRES_CPU_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTREScpu",Integer.class,"cpu field from AllocTRES");
+    public static final PropertyTag<Integer> ALOCTRES_CPU_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTREScpu",Integer.class,"cpu field from AllocTRES");
     @OptionalTable(target=Long.class)
-    private static final PropertyTag<Number> ALOCTRES_MEM_PROP = new PropertyTag<Number>(slurm_reg,"AllocTRESmem",Number.class,"mem field from AllocTRES");
+    public static final PropertyTag<Number> ALOCTRES_MEM_PROP = new PropertyTag<Number>(slurm_reg,"AllocTRESmem",Number.class,"mem field from AllocTRES");
     @OptionalTable
-    private static final PropertyTag<Integer> ALOCTRES_NODE_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTRESnode",Integer.class,"node field from AllocTRES");
+    public static final PropertyTag<Integer> ALOCTRES_NODE_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTRESnode",Integer.class,"node field from AllocTRES");
     @OptionalTable
-    private static final PropertyTag<Integer> ALOCTRES_GPU_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTRESgpu",Integer.class,"gres/gpu field from AllocTRES");
+    public static final PropertyTag<Integer> ALOCTRES_GPU_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTRESgpu",Integer.class,"gres/gpu field from AllocTRES");
               
     private static final MakerMap SLURM_ATTRIBUTES = new MakerMap();
 	static {
