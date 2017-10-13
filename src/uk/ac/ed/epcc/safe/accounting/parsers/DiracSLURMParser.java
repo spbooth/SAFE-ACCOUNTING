@@ -26,9 +26,11 @@ import uk.ac.ed.epcc.safe.accounting.parsers.value.SlurmMemoryParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
 import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
@@ -36,7 +38,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 
 public class DiracSLURMParser extends AbstractKeyPairParser {
-	
+	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
+
 	public static final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
 	
     public static final PropertyRegistry slurm_reg = new PropertyRegistry("diracslurm", "Dirac slurm properties");
@@ -98,7 +101,7 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
     public static final PropertyTag<String> CLUSTER_PROP = new PropertyTag<String>(slurm_reg,"Cluster", String.class);
     
     @OptionalTable(target=Long.class)
-    public static final PropertyTag<Number> CPU_TIME_RAW_PROP = new PropertyTag<Number>(slurm_reg,"CPUTimeRaw",Number.class,"Residency seconds from SLURM");
+    public static final PropertyTag<Number> CPU_TIME_RAW_PROP = new PropertyTag<Number>(slurm_reg,"CPUTimeRAW",Number.class,"Residency seconds from SLURM");
     @OptionalTable
     public static final PropertyTag<Integer> ALOCTRES_CPU_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTREScpu",Integer.class,"cpu field from AllocTRES");
     @OptionalTable(target=Long.class)
@@ -138,7 +141,7 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
         AllocTRES.addParser("gpu", ALOCTRES_GPU_PROP, IntegerParser.PARSER);
         SLURM_ATTRIBUTES.put("AllocTRES", new NestedContainerEntryMaker(AllocTRES));
 	}
-    
+	private boolean skip_cancelled=false;
     public DiracSLURMParser(AppContext conn) {
 		super(conn);
 	}
@@ -154,6 +157,7 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
 		MultiFinder finder = (MultiFinder) super.initFinder(conn, prev, table);
 		finder.addFinder(BatchParser.batch);
 		finder.addFinder(slurm_reg);
+		skip_cancelled = conn.getBooleanParameter(table+SKIP_CANCELLED_SUFFIX, false);
 		return finder;
 	}
 
@@ -178,6 +182,26 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
 			getLogger().error("Error setting standard derived props",e);
 		}
 		return derv;
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.parsers.AbstractKeyPairParser#skipCheck(uk.ac.ed.epcc.safe.accounting.properties.PropertyMap)
+	 */
+	@Override
+	public boolean skipCheck(PropertyMap map)throws AccountingParseException {
+		String state = map.getProperty(STATE_PROP);
+		if( state == null ) {
+			throw new AccountingParseException("No state field");
+		}
+		// Illegal states
+		if( state.startsWith("RUNNING") || state.startsWith("PENDING")){
+			return false;
+		}
+		if( skip_cancelled && state.startsWith("CANCELLED")){
+			return false;
+		}
+
+		return true;
 	}
 
 }
