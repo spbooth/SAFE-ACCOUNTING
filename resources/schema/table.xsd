@@ -82,6 +82,9 @@
 			<xsd:element name="MaxColumn" type="ColumnType" >
 			<xsd:annotation><xsd:documentation>A Maximum reduction of a numerical or date expression.</xsd:documentation></xsd:annotation>
 			</xsd:element>
+			<xsd:element name="CountDistinctColumn" type="ColumnType" >
+			<xsd:annotation><xsd:documentation>A count of the number of different values the expression takes.</xsd:documentation></xsd:annotation>
+			</xsd:element>
 		</xsd:choice>
 	</xsd:group>
 
@@ -144,154 +147,172 @@
 
 	<xsd:group name="FormattingInstructions">
 	   <xsd:annotation><xsd:documentation>These are transformations and formatting applied after the data has been retrieved.</xsd:documentation></xsd:annotation>
-		<xsd:choice>
-			<xsd:element name="TableFormat" type="xsd:string"
-				minOccurs="0" maxOccurs="1" />
-			<xsd:element name="SkipRows" type="par:TextOrParameterType"
-				minOccurs="0" maxOccurs="1" />
-			<xsd:element name="MaxRows" type="par:TextOrParameterType"
-				minOccurs="0" maxOccurs="1" />
-			<xsd:element name="Warning" type="par:TextOrParameterType"
-				minOccurs="0" maxOccurs="1" />
-			<xsd:element name="SortBy" minOccurs="0" maxOccurs="1">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="Columns"
-							type="par:TextOrParameterType" minOccurs="1" maxOccurs="1" />
-						<xsd:element name="Comparators"
-							type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" />
-						<xsd:element name="Reverse"
-							type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" />
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="Set">
-				<xsd:complexType>
-					<xsd:all>
-						<xsd:element name="Column"
-							type="par:TextOrParameterType" />
-						<xsd:element name="Row"
-							type="par:TextOrParameterType" />
-						<xsd:element name="Value"
-							type="par:TextOrParameterType" />
-					</xsd:all>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="SetColumnAt">
-				<xsd:complexType>
-					<xsd:all>
-						<xsd:element name="Column"
-							type="par:TextOrParameterType" />
-						<xsd:element name="At"
-							type="par:TextOrParameterType" />
-					</xsd:all>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="SetColumnAfter">
-				<xsd:complexType>
-					<xsd:all>
-						<xsd:element name="Column"
-							type="par:TextOrParameterType" />
-						<xsd:element name="After"
-							type="par:TextOrParameterType" />
-					</xsd:all>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="SetColumnLast">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="Column"
-							type="par:TextOrParameterType" />
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="SetRowAt">
-				<xsd:complexType>
-					<xsd:all>
-						<xsd:element name="Row"
-							type="par:TextOrParameterType" />
-						<xsd:element name="At"
-							type="par:TextOrParameterType" />
-					</xsd:all>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="SetRowAfter">
-				<xsd:complexType>
-					<xsd:all>
-						<xsd:element name="Row"
-							type="par:TextOrParameterType" />
-						<xsd:element name="After"
-							type="par:TextOrParameterType" />
-					</xsd:all>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="SetRowLast">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="Row"
-							type="par:TextOrParameterType" />
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="Remove" type="RemoveType">
-				<xsd:annotation><xsd:documentation>
-				Remove a specified row or column from the table. Normally used to remove scratch data used in
-				CombineColumn.
-				</xsd:documentation></xsd:annotation>
-			</xsd:element>
-			<xsd:element name="Format" type="FormatType">
-			</xsd:element>
-			<xsd:element name="Transform" type="FormatType">
-			</xsd:element>
-			<xsd:element name="TransformKeys" type="FormatType">
-			</xsd:element>
-			<xsd:element name="NumberFormat" type="NumberFormatType">
-			<xsd:annotation>
-			   <xsd:documentation>
-			     Specify the formatting for numerical data.
-			   </xsd:documentation>
-			</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="PercentFormat" type="PercentFormatType">
-			<xsd:annotation>
-			   <xsd:documentation>
-			     Format fractional data in a column as a percentage.
-			   </xsd:documentation>
-			</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="DateFormat" type="DateFormatType">
-			<xsd:annotation>
-			   <xsd:documentation>
-			     Format column data as a date.
-			   </xsd:documentation>
-			</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="PercentColumn" type="PercentColumnType" >
-			<xsd:annotation>
-			   <xsd:documentation>
-			     Add a new column presenting an existing column as a percentage of some value.
-			   </xsd:documentation>
-			</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="TotalColumn" type="TotalColumnType" >
-			<xsd:annotation>
-			   <xsd:documentation>
-			     Add a total value to an existing column. 
-			   </xsd:documentation>
-			</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="CategoryTotals"
-				type="CategoryTotalsType" />
-			<xsd:element name="CategorySet"
-				type="CategorySetType" />
-			<xsd:element name="CombineColumn" type="CombineType"></xsd:element>
-			<xsd:element name="KeyName" type="KeyNameType">
-			<xsd:annotation><xsd:documentation>Set the name of the table key. Normally keys are not shown and in many cases are not human readable. Setting this value shows the key values as the first column with the specified name.</xsd:documentation></xsd:annotation>
-			</xsd:element>
-			<xsd:element name="PrintHeadings"
-				type="PrintHeadingsType">
-			</xsd:element>
-		</xsd:choice>
+	   <xsd:choice>
+	   	<xsd:element name="TableFormat" type="xsd:string"
+	   		minOccurs="0" maxOccurs="1" />
+	   	<xsd:element name="SkipRows" type="par:TextOrParameterType"
+	   		minOccurs="0" maxOccurs="1" />
+	   	<xsd:element name="MaxRows" type="par:TextOrParameterType"
+	   		minOccurs="0" maxOccurs="1" />
+	   	<xsd:element name="Warning" type="par:TextOrParameterType"
+	   		minOccurs="0" maxOccurs="1" />
+	   	<xsd:element name="SortBy" minOccurs="0" maxOccurs="1">
+	   		<xsd:complexType>
+	   			<xsd:sequence>
+	   				<xsd:element name="Columns"
+	   					type="par:TextOrParameterType" minOccurs="1" maxOccurs="1" />
+	   				<xsd:element name="Comparators"
+	   					type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" />
+	   				<xsd:element name="Reverse"
+	   					type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" />
+	   			</xsd:sequence>
+	   		</xsd:complexType>
+	   	</xsd:element>
+	   	<xsd:element name="Set">
+	   		<xsd:complexType>
+	   			<xsd:all>
+	   				<xsd:element name="Column"
+	   					type="par:TextOrParameterType" />
+	   				<xsd:element name="Row"
+	   					type="par:TextOrParameterType" />
+	   				<xsd:element name="Value"
+	   					type="par:TextOrParameterType" />
+	   			</xsd:all>
+	   		</xsd:complexType>
+	   	</xsd:element>
+	   	<xsd:element name="SetColumnAt">
+	   		<xsd:complexType>
+	   			<xsd:all>
+	   				<xsd:element name="Column"
+	   					type="par:TextOrParameterType" />
+	   				<xsd:element name="At"
+	   					type="par:TextOrParameterType" />
+	   			</xsd:all>
+	   		</xsd:complexType>
+	   	</xsd:element>
+	   	<xsd:element name="SetColumnAfter">
+	   		<xsd:complexType>
+	   			<xsd:all>
+	   				<xsd:element name="Column"
+	   					type="par:TextOrParameterType" />
+	   				<xsd:element name="After"
+	   					type="par:TextOrParameterType" />
+	   			</xsd:all>
+	   		</xsd:complexType>
+	   	</xsd:element>
+	   	<xsd:element name="SetColumnLast">
+	   		<xsd:complexType>
+	   			<xsd:sequence>
+	   				<xsd:element name="Column"
+	   					type="par:TextOrParameterType" />
+	   			</xsd:sequence>
+	   		</xsd:complexType>
+	   	</xsd:element>
+	   	<xsd:element name="SetRowAt">
+	   		<xsd:complexType>
+	   			<xsd:all>
+	   				<xsd:element name="Row"
+	   					type="par:TextOrParameterType" />
+	   				<xsd:element name="At"
+	   					type="par:TextOrParameterType" />
+	   			</xsd:all>
+	   		</xsd:complexType>
+	   	</xsd:element>
+	   	<xsd:element name="SetRowAfter">
+	   		<xsd:complexType>
+	   			<xsd:all>
+	   				<xsd:element name="Row"
+	   					type="par:TextOrParameterType" />
+	   				<xsd:element name="After"
+	   					type="par:TextOrParameterType" />
+	   			</xsd:all>
+	   		</xsd:complexType>
+	   	</xsd:element>
+	   	<xsd:element name="SetRowLast">
+	   		<xsd:complexType>
+	   			<xsd:sequence>
+	   				<xsd:element name="Row"
+	   					type="par:TextOrParameterType" />
+	   			</xsd:sequence>
+	   		</xsd:complexType>
+	   	</xsd:element>
+	   	<xsd:element name="Remove" type="RemoveType">
+	   		<xsd:annotation>
+	   			<xsd:documentation>
+	   				Remove a specified row or column from the table.
+	   				Normally used to remove scratch data used in
+	   				CombineColumn.
+	   			</xsd:documentation>
+	   		</xsd:annotation>
+	   	</xsd:element>
+	   	<xsd:element name="Format" type="FormatType"></xsd:element>
+	   	<xsd:element name="Transform" type="FormatType">
+	   	</xsd:element>
+	   	<xsd:element name="TransformKeys" type="FormatType">
+	   	</xsd:element>
+	   	<xsd:element name="NumberFormat" type="NumberFormatType">
+	   		<xsd:annotation>
+	   			<xsd:documentation>
+	   				Specify the formatting for numerical data.
+	   			</xsd:documentation>
+	   		</xsd:annotation>
+	   	</xsd:element>
+	   	<xsd:element name="PercentFormat" type="PercentFormatType">
+	   		<xsd:annotation>
+	   			<xsd:documentation>
+	   				Format fractional data in a column as a
+	   				percentage.
+	   			</xsd:documentation>
+	   		</xsd:annotation>
+	   	</xsd:element>
+	   	<xsd:element name="DateFormat" type="DateFormatType">
+	   		<xsd:annotation>
+	   			<xsd:documentation>
+	   				Format column data as a date.
+	   			</xsd:documentation>
+	   		</xsd:annotation>
+	   	</xsd:element>
+	   	<xsd:element name="PercentColumn" type="PercentColumnType">
+	   		<xsd:annotation>
+	   			<xsd:documentation>
+	   				Add a new column presenting an existing column as
+	   				a percentage of some value.
+	   			</xsd:documentation>
+	   		</xsd:annotation>
+	   	</xsd:element>
+	   	<xsd:element name="TotalColumn" type="TotalColumnType">
+	   		<xsd:annotation>
+	   			<xsd:documentation>
+	   				Add a total value to an existing column.
+	   			</xsd:documentation>
+	   		</xsd:annotation>
+	   	</xsd:element>
+	   	<xsd:element name="CategoryTotals" type="CategoryTotalsType" />
+	   	<xsd:element name="CategorySet" type="CategorySetType" />
+	   	<xsd:element name="CombineColumn" type="CombineType"></xsd:element>
+	   	<xsd:element name="KeyName" type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+	   		<xsd:annotation>
+	   			<xsd:documentation>
+	   				Set the name of the table key. Normally keys are
+	   				not shown and in many cases are not human
+	   				readable. Setting this value shows the key values
+	   				as the first column with the specified name.
+	   			</xsd:documentation>
+	   		</xsd:annotation>
+	   	</xsd:element>
+	   	<xsd:element name="MergeRows" type="MergeRowType">
+	   		<xsd:annotation>
+	   			<xsd:documentation>
+	   				Merge rows based on values in a column. These
+	   				become the new row keys. This actually makes a
+	   				new table so formats may be lost.
+	   			</xsd:documentation>
+	   		</xsd:annotation>
+	   	</xsd:element>
+	   	<xsd:element name="PrintHeadings" type="PrintHeadingsType">
+	   	</xsd:element>
+	   	<xsd:element name="ThresholdRows" type="ThresholdRowsType"></xsd:element>
+	   </xsd:choice>
 	</xsd:group>
 
 	<xsd:complexType name="DateType">
@@ -540,6 +561,11 @@
 			<xsd:element name="Name" type="par:TextOrParameterType"></xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
+	<xsd:complexType name="MergeRowType">
+		<xsd:sequence>
+			<xsd:element name="NewKey" type="par:TextOrParameterType"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
 
 	<xsd:complexType name="PrintHeadingsType">
 		<xsd:sequence>
@@ -553,5 +579,19 @@
 				<xsd:attribute name="labeller" type="xsd:string" use="optional"></xsd:attribute>
 			</xsd:extension>
 		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="ThresholdRowsType">
+		<xsd:all>
+			<xsd:element name="Column" type="par:TextOrParameterType"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="Minimum"
+				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="Maximum"
+				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+			</xsd:element>
+		</xsd:all>
 	</xsd:complexType>
 </xsd:schema>
