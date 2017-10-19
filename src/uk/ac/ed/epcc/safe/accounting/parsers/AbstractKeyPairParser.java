@@ -57,7 +57,7 @@ public abstract class AbstractKeyPairParser extends BatchParser implements Conte
 	
 	private boolean errors_fatal=true;
 
-	static final Pattern ATTR_PATTERN=Pattern.compile("(\\w+)=(\\S+|(?:\"[^\"]+\"))(\\s|$)");
+	static final Pattern ATTR_PATTERN=Pattern.compile("(\\w+)=([^\"\\s]+|(?:\"[^\"]+\"))(\\s|$)");
 	
 	public AbstractKeyPairParser(AppContext conn) {
 		this.conn=conn;
@@ -84,14 +84,18 @@ public abstract class AbstractKeyPairParser extends BatchParser implements Conte
 		// split the record into keyword/value pairs
 		// fetch a ContainerEntryMaker from the keyword.
 		// use this to parse the value into the map.
+		//getLogger().debug(record);
 		Matcher m = ATTR_PATTERN.matcher(record);
 	    while(m.find()){
 	    	String attrName=m.group(1);
 	    	String attrValue=m.group(2);
+	    	//getLogger().debug(attrName+"="+attrValue);
 	    	if( attrValue.startsWith("\"")){
+	    		assert(attrValue.endsWith("\""));
 	    		attrValue=attrValue.substring(1,attrValue.length()-1);
 	    	}
 	    	ContainerEntryMaker maker = getEntryMaker(attrName);
+	    	//getLogger().debug(attrName+"="+attrValue);
 			if (maker == null) {
 				String errorMessage = "unrecognised attribute '" + attrName + "'";
 				this.warnings.add(errorMessage, record);
@@ -108,9 +112,18 @@ public abstract class AbstractKeyPairParser extends BatchParser implements Conte
 			}
 	    }
 		
-		return true;
+		return skipCheck(map);
 	}
 
+	/** extension point to allow sub-classes to verify 
+	 * the parsed properties and skip certain records
+	 * 
+	 * @param map
+	 * @return
+	 */
+	public boolean skipCheck(PropertyMap map)throws AccountingParseException {
+		return true;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

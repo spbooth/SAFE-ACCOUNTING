@@ -173,7 +173,7 @@ public class ErrorSet
       e = reg.get(text);
     } else
     {
-      if( reg.size() < max_entry){
+      if( max_entry < 0 || reg.size() < max_entry){
     	  e = new Entry(text,max_details);
     	  reg.put(text, e);
       }
