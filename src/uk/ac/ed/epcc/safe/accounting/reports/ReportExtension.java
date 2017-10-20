@@ -129,6 +129,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	protected DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	protected Map<String,Object> params=null;
 	protected Set<String> parameter_names=null;
+	
 	private boolean use_reference = false;
 	private TimerService timer;
 	

@@ -70,7 +70,7 @@
     	<xsd:annotation><xsd:documentation>explicitly state if input is optional or mandatory</xsd:documentation></xsd:annotation>
     	</xsd:attribute>
     	<xsd:attribute name="value" type="xsd:string" >
-    	<xsd:annotation><xsd:documentation>value of a ReadOnly type</xsd:documentation></xsd:annotation>
+    	<xsd:annotation><xsd:documentation>value of a ReadOnly type or default value for the input</xsd:documentation></xsd:annotation>
     	</xsd:attribute>
     	<xsd:attribute name="length" type="xsd:integer" >
     	<xsd:annotation><xsd:documentation>Specify a maximum allowed length for an input that support this</xsd:documentation></xsd:annotation>
@@ -210,42 +210,12 @@
 	
 
 	<!-- Optional content based on parameter -->
-	<xsd:element name="IfSet">
+	<xsd:element name="IfSet" type="IfSetComplexType">
     <xsd:annotation><xsd:documentation>Optional content that is enabled/disabled based on a parameter value. The parameter is considered un-set if it is not defined is a boolean false value or a zero length string.</xsd:documentation></xsd:annotation>
-	<xsd:complexType>
-        <xsd:sequence>
-        	<xsd:element name="Content" maxOccurs="1"
-    				minOccurs="1">
-    				<xsd:annotation><xsd:documentation>Content to be be expanded if parameter is set</xsd:documentation></xsd:annotation>
-    				<xsd:complexType>
-    					<xsd:complexContent mixed="true">
-    						<xsd:restriction base="xsd:anyType">
-    							<xsd:sequence>
-    								<xsd:any processContents="lax"
-    									minOccurs="0" maxOccurs="unbounded" />
-    							</xsd:sequence>
-    						</xsd:restriction>
-    					</xsd:complexContent>
-    				</xsd:complexType>
-    			</xsd:element>
-    			<xsd:element name="Fallback" maxOccurs="1" minOccurs="0">
-    			<xsd:annotation><xsd:documentation>Optional Content to be be expanded if parameter is not set</xsd:documentation></xsd:annotation>
-    			<xsd:complexType>
-    					<xsd:complexContent mixed="true">
-    						<xsd:restriction base="xsd:anyType">
-    							<xsd:sequence>
-    								<xsd:any processContents="lax"
-    									minOccurs="0" maxOccurs="unbounded" />
-    							</xsd:sequence>
-    						</xsd:restriction>
-    					</xsd:complexContent>
-    				</xsd:complexType>
-    			</xsd:element>
-        </xsd:sequence>
-        <xsd:attribute name="name" type="xsd:string"></xsd:attribute>
-	</xsd:complexType>
 	</xsd:element>
-	
+	<xsd:element name="IfNotSet" type="IfSetComplexType">
+    <xsd:annotation><xsd:documentation>Optional content that is enabled/disabled based on a parameter value. The parameter is considered un-set if it is not defined is a boolean false value or a zero length string.</xsd:documentation></xsd:annotation>
+	</xsd:element>
 	<xsd:complexType name="TextOrParameterType" mixed="true">
 	<xsd:annotation><xsd:documentation>
 	Text content that will be parsed as input by later reporting stages and may be generated 
@@ -330,5 +300,30 @@
 		</xsd:attribute>
 	</xsd:complexType>
 	</xsd:element>
-	
+
+	<xsd:complexType name="IfSetComplexType">
+		<xsd:sequence>
+			<xsd:element minOccurs="1" maxOccurs="1" name="Content">
+				<xsd:annotation></xsd:annotation>
+				<xsd:complexType mixed="true">
+					<xsd:sequence>
+						<xsd:any minOccurs="0" maxOccurs="unbounded"
+							processContents="lax">
+						</xsd:any>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element minOccurs="0" maxOccurs="1" name="Fallback">
+				<xsd:annotation></xsd:annotation>
+				<xsd:complexType mixed="true">
+					<xsd:sequence>
+						<xsd:any minOccurs="0" maxOccurs="unbounded"
+							processContents="lax">
+						</xsd:any>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
 </xsd:schema>
