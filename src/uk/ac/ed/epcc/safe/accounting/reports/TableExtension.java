@@ -38,6 +38,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.ed.epcc.safe.accounting.ColName;
+import uk.ac.ed.epcc.safe.accounting.CountReduction;
 import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
@@ -521,12 +522,14 @@ public class TableExtension extends ReportExtension {
 				compoundTable.mergeKeys(table);
 				compoundTable.table.addRows(table);
 				for( String col : col_names){
-					Reduction red = cols.get(col).getReduction();
-					if( use_overlap && red == Reduction.AVG){
-						// These have been mapped to time average 
-						red = Reduction.SUM;
+					if( table.containsCol(col)) {
+						Reduction red = cols.get(col).getReduction();
+						if( use_overlap && red == Reduction.AVG){
+							// These have been mapped to time average 
+							red = Reduction.SUM;
+						}
+						compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 					}
-					compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 				}
 				//compoundTable.addTable(table);
 				table=null;
@@ -670,6 +673,11 @@ public class TableExtension extends ReportExtension {
 					reductions.add(red);
 					col_names.add(col_name);
 					cols.put(col_name,red);
+				}else if(columnType.equals("CountDistinctColumn")) {
+					ReductionTarget red = new CountReduction(property);
+					reductions.add(red);
+					col_names.add(col_name);
+					cols.put(col_name,red);
 				}else{
 					extension.addError("Bad column", "Unexpected Column type "+columnType);
 				}
@@ -761,12 +769,15 @@ public class TableExtension extends ReportExtension {
 				compoundTable.mergeKeys(table);
 				compoundTable.table.addRows(table);
 				for( String col : col_names){
-					Reduction red = cols.get(col).getReduction();
-					if( use_overlap && red == Reduction.AVG){
-						// These have been mapped to time average 
-						red = Reduction.SUM;
+					// Don't remake col if inner table deleted it/has no data
+					if( table.hasCol(col)) {
+						Reduction red = cols.get(col).getReduction();
+						if( use_overlap && red == Reduction.AVG){
+							// These have been mapped to time average 
+							red = Reduction.SUM;
+						}
+						compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 					}
-					compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 				}
 				//compoundTable.addTable(table);
 				table=null;
@@ -984,7 +995,7 @@ public class TableExtension extends ReportExtension {
 			Node n = list.item(i);
 			if (n.getNodeType() == Node.ELEMENT_NODE) {
 				Element e = (Element) n;
-				processTable(table, e);
+				table=processTable(table, e);
 			}
 		}
 		return table;
@@ -999,7 +1010,7 @@ public class TableExtension extends ReportExtension {
 	 * @param inst
 	 *            the inst
 	 */
-	private void processTable(Table<String,Object> target, Element inst) {
+	private Table processTable(Table<String,Object> target, Element inst) {
 		String instruction = inst.getLocalName();
 		try {
 
@@ -1227,6 +1238,31 @@ public class TableExtension extends ReportExtension {
 				String a = getParam("Arg1",inst);
 				String b = getParam("Arg2",inst);
 				target.rowOperation(dest, op, a, b);
+			}else if( instruction.equals("MergeRows")) {
+				String key = getParam("NewKey", inst);
+				Table<String,Object> old = target;
+				target = new Table<>();
+				target.addTable(key, old);
+			}else if( instruction.equals("ThresholdRows")) {
+				String col = getParam("Column", inst);
+				Number min = getNumberParam("Minimum",null, inst);
+				Number max = getNumberParam("Maximum",null, inst);
+				if(col != null) {
+					if( min != null  ) {
+						try {
+							target.thresholdRows(col, MatchCondition.LT, min);
+						}catch(Throwable t) {
+							addError("Bad threshold", "Minimum", t);
+						}
+					}
+					if( max != null ) {
+						try {
+							target.thresholdRows(col, MatchCondition.GT, max);
+						}catch(Throwable t) {
+							addError("Bad threshold", "Maximum", t);
+						}
+					}
+				}
 			}else if(instruction.equals("PrintHeadings")){
 				target.setPrintHeadings(getBooleanParam("Value", true, inst));
 			}
@@ -1234,6 +1270,7 @@ public class TableExtension extends ReportExtension {
 			getLogger().error( "Error processing table " + instruction,t);
 
 		}
+		return target;
 	}
 
 	/**

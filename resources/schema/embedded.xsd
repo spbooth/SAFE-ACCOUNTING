@@ -98,6 +98,7 @@ report schema but should be included in an extended schema if embedded reports a
         <xsd:choice>
 				<xsd:element ref="par:Parameter"/>
 				<xsd:element ref="par:IfSet"/>
+				<xsd:element ref="par:IfNotSet"/>
 				<xsd:element ref="par:Optional"/>
 				<xsd:group ref="ato:NumberGroup"/>
 				<xsd:element ref="ato:Percentage" />

@@ -36,10 +36,16 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.GeneralMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
+import uk.ac.ed.epcc.webapp.jdbc.filter.ResultMapper;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 
 
-
+/** A {@link ResultMapper} configured by {@link ReductionTarget}s
+ * 
+ * @author spb
+ *
+ * @param <T>
+ */
 public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends GeneralMapMapper<ExpressionTuple, ReductionMapResult>{
 		private Set<ReductionTarget> sum;
 		private Set<ReductionTarget> skip;
@@ -107,6 +113,7 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 								case MAX: addMax(e, value_name);break;
 								case AVG: addAverage(e, value_name);break;
 								case SELECT:addClause(val, value_name);break; 
+								case DISTINCT: addCount(e, value_name); break; // might be counting distinct numbers
 								default: throw new IllegalReductionException("Bad number reduction");
 								}
 							}else if( Date.class.isAssignableFrom(val.getTarget()) ){
@@ -118,14 +125,15 @@ public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends
 								case MIN: addMinDate(e, value_name);break;
 								case MAX: addMaxDate(e, value_name);break;
 								case SELECT:addClause(val, value_name);break; 
+								case DISTINCT: addCount(e, value_name); break; // might be counting distinct times
 								default: throw new IllegalReductionException("Bad date reduction");
 								}
 
 							}else{
-								if( target.getReduction() == Reduction.SELECT){
-									addClause(val, value_name);
-								}else{
-									throw new IllegalReductionException("Unsupported data type for reduction");
+								switch(target.getReduction()) {
+								case SELECT:addClause(val, value_name);break; 
+								case DISTINCT: addCount((SQLExpression)val, value_name); break; 
+								default: throw new IllegalReductionException("Unsupported data type for reduction");
 								}
 							}
 						}else{

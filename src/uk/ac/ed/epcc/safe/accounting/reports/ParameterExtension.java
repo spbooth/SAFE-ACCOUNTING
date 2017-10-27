@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -114,6 +116,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  *
  */
 public class ParameterExtension extends ReportExtension {
+	private static final String PARAMETER_REF_ELEMENT = "ParameterRef";
 	private static final String FORMAT_PARAMETER_ELEMENT = "FormatParameter";
 	private static final String FOR_ELEMENT = "For";
 	private static final String CONTENT_ELEM = "Content";
@@ -137,6 +140,7 @@ public class ParameterExtension extends ReportExtension {
 		super(ctx,nf);
 		
 	}
+	protected Set<String> variable_names=new LinkedHashSet<>();
 	/** Build a form based on the ParameterDef elements in the report.
 	 * 
 	 * @param form
@@ -791,9 +795,11 @@ public class ParameterExtension extends ReportExtension {
 		if( parameter_names != null){
 			parameter_names.add(variable);
 		}
+		
 		String splitter = this.getAttribute(SPLIT_ATTR, element);
 		Splitter split = getContext().makeObjectWithDefault(Splitter.class, null, SPLITTER_PREFIX, splitter);
 		try{
+			variable_names.add(variable);
 			Object[] list;
 			if( split == null ){
 				if( param instanceof Collection ){
@@ -827,6 +833,7 @@ public class ParameterExtension extends ReportExtension {
 			if( parameter_names != null){
 				parameter_names.remove(variable);
 			}
+			variable_names.remove(variable);
 		}
 		return result;
 	}
@@ -867,6 +874,7 @@ public class ParameterExtension extends ReportExtension {
 			return result;
 		}
 		try{
+			variable_names.add(variable);
 		PropertyFinder finder = split.getFinder();
 		AndRecordSelector sel = new AndRecordSelector();
 		NodeList list = element.getChildNodes();
@@ -900,6 +908,7 @@ public class ParameterExtension extends ReportExtension {
 			if( parameter_names != null){
 				parameter_names.remove(variable);
 			}
+			variable_names.remove(variable);
 		}
 		return result;
 		
@@ -932,6 +941,24 @@ public class ParameterExtension extends ReportExtension {
 			}else if( item.getLocalName().equals(FORMAT_PARAMETER_ELEMENT)){
 				String name=item.getAttribute(NAME_ATTR);
 				return formatParameter(name, item.getChildNodes());
+			}else if( item.getLocalName().equals(PARAMETER_REF_ELEMENT) ||
+					item.getLocalName().equals("IfSet") ||
+					item.getLocalName().equals("IfNotSet") ||
+					item.getLocalName().equals("Content") ||
+					item.getLastChild().equals("Fallback")) {
+				// elements that are legal provided the name parameter is not a variable.
+				String name = item.getAttribute(NAME_ATTR);
+				if( variable_names.contains(name)) {
+					addError("Illegal expansion","Parameter "+name+" is a loop variable and cannot be accessed using "+item.getLocalName());
+				}
+				// Import the node we will do additional XSL template 
+				// expansion on the result to resolve.
+				// expand child nodes as IfSet/Set might reference variables
+				// or additional loops
+				Node child = doc.importNode(item, false);
+				Node frag = expand(doc,item.getChildNodes());
+				child.appendChild(frag);
+				return child;
 			}else{
 				addError("Illegal expansion", item.getLocalName()+ " not allowed in loop expansion");
 			}

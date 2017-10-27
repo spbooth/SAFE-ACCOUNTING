@@ -16,42 +16,32 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting;
 
-import uk.ac.ed.epcc.webapp.content.Operator;
+import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 
-/** Reduction operators.
- * <p>
- * The INDEX reduction is equivalent to the SQL GROUP BY CLAUSE, when combined with other
- * Reductions it requests that multiple results should be returned, with reductions only happending
- * across sets of records where the INDEX property is the same.
- * </p>
- * <p>
- * AVG is a mean value except when doing overlap mapping when it becomes a time average
- * </p>
- * <p>
- * SELECT just selects a value without adding to the SQL GROUP BY. The expression is assumed to be
- * derivable from the INDEXs or the same for all records.
- * </p>
+/** A {@link ReductionTarget} that generates an index value similar to an SQL GROUP BY clause.
+ * 
  * @author spb
  *
  */
-public enum Reduction {
-  SUM(Operator.ADD),
-  AVG(Operator.AVG),
-  MIN(Operator.MIN),
-  MAX(Operator.MAX),
-  INDEX(Operator.MERGE),
-  SELECT(Operator.MERGE),
-  DISTINCT(Operator.MERGE);
-  
-  private final Operator op;
-  private Reduction(Operator o){
-	  this.op=o;
-  }
-  /** get a {@link Operator} suitable for combing partial results.
-   * 
-   * @return {@link Operator}
-   */
-  public Operator operator(){
-	  return op;
-  }
+
+
+
+public class CountReduction extends ReductionTarget<Object> {
+
+
+	public CountReduction(
+			PropExpression<?> tag) throws IllegalReductionException {
+		super(Object.class, Reduction.DISTINCT, tag);
+		
+	}
+
+	
+	@Override
+	public Object combine(Object a, Object b){
+		if( a != null ){
+			return  a;
+		}else{
+			return  b;
+		}
+	}
 }

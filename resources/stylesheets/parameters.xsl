@@ -21,10 +21,10 @@
 		<xsl:copy-of select="param:formatParameter($ParameterExtension,@name,child::*)" />
 	</xsl:template>
 	<xsl:template match="par:Repeat">		
-		<xsl:copy-of select="param:repeat($ParameterExtension,self::*)" />
+		<xsl:apply-templates select="param:repeat($ParameterExtension,self::*)" />
 	</xsl:template>
 	<xsl:template match="par:For">		
-		<xsl:copy-of select="param:For($ParameterExtension,self::*)" />
+		<xsl:apply-templates select="param:For($ParameterExtension,self::*)" />
 	</xsl:template>
 	<!--  remove the parameter defs -->
     <xsl:template match="par:ParameterDef"/>
@@ -40,6 +40,16 @@
 	</xsl:choose>
     </xsl:template>
     
+    <xsl:template match="par:IfNotSet">
+    <xsl:choose>
+	<xsl:when test="not(param:isSet($ParameterExtension,@name))">
+	<xsl:apply-templates select="par:Content" mode="use" />
+	</xsl:when>
+	<xsl:otherwise>
+	<xsl:apply-templates select="par:Fallback" mode="use"/>
+	</xsl:otherwise>
+	</xsl:choose>
+    </xsl:template>
     <xsl:template match="par:Content|par:Fallback"/>
     <xsl:template match="par:Content|par:Fallback" mode="use">
     <xsl:apply-templates/>
