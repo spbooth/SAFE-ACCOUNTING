@@ -35,8 +35,8 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
     public static class ReportLogFactory extends DefaultDataObjectPropertyFactory<ReportTemplateLog> {
 
         public static final PropertyRegistry reportlog_reg = new PropertyRegistry("reportlog", "report log properties");
-        public static final ReferenceTag<AppUser, AppUserFactory<AppUser>> person_tag = 
-        		new ReferenceTag<AppUser, AppUserFactory<AppUser>>(reportlog_reg, "Person", (Class<? extends AppUserFactory<AppUser>>) AppUserFactory.class, "Person");
+        public static final ReferenceTag<AppUser, AppUserFactory> person_tag = 
+        		new ReferenceTag<AppUser, AppUserFactory>(reportlog_reg, "Person",  AppUserFactory.class, "Person");
 
         public static final String DEFAULT_TABLE = "ReportTemplateLog";
 
@@ -102,7 +102,8 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
                 log.record.setProperty(PERSON_ID, user);
             }
             if (parameters != null) {
-                log.record.setProperty(PARAMETERS, String.join("/", parameters));
+                String param_string = String.join("/", parameters);
+				log.record.setProperty(PARAMETERS, param_string);
             }
             log.commit();
         }
