@@ -102,8 +102,16 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
                 log.record.setProperty(PERSON_ID, user);
             }
             if (parameters != null) {
-                String param_string = String.join("/", parameters);
-				log.record.setProperty(PARAMETERS, param_string);
+            	// requires Java-8
+                //String param_string = String.join("/", parameters);
+            	StringBuilder sb = new StringBuilder();
+            	for( String s : parameters) {
+            		if( sb.length() > 0 ) {
+            			sb.append("/");
+            		}
+            		sb.append(s);
+            	}
+				log.record.setProperty(PARAMETERS, sb.toString());
             }
             log.commit();
         }
