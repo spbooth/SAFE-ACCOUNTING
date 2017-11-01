@@ -319,6 +319,16 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	}
 	
 	protected final int getIntParam(String name, int def, Element elem) throws Exception{
+		if( hasParameterRef(elem)){
+			Object ref_data = getParameterRef(elem);
+			if( ref_data != null ){
+				Number val =  convert(null,Number.class,ref_data);
+				if( val != null ){
+					return val.intValue();
+				}
+			}
+			return def;
+		}
 		String s = getParam(name,elem);
 		if( s == null || s.trim().length() == 0){
 			return def;

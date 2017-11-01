@@ -394,18 +394,18 @@ public abstract class SelectBuilder {
 
 	protected final String getParamNS(String namespace, String name, Element elem)
 			throws ReportException {
-				if( elem == null){
-					return null;
-				}
-				Element v = getParamElementNS(namespace,name, elem);
-				if( v != null ){
-					String result = normalise(getText(v));
-					debug("lookup ["+name+"] in "+elem.getNodeName()+", found ["+result+"]");
-					return result;
-				}
-				debug("lookup ["+name+"] in "+elem.getNodeName()+", no element found");
-				return null;  
-			}
+		if( elem == null){
+			return null;
+		}
+		Element v = getParamElementNS(namespace,name, elem);
+		if( v != null ){
+			String result = normalise(getText(v));
+			debug("lookup ["+name+"] in "+elem.getNodeName()+", found ["+result+"]");
+			return result;
+		}
+		debug("lookup ["+name+"] in "+elem.getNodeName()+", no element found");
+		return null;  
+	}
 	/** Map whitespace to normalised form. This is important for configuration elements if
 	 * we want to be able to reformat the XML without breaking things
 	 * 
