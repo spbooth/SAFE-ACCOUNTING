@@ -20,7 +20,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
-import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
@@ -28,7 +27,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.IllegalContentException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
@@ -419,6 +417,12 @@ public abstract class SelectBuilder {
 		return value.trim().replaceAll("\\s+", " ");
 	}
 
+	/** get a child element in the same namespace as the parent
+	 * 
+	 * @param name child element name
+	 * @param e  parent Element
+	 * @return
+	 */
 	protected final Element getParamElement(String name, Element e) {
 		return getParamElementNS(e.getNamespaceURI(), name, e);
 	}

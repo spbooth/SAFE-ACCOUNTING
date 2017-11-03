@@ -341,7 +341,26 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 	}
 	protected final boolean getBooleanParam(String name, boolean def, Element elem) throws Exception{
-		String s = getParam(name,elem);
+		Element inner = getParamElement(name, elem);
+		if( inner == null) {
+			return def;
+		}
+		String s=null;
+		if( hasParameterRef(inner)) {
+			Object ref_data = getParameterRef(elem);
+			if( ref_data != null ){
+				if( ref_data instanceof Boolean) {
+					return ((Boolean)ref_data).booleanValue();
+				}else if( ref_data instanceof String) {
+					s=ref_data.toString();
+				}else {
+					addError("Expecting Boolean", "Got "+ref_data.toString()+" instead of boolean");
+					return def;
+				}
+			}
+		}else {
+		    s = normalise(getText(inner));
+		}
 		if( s == null || s.trim().length() == 0){
 			return def;
 		}
@@ -402,7 +421,21 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	}
 	
 	protected final int getIntParamNS(String namespace,String name, int def, Element elem) throws Exception{
-		String s = getParamNS(namespace,name,elem);
+		Element inner = getParamElementNS(namespace, name, elem);
+		if( inner == null ) {
+			return def;
+		}
+		if( hasParameterRef(inner)) {
+			Object ref_data = getParameterRef(elem);
+			if( ref_data != null ){
+				Number val =  convert(null,Number.class,ref_data);
+				if( val != null ){
+					return val.intValue();
+				}
+			}
+			return def;
+		}
+		String s = normalise(getText(inner));
 		if( s == null || s.trim().length() == 0){
 			return def;
 		}
@@ -502,6 +535,21 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			}
 			if( dat instanceof Number){
 				return (T) fac.makeReference(((Number)dat).intValue());
+			}
+		}
+		if( target == Boolean.class) {
+			if( dat instanceof String) {
+				String val = (String)dat;
+				return (T) Boolean.valueOf(val);
+			}
+		}
+		if( Number.class.isAssignableFrom(target) ) {
+			if( dat instanceof String) {
+				try {
+					return (T) parseNumber(null, target, (String)dat);
+				} catch (ParseException e) {
+					addError("convert error", "Error parsing number", e);
+				}
 			}
 		}
 		addError("bad type conversion", "Cannot convert "+dat.getClass().getCanonicalName()+" to "+target.getCanonicalName());
