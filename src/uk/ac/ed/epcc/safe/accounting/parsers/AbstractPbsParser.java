@@ -174,6 +174,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 			PBS_REGISTRY, "user",String.class,
 	"The name of the user under which the job executed");
 
+	
 	// //////////////////////////////////////////////////////////////////////////
 	// PROPERTY TAGS COPPIED FROM BatchParser
 	// //////////////////////////////////////////////////////////////////////////
@@ -308,7 +309,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 		// E
 		STANDARD_ATTRIBUTES.addParser(PBS_ALTERNATE_ID_PROP,StringParser.PARSER);
 		// B
-		STANDARD_ATTRIBUTES.addParser(PBS_AUTHORIZED_GROUPS_PROP,StringParser.PARSER);
+		STANDARD_ATTRIBUTES.put(PBS_AUTHORIZED_GROUPS_PROP.getName(),new PBSAuthorizedGroupsMaker());
 		// B
 		STANDARD_ATTRIBUTES.addParser(PBS_AUTHORIZED_HOSTS_PROP,StringParser.PARSER);
 		// B
@@ -333,7 +334,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 		// All record types
 		STANDARD_ATTRIBUTES.addParser(PBS_JOB_TIMESTAMP_PROP,PbsDateParser.PARSER);
 		// B
-		STANDARD_ATTRIBUTES.addParser(PBS_OWNER_PROP,StringParser.PARSER);
+		STANDARD_ATTRIBUTES.put(PBS_OWNER_PROP.getName(),new PBSOwnerEntryMaker());
 		// B, E, Q, S
 		STANDARD_ATTRIBUTES.addParser(PBS_QUEUE_PROP,StringParser.PARSER);
 		// All record types
@@ -390,6 +391,92 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	}
 	static{
 		PBS_REGISTRY.lock();
+	}
+	
+	/** class to extract both the owner and user properties from a reservation
+	 * owner attribute
+	 * 
+	 * @author spb
+	 *
+	 */
+	public static class PBSOwnerEntryMaker implements ContainerEntryMaker{
+
+		@Override
+		public void setValue(PropertyContainer contanier, String valueString) throws IllegalArgumentException,
+				InvalidPropertyException, NullPointerException, AccountingParseException {
+			contanier.setOptionalProperty(PBS_OWNER_PROP, valueString);
+			String user = getUser(valueString);
+			if( user != null) {
+				contanier.setOptionalProperty(PBS_USER_PROP, user);
+			}
+			
+		}
+
+		@Override
+		public void setValue(PropertyMap map, String valueString)
+				throws IllegalArgumentException, NullPointerException, AccountingParseException {
+			map.setOptionalProperty(PBS_OWNER_PROP, valueString);
+			String user = getUser(valueString);
+			if( user != null) {
+				map.setOptionalProperty(PBS_USER_PROP, user);
+			}
+			
+		}
+		private String getUser(String owner) {
+			if( owner.contains("@")) {
+				return owner.substring(0, owner.indexOf('@'));
+			}
+			return null;
+		}
+		
+	}
+	/** A {@link ContainerEntryMaker} that sets the account proeprty to be the
+	 * first non-null authorized group. The assumption is that groups
+	 * are also valid accounting budgets.
+	 * 
+	 * @author spb
+	 *
+	 */
+	public static class PBSAuthorizedGroupsMaker implements ContainerEntryMaker{
+
+		@Override
+		public void setValue(PropertyContainer contanier, String valueString) throws IllegalArgumentException,
+				InvalidPropertyException, NullPointerException, AccountingParseException {
+			contanier.setOptionalProperty(PBS_AUTHORIZED_GROUPS_PROP, valueString);
+			String account = getAccount(valueString);
+			if( account != null) {
+				contanier.setOptionalProperty(PBS_ACCOUNT_PROP, account);
+			}
+			
+			
+		}
+
+		@Override
+		public void setValue(PropertyMap map, String valueString)
+				throws IllegalArgumentException, NullPointerException, AccountingParseException {
+			map.setOptionalProperty(PBS_AUTHORIZED_GROUPS_PROP, valueString);
+			String account = getAccount(valueString);
+			if( account != null) {
+				map.setOptionalProperty(PBS_ACCOUNT_PROP, account);
+			}
+			
+		}
+		
+		public String getAccount(String value) {
+			if( value == null) {
+				return null;
+			}
+			for(String g : value.split(",")) {
+				if( g.startsWith("+")) {
+					g = g.substring(1);
+				}
+				if( g.length() > 0) {
+					return g;
+				}
+			}
+			return null;
+		}
+		
 	}
 	
 	/** class that attempts to extract a PBS sequence number and array-id 
