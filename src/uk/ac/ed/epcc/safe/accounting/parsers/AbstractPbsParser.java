@@ -394,7 +394,10 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	}
 	
 	/** class to extract both the owner and user properties from a reservation
-	 * owner attribute
+	 * owner attribute.
+	 * 
+	 * Note that torque seems to set owner for normal batch jobs as well so
+	 * Only add user if not already set.
 	 * 
 	 * @author spb
 	 *
@@ -406,7 +409,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 				InvalidPropertyException, NullPointerException, AccountingParseException {
 			contanier.setOptionalProperty(PBS_OWNER_PROP, valueString);
 			String user = getUser(valueString);
-			if( user != null) {
+			if( user != null && contanier.getProperty(PBS_USER_PROP,null) == null) {
 				contanier.setOptionalProperty(PBS_USER_PROP, user);
 			}
 			
@@ -417,7 +420,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 				throws IllegalArgumentException, NullPointerException, AccountingParseException {
 			map.setOptionalProperty(PBS_OWNER_PROP, valueString);
 			String user = getUser(valueString);
-			if( user != null) {
+			if( user != null && map.getProperty(PBS_USER_PROP) == null) {
 				map.setOptionalProperty(PBS_USER_PROP, user);
 			}
 			
