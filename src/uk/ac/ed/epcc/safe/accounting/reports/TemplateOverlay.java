@@ -20,19 +20,26 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
+import uk.ac.ed.epcc.webapp.content.Link;
 import uk.ac.ed.epcc.webapp.editors.xml.DomVisitor;
+import uk.ac.ed.epcc.webapp.forms.html.RedirectResult;
 import uk.ac.ed.epcc.webapp.forms.inputs.ConstantInput;
 import uk.ac.ed.epcc.webapp.jdbc.table.IntegerFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
+import uk.ac.ed.epcc.webapp.model.data.forms.registry.SummaryContentProvider;
 import uk.ac.ed.epcc.webapp.model.xml.XMLOverlay;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
@@ -44,7 +51,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X> {
+public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X> implements SummaryContentProvider<X>{
 
 	public static class ReportFile extends XMLFile{
 
@@ -140,6 +147,20 @@ public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X>
 		final TableSpecification spec = super.getDefaultTableSpecification(c, table);
 		spec.setOptionalField(USE_COUNTER, new IntegerFieldType());
 		return spec;
+	}
+
+	@Override
+	public <C extends ContentBuilder> C getSummaryContent(AppContext c, C cb, X target) {
+		String schemas = c.getInitParameter("schema.links");
+		if( schemas != null && cb instanceof ExtendedXMLBuilder) {
+			cb.addHeading(4, "Schema documentation");
+			Set<Link> links = new LinkedHashSet<>();
+			for(String name : schemas.split("\\s*,\\s*")) {
+				links.add(new Link(c, name, new RedirectResult("/templates/schema/"+name)));
+			}
+			cb.addList(links);
+		}
+		return cb;
 	}
 	
 	

@@ -67,6 +67,7 @@ public class TemplateServlet extends SessionServlet {
 		boolean update=false;
 		boolean do_transform=false;
 		String def_transform=null;
+		String mime_type = "text/xml";
 		if( type.equals("schema")){
 			overlay=builder.getSchemaOverlay();
 			group=builder.SCHEMA_GROUP;
@@ -78,6 +79,7 @@ public class TemplateServlet extends SessionServlet {
 		}else if( type.equals("stylesheets")){
 			overlay=builder.getReportOverlay();
 			group=ReportBuilder.STYLESHEET_GROUP;
+			mime_type="text/xml";
 		}else if( type.equals("report")){
 			overlay=builder.getReportOverlay();
 			group=ReportBuilder.REPORT_TEMPLATE_GROUP;
@@ -105,7 +107,8 @@ public class TemplateServlet extends SessionServlet {
 			t.transform(s, r);
 			
 		}else{
-			res.setContentType("application/xml");
+			
+			res.setContentType(mime_type);
 			TextFile file = overlay.find(group, name);
 			if( file == null ){
 				res.sendError(HttpServletResponse.SC_NO_CONTENT);

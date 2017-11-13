@@ -11,14 +11,14 @@
 <!--| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |-->
 <!--| See the License for the specific language governing permissions and      |-->
 <!--| limitations under the License.                                           |-->
-<?xml-stylesheet type="text/xsl" href="../stylesheets/xs3p/xs3p.xsl"?>
+<?xml-stylesheet type="text/xsl" href="../stylesheets/xs3p/xs3p.xsl" version="1.0" ?>
 <xsd:schema elementFormDefault="qualified"
 	targetNamespace="http://safe.epcc.ed.ac.uk/parameter"
 	xmlns="http://safe.epcc.ed.ac.uk/parameter"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fil="http://safe.epcc.ed.ac.uk/filter">
 
     <xsd:import schemaLocation="filter.xsd" namespace="http://safe.epcc.ed.ac.uk/filter"></xsd:import>
-
+    <xsd:annotation><xsd:documentation>This schema defines elements that define the parameter form and substitute the results into the report.</xsd:documentation></xsd:annotation>
 
     
     
