@@ -263,7 +263,7 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 				manager.addIndexTable(tab, record,target);
 			}
 			manager.finishIndexTable(tab, target);
-			cb.addText("Dates in red indicate records that cross the time period of the filter");
+			cb.addText("Dates in red indicate records that cross the time period of the filter. Grey End-dates indicate an allocation that is past");
 			cb.addTable(c, tab);
 		}catch(Exception e){
 			getLogger().error("Error making index table",e);

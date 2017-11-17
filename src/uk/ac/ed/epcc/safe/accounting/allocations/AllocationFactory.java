@@ -47,6 +47,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.NumberOp;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.FormatProvider;
@@ -700,7 +701,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	
 	@SuppressWarnings("unchecked")
 	public   Table<String,T> addIndexTable(Table<String,T> tab, T target, PropertyTarget template) {
-		
+		Date now = getContext().getService(CurrentTimeService.class).getCurrentTime();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		tab.put("View", target, new Link(getContext(), "View", target.getViewTransition()));
 		String start_date = START_DATE_COL;
@@ -723,8 +724,12 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			period_end = template.getProperty(StandardProperties.ENDED_PROP,null);
 		}
 
-		if( period_end != null && period_end.before(target.getEnd())){
-			tab.addAttribute(end_date, target, "class", "warn");
+		if( period_end != null ) {
+			if( period_end.before(target.getEnd())){
+				tab.addAttribute(end_date, target, "class", "warn");
+			}else if( target.getEnd().before(now)) {
+				tab.addAttribute(end_date, target, "class", "grey");
+			}
 		}
 
 		for(PropertyTag tag : getListProperties()){
