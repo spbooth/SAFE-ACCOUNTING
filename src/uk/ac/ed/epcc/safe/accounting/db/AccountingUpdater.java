@@ -95,6 +95,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 		Date last= null;
 		Date bad_date = new Date(100000000000L); //. roughly 1973-03-03
     	Logger log = conn.getService(LoggerService.class).getLogger(getClass());
+    	DatabaseService db_serv = conn.getService(DatabaseService.class);
     	Iterator<R> lines;
     
     	boolean check_exists=conn.getBooleanParameter("accounting.checkduplicate", true);
@@ -273,8 +274,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     			log.error("Unexpected Error parsing line "+fmt,e);
     		}
     		// We don't want very long held locks so commit between records.
-    		DatabaseService serv = conn.getService(DatabaseService.class);
-			serv.commitTransaction();
+			db_serv.commitTransaction();
     	}
     	StringBuilder error_text= target.endParse();
     	error_text.append(errors.toString());
