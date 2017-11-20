@@ -256,12 +256,13 @@ public class TableExtension extends ReportExtension {
 				// use hasChild as element is empty
 				if( extension.hasChild(DEFAULT_LIST, tableElement)){
 					AppContext conn = extension.getContext();
-					String prop_list = conn.getInitParameter("jobtable.properties","");
+					String prop_list = conn.getExpandedProperty("jobtable.properties","");
 					PropertyFinder finder =  recordSet.getUsageProducer().getFinder();
-					for(String prop_name : prop_list.split(",")){
+					for(String tag : prop_list.split(",")){
+							String prop_name = conn.getExpandedProperty("jobtable.property,"+tag, tag);
 							PropertyTag t = finder.find(prop_name);
 							if( t != null ){
-								String label = conn.getInitParameter("propertylabel."+t.getName());
+								String label = conn.getExpandedProperty("propertylabel."+t.getName());
 								Transform tr = conn.makeObjectWithDefault(Transform.class, null, "propertytransform", t.getName());
 								if( tr == null){
 									Labeller l = conn.makeObjectWithDefault(Labeller.class, null, "propertylabeller", t.getName());
