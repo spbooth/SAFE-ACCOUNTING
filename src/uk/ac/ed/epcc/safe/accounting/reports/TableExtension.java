@@ -259,7 +259,7 @@ public class TableExtension extends ReportExtension {
 					String prop_list = conn.getExpandedProperty("jobtable.properties","");
 					PropertyFinder finder =  recordSet.getUsageProducer().getFinder();
 					for(String tag : prop_list.split(",")){
-							String prop_name = conn.getExpandedProperty("jobtable.property,"+tag, tag);
+							String prop_name = conn.getExpandedProperty("jobtable.property."+tag, tag);
 							PropertyTag t = finder.find(prop_name);
 							if( t != null ){
 								String label = conn.getExpandedProperty("propertylabel."+t.getName());
@@ -271,6 +271,8 @@ public class TableExtension extends ReportExtension {
 									}
 								}
 								tableMaker.addColumn(new ColName(t, label,tr));
+							}else {
+								extension.addError("bad default property", prop_name);
 							}
 					}
 				}
