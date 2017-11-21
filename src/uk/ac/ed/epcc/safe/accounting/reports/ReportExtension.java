@@ -462,6 +462,14 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		return up.getFinder().find(name.trim());
 	}
 	protected PropExpression getExpression(PropertyTargetFactory up, String expr){
+		if( up == null) {
+			addError("Internal error","No usage producer");
+			return null;
+		}
+		if( expr == null) {
+			addError("Bad Property","Null value passed");
+			return null;
+		}
 		Parser p = new Parser(conn, up.getFinder());
 		try {
 			return p.parse(expr.trim());
