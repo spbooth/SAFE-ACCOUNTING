@@ -257,7 +257,21 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			}
 			f.addValidator(new ListenerUpdateValidator(o));
 			addUpdateValidator(f, o);
+			modifyAllocationForm(f, o);
 		}
+
+		/* (non-Javadoc)
+		 * @see uk.ac.ed.epcc.webapp.model.data.DataObjectFormFactory#getSelectors()
+		 */
+		
+		
+	}
+	/** extension point to allow customisation of the allocation form.
+	 * 
+	 * @param f
+	 * @param o
+	 */
+	protected void modifyAllocationForm(Form f, T o) {
 		
 	}
 	public class AllocationValidator implements FormValidator{
@@ -754,7 +768,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	
 	
 	@SuppressWarnings("unchecked")
-	protected final <X,C,R> void addValueToTable(T target,Table<C,R> tab,C col, R row,
+	protected  <X,C,R> void addValueToTable(T target,Table<C,R> tab,C col, R row,
 			PropertyTag<X> t) {
 		try{
 		        Logger log = getContext().getService(LoggerService.class).getLogger(getClass());
