@@ -290,7 +290,7 @@
 	   	<xsd:element name="CategoryTotals" type="CategoryTotalsType" />
 	   	<xsd:element name="CategorySet" type="CategorySetType" />
 	   	<xsd:element name="CombineColumn" type="CombineType"></xsd:element>
-	   	<xsd:element name="KeyName" type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+	   	<xsd:element name="KeyName" type="KeyNameType" maxOccurs="1" minOccurs="0">
 	   		<xsd:annotation>
 	   			<xsd:documentation>
 	   				Set the name of the table key. Normally keys are
