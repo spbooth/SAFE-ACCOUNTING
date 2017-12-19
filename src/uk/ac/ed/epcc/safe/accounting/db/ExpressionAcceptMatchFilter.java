@@ -37,6 +37,9 @@ public class ExpressionAcceptMatchFilter<T extends ExpressionTarget,I> extends A
 		try {
 			I res1 = o.evaluateExpression(expr1);
 			I res2 = o.evaluateExpression(expr2);
+			if( res1 == null || res1 == null) {
+				return false;
+			}
 			if( m == null ){
 				if( res1 == null){
 					return res2==null;

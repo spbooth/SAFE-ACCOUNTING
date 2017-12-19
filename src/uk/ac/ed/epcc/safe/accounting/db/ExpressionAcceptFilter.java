@@ -45,6 +45,9 @@ public class ExpressionAcceptFilter<T extends ExpressionTarget,I> extends Abstra
 	public boolean accept(T o) {
 		try {
 			I res = o.evaluateExpression(expr);
+			if( res==null || data == null) {
+				return false;
+			}
 			if( m == null ){
 				return data.equals(res);
 			}
