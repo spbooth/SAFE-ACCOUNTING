@@ -347,10 +347,24 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 @Test
 	public void testReceiveAccounting() throws Exception {
 		String updateText = getUpdateText();
-		//takeBaseline();
+		ParseUsageRecordFactory<R,I> fac = getFactory();
+		if (!fac.isValid()) {
+			return;
+		}
+		
+		takeBaseline();
 		receiveAccounting(updateText);
 		//save("tests",getClass().getSimpleName(),getFactory());
+		String expect = getReceiveAccountingExpected();
+		if( expect != null) {
+			//saveDiff("scratch.xml");
+			checkDiff("/cleanup.xsl", expect);
+		}
 	}
+
+    public String getReceiveAccountingExpected() {
+    	return null;
+    }
 
 public void receiveAccounting(String updateText) {
 	ParseUsageRecordFactory<R,I> fac = getFactory();
