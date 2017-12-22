@@ -77,7 +77,7 @@ public class SlurmDurationParser implements ValueParser<Duration> {
 
 		String text = valueString.trim();
 		
-		if(text.equals("INVALID")){
+		if(text.equals("INVALID") || text.equals("UNLIMITED") || text.equals("Partition_Limit")){
 			return null;
 		}
 		long days=0;
