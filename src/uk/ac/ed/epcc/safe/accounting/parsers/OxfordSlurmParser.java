@@ -3,13 +3,16 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.DateParser;
+import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.SlurmDurationParser;
+import uk.ac.ed.epcc.safe.accounting.parsers.value.SlurmMemoryParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParseException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
@@ -21,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
+import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
@@ -80,9 +84,24 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed,ConfigPa
 	public static final PropertyTag<Duration> TIMELIMIT_PROP = new PropertyTag<Duration>(slurm, "Timelimit", Duration.class);
 	@AutoTable
 	public static final PropertyTag<String> STATE_PROP = new PropertyTag<String>(slurm, "State", String.class);
-
+	@OptionalTable
+    public static final PropertyTag<Integer> ALOCGRES_GPU_PROP = new PropertyTag<Integer>(slurm,"AllocGRESgpu",Integer.class,"gres/gpu field");
+  
 	public static final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
-	
+	private static MakerMap GRES = new MakerMap();
+	private static final Pattern ATTR_PATTERN=Pattern.compile("(\\w+):([^,\\s]*)");
+	private static ContainerEntryMaker gres_parser = new AbstractNestedContainerEntryMaker(GRES) {
+		/**
+		 * @return the attrPattern
+		 */
+		protected Pattern getAttrPattern() {
+			return ATTR_PATTERN;
+		}
+		
+	};
+	static {
+        GRES.addParser("gpu", ALOCGRES_GPU_PROP, IntegerParser.PARSER);
+	}
 	private boolean skip_cancelled=false;
 	private String table;
 	
@@ -118,7 +137,9 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed,ConfigPa
 		parseDate(map,End, fields[pos++]);
 		parseDate(map,Submit, fields[pos++]);
 		parseInteger(map,ALLOC_CPUS,fields[pos++]);
-		map.setProperty(ALLOC_GRES,fields[pos++]);
+		String gres= fields[pos++];
+		map.setProperty(ALLOC_GRES,gres);
+		gres_parser.setValue(map, gres);
 		parseInteger(map,NNODE,fields[pos++]);
 		parseDuration(map,ELAPSED_PROP,fields[pos++]);
 		parseDuration(map,TIMELIMIT_PROP,fields[pos++]);
