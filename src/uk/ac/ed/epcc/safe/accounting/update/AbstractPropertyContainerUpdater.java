@@ -125,7 +125,7 @@ public TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpec
         // keep this in case we are specifying the table entirely in properties
         String prefix = "create_table."+table_name+".";
 		Map<String,String> params = c.getInitParameters(prefix);
-		spec.setFromParameters(prefix,params);
+		spec.setFromParameters(c,prefix,params);
        
 		if( spec.getFieldNames().size() == 0 ){
 		   return null;
