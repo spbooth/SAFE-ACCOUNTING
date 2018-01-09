@@ -380,7 +380,7 @@ public class RepositoryAccessorMap<X extends DataObject&ExpressionTarget> extend
 	
 	
 	protected void addSource(StringBuilder sb) {
-		res.addTable(sb, true);
+		res.addSource(sb, true);
 		
 	}
 	

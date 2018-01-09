@@ -38,7 +38,7 @@ public class PropertyMaker<T extends DataObject&ExpressionTarget,PT> extends Set
 	}
 	@Override
 	protected void addSource(StringBuilder sb) {
-		res.addTable(sb, true);
+		res.addSource(sb, true);
 		
 	}
 	@Override

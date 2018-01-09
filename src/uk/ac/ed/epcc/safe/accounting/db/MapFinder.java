@@ -53,7 +53,7 @@ public class MapFinder<T extends DataObject&ExpressionTarget,K,R> extends Filter
 	}
 	@Override
 	protected void addSource(StringBuilder sb) {
-		res.addTable(sb, true);
+		res.addSource(sb, true);
 		
 	}
 	@Override
