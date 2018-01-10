@@ -62,6 +62,7 @@ import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
 import uk.ac.ed.epcc.webapp.model.data.transition.AbstractPathTransitionProvider;
 import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
 import uk.ac.ed.epcc.webapp.servlet.ServletService;
+import uk.ac.ed.epcc.webapp.servlet.ViewTransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
@@ -99,7 +100,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	public static final ReportTemplateKey PDF = new ReportTemplateViewKey("PDF", "Generate PDF");
 	public static final ReportTemplateKey CSV = new ReportTemplateViewKey("CSV", "Generate CSV");
 
-	private static final class ReportTemplateViewKey extends ReportTemplateKey {
+	private static final class ReportTemplateViewKey extends ReportTemplateKey implements ViewTransitionKey<Report>{
 		private ReportTemplateViewKey(String name, String help) {
 			super(name, help);
 		}
@@ -108,6 +109,11 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		public boolean allow(AppContext c, Report target) 
 		{
 			return target != null && canView(c, target);
+		}
+
+		@Override
+		public boolean isNonModifying(Report target) {
+			return true;
 		}
 	}
 
