@@ -34,11 +34,12 @@ public class ShortTextPeriodFormatter implements ValueFormatter<TimePeriod> {
 
 	
 
-
-
+	public String format(TimePeriod tp){
+		return toString(tp);
+	}
 
 	
-	public String format(TimePeriod tp){
+	public static String toString(TimePeriod tp){
 		if( tp == null ){
 			return "";
 		}
