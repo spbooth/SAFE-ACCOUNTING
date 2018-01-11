@@ -59,6 +59,8 @@ import uk.ac.ed.epcc.webapp.forms.FormValidator;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
 import uk.ac.ed.epcc.webapp.forms.html.ForwardResult;
+import uk.ac.ed.epcc.webapp.forms.inputs.BoundedDateInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.DateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampMultiInput;
@@ -89,6 +91,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.model.log.Viewable;
 import uk.ac.ed.epcc.webapp.model.period.GatedTransition;
 import uk.ac.ed.epcc.webapp.model.period.SplitTransition;
+import uk.ac.ed.epcc.webapp.preferences.Preference;
 import uk.ac.ed.epcc.webapp.servlet.TransitionServlet;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
@@ -123,6 +126,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	@SuppressWarnings("unchecked")
 	private static final AllocationKey SPLIT = new AllocationKey(AllocationRecord.class, "Split", "Split a record at a given date");
 	
+	public static final Preference USE_DATE_PREF = new Preference("allocation.use_date_input", false, "use html5 date input for allocation forms");
 
 	private static final String ALLOCATION = "Allocation";
 	public static class AllocationRecord extends UsageRecordFactory.Use implements Viewable, Allocation{
@@ -434,7 +438,10 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	/** Get the correct input to use for the date fields
 	 * 
 	 */
-	public TimeStampMultiInput getDateInput(){
+	public final BoundedDateInput getDateInput(){
+		if( USE_DATE_PREF.isEnabled(getContext())) {
+			return new DateInput();
+		}
 		return new TimeStampMultiInput(1000L, Calendar.DAY_OF_MONTH);
 	}
 	
