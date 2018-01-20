@@ -348,6 +348,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 	public void testReceiveAccounting() throws Exception {
 		String updateText = getUpdateText();
 		ParseUsageRecordFactory<R,I> fac = getFactory();
+		assertNotNull(fac);
 		if (!fac.isValid()) {
 			return;
 		}
