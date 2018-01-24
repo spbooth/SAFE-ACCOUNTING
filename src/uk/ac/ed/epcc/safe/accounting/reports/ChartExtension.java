@@ -182,14 +182,20 @@ public abstract class ChartExtension extends ReportExtension {
 			Element e = (Element) node;
 			AppContext ctx = getContext();
 
-			int timeBlocks = getContext().getIntegerParameter("timechart.default.NumberOfTimeBlocks", 10);
-			try {
-				timeBlocks = getIntParam("NumberOfTimeBlocks",timeBlocks , e);
-			} catch (Exception e1) {
-				addError("Bad Plot", "Error setting NumberOfTimeBlocks", e1);
-			}	
-
-
+			int timeBlocks = 1;
+			if( graphOutput()) {
+				// Only use timeBlocks for graphical output
+				// in tables they will be merged anyway
+				// and merge will just use a sum
+				// which will be incorrect for time averages
+				timeBlocks = getContext().getIntegerParameter("timechart.default.NumberOfTimeBlocks", 10);
+				try {
+					timeBlocks = getIntParam("NumberOfTimeBlocks",timeBlocks , e);
+				} catch (Exception e1) {
+					addError("Bad Plot", "Error setting NumberOfTimeBlocks", e1);
+				}	
+			}
+			
 
 			try {
 				TimeChart chart;
