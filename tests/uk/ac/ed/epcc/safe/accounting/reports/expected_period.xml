@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><Report xmlns="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd">
+<Title>Test Repeat</Title>
+
+
+X-Q1 2014-X
+
+X-Q2 2014-X
+
+X-Q3 2014-X
+
+X-Q4 2014-X
+
+</Report>

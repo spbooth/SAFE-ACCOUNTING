@@ -10,16 +10,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
 
+import uk.ac.ed.epcc.safe.accounting.db.AccountingClassification;
 import uk.ac.ed.epcc.safe.accounting.db.AccountingClassificationFactory;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.WebappTestBase;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
 import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.DoubleInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.IntegerInput;
@@ -36,9 +40,76 @@ import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
 import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
+import uk.ac.ed.epcc.webapp.time.CalendarFieldSplitPeriod;
 
 public class ParameterExtensionTest extends WebappTestBase {
 	
+	@Test
+	public void testFor() throws Exception{
+		AccountingClassificationFactory fac = ctx.makeObject(AccountingClassificationFactory.class, "TestClassifier");
+		assertNotNull(fac);
+		PropertyTag<Integer> count =  (PropertyTag<Integer>) fac.getFinder().find(Number.class,"count");
+		AccountingClassification a = (AccountingClassification) fac.makeFromString("A");
+		a.setProperty(count, Integer.valueOf(1));
+		a.commit();
+		AccountingClassification b = (AccountingClassification) fac.makeFromString("B");
+		b.setProperty(count, Integer.valueOf(2));
+		b.commit();
+		AccountingClassification c = (AccountingClassification) fac.makeFromString("C");
+		c.setProperty(count, Integer.valueOf(3));
+		c.commit();
+		String templateName = "testFor";
+		
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<String,Object>();
+		ReportBuilderTest.setupParams(ctx, params);
+		
+
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
+		reportBuilder.setupExtensions(params);
+		
+		
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ReportType	XML = new ReportType("XML","xml", "text/xml","XML"); 
+		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
+		checkContent(null, "expected_for.xml", out.toString());
+	}
+	
+	@Test
+	public void testRepeat() throws Exception{
+
+		String templateName = "testRepeat";
+		
+		// Create a HTMLForm.
+		HTMLForm form = new HTMLForm(ctx);
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<String,Object>();
+		ReportBuilderTest.setupParams(ctx, params);
+		
+
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
+		reportBuilder.setupExtensions(params);
+		reportBuilder.buildReportParametersForm(form, params);	
+		
+		Calendar c = Calendar.getInstance();
+		
+		c.clear();
+		c.set(2014, Calendar.JANUARY, 1, 0, 0, 0);
+		CalendarFieldSplitPeriod period = new CalendarFieldSplitPeriod(c, Calendar.MONTH, 3, 4);
+		((CalendarFieldPeriodInput)form.getInput("Period")).setValue(period);
+	
+		reportBuilder.extractReportParametersFromForm(form, params);
+		
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ReportType	XML = new ReportType("XML","xml", "text/xml","XML"); 
+		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
+	
+		checkContent(null, "expected_period.xml", out.toString());
+	}
 	
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
@@ -96,7 +167,8 @@ public class ParameterExtensionTest extends WebappTestBase {
 	
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		reportBuilder.renderXML(params, out);
+		
+		reportBuilder.renderXML(params,out);
 		
 		// Look for errors
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());

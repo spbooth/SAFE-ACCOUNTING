@@ -116,7 +116,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  *
  */
 public class ParameterExtension extends ReportExtension {
-	private static final String PARAMETER_REF_ELEMENT = "ParameterRef";
+    static final String PARAMETER_REF_ELEMENT = "ParameterRef";
 	private static final String FORMAT_PARAMETER_ELEMENT = "FormatParameter";
 	private static final String FOR_ELEMENT = "For";
 	private static final String CONTENT_ELEM = "Content";
@@ -133,7 +133,7 @@ public class ParameterExtension extends ReportExtension {
 	private static final String UNSELECTED_ATTR = "unselected";
 	private static final String VALUE_ATTR = "value";
 	private static final String NAME_ATTR = "name";
-	private static final String PARAMETER_DEF_ELEMENT = "ParameterDef";
+	static final String PARAMETER_DEF_ELEMENT = "ParameterDef";
 	public static final String PARAMETER_LOC = "http://safe.epcc.ed.ac.uk/parameter";	
 	public ParameterExtension(AppContext ctx, NumberFormat nf)
 			throws ParserConfigurationException {

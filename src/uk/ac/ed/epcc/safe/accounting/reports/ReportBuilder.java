@@ -600,6 +600,22 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		return (paramNodes.getLength() > 0);
 
 	}
+	public boolean runParameterTransform() {
+		// Default behaviour is to run transform if any param syntax found
+		// some elements are exceptions and don't need the transform run
+		NodeList paramNodes = getParameterDocument().getElementsByTagNameNS(
+				PARAMETER_LOC, "*");
+		for(int i=0; i< paramNodes.getLength(); i++) {
+			Node n = paramNodes.item(i);
+			switch(n.getLocalName()){
+			case	ParameterExtension.PARAMETER_DEF_ELEMENT: break;
+			case    ParameterExtension.PARAMETER_REF_ELEMENT: break;
+			default: return true;
+			}
+		}
+		return false;
+
+	}
 	public void buildReportParametersForm(Form form, Map<String, Object> params)
 			throws Exception {
 		ParameterExtension pe = (ParameterExtension) params
@@ -862,10 +878,9 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	// The routine that generates the html:
 	protected Source runParametersTransform(Source xmlSource,
 			Map<String, Object> params) throws Exception {
-		// If the report has parameters the first pass will substitute them.
-		// Note we look for Parameter not ParameterDef as these may be static
-		// values not driven by the form
-		if (hasReportParameters()) {
+		// If the report has parameter content the first pass will substitute them.
+		// Note PArameterDef
+		if (runParameterTransform()) {
 
 			Transformer transformer = getXSLTransform(
 					"parameters.xsl", params);
