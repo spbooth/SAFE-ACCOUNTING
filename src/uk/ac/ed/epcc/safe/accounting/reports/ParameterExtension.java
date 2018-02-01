@@ -945,7 +945,7 @@ public class ParameterExtension extends ReportExtension {
 					item.getLocalName().equals("IfSet") ||
 					item.getLocalName().equals("IfNotSet") ||
 					item.getLocalName().equals("Content") ||
-					item.getLastChild().equals("Fallback")) {
+					item.getLocalName().equals("Fallback")) {
 				// elements that are legal provided the name parameter is not a variable.
 				String name = item.getAttribute(NAME_ATTR);
 				if( variable_names.contains(name)) {
