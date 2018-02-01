@@ -18,7 +18,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 public class ReportTypeRegistry implements Contexed {
 	public static final String REPORT_TYPE_PARAM = "ReportType";
     private final AppContext conn;
-	public ReportTypeRegistry(AppContext conn) {
+	protected ReportTypeRegistry(AppContext conn) {
 		this.conn=conn;
 		parseReportTypes();
 	}
@@ -185,5 +185,14 @@ public class ReportTypeRegistry implements Contexed {
 			}
 			
 		}
+	}
+	private static final String REG_ATTR="ReportTypeRegistryAttr";
+	public static ReportTypeRegistry getInstance(AppContext conn) {
+		ReportTypeRegistry reg = (ReportTypeRegistry) conn.getAttribute(REG_ATTR);
+		if( reg == null) {
+			reg = new ReportTypeRegistry(conn);
+			conn.setAttribute(REG_ATTR, reg);
+		}
+		return reg;
 	}
 }

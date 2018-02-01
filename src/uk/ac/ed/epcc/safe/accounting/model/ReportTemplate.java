@@ -29,6 +29,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
 import uk.ac.ed.epcc.webapp.model.data.Retirable;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 
 
@@ -56,14 +57,25 @@ public class ReportTemplate extends DataObject implements Retirable{
 		return builder;
 	}
 	public boolean canUse(SessionService user){
+		TimerService timer = getContext().getService(TimerService.class);
+		if( timer != null ) {
+			timer.startTimer("ReportTemplate.canUse");
+		}
 		boolean res=false;
 		try {
-			ReportBuilder b = getBuilder();
+			ReportBuilder b;
+			b = getBuilder();
 			Map<String,Object> params = new HashMap<String, Object>();
-			b.setupExtensions(params);
+			// Only need the minimum set of extensions needed to check access
+			// so pass a null ReportType
+			b.setupExtensions(null,params);
 			res = b.canUse(user,params);
 		} catch (Exception e) {
 			getLogger().error("Error creating builder",e);
+		}finally {
+			if( timer != null ) {
+				timer.stopTimer("ReportTemplate.canUse");
+			}
 		}
 		getContext().getService(LoggerService.class).getLogger(getClass()).debug("Template "+getReportName()+" canUse="+res);
 		return res;

@@ -35,6 +35,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.RoleSelector;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 
 /** A {@link ReportExtension} that handles access control to sections of a report.
@@ -188,6 +189,11 @@ public class RestrictExtension extends ReportExtension {
 		return false;
 	}
 	public boolean canUse(Document doc){
+		TimerService timer = getContext().getService(TimerService.class);
+		if( timer != null ) {
+			timer.startTimer("RestrictExtension.canUse");
+		}
+		try {
 		NodeList roleNodes = doc.getElementsByTagNameNS(
 				RESTRICT_LOC, "SufficientRole");
 		boolean seen_rule=false;
@@ -251,5 +257,10 @@ public class RestrictExtension extends ReportExtension {
 		}
 		//log.debug("default permission");
 		return REPORT_DEFAULT_ALLOW.isEnabled(getContext());
+		}finally {
+			if( timer != null ) {
+				timer.stopTimer("RestrictExtension.canUse");
+			}
+		}
 	}
 }

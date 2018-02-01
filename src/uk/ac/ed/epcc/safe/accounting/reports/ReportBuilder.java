@@ -111,6 +111,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 
 	public static final Feature CHECK_PARAMETER_NAMES = new Feature("reports.check_parameter_names",true,"Check that report parameter names come from the valid set");
 	public static final Feature EMBEDDED_USE_REFERENCE = new Feature("reports.embedded.use_reference",true,"XMLGenerators (e.g. tables) are added directly to the final XMLBuilder to allow links etc");
+	public static final Feature ALWAYS_RUN_PARAMETER_TRANSFORM = new Feature("reports.always_run_parameter_transform",true,"Assume checking if transform is needed is as expensive as ruuning it");
 	public class Resolver implements URIResolver {
 
 		public Source resolve(String href, String base)
@@ -185,30 +186,31 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	
 	// private String schema_name = null;
 	private DocumentBuilder docBuilder;
-	private TransformerFactory tFactory;
+	private TransformerFactory transformerFactory;
 	private Set<ErrorSet> error_sets;
 	ErrorSet general_error;
 	private Set<TemplateValidator> validators;
 	private final Logger log;
+	private boolean log_source=false;
 	public static final String REPORT_DEVELOPER = "ReportDeveloper";
     private final ReportTypeRegistry report_type_reg;
 	public ReportBuilder(AppContext conn) throws URISyntaxException, ParserConfigurationException {
-		this(new ReportTypeRegistry(conn));
+		this(ReportTypeRegistry.getInstance(conn));
 	}
 	protected ReportBuilder(ReportTypeRegistry reg) throws URISyntaxException, ParserConfigurationException {	
 		PARAMETER_URI = new URI(PARAMETER_LOC);
 		
 		this.conn = reg.getContext();
+		TimerService timer = conn.getService(TimerService.class);
 		
 		report_type_reg = reg;
 		
 		log = conn.getService(LoggerService.class).getLogger(getClass());
 		
-		tFactory = TransformerFactory.newInstance();
-		
-		log.debug("TransformerFactory="+tFactory.getClass().getCanonicalName());
+		if( timer != null) {
+			timer.startTimer("makeOverlays");
+		}
 		URL base_url=null;
-		
 		try {
 			base_url = new URL(BASE_LOC);
 		} catch (MalformedURLException e) {
@@ -252,16 +254,25 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			throw new ConsistencyError(
 					"Text file overlay (stylesheet) not valid");
 		}
-		// Get the stylesheets to use the local URIs to find resources.
-		tFactory.setURIResolver(new Resolver());
+		if( timer != null) {
+			timer.stopTimer("makeOverlays");
+		}
 		resetErrors();
 		
 		validators=new LinkedHashSet<TemplateValidator>();
+		if( timer != null) {
+			timer.startTimer("docBuilder");
+		}
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
 		.newInstance();
 		docBuilderFactory.setNamespaceAware(true);
 		docBuilder = docBuilderFactory.newDocumentBuilder();
-		
+		if( timer != null) {
+			timer.stopTimer("docBuilder");
+		}
+		if( timer != null) {
+			timer.startTimer("ReportTypes");
+		}
 		// build ReportTypes from config.
 		// make a ReportType for each tag defined in the config service.
 		//To define a new ReportType MYTAG set
@@ -285,6 +296,19 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 				log.error("Error making ReportType "+name,t);
 			}
 		}
+		if( timer != null) {
+			timer.stopTimer("ReportTypes");
+		}
+	}
+	private TransformerFactory getTransformerFactory() {
+		if( transformerFactory == null) {
+			transformerFactory=TransformerFactory.newInstance();
+			
+			log.debug("TransformerFactory="+transformerFactory.getClass().getCanonicalName());
+			// Get the stylesheets to use the local URIs to find resources.
+			transformerFactory.setURIResolver(new Resolver());
+		}
+		return transformerFactory;
 	}
 	/**
 	 * 
@@ -317,10 +341,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	}
 	private Document param_document=null;
 	public static final String REPORT_PARAMS_ATTR = "report.params";
-	private Document getParameterDocument() {
-		
-		return param_document;
-	}
+	
 	private Set<String> getParameterDefNames(){
 		Set<String> names = new HashSet<String>();
 		Document pdoc = getParameterDocument();
@@ -334,10 +355,15 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		}
 		return names;
 	}
-	public void setTemplate(String template_name) throws DataFault,
+	protected void setTemplate(String template_name) throws DataFault,
 			ParserConfigurationException, InvalidArgument,
 			TransformerFactoryConfigurationError, TransformerException {
-
+		TimerService timer = getContext().getService(TimerService.class);
+		if( timer != null ) {
+			timer.startTimer("ReportBuilder.setTemplate");
+		}
+		try {
+			log_source=false;
 		if( template != null){
 			resetErrors();
 			param_document=null;
@@ -362,26 +388,54 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		}
 
 		
-		// perform the initial parse to check for errors.
-		Document reportTemplateDocument = docBuilder.newDocument();
-		assert(docBuilder.isNamespaceAware());
-
-
-		// perform the initial transform before everything else.
-		Map<String, Object> p = new HashMap<String, Object>();
-		p.put(RESTRICT_EXTENSION_TAG, new RestrictExtension(conn, null));
-		Transformer transformer = getXSLTransform("initial.xsl",
-				p);
-
-		DOMResult result = new DOMResult(reportTemplateDocument);
-		transformer.transform(getTemplateSource(), result);
-
-		logSource("Initial ",new DOMSource(reportTemplateDocument));
-		param_document= reportTemplateDocument;
 		
+		// perform the initial parse to check for errors.
+		getParameterDocument();
+		}finally {
+			if( timer != null ) {
+				timer.stopTimer("ReportBuilder.setTemplate");
+			}
+		}
 	}
-	public void setTemplate(String template_name,String schema_name) throws DataFault, ParserConfigurationException, InvalidArgument, TransformerFactoryConfigurationError, TransformerException, SAXException, IOException{
+	/**
+	 * @throws ParserConfigurationException
+	 * @throws TransformerFactoryConfigurationError
+	 * @throws TransformerConfigurationException
+	 * @throws DataFault
+	 * @throws TransformerException
+	 */
+	private Document getParameterDocument()  {
+		if( param_document == null ) {
+			try {
+				Document reportTemplateDocument = docBuilder.newDocument();
+				assert(docBuilder.isNamespaceAware());
+
+
+				// perform the initial transform before everything else.
+				Map<String, Object> p = new HashMap<String, Object>();
+				p.put(RESTRICT_EXTENSION_TAG, new RestrictExtension(conn, null));
+				Transformer transformer = getXSLTransform("initial.xsl",
+						p);
+
+				DOMResult result = new DOMResult(reportTemplateDocument);
+				transformer.transform(getTemplateSource(), result);
+
+				if(log_source) {
+					logSource("Initial ",new DOMSource(reportTemplateDocument));
+				}
+				param_document= reportTemplateDocument;
+			}catch(Throwable t) {
+				general_error.add("initial_transform", "Failed to make parameter document", t);
+				// prevent re-run
+				param_document=docBuilder.newDocument();
+			}
+		}
+		return param_document;
+	}
+	protected void setTemplate(String template_name,String schema_name) throws DataFault, ParserConfigurationException, InvalidArgument, TransformerFactoryConfigurationError, TransformerException, SAXException, IOException{
 		setTemplate(template_name);
+		getParameterDocument(); // Generate any errors 
+		log_source=true;
 		try{
 			Schema s = getSchema(schema_name);
 			if( s != null ){
@@ -396,14 +450,16 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	}
 
 	private void logSource(String text, Source s){
-		try{
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		Transformer identity = getXSLTransform(null, null);
-		identity.transform(s, new
-		   StreamResult(out));
-		log.debug(text+" source XML is:"+out.toString());
-		}catch(Throwable t){
-			log.error("Error in logSource",t);
+		if( log_source) {
+			try{
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				Transformer identity = getXSLTransform(null, null);
+				identity.transform(s, new
+						StreamResult(out));
+				log.debug(text+" source XML is:"+out.toString());
+			}catch(Throwable t){
+				log.error("Error in logSource",t);
+			}
 		}
 	}
 	
@@ -456,7 +512,10 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	public boolean canUse( SessionService<?> person,Map<String, Object> params) {
 		//Logger log =
 		//getContext().getService(LoggerService.class).getLogger(getClass());
-		
+		if (person.hasRole(ReportBuilder.REPORT_DEVELOPER)) {
+			// log.debug(template_name+" user "+person.getName()+" is report developer");
+			return true;
+		}
 		//This has to go right back to the raw template source as the templateDocument
 		//has been processed by the initial transform that removes the access control statements.
 		Document doc;
@@ -468,10 +527,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		}
 		
 		
-		if (person.hasRole(ReportBuilder.REPORT_DEVELOPER)) {
-			// log.debug(template_name+" user "+person.getName()+" is report developer");
-			return true;
-		}
+		
 		if( hasErrors()){
 			// normally don't show erroneous reports.
 			return false;
@@ -600,7 +656,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		return (paramNodes.getLength() > 0);
 
 	}
-	public boolean runParameterTransform() {
+	public boolean needParameterTransform() {
 		// Default behaviour is to run transform if any param syntax found
 		// some elements are exceptions and don't need the transform run
 		NodeList paramNodes = getParameterDocument().getElementsByTagNameNS(
@@ -795,7 +851,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	public Document getSchemaDocument(String name) throws DataFault, SAXException, TransformerException{
 		Source src = getSchemaSource(name);
 		DOMResult res = new DOMResult();
-		Transformer tf = tFactory.newTransformer();
+		Transformer tf = getTransformerFactory().newTransformer();
 		tf.transform(src, res);
 		return (Document) res.getNode();
 	}
@@ -845,13 +901,13 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		ErrorSet error_set = new ErrorSet();
 		ErrorSetErrorListener listener = new ErrorSetErrorListener(name!=null?name:"identity", log, error_set);
 		error_sets.add(error_set);
-		tFactory.setErrorListener(listener);
+		getTransformerFactory().setErrorListener(listener);
 		// Generate the transformer.
 		Transformer transformer;
 		if( name != null ){
-			transformer = tFactory.newTransformer(getStyleSheet(name));
+			transformer = getTransformerFactory().newTransformer(getStyleSheet(name));
 		}else{
-			transformer = tFactory.newTransformer();
+			transformer = getTransformerFactory().newTransformer();
 		}
 		transformer.setErrorListener(listener);
 		// Push all the parameters form the request into the transformer
@@ -879,8 +935,8 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	protected Source runParametersTransform(Source xmlSource,
 			Map<String, Object> params) throws Exception {
 		// If the report has parameter content the first pass will substitute them.
-		// Note PArameterDef
-		if (runParameterTransform()) {
+		// Is the test as expensive as the transform ??
+		if (ALWAYS_RUN_PARAMETER_TRANSFORM.isEnabled(getContext()) || needParameterTransform()) {
 
 			Transformer transformer = getXSLTransform(
 					"parameters.xsl", params);
@@ -922,13 +978,15 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		return conn;
 	}
 
+	private static final String REPORT_BUILDER_ATTR="ReportBuilderAttr";
 	public static ReportBuilder getInstance(AppContext conn) throws Exception{
 		
 		// allow ReportBuilder to be overridden using param 
-		ReportBuilder builder=conn.makeContexedObject(ReportBuilder.class, "ReportBuilder");
-		
-		
-		
+		ReportBuilder builder=(ReportBuilder) conn.getAttribute(REPORT_BUILDER_ATTR);
+		if( builder == null) {
+			builder = conn.makeContexedObject(ReportBuilder.class, "ReportBuilder");
+			conn.setAttribute(REPORT_BUILDER_ATTR, builder);
+		}
 		return builder;
 	}
     public static void setTemplate(AppContext conn,ReportBuilder builder,String templateName) throws Exception{

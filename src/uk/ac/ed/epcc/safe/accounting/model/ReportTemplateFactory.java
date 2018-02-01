@@ -56,6 +56,7 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataNotFoundException;
 import uk.ac.ed.epcc.webapp.model.data.filter.SQLValueFilter;
 import uk.ac.ed.epcc.webapp.model.data.table.TableStructureDataObjectFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 
 
@@ -109,6 +110,10 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	 * @return {@link FilterResult}
 	 */
 	public FilterResult<R> getTemplatesInGroup(String group) {
+		TimerService timer = getContext().getService(TimerService.class);
+		if(timer != null) {
+			timer.startTimer("getTemplatesInGroup:"+group);
+		}
 		try {
 			if (group == null || group.trim().isEmpty() || group.equalsIgnoreCase("all")) {
 				return all();
@@ -124,7 +129,11 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 			}
 		} catch (DataFault e) {
 			return null;
-		}	
+		}finally {
+			if(timer != null) {
+				timer.stopTimer("getTemplatesInGroup:"+group);
+			}
+		}
 	}
 	/**
 	 * @return
@@ -236,7 +245,17 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	
 	public Table<String,ReportTemplate> getIndexTable() throws DataFault
 	{
+		TimerService timer = getContext().getService(TimerService.class);
+		if( timer != null) {
+			timer.startTimer("ReportTemplate.getIndexTable");
+		}
+		try {
 		return getReportGroupTable(useGroups() ? reportGroups.getIndexList() : null);
+		}finally {
+			if( timer != null) {
+				timer.stopTimer("ReportTemplate.getIndexTable");
+			}
+		}
 	}
 
 	public Table<String,ReportTemplate> getReportGroupTable(String group) throws DataFault
@@ -246,17 +265,27 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 	
 	public Table<String,ReportTemplate> getReportGroupTable(String group, Map<String, Object> params) throws DataFault
 	{
+		TimerService timer = getContext().getService(TimerService.class);
 		Table<String,ReportTemplate> t = new Table<String,ReportTemplate>();
 		SessionService sess = getContext().getService(SessionService.class);
 
+		if( timer != null) {
+			timer.startTimer("getTemplatesInGroup");
+		}
 		FilterResult<R> reportTemplates = getTemplatesInGroup(group);
+		if( timer != null) {
+			timer.stopTimer("getTemplatesInGroup");
+		}
 		if (reportTemplates == null) {
 			getLogger().debug("No report templates for group: " + group);
 			return null;
 		}
 		else {
 			ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(getContext());
-			for (ReportTemplate reportTemplate : reportTemplates) {	
+			for (ReportTemplate reportTemplate : reportTemplates) {
+				if( timer != null) {
+					timer.startTimer("add template to group "+reportTemplate.getTemplateName());
+				}
 				if (reportTemplate.canUse(sess))
 				{
 					Report report = new Report(reportTemplate.getTemplateName(), params);
@@ -270,6 +299,9 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends TableStruct
 									prov, report, ReportTemplateTransitionProvider.PREVIEW)));
 					t.put("Description", reportTemplate, reportDescription);
 					
+				}
+				if( timer != null) {
+					timer.stopTimer("add template to group "+reportTemplate.getTemplateName());
 				}
 			}
 		}

@@ -65,6 +65,7 @@ import uk.ac.ed.epcc.webapp.servlet.ServletService;
 import uk.ac.ed.epcc.webapp.servlet.ViewTransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 /**
  * Publications 
@@ -80,6 +81,10 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			"Log reporting: user, template and parameters are logged every time a report is built");
 
 	private static boolean canView(AppContext c, Report target) {
+		TimerService timer = c.getService(TimerService.class);
+		if( timer!= null) {
+			timer.startTimer("Reports.canView."+target.getName());
+		}
 		SessionService sess = c.getService(SessionService.class);
 		try {
 			ReportBuilder builder = ReportBuilder.getInstance(c);
@@ -91,6 +96,10 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		catch (Exception e) {
 			c.getService(LoggerService.class).getLogger(ReportTemplateTransitionProvider.class).error("Error checking access", e);
 			return false;
+		}finally{
+			if( timer!= null) {
+				timer.stopTimer("Reports.canView."+target.getName());
+			}
 		}
 	}
 
@@ -259,7 +268,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	
 	public ReportTemplateTransitionProvider(AppContext conn){
 		super(conn);
-		ReportTypeRegistry reg = new ReportTypeRegistry(conn);
+		ReportTypeRegistry reg = ReportTypeRegistry.getInstance(conn);
 		this.fac = new ReportTemplateFactory<ReportTemplate>(conn);
 		if (LOG_REPORT_USE.isEnabled(conn)) {
 			this.logFac = new ReportLogFactory(conn, conn.getService(SessionService.class).getLoginFactory(), fac);
