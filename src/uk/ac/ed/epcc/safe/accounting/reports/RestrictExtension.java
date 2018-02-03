@@ -120,6 +120,7 @@ public class RestrictExtension extends ReportExtension {
 	private boolean hasRelationship(AppContext conn, SessionService user, String type, String val) {
 		RoleSelector<?> sel = conn.makeObject(RoleSelector.class,type);
 		if( sel != null){
+			getLogger().error("Report using deprecated RoleSelector "+type);
 			return sel.hasRole(val, user);
 		}
 		DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
@@ -147,6 +148,7 @@ public class RestrictExtension extends ReportExtension {
 		String name = getText(element);
 		RoleSelector rel = conn.makeObjectWithDefault(RoleSelector.class, null,type);
 		if( rel != null){
+			getLogger().error("Report using deprecated RoleSelector "+type);
 			if( name == null || name.trim().length()==0 ){
 				return rel.hasRole(role, user);
 			}else{
