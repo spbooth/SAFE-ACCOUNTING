@@ -368,6 +368,7 @@ public class ParameterExtension extends ReportExtension {
 		if (! empty(role)) {
 			RoleSelector sel = conn.makeObjectWithDefault(RoleSelector.class,null,type);
 			if( sel != null ){
+				getLogger().error("Report using deprecated RoleSelector");
 				return sel.getInput(role, conn.getService(SessionService.class));
 			}
 			type=conn.getInitParameter("typealias."+type, type);
