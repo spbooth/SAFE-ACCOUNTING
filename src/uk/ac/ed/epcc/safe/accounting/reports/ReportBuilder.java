@@ -24,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.KeyStore.Entry.Attribute;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -652,8 +653,26 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	public boolean hasReportParameters() {
 		// Find the parameters which have been defined
 		NodeList paramNodes = getParameterDocument().getElementsByTagNameNS(
-				PARAMETER_LOC, "Parameter");
+				PARAMETER_LOC, "ParameterDef");
 		return (paramNodes.getLength() > 0);
+
+	}
+	public boolean hasMandatoryReportParameters() {
+		// Find the parameters which have been defined
+		NodeList paramNodes = getParameterDocument().getElementsByTagNameNS(
+				PARAMETER_LOC, "ParameterDef");
+		if( paramNodes.getLength()==0) {
+			return false;
+		}
+		for(int i=0 ; i< paramNodes.getLength(); i++) {
+			Node n = paramNodes.item(i);
+			Element e = (Element)n;
+			String optional = e.getAttribute("optional");
+			if( optional == null || optional.trim().isEmpty() || ! Boolean.parseBoolean(optional.trim())) {
+				return true;
+			}
+		}
+		return false;
 
 	}
 	public boolean needParameterTransform() {

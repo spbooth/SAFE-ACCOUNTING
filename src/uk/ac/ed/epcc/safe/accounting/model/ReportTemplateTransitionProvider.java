@@ -468,7 +468,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		try {
 			builder = ReportBuilder.getInstance(context);
 			ReportBuilder.setTemplate(context, builder, target.getName());
-			boolean has_form = builder.hasReportParameters();
+			boolean has_form = builder.hasMandatoryReportParameters();
 			params = getParameters(target, context, builder);
 			if (! has_form || (params != null && !target.getParameters().isEmpty())) 
 			{
