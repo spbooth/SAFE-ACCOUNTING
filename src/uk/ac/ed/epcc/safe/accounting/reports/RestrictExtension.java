@@ -126,7 +126,8 @@ public class RestrictExtension extends ReportExtension {
 		DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
 		if( fac != null){
 			try {
-				return conn.getService(SessionService.class).hasRelationship(fac, null, val);
+				return fac.exists(conn.getService(SessionService.class).getRelationshipRoleFilter(fac, val));
+				//return conn.getService(SessionService.class).hasRelationship(fac, null, val);
 			} catch (Exception e) {
 				addError("relationship_error", "Cannot check for relationship="+val+" on "+type, e);
 				return false;
@@ -164,7 +165,7 @@ public class RestrictExtension extends ReportExtension {
 			type=conn.getInitParameter("typealias."+type, type);
 
 			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
-			if( fac != null){
+			if( fac != null && !empty(role)){
 				try {
 					BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
 					if( fil == null ){

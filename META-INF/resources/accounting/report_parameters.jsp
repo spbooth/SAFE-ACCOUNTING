@@ -39,7 +39,7 @@
 		templateFileName = templateName
 				+ (reportType == null ? "" : "."
 						+ reportType.getExtension());
-		builder.setTemplate(templateName);
+		ReportBuilder.setTemplate(conn, builder, templateName);
 		
 		form = new HTMLReportParametersForm(builder, params, reportType);
 	} catch (Exception e) {
