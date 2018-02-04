@@ -14,7 +14,7 @@
   xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
     <acc:RequireRole>frog</acc:RequireRole>
 	<acc:SufficientRole>earwig</acc:SufficientRole>
-	<acc:SufficientRelationship type='ProjectRelationship' role='Tadpole'>Example</acc:SufficientRelationship>
+	<acc:SufficientRelationship type='Project' role='Tadpole'>Example</acc:SufficientRelationship>
 	<acc:RestrictedSection>
 	<acc:Roles><acc:Required>Bard</acc:Required><acc:Sufficient>Shakespear</acc:Sufficient></acc:Roles>
 	<acc:Content>Now is the winter of our discontent</acc:Content>
