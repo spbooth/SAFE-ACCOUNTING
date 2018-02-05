@@ -24,7 +24,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.KeyStore.Entry.Attribute;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.HashSet;
