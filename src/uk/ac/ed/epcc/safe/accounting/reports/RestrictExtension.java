@@ -26,6 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
+import uk.ac.ed.epcc.safe.accounting.reports.exceptions.RestrictException;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
@@ -105,12 +106,11 @@ public class RestrictExtension extends ReportExtension {
 		AppContext conn = getContext();
 		SessionService user = conn.getService(SessionService.class);
 		if( user == null ){
-			addError("Bad access control", "No current user");
-			return false;
+			throw new RestrictException( "No current user");
 		}
 		String type = element.getAttribute("type");
 		String val=getText(element);
-		if( type == null || type.length()==0){
+		if( empty(type)){
 			return user.hasRole(val);
 		}else{
 			return hasRelationship(conn, user, type, val);
@@ -137,129 +137,136 @@ public class RestrictExtension extends ReportExtension {
 		return false;
 	}
 	@SuppressWarnings("unchecked")
-	private boolean checkRelationship(Element element) throws ReportException{
+	private boolean checkRelationship(Element element) throws ReportException, RestrictException{
 		AppContext conn = getContext();
 		SessionService user = conn.getService(SessionService.class);
 		if( user == null ){
-			addError("Bad access control", "No current user");
-			return false;
+			throw new RestrictException("No current user");
 		}
 		String type = element.getAttribute("type");
+		if( empty(type)) {
+			throw new RestrictException("No type specified for relationship");
+		}
 		String role = element.getAttribute("role");
+		if( empty(role) ) {
+			throw new RestrictException("No role specified for relationship on "+type);
+		}
 		String name = getText(element);
 		RoleSelector rel = conn.makeObjectWithDefault(RoleSelector.class, null,type);
 		if( rel != null){
+
 			getLogger().error("Report using deprecated RoleSelector "+type);
-			if( name == null || name.trim().length()==0 ){
+
+			if( empty(name) ){
 				return rel.hasRole(role, user);
 			}else{
 				// Want role on specific object
 				DataObjectFactory fac = rel.getTargetFactory();
+				if( fac == null) {
+					throw new RestrictException("No factory for "+type);
+				}
 				if( fac instanceof NameFinder){
-					return rel.hasRole(user, (DataObject) ((NameFinder)fac).findFromString(name), role);
+					DataObject target = (DataObject) ((NameFinder)fac).findFromString(name);
+					if( target == null) {
+						throw new RestrictException("No target for "+type+":"+name);
+					}
+					return rel.hasRole(user, target, role);
 				}else{
-					addDeveloperError("not_name_finder", type);
+					throw new RestrictException(type+" not_name_finder");
 				}
 			}
 		}else{
 			type=conn.getInitParameter("typealias."+type, type);
 
 			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
-			if( fac != null && !empty(role)){
-				try {
-					BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
-					if( fil == null ){
-						fil = new GenericBinaryFilter(fac.getTarget(),false);
-					}
-					if( name == null || name.trim().length()==0 ){
-						return fac.exists(fil);
-					}else{
-						// Want role on specific object
-						if( fac instanceof NameFinder){
-							return fac.matches(fil, (DataObject) ((NameFinder)fac).findFromString(name));
-						}else{
-							addDeveloperError("not_name_finder", type);
-						}
-					}
-				} catch (Exception e) {
-					addError("relationship_error", "Cannot check for relationship="+role+" on "+type, e);
-					return false;
+			if( fac == null) {
+				throw new RestrictException("No factory found for type "+type);
+			}
+			if( empty(role)) {
+				throw new RestrictException("No role specified for type "+type);
+			}
+
+			try {
+				BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
+				if( fil == null ){
+					fil = new GenericBinaryFilter(fac.getTarget(),false);
 				}
-			}else{
-			addDeveloperError("no_relationship", type);
+				if( empty(name) ){
+					return fac.exists(fil);
+				}else{
+					// Want role on specific object
+					if( fac instanceof NameFinder){
+						return fac.matches(fil, (DataObject) ((NameFinder)fac).findFromString(name));
+					}else{
+						throw new RestrictException("factory "+type+" not a name finder but name="+name);
+					}
+				}
+			}catch(RestrictException re) {
+				throw re;
+			} catch (Exception e) {
+				throw new RestrictException( "Cannot check for relationship="+role+" on "+type, e);
+			}
 		}
-		}
-		return false;
+
 	}
-	public boolean canUse(Document doc){
+	public boolean canUse(Document doc) throws ReportException{
 		TimerService timer = getContext().getService(TimerService.class);
 		if( timer != null ) {
 			timer.startTimer("RestrictExtension.canUse");
 		}
 		try {
-		NodeList roleNodes = doc.getElementsByTagNameNS(
-				RESTRICT_LOC, "SufficientRole");
-		boolean seen_rule=false;
-		//log.debug("sufficient nodes "+roleNodes.getLength());
-		for (int i = 0; i < roleNodes.getLength(); i++) {
-			Element element = (Element) roleNodes.item(i);
-			try {
+			NodeList roleNodes = doc.getElementsByTagNameNS(
+					RESTRICT_LOC, "SufficientRole");
+			boolean seen_rule=false;
+			//log.debug("sufficient nodes "+roleNodes.getLength());
+			for (int i = 0; i < roleNodes.getLength(); i++) {
+				Element element = (Element) roleNodes.item(i);
+
 				if( checkRole(element)){
 					return true;
 				}
-			} catch (ReportException e) {
-				addError("role_error", "Error checking sufficient role",e);
 			}
-		}
-		roleNodes = doc.getElementsByTagNameNS(
-				RESTRICT_LOC, "SufficientRelationship");
-		//log.debug("sufficient nodes "+roleNodes.getLength());
-		for (int i = 0; i < roleNodes.getLength(); i++) {
-			Element element = (Element) roleNodes.item(i);
-			try {
+			roleNodes = doc.getElementsByTagNameNS(
+					RESTRICT_LOC, "SufficientRelationship");
+			//log.debug("sufficient nodes "+roleNodes.getLength());
+			for (int i = 0; i < roleNodes.getLength(); i++) {
+				Element element = (Element) roleNodes.item(i);
+
 				if( checkRelationship(element)){
 					return true;
 				}
-			} catch (ReportException e) {
-				addError("relation_error", "Error checking sufficient relationship",e);
+
 			}
-		}
-		roleNodes = doc.getElementsByTagNameNS(RESTRICT_LOC,
-				"RequireRole");
-		//log.debug("require nodes "+roleNodes.getLength());
-		for (int i = 0; i < roleNodes.getLength(); i++) {
-			Element element = (Element) roleNodes.item(i);
-			seen_rule=true;
-			try {
+			roleNodes = doc.getElementsByTagNameNS(RESTRICT_LOC,
+					"RequireRole");
+			//log.debug("require nodes "+roleNodes.getLength());
+			for (int i = 0; i < roleNodes.getLength(); i++) {
+				Element element = (Element) roleNodes.item(i);
+				seen_rule=true;
+
 				if( ! checkRole(element)){
 					return false;
 				}
-			} catch (ReportException e) {
-				addError("role_error","Error checking required role",e);
-				return false;
+
 			}
-		}
-		roleNodes = doc.getElementsByTagNameNS(RESTRICT_LOC,
-				"RequireRelationship");
-		//log.debug("require nodes "+roleNodes.getLength());
-		for (int i = 0; i < roleNodes.getLength(); i++) {
-			Element element = (Element) roleNodes.item(i);
-			seen_rule=true;
-			try {
+			roleNodes = doc.getElementsByTagNameNS(RESTRICT_LOC,
+					"RequireRelationship");
+			//log.debug("require nodes "+roleNodes.getLength());
+			for (int i = 0; i < roleNodes.getLength(); i++) {
+				Element element = (Element) roleNodes.item(i);
+				seen_rule=true;
+
 				if( ! checkRelationship(element)){
 					return false;
 				}
-			} catch (ReportException e) {
-				addError("role_error","Error checking required role",e);
-				return false;
+
 			}
-		}
-		if( seen_rule ){
-			// user has passed all explicitly required rules.
-			return true;
-		}
-		//log.debug("default permission");
-		return REPORT_DEFAULT_ALLOW.isEnabled(getContext());
+			if( seen_rule ){
+				// user has passed all explicitly required rules.
+				return true;
+			}
+			//log.debug("default permission");
+			return REPORT_DEFAULT_ALLOW.isEnabled(getContext());
 		}finally {
 			if( timer != null ) {
 				timer.stopTimer("RestrictExtension.canUse");

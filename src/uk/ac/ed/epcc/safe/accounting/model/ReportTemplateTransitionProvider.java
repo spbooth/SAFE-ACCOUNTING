@@ -75,6 +75,8 @@ extends AbstractPathTransitionProvider<Report, ReportTemplateKey>
 implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransitionFactory<ReportTemplateKey, Report>
 {
 	private static final String FORM_PARAMETER_PREFIX = "__";
+	private static final int FORM_PARAMETER_OFFSET=FORM_PARAMETER_PREFIX.length();
+	
 	private static final String SERVE_DATA_DEFAULT_TAG = "ServeData";
 	public static final Feature LOG_REPORT_USE = new Feature("reports.log_report_use",
 			false,
@@ -301,7 +303,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			for (String p : id) {
 				boolean isContextParam = false; 
 				if (p.startsWith(FORM_PARAMETER_PREFIX)) {
-					p = p.substring(2);
+					p = p.substring(FORM_PARAMETER_OFFSET);
 					isContextParam = true;
 				}
 				int ind = p.indexOf(":");

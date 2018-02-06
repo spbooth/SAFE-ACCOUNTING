@@ -62,6 +62,7 @@ import org.xml.sax.SAXException;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
+import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.xml.ErrorSetErrorListener;
 import uk.ac.ed.epcc.safe.accounting.xml.LSResolver;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -533,7 +534,12 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			return false;
 		}
 		RestrictExtension restrict = (RestrictExtension) params.get(RESTRICT_EXTENSION_TAG);
-		return restrict.canUse(doc);
+		try {
+			return restrict.canUse(doc);
+		} catch (ReportException e) {
+			getLogger().error("Error in access control", e);
+			return false;
+		}
 	}
 	
 	public void setupUser(Map<String,Object> params) {
