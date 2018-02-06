@@ -60,6 +60,7 @@ import uk.ac.ed.epcc.webapp.logging.buffer.BufferLoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
 import uk.ac.ed.epcc.webapp.model.data.transition.AbstractPathTransitionProvider;
+import uk.ac.ed.epcc.webapp.model.serv.ServeDataProducer;
 import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
 import uk.ac.ed.epcc.webapp.servlet.ServletService;
 import uk.ac.ed.epcc.webapp.servlet.ViewTransitionKey;
@@ -77,7 +78,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	private static final String FORM_PARAMETER_PREFIX = "__";
 	private static final int FORM_PARAMETER_OFFSET=FORM_PARAMETER_PREFIX.length();
 	
-	private static final String SERVE_DATA_DEFAULT_TAG = "ServeData";
+	//private static final String SERVE_DATA_DEFAULT_TAG = "ServeData";
 	public static final Feature LOG_REPORT_USE = new Feature("reports.log_report_use",
 			false,
 			"Log reporting: user, template and parameters are logged every time a report is built");
@@ -163,7 +164,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 					msd.setMimeType(type.getMimeType());
 					msd.setName(target.getName() + "."+type.getExtension());
 					SettableServeDataProducer producer = getContext().makeObjectWithDefault(
-							SettableServeDataProducer.class, SessionDataProducer.class, SERVE_DATA_DEFAULT_TAG);
+							SettableServeDataProducer.class, SessionDataProducer.class, ServeDataProducer.DEFAULT_SERVE_DATA_TAG);
 					return new ServeDataResult(producer, producer.setData(msd));
 				}
 			} catch (Exception e) {
@@ -531,7 +532,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			boolean hasErrors, 
 			Map<String, Object> reportParameters) 
 	{
-		SettableServeDataProducer producer = conn.makeObjectWithDefault(SettableServeDataProducer.class, SessionDataProducer.class, SERVE_DATA_DEFAULT_TAG);
+		SettableServeDataProducer producer = conn.makeObjectWithDefault(SettableServeDataProducer.class, SessionDataProducer.class, ServeDataProducer.DEFAULT_SERVE_DATA_TAG);
         FormResult result=null;
         FormResult logs=null;
     	// store the logs
