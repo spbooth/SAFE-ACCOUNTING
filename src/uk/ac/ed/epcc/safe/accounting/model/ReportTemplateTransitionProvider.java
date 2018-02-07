@@ -477,7 +477,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			{
 				logReport(target);
 				cb.addHeading(4, "Report Preview");
-				ContentBuilder report = cb.getPanel("report");
+				ContentBuilder report = cb.getPanel("report_container");
 				builder.renderContent(params, (SimpleXMLBuilder)report);
 				report.addParent();
 			}

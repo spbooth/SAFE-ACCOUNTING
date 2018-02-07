@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:res="http://safe.epcc.ed.ac.uk/restrict"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<rep:Title>Template report</rep:Title>
+<par:ParameterDef name="Message" type="String"/>
+<rep:Section>
+<rep:Title>A Section title</rep:Title>
+<rep:Text>This is the initial report template.</rep:Text>
+<rep:Text><par:Parameter name="Message"/></rep:Text>
+</rep:Section>
+</rep:Report>
