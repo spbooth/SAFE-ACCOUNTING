@@ -19,16 +19,6 @@
 <ReportDesription></ReportDesription>
 <TemplateName>PieTimeChart.xml</TemplateName>
 </ReportTemplate>
-<ReportTemplate id='4'>
-<ReportName>Project Jobs</ReportName>
-<ReportDesription>Your project jobs</ReportDesription>
-<TemplateName>ProjectJobs.xml</TemplateName>
-</ReportTemplate>
-<ReportTemplate id='3'>
-<ReportName>Project Usage</ReportName>
-<ReportDesription>Your project usage</ReportDesription>
-<TemplateName>ProjectUsage.xml</TemplateName>
-</ReportTemplate>
 <ReportTemplate id='5'>
 <ReportName>Service Usage</ReportName>
 <ReportDesription>The service usage</ReportDesription>

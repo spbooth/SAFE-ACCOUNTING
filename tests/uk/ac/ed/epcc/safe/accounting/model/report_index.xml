@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><table class="auto" rows="7" cols="2">
+<tr count="0">
+<th class="first" count="0">Name</th>
+<th class="main" count="1">Description</th>
+</tr>
+<tr count="1">
+<td class="first" count="0">
+<a href="/TransitionServlet/ReportTemplate//AggregateTimeChart/-/Transition=View">Aggregate Time Chart</a>
+</td>
+<td class="main" count="1"/>
+</tr>
+<tr count="2">
+<td class="first" count="0">
+<a href="/TransitionServlet/ReportTemplate//BarTimeChart/-/Transition=View">Bar Time Chart</a>
+</td>
+<td class="main" count="1"/>
+</tr>
+<tr count="3">
+<td class="first" count="0">
+<a href="/TransitionServlet/ReportTemplate//PieTimeChart/-/Transition=View">Pie Time Chart</a>
+</td>
+<td class="main" count="1"/>
+</tr>
+<tr count="4">
+<td class="first" count="0">
+<a href="/TransitionServlet/ReportTemplate//ServiceUsage/-/Transition=View">Service Usage</a>
+</td>
+<td class="main" count="1"/>
+</tr>
+<tr count="5">
+<td class="first" count="0">
+<a href="/TransitionServlet/ReportTemplate//TimeChart/-/Transition=View">Time Chart</a>
+</td>
+<td class="main" count="1"/>
+</tr>
+<tr count="6">
+<td class="first" count="0">
+<a href="/TransitionServlet/ReportTemplate//UserJobs/-/Transition=View">User Jobs</a>
+</td>
+<td class="main" count="1"/>
+</tr>
+<tr count="7">
+<td class="first" count="0">
+<a href="/TransitionServlet/ReportTemplate//UserUsage/-/Transition=View">User Usage</a>
+</td>
+<td class="main" count="1"/>
+</tr>
+</table>
