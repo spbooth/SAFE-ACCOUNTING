@@ -116,7 +116,7 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		data.write(out);
 		String result = out.toString();
 		System.out.println(result);
-		assertEquals(getResourceAsString("SimpleTestReport.csv"), result);
+		assertEquals(getResourceAsString("SimpleTestReport.csv").replaceAll("\r\n", "\n"), result.replaceAll("\r\n", "\n"));
 		
 	}
 }
