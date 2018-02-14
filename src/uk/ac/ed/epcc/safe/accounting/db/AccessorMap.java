@@ -113,7 +113,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  */
 
 
-public abstract class AccessorMap<X extends ExpressionTarget&Contexed> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
+public abstract class AccessorMap<X extends ExpressionTarget> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
 	public static final Feature EVALUATE_CACHE_FEATURE = new Feature("evaluate.cache",true,"cache expression evaluations in ExpressionTargets");
 	protected final Class<? super X> target;
 	
@@ -153,15 +153,15 @@ public abstract class AccessorMap<X extends ExpressionTarget&Contexed> implement
 		private Set<PropertyTag> missing;
 		private Map<PropExpression,Object> cache=null;
 		private final boolean use_cache;
-		public ExpressionTargetProxy(X r,boolean use_cache){
-			super(r.getContext());
+		public ExpressionTargetProxy(AppContext conn,X r,boolean use_cache){
+			super(conn);
 			this.record=r;
 			missing=new HashSet<PropertyTag>();
 			this.use_cache=use_cache;
 		}
-		public ExpressionTargetProxy(X r){
-			this(r,EVALUATE_CACHE_FEATURE.isEnabled(r.getContext()));
-			assert(r.getContext() != null);
+		public ExpressionTargetProxy(AppContext conn,X r){
+			this(conn,r,EVALUATE_CACHE_FEATURE.isEnabled(conn));
+			assert(conn != null);
 		}
 		@SuppressWarnings("unchecked")
 		public <R> R evaluateExpression(PropExpression<R> expr) throws InvalidExpressionException{
@@ -634,7 +634,7 @@ public abstract class AccessorMap<X extends ExpressionTarget&Contexed> implement
 		return defined;
 	}
 	public final ExpressionTargetContainer getProxy(X record){
-		return new ExpressionTargetProxy(record);
+		return new ExpressionTargetProxy(getContext(),record);
 	}
 	/** Get the set of defines properties whose resutls may be assigned to the
 	 * specified target type

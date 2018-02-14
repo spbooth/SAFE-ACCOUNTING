@@ -376,8 +376,8 @@ public class AtomExtension extends ReportExtension {
 			RecordSet set, Period period,Reduction reduction)
 			throws ReportException, Exception, IllegalReductionException {
 		UsageProducer<?> producer = set.getUsageProducer();
-		AndRecordSelector selector = new AndRecordSelector(set.getRecordSelector());
-		selector.add(set.getPeriodSelector(period));
+		AndRecordSelector selector = set.getPeriodSelector(period);
+		
 		String exp = getText(element);
 		if(exp != null && exp.trim().length() > 0){
 			PropExpression expression = getExpression(producer,exp);

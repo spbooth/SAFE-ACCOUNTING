@@ -264,7 +264,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 						}
 						assertTrue(prob.toString(),ok);
 					} else {
-						System.out.println("Record not found\n");
+						System.out.println("Duplicate Record not found\n");
 					}
 				}
 			} catch (SkipRecord e) {

@@ -37,7 +37,6 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.ResultMapper;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 
 
 /** A {@link ResultMapper} configured by {@link ReductionTarget}s
@@ -46,7 +45,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
  *
  * @param <T>
  */
-public class IndexReductionMapper<T extends DataObject&ExpressionTarget> extends GeneralMapMapper<ExpressionTuple, ReductionMapResult>{
+public class IndexReductionMapper<T extends ExpressionTarget> extends GeneralMapMapper<ExpressionTuple, ReductionMapResult>{
 		private Set<ReductionTarget> sum;
 		private Set<ReductionTarget> skip;
 		private Map<ReductionTarget,Object> default_map;

@@ -24,11 +24,10 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterFinder;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 
 
 
-public class IndexReductionFinder<T extends DataObject&ExpressionTarget> extends FilterFinder<T,Map<ExpressionTuple,ReductionMapResult>>{
+public class IndexReductionFinder<T extends ExpressionTarget> extends FilterFinder<T,Map<ExpressionTuple,ReductionMapResult>>{
 	private final AccessorMap<T> map;
 	public IndexReductionFinder(AccessorMap<T> map,Set<ReductionTarget> sum,ReductionMapResult defs) throws InvalidPropertyException, IllegalReductionException, CannotUseSQLException {
 		super(map.getContext(),map.getTarget(),true);

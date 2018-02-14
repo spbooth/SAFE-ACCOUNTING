@@ -20,7 +20,6 @@ import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 /** Interface that combines {@link ExpressionFilterTarget} and
  * {@link PropertyTargetFactory} and supports the generation of
@@ -30,7 +29,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
  *
  * @param <T>
  */
-public interface ExpressionTargetFactory<T extends DataObject&ExpressionTarget> extends ExpressionTargetGenerator<T>,
+public interface ExpressionTargetFactory<T extends ExpressionTarget> extends ExpressionTargetGenerator<T>,
 		ExpressionFilterTarget<T> {
 	
 	public AccessorMap<T> getAccessorMap();

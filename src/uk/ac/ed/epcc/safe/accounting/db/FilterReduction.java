@@ -17,11 +17,10 @@ import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterFinder;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 
 
 
-public class FilterReduction<T extends DataObject&ExpressionTarget,R> extends FilterFinder<T, R> {
+public class FilterReduction<T extends ExpressionTarget,R> extends FilterFinder<T, R> {
 	private final AccessorMap<T> map;
 	public FilterReduction(AccessorMap<T> map,ReductionTarget<R> tag) throws InvalidSQLPropertyException {
 		super(map.getContext(),map.getTarget(),true);

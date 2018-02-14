@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
@@ -39,7 +40,12 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** A property enabled {@link TupleFactory}
- * The component parts are accessible as references
+ * 
+ * The component parts are accessible as references.
+ * The contributing factories are specified with the property 
+ * <b><i>config-tag</i>.members</b>. There is no join clause provided by default this
+ * either has to be specified in the report as part of the filter or the class can be extended
+ * and {@link #addMandatoryFilter(BaseFilter)} overridden.
  * 
  * @author spb
  *
@@ -51,8 +57,9 @@ public class PropertyTupleFactory<
 A extends DataObject, 
 AF extends DataObjectFactory<A>,
 T extends PropertyTupleFactory.PropertyTuple<A>
->extends TupleFactory<A,AF,T> implements ExpressionTargetGenerator<T>, ExpressionFilterTarget,Tagged{
+>extends TupleFactory<A,AF,T> implements ExpressionTargetFactory<T>, ExpressionFilterTarget<T>,Tagged{
 
+	private static final String MEMBERS_CONFIG_SUFFIX = ".members";
 	protected final TupleAccessorMap map;
 	private final String tag;
 	protected MultiFinder finder = new MultiFinder();
@@ -69,6 +76,9 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 		super(c);
 		this.tag=config_tag;
 		addMembers(c, config_tag);
+		if( ! hasMemberFactories()) {
+			getLogger().error("PropertyTupleFactory "+tag+" has no members");
+		}
 		map = new TupleAccessorMap(this, config_tag);
 		member_tags = new LinkedList<>();
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
@@ -86,7 +96,7 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 	 * @param config_tag
 	 */
 	protected void addMembers(AppContext c, String config_tag) {
-		String nested = c.getInitParameter(config_tag+".members");
+		String nested = c.getInitParameter(config_tag+MEMBERS_CONFIG_SUFFIX);
 		if( nested != null){
 			for(String tag : nested.split("\\s*,\\s*")){
 				AF fac = (AF) c.makeObject(DataObjectFactory.class, tag);
@@ -271,5 +281,10 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 	
 	protected Collection<ReferenceTag<A,AF>> getMemberTags(){
 		return (Collection<ReferenceTag<A,AF>>) member_tags.clone();
+	}
+	@Override
+	public AccessorMap<T> getAccessorMap() {
+		// TODO Auto-generated method stub
+		return map;
 	}
 }

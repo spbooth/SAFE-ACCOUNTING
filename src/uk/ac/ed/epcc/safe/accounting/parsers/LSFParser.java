@@ -532,21 +532,27 @@ public class LSFParser extends BatchParser implements  Contexed {
 		String projectName = values.get(PROJECTNAME_INDEX_OFFSET + dataOffset);
 		int jobStatus = getInteger(values, JOB_STATUS_INDEX_OFFSET + dataOffset);
 		
+		String maxRMemString = values.get(MAX_RMEM_INDEX_OFFSET + dataOffset);
+		String maxRSwapString = values.get(MAX_RSWAP_INDEX_OFFSET + dataOffset);
 		try {
-			Long.valueOf(values.get(MAX_RMEM_INDEX_OFFSET + dataOffset));
-			Long.valueOf(values.get(MAX_RSWAP_INDEX_OFFSET + dataOffset));
+			Long.valueOf(maxRMemString);
+			Long.valueOf(maxRSwapString);
 		} catch (Exception e)
 		{
 			throw new AccountingParseException(e.getMessage());
 		}
 		
-		long maxRMem = Long.valueOf(values.get(MAX_RMEM_INDEX_OFFSET + dataOffset));
+		long maxRMem = Long.valueOf(maxRMemString);
 //		if( maxRMem < 0L){
 //			System.out.println(values.get(MAX_RMEM_INDEX_OFFSET + dataOffset));
 //		}
-		assert(maxRMem > 0L);
-		long maxRSwap = Long.valueOf(values.get(MAX_RSWAP_INDEX_OFFSET + dataOffset));
-		assert(maxRSwap > 0L);
+//		if(maxRMem < 0L) {
+//			throw new AccountingParseException("Bad maxRMem "+maxRMemString);
+//		}
+		long maxRSwap = Long.valueOf(maxRSwapString);
+//		if(maxRSwap < 0L) {
+//			throw new AccountingParseException("Bad MaxRSwap "+maxRSwapString);
+//		}
 		int num_processors = Integer.valueOf(values.get(NUM_PROCESSORS_INDEX));
 		Date submitTime = getDate(values,SUBMIT_TIME_INDEX);
 		Date startTime = getDate(values,START_TIME_INDEX);

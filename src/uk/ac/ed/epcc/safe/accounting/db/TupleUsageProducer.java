@@ -122,8 +122,18 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 		
 	}
 
-	private GeneratorReductionHandler<UR, TupleUsageProducer<A, AF, UR>> getReductionHandler(){
-		return new GeneratorReductionHandler<UR, TupleUsageProducer<A, AF, UR>>(this);
+	private ReductionHandler<UR, TupleUsageProducer<A, AF, UR>> getReductionHandler(){
+		return new ReductionHandler<UR, TupleUsageProducer<A, AF, UR>>(this){
+
+			/* (non-Javadoc)
+			 * @see uk.ac.ed.epcc.safe.accounting.db.ReductionHandler#isQualify()
+			 */
+			@Override
+			public boolean isQualify() {
+				return true;
+			}
+			
+		};
 	}
 
 	public <I> Map<I, Number> getReductionMap(PropExpression<I> index,

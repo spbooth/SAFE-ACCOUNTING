@@ -30,7 +30,6 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 
 /** A wrapper round an {@link ExpressionTargetFactory} that implements {@link ReductionProducer}
  * It uses SQL reductions if it can but defaults to iterating 
@@ -41,7 +40,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
  *
  * @param <E> type of {@link ExpressionTarget}
  */
-public class ReductionHandler<E extends DataObject&ExpressionTarget,F extends ExpressionTargetFactory<E>> extends GeneratorReductionHandler<E, F> {
+public class ReductionHandler<E extends ExpressionTarget,F extends ExpressionTargetFactory<E>> extends GeneratorReductionHandler<E, F> {
 
 	public ReductionHandler(F fac) {
 		super(fac);
@@ -49,10 +48,11 @@ public class ReductionHandler<E extends DataObject&ExpressionTarget,F extends Ex
 		
 	}
 
+	private boolean qualify=false;
 	private final AccessorMap map;
 	
 	
-	private final BaseFilter<E> getFilter(RecordSelector selector) throws CannotFilterException {
+	protected final BaseFilter<E> getFilter(RecordSelector selector) throws CannotFilterException {
 		if( selector == null ){
 			return null;
 		}
@@ -82,6 +82,9 @@ public class ReductionHandler<E extends DataObject&ExpressionTarget,F extends Ex
 		}
 		try{
 			IndexReductionFinder<E> finder = new IndexReductionFinder<E>(map, sum,makeDef(sum));
+			if( isQualify()) {
+				finder.setQualify(true);
+			}
 			return finder.find(FilterConverter.convert(getFilter(selector)));
 		}catch(CannotUseSQLException e){
 			// default to iterating. e.g a non SQL filter or property
@@ -100,6 +103,9 @@ public class ReductionHandler<E extends DataObject&ExpressionTarget,F extends Ex
 		try{
 			SQLFilter<E> sql_fil = FilterConverter.convert(getFilter(sel));
 			FilterReduction<E,R> fs = new FilterReduction<E,R>(map,type);
+			if( isQualify()) {
+				fs.setQualify(true);
+			}
 			R res = fs.find(sql_fil);
 			if( res == null ){
 				return type.getDefault();
@@ -127,6 +133,9 @@ public class ReductionHandler<E extends DataObject&ExpressionTarget,F extends Ex
 			try{
 				// By default we'll sum the Number value.
 				MapReductionFinder<E,I> finder = new MapReductionFinder<E,I>(map,index, property);
+				if( isQualify()) {
+					finder.setQualify(true);
+				}
 				Map<I, Number> result = finder.find(FilterConverter.convert(getFilter(selector)));
 				return result;
 			}catch(CannotUseSQLException e){
@@ -135,6 +144,22 @@ public class ReductionHandler<E extends DataObject&ExpressionTarget,F extends Ex
 		} 
 		return null;
 		
+	}
+
+	/**
+	 * @return the qualify
+	 */
+	public boolean isQualify() {
+		return qualify;
+	}
+
+	/**
+	 * @param qualify the qualify to set
+	 */
+	public boolean setQualify(boolean qualify) {
+		boolean old=isQualify();
+		this.qualify = qualify;
+		return old;
 	}
 	
 	

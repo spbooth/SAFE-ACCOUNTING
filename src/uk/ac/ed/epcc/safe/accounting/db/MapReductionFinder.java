@@ -26,12 +26,11 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SumMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterFinder;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 
 
 
-public class MapReductionFinder<T extends DataObject&ExpressionTarget,K> extends FilterFinder<T, Map<K,Number>> {
+public class MapReductionFinder<T extends ExpressionTarget,K> extends FilterFinder<T, Map<K,Number>> {
 	private final AccessorMap<T> map;
 	public MapReductionFinder(AccessorMap<T> map, PropExpression<K> key,
 			ReductionTarget<Number> value) throws InvalidSQLPropertyException {

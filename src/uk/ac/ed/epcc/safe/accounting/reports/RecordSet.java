@@ -32,9 +32,9 @@ import uk.ac.ed.epcc.webapp.time.Period;
 /** RecordSet combines a combination of {@link UsageProducer} and {@link RecordSelector}
  * and time bounds (Array of {@link PropExpression}s) it represents a set of UsageRecords.
  * The time bounds are used to generate {@link PeriodOverlapRecordSelector}s. These are not stored directly in
- * the {@link RecordSelector} as they wil depend on the time period under consideration.
+ * the {@link RecordSelector} as they will depend on the time period under consideration.
  * 
- * This is required where reports need a combination of informations from
+ * This is required where reports need a combination of information from
  * incompatible {@link UsageProducer}s. For example Data usage and allocations. 
  * 
  * @author spb
@@ -71,7 +71,7 @@ private final AccountingService serv;
 	public PropExpression<Date>[] getBounds(){
 		return bounds;
 	}
-	/** Returns a {@link RecordSelector} including a selector based on the 
+	/** Returns a {@link RecordSelector} including the filter selector and a selector based on the 
 	 * time bounds and the specified {@link Period}.
 	 * 
 	 * @param period
@@ -100,8 +100,8 @@ private final AccountingService serv;
 	 * @return
 	 */
 	public boolean useOverlap() {
-		ExpressionTargetGenerator<?> up = getGenerator();
-		return use_overlap && bounds.length == 2 && up.compatible(bounds[0]) && up.compatible(bounds[1]);
+		//return use_overlap && bounds.length == 2 && up.compatible(bounds[0]) && up.compatible(bounds[1]);
+		return use_overlap && hasOverlapBounds() ;
 	}
   public void setUsageProducer(String name){
 	  setUsageProducer(serv.getUsageProducer(name));
