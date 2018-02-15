@@ -28,6 +28,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ExpressionException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.IllegalContentException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.UnexpandedContentException;
@@ -270,7 +271,7 @@ public abstract class SelectBuilder {
 		public final PropExpression<Date>[] bounds;
 		public final boolean overlap;
 	}
-	public final DateBounds getDateProperties(ObjectSet recordSet,Node datePropertyNode) {		
+	public final DateBounds getDateProperties(ObjectSet recordSet,Node datePropertyNode) throws ReportException {		
 		
 		ExpressionTargetGenerator producer = recordSet.getGenerator();
 		if (datePropertyNode != null) {
@@ -278,7 +279,7 @@ public abstract class SelectBuilder {
 				return new DateBounds(new PropertyTag[0],false);
 			}
 			PropExpression property = null;
-			try{
+			
 				
 			String param = getParam(PROPERTY_ELEMENT,(Element) datePropertyNode);
 			if( param != null ){
@@ -287,8 +288,13 @@ public abstract class SelectBuilder {
 				property = getExpression(producer.getFinder(), param); 
 			}
 			
-			if (property != null && Date.class.isAssignableFrom(property.getTarget())) {
-				return new DateBounds(new PropExpression[]{property},false);
+			if (property != null ) {
+				if( Date.class.isAssignableFrom(property.getTarget())) {
+
+					return new DateBounds(new PropExpression[]{property},false);
+				}else {
+					throw new ExpressionException("Not a date property "+property.toString());
+				}
 				
 			} else {
 				// check for overlap properties.
@@ -305,10 +311,7 @@ public abstract class SelectBuilder {
 							endProperty},overlap);
 				}			
 			}
-			}catch(Exception e){
-				addError("Bad Property", "Error reading property",e);
-				return null;
-			}
+			
 		}
 		if( recordSet.getGenerator().compatible(StandardProperties.ENDED_PROP)){
 			// default to ended  if supported.

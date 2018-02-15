@@ -36,6 +36,7 @@ import uk.ac.ed.epcc.safe.accounting.charts.MapperEntry;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntry;
 import uk.ac.ed.epcc.safe.accounting.charts.SetMapperEntry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
+import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.BarTimeChart;
@@ -91,8 +92,7 @@ public abstract class ChartExtension extends ReportExtension {
 	public PlotEntry getPlotEntry(PropertyFinder finder, Element e) throws Exception{
 		String name = getExpandedParam("Plot",e);
 		if( name == null  || name.isEmpty()){
-			addError("No Plot Quantity","No Plot quantity was specified");
-			return null;
+			throw new ReportException("No Plot quantity was specified");
 		}
 		String start_name = getParam("StartProp", e);
 		String end_name = getParam("EndProp",e);

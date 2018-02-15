@@ -27,6 +27,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 public class ObjectSet<F extends ExpressionTargetGenerator> {
 	private F generator=null;
 	private AndRecordSelector sel=new AndRecordSelector();
+	private boolean has_error=false;
 	
 	
 	protected ObjectSet(){
@@ -39,6 +40,9 @@ public class ObjectSet<F extends ExpressionTargetGenerator> {
 	
 
 	public F getGenerator() {
+		if(has_error) {
+			return null;
+		}
 		return generator;
 	}
 	public void setGenerator(F generator) {
@@ -46,10 +50,14 @@ public class ObjectSet<F extends ExpressionTargetGenerator> {
 	}
 
 	public final  RecordSelector getRecordSelector(){
+		if(has_error) {
+			return null;
+		}
 		return sel;
 	}
 	protected void clearSelection(){
 		sel=new AndRecordSelector();
+		has_error=false;
 	}
 	public final void addRecordSelector(RecordSelector sel){
 		this.sel.add(sel);
@@ -87,6 +95,18 @@ public class ObjectSet<F extends ExpressionTargetGenerator> {
 		} else if (!sel.equals(other.sel))
 			return false;
 		return true;
+	}
+	/**
+	 * @return the has_error
+	 */
+	public boolean hasError() {
+		return has_error;
+	}
+	/**
+	 * @param has_error the has_error to set
+	 */
+	public void setError(boolean has_error) {
+		this.has_error = has_error;
 	}
 
 }

@@ -72,6 +72,7 @@ public class FormatExtension extends ReportExtension {
 	
 	public DocumentFragment format(RecordSet recordSet, Period period,NodeList template){
 		Document doc = getDocument();
+		try {
 		DocumentFragment result = doc.createDocumentFragment();
 		UsageProducer<?> prod = recordSet.getUsageProducer();
 		ExpressionExpander expander = new ExpressionExpander(getContext(),parse_vis);
@@ -88,29 +89,21 @@ public class FormatExtension extends ReportExtension {
 		int count=-1;
 		Element limit = getFirstElement(template, "Limit");
 		if( limit != null ){
-			try {
-				start = getIntParam("Start", -1, limit);
-			} catch (Exception e) {
-				addError("Bad Limit","Error setting Start",e);
-			}
-			try {
-				count = getIntParam("Count", -1, limit);
-			} catch (Exception e) {
-				addError("Bad Limit","Error setting Count",e);
-			}
+
+			start = getIntParam("Start", -1, limit);
+
+			count = getIntParam("Count", -1, limit);
+
 		}
 		
 		Iterator<? extends ExpressionTargetContainer> it=null;
-		try {
+		
 			if( start == -1 && count == -1){
 				it = prod.getIterator(sel);
 			}else{
 				it=prod.getIterator(sel, start, count);
 			}
-		} catch (Exception e) {
-			addError("Bad selection", "Error geting selected records", e);
-			return result;
-		}
+		
 		
 		while(it.hasNext()){
 			ExpressionTargetContainer rec = it.next();
@@ -125,6 +118,10 @@ public class FormatExtension extends ReportExtension {
 		}
 		//result.normalize();
 		return result;
+		}catch(Exception e) {
+			addError("Bad format section", "", e);
+			return doc.createDocumentFragment();
+		}
 	}
 	
 	/** Perform a node clone with re-write.

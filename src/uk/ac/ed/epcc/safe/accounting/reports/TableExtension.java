@@ -67,6 +67,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ExpressionException;
+import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
@@ -110,7 +112,7 @@ public class TableExtension extends ReportExtension {
 			}
 		}
 	}
-	public static class BadTableException extends Exception{
+	public static class BadTableException extends ReportException{
 
 		public BadTableException() {
 			super();
@@ -149,8 +151,9 @@ public class TableExtension extends ReportExtension {
 		 * 
 		 * @param instructions
 		 * @return null or Table
+		 * @throws BadTableException 
 		 */
-		public Table postProcess(Node instructions);
+		public Table postProcess(Node instructions) throws BadTableException;
 	}
 	/** A {@link TableProxy} for a combining multiple generated tables into one composite table.
 	 * 
@@ -243,7 +246,7 @@ public class TableExtension extends ReportExtension {
 		JobTableMaker tableMaker;
 		
 		public SimpleTable(TableExtension extension, CompoundTable compoundTable, 
-				Period period, RecordSet recordSet, Node tableNode) {
+				Period period, RecordSet recordSet, Node tableNode) throws BadTableException {
 			this.compoundTable = compoundTable;
 			this.extension = extension;
 			this.period = period;
@@ -287,7 +290,7 @@ public class TableExtension extends ReportExtension {
 							Integer.parseInt(extension.getParam(SKIP_ROWS, tableElement).trim()));
 				}
 			}catch(Exception e){
-				extension.addError("Bad Table", "Error setting MaxRows", e);
+				throw new BadTableException("Error setting SkipRows", e);
 			}
 			try{
 				// See if MaxRows is set
@@ -324,15 +327,19 @@ public class TableExtension extends ReportExtension {
 				columnName = extension.getParam("Name", data_element);
 			} catch (Exception e) {
 				extension.addError("Bad Column","Error getting column name",e);
+				return "";
 			}
 	
 			
-			PropExpression data_tag = extension.getPropertyExpression(columnNode, producer);
-			if (data_tag == null) {
-				extension.addError("Bad expression", "No property found");
+			PropExpression data_tag;
+			try {
+				data_tag = extension.getPropertyExpression(columnNode, producer);
+				tableMaker.addColumn(new ColName(data_tag, columnName));
+			} catch (ExpressionException e) {
+				extension.addError("Bad expression", "No property found",e);
 				return "";
 			}
-			tableMaker.addColumn(new ColName(data_tag, columnName));
+			
 			return "";
 		
 		}
@@ -396,7 +403,7 @@ public class TableExtension extends ReportExtension {
 		
 		public SummaryTable(TableExtension extension, 
 				CompoundTable compoundTable, Period period, 
-				RecordSet recordSet, Node tableNode) {
+				RecordSet recordSet, Node tableNode) throws ReportException {
 			super(extension,compoundTable,recordSet,tableNode);
 			this.period = period;
 			Element tableElement = (Element)tableNode;
@@ -852,28 +859,31 @@ public class TableExtension extends ReportExtension {
 				columnName = extension.getParam("Name", data_element);
 			} catch (Exception e) {
 				extension.addError("Bad Column","Error getting column name",e);
+				return "";
 			}
 	
 			
-			PropExpression data_tag = extension.getPropertyExpression(columnNode, set.getGenerator());
-			if (data_tag == null) {
-				extension.addError("Bad expression", "No property found");
+			PropExpression data_tag;
+			try {
+				data_tag = extension.getPropertyExpression(columnNode, set.getGenerator());
+				tableMaker.addColumn(new ColName(data_tag, columnName));
+			} catch (ExpressionException e) {
+				extension.addError("Bad expression", "No property found",e);
 				return "";
 			}
-			tableMaker.addColumn(new ColName(data_tag, columnName));
+			
 			return "";
 		
 		}
 	
 		
-		public Table postProcess(Node instructions) {
+		public Table postProcess(Node instructions) throws BadTableException {
 			Table<String,Object> table;
 			try {
 				// We ignore the period for a ObjectTable
 				table = tableMaker.makeTable(set.getRecordSelector());
 			} catch (Throwable e) {
-				extension.addError("Table Error", "Error making JobTable", e);
-				table = new Table<String,Object>();
+				throw new BadTableException("Error making JobTable", e);
 			}		
 			AppContext conn = extension.getContext();
 			if (compoundTable == null) {
@@ -911,22 +921,23 @@ public class TableExtension extends ReportExtension {
 	}
 	
 	public SimpleTable newSimpleTable(Period period, RecordSet recordSet, 
-			Node node) {
+			Node node) throws BadTableException {
 		return new SimpleTable(this, null, period, recordSet, node);
 	}
 
 	public SimpleTable newSimpleTable(CompoundTable compountTable, 
-			Period period, RecordSet recordSet, Node node) {
+			Period period, RecordSet recordSet, Node node) throws BadTableException {
 		return new SimpleTable(this, compountTable, period, recordSet, node);
 	}
 
 	public SummaryTable newSummaryTable(Period period, RecordSet recordSet, 
-			Node node) {
-		return new SummaryTable(this, null, period,recordSet,node);
+			Node node) throws ReportException {
+		
+			return new SummaryTable(this, null, period,recordSet,node);	
 	}
 
 	public SummaryTable newSummaryTable(CompoundTable compountTable, 
-			Period period, RecordSet recordSet, Node node) {
+			Period period, RecordSet recordSet, Node node) throws ReportException {
 		return new SummaryTable(this, compountTable, period,recordSet,node);
 	}
 	public SummaryObjectTable newSummaryObjectTable(CompoundTable compoundTable, ObjectSet recordSet, Node tableNode){
@@ -958,16 +969,20 @@ public class TableExtension extends ReportExtension {
 		table.addColumn(node);
 	}
 	
-	public DocumentFragment postProcess(TableProxy proxy,  Node instructions) {
-		startTimer("postProcess "+proxy.getClass().getSimpleName());
-		Table table = proxy.postProcess(instructions);		
-		stopTimer("postProcess "+proxy.getClass().getSimpleName());
-		if (table != null) {
-			return format(table,instructions);
-			
-		} else {
-			return getDocument().createDocumentFragment();
-			
+	public DocumentFragment postProcess(TableProxy proxy,  Node instructions) throws BadTableException {
+		try {
+			startTimer("postProcess "+proxy.getClass().getSimpleName());
+			Table table = proxy.postProcess(instructions);		
+
+			if (table != null) {
+				return format(table,instructions);
+
+			} else {
+				return getDocument().createDocumentFragment();
+
+			}
+		}finally {
+			stopTimer("postProcess "+proxy.getClass().getSimpleName());
 		}
 		
 	}
@@ -986,7 +1001,7 @@ public class TableExtension extends ReportExtension {
 		
 	}
 	
-	private PropExpression getPropertyExpression(Node node, PropertyTargetFactory producer) {
+	private PropExpression getPropertyExpression(Node node, PropertyTargetFactory producer) throws ExpressionException {
 		return getPropertyExpression(node, producer, PROPERTY_ELEMENT);
 	}
 	private Table<String,Object> processTable(Table<String,Object> table, Node instructions) {

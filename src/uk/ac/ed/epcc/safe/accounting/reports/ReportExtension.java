@@ -55,6 +55,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.UnresolvedNameException;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
+import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ExpressionException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
@@ -461,29 +462,21 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public PropertyTag getTag(PropertyTargetFactory up, String name){
 		return up.getFinder().find(name.trim());
 	}
-	protected PropExpression getExpression(PropertyTargetFactory up, String expr){
+	protected PropExpression getExpression(PropertyTargetFactory up, String expr) throws ExpressionException{
 		if( up == null) {
-			addError("Internal error","No usage producer");
-			return null;
+			throw new ExpressionException("No usage producer");
 		}
 		if( expr == null) {
-			addError("Bad Property","Null value passed");
-			return null;
+			throw new ExpressionException("Null value passed");
 		}
 		Parser p = new Parser(conn, up.getFinder());
 		try {
 			return p.parse(expr.trim());
 		} catch (UnresolvedNameException e) {
-			addError("Bad Property",expr+" Cannot resolve:"+e.getUnresolvedName());
-			debug("Cannot resolve:"+e.getUnresolvedName());
-			debug("PropertyFinder is "+e.getFinder());
-			for(PropertyTag tag : e.getFinder().getProperties()){
-				debug(" "+tag.getName());
-			}
+			throw new ExpressionException("Bad property",e);
 		} catch (uk.ac.ed.epcc.safe.accounting.expr.ParseException e) {
-			addError("BadExpression", expr,e);
+			throw new ExpressionException("BadExpression", e);
 		}
-		return null;
 	}
 	
 	
@@ -734,18 +727,17 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public boolean empty(String value){
 		return value == null || value.trim().length() == 0;
 	}
-	public PropExpression getPropertyExpression(Node node, PropertyTargetFactory producer, String name) {
+	public PropExpression getPropertyExpression(Node node, PropertyTargetFactory producer, String name) throws ExpressionException {
 		Element element = (Element) node;		
 		String data_str=null;
 		try {
 			data_str = getParam(name, element);
 		} catch (Exception e) {
-			addError("Bad Property", "Error reading property",e);
-			return null;
+			throw new ExpressionException("Error reading property",e);
 		}
 		if (data_str == null || data_str.trim().length() == 0) {
 			addError("Bad property", "No property specified",node);
-			return null;
+			throw new ExpressionException("null expression");
 		}
 		PropExpression data_tag = getExpression(producer, data_str);
 		if (data_tag == null) {

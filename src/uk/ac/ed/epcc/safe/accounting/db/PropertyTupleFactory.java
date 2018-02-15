@@ -17,6 +17,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
@@ -80,6 +81,7 @@ T extends PropertyTupleFactory.PropertyTuple<A>
 			getLogger().error("PropertyTupleFactory "+tag+" has no members");
 		}
 		map = new TupleAccessorMap(this, config_tag);
+		finder.addFinder(StandardProperties.time); // for JobCount
 		member_tags = new LinkedList<>();
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 		finder.addFinder(refs);

@@ -43,6 +43,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
+import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
@@ -356,7 +357,15 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 		TableSpecification result = super.modifyDefaultTableSpecification(c, spec, map, table_name);
 		String remote_table = c.getInitParameter("LinkPolicy.target."+table_name);
 		if( remote_table != null){
-			spec.setField(remote_table+"ID", new ReferenceFieldType(remote_table));
+			String name = remote_table+"ID";
+			spec.setField(name, new ReferenceFieldType(remote_table));
+		
+			try {
+				// Add an index to optimise back-joins from the master table to this one.
+				spec.new Index(name+"_idx", false, name);
+			} catch (InvalidArgument e) {
+				c.getService(LoggerService.class).getLogger(getClass()).error("Error making index",e);
+			}
 		}
 		return result;
 	}

@@ -100,6 +100,7 @@ public class FilterExtension extends ReportExtension{
 			  addError("Bad Filter Specification", "Non empty string "+fil);
 			  // Don't match anything on error.
 			  prev.addRecordSelector(new SelectClause());
+			  prev.setError(true);
 			  return prev;
 		  }
 		  try{
@@ -119,6 +120,7 @@ public class FilterExtension extends ReportExtension{
 			  getLogger().error("Error parsing filter clause",t);
 			  addError("Filter parse error", t.getMessage());
 			  prev.addRecordSelector(new SelectClause());
+			  prev.setError(true);
 		  }
 		  return prev;
 	  }catch(Throwable t){
@@ -173,9 +175,11 @@ public class FilterExtension extends ReportExtension{
 				  }
 			  } catch (FilterParseException e1) {
 				  result.addRecordSelector(new SelectClause()); // default to no select on exception
+				  result.setError(true);
 				  addError("Bad Filter",e1.getMessage(),e1);
 			  } catch (Throwable e1) {
 				  result.addRecordSelector(new SelectClause()); // default to no select on exception
+				  result.setError(true);
 				  addError("Parse error", e1.getMessage(),e1);
 			  } 
 
@@ -205,6 +209,9 @@ public class FilterExtension extends ReportExtension{
 	
 }
   public boolean hasRecords(Period period,RecordSet set){
+	  if(set.hasError()) {
+		  return false;
+	  }
 	  UsageProducer<?> producer = set.getUsageProducer();
 		AndRecordSelector selector = set.getPeriodSelector(period);
 		try {

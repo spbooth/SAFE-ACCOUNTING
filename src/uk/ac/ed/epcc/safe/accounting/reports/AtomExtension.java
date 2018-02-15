@@ -145,7 +145,9 @@ public class AtomExtension extends ReportExtension {
 	}
 	
 	public AtomResult expandNumberGroup(Period period,RecordSet set, Element element) throws IllegalReductionException, Exception{
-		
+		if( set.hasError()) {
+			throw new ReportException("Bad record set");
+		}
 		if( element == null ){
 			throw new ParseException("Expecting number group");
 		}
@@ -187,6 +189,9 @@ public class AtomExtension extends ReportExtension {
 		throw new ParseException("unexpected content");
 	}
 	public AtomResult expandAtom(Period period,RecordSet set,Node element) throws IllegalReductionException, Exception{
+		if( set.hasError()) {
+			throw new ReportException("Bad record set");
+		}
 		// have to look for additional filters etc.
 		set = new RecordSet(set); // copy
 		// add filters.
@@ -217,14 +222,14 @@ public class AtomExtension extends ReportExtension {
 			Node n = list.item(i);
 			if( n.getNodeType()==Node.ELEMENT_NODE && n.getNamespaceURI()==element.getNamespaceURI()){
 				if( pos >= 2 ){
-					addError("Wrong number of Arguments", "Expecting two child nodes",element);	
+					throw new ReportException( "atom:Combine Expecting two child nodes");	
 				}
 				arg[pos]=(Element)n;
 				pos++;
 			}
 		}
 		if( pos != 2 ){
-			addError("Wrong number of Arguments", "Expecting two child nodes",element);	
+			throw new ReportException( "atom:Combine Expecting two child nodes");	
 		}
 		return new AtomResult<Number>(null,op.operate((Number)expandNumberGroup(period, set, arg[0]).value, (Number)expandNumberGroup(period, set, arg[1]).value));
 	}
