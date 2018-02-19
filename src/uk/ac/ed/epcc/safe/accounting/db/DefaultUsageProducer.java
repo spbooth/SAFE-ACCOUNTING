@@ -29,6 +29,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
+import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
@@ -138,6 +139,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 			Long calc_cutoff = cutoffs.get(key);
 			SessionService sess=null;
 			if(calc_cutoff ==null){
+				
 				TimerService timer = getContext().getService(TimerService.class);
 				String cutoff_name = "auto_cutoff."+getTag()+"_"+start.toString()+"_"+end.toString();
 				if(CACHE_CUTOFFS.isEnabled(getContext())) {
@@ -151,10 +153,15 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 						timer.startTimer(cutoff_name);
 					}
 					try {
-
-						calc_cutoff = getCutoff(null,start, end);
-						if( log !=null) log.debug(getTag()+": calculated cutoff for "+start+","+end+" as "+cutoff);
-						cutoffs.put(key,calc_cutoff);
+						AccessorMap map = getAccessorMap();
+						// Check this uses SQL
+						if( map.getSQLValue(start) != null && map.getSQLValue(end) != null) {
+							calc_cutoff = getCutoff(null,start, end);
+							if( log !=null) log.debug(getTag()+": calculated cutoff for "+start+","+end+" as "+cutoff);
+							cutoffs.put(key,calc_cutoff);
+						}else {
+							calc_cutoff=0L;
+						}
 					} catch (Exception e) {
 						getLogger().error("Error making cutoff",e);
 						calc_cutoff=0L;
