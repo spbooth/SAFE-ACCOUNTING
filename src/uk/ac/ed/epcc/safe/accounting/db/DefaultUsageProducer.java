@@ -162,6 +162,8 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 						}else {
 							calc_cutoff=0L;
 						}
+					}catch(InvalidSQLPropertyException isp) {
+						calc_cutoff=0L;
 					} catch (Exception e) {
 						getLogger().error("Error making cutoff",e);
 						calc_cutoff=0L;
