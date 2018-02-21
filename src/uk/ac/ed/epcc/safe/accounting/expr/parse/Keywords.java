@@ -77,7 +77,7 @@ public enum Keywords {
 		@Override
 		public PropExpression getExpression(LinkedList<PropExpression> inner)
 				throws ParseException {
-			return new DurationCastPropExpression(inner.getFirst(),1L);
+			return new DurationCastPropExpression(cast(Number.class,inner.getFirst()),1L);
 		}
 	
 	},
@@ -87,7 +87,7 @@ public enum Keywords {
 		@Override
 		public PropExpression getExpression(LinkedList<PropExpression> inner)
 				throws ParseException {
-			return new LocatePropExpression(inner.getFirst(),inner.get(1),inner.getLast());
+			return new LocatePropExpression(cast(String.class,inner.getFirst()),cast(String.class,inner.get(1)),cast(Integer.class,inner.getLast()));
 		}
 	},
 	GREATEST{
@@ -119,4 +119,12 @@ public enum Keywords {
 		}
 		return sb.toString();
 	}
+	
+	public <T> PropExpression<T> cast(Class<T> clazz,PropExpression expr) throws ParseException{
+		if( clazz.isAssignableFrom(expr.getTarget())){
+			return expr;
+		}
+		throw new ParseException(expr.toString()+" not a "+clazz.getSimpleName()+" expression");
+	}
+	
 }
