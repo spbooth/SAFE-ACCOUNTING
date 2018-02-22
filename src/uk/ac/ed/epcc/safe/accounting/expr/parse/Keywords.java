@@ -87,7 +87,7 @@ public enum Keywords {
 		@Override
 		public PropExpression getExpression(LinkedList<PropExpression> inner)
 				throws ParseException {
-			return new LocatePropExpression(cast(String.class,inner.getFirst()),cast(String.class,inner.get(1)),cast(Integer.class,inner.getLast()));
+			return new LocatePropExpression(cast(String.class,inner.getFirst()),cast(String.class,inner.get(1)),cast(Number.class,inner.getLast()));
 		}
 	},
 	GREATEST{
