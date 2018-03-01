@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringBufferInputStream;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -13,6 +14,7 @@ import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
+import uk.ac.ed.epcc.webapp.TestTimeService;
 import uk.ac.ed.epcc.webapp.model.data.stream.MimeStreamData;
 import uk.ac.ed.epcc.webapp.model.serv.ServeDataProducer;
 import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
@@ -29,6 +31,11 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 	
 	@Test
 	public void testDefaultTransition() throws Exception {
+		TestTimeService serv = new TestTimeService();
+		Calendar start = Calendar.getInstance();
+		start.set(2018, Calendar.FEBRUARY, 10, 9, 0, 0);
+		serv.setResult(start.getTime());
+		ctx.setService(serv);
 		setupPerson("fred@example.com");
 		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(ctx);
 		Report report = new Report("TimeChart.xml");

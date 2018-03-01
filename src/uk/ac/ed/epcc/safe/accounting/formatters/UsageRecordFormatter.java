@@ -37,6 +37,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
@@ -424,7 +425,8 @@ public class UsageRecordFormatter implements Contexed {
 		this.defaults = defaults;
 
 		this.internalDefaults = new PropertyMap();
-		this.internalDefaults.setProperty(PROP_NOW, new Date());
+		CurrentTimeService serv = getContext().getService(CurrentTimeService.class);
+		this.internalDefaults.setProperty(PROP_NOW, serv.getCurrentTime());
 
 		this.errors = new ErrorSet();
 		this.isFormatting = true;

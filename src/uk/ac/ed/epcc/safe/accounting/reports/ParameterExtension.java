@@ -58,6 +58,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.ClassTableCreator;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
@@ -277,7 +278,9 @@ public class ParameterExtension extends ReportExtension {
 		AppContext conn = getContext();
 		
 		String type = getAttribute("type",param);
-		String role=getAttribute("role",param);			
+		String role=getAttribute("role",param);	
+		CurrentTimeService time = getContext().getService(CurrentTimeService.class);
+		Date now = time.getCurrentTime();
 			
 		//TODO make this more parameter configurable
 		if (type.equals("ReadOnly")) {
@@ -354,13 +357,13 @@ public class ParameterExtension extends ReportExtension {
 		} else if (type.equals("Period")){
 			return new SimplePeriodInput();
 		}else if (type.equals("RegularSplitPeriod")){
-			return new RegularPeriodInput();
+			return new RegularPeriodInput(now);
 		}else if (type.equals("CalendarPeriod")){
-			return new CalendarFieldPeriodInput();
+			return new CalendarFieldPeriodInput(now);
 		}else if (type.equals("DayCalendarPeriod")){
-			return new CalendarFieldPeriodInput(Calendar.DATE);
+			return new CalendarFieldPeriodInput(now,Calendar.DATE);
 		}else if (type.equals("MonthCalendarPeriod")){
-			return new CalendarFieldPeriodInput(Calendar.MONTH);
+			return new CalendarFieldPeriodInput(now,Calendar.MONTH);
 		}
 		// Not a built in type try various methods in turn
 		
