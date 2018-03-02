@@ -39,11 +39,8 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  * @param <UR> 
  *
  */
-public class SequenceTupleProducer<
-A extends DataObject & ExpressionTarget, 
-AF extends DataObjectFactory<A> & ExpressionTargetFactory<A>,
-UR extends SequenceTupleProducer.PeriodTuple<A>
-> extends TupleUsageProducer<A,AF,UR> {
+public class SequenceTupleProducer<A extends DataObject & ExpressionTarget, AF extends DataObjectFactory<A> & ExpressionTargetFactory<A>,UR extends SequenceTupleProducer.PeriodTuple<A>> 
+extends TupleUsageProducer<A,AF,UR> {
 
 	public SequenceTupleProducer(AppContext c, String config_tag) {
 		super(c, config_tag);

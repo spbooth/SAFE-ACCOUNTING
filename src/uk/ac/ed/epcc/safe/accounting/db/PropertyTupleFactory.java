@@ -8,7 +8,6 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
@@ -54,11 +53,11 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * @param <AF>
  * @param <T>
  */
-public class PropertyTupleFactory<
-A extends DataObject, 
-AF extends DataObjectFactory<A>,
-T extends PropertyTupleFactory.PropertyTuple<A>
->extends TupleFactory<A,AF,T> implements ExpressionTargetFactory<T>, ExpressionFilterTarget<T>,Tagged{
+public class PropertyTupleFactory<A extends DataObject, AF extends DataObjectFactory<A>,T extends PropertyTupleFactory.PropertyTuple<A>>
+extends TupleFactory<A,AF,T> 
+implements ExpressionTargetFactory<T>, 
+ExpressionFilterTarget<T>,
+Tagged{
 
 	private static final String MEMBERS_CONFIG_SUFFIX = ".members";
 	protected final TupleAccessorMap map;
