@@ -56,7 +56,6 @@ import uk.ac.ed.epcc.webapp.time.Period;
 public class PropertyTupleFactory<A extends DataObject, AF extends DataObjectFactory<A>,T extends PropertyTupleFactory.PropertyTuple<A>>
 extends TupleFactory<A,AF,T> 
 implements ExpressionTargetFactory<T>, 
-ExpressionFilterTarget<T>,
 Tagged{
 
 	private static final String MEMBERS_CONFIG_SUFFIX = ".members";
