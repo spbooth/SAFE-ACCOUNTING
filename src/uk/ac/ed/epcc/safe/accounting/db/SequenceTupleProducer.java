@@ -152,7 +152,7 @@ extends TupleUsageProducer<A,AF,UR> {
 	 * @see uk.ac.ed.epcc.safe.accounting.db.TupleUsageProducer#getTarget()
 	 */
 	@Override
-	public Class getTarget() {
+	public Class<? super UR> getTarget() {
 		return PeriodTuple.class;
 	}
 }

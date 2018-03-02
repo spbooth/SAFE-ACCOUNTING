@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
@@ -237,7 +236,7 @@ Tagged{
 	}
 
 	@Override
-	public Class getTarget() {
+	public Class<? super T> getTarget() {
 		return PropertyTuple.class;
 	}
 
