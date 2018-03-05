@@ -12,7 +12,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
-import uk.ac.ed.epcc.safe.accounting.db.ClassificationUpdater;
+import uk.ac.ed.epcc.safe.accounting.db.UploadParseTargetUpdater;
 import uk.ac.ed.epcc.safe.accounting.parsers.PasswdParser;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -32,7 +32,7 @@ public class ParsePersonTest extends PersonTest {
 	@Test
 	public void testUpload() throws InvalidExpressionException, DataException, ParseException{
 		PropertyPersonFactory<PropertyPerson> fac = new PropertyPersonFactory<PropertyPerson>(ctx);
-		ClassificationUpdater<PropertyPerson,String> updater = new ClassificationUpdater<PropertyPerson,String>(ctx, fac);
+		UploadParseTargetUpdater<PropertyPerson,String> updater = new UploadParseTargetUpdater<PropertyPerson,String>(ctx, fac);
 		
 		ErrorSet errors = new ErrorSet();
     	ErrorSet skip_list = new ErrorSet();

@@ -18,7 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.upload;
 
 import java.util.Map;
 /** An UploadParser is the interface that needs to be implemented by a class to allow it to
- * be invoked by the UploadServlet of command line upload app to load data.
+ * be invoked by the UploadServlet or command line upload app to load data.
  * 
  * @author spb
  *
@@ -27,7 +27,8 @@ public interface UploadParser {
 
 	/** process data for upload.
 	 * Normal convention is for  the uploaded data to be in a parameter called
-	 * <em>upload</em>
+	 * <em>upload</em>. If the data is for a specific table that the tag for that
+	 * table is in parameter <em>table</em>
 	 * 
 	 * @param parameters (map of form/app parameters)
 	 * @return String status report

@@ -26,7 +26,7 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorContributer;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
-import uk.ac.ed.epcc.safe.accounting.db.ClassificationParseTarget;
+import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
 import uk.ac.ed.epcc.safe.accounting.db.CompatibleSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.db.PropertyMaker;
@@ -92,7 +92,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * @param <P>
  */
 
-public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFactory<P> implements ExpressionTargetFactory<P>, TableStructureTransitionTarget, ClassificationParseTarget<P,String>, PlugInOwner<String>, FilterSelector<DataObjectItemInput<P>>{
+public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFactory<P> implements ExpressionTargetFactory<P>, TableStructureTransitionTarget, UploadParseTarget<P,String>, PlugInOwner<String>, FilterSelector<DataObjectItemInput<P>>{
 
 	
 	public static final Feature MAKE_ON_UPLOAD_FEATURE = new Feature("person.make_on_upload",true,"On a person upload unknown users will be created as well as existing ones updated");

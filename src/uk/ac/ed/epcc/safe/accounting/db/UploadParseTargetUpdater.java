@@ -30,28 +30,30 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
-/** Parses an external source of classification data.
+/** Parses an external source of property data.
  * 
- * Classification data can also be generated on the fly as part of the accounting parse process
- * but this is needed if there is additional data than needs to be associated with the classification 
+ * Data for the same table may also be generated on the fly as part of the accounting parse process
+ * e.g. classification data.
+ * This class is needed if there is additional data than needs to be associated with the classification 
  * objects that is not available during the parse.
  * 
  * @author spb
  *
- * @param <T>
+  * @param <T> Type of record generated
+ * @param <R> Type of intermediate record (type input is split into) for parse
  */
 
 
 
 
-public class ClassificationUpdater<T extends DataObject & PropertyContainer,R> {
+public class UploadParseTargetUpdater<T extends DataObject & PropertyContainer,R> {
 	private final AppContext conn;
-	private final ClassificationParseTarget<T,R> target;
+	private final UploadParseTarget<T,R> target;
 	// These defined as object attributes to allow unit tests
 	int n_lines=0;
 	int skip=0;
 	int updates=0;
-    public ClassificationUpdater(AppContext c, ClassificationParseTarget<T,R> target){
+    public UploadParseTargetUpdater(AppContext c, UploadParseTarget<T,R> target){
     	this.conn=c;
     	this.target=target;
     }

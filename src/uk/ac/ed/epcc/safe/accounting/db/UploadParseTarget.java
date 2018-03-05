@@ -29,9 +29,10 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
  * 
  * @author spb
  *
- * @param <T>
+  * @param <T> Type of record parsed to
+ * @param <R> Type of intermediate record (type input is split into) for parse
  */
-public interface ClassificationParseTarget<T extends DataObject & PropertyContainer,R> extends
+public interface UploadParseTarget<T extends DataObject & PropertyContainer,R> extends
 		PropertyContainerParseTarget<T,R> {
 	/** Returns an uncommitted object updated to match the input container.
 	 * This is either a new object or an existing object selected using the
