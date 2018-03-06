@@ -49,7 +49,7 @@ public class AccountingClassification extends Classification implements Property
     protected final ExpressionTargetContainer proxy;
 	@SuppressWarnings("unchecked")
 	protected AccountingClassification(PropertyTargetClassificationFactory<?> fac,Record res) {
-		super(res);
+		super(res, fac);
 		this.fac=fac;
 		AccessorMap map = fac.getAccessorMap();
 		proxy = map.getProxy(this);
