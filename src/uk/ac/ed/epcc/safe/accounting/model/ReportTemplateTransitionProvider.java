@@ -459,6 +459,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		if (isReportDev) 
 		{
 			logService = new BufferLoggerService(context);
+			// maximum log length to keep
+			int max_length = context.getIntegerParameter("reporting.buffer_logger.max_length", 1024*1024*8);
+			logService.setMaxLength(max_length);
 			context.setService(logService);
 			Properties props = new Properties();
 			props.setProperty("service.feature.log_query", "on");

@@ -317,6 +317,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	private void resetErrors() {
 		error_sets=new HashSet<ErrorSet>();
 		general_error=new ErrorSet();
+		general_error.setName("general");
 		general_error.setMaxDetails(16);
 		general_error.setMaxEntry(16);
 		error_sets.add(general_error);
@@ -814,7 +815,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 							params);
 					logSource(name, xmlSource);
 					// Perform the transformation, sending the output to the response.
-					DOMResult result = new DOMResult();
+					DOMResult result = new DOMResult(docBuilder.newDocument());
 					transformer.transform(xmlSource, result);
 					xmlSource = new DOMSource(result.getNode());
 					if( timer != null){
@@ -923,7 +924,12 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		// however this does allow us to capture multple errors and display them together
 		Logger log =getLogger();
 		ErrorSet error_set = new ErrorSet();
-		ErrorSetErrorListener listener = new ErrorSetErrorListener(name!=null?name:"identity", log, error_set);
+		String tag = name!=null?name:"identity";
+		error_set.setName(tag);
+		error_set.setMaxDetails(16);
+		error_set.setMaxEntry(16);
+		
+		ErrorSetErrorListener listener = new ErrorSetErrorListener(tag, log, error_set);
 		error_sets.add(error_set);
 		getTransformerFactory().setErrorListener(listener);
 		// Generate the transformer.
