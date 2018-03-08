@@ -19,7 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 
-/** A cast an index expression to {@link Locate}.
+/** Expression to find the position of one string in another
  * 
  * @author spb
  *
@@ -30,6 +30,14 @@ public class LocatePropExpression implements PropExpression<Integer> {
 	public final PropExpression<String> substr;
 	public final PropExpression<String> str;
     public final PropExpression<Number> pos; // starting index
+    /** create a {@link LocatePropExpression}
+     * this finds the position of one string in another
+     * and maps onto the SQL LOCATE statement if possible.
+     * 
+     * @param substr  string to search for
+     * @param str     string to search in
+     * @param pos     start position of search (start at 1)
+     */
     public LocatePropExpression(PropExpression<String> substr, PropExpression<String> str, PropExpression<Number> pos){
     	this.substr=substr.copy();
     	this.str=str.copy();

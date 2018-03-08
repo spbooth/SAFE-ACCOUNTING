@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.expr.parse;
 import java.util.LinkedList;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
@@ -36,65 +37,101 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFunc;
  *
  */
 public enum Keywords {
-	
+	/** Generates a {@link NamePropExpression}
+	 * 
+	 */
 	NAME {
 		@SuppressWarnings("unchecked")
 		@Override
 		public PropExpression getExpression(LinkedList<PropExpression> list)
 				throws ParseException {
+			checkSingleArg(list);
 			PropExpression inner = list.getFirst();
 			if( inner instanceof ReferenceExpression){
 				return new NamePropExpression((ReferenceExpression) inner);
 			}
 			throw new ParseException("Expression "+inner.toString()+" not a reference");
 		}
+
+		
 	},
-	
+	/** generate a {@link StringPropExpression}
+	 * 
+	 */
 	STRING {
 		@SuppressWarnings("unchecked")
 		@Override
 		public PropExpression getExpression(LinkedList<PropExpression> inner)
 				throws ParseException {
-			
+			checkSingleArg(inner);
 			return new StringPropExpression(inner.getFirst());
 		}
 	},
-	
+	/** generate a {@link IntPropExpression}
+	 * 
+	 */
 	INT {
 
 		@SuppressWarnings("unchecked")
 		@Override
 		public PropExpression getExpression(LinkedList<PropExpression> inner)
 				throws ParseException {
+			checkSingleArg(inner);
 			return new IntPropExpression(inner.getFirst());
 		}
 	
 	},
-	
+	/** generate a {@link DurationCastPropExpression}
+	 * 
+	 */
 	DURATION_CAST {
 
 		@SuppressWarnings("unchecked")
 		@Override
 		public PropExpression getExpression(LinkedList<PropExpression> inner)
 				throws ParseException {
+			checkSingleArg(inner);
 			return new DurationCastPropExpression(cast(Number.class,inner.getFirst()),1L);
 		}
 	
 	},
-	
+	/** generate a {@link LocatePropExpression}
+	 * arguments:
+	 * <ul>
+	 * <li> string to search for</li>
+	 * <li> string to search in</li>
+	 * <li> start position of search (from 1)</li>
+	 * </ul>
+	 */
 	LOCATE {
 		@SuppressWarnings("unchecked")
 		@Override
 		public PropExpression getExpression(LinkedList<PropExpression> inner)
 				throws ParseException {
-			return new LocatePropExpression(cast(String.class,inner.getFirst()),cast(String.class,inner.get(1)),cast(Number.class,inner.getLast()));
+			PropExpression<Number> pos;
+			int argcount = inner.size();
+			if( argcount < 2 || argcount > 3) {
+				throw new ParseException("Wrong number of arguments got:"+argcount+" expected 2 or 3, (search-val, string-to-search [, start-pos(indexes from 1)])");
+			}
+			if( argcount == 2) {
+				pos = new ConstPropExpression(Number.class, Integer.valueOf(1));
+			}else {
+				pos = cast(Number.class,inner.getLast());
+			}
+			return new LocatePropExpression(cast(String.class,inner.getFirst()),cast(String.class,inner.get(1)),pos);
 		}
 	},
+	/** return the largest of a set of expressions
+	 * 
+	 */
 	GREATEST{
 		public PropExpression getExpression(LinkedList<PropExpression> inner){
 			return ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.GREATEST,inner );
 		}
 	},
+	/** generate ate least of a set of expressions
+	 * 
+	 */
 	LEAST {
 		public PropExpression getExpression(LinkedList<PropExpression> inner){
 			return ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.LEAST,inner );
@@ -119,12 +156,27 @@ public enum Keywords {
 		}
 		return sb.toString();
 	}
-	
+	/** check type of expression is assignable to a type
+	 * 
+	 * @param clazz
+	 * @param expr
+	 * @return
+	 * @throws ParseException
+	 */
 	public <T> PropExpression<T> cast(Class<T> clazz,PropExpression expr) throws ParseException{
 		if( clazz.isAssignableFrom(expr.getTarget())){
 			return expr;
 		}
 		throw new ParseException(expr.toString()+" not a "+clazz.getSimpleName()+" expression");
+	}
+	/**
+	 * @param list
+	 * @throws ParseException
+	 */
+	private static void checkSingleArg(LinkedList<PropExpression> list) throws ParseException {
+		if( list.size() != 1) {
+			throw new ParseException("Expecting a single argument");
+		}
 	}
 	
 }
