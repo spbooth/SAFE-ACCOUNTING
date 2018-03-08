@@ -20,6 +20,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
+import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
@@ -28,6 +29,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.safe.accounting.properties.UnresolvedNameException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ExpressionException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.IllegalContentException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
@@ -131,22 +133,19 @@ public abstract class SelectBuilder {
 		
 	}
 
-	public PropExpression getExpression(PropertyFinder finder, String name) {
+	public PropExpression getExpression(PropertyFinder finder, String name) throws UnresolvedNameException, ParseException {
 		if(name == null || name.trim().length()==0){
-			addError("Cannot parse Expression", "Expression is empty",new Exception());
-			return null;
+			throw new ParseException("Empty expression");
 		}
 		Parser p = new Parser(getContext(),finder);
-		try {
-			return p.parse(name);
-		} catch (uk.ac.ed.epcc.safe.accounting.expr.ParseException e) {
-			addError("Cannot parse Expression", "Expression "+name+" Not parsed", e);
-			return null;
-		} catch (InvalidPropertyException e) {
-			addError("Cannot parse Expression", "Expression "+name+" Not parsed", e);
-			return null;
+		return p.parse(name);
+	}
+	public <T> PropExpression<T> getExpression(Class<T> clazz,PropertyFinder finder, String name) throws UnresolvedNameException, ParseException {
+		PropExpression expr = getExpression(finder, name);
+		if(! clazz.isAssignableFrom(expr.getTarget())) {
+			throw new ParseException("Expression "+name+" not of type "+clazz.getSimpleName());
 		}
-		
+		return expr;
 	}
 	@SuppressWarnings("unchecked")
 	protected <T> ValueParser<T> getValueParser(String fmt,PropExpression<T> tag)
@@ -285,7 +284,11 @@ public abstract class SelectBuilder {
 			if( param != null ){
 				// only look if the element exists 
 				// to supress error reporting 
-				property = getExpression(producer.getFinder(), param); 
+				try {
+					property = getExpression(producer.getFinder(), param);
+				} catch (Exception e) {
+					throw new ReportException("Bad Date expression", e);
+				} 
 			}
 			
 			if (property != null ) {
@@ -297,19 +300,28 @@ public abstract class SelectBuilder {
 				}
 				
 			} else {
-				// check for overlap properties.
-				String start = getParam("StartProperty", (Element) datePropertyNode);
-				String end = getParam("EndProperty", (Element) datePropertyNode);
-				PropExpression<Date> startProperty = getExpression(producer.getFinder(), start); 
-				PropExpression<Date> endProperty = getExpression(producer.getFinder(), end);
-				boolean overlap = ! hasChild("NoOverlap", (Element) datePropertyNode);
-				if (startProperty != null && Date.class.isAssignableFrom(startProperty.getTarget()) &&
-					endProperty != null && Date.class.isAssignableFrom(endProperty.getTarget())) {
-	
-					return new DateBounds(new PropExpression[]{
-							startProperty,
-							endProperty},overlap);
-				}			
+				try {
+					// check for overlap properties.
+					PropExpression<Date> startProperty = null;
+					PropExpression<Date> endProperty = null;
+					String start = getParam("StartProperty", (Element) datePropertyNode);
+					String end = getParam("EndProperty", (Element) datePropertyNode);
+					if( start != null ) {
+						startProperty = getExpression(Date.class,producer.getFinder(), start);
+					}
+					if( end != null ) {
+						endProperty = getExpression(Date.class,producer.getFinder(), end);
+					}
+					boolean overlap = ! hasChild("NoOverlap", (Element) datePropertyNode);
+					if (startProperty != null && endProperty != null ) {
+
+						return new DateBounds(new PropExpression[]{
+								startProperty,
+								endProperty},overlap);
+					}	
+				}catch(Exception e) {
+					throw new ReportException("Bad DateBounds", e);
+				}
 			}
 			
 		}

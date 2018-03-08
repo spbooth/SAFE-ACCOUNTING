@@ -741,42 +741,13 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		PropExpression data_tag = getExpression(producer, data_str);
 		if (data_tag == null) {
-			addError("Bad property", "No property found for " + data_str);
-			return null;
+			addError("Bad property", "No property found for " + data_str,node);
+			throw new ExpressionException("No property found for "+data_str);
 		}
 		return data_tag;
 			
 	}
-	/**
-	 * Gets the PropertyTag in the sub-tag 'name'.
-	 * 
-	 * @param node the XML node
-	 * @param producer the producer, required to create the PropertyTags.
-	 * @param name the name of the sub-tag.
-	 * 
-	 * @return the property tag
-	 */
-	public PropertyTag getProperty(Node node, PropertyTargetFactory producer, String name) {
-		Element element = (Element) node;		
-		String data_str=null;
-		try {
-			data_str = getParam(name, element);
-		} catch (Exception e) {
-			addError("Bad Property", "Error reading property",e);
-			return null;
-		}
-		if (data_str == null || data_str.trim().length() == 0) {
-			addError("Bad property", "No property specified",node);
-			return null;
-		}
-		PropertyTag data_tag = getTag(producer, data_str);
-		if (data_tag == null) {
-			addError("Bad property", "No property found for " + data_str);
-			return null;
-		}
-		return data_tag;
-			
-	}
+	
 	
 	public DocumentFragment addReference(XMLGenerator gen){
 		Document doc = getDocument();
