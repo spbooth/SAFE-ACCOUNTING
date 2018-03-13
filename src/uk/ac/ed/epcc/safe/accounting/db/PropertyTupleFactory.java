@@ -20,14 +20,17 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.Tagged;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
+import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseSQLFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
+import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
@@ -43,8 +46,13 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * The component parts are accessible as references.
  * The contributing factories are specified with the property 
  * <b><i>config-tag</i>.members</b>. There is no join clause provided by default this
- * either has to be specified in the report as part of the filter or the class can be extended
- * and {@link #addMandatoryFilter(BaseFilter)} overridden.
+ * either has to be specified in either:
+ * <ul>
+ * <li>The report as part of the filter.</li>
+ * <li>The class can be extended and {@link #addMandatoryFilter(BaseFilter)} overridden.</li>
+ * <li>The filter fan be specified using the config property <b><i>tag</i>.manadatory_filter</b>. This should
+ * be a comma separated list of clauses of the form <b>expr=expr<b>.</li>
+ * </ul>
  * 
  * @author spb
  *
@@ -160,6 +168,33 @@ Tagged{
 	 * @return
 	 */
 	protected BaseFilter<T> addMandatoryFilter(BaseFilter<T> fil){
+		String config_spec = getContext().getInitParameter(getTag()+".mandatory_filter");
+		if( config_spec != null ) {
+			AndFilter<T> and = new AndFilter<>(getTarget(),fil);
+			for(String clause : config_spec.split("\\s*,\\s*")) {
+				int pos = clause.indexOf('=');
+				if( pos < 1 || pos == (clause.length()-1)) {
+					getLogger().error("Bad mandatory filter clause "+clause);
+					// default to generate nothing on error as a bad filter can
+					// result in a very expensive query
+					and.addFilter(new FalseFilter<>(getTarget()));
+				}else {
+					try {
+						String exp1=clause.substring(0, pos);
+						String exp2=clause.substring(pos+1);
+						Parser p = new Parser(getContext(), getFinder());
+						PropExpression pe1 = p.parse(exp1);
+						PropExpression pe2 = p.parse(exp2);
+						and.addFilter(getRawFilter(new RelationClause<>(pe1, pe2)));
+					}catch(Throwable t) {
+						getLogger().error("Bad mandatory filter clause "+clause,t);
+						// default to generate nothing on error as a bad filter can
+						// result in a very expensive query
+						and.addFilter(new FalseFilter<>(getTarget()));
+					}
+				}
+			}
+		}
 		return fil;
 	}
 	protected final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
