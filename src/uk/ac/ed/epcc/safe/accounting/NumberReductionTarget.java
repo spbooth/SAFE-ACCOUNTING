@@ -14,6 +14,7 @@
 package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 public abstract class NumberReductionTarget extends ReductionTarget<Number> {
 

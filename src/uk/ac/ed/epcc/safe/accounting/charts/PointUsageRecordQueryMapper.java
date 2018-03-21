@@ -24,7 +24,6 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.IndexReduction;
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
@@ -36,6 +35,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.AverageValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** QueryMapper that plots property data based on a single DateProperty being within the target range

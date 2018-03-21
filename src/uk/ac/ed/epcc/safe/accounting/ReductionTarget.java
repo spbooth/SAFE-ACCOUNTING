@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 /** A ReductionTarget represents a {@link Reduction} of a {@link PropExpression} over set of records.
  * 

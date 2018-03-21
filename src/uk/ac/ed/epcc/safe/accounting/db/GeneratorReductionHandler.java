@@ -21,7 +21,6 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.IndexReduction;
-import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionProducer;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
@@ -30,6 +29,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 /** A wrapper round an {@link ExpressionTargetGenerator} that implements {@link ReductionProducer}
  * 

@@ -24,7 +24,6 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.IndexReduction;
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
-import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
@@ -35,6 +34,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** QueryMapper that plots property data based on the record being entirely within

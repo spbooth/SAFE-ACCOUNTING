@@ -16,11 +16,11 @@ package uk.ac.ed.epcc.safe.accounting.charts;
 import java.util.Date;
 import java.util.Vector;
 
-import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.strategy.SetRangeMapper;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 /** A MapperEntry that generates a single fixed dataset.
  * 
  * 

@@ -16,7 +16,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.charts.MapperEntry;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -28,6 +27,7 @@ import uk.ac.ed.epcc.webapp.charts.InvalidTransformException;
 import uk.ac.ed.epcc.webapp.charts.strategy.SetRangeMapper;
 import uk.ac.ed.epcc.webapp.charts.TimeChart;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>,T extends UsageRecordFactory.Use> extends DataObjectPropertyFactoryTestCase<F, T> {
 

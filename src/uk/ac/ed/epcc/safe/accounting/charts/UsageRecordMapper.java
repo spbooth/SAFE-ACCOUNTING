@@ -21,7 +21,6 @@ import java.util.Date;
 import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
-import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -29,6 +28,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.strategy.RangeMapper;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** Base class for mapping a UsageRecord to a time range.
  * 

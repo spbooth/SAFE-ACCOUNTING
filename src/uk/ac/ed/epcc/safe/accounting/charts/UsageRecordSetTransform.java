@@ -17,11 +17,11 @@
 package uk.ac.ed.epcc.safe.accounting.charts;
 import java.util.Date;
 
-import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.strategy.SetRangeMapper;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 
 

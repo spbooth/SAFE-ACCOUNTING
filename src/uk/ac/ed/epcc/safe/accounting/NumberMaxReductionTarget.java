@@ -18,6 +18,7 @@ package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.NumberOp;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 /** A {@link ReductionTarget} operating on numbers. 
  * 

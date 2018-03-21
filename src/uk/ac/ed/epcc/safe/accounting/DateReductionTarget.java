@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting;
 import java.util.Date;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 /** A {@link ReductionTarget} operating on Dates.
  * 

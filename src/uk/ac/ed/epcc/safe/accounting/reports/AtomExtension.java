@@ -33,7 +33,6 @@ import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
-import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -46,6 +45,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 /**

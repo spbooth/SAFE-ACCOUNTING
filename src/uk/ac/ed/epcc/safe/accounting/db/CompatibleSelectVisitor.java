@@ -16,7 +16,6 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
-import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
@@ -31,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RelationshipClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;

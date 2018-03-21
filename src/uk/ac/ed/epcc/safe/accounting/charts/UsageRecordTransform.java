@@ -19,12 +19,12 @@ package uk.ac.ed.epcc.safe.accounting.charts;
 import java.util.Date;
 import java.util.Vector;
 
-import uk.ac.ed.epcc.safe.accounting.Reduction;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.strategy.LabelledSetRangeMapper;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 /** A LabellerTransform for mapping UsageRecords to charts
  * 
  * @author spb

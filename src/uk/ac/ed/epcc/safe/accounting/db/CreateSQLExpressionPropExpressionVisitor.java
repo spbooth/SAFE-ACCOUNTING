@@ -48,7 +48,6 @@ import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.SQLContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFuncExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFuncValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CastDoubleSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CastLongSQLExpression;
