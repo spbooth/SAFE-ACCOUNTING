@@ -193,6 +193,18 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		property_finder=null;
 		mapi=null;
 	}
+	/** Constructor for a directly constructed history factory.
+	 * As with {@link HistoryFactory} the peer reference property
+	 * <i>MUST</i> be set
+	 * 
+	 * @param conn
+	 * @param table
+	 */
+	public PropertyTargetHistoryFactory(AppContext conn, String table) {
+		super(conn,table);
+		property_finder=null;
+		mapi=null;
+	}
 	@SuppressWarnings("unchecked")
 	private void initAccessorMap(AppContext conn, String tag){
 		MultiFinder finder = new MultiFinder();
