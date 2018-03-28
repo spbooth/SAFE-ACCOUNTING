@@ -101,7 +101,7 @@ UploadParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 		finder.addFinder(map.setRelationshipProperties(this));
 		match_prop = (PropertyTag<String>) finder.find(String.class,c.getInitParameter(table+".match",Classification.NAME));
 		if( match_prop == null ){
-			getLogger().error("No match property defined");
+			getLogger().error("No match property defined "+table);
 		}
 		
 		PropertyRegistry derived = new PropertyRegistry(table+"DerivedProperties","Derived properties for table "+table);
