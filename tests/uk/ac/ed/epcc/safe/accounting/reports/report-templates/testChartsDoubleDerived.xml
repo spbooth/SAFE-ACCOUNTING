@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!-- Copyright - The University of Edinburgh 2015 -->
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<Title>Test Plots</Title>  
+<per:Period>
+	<per:StartTime>29-09-2008</per:StartTime>
+	<per:EndTime>29-10-2008</per:EndTime>
+</per:Period>
+
+
+
+
+<Heading>School Usage</Heading>
+
+<cha:TimeChart>
+	<cha:NumberOfTimeBlocks>5</cha:NumberOfTimeBlocks>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:GroupBy>School</cha:GroupBy>
+</cha:TimeChart>
+<!-- 
+mysql> SELECT School.Name, SUM(Wall) FROM SGERecord JOIN (Project,Institute,School) ON (SGERecord.ProjectID=Project.Id AND Project.InstituteID=Institute.Id AND Institute.SchoolID=School.ID) GROUP BY School.Name\G
+*************************** 1. row ***************************
+     Name: Informatics
+SUM(Wall): 190214
+*************************** 2. row ***************************
+     Name: Physics
+SUM(Wall): 164
+-->
+
+
+
+</Report>

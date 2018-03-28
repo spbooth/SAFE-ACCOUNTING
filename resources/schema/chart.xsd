@@ -42,7 +42,7 @@
 			<xsd:element name="WarningLevel"
 				type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" />
 			<xsd:group ref="ChartGroup"></xsd:group>
-			<xsd:group ref="PlotGroup"></xsd:group>
+			<xsd:group ref="PlotGroup" maxOccurs="1" minOccurs="0"></xsd:group>
 			<xsd:element name="AddChart" type="ChartType"
 				maxOccurs="unbounded" minOccurs="0" />
 			<xsd:element ref="Caption" maxOccurs="1" minOccurs="0" />

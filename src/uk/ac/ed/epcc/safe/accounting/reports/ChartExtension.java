@@ -90,6 +90,11 @@ public abstract class ChartExtension extends ReportExtension {
 		serv=c.getService(ChartService.class);
 	}
 	public PlotEntry getPlotEntry(PropertyFinder finder, Element e) throws Exception{
+		if( ! hasChild("Plot", e) ) {
+			// Null plot is allowed so we can put everything
+			// nested in AddChart if we want
+			return null;
+		}
 		String name = getExpandedParam("Plot",e);
 		if( name == null  || name.isEmpty()){
 			throw new ReportException("No Plot quantity was specified");
