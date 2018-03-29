@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!-- Copyright - The University of Edinburgh 2015 -->
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+  
+<Title>Test Period</Title>
+
+
+<Heading>One Six Month Split</Heading>
+<cha:TimeChart>
+	<per:Period>
+		<per:StartTime>09-2008</per:StartTime>
+		<per:SplitUnit>Month</per:SplitUnit>
+		<per:NumberOfSplitUnits>6</per:NumberOfSplitUnits>	
+	</per:Period>
+	<cha:Plot>Wall</cha:Plot>
+</cha:TimeChart>
+
+
+</Report>

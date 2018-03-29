@@ -14,17 +14,12 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.TestTimeService;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
-import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
 public class PeriodExtensionTest extends ExtensionTestCase {
 
-	
-	
 	@Test
-	@DataBaseFixtures({"Eddie.xml"})
 	public void testDefaultPeriod() throws Exception {
 		
 		// Has to resolve data in period
@@ -44,77 +39,66 @@ public class PeriodExtensionTest extends ExtensionTestCase {
 				"Default Period" + System.getProperty("line.separator") +
 				"01-"+months[start.get(Calendar.MONTH)]+"-"+start.get(Calendar.YEAR);
 		
-		testPeriod("csv", defaultPeriod);
+		testPeriod("testDefaultPeriod","csv", defaultPeriod);
 		
 	}
 	@Test
-	@DataBaseFixtures({"Eddie.xml"})
 	public void testDefaultEndTimePeriod() throws Exception {	
-		testPeriod("csv", new File(getOutputDir()+"DefaultEndTimePeriod.csv"));
+		testPeriod("testDefaultEndPeriod","csv", new File(getOutputDir()+"DefaultEndTimePeriod.csv"));
 		
 	}
 	@Test
-	@DataBaseFixtures({"Eddie.xml"})
 	public void testDefaultNumberOfSplitsPeriod() throws Exception {	
-		testPeriod("csv", new File(getOutputDir()+"DefaultNumberOfSplitsPeriod.csv"));
+		testPeriod("testDefaultNumSplitPeriod","csv", new File(getOutputDir()+"DefaultNumberOfSplitsPeriod.csv"));
 		
 	}
 	@Test
-	@DataBaseFixtures({"Eddie.xml"})
 	public void testNumberOfSplitsPeriod() throws Exception {	
-		testPeriod("csv", new File(getOutputDir()+"NumberOfSplitsPeriod.csv"));
+		testPeriod("testNumSplitPeriod","csv", new File(getOutputDir()+"NumberOfSplitsPeriod.csv"));
 		
 	}
 	@Test
-	@DataBaseFixtures({"Eddie.xml"})
 	public void testTimeStampPeriod() throws Exception {	
-		testPeriod("csv", new File(getOutputDir()+"TimeStampPeriod.csv"));
+		testPeriod("testTimestampPeriod","csv", new File(getOutputDir()+"TimeStampPeriod.csv"));
 		
 	}
 	@Test
-	@DataBaseFixtures({"Eddie.xml"})
 	public void testMonthPeriod() throws Exception {	
-		testPeriod("csv", new File(getOutputDir()+"MonthPeriod.csv"));
+		testPeriod("testMonthPeriod","csv", new File(getOutputDir()+"MonthPeriod.csv"));
 
 	}
 	@Test
-	@DataBaseFixtures({"Eddie.xml"})
-	public void testYearInQuatersPeriod() throws Exception {	
-		testPeriod("csv", new File(getOutputDir()+"YearInQuatersPeriod.csv"));
+	public void testYearInQuartersPeriod() throws Exception {	
+		testPeriod("testYearInQuartersPeriod","csv", new File(getOutputDir()+"YearInQuatersPeriod.csv"));
 
 	}	
 	@Test
-	@DataBaseFixtures({"Eddie.xml"})
 	public void testSixOneMonthSplits() throws Exception {	
-		testPeriod("csv", new File(getOutputDir()+"SixOneMonthSplits.csv"));
+		testPeriod("testSixOneMonthSplitsPeriod","csv", new File(getOutputDir()+"SixOneMonthSplits.csv"));
 
 	}
 	@Test
-	@DataBaseFixtures({"Eddie.xml"})
 	public void testOneSixMonthSplit() throws Exception {	
-		testPeriod("csv", new File(getOutputDir()+"OneSixMonthSplit.csv"));
+		testPeriod("testOneSixMonthSplitPeriod","csv", new File(getOutputDir()+"OneSixMonthSplit.csv"));
 
 	}
 	@Test
-	@DataBaseFixtures({"Eddie.xml"})
 	public void testOneHourPeriod() throws Exception {	
-		testPeriod("csv", new File(getOutputDir()+"OneHourPeriod.csv"));
+		testPeriod("testOneHourPeriod","csv", new File(getOutputDir()+"OneHourPeriod.csv"));
 
 	}
 	@Test
-	@DataBaseFixtures({"Eddie.xml"})
 	public void testFormatPeriod() throws Exception {	
-		testPeriod("csv", new File(getOutputDir()+"FormatPeriod.csv"));
+		testPeriod("testFormatPeriod","csv", new File(getOutputDir()+"FormatPeriod.csv"));
 
 	}
-	protected void testPeriod(String reportType, File outputFile) throws Exception {
-		testPeriod(reportType, TestDataHelper.readFileAsString(outputFile));
+	
+	protected void testPeriod(String templateName,String reportType, File outputFile) throws Exception {
+		testPeriod(templateName,reportType, TestDataHelper.readFileAsString(outputFile));
 		
 	}
-
-	private void testPeriod(String type, String expectedOutput) throws Exception {		
+	private void testPeriod(String templateName,String type, String expectedOutput) throws Exception {		
 		
-		String templateName = "testPeriod";
 		
 		// Create a HTMLForm.
 		HTMLForm form = new HTMLForm(ctx);

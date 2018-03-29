@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!-- Copyright - The University of Edinburgh 2015 -->
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+  
+<Title>Test Period</Title>
+
+<Heading>Default Period</Heading>
+<cha:TimeChart>
+	<cha:NumberOfTimeBlocks>5</cha:NumberOfTimeBlocks>
+	<cha:Plot>Wall</cha:Plot>
+	
+</cha:TimeChart>
+<!-- should be the start on the previous month to the start of the current month -->
+
+
+</Report>
