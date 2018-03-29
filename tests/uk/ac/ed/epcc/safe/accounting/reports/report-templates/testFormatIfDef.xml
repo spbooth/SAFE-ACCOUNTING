@@ -24,21 +24,7 @@
 <Heading>Format Section</Heading>
 
 <fmt:Format>
-	<Stuff>Some ${JobID} stuff</Stuff><Queue>$[string]{Queue}</Queue> <Start>${StartedTimestamp}</Start>
-</fmt:Format>
-
-<fmt:Format>
 	<fmt:IfDef required="JobID"><Required>Some ${JobID} stuff</Required></fmt:IfDef><Queue>${Queue}</Queue> <Start>${StartedTimestamp}</Start>
 </fmt:Format>
 
-<fmt:Format>
-	<fmt:If property="JobID" value="1153891" ><If>Some ${JobID} stuff</If></fmt:If><Queue>${Queue}</Queue> <Start>${StartedTimestamp}</Start>
-</fmt:Format>
-
-Begin Limit
-<fmt:Format>
-<fmt:Limit><fmt:Start>2</fmt:Start><fmt:Count>3</fmt:Count></fmt:Limit>
-	<Stuff>Limit ${JobID} stuff</Stuff><Queue>$[string]{Queue}</Queue> <Start>${StartedTimestamp}</Start>
-</fmt:Format>
-End Limit
 </Report>

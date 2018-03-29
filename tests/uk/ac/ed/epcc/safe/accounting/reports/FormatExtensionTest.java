@@ -26,43 +26,46 @@ public class FormatExtensionTest extends ExtensionTestCase {
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFormat() throws Exception {
-		testFormatExtension("xml", "Format.xml");
+		testFormatExtension("testFormatBasic","xml", "Format.xml");
 
 	}	
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFormatWithIfDef() throws Exception {
-		testFormatExtension("xml", "FormatIfDef.xml");
+		testFormatExtension("testFormatIfDef","xml", "FormatIfDef.xml");
 
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFormatWithIf() throws Exception {
-		testFormatExtension("xml", "FormatIf.xml");
+		testFormatExtension("testFormatIf","xml", "FormatIf.xml");
 
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFormatLimit() throws Exception {
-		testFormatExtension("xml", "LimitFormat.xml");
+		testFormatExtension("testFormatLimit","xml", "LimitFormat.xml");
 
 	}
-	protected void testFormatExtension(String type, File outputFile) throws Exception {
-		testChart(type, TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n", ""));
+	protected void testFormatExtension(String templateName,String type, File outputFile) throws Exception {
+		testChart(templateName,type, TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n", ""));
 		
 	}	
-	protected void testFormatExtension(String reportType, String name) throws Exception {
+//	protected void testFormatExtension(String type, String name) throws Exception {
+//		testFormatExtension("testFormat",type, name);
+//	}	
+	protected void testFormatExtension(String templateName,String reportType, String name) throws Exception {
 		
 		
 		ByteArrayStreamData data = new ByteArrayStreamData();
 		data.read(getClass().getResourceAsStream("output/"+name));
-		testChart(reportType, data.toString().replaceAll("<!--.*-->\\s*\n", ""));
+		testChart(templateName,reportType, data.toString().replaceAll("<!--.*-->\\s*\n", ""));
 		
 	}
-	protected void testChart(String type, String expectedOutput)
+	protected void testChart(String templateName,String type, String expectedOutput)
 			throws Exception {
 
-		String templateName = "testFormat";
+		
 
 		// Create a HTMLForm.
 		HTMLForm form = new HTMLForm(ctx);
