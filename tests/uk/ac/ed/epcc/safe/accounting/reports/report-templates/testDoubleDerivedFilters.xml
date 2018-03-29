@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!-- Copyright - The University of Edinburgh 2015 -->
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+
+<per:Period>
+	<per:StartTime>29-09-2008</per:StartTime>
+	<per:EndTime>29-10-2008</per:EndTime>
+	<per:NumberOfSplits>4</per:NumberOfSplits>
+</per:Period>
+	
+
+
+<Heading>Double Derived Porperty Filter</Heading>
+
+<tab:SummaryTable>
+  	<fil:Filter>
+		<fil:EQ>
+			<fil:Property>School</fil:Property>
+			<fil:Value>Informatics</fil:Value>
+		</fil:EQ>
+	</fil:Filter>
+	<tab:Index>
+		<tab:Name>Institute</tab:Name>
+		<tab:Property>Institute</tab:Property>
+	</tab:Index>
+	<tab:SumColumn>
+		<tab:Name>Time</tab:Name>
+		<tab:Property>Wall</tab:Property>
+	</tab:SumColumn>						
+	<tab:SortBy>
+		<tab:Columns>Time</tab:Columns>
+	</tab:SortBy>
+</tab:SummaryTable>
+<!-- 
+mysql> SELECT Institute.Name, SUM(Wall) FROM SGERecord JOIN (Project,Institute,School) ON (SGERecord.ProjectID=Project.Id AND Project.InstituteID=Institute.Id AND Institute.SchoolID=School.ID) WHERE School.Name="Informatics" GROUP BY Institute.Name\G
+*************************** 1. row ***************************
+     Name: Computing Systems Architecture
+SUM(Wall): 49854
+*************************** 2. row ***************************
+     Name: Digital Communications
+SUM(Wall): 140360
+2 rows in set (0.00 sec)
+-->
+<!--  
+<Heading>Allocation table</Heading>
+
+<tab:Table>
+  	<fil:Filter>
+		<fil:Producer>allocation</fil:Producer>
+	</fil:Filter>
+	<tab:Column>
+		<tab:Name>Allocated CPU Hours</tab:Name>
+		<tab:Property>CPUHours</tab:Property>
+	</tab:Column>
+	<tab:Column>
+		<tab:Name>Project</tab:Name>
+		<tab:Property>Project</tab:Property>
+	</tab:Column>
+	<tab:Column>
+		<tab:Name>Start</tab:Name>
+		<tab:Property>StartedTimestamp</tab:Property>
+	</tab:Column>
+	<tab:Column>
+		<tab:Name>End</tab:Name>
+		<tab:Property>CompletedTimestamp</tab:Property>
+	</tab:Column>
+</tab:Table>
+-->
+
+
+</Report>

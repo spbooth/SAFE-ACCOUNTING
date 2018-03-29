@@ -25,62 +25,62 @@ public class FilterExtensionTest extends ExtensionTestCase {
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFilterNameParse() throws Exception {			
-		testFilter("csv", 
+		testFilter("csv", "testNameParseFilters.xml",
 				new File(getOutputDir()+"FilterNameParse.csv"));
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFilterIdParse() throws Exception {			
-		testFilter("csv", 
+		testFilter("csv", "testIdParseFilters.xml",
 				new File(getOutputDir()+"FilterIdParse.csv"));
 	}
 	
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFilterEQ() throws Exception {			
-		testFilter("csv", 
+		testFilter("csv", "testEQFilters.xml",
 				new File(getOutputDir()+"FilterEQ.csv"));
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFilterNE() throws Exception {			
-		testFilter("csv", 
+		testFilter("csv", "testNEFilters.xml",
 				new File(getOutputDir()+"FilterNE.csv"));
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFilterGT() throws Exception {			
-		testFilter("csv", 
+		testFilter("csv", "testGTFilters.xml",
 				new File(getOutputDir()+"FilterGT.csv"));
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFilterGE() throws Exception {			
-		testFilter("csv", 
+		testFilter("csv", "testGEFilters.xml",
 				new File(getOutputDir()+"FilterGE.csv"));
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFilterLT() throws Exception {			
-		testFilter("csv", 
+		testFilter("csv", "testLTFilters.xml",
 				new File(getOutputDir()+"FilterLT.csv"));
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFilterLE() throws Exception {			
-		testFilter("csv", 
+		testFilter("csv", "testLEFilters.xml",
 				new File(getOutputDir()+"FilterLE.csv"));
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFilterAnd() throws Exception {			
-		testFilter("csv", 
+		testFilter("csv", "testAndFilters.xml",
 				new File(getOutputDir()+"FilterAnd.csv"));
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFilterOr() throws Exception {			
-		testFilter("csv", 
+		testFilter("csv", "testOrFilters.xml",
 				new File(getOutputDir()+"FilterOr.csv"));
 	}
 	@Test
@@ -92,18 +92,12 @@ public class FilterExtensionTest extends ExtensionTestCase {
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testFilterWithDoubleDerivedProperty() throws Exception {			
-		testFilter("csv", 
+		testFilter("csv", "testDoubleDerivedFilters.xml",
 				new File(getOutputDir()+"FilterWithDoubleDerivedProperty.csv"));
 	}
 	
 	
 
-	protected void testFilter(String reportType, File outputFile) 
-		throws Exception 
-	{		
-		testFlter(reportType, "testFilters",TestDataHelper.readFileAsString(outputFile));
-		
-	}	
 	protected void testFilter(String reportType, String templateName,File outputFile) 
 	throws Exception 
 	{		
