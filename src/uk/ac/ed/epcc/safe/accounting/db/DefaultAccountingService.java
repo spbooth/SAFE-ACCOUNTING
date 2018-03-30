@@ -63,15 +63,7 @@ public class DefaultAccountingService implements Contexed, AccountingService{
 			return null;
 		}
 	}
-	/** Does the User have access to all the specified records
-	 * 
-	 * @param user AppUser making request
-	 * @param sel RecordSelector requested
-	 * @return boolean
-	 */
-	public boolean allow(SessionService user, RecordSelector sel){
-		return true;
-	}
+	
 	public AppContext getContext() {
 		return c;
 	}

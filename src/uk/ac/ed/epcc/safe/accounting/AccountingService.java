@@ -54,11 +54,4 @@ public interface AccountingService extends AppContextService<AccountingService>{
 	 * @return {@link UsageProducer}
 	 */
 	public UsageProducer getUsageProducer(String name);
-	/** Does the User have access to all the specified records
-	 * 
-	 * @param user AppUser making request
-	 * @param sel RecordSelector requested
-	 * @return boolean
-	 */
-	public boolean allow(SessionService user, RecordSelector sel);
 }
