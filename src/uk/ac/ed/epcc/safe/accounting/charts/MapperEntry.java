@@ -52,6 +52,7 @@ import uk.ac.ed.epcc.webapp.charts.PeriodPlot;
 import uk.ac.ed.epcc.webapp.charts.PeriodSequencePlot;
 import uk.ac.ed.epcc.webapp.charts.PeriodSetPlot;
 import uk.ac.ed.epcc.webapp.charts.PieTimeChart;
+import uk.ac.ed.epcc.webapp.charts.Plot;
 import uk.ac.ed.epcc.webapp.charts.SingleValueSetPlot;
 import uk.ac.ed.epcc.webapp.charts.TimeChart;
 import uk.ac.ed.epcc.webapp.charts.strategy.SetRangeMapper;
@@ -452,16 +453,51 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 	}
 	
     public boolean plot(boolean graph_transform,PlotEntry e, PeriodChart tc, UsageProducer ap,RecordSelector sel, int nplots,boolean allow_overlap) throws Exception {
+    	Plot ds = makePlot(graph_transform, e, tc, ap, sel, nplots, allow_overlap);
+    	return plotDataSet(ds, graph_transform, e, tc, ap, sel, nplots);
+	}
+    
+    public boolean plotDataSet(Plot ds,boolean graph_transform,PlotEntry e, PeriodChart tc, UsageProducer ap,RecordSelector sel, int nplots) throws Exception {
+    	if( ds == null) {
+    		return false;
+    	}
+    	if( tc instanceof TimeChart){
+    		plotTimeChart(e, (TimeChart)tc, (PeriodSequencePlot)ds, nplots, use_line,graph_transform);
+    		return true;
+    	}
+    	if( tc instanceof PieTimeChart){
+    		plotPieTimeChart(e, (PieTimeChart)tc, nplots, (SingleValueSetPlot)ds);
+    		return true;
+    	}
+    	if( tc instanceof BarTimeChart){
+    		plotBarTimeChart(e, (BarTimeChart) tc, nplots, (SingleValueSetPlot)ds);
+    		return true;
+    	}
+    	return false;
+    }
+    /** Create a {@link Plot} dataset corresponding to the desired {@link PlotEntry} etc.
+     * 
+     * @param graph_transform
+     * @param e
+     * @param tc
+     * @param ap
+     * @param sel
+     * @param nplots
+     * @param allow_overlap
+     * @return {@link Plot}
+     * @throws Exception
+     */
+	public Plot makePlot(boolean graph_transform,PlotEntry e, PeriodChart tc, UsageProducer ap,RecordSelector sel, int nplots,boolean allow_overlap) throws Exception {
 		if( tc instanceof TimeChart){
-			return plot(graph_transform,e,(TimeChart)tc,ap,sel,nplots,allow_overlap);
+			return makeTimeChartPlot(e, (TimeChart) tc, ap, sel, nplots, allow_overlap, use_line, graph_transform);
 		}
 		if( tc instanceof PieTimeChart){
-			return plot(e,(PieTimeChart)tc,ap,sel,nplots,allow_overlap);
+			return makePieTimeChartPlot(e, (PieTimeChart) tc, ap, sel, nplots, allow_overlap);
 		}
 		if( tc instanceof BarTimeChart){
-			return plot(e,(BarTimeChart)tc,ap,sel,nplots,allow_overlap);
+			return makeBarTimeChartPlot(e, (BarTimeChart) tc, ap, sel, nplots, allow_overlap);
 		}
-		return false;
+		return null;
 	}
 	/** plot data on a TimeChart using this SimpleMapper
 	 * @param graph_transforms
@@ -572,19 +608,24 @@ public abstract class MapperEntry implements Contexed,Cloneable{
      */
     public <P extends PeriodSequencePlot>void plotTimeChart(PlotEntry e,TimeChart<P> tc, P ds, int nplots,boolean use_line, boolean graph_transforms) throws Exception{
     	if(  isCumulative()){ 
-			tc.getChartData().setCumulative(true);
+    		tc.getChartData().setCumulative(true);
     	}
     	Vector<String> labels=getLabels();
-		 if( use_line ){
-	        	tc.addLineGraph(ds,custom_colour);
-	        }else{
-	            tc.addAreaGraph(ds,custom_colour);
-	        }
-		if( labels != null ){
-			ds.setLegends((String[]) labels.toArray(new String[labels.size()]));
-		}
-		
-		tc.sortSets(ds,nplots);
+    	if( use_line ){
+    		tc.addLineGraph(ds,custom_colour);
+    	}else{
+    		tc.addAreaGraph(ds,custom_colour);
+    	}
+    	if( labels != null ){
+    		ds.setLegends((String[]) labels.toArray(new String[labels.size()]));
+    	}else{
+    		String plot_label = e.getLabel();
+    		if( plot_label != null) {
+    			ds.setLegends(new String[] { plot_label});
+    		}
+    	}
+
+    	tc.sortSets(ds,nplots);
 		
 		String quant=e.getLabel();
 		if(  isCumulative()){ 

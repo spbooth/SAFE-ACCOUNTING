@@ -73,7 +73,12 @@
 	<xsd:element name="PieTimeChart" type="PieTimeChartType" />
 	<xsd:element name="BarTimeChart" type="PieTimeChartType" />
 
-
+    <xsd:complexType name="AddDataType">
+    	<xsd:sequence>
+			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
+			<xsd:group ref="PlotEntryGroup"></xsd:group>
+		</xsd:sequence>
+    </xsd:complexType>
 
 
 	<xsd:complexType name="ChartType">
@@ -94,8 +99,8 @@
 		</xsd:sequence>
 	</xsd:group>
 
-	<!--  parameters for data to be added to the chart -->
-	<xsd:group name="PlotGroup">
+
+	<xsd:group name="PlotEntryGroup">
 		<xsd:sequence>
 			<xsd:element name="Plot" type="par:TextOrParameterType"
 				minOccurs="1" maxOccurs="1" />
@@ -141,6 +146,18 @@
 				</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!--  parameters for data to be added to the chart -->
+	<xsd:group name="PlotGroup">
+		<xsd:sequence>
+			<xsd:group ref="PlotEntryGroup"/>
+			<xsd:element name="AddData" type="AddDataType" minOccurs="0" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>
+			Additional plot entry specifications to be merged with the original plot.
+			This allows data with different filters to be combined in a single plot.
+			</xsd:documentation></xsd:annotation>
+			</xsd:element>
 			<xsd:choice>
 				<xsd:element name="GroupBy"
 					type="par:TextOrParameterType" minOccurs="1" maxOccurs="1" />
@@ -185,4 +202,6 @@
 			<xsd:pattern value="SUM|AVG|MIN|MAX" />
 		</xsd:restriction>
 	</xsd:simpleType>
+
+    
 </xsd:schema>

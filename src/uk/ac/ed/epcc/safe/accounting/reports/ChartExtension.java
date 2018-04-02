@@ -41,6 +41,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.BarTimeChart;
 import uk.ac.ed.epcc.webapp.charts.PeriodChart;
 import uk.ac.ed.epcc.webapp.charts.PieTimeChart;
+import uk.ac.ed.epcc.webapp.charts.Plot;
 import uk.ac.ed.epcc.webapp.charts.TimeChart;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
@@ -89,12 +90,14 @@ public abstract class ChartExtension extends ReportExtension {
 		super(c,nf);
 		serv=c.getService(ChartService.class);
 	}
-	public PlotEntry getPlotEntry(PropertyFinder finder, Element e) throws Exception{
+	public PlotEntry getPlotEntry(RecordSet set, Node n) throws Exception{
+		Element e = (Element) n;
 		if( ! hasChild("Plot", e) ) {
 			// Null plot is allowed so we can put everything
 			// nested in AddChart if we want
 			return null;
 		}
+		PropertyFinder finder = set.getUsageProducer().getFinder();
 		String name = getExpandedParam("Plot",e);
 		if( name == null  || name.isEmpty()){
 			throw new ReportException("No Plot quantity was specified");
@@ -128,9 +131,11 @@ public abstract class ChartExtension extends ReportExtension {
 		}
 		return result;
 	}
-	public MapperEntry getMapperEntry(PlotEntry p,PropertyFinder finder, Element e) throws Exception{
+	public MapperEntry getMapperEntry(RecordSet set, Node n) throws Exception{
+		Element e = (Element) n;
 		MapperEntry entry;
 		AppContext ctx = getContext();
+		PropertyFinder finder = set.getUsageProducer().getFinder();
 		if (hasParam("GroupBy", e)) {
 			entry = serv.getMapperEntry(errors,finder,getParam("GroupBy", e));
 			
@@ -138,10 +143,6 @@ public abstract class ChartExtension extends ReportExtension {
 			entry = serv.getMapperEntry(errors, finder, "");
 			if( hasParam("Label", e)){
 				((SetMapperEntry)entry).setLabel(getExpandedParam("Label", e));
-			}else{
-				// multiple plots need labels gor each set
-				// so always set these
-				((SetMapperEntry)entry).setLabel(p.getLabel());
 			}
 		}
 		if( hasParam("Line", e)){
@@ -272,8 +273,66 @@ public abstract class ChartExtension extends ReportExtension {
 	 * @return DocumentFragment
 	 */
 	public DocumentFragment addPlot(RecordSet set, Chart<?> chart, Node node ){
+		
+		try {
+			PlotEntry p = getPlotEntry(set, (Element) node);
+			
+			MapperEntry entry = getMapperEntry(set, (Element) node);
+			Plot ds = makeDataSet(null, set, p, entry, chart, node);
+			return addPlot(ds,set,p,entry,chart,node);
+		}catch(Throwable t){
+			addError("Error in plot", t.getClass().getCanonicalName(), t);
+			Document doc = getDocument();
+			return doc.createDocumentFragment();
+		}
+	}
+	public Plot makeDataSet(RecordSet set,PlotEntry plot,MapperEntry entry, Chart<?> chart, Node node ) throws Exception {
+		return makeDataSet(null,set,plot,entry,chart,node);
+	}
+	public Plot makeDataSet(Plot orig,RecordSet set,PlotEntry plot,MapperEntry entry, Chart<?> chart, Node node ) throws Exception {
+		if(plot == null) {
+			// ok to skip top level plot
+			return null;
+		}
+		if( chart == null){
+			addError("Bad Plot","No chart object");
+			return orig;
+		}
+		if (node.getNodeType() != Node.ELEMENT_NODE) {
+			addError("Bad Plot", "Non element fragment passed to makeTimeChart");
+			return orig;
+		}
+		Element e = (Element) node;
+		int nPlots = getNumberParam("NPlots", 10, e).intValue();
+		UsageProducer up = set.getUsageProducer();
+		
+		boolean overlap = getBooleanParam("Overlap", true, e);
+		RecordSelector sel = set.getRecordSelector();
+		PeriodChart tc = chart.chart;
+		Plot ds =  entry.makePlot(graphOutput(), plot, tc, up, sel, nPlots, overlap);
+		if( orig == null) {
+			return ds;
+		}else {
+			orig.addData(ds);
+			return orig;
+		}
+	}
+	public DocumentFragment addPlot(RecordSet set,PlotEntry plot,MapperEntry entry, Chart<?> chart, Node node ){
+		try {
+			Plot ds = makeDataSet(null, set, plot, entry, chart, node);
+			return addPlot(ds,set,plot,entry,chart,node);
+		}catch(Throwable t){
+			addError("Error in plot", t.getClass().getCanonicalName(), t);
+			Document doc = getDocument();
+			return doc.createDocumentFragment();
+		}
+	}	
+	public DocumentFragment addPlot(Plot ds,RecordSet set,PlotEntry plot,MapperEntry entry, Chart<?> chart, Node node ){
 		Document doc = getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
+		if( ds == null) {
+			return result;
+		}
 		if( chart == null){
 			return result;
 		}
@@ -281,29 +340,22 @@ public abstract class ChartExtension extends ReportExtension {
 			addError("Bad Plot", "Non element fragment passed to makeTimeChart");
 			return result;
 		}
-		
+		if( plot == null ){
+			return result;
+		}
 		Element e = (Element) node;
 		startTimer("addPlot");
 		try{
-			UsageProducer up = set.getUsageProducer();
-			if( up == null ){
-				addError("No UsageProducer","No UsageProducer defined in addPlot");
-				return result;
-			}
-			PropertyFinder finder = up.getFinder();
-
-			PlotEntry plot = getPlotEntry(finder, e);
-			if( plot == null ){
-				return result;
-			}
-			MapperEntry entry = getMapperEntry(plot,finder, e);
-
+			
+			
 
 			int nPlots = getNumberParam("NPlots", 10, e).intValue();
-			boolean overlap = getBooleanParam("Overlap", true, e);
+			UsageProducer up = set.getUsageProducer();
 			RecordSelector sel = set.getRecordSelector();
+			PeriodChart tc = chart.chart;
 			
-			chart.has_data =  entry.plot(graphOutput(),plot,chart.chart, up, sel, nPlots,overlap) || chart.has_data;
+			boolean added = entry.plotDataSet(ds, graphOutput(), plot, tc, up, sel, nPlots);
+			chart.has_data =  added || chart.has_data;
 			
 			return result;
 		}catch(Throwable t){
