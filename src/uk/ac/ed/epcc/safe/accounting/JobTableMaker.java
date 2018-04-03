@@ -44,9 +44,6 @@ public class JobTableMaker<UR extends ExpressionTargetContainer> extends Express
 	
 	@Override
 	protected Object makeKey(UR t) {
-		if( t instanceof Identified ){
-			return ((Identified)t).getIdentifier();
-		}
 		return t;
 	}
     
