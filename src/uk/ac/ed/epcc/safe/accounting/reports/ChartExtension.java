@@ -40,8 +40,10 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.BarTimeChart;
 import uk.ac.ed.epcc.webapp.charts.PeriodChart;
+import uk.ac.ed.epcc.webapp.charts.PeriodSetPlot;
 import uk.ac.ed.epcc.webapp.charts.PieTimeChart;
 import uk.ac.ed.epcc.webapp.charts.Plot;
+import uk.ac.ed.epcc.webapp.charts.SetPeriodChart;
 import uk.ac.ed.epcc.webapp.charts.TimeChart;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
@@ -306,6 +308,14 @@ public abstract class ChartExtension extends ReportExtension {
 		int nPlots = getNumberParam("NPlots", 10, e).intValue();
 		UsageProducer up = set.getUsageProducer();
 		
+		if( ! entry.compatible(up)) {
+			// This could happen in an AddData clause where the
+			// MapperEntry is already set but the UsageProducer is
+			// changed.
+			addError("Bad Plot","Usage producer not compatible with current MapperEntry");
+			return orig;
+		}
+		
 		boolean overlap = getBooleanParam("Overlap", true, e);
 		RecordSelector sel = set.getRecordSelector();
 		PeriodChart tc = chart.chart;
@@ -314,6 +324,11 @@ public abstract class ChartExtension extends ReportExtension {
 			return ds;
 		}else {
 			orig.addData(ds);
+			if( chart.chart instanceof SetPeriodChart) {
+				// set period charts only plot one dataset
+				// so make sure this is the right one
+				((SetPeriodChart)chart.chart).setPlot((PeriodSetPlot) orig);
+			}
 			return orig;
 		}
 	}

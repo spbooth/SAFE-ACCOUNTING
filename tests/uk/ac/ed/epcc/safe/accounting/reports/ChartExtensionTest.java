@@ -53,6 +53,13 @@ public class ChartExtensionTest extends ExtensionTestCase {
 		testChart("testChartsNested.xml","xml", new File(getOutputDir()+"NestedTimeChart.xml"));
 
 	}
+	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testAddDataXMLTimeChartPlot() throws Exception {
+		testChart("testChartsAddData.xml","xml", new File(getOutputDir()+"AddDataTimeChart.xml"));
+
+	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testHTMLTimeChartNoGroupPlot() throws Exception {
@@ -103,6 +110,12 @@ public class ChartExtensionTest extends ExtensionTestCase {
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testXMLPieTimeChartPlot() throws Exception {
 		testChart("testPieTimeCharts.xml","xml", new File(getOutputDir()+"PieTimeChart.xml"));
+
+	}
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testAddDataXMLPieTimeChartPlot() throws Exception {
+		testChart("testAddDataPieTimeCharts.xml","xml", new File(getOutputDir()+"AddDataPieTimeChart.xml"));
 
 	}
 	@Test

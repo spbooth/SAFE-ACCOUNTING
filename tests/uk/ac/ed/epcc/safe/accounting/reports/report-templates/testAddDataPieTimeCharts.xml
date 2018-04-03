@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!-- Copyright - The University of Edinburgh 2015 -->
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<Title>Test Plots</Title>  
+<per:Period>
+	<per:StartTime>29-09-2008</per:StartTime>
+	<per:EndTime>29-10-2008</per:EndTime>
+</per:Period>
+
+
+
+<Heading>Pie Time Chart Plot</Heading>
+<cha:PieTimeChart>
+	<cha:Plot>Wall</cha:Plot>
+	<cha:AddData>
+	<fil:Filter>
+	<fil:EQ>
+	<fil:Property>Project</fil:Property>
+	<fil:Value>ecdf_baseline</fil:Value>
+	</fil:EQ>
+	</fil:Filter>
+	<cha:Plot>Wall</cha:Plot>
+	</cha:AddData>
+	<cha:GroupBy>Project</cha:GroupBy>
+</cha:PieTimeChart>
+<!-- 
+mysql> SELECT Project.Name, Sum(Wall) FROM SGERecord JOIN Project ON SGERecord.ProjectID=Project.Id GROUP BY ProjectID\G
+*************************** 1. row ***************************
+     Name: ecdf_baseline
+Sum(Wall): 241730
+    *2 = 483460
+*************************** 2. row ***************************
+     Name: ngsadmin
+Sum(Wall): 1
+*************************** 3. row ***************************
+     Name: inf_hcrc_cstr_emime
+Sum(Wall): 140360
+*************************** 4. row ***************************
+     Name: prdatlas
+Sum(Wall): 170304
+*************************** 5. row ***************************
+     Name: atlas
+Sum(Wall): 164
+*************************** 6. row ***************************
+     Name: lhcb
+Sum(Wall): 615
+*************************** 7. row ***************************
+     Name: inf_iccs_smt
+Sum(Wall): 49854
+7 rows in set (0.01 sec)
+-->
+
+
+</Report>
