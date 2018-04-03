@@ -16,14 +16,17 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
+import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.charts.MapperEntry;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.charts.InvalidTransformException;
+import uk.ac.ed.epcc.webapp.charts.PeriodSequencePlot;
 import uk.ac.ed.epcc.webapp.charts.strategy.SetRangeMapper;
 import uk.ac.ed.epcc.webapp.charts.TimeChart;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
@@ -122,15 +125,45 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 				// than having the test
 				
 				//assertEquals(expectData(),e.plot(true,pe, tc, fac, new AndRecordSelector(), 20,true));
-				e.plot(true,pe, tc, fac, new AndRecordSelector(), 20,true);
+				plot(e,true,pe, tc, fac, new AndRecordSelector(), 20,true);
 				TimeChart short_tc = TimeChart.getInstance(ctx, start,
 						Calendar.HOUR_OF_DAY, 1, 4, 10);
 				//assertEquals(expectData(),e.plot(true,pe, short_tc, fac, new AndRecordSelector(), 20,true));
 				
-				e.plot(true,pe, short_tc, fac, new AndRecordSelector(), 20,true);
+				plot(e,true,pe, short_tc, fac, new AndRecordSelector(), 20,true);
 			}
 		}
+		
+		
 }
+	 /** plot data on a TimeChart using this SimpleMapper
+		 * @param graph_transforms
+	     * 					should transforms that only make sense graphically be applied
+		 * @param e 
+		 * 			PlotEntry
+	     * @param tc 
+	     * 			timeChart
+	     * @param ap 
+	     * 			UsageProducer
+	     * @param sel 
+	     *			RecordSelector
+	     * @param nplots 
+	     * 					int max number of plots
+		 * @param allow_overlap 
+	  
+	     * @return boolean true of ok
+		 * @throws Exception 
+	     */
+	    public boolean plot(MapperEntry m,boolean graph_transforms,PlotEntry e, TimeChart tc, UsageProducer<?> ap,RecordSelector sel, int nplots,boolean allow_overlap) throws Exception {
+	    	boolean use_line = m.getUseLine();
+			PeriodSequencePlot ds = m.makeTimeChartPlot(e, tc, ap, sel, nplots, allow_overlap, use_line, graph_transforms);
+			
+			if( ds != null ){
+				m.plotTimeChart(e, tc, ds, nplots, use_line,graph_transforms);
+				return true;
+			}
+			return false;
+	    }
 	/** get the start date for a period of existing data available to
 	 * the test.
 	 * @return

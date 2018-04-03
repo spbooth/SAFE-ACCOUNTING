@@ -272,9 +272,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     public boolean compatible(UsageProducer<?> ap){
     	return true;
     }
-    protected Vector<String> getLabels(){
-    	return null;
-    }
+    protected abstract Vector<String> getLabels();
     /** Generate a dataset for a PieTimeChart using this mapper.
      * 
      * @param e
@@ -300,29 +298,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
         }
         return null;
     }
-    /** plot data on a PieTimeChart using this mapper
-     * @param e 
-     * @param tc  PieTimeChart
-     * @param ap 
-     * @param sel 
- 
-     * @param nplots int max number of plots
-     * @param overlap 
-     * @return boolean true of ok
-     * @throws InvalidTransformException
-     */
-    public boolean plot(PlotEntry e, PieTimeChart tc, UsageProducer ap,RecordSelector sel, int nplots,boolean overlap) throws InvalidTransformException {
-        SingleValueSetPlot ds = makePieTimeChartPlot(e, tc, ap, sel, nplots, overlap);
-   
-        
-       
-    	if( ds != null ){
-    		plotPieTimeChart(e, tc, nplots, ds);
-    		
-        	return true;
-    	}
-    	return false;
-    }
+    
 	public void plotPieTimeChart(PlotEntry e, PieTimeChart tc, int nplots,
 			SingleValueSetPlot ds) {
 		Vector<String> labels = getLabels();
@@ -360,27 +336,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
         }
         return null;
 	}
-    /** plot data on a PieTimeChart using this mapper
-     * @param e 
-     * @param tc  PieTimeChart
-     * @param ap 
-     * @param sel 
- 
-     * @param nplots int max number of plots
-     * @param allow_overlap 
-     * @return boolean true of ok
-     * @throws InvalidTransformException
-     */
-    public boolean plot(PlotEntry e, BarTimeChart tc, UsageProducer ap,RecordSelector sel, int nplots,boolean allow_overlap) throws InvalidTransformException {
-        
-    	SingleValueSetPlot ds = makeBarTimeChartPlot(e, tc, ap, sel, nplots, allow_overlap);
-       
-    	if( ds != null ){
-    		plotBarTimeChart(e, tc, nplots, ds);
-        	return true;
-    	}
-    	return false;
-    }
+    
 	public void plotBarTimeChart(PlotEntry e, BarTimeChart tc, int nplots,
 			SingleValueSetPlot ds) {
 		Vector<String> labels=getLabels();
@@ -452,10 +408,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 		return data_added;
 	}
 	
-    public boolean plot(boolean graph_transform,PlotEntry e, PeriodChart tc, UsageProducer ap,RecordSelector sel, int nplots,boolean allow_overlap) throws Exception {
-    	Plot ds = makePlot(graph_transform, e, tc, ap, sel, nplots, allow_overlap);
-    	return plotDataSet(ds, graph_transform, e, tc, ap, sel, nplots);
-	}
+  
     
     public boolean plotDataSet(Plot ds,boolean graph_transform,PlotEntry e, PeriodChart tc, UsageProducer ap,RecordSelector sel, int nplots) throws Exception {
     	if( ds == null) {
@@ -499,30 +452,11 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 		}
 		return null;
 	}
-	/** plot data on a TimeChart using this SimpleMapper
-	 * @param graph_transforms
-     * 					should transforms that only make sense graphically be applied
-	 * @param e 
-	 * 			PlotEntry
-     * @param tc 
-     * 			timeChart
-     * @param ap 
-     * 			UsageProducer
-     * @param sel 
-     *			RecordSelector
-     * @param nplots 
-     * 					int max number of plots
-	 * @param allow_overlap 
-  
-     * @return boolean true of ok
-	 * @throws Exception 
-     */
-    public boolean plot(boolean graph_transforms,PlotEntry e, TimeChart<?> tc, UsageProducer<?> ap,RecordSelector sel, int nplots,boolean allow_overlap) throws Exception {
-    	return plot(e,tc,ap,sel,nplots,allow_overlap,use_line,graph_transforms);
+	
+    public boolean getUseLine() {
+    	return use_line;
     }
-    public boolean plot(PlotEntry e, TimeChart<?> tc, UsageProducer<?> ap,RecordSelector sel, int nplots,boolean allow_overlap) throws Exception {
-    	return plot(e,tc,ap,sel,nplots,allow_overlap,use_line,true);
-    }
+    
     /** Make a dataset for a TimeChart and plot data to it using this transform.
      * 
      * @param e
@@ -644,32 +578,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 			ds.doConvertToStacked();
 		}
     }
-    /** make and plot a single dataset.
-     * 
-     * @param e
-     * @param tc
-     * @param ap
-     * @param request_sel
-     * @param nplots
-     * @param allow_overlap
-     * @param use_line
-     * @param graph_transforms
-     * @return Plot
-     * @throws Exception 
-     */
-	public  <P extends PeriodSequencePlot> boolean plot(PlotEntry e, TimeChart<P> tc, UsageProducer<?> ap,RecordSelector request_sel, int nplots,boolean allow_overlap,boolean use_line,boolean graph_transforms) throws Exception {
-		
-    	P ds = makeTimeChartPlot(e, tc, ap, request_sel, nplots, allow_overlap, use_line, graph_transforms);
-    	
-    	if( ds != null ){
-    		plotTimeChart(e, tc, ds, nplots, use_line,graph_transforms);
-    		return true;
-    	}
-    	return false;
-    
-    }
-
-	private AndRecordSelector modifySelector(RecordSelector request_sel,
+    private AndRecordSelector modifySelector(RecordSelector request_sel,
 			PropExpression<? extends Number> prop_tag) {
 		AndRecordSelector sel;
 		sel = new AndRecordSelector(request_sel);
