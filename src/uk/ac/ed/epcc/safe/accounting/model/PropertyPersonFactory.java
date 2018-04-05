@@ -149,7 +149,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		plugin_owner = new ConfigPlugInOwner<PropertyPersonFactory<P>,String>(c,finder ,tag);
 		finder.addFinder(plugin_owner.getFinder());
 		map.addDerived(c, plugin_owner.getDerivedProperties());
-		String role_list = c.getInitParameter(RoleUpdate.ROLE_LIST_CONFIG);
+		String role_list = c.getExpandedProperty(RoleUpdate.ROLE_LIST_CONFIG);
 		if( role_list != null ){
 			@SuppressWarnings("unchecked")
 			SessionService<P> serv = getContext().getService(SessionService.class);
