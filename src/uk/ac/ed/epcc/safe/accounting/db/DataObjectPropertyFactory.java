@@ -215,7 +215,7 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	 */
 	private final BaseFilter<T> addDefaultFilter(BaseFilter<T> fil){
 		String default_relationship = getContext().getInitParameter(getConfigTag()+".default_filter_relationship");
-		if( default_relationship != null){
+		if( default_relationship != null && ! default_relationship.isEmpty()){
 			try {
 				return new AndFilter<>(getTarget(),getRelationshipFilter(default_relationship), fil);
 			} catch (CannotFilterException e) {
