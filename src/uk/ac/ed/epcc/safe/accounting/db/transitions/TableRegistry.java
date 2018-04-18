@@ -26,7 +26,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
-import uk.ac.ed.epcc.webapp.jdbc.table.AbstractTableRegistry;
 import uk.ac.ed.epcc.webapp.jdbc.table.DefaultTableTransitionRegistry;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureTransitionTarget;

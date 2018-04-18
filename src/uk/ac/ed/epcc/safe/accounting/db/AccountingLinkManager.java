@@ -71,14 +71,9 @@ implements ExpressionTargetFactory<T>{
 			DataObjectFactory<R> right_fac, String right_field) {
 		super(c, table, left_fac, left_field, right_fac, right_field);
 	}
-	public class AccountingLinkManagerTableRegistry extends TableRegistry{
-
-		public AccountingLinkManagerTableRegistry() {
-			super(res,getDefaultTableSpecification(getContext(), getTag(),getLeftFactory(),getLeftField(),getRightFactory(),getRightField()),getProperties(),getAccessorMap());
-		}
-	}
+	
 	protected TableRegistry makeTableRegistry() {
-		return new AccountingLinkManagerTableRegistry();
+		return new TableRegistry<>(res,getFinalTableSpecification(getContext(), getTag(),getLeftFactory(),getLeftField(),getRightFactory(),getRightField()),getProperties(),getAccessorMap());
 	}
 	
 

@@ -244,7 +244,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		return new PersonTableRegistry(getAccessorMap());
 	}
 	
-	public void resetStructure() {
+	public final void resetStructure() {
 		table_reg=null;	
 		initAccessorMap(getContext(), getConfigTag());
 	}
