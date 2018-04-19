@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -42,11 +43,15 @@ import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureListener;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
@@ -64,7 +69,8 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 public class ParseAccountingClassificationFactory<T extends AccountingClassification,R>
 extends PropertyTargetClassificationFactory<T> implements PlugInOwner<R> ,
-UploadParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
+UploadParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>,
+TableTransitionContributor, TableStructureListener{
 	private PropertyFinder reg=null;
 	private RepositoryAccessorMap<T> map=null;
 	
@@ -149,52 +155,12 @@ UploadParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 	}
 
 
-	public class ParseClassificationRegistry extends PropertyTargetClassificationTableRegistry{
+	
 
-		@SuppressWarnings("unchecked")
-		public ParseClassificationRegistry() {
-			super();
-			Set<String> configs = getConfigProperties();
-			if( configs != null && ! configs.isEmpty()){
-				addTableTransition(new AdminOperationKey(getTarget(), "Configure","Edit configuration parameters directly"), new ConfigTransition(getContext(), configs));
-			}
-			if( getPluginOwner() instanceof TransitionSource){
-				addTransitionSource((TransitionSource) getPluginOwner());
-			}
-
-		}
-
-		@Override
-		public void getTableTransitionSummary(ContentBuilder hb, SessionService operator) {
-			super.getTableTransitionSummary(hb, operator);
-			Set<String> configs = getConfigProperties();
-			if( configs != null && ! configs.isEmpty()){
-				hb.addHeading(3, "Configuration parameters");
-				Table t = new Table();
-				for(String param : configs){
-					t.put("Value",param, getContext().getInitParameter(param, "Not-set"));
-				}
-				t.setKeyName("Parameter");
-				hb.addTable(getContext(), t);
-			}
-			if( getPluginOwner() instanceof SummaryProvider){
-				((SummaryProvider) getPluginOwner()).getTableTransitionSummary(hb, operator);
-			}
-
-		}
-
-	}
-
-	@Override
-	public PropertyTargetClassificationTableRegistry makeTableRegistry(){
-		return new ParseClassificationRegistry();
-	}
 
 	@Override
 	public void resetStructure() {
-		super.resetStructure();
 		initAccessorMap(getContext(), getConfigTag());
-
 	}
 	public PropertyContainerParser<R> getParser() {
 		return getPluginOwner().getParser();
@@ -361,6 +327,43 @@ UploadParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>{
 		}
 		reg=null;
 		super.release();
+	}
+
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.PropertyTargetClassificationFactory#addSummaryContent(uk.ac.ed.epcc.webapp.content.ContentBuilder)
+	 */
+	@Override
+	public void addSummaryContent(ContentBuilder hb) {
+	
+		super.addSummaryContent(hb);
+		Set<String> configs = getConfigProperties();
+		if( configs != null && ! configs.isEmpty()){
+			hb.addHeading(3, "Configuration parameters");
+			Table t = new Table();
+			for(String param : configs){
+				t.put("Value",param, getContext().getInitParameter(param, "Not-set"));
+			}
+			t.setKeyName("Parameter");
+			hb.addTable(getContext(), t);
+		}
+		if( getPluginOwner() instanceof SummaryProvider){
+			((SummaryProvider) getPluginOwner()).getTableTransitionSummary(hb,getContext().getService(SessionService.class));
+		}
+	}
+
+
+	@Override
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> map = new LinkedHashMap<>();
+		Set<String> configs = getConfigProperties();
+		if( configs != null && ! configs.isEmpty()){
+			map.put(new AdminOperationKey( "Configure","Edit configuration parameters directly"), new ConfigTransition(getContext(), configs));
+		}
+		if( getPluginOwner() instanceof TableTransitionContributor){
+			map.putAll(((TableTransitionContributor) getPluginOwner()).getTableTransitions());
+		}
+		return null;
 	}
 	
 

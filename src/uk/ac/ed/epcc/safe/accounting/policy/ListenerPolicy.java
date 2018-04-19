@@ -44,12 +44,12 @@ import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.TableInput;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
@@ -73,7 +73,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 
-public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProvider,TransitionSource<TableTransitionTarget>,ConfigParamProvider{
+public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProvider,TableTransitionContributor,ConfigParamProvider{
     private static final String PREFIX = "UsageRecordListener.";
 	Logger log;
     protected AppContext ctx;
@@ -210,8 +210,8 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 		}
 	}
 	public final class DeleteListenerAction extends FormAction {
-		private final TableTransitionTarget target;
-		public DeleteListenerAction(TableTransitionTarget target){
+		private final DataObjectFactory target;
+		public DeleteListenerAction(DataObjectFactory target){
 			this.target=target;
 		}
 		@SuppressWarnings("unchecked")
@@ -238,11 +238,11 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 			return new ViewTableResult(target);
 		}
 	}
-	public class DeleteListenerTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class DeleteListenerTransition extends AbstractFormTransition<DataObjectFactory>{
 
 		
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext c) throws TransitionException {
 			SetInput<String> input = new SetInput<String>();
 			for(String s : list.split(",")){
@@ -253,12 +253,12 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 			
 		}
 	}
-	public class AddListenerTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class AddListenerTransition extends AbstractFormTransition<DataObjectFactory>{
 
 		
 		public final class AddListenerAction extends FormAction {
-			private final TableTransitionTarget target;
-			public AddListenerAction(TableTransitionTarget target){
+			private final DataObjectFactory target;
+			public AddListenerAction(DataObjectFactory target){
 				this.target=target;
 			}
 			@SuppressWarnings("unchecked")
@@ -287,7 +287,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 			}
 		}
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 			AppContext c) throws TransitionException {
 			
 			TableInput<UsageRecordListener> input = new TableInput<UsageRecordListener>(ctx, UsageRecordListener.class);
@@ -297,11 +297,11 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 				
 		}
 	}
-	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>>();
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "Add Listener"),new AddListenerTransition());
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey,Transition<? extends DataObjectFactory>>();
+		result.put(new AdminOperationKey( "Add Listener"),new AddListenerTransition());
 		if( list != null  && list.length() > 0){
-			result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "Remove Listener"),new DeleteListenerTransition());
+			result.put(new AdminOperationKey("Remove Listener"),new DeleteListenerTransition());
 		}
 		return result;
 	}

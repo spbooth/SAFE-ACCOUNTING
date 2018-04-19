@@ -39,9 +39,8 @@ import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -71,7 +70,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSource<TableTransitionTarget>, SummaryProvider{
+public class ExpressionPropertyPolicy extends BasePolicy implements TableTransitionContributor, SummaryProvider{
 	private PropExpressionMap defs=new PropExpressionMap();	
 	private AppContext c;
 	private String table;
@@ -108,11 +107,11 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSo
 	 * @author spb
 	 *
 	 */
-	public class AddPropertyTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class AddPropertyTransition extends AbstractFormTransition<DataObjectFactory>{
 
 		public final class AddPropertyAction extends FormAction {
-			private final TableTransitionTarget target;
-			public AddPropertyAction(TableTransitionTarget target){
+			private final DataObjectFactory target;
+			public AddPropertyAction(DataObjectFactory target){
 				this.target=target;
 			}
 			@SuppressWarnings("unchecked")
@@ -125,7 +124,7 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSo
 			}
 		}
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext conn) throws TransitionException {
 			SetInput<ConfigPropertyRegistry> input=new SetInput<ConfigPropertyRegistry>();
 			for(PropertyFinder pf : props.getNested()){
@@ -145,11 +144,11 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSo
 		}
 
 	}
-	public class AddDerivedTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class AddDerivedTransition extends AbstractFormTransition<DataObjectFactory>{
 
 		public final class AddDerivedAction extends FormAction {
-			private final TableTransitionTarget target;
-			public AddDerivedAction(TableTransitionTarget target){
+			private final DataObjectFactory target;
+			public AddDerivedAction(DataObjectFactory target){
 				this.target=target;
 			}
 			@Override
@@ -166,18 +165,18 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TransitionSo
 			}
 		}
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext ctx) throws TransitionException {
 			f.addInput("Prop", "Property to define", new PropertyTagInput(finder));
 			f.addInput("Expr", "Definition", new PropExpressionInput(c,finder));
 			f.addAction("Add", new AddDerivedAction(target));
 		}
 	}
-	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
 		// add transitions here
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddDefinition","Add a new property definition"),new AddDerivedTransition());
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddProperty","Define a new property"),new AddPropertyTransition());
+		result.put(new AdminOperationKey( "AddDefinition","Add a new property definition"),new AddDerivedTransition());
+		result.put(new AdminOperationKey( "AddProperty","Define a new property"),new AddPropertyTransition());
 		return result;
 	}
 	protected final Logger getLogger(){

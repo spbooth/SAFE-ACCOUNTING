@@ -33,7 +33,7 @@ import uk.ac.ed.epcc.safe.accounting.db.MapFinder;
 import uk.ac.ed.epcc.safe.accounting.db.PropertyMaker;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.db.RepositoryAccessorMap;
-import uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry;
+import uk.ac.ed.epcc.safe.accounting.db.transitions.PropertyInfoGenerator;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
@@ -58,6 +58,7 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
@@ -67,6 +68,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -76,6 +78,7 @@ import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.model.history.HistoryFactory;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 
@@ -91,7 +94,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
 
 
 public class PropertyTargetHistoryFactory<T extends DataObject , F extends DataObjectFactory<T>, H extends PropertyTargetHistoryFactory.HistoryUse<T>> 
-extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<H>,ExpressionFilterTarget<H>,PropertyImplementationProvider{
+extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<H>,ExpressionFilterTarget<H>,PropertyImplementationProvider,TableContentProvider {
 
 	/** HistoryRecord extended to be an ExpressionTarget
 	 * 
@@ -323,9 +326,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
     protected boolean useHistoryAsTimeBounds(){
     	return true;
     }
-	protected TableRegistry makeTableRegistry() {
-		return new TableRegistry(res,getFinalTableSpecification(getContext(), getTag()),getProperties(),getAccessorMap());
-	}
+	
 	
 
 	
@@ -581,4 +582,12 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 	public final String getImplemenationInfo(PropertyTag<?> tag) {
 		return getAccessorMap().getImplemenationInfo(tag);
 	}
+	@Override
+	public void addSummaryContent(ContentBuilder hb) {
+		AccessorMap m = getAccessorMap();
+		PropertyInfoGenerator gen = new PropertyInfoGenerator(null, m);
+		gen.getTableTransitionSummary(hb, getContext().getService(SessionService.class));
+		
+	}
+	
 }

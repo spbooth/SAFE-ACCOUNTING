@@ -71,6 +71,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
@@ -83,6 +84,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.FieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -122,8 +124,8 @@ public abstract class AggregateUsageRecordFactory
 	private static final String COMPLETED_TIMESTAMP = "CompletedTimestamp";
 	private static final String STARTED_TIMESTAMP = "StartedTimestamp";
 	private static final Feature USE_FAST_REGENERATE = new Feature("aggregate.use_fast_regenerate",true,"Use reductions to speed up regenerate");
-	public static final AdminOperationKey<AggregateUsageRecordFactory> REGENERATE = new AdminOperationKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "Regenerate","Repopulate all contents from master table");
-	public static final AdminOperationKey<AggregateUsageRecordFactory> REGENERATE_RANGE = new AdminOperationKey<AggregateUsageRecordFactory>(AggregateUsageRecordFactory.class, "RegenerateRange","Repopulate contents for a specified time period");
+	public static final AdminOperationKey REGENERATE = new AdminOperationKey("Regenerate","Repopulate all contents from master table");
+	public static final AdminOperationKey REGENERATE_RANGE = new AdminOperationKey("RegenerateRange","Repopulate contents for a specified time period");
 	public static final PropertyRegistry aggregate = new PropertyRegistry("aggregate","Time bounds for aggregate records");
 	public static final PropertyTag<Date> AGGREGATE_STARTED_PROP = new PropertyTag<Date>(aggregate,STARTED_TIMESTAMP,Date.class);
 	public static final PropertyTag<Date> AGGREGATE_ENDED_PROP = new PropertyTag<Date>(aggregate,COMPLETED_TIMESTAMP,Date.class);
@@ -274,96 +276,8 @@ public abstract class AggregateUsageRecordFactory
 		}
 		return props;
 	}
-	public class AggregateTableRegistry extends DataObjectTableRegistry{
-		
-		
-
-		public AggregateTableRegistry() {
-			
-			if( master_producer != null){
-				addTableTransition(REGENERATE, new AbstractDirectTransition<AggregateUsageRecordFactory>() {
-
-				public FormResult doTransition(AggregateUsageRecordFactory target,
-						AppContext c) throws TransitionException {
-					try {
-						if( USE_FAST_REGENERATE.isEnabled(getContext())) {
-							target.fastRegenerate();
-						}else {
-							target.regenerate();
-						}
-					} catch (Exception e) {
-						getLogger().error("Error regenerating table",e);
-						throw new TransitionException("Regenerate failed");
-					}
-					return new ViewTableResult(target);
-				}
-			});
-			addTableTransition(REGENERATE_RANGE, new AbstractFormTransition<AggregateUsageRecordFactory>() {
-				private static final String RANGE = "Range";
-				final class RangeAction extends FormAction{
-					public RangeAction(AggregateUsageRecordFactory target) {
-						super();
-						this.target = target;
-					}
-					private final AggregateUsageRecordFactory target;
-					@Override
-					public FormResult action(Form f) throws ActionException {
-						TimePeriod period = (TimePeriod) f.get(RANGE);
-						try {
-							target.regenerate(period.getStart(),period.getEnd());
-						} catch (Exception e) {
-							throw new ActionException("Error in regenerate", e);
-						}
-						return new ViewTableResult(target);
-					}
-					
-				}
-				
-				@Override
-				public void buildForm(Form f, AggregateUsageRecordFactory target, AppContext conn)
-						throws TransitionException {
-					f.addInput(RANGE, "Time range to regenerate", new SimplePeriodInput());
-					f.addAction("Regenerate", new RangeAction(target));
-				}
-
-					
-				});	
-			}
-		}
-
-		@Override
-		public void getTableTransitionSummary(ContentBuilder hb,
-				SessionService operator) {
-			
-			super.getTableTransitionSummary(hb, operator);
-			
-			hb.addHeading(4,"Match properties");
-			ExtendedXMLBuilder xml = hb.getText();
-			xml.open("ul");
-			for(PropertyTag t : getKeyProperties()){
-				xml.open("li");
-				xml.clean(t.getName());
-				xml.close();
-			}
-			xml.close();
-			xml.appendParent();
-			hb.addHeading(4,"Sum properties");
-			xml = hb.getText();
-			xml.open("ul");
-			for(PropertyTag t : getSumProperties()){
-				xml.open("li");
-				xml.clean(t.getName());
-				xml.close();
-			}
-			xml.close();
-			xml.appendParent();
-		}
-		
-	}
-	@Override
-	protected AggregateTableRegistry makeTableRegistry(){
-		return new AggregateTableRegistry();
-	}
+	
+	
 	private String getConfigName(PropertyTag t) {
 		return "key."+getConfigTag()+"."+t.getName();
 	}
@@ -838,6 +752,93 @@ public abstract class AggregateUsageRecordFactory
 	public void startListenerParse() {
 		raw_counter=0;
 		fetch_counter=0;
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#addSummaryContent(uk.ac.ed.epcc.webapp.content.ContentBuilder)
+	 */
+	@Override
+	public void addSummaryContent(ContentBuilder hb) {
+		super.addSummaryContent(hb);
+		hb.addHeading(4,"Match properties");
+		ExtendedXMLBuilder xml = hb.getText();
+		xml.open("ul");
+		for(PropertyTag t : getKeyProperties()){
+			xml.open("li");
+			xml.clean(t.getName());
+			xml.close();
+		}
+		xml.close();
+		xml.appendParent();
+		hb.addHeading(4,"Sum properties");
+		xml = hb.getText();
+		xml.open("ul");
+		for(PropertyTag t : getSumProperties()){
+			xml.open("li");
+			xml.clean(t.getName());
+			xml.close();
+		}
+		xml.close();
+		xml.appendParent();
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#getTableTransitions()
+	 */
+	@Override
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		
+		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> transitions = super.getTableTransitions();
+		
+		
+		if( master_producer != null){
+			transitions.put(REGENERATE, new AbstractDirectTransition<AggregateUsageRecordFactory>() {
+
+			public FormResult doTransition(AggregateUsageRecordFactory target,
+					AppContext c) throws TransitionException {
+				try {
+					if( USE_FAST_REGENERATE.isEnabled(getContext())) {
+						target.fastRegenerate();
+					}else {
+						target.regenerate();
+					}
+				} catch (Exception e) {
+					getLogger().error("Error regenerating table",e);
+					throw new TransitionException("Regenerate failed");
+				}
+				return new ViewTableResult(target);
+			}
+		});
+		transitions.put(REGENERATE_RANGE, new AbstractFormTransition<AggregateUsageRecordFactory>() {
+			private static final String RANGE = "Range";
+			final class RangeAction extends FormAction{
+				public RangeAction(AggregateUsageRecordFactory target) {
+					super();
+					this.target = target;
+				}
+				private final AggregateUsageRecordFactory target;
+				@Override
+				public FormResult action(Form f) throws ActionException {
+					TimePeriod period = (TimePeriod) f.get(RANGE);
+					try {
+						target.regenerate(period.getStart(),period.getEnd());
+					} catch (Exception e) {
+						throw new ActionException("Error in regenerate", e);
+					}
+					return new ViewTableResult(target);
+				}
+				
+			}
+			
+			@Override
+			public void buildForm(Form f, AggregateUsageRecordFactory target, AppContext conn)
+					throws TransitionException {
+				f.addInput(RANGE, "Time range to regenerate", new SimplePeriodInput());
+				f.addAction("Regenerate", new RangeAction(target));
+			}
+
+				
+			});	
+		}
+		return transitions;
 	}
 	
 }

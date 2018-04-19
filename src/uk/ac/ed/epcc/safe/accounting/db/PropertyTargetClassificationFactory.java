@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry;
+import uk.ac.ed.epcc.safe.accounting.db.transitions.PropertyInfoGenerator;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
@@ -31,6 +31,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
@@ -40,6 +41,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
 import uk.ac.ed.epcc.webapp.model.ClassificationFactory;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
@@ -50,7 +52,7 @@ import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 public abstract class PropertyTargetClassificationFactory<T extends AccountingClassification> extends
-		ClassificationFactory<T> implements ExpressionTargetFactory<T>{
+		ClassificationFactory<T> implements ExpressionTargetFactory<T>, TableContentProvider{
 	public PropertyTargetClassificationFactory(AppContext ctx, String homeTable) {
 		super(ctx, homeTable);
 	}
@@ -102,19 +104,7 @@ public abstract class PropertyTargetClassificationFactory<T extends AccountingCl
 	}
 
 
-	public class PropertyTargetClassificationTableRegistry extends TableRegistry{
-
-		public PropertyTargetClassificationTableRegistry() {
-			super(res,getFinalTableSpecification(getContext(), getTag()),null,getAccessorMap());
-		}
-	}
-
 	
-    
-
-	protected PropertyTargetClassificationTableRegistry makeTableRegistry() {
-		return new PropertyTargetClassificationTableRegistry();
-	}
 	
 	
 
@@ -197,5 +187,12 @@ public abstract class PropertyTargetClassificationFactory<T extends AccountingCl
 		} catch (UnknownRelationshipException e) {
 			throw new CannotFilterException(e);
 		}
+	}
+	@Override
+	public void addSummaryContent(ContentBuilder hb) {
+		AccessorMap m = getAccessorMap();
+		PropertyInfoGenerator gen = new PropertyInfoGenerator(null, m);
+		gen.getTableTransitionSummary(hb, getContext().getService(SessionService.class));
+		
 	}
 }

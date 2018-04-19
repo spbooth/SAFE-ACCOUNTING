@@ -64,10 +64,12 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -436,37 +438,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		}
 		
 	}
-	public class ChargedAllocationTableRegistry extends ParseTableRegistry{
-
-		@Override
-		public void getTableTransitionSummary(ContentBuilder hb,
-				SessionService operator) {
-			super.getTableTransitionSummary(hb, operator);
-			hb.addHeading(3,"Master Producer: "+master.getTag());
 	
-			addTable(hb,"Index Properties",getIndexProperties());
-			addTable(hb, "Allocation properties", getAllocationProperties());
-			addTable(hb,"Accumulation properties",getAccumulations());
-		}
-		public void addTable(ContentBuilder hb,String title,Set<? extends PropertyTag> set){
-			hb.addHeading(4,title);
-			Table t = new Table();
-			for(PropertyTag<?> tag : set){
-				t.put("Property Name", tag, tag.getFullName());
-				t.put("Desciption", tag, tag.getDescription());
-			}
-			hb.addTable(getContext(), t);
-		}
-
-		public ChargedAllocationTableRegistry() {
-			addTableTransition(new AdminOperationKey<ChargedAllocationFactory<T,R>>(ChargedAllocationFactory.class, "Regenerate"), new RegenerateAllTransition());
-		}
-		
-	}
-	@Override
-	protected ChargedAllocationTableRegistry makeTableRegistry() {
-		return new ChargedAllocationTableRegistry();
-	}
 	@Override
 	protected Set<String> getSupress() {
 		// We don't want to edit the accumulated fields 
@@ -542,6 +514,42 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		}
 		super.notifyModified(rec, details);
 	}
-	
+	private void addTable(ContentBuilder hb,String title,Set<? extends PropertyTag> set){
+		hb.addHeading(4,title);
+		Table t = new Table();
+		for(PropertyTag<?> tag : set){
+			t.put("Property Name", tag, tag.getFullName());
+			t.put("Desciption", tag, tag.getDescription());
+		}
+		hb.addTable(getContext(), t);
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory#addSummaryContent(uk.ac.ed.epcc.webapp.content.ContentBuilder)
+	 */
+	@Override
+	public void addSummaryContent(ContentBuilder hb) {
+		// TODO Auto-generated method stub
+		super.addSummaryContent(hb);
+		if( master == null) {
+			hb.addHeading(3, "No Master Producer");
+		}else {
+			hb.addHeading(3,"Master Producer: "+master.getTag());
+		}
+		addTable(hb,"Index Properties",getIndexProperties());
+		addTable(hb, "Allocation properties", getAllocationProperties());
+		addTable(hb,"Accumulation properties",getAccumulations());
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory#getTableTransitions()
+	 */
+	@Override
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> tableTransitions = super.getTableTransitions();
+		
+		
+		tableTransitions.put(new AdminOperationKey("Regenerate"), new RegenerateAllTransition());
+		
+		return tableTransitions;
+	}
 	
 }

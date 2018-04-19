@@ -26,26 +26,19 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
-import uk.ac.ed.epcc.webapp.jdbc.table.AbstractTableRegistry;
-import uk.ac.ed.epcc.webapp.jdbc.table.DefaultTableTransitionRegistry;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionRegistry;
-import uk.ac.ed.epcc.webapp.model.data.Repository;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
-/** A {@link TableTransitionRegistry} for classes that support PropExpressions.
+/** A class for generating summary info on the implementation of properties
  * 
  * @author spb
  *
  */
-public class TableRegistry<T extends TableStructureTransitionTarget> extends DefaultTableTransitionRegistry<T> implements TableTransitionRegistry{
+public class PropertyInfoGenerator{
 	private AccessorMap<?> map;
 	private final Set<PropertyTag> props;
 	
-	public TableRegistry(Repository res, TableSpecification spec, Set<PropertyTag> props,AccessorMap<?> m){
-		super(res,spec);
+	public PropertyInfoGenerator(Set<PropertyTag> props,AccessorMap<?> m){
 		this.map=m;
 		if( props == null){
 			this.props=map.getProperties();

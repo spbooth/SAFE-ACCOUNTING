@@ -54,12 +54,12 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.TableInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -104,7 +104,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider,TransitionSource<TableTransitionTarget> {
+public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider,TableTransitionContributor {
 
 	private static final String LINK_POLICY_TARGET = "LinkPolicy.target.";
 	private AppContext c;
@@ -312,8 +312,8 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 	}
 	public final class SetRemoteAction extends FormAction{
 
-		private final TableTransitionTarget target;
-		public SetRemoteAction(TableTransitionTarget target) {
+		private final DataObjectFactory target;
+		public SetRemoteAction(DataObjectFactory target) {
 			this.target=target;
 		}
 
@@ -322,16 +322,15 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 				throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
 
 			ConfigService serv = c.getService(ConfigService.class);
-			//TODO is there a better way of getting the config tag
-			serv.setProperty(LINK_POLICY_TARGET+target.getTableTransitionID(),(String) f.get("table"));
+			serv.setProperty(LINK_POLICY_TARGET+target.getConfigTag(),(String) f.get("table"));
 			return new ViewTableResult(target);
 			
 		}
 		
 	}
-	public class SetRemoteTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class SetRemoteTransition extends AbstractFormTransition<DataObjectFactory>{
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext conn) throws TransitionException {
 			TableInput<UsageRecordFactory> input = new TableInput<UsageRecordFactory>(conn,UsageRecordFactory.class);
 			f.addInput("table", "Master table", input);
@@ -341,9 +340,9 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 			f.addAction("Set Master", new SetRemoteAction(target));
 		}
 	}
-	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "Set Master", "Set the master table for LinkPolicy"), new SetRemoteTransition());
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+		result.put(new AdminOperationKey("Set Master", "Set the master table for LinkPolicy"), new SetRemoteTransition());
 		return result;
 	}
 	protected final Logger getLogger(){

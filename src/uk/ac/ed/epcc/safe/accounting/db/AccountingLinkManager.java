@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -46,13 +45,13 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureListener;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.LinkManager;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
-import uk.ac.ed.epcc.webapp.model.data.table.TableStructureLinkManager;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 /** A LinkManager that also supports properties.
@@ -63,22 +62,13 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * @param <L>
  * @param <R>
  */
-public abstract class AccountingLinkManager<T extends AccountingLinkManager.PropertyTargetLink<L,R>,L extends DataObject,R extends DataObject> extends TableStructureLinkManager<T, L, R> 
-implements ExpressionTargetFactory<T>{
+public abstract class AccountingLinkManager<T extends AccountingLinkManager.PropertyTargetLink<L,R>,L extends DataObject,R extends DataObject> extends LinkManager<T, L, R> 
+implements ExpressionTargetFactory<T>, TableStructureListener{
 
 	protected AccountingLinkManager(AppContext c, String table,
 			DataObjectFactory<L> left_fac, String left_field,
 			DataObjectFactory<R> right_fac, String right_field) {
 		super(c, table, left_fac, left_field, right_fac, right_field);
-	}
-	public class AccountingLinkManagerTableRegistry extends TableRegistry{
-
-		public AccountingLinkManagerTableRegistry() {
-			super(res,getDefaultTableSpecification(getContext(), getTag(),getLeftFactory(),getLeftField(),getRightFactory(),getRightField()),getProperties(),getAccessorMap());
-		}
-	}
-	protected TableRegistry makeTableRegistry() {
-		return new AccountingLinkManagerTableRegistry();
 	}
 	
 
@@ -195,7 +185,6 @@ public final PropertyFinder getFinder() {
 
 
 public void resetStructure() {
-	super.resetStructure();
 	initAccessorMap(getContext(), getConfigTag());
 }
 

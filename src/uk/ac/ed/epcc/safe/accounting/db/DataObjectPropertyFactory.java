@@ -20,12 +20,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry;
+import uk.ac.ed.epcc.safe.accounting.db.transitions.PropertyInfoGenerator;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -36,6 +37,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
@@ -48,13 +50,16 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.FieldSQLExpression;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 import uk.ac.ed.epcc.webapp.model.data.FilterResult;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.filter.FilterUpdate;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
-import uk.ac.ed.epcc.webapp.model.data.table.TableStructureDataObjectFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 import uk.ac.ed.epcc.webapp.time.Period;
@@ -69,40 +74,10 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * @param <T>
  */
 public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyContainer>
-		extends TableStructureDataObjectFactory<T> implements ExpressionTargetFactory<T>,
-		DerivedPropertyFactory {
+		extends DataObjectFactory<T> implements ExpressionTargetFactory<T>,
+		DerivedPropertyFactory, TableTransitionContributor,TableContentProvider {
 	
 	
-	protected class DataObjectTableRegistry extends TableRegistry{
-		public DataObjectTableRegistry(){
-			super(res,getFinalTableSpecification(getContext(), getTag()),getProperties(),getAccessorMap());
-			Set<String> configs = getConfigProperties();
-			if( configs != null && ! configs.isEmpty()){
-				addTableTransition(new AdminOperationKey(getTarget(), "Configure","Edit configuration parameters directly"), new ConfigTransition(getContext(), configs));
-			}
-		}
-
-		/* (non-Javadoc)
-		 * @see uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry#getTableTransitionSummary(uk.ac.ed.epcc.webapp.content.ContentBuilder, uk.ac.ed.epcc.webapp.session.SessionService)
-		 */
-		@Override
-		public void getTableTransitionSummary(ContentBuilder hb, SessionService operator) {
-			super.getTableTransitionSummary(hb, operator);
-			Set<String> configs = getConfigProperties();
-			if( configs != null && ! configs.isEmpty()){
-				hb.addHeading(3, "Configuration parameters");
-				Table t = new Table();
-				for(String param : configs){
-					t.put("Value",param, getContext().getInitParameter(param, "Not-set"));
-				}
-				t.setKeyName("Parameter");
-				hb.addTable(getContext(), t);
-			}
-		}
-	}
-	protected DataObjectTableRegistry makeTableRegistry() {
-		return new DataObjectTableRegistry();
-	}
 	/** get a set of configuration parameters that configure this object.
 	 * This is used to produce a generic configuration table transtition.
 	 * 
@@ -381,5 +356,37 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	public final long getRecordCount(RecordSelector selector)
 			throws Exception {
 		        return getCount(getFilter(selector));
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider#addSummaryContent(uk.ac.ed.epcc.webapp.content.ContentBuilder)
+	 */
+	@Override
+	public void addSummaryContent(ContentBuilder hb) {
+		AccessorMap m = getAccessorMap();
+		PropertyInfoGenerator gen = new PropertyInfoGenerator(null, m);
+		gen.getTableTransitionSummary(hb, getContext().getService(SessionService.class));
+		
+		Set<String> configs = getConfigProperties();
+		if( configs != null && ! configs.isEmpty()){
+			hb.addHeading(3, "Configuration parameters");
+			Table t = new Table();
+			for(String param : configs){
+				t.put("Value",param, getContext().getInitParameter(param, "Not-set"));
+			}
+			t.setKeyName("Parameter");
+			hb.addTable(getContext(), t);
+		}
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor#getTableTransitions()
+	 */
+	@Override
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> map = new LinkedHashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+		Set<String> configs = getConfigProperties();
+		if( configs != null && ! configs.isEmpty()){
+			map.put(new AdminOperationKey( "Configure","Edit configuration parameters directly"), new ConfigTransition(getContext(), configs));
+		}
+		return map;
 	}
 }

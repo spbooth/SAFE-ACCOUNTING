@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.model;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,12 +28,14 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorContributer;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
+import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory.RescanTableTransition;
 import uk.ac.ed.epcc.safe.accounting.db.CompatibleSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.db.PropertyMaker;
 import uk.ac.ed.epcc.safe.accounting.db.RepositoryAccessorMap;
+import uk.ac.ed.epcc.safe.accounting.db.transitions.PropertyInfoGenerator;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
-import uk.ac.ed.epcc.safe.accounting.db.transitions.TableRegistry;
+
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
@@ -43,6 +46,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.selector.FilterSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
@@ -56,6 +60,7 @@ import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
@@ -66,12 +71,15 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderClause;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
-import uk.ac.ed.epcc.webapp.jdbc.table.CompositeTableTransitionRegistry;
+import uk.ac.ed.epcc.webapp.jdbc.table.AddClassificationReferenceTransition;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionRegistry;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureListener;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.TableStructureContributer;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
@@ -92,7 +100,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * @param <P>
  */
 
-public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFactory<P> implements ExpressionTargetFactory<P>, TableStructureTransitionTarget, UploadParseTarget<P,String>, PlugInOwner<String>, FilterSelector<DataObjectItemInput<P>>{
+public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFactory<P> implements ExpressionTargetFactory<P>, TableContentProvider, TableTransitionContributor, TableStructureListener,UploadParseTarget<P,String>, PlugInOwner<String>, FilterSelector<DataObjectItemInput<P>>{
 
 	
 	public static final Feature MAKE_ON_UPLOAD_FEATURE = new Feature("person.make_on_upload",true,"On a person upload unknown users will be created as well as existing ones updated");
@@ -205,47 +213,9 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		return map;
 	}
 	
-	public class PersonTableRegistry extends TableRegistry{
-
-		@SuppressWarnings("unchecked")
-		public PersonTableRegistry(AccessorMap m) {
-			super(res,getFinalTableSpecification(getContext(), getTag()),null,m);			
-			if( plugin_owner instanceof TransitionSource){
-				addTransitionSource((TransitionSource) plugin_owner);
-			}
-		}
-		@Override
-		public void getTableTransitionSummary(ContentBuilder hb, SessionService operator) {
-			super.getTableTransitionSummary(hb, operator);
-			if( plugin_owner instanceof SummaryProvider){
-				((SummaryProvider) plugin_owner).getTableTransitionSummary(hb, operator);
-			}
-			
-		}
-		
-	}
-	private PersonTableRegistry table_reg=null;
-	public final TableTransitionRegistry getTableTransitionRegistry() {
-		if( table_reg == null ){
-			table_reg = makeTableRegistry();
-			if( table_reg instanceof CompositeTableTransitionRegistry){
-				CompositeTableTransitionRegistry comp = (CompositeTableTransitionRegistry)table_reg;
-				for(TableStructureContributer c : getTableStructureContributers()){
-					if( c instanceof TransitionSource){
-						comp.addTransitionSource((TransitionSource)c);
-					}
-				}
-			}
-		}
-		return table_reg;
-	}
-
-	protected PersonTableRegistry makeTableRegistry() {
-		return new PersonTableRegistry(getAccessorMap());
-	}
+	
 	
 	public void resetStructure() {
-		table_reg=null;	
 		initAccessorMap(getContext(), getConfigTag());
 	}
 
@@ -472,5 +442,40 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		}
 		reg=null;
 		super.release();
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#addSummaryContent(uk.ac.ed.epcc.webapp.content.ContentBuilder)
+	 */
+	@Override
+	public void addSummaryContent(ContentBuilder hb) {
+		PropertyInfoGenerator gen = new PropertyInfoGenerator(null, getAccessorMap());
+		gen.getTableTransitionSummary(hb, getContext().getService(SessionService.class));
+		if( plugin_owner instanceof SummaryProvider){
+			((SummaryProvider) plugin_owner).getTableTransitionSummary(hb, getContext().getService(SessionService.class));
+		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#getTableTransitions()
+	 */
+	@Override
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> map = new LinkedHashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+		if( getConfigTag().equals(getTag())){
+			// Don't allow transitions where the config is taken from
+			// a different table
+			PlugInOwner owner = plugin_owner;
+			if( owner instanceof TableTransitionContributor){
+				map.putAll(((TableTransitionContributor)owner).getTableTransitions());
+			}
+			if( hasProperty(StandardProperties.TEXT_PROP) && hasProperty(StandardProperties.ENDED_PROP)){
+				map.put(new AdminOperationKey("Rescan", "Rescan all records stored as text"), new RescanTableTransition());
+			}
+		}
+		map.put(new AdminOperationKey("AddClassificationReference","Add a reference to a classification"), new AddClassificationReferenceTransition());
+
+		
+		return map;
 	}
 }

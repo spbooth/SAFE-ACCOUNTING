@@ -13,7 +13,6 @@ import org.junit.Test;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionRegistry;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactoryTestCase;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -83,14 +82,7 @@ public abstract class DataObjectPropertyFactoryTestCase<D extends DataObjectProp
 		}
 		}
 	}
-	@Test
-	public void testGetRegistry(){
-		DataObjectPropertyFactory fac = (DataObjectPropertyFactory)getFactory();
-		if( fac.isValid()){
-		TableTransitionRegistry reg = fac.getTableTransitionRegistry();
-		assertNotNull(reg);
-		}
-	}
+	
 	@Test
 	public void testGetAccessorMap(){
 		DataObjectPropertyFactory fac = (DataObjectPropertyFactory)getFactory();

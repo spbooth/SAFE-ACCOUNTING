@@ -11,10 +11,10 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 
-public class ConfigTransition<T extends TableTransitionTarget> extends AbstractFormTransition<T> {
+public class ConfigTransition<T extends DataObjectFactory> extends AbstractFormTransition<T> {
 
 	private final AppContext conn;
 	public ConfigTransition(AppContext conn,Set<String> params) {

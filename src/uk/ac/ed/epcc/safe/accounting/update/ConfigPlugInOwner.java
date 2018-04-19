@@ -36,10 +36,10 @@ import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 
 /** A {@link PlugInOwner} configured from the config-service.
  * 
@@ -51,7 +51,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  */
 
 
-public class ConfigPlugInOwner<T extends TableTransitionTarget & PlugInOwner<R>,R> extends AbstractPlugInOwner<T,R> {
+public class ConfigPlugInOwner<T extends DataObjectFactory & PlugInOwner<R>,R> extends AbstractPlugInOwner<T,R> {
 	public static final String POLICIES_PREFIX = "policies.";
 	public static final String PARSER_PREFIX = "parser.";
 	final Class<? extends PropertyContainerParser> default_parser_class;
@@ -249,13 +249,13 @@ public class ConfigPlugInOwner<T extends TableTransitionTarget & PlugInOwner<R>,
 		}
 		
 		@Override
-		public Map<TableTransitionKey<T>, Transition<T>> getTransitions() {
+		public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
 			
-			Map<TableTransitionKey<T>, Transition<T>> res = super.getTransitions();
-			res.put(new AdminOperationKey(PlugInOwner.class,"DeletePolicy","Remove one of the configured policies"), new DeletePolicyTransition());
-			res.put(new AdminOperationKey<T>(PlugInOwner.class,"AddPolicy","Add a new policy"), new AddPolicyTransition());
+			Map<TableTransitionKey, Transition<? extends DataObjectFactory>> res = super.getTableTransitions();
+			res.put(new AdminOperationKey("DeletePolicy","Remove one of the configured policies"), new DeletePolicyTransition());
+			res.put(new AdminOperationKey("AddPolicy","Add a new policy"), new AddPolicyTransition());
 			if( getParser().getClass() == default_parser_class){
-				res.put(new AdminOperationKey(PlugInOwner.class,"SetParser","Set a table parser"), new SetParserTransition());
+				res.put(new AdminOperationKey("SetParser","Set a table parser"), new SetParserTransition());
 			}
 
 			return res;

@@ -35,10 +35,10 @@ import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 /** This policy generates new derived properties 
  * which are defined as expressions over other properties that
  * are already in scope.
@@ -59,7 +59,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
  */
 
 
-public class DerivedPropertyPolicy extends BasePolicy implements TransitionSource<TableTransitionTarget>{
+public class DerivedPropertyPolicy extends BasePolicy implements TableTransitionContributor{
 	private PropertyRegistry reg=null;
 	private PropExpressionMap defs=new PropExpressionMap();	
 	private AppContext c;
@@ -81,11 +81,11 @@ public class DerivedPropertyPolicy extends BasePolicy implements TransitionSourc
 		previous.getAllFrom(defs);
 	    return previous;
 	}
-	public class AddDerivedTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class AddDerivedTransition extends AbstractFormTransition<DataObjectFactory>{
 
 		public final class AddDerivedAction extends FormAction {
-			private final TableTransitionTarget target;
-			public AddDerivedAction(TableTransitionTarget target){
+			private final DataObjectFactory target;
+			public AddDerivedAction(DataObjectFactory target){
 				this.target=target;
 			}
 			@Override
@@ -100,17 +100,17 @@ public class DerivedPropertyPolicy extends BasePolicy implements TransitionSourc
 			}
 		}
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext ctx) throws TransitionException {
 			f.addInput("Name", "Name of new property", new TextInput(false));
 			f.addInput("Expr", "Definition", new PropExpressionInput(c,finder));
 			f.addAction("Add", new AddDerivedAction(target));
 		}
 	}
-	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
 		// add transitions here
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddDerivedProperty"),new AddDerivedTransition());
+		result.put(new AdminOperationKey("AddDerivedProperty"),new AddDerivedTransition());
 		return result;
 	}
 

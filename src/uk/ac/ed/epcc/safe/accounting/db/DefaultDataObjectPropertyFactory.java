@@ -28,6 +28,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureListener;
 /** Default implementation of the DataObjectPropertyFactory logic.
  * 
  * To keep this lightweight when this functionality is not in use the 
@@ -37,7 +38,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  * @param <T>
  */
 public abstract  class DefaultDataObjectPropertyFactory<T extends DataObjectPropertyContainer> extends
-		DataObjectPropertyFactory<T> implements UsageProducer<T>{
+		DataObjectPropertyFactory<T> implements UsageProducer<T>, TableStructureListener{
 	private PropertyFinder reg=null;
 	private RepositoryAccessorMap<T> map=null;
 	private PropExpressionMap expression_map=null;
@@ -92,7 +93,6 @@ public abstract  class DefaultDataObjectPropertyFactory<T extends DataObjectProp
 	
 
 	public void resetStructure() {
-		super.resetStructure();
 		initAccessorMap(getContext(), getConfigTag());
 	}
 

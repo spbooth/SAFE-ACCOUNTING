@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting.update;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,11 +31,11 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Base class for implementing {@link PlugInOwner}.
  * 
@@ -45,7 +46,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * @param <T> target type for {@link TransitionSource}
  * @param <R> {@link PropertyContainerParser} IR type
  */
-public abstract class AbstractPlugInOwner<T extends PlugInOwner<R> & TableTransitionTarget,R> implements Contexed, PlugInOwner<R>, SummaryProvider, TransitionSource<T>, ConfigParamProvider {
+public abstract class AbstractPlugInOwner<T extends DataObjectFactory & PlugInOwner<R>,R> implements Contexed, PlugInOwner<R>, SummaryProvider, TableTransitionContributor, ConfigParamProvider {
   
 	private final AppContext c;
     private final String tag;
@@ -146,15 +147,15 @@ public abstract class AbstractPlugInOwner<T extends PlugInOwner<R> & TableTransi
 	}
 
 @SuppressWarnings("unchecked")
-public Map<TableTransitionKey<T>, Transition<T>> getTransitions() {
-	Map<TableTransitionKey<T>, Transition<T>> res = new HashMap<TableTransitionKey<T>, Transition<T>>();
+public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+	Map<TableTransitionKey, Transition<? extends DataObjectFactory>> res = new LinkedHashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
 	PropertyContainerParser parser = getParser();
-	if( parser != null && parser instanceof TransitionSource){
-		res.putAll(((TransitionSource) parser).getTransitions());
+	if( parser != null && parser instanceof TableTransitionContributor){
+		res.putAll(((TableTransitionContributor) parser).getTableTransitions());
 	}
 	for(PropertyContainerPolicy pol : getPolicies()){
-		if( pol instanceof TransitionSource){
-			res.putAll(((TransitionSource) pol).getTransitions());
+		if( pol instanceof TableTransitionContributor){
+			res.putAll(((TableTransitionContributor) pol).getTableTransitions());
 		}
 	}
 	return res;

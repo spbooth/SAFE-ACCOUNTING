@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
@@ -49,14 +50,18 @@ import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.result.MessageResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraFormTransition;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AddClassificationReferenceTransition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.DataBaseHandlerService;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureListener;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
@@ -81,7 +86,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  *
  */
 
-public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R> extends UsageRecordFactory<T> implements UsageRecordParseTarget<T,R>, PlugInOwner<R> {
+public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R> extends UsageRecordFactory<T> implements UsageRecordParseTarget<T,R>, PlugInOwner<R>, TableStructureListener {
 
 	 
 	
@@ -361,39 +366,7 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 		return cb;
 	}
 	}
-	public class ParseTableRegistry extends DataObjectTableRegistry{
-		@SuppressWarnings("unchecked")
-		public ParseTableRegistry() {
-			super();
-			if( getConfigTag().equals(getTag())){
-				// Don't allow transitions where the config is taken from
-				// a different table
-				PlugInOwner owner = getPlugInOwner();
-				if( owner instanceof TransitionSource){
-					addTransitionSource((TransitionSource<ParseUsageRecordFactory<T,R>>)owner);
-				}
-				if( hasProperty(StandardProperties.TEXT_PROP) && hasProperty(StandardProperties.ENDED_PROP)){
-					addTableTransition(new AdminOperationKey<ParseUsageRecordFactory>(ParseUsageRecordFactory.class, "Rescan", "Rescan all records stored as text"), new RescanTableTransition());
-				}
-			}
-			addTableTransition(new AdminOperationKey<ParseUsageRecordFactory>(ParseUsageRecordFactory.class, "AddClassificationReference","Add a reference to a classification"), new AddClassificationReferenceTransition(res));
-		}
-
-		@Override
-		public void getTableTransitionSummary(ContentBuilder hb, SessionService operator) {
-			super.getTableTransitionSummary(hb, operator);
-			if( plugin_owner instanceof SummaryProvider){
-				((SummaryProvider) plugin_owner).getTableTransitionSummary(hb, operator);
-			}
-			
-			
-		}
-		
-	}
-	@Override
-	protected ParseTableRegistry makeTableRegistry(){
-    	return new ParseTableRegistry();
-	}
+	
 
 
 	/* (non-Javadoc)
@@ -401,7 +374,6 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 	 */
 	public void resetStructure() {
 		initAccessorMap(getContext(), getConfigTag());
-		super.resetStructure();
 	}
 	/** Re-scan a set of records with a Text field. 
 	 * This will only work if any meta-data properties consumed by parsers or policies in the startParse methos have been persisted within the
@@ -476,6 +448,42 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 			((ConfigParamProvider)owner).addConfigParameters(props);
 		}
 		return props;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#addSummaryContent(uk.ac.ed.epcc.webapp.content.ContentBuilder)
+	 */
+	@Override
+	public void addSummaryContent(ContentBuilder hb) {
+		super.addSummaryContent(hb);
+		if( plugin_owner instanceof SummaryProvider){
+			((SummaryProvider) plugin_owner).getTableTransitionSummary(hb, getContext().getService(SessionService.class));
+		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#getTableTransitions()
+	 */
+	@Override
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> map = super.getTableTransitions();
+		if( getConfigTag().equals(getTag())){
+			// Don't allow transitions where the config is taken from
+			// a different table
+			PlugInOwner owner = getPlugInOwner();
+			if( owner instanceof TableTransitionContributor){
+				map.putAll(((TableTransitionContributor)owner).getTableTransitions());
+			}
+			if( hasProperty(StandardProperties.TEXT_PROP) && hasProperty(StandardProperties.ENDED_PROP)){
+				map.put(new AdminOperationKey("Rescan", "Rescan all records stored as text"), new RescanTableTransition());
+			}
+		}
+		map.put(new AdminOperationKey("AddClassificationReference","Add a reference to a classification"), new AddClassificationReferenceTransition());
+
+		
+		return map;
 	}
 
 

@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,13 +45,18 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureListener;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.Classification;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
 /** Factory class for {@link AccountingClassification} objects.
  * 
@@ -65,7 +71,9 @@ import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
 public class AccountingClassificationFactory<T extends AccountingClassification>
 		extends PropertyTargetClassificationFactory<T>  implements UsageProducer<T>,
 		FilterSelector<DataObjectItemInput<T>>,
-		PropertyImplementationProvider{
+		PropertyImplementationProvider,
+		TableStructureListener,
+		TableTransitionContributor{
 	private PropertyFinder reg=null;
 	private RepositoryAccessorMap<T> map=null;
 	public static final PropertyRegistry classification = new PropertyRegistry("classification", "Standard properties for a Classification table");
@@ -141,7 +149,6 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 
 	@Override
 	public void resetStructure() {
-		super.resetStructure();
 		initAccessorMap(getContext(), getConfigTag());
 	}
 
@@ -189,24 +196,7 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 				}
 			});
 		}		
-	}
-
-    public class AccountingClassificationTableRegistry extends PropertyTargetClassificationTableRegistry{
-
-		public AccountingClassificationTableRegistry() {
-			addTableTransition(new AdminOperationKey<AccountingClassificationFactory>(AccountingClassificationFactory.class, "Add derived property"), new AddDerivedTransition());
-		}
-    	
-    }
-
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.db.PropertyTargetClassificationFactory#makeTableRegistry()
-	 */
-	@Override
-	protected AccountingClassificationTableRegistry makeTableRegistry() {
-		return new AccountingClassificationTableRegistry();
-	}
-	
+	}	
 	private ReductionHandler<T, AccountingClassificationFactory<T>> getReductionHandler(){
 		return new ReductionHandler<T, AccountingClassificationFactory<T>>(this);
 	}
@@ -241,6 +231,13 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 	@Override
 	public String getImplemenationInfo(PropertyTag<?> tag) {
 		return getAccessorMap().getImplemenationInfo(tag);
+	}
+	@Override
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> map = new LinkedHashMap<>();
+		map.put(new AdminOperationKey("Add derived property"), new AddDerivedTransition());
+		
+		return map;
 	}
 	
 	

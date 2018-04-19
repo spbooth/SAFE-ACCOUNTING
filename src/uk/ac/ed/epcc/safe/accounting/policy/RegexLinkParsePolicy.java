@@ -30,9 +30,8 @@ import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -53,7 +52,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  *
  */
 
-public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements SummaryProvider,TransitionSource<TableTransitionTarget>,ConfigParamProvider{
+public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements SummaryProvider,TableTransitionContributor,ConfigParamProvider{
 	private static final String REGEX_LINK_PARSE_TABLE_PREFIX = "regex_link_parse.table.";
 	private static final String REGEX_LINK_PARSE_LINK_PREFIX = "regex_link_parse.link.";
 	private AppContext conn;
@@ -221,11 +220,11 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 		
 	}
 
-	public class RelinkTransition extends AbstractDirectTransition<TableTransitionTarget>{
+	public class RelinkTransition extends AbstractDirectTransition<DataObjectFactory>{
 
 	
 		@Override
-		public FormResult doTransition(TableTransitionTarget target, AppContext c) throws TransitionException {
+		public FormResult doTransition(DataObjectFactory target, AppContext c) throws TransitionException {
 			try {
 				relink();
 			} catch (Exception e) {
@@ -237,9 +236,9 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 		
 	}
 	@Override
-	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
-		result.put(new AdminOperationKey(TableTransitionTarget.class,"Relink","Re-apply regexp links to all records"),new RelinkTransition());
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+		result.put(new AdminOperationKey(DataObjectFactory.class,"Relink","Re-apply regexp links to all records"),new RelinkTransition());
 		return result;
 	}
 
