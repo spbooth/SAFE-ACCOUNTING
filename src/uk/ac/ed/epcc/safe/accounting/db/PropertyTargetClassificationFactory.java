@@ -23,7 +23,6 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.PropertyInfoGenerator;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -48,7 +47,6 @@ import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.session.SessionService;
-import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 public abstract class PropertyTargetClassificationFactory<T extends AccountingClassification> extends
@@ -134,7 +132,7 @@ public abstract class PropertyTargetClassificationFactory<T extends AccountingCl
 		}
 	}
 	public final boolean compatible(RecordSelector sel){
-		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,this,false);
+		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,getAccessorMap(),false);
 		try {
 			return sel.visit(vis);
 		} catch (Exception e) {
@@ -177,22 +175,26 @@ public abstract class PropertyTargetClassificationFactory<T extends AccountingCl
 	public final T find(RecordSelector sel) throws DataException, CannotFilterException {
 		return find(getFilter(sel));
 	}
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
-	 */
-	@Override
-	public BaseFilter<T> getRelationshipFilter(String relationship) throws CannotFilterException {
-		try {
-			return getContext().getService(SessionService.class).getRelationshipRoleFilter(this, relationship);
-		} catch (UnknownRelationshipException e) {
-			throw new CannotFilterException(e);
-		}
-	}
+	
 	@Override
 	public void addSummaryContent(ContentBuilder hb) {
 		AccessorMap m = getAccessorMap();
 		PropertyInfoGenerator gen = new PropertyInfoGenerator(null, m);
-		gen.getTableTransitionSummary(hb, getContext().getService(SessionService.class));
+		gen.getTableTransitionSummary(hb);
 		
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator#getProperty(uk.ac.ed.epcc.safe.accounting.properties.PropertyTag, java.lang.Object)
+	 */
+	@Override
+	public <X> X getProperty(PropertyTag<X> tag, T record) throws InvalidExpressionException {
+		return getAccessorMap().getProxy(record).getProperty(tag);
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator#evaluateExpression(uk.ac.ed.epcc.safe.accounting.properties.PropExpression, java.lang.Object)
+	 */
+	@Override
+	public <I> I evaluateExpression(PropExpression<I> expr, T record) throws InvalidExpressionException {
+		return getAccessorMap().getProxy(record).evaluateExpression(expr);
 	}
 }

@@ -20,8 +20,8 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.NullSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OrRecordSelector;
@@ -43,7 +43,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.SQLOrFilter;
 
 
 
-public class FilterSelectVisitor<T extends ExpressionTarget> implements SelectorVisitor<BaseFilter<T>>{
+public class FilterSelectVisitor<T> implements SelectorVisitor<BaseFilter<T>>{
 
 	/**
 	 * 
@@ -57,7 +57,10 @@ public class FilterSelectVisitor<T extends ExpressionTarget> implements Selector
 			ExpressionFilterTarget<T> dataObjectPropertyFactory) {
 		target = dataObjectPropertyFactory;
 	}
-
+	public FilterSelectVisitor(
+			ExpressionTargetFactory<T> dataObjectPropertyFactory) {
+		target = dataObjectPropertyFactory.getAccessorMap();
+	}
 	public BaseFilter<T> visitAndRecordSelector(AndRecordSelector a) throws Exception {
 		AndFilter<T> result = new AndFilter<T>(target.getTarget());
 		for( RecordSelector s : a){

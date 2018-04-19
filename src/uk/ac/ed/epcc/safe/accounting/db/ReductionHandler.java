@@ -66,17 +66,19 @@ public class ReductionHandler<E extends ExpressionTarget,F extends ExpressionTar
 	}
 	
 	public final boolean compatible(RecordSelector sel){
-		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,fac,false);
+		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,fac.getAccessorMap(),false);
 		try {
 			return sel.visit(vis);
 		} catch (Exception e) {
 			return false;
 		}
 	}
-	
+	public final boolean compatible(PropExpression e) {
+		return map.resolves(e, false);
+	}
 	@SuppressWarnings("unchecked")
 	public  Map<ExpressionTuple, ReductionMapResult> getIndexedReductionMap( Set<ReductionTarget> sum, RecordSelector selector) throws Exception{
-		if( ! (fac.compatible(selector) && compatible(sum))){
+		if( ! (compatible(selector) && compatible(sum))){
 			// can't do anything
 			return new HashMap<ExpressionTuple, ReductionMapResult>();
 		}
@@ -97,7 +99,7 @@ public class ReductionHandler<E extends ExpressionTarget,F extends ExpressionTar
 	
 	
 	public <R> R getReduction(ReductionTarget<R> type, RecordSelector sel) throws Exception {
-		if( ! fac.compatible(type.getExpression())){
+		if( ! map.resolves(type.getExpression(),false)){
 			return type.getDefault();
 		}
 		try{
@@ -122,7 +124,7 @@ public class ReductionHandler<E extends ExpressionTarget,F extends ExpressionTar
 			throws Exception 
 	{
 		
-		if( !(fac.compatible(index) && fac.compatible(property.getExpression())&& compatible(selector))){
+		if( !(compatible(index) && compatible(property.getExpression())&& compatible(selector))){
 			// no matching property
 			return new HashMap<I,Number>();
 			

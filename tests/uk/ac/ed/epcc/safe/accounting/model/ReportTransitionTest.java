@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.io.StringBufferInputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;

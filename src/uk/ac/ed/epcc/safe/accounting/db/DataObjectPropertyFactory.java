@@ -138,32 +138,6 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 
 	
 
-	public final <R> BaseFilter<T> getFilter(PropExpression<R> expr,
-			MatchCondition match, R value) throws CannotFilterException{
-		return getAccessorMap().getFilter( expr, match, value);
-	}
-	
-	public final <R> BaseFilter<T> getRelationFilter(PropExpression<R> left,
-			MatchCondition match, PropExpression<R> right)
-			throws CannotFilterException {
-		return getAccessorMap().getRelationFilter(left, match, right);
-	}
-
-	public final <R> BaseFilter<T> getNullFilter(PropExpression<R> expr,
-			boolean is_null) throws CannotFilterException {
-		return getAccessorMap().getNullFilter(expr, is_null);
-	}
-	public BaseFilter<T> getPeriodFilter(Period period,
-			PropExpression<Date> start,
-			PropExpression<Date> end, OverlapType type, long cutoff)
-			throws CannotFilterException {
-		return getAccessorMap().getPeriodFilter(period, start, end,type,cutoff);
-	}
-	
-	public <I> SQLFilter<T> getOrderFilter(boolean descending, PropExpression<I> expr)
-			throws CannotFilterException {
-		return getAccessorMap().getOrderFilter(descending, expr);
-	}
 	/** Get a filter from a {@link RecordSelector}
 	 * 
 	 * @param selector
@@ -192,20 +166,14 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 		String default_relationship = getContext().getInitParameter(getConfigTag()+".default_filter_relationship");
 		if( default_relationship != null && ! default_relationship.isEmpty()){
 			try {
-				return new AndFilter<>(getTarget(),getRelationshipFilter(default_relationship), fil);
+				return new AndFilter<>(getTarget(),getAccessorMap().getRelationshipFilter(default_relationship), fil);
 			} catch (CannotFilterException e) {
 				getLogger().error("Error adding default relationship", e);
 			}
 		}
 		return fil;
 	}
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
-	 */
-	@Override
-	public BaseFilter<T> getRelationshipFilter(String relationship) throws CannotFilterException {
-		return getRelationshipFilter(relationship,null);
-	}
+	
 	public BaseFilter<T> getRelationshipFilter(String relationship,BaseFilter<T> fallback) throws CannotFilterException {
 		try {
 			return getContext().getService(SessionService.class).getRelationshipRoleFilter(this, relationship);
@@ -331,7 +299,7 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	}
 	
 	public final boolean compatible(RecordSelector sel){
-		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,this,false);
+		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,getAccessorMap(),false);
 		try {
 			return sel.visit(vis);
 		} catch (Exception e) {
@@ -357,6 +325,21 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 			throws Exception {
 		        return getCount(getFilter(selector));
 	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator#getProperty(uk.ac.ed.epcc.safe.accounting.properties.PropertyTag, java.lang.Object)
+	 */
+	@Override
+	public <X> X getProperty(PropertyTag<X> tag, T record) throws InvalidExpressionException {
+		return getAccessorMap().getProxy(record).getProperty(tag);
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator#evaluateExpression(uk.ac.ed.epcc.safe.accounting.properties.PropExpression, java.lang.Object)
+	 */
+	@Override
+	public <I> I evaluateExpression(PropExpression<I> expr, T record) throws InvalidExpressionException {
+		return getAccessorMap().getProxy(record).evaluateExpression(expr);
+	}
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider#addSummaryContent(uk.ac.ed.epcc.webapp.content.ContentBuilder)
 	 */
@@ -364,7 +347,7 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	public void addSummaryContent(ContentBuilder hb) {
 		AccessorMap m = getAccessorMap();
 		PropertyInfoGenerator gen = new PropertyInfoGenerator(null, m);
-		gen.getTableTransitionSummary(hb, getContext().getService(SessionService.class));
+		gen.getTableTransitionSummary(hb);
 		
 		Set<String> configs = getConfigProperties();
 		if( configs != null && ! configs.isEmpty()){

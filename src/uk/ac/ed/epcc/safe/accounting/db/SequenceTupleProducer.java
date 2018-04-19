@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.db.TupleUsageProducer.TupleUsageRecord;
 import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
@@ -15,7 +14,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
-import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFunc;
@@ -24,7 +22,6 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 /** A {@link TupleUsageProducer} that represents a time-sequence join
  * 
@@ -109,16 +106,6 @@ extends TupleUsageProducer<A,AF,UR> {
 			}
 		}
 		return m;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.db.PropertyTupleFactory#getPeriodFilter(uk.ac.ed.epcc.webapp.time.Period, uk.ac.ed.epcc.safe.accounting.properties.PropExpression, uk.ac.ed.epcc.safe.accounting.properties.PropExpression, uk.ac.ed.epcc.safe.accounting.selector.OverlapType, long)
-	 */
-	@Override
-	public BaseFilter getPeriodFilter(Period period, PropExpression start_prop, PropExpression end_prop,
-			OverlapType type, long cutoff) throws CannotFilterException {
-		// TODO Auto-generated method stub
-		return super.getPeriodFilter(period, start_prop, end_prop, type, cutoff);
 	}
 
 	public static  class PeriodTuple<A extends DataObject & ExpressionTarget> extends TupleUsageProducer.TupleUsageRecord<A> implements TimePeriod{

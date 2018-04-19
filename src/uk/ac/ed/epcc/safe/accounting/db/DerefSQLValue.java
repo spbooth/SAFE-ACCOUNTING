@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
@@ -124,13 +125,21 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 			} catch (Exception e) {
 				throw new CannotFilterException(e);
 			}
-
+			// AccessorMap always can generate filters
+			if( producer instanceof ExpressionTargetFactory){
+				ExpressionFilterTarget eft = ((ExpressionTargetFactory) producer).getAccessorMap();
+				
+				return a.getSQLFilter(FilterConverter.convert(eft.getFilter(expr, match, val)));
+				
+			}
+			// Old way producer implements ExpressionFilterTarget directly
 			if( producer instanceof ExpressionFilterTarget){
 				ExpressionFilterTarget eft = (ExpressionFilterTarget) producer;
 				
 				return a.getSQLFilter(FilterConverter.convert(eft.getFilter(expr, match, val)));
 				
 			}
+			
 			throw new NoSQLFilterException("Target is not an ExpressionFilterTarget");
 		}
 		throw new NoSQLFilterException("Multiple de-reference");
@@ -149,7 +158,14 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 			} catch (Exception e) {
 				throw new CannotFilterException(e);
 			}
-
+			if( producer instanceof ExpressionTargetFactory){
+				// Get filter from AccessorMap
+				ExpressionFilterTarget eft = ((ExpressionTargetFactory) producer).getAccessorMap();
+				
+				return a.getSQLFilter(FilterConverter.convert(eft.getOrderFilter(descending, expr)));
+				
+			}
+			// Old way where factory implements directly
 			if( producer instanceof ExpressionFilterTarget){
 				ExpressionFilterTarget eft = (ExpressionFilterTarget) producer;
 				
@@ -171,6 +187,14 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 			} catch (Exception e) {
 				throw new CannotFilterException(e);
 			}
+			// Get filters from AccessorMap
+			if( producer instanceof ExpressionTargetFactory){
+				ExpressionFilterTarget eft = ((ExpressionTargetFactory) producer).getAccessorMap();
+				
+				return a.getSQLFilter(FilterConverter.convert(eft.getNullFilter(expr, is_null)));
+				
+			}
+			// Ols style where factory implements directly
 			if( producer instanceof ExpressionFilterTarget){
 				ExpressionFilterTarget eft = (ExpressionFilterTarget) producer;
 				

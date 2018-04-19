@@ -17,20 +17,14 @@
 package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-/** Interface that combines {@link ExpressionFilterTarget} and
- * {@link PropertyTargetFactory} and supports the generation of
- * {@link SQLExpression}s and filters so it really can only be implemented by a {@link DataObjectFactory}
- * 
+/** Interface for property enabled factories.
+ * Essentially this means it can generate an {@link AccessorMap}
  * @author spb
  *
  * @param <T>
  */
-public interface ExpressionTargetFactory<T extends ExpressionTarget> extends ExpressionTargetGenerator<T>,
-		ExpressionFilterTarget<T> {
+public interface ExpressionTargetFactory<T> extends ExpressionTargetGenerator<T>
+{
 	
 	public AccessorMap<T> getAccessorMap();
 }

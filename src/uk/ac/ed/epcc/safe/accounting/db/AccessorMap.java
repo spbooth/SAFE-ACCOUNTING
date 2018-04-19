@@ -107,13 +107,13 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * 
  * 
  * @author spb
- * @param <X> type of DataObject
+ * @param <X> type of {@link ExpressionTarget}
  *
  * 
  */
 
 
-public abstract class AccessorMap<X extends ExpressionTarget> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
+public abstract class AccessorMap<X> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
 	public static final Feature EVALUATE_CACHE_FEATURE = new Feature("evaluate.cache",true,"cache expression evaluations in ExpressionTargets");
 	protected final Class<? super X> target;
 	
@@ -947,7 +947,7 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
     	}
     	
     	if( resolves(expr,false)){
-    		return new ExpressionAcceptFilter<X, I>(target,expr, match, data);
+    		return new ExpressionAcceptFilter<X, I>(target,this,expr, match, data);
     	}
     	// we might still have a derived property but cannot make a SQLfilter
 		
@@ -995,7 +995,7 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
 		} catch (Exception e) {
 		
 		}
-		return new ExpressionAcceptMatchFilter<X,R>(target,left, match,right);
+		return new ExpressionAcceptMatchFilter<X,R>(target,this,left, match,right);
 	}
     @SuppressWarnings("unchecked")
 	public final <I> BaseFilter<X> getNullFilter(PropExpression<I> expr,
@@ -1044,7 +1044,7 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
     	// could still have a derived property using accessors but cannot make these into
     	// an SQLFilter
     	if(resolves(expr,false)){
-    		return new ExpressionAcceptNullFilter<X, I>(target,expr, is_null);
+    		return new ExpressionAcceptNullFilter<X, I>(target,this,expr, is_null);
     	}
 
 
@@ -1072,7 +1072,7 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
 	 * @return BaseFilter
 	 * @throws CannotFilterException
 	 */
-	public final BaseFilter<X> getPeriodFilter(Period period,
+	public BaseFilter<X> getPeriodFilter(Period period,
 			PropExpression<Date> start_prop,
 			PropExpression<Date> end_prop, OverlapType type,long cutoff)
 			throws CannotFilterException {

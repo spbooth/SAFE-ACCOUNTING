@@ -54,7 +54,7 @@ public class PropertyInfoGenerator{
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.webapp.model.data.transition.TableTransitionTarget#getTableTransitionSummaryHTML(uk.ac.ed.epcc.webapp.model.AppUser)
 	 */
-	public  void getTableTransitionSummary(ContentBuilder hb,SessionService operator) {
+	public  void getTableTransitionSummary(ContentBuilder hb) {
 		hb.addText("The following table shows those properties that are defined for the current configuration." +
 				" and how they are currently implemented. If a property does not have a corresponding database field it " +
 				"may be defined as an expression over other properties.");
@@ -90,7 +90,7 @@ public class PropertyInfoGenerator{
 			}
 			t.setKeyName("Name");
 			t.sortRows();
-			hb.addTable(operator.getContext(), t);
+			hb.addTable(map.getContext(), t);
 		}		
 	}
 	public final  Table getPropertyTable(){

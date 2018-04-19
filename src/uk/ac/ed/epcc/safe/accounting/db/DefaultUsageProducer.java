@@ -58,7 +58,6 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  */ 
 public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContainer & ExpressionTargetContainer>  extends DataObjectPropertyFactory<T> implements UsageProducer<T> ,PropertyImplementationProvider{
 	
-	private static final Feature CACHE_CUTOFFS = new Preference("reporting.cache_cutoff",true,"Cache the cutoffs in session");
 
 	protected Logger log;
 	    
@@ -83,127 +82,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	public final PropExpressionMap getDerivedProperties(){
 		return getAccessorMap().getDerivedProperties();
 	}
-	private static class CutoffKey{
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((end == null) ? 0 : end.hashCode());
-			result = prime * result + ((start == null) ? 0 : start.hashCode());
-			return result;
-		}
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			CutoffKey other = (CutoffKey) obj;
-			if (end == null) {
-				if (other.end != null)
-					return false;
-			} else if (!end.equals(other.end))
-				return false;
-			if (start == null) {
-				if (other.start != null)
-					return false;
-			} else if (!start.equals(other.start))
-				return false;
-			return true;
-		}
-		public CutoffKey(PropExpression<Date> start, PropExpression<Date> end) {
-			super();
-			this.start = start;
-			this.end = end;
-		}
-		public final PropExpression<Date> start;
-		public final PropExpression<Date> end;
-		
-	}
-	public Map<CutoffKey,Long> cutoffs=null;
-	public static final Feature AUTO_CUTOFF_FEATURE = new Feature("auto_cutoff",true,"automatically calculate cutoffs (maximum record time extent, used to optimise search) using additional queried");
 	
-	public BaseFilter<T> getPeriodFilter(Period period,
-			PropExpression<Date> start, PropExpression<Date> end, OverlapType type,long cutoff)
-			throws CannotFilterException {
-		if( start == null || end == null || start.equals(end)){
-			cutoff=0L;
-		}else if(AUTO_CUTOFF_FEATURE.isEnabled(getContext())){
-			if( cutoff <= 0L) {
-			if( cutoffs == null ){
-				cutoffs=new HashMap<DefaultUsageProducer.CutoffKey, Long>();
-			}
-			CutoffKey key = new CutoffKey(start, end);
-			Long calc_cutoff = cutoffs.get(key);
-			SessionService sess=null;
-			if(calc_cutoff ==null){
-				
-				TimerService timer = getContext().getService(TimerService.class);
-				String cutoff_name = "auto_cutoff."+getTag()+"_"+start.toString()+"_"+end.toString();
-				if(CACHE_CUTOFFS.isEnabled(getContext())) {
-					sess = getContext().getService(SessionService.class);
-					if(sess !=null) {
-						calc_cutoff=(Long) sess.getAttribute(cutoff_name);
-					}
-				}
-				if(calc_cutoff==null) {
-					if( timer != null ) {
-						timer.startTimer(cutoff_name);
-					}
-					try {
-						AccessorMap map = getAccessorMap();
-						// Check this uses SQL
-						if( map.getSQLValue(start) != null && map.getSQLValue(end) != null) {
-							calc_cutoff = getCutoff(null,start, end);
-							if( log !=null) log.debug(getTag()+": calculated cutoff for "+start+","+end+" as "+cutoff);
-							cutoffs.put(key,calc_cutoff);
-						}else {
-							calc_cutoff=0L;
-						}
-					}catch(InvalidSQLPropertyException isp) {
-						calc_cutoff=0L;
-					} catch (Exception e) {
-						getLogger().error("Error making cutoff",e);
-						calc_cutoff=0L;
-					}finally {
-						if( timer != null ) {
-							timer.stopTimer(cutoff_name);
-						}
-					}
-				}
-				if(sess !=null ) {
-					sess.setAttribute(cutoff_name, calc_cutoff);
-				}
-			}
-			cutoff=calc_cutoff;
-			}
-		}
-		return super.getPeriodFilter(period, start, end,type,cutoff);
-	}
-
-	/**
-	 * @param start
-	 * @param end
-	 * @return
-	 * @throws Exception
-	 * @throws IllegalReductionException
-	 */
-	private Long getCutoff(RecordSelector narrow,PropExpression<Date> start, PropExpression<Date> end)
-			throws Exception{
-		Long calc_cutoff;
-		final DurationPropExpression duration = new DurationPropExpression(start, end);
-		// go for global max length. More likely to cache
-		// answer in Sql level and independent of period so can cheaply cache
-		// at this level. Alternative would need map keyed by props and period.
-		AndRecordSelector sel = new AndRecordSelector(narrow);
-		sel.add(new SelectClause<Duration>(duration,MatchCondition.GT,new Duration(0L,1L)));
-		sel.add(new SelectClause<Date>(start,MatchCondition.GT,new Date(0L)));
-		long l = getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), sel).longValue()+1L;
-		calc_cutoff = new Long(l);
-		return calc_cutoff;
-	}
 
 	
 	private ReductionHandler<T, DefaultUsageProducer<T>> getReductionHandler(){

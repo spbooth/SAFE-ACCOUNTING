@@ -80,7 +80,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  */
 
 
-public class OverlapHandler<T extends ExpressionTargetContainer> {
+public class OverlapHandler<T> {
 	private final AppContext conn;
     private final UsageProducer<T> prod;
     private Logger log=null;

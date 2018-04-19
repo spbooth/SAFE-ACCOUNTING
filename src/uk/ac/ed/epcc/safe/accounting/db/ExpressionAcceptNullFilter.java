@@ -15,28 +15,27 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AbstractAcceptFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.AcceptFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FilterVisitor;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 
 
-public class ExpressionAcceptNullFilter<T extends ExpressionTarget,I> extends AbstractAcceptFilter<T>{
-	
+public class ExpressionAcceptNullFilter<T,I> extends AbstractAcceptFilter<T>{
+	private final AccessorMap<T> map;
 	private final boolean is_null;
 	private final PropExpression<I> expr;
 	
-	public ExpressionAcceptNullFilter(Class<? super T> target,PropExpression<I> expr, boolean is_null){
+	public ExpressionAcceptNullFilter(Class<? super T> target,AccessorMap<T> map,PropExpression<I> expr, boolean is_null){
 		super(target);
+		this.map=map;
 		this.expr=expr;
 		this.is_null=is_null;
 	}
 
-	public boolean accept(T o) {
+	public boolean accept(T t) {
 		try {
+			ExpressionTarget o = map.getProxy(t);
 			I res = o.evaluateExpression(expr);
 			if( res == null ){
 				return is_null;

@@ -152,7 +152,7 @@ Tagged{
 
 	@Override
 	public boolean compatible(RecordSelector sel) {
-		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,this,false);
+		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,getAccessorMap(),false);
 		try {
 			return sel.visit(vis);
 		} catch (Exception e) {
@@ -275,39 +275,7 @@ Tagged{
 		return PropertyTuple.class;
 	}
 
-	@Override
-	public BaseFilter getFilter(PropExpression expr, MatchCondition match, Object value) throws CannotFilterException {
-		return map.getFilter(expr, match, value);
-	}
-
-	@Override
-	public BaseFilter getNullFilter(PropExpression expr, boolean is_null) throws CannotFilterException {
-		return map.getNullFilter(expr, is_null);
-	}
-
-	@Override
-	public BaseFilter getRelationFilter(PropExpression left, MatchCondition match, PropExpression right)
-			throws CannotFilterException {
-		return map.getRelationFilter(left, match, right);
-	}
-
-	@Override
-	public BaseFilter getPeriodFilter(Period period, PropExpression start_prop, PropExpression end_prop,
-			OverlapType type, long cutoff) throws CannotFilterException {
-		return map.getPeriodFilter(period, start_prop, end_prop, type, cutoff);
-	}
-
-	@Override
-	public BaseSQLFilter getOrderFilter(boolean descending, PropExpression expr) throws CannotFilterException {
-		return map.getOrderFilter(descending, expr);
-	}
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
-	 */
-	@Override
-	public BaseFilter getRelationshipFilter(String relationship) throws CannotFilterException {
-		return map.getRelationshipFilter(relationship);
-	}
+	
 	@Override
 	public final String getTag() {
 		return tag;

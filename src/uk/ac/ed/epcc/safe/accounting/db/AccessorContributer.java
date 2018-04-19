@@ -16,15 +16,30 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Accessor;
 import uk.ac.ed.epcc.webapp.model.data.Composite;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 
-/** Interdace for {@link Composite}s that add properties
+/** Interface for {@link Composite}s that add properties
  * 
+ * 
+ * @see ExpressionTargetFactoryComposite
  * @author spb
  *
  */
 public interface AccessorContributer {
+	/** Modifies the property config. 
+	 * {@link PropertyRegistry}s can be added to the {@link MultiFinder}.
+	 * Custom {@link Accessor}s etc. can be added to the {@link AccessorMap}.
+	 * Additional derived properties can be defined.
+	 * 
+	 * This is called before {@link RepositoryAccessorMap#populate(uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder, PropertyRegistry, boolean)}
+	 * 
+	 * @param mapi2
+	 * @param finder
+	 * @param derived
+	 */
 	public <P extends DataObject&ExpressionTarget> void customAccessors(AccessorMap<P> mapi2,
 			MultiFinder finder, PropExpressionMap derived);
 }

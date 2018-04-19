@@ -18,7 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.allocations;
 
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
@@ -38,7 +38,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * @param <K> transition key
  * @param <T> type of {@link Allocation}
  */
-public interface AllocationManager<K,T extends Allocation> extends UsageProducer<T>, ViewTransitionProvider<K,T>,SplitManager<T> ,ExpressionFilterTarget<T>{
+public interface AllocationManager<K,T extends Allocation> extends UsageProducer<T>, ViewTransitionProvider<K,T>,SplitManager<T> ,ExpressionTargetFactory<T>{
 
 /** Role needed to modify allocations.
  *    Can restrict which index properties a user can set by defining a

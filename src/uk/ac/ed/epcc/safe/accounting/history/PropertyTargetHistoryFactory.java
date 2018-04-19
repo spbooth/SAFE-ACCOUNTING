@@ -94,7 +94,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
 
 
 public class PropertyTargetHistoryFactory<T extends DataObject , F extends DataObjectFactory<T>, H extends PropertyTargetHistoryFactory.HistoryUse<T>> 
-extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<H>,ExpressionFilterTarget<H>,PropertyImplementationProvider,TableContentProvider {
+extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<H>,PropertyImplementationProvider,TableContentProvider {
 
 	/** HistoryRecord extended to be an ExpressionTarget
 	 * 
@@ -369,38 +369,6 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 	}
 
 	
-
-	public final <R> BaseFilter<H> getFilter(PropExpression<R> expr,
-			MatchCondition match, R value) throws CannotFilterException{
-		return getAccessorMap().getFilter( expr, match, value);
-	}
-	
-	public <R> BaseFilter<H> getRelationFilter(PropExpression<R> left,
-			MatchCondition match, PropExpression<R> right)
-			throws CannotFilterException {
-		return getAccessorMap().getRelationFilter(left, match, right);
-	}
-	public <R> BaseFilter<H> getNullFilter(PropExpression<R> expr,
-			boolean is_null) throws CannotFilterException {
-		return getAccessorMap().getNullFilter(expr, is_null);
-	}
-
-		
-	public <I> SQLFilter<H> getOrderFilter(boolean descending, PropExpression<I> expr)
-			throws CannotFilterException {
-		return getAccessorMap().getOrderFilter(descending, expr);
-	}
-	
-
-	
-	
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
-	 */
-	@Override
-	public BaseFilter<H> getRelationshipFilter(String relationship) throws CannotFilterException {
-		return getAccessorMap().getRelationshipFilter(relationship);
-	}
 	/** Get a filter from a PropertyMap selector
 	 * 
 	 * @param selector
@@ -484,7 +452,13 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 			return result;
 		}	
 	}
-	
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator#getProperty(uk.ac.ed.epcc.safe.accounting.properties.PropertyTag, java.lang.Object)
+	 */
+	@Override
+	public <X> X getProperty(PropertyTag<X> tag, H record) throws InvalidExpressionException {
+		return getAccessorMap().getProxy(record).getProperty(tag);
+	}
 	public <I, P> Map<I, P> getPropMap(PropertyTag<I> index,
 			PropertyTag<P> property,  RecordSelector selector)
 			throws DataException, CannotFilterException, InvalidExpressionException 
@@ -519,7 +493,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 	
 	
 	public boolean compatible(RecordSelector sel) {
-		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(this,false);
+		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(getAccessorMap(),false);
 		try {
 			return sel.visit(vis);
 		} catch (Exception e) {
@@ -586,7 +560,7 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 	public void addSummaryContent(ContentBuilder hb) {
 		AccessorMap m = getAccessorMap();
 		PropertyInfoGenerator gen = new PropertyInfoGenerator(null, m);
-		gen.getTableTransitionSummary(hb, getContext().getService(SessionService.class));
+		gen.getTableTransitionSummary(hb);
 		
 	}
 	

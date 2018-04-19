@@ -257,48 +257,13 @@ public final PropExpressionMap getDerivedProperties() {
 
 	
 
-	public final <X> BaseFilter<T> getFilter(PropExpression<X> expr,
-			MatchCondition match, X value) throws CannotFilterException{
-		return getAccessorMap().getFilter( expr, match, value);
-	}
-	 public <X> BaseFilter<T> getNullFilter(PropExpression<X> expr,
-			boolean is_null) throws CannotFilterException {
-		return getAccessorMap().getNullFilter(expr, is_null);
-	}
-
-	
-	public <Q> BaseFilter<T> getRelationFilter(PropExpression<Q> left,
-			MatchCondition match, PropExpression<Q> right)
-			throws CannotFilterException {
-		return getAccessorMap().getRelationFilter(left, match, right);
-	}
-
-	public BaseFilter<T> getPeriodFilter(Period period,
-			PropExpression<Date> start, 
-			PropExpression<Date> end, OverlapType type,long cutoff)
-			throws CannotFilterException {
-		return getAccessorMap().getPeriodFilter(period, start, 
-				end,type,cutoff);
-	}
-	public <I> SQLFilter<T> getOrderFilter(boolean descending, PropExpression<I> expr)
-			throws CannotFilterException {
-		return getAccessorMap().getOrderFilter(descending, expr);
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
-	 */
-	@Override
-	public BaseFilter<T> getRelationshipFilter(String relationship) throws CannotFilterException {
-		return getAccessorMap().getRelationshipFilter(relationship);
-	}
 	public <I> boolean compatible(PropExpression<I> expr) {
 		return getAccessorMap().resolves(expr,false);
 	}
 
 	
 	public final boolean compatible(RecordSelector sel){
-		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,this,false);
+		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,getAccessorMap(),false);
 		try {
 			return sel.visit(vis);
 		} catch (Exception e) {

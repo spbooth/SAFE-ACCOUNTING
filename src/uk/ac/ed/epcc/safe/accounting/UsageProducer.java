@@ -32,7 +32,7 @@ import uk.ac.ed.epcc.webapp.Tagged;
  * @param <UR> 
  *
  */
-public interface UsageProducer<UR extends ExpressionTargetContainer> extends 
+public interface UsageProducer<UR> extends 
 ExpressionTargetGenerator<UR>, 
 Tagged, 
 ReductionProducer<UR>{	    
