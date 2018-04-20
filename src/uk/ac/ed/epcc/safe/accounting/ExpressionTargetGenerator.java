@@ -14,6 +14,7 @@
 package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -36,12 +37,22 @@ public interface ExpressionTargetGenerator<T> extends PropertyTargetGenerator<T>
 	 */
 	public  <I> boolean compatible(PropExpression<I> expr);
 	
-	/** Evaluate an expression on a target object
-	 * 
-	 * @param expr
-	 * @param record
-	 * @return
-	 * @throws InvalidExpressionException 
-	 */
-	public <I> I evaluateExpression(PropExpression<I> expr, T record)throws InvalidExpressionException;
+	/** Get an {@link ExpressionTarget} for the target object.
+	    * This could be the record itself or a wrapper object.
+	    * 
+	    * @param record
+	    * @return
+	    */
+	   public ExpressionTargetContainer getExpressionTarget(T record);
+	   
+	  
+	   
+	   /** Is this a record from this {@link UsageProducer}.
+	    * 
+	    * @param record
+	    * @return
+	    */
+	   public boolean isMyTarget(T record);
+	   
+	   
 }

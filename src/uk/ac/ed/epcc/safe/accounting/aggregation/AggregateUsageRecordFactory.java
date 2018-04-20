@@ -93,7 +93,6 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.filter.FilterDelete;
-import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 /** A UsageRecordFactory that generates aggregate records from a separate class.
  * The tables in the master {@link UsageProducer} will require a {@link ListenerPolicy} to populate the aggregate records if data 

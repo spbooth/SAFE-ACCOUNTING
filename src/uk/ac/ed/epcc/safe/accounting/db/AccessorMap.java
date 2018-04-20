@@ -636,6 +636,7 @@ public abstract class AccessorMap<X> implements Contexed, ExpressionFilterTarget
 	public final ExpressionTargetContainer getProxy(X record){
 		return new ExpressionTargetProxy(getContext(),record);
 	}
+	
 	/** Get the set of defines properties whose resutls may be assigned to the
 	 * specified target type
 	 * 

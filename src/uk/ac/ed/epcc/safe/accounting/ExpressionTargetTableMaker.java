@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
@@ -117,21 +117,22 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 	   while(it.hasNext()){
 		   E record = it.next();
 		   Object key = makeKey(record);
+		   ExpressionTargetContainer et = up.getExpressionTarget(record);
 		   for(String lab : labels){
 			   PropExpression t = props.get(lab);
 			   try{
-			   Object val = up.evaluateExpression(t,record);
-			   if( val != null){
-				res.put(lab, key,val );
-			   }
+				   Object val = et.evaluateExpression(t);
+				   if( val != null){
+					   res.put(lab, key,val );
+				   }
 			   }catch(InvalidPropertyException e){
-				   
+
 			   }
 		   }
 		   if( warning != null ){
 			   try{
 				   boolean set =false;
-				   Object val = up.evaluateExpression(warning,record);
+				   Object val = et.evaluateExpression(warning);
 				   if( val != null){
 					   if( val instanceof Boolean){
 						   set =((Boolean)val).booleanValue();
@@ -147,6 +148,9 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 			   }catch(Throwable t){
 				   c.getService(LoggerService.class).getLogger(getClass()).error("Error evaluating warning",t);
 			   }
+		   }
+		   if( key != et) {
+			   et.release();
 		   }
 	   }
 	   for(String lab : labels){

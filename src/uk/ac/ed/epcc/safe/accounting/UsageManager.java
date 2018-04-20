@@ -668,4 +668,34 @@ public abstract class UsageManager<UR extends ExpressionTargetContainer> impleme
 //		}
 //		return null;
 //	}
+	private UsageProducer getProducerFromTarget(UR record) {
+		for(UsageProducer prod : factories.values()) {
+			if( prod.isMyTarget(record)) {
+				return prod;
+			}
+		}
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.UsageProducer#getExpressionTarget(java.lang.Object)
+	 */
+	@Override
+	public ExpressionTargetContainer getExpressionTarget(UR record) {
+		return getProducerFromTarget(record).getExpressionTarget(record);
+	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.UsageProducer#isMyTarget(java.lang.Object)
+	 */
+	@Override
+	public boolean isMyTarget(UR record) {
+		for(UsageProducer prod : factories.values()) {
+			if( prod.isMyTarget(record)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

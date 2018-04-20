@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionInput;
@@ -239,6 +240,12 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 		
 		return map;
 	}
-	
-	
+	@Override
+	public ExpressionTargetContainer getExpressionTarget(T record) {
+		return record;
+	}
+	@Override
+	public boolean isMyTarget(T record) {
+		return isMine(record);
+	}
 }

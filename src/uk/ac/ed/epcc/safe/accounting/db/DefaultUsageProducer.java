@@ -13,41 +13,22 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
-import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Feature;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
-import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.model.data.Duration;
-import uk.ac.ed.epcc.webapp.preferences.Preference;
-import uk.ac.ed.epcc.webapp.session.SessionService;
-import uk.ac.ed.epcc.webapp.time.Period;
-import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 /** Common base class for turning a {@link DataObjectPropertyFactory} into a {@link UsageProducer}
  * This class implements most of the query logic needed to implement UsageProducer
@@ -111,5 +92,17 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	@Override
 	public final String getImplemenationInfo(PropertyTag<?> tag) {
 		return getAccessorMap().getImplemenationInfo(tag);
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.UsageProducer#getExpressionTarget(java.lang.Object)
+	 */
+	@Override
+	public ExpressionTargetContainer getExpressionTarget(T record) {
+		return record;
+	}
+	@Override
+	public boolean isMyTarget(T record) {
+		return isMine(record);
 	}
 }

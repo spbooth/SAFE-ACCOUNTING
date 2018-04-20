@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
@@ -65,7 +64,6 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
@@ -78,7 +76,6 @@ import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.model.history.HistoryFactory;
-import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 
@@ -453,12 +450,19 @@ extends HistoryFactory<T,H> implements ExpressionTargetFactory<H>,UsageProducer<
 		}	
 	}
 	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator#getProperty(uk.ac.ed.epcc.safe.accounting.properties.PropertyTag, java.lang.Object)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator#getExpressionTarget(java.lang.Object)
 	 */
 	@Override
-	public <X> X getProperty(PropertyTag<X> tag, H record) throws InvalidExpressionException {
-		return getAccessorMap().getProxy(record).getProperty(tag);
+	public ExpressionTargetContainer getExpressionTarget(H record) {
+		return getAccessorMap().getProxy(record);
 	}
+
+	
+	@Override
+	public boolean isMyTarget(H record) {
+		return isMine(record);
+	}
+	
 	public <I, P> Map<I, P> getPropMap(PropertyTag<I> index,
 			PropertyTag<P> property,  RecordSelector selector)
 			throws DataException, CannotFilterException, InvalidExpressionException 

@@ -77,12 +77,4 @@ public interface PropertyTargetGenerator<UR> extends PropertyTargetFactory {
    	public <PT> Set<PT> getValues(PropertyTag<PT> data_tag, RecordSelector selector) 
    		throws Exception;
    	
-   	/** Retrieve a property value.
-   	 * 
-   	 * @param tag
-   	 * @param record
-   	 * @return value
-   	 * @throws InvalidExpressionException 
-   	 */
-    public <T> T getProperty(PropertyTag<T> tag, UR record)throws InvalidExpressionException;
 }

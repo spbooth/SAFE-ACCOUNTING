@@ -27,16 +27,16 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorContributer;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
-import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
-import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory.RescanTableTransition;
 import uk.ac.ed.epcc.safe.accounting.db.CompatibleSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
+import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory.RescanTableTransition;
 import uk.ac.ed.epcc.safe.accounting.db.PropertyMaker;
 import uk.ac.ed.epcc.safe.accounting.db.RepositoryAccessorMap;
+import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.PropertyInfoGenerator;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
-
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -49,7 +49,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.selector.FilterSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.ConfigPlugInOwner;
@@ -70,7 +69,6 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.OrderClause;
-import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.AddClassificationReferenceTransition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
@@ -81,7 +79,6 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
-import uk.ac.ed.epcc.webapp.model.data.TableStructureContributer;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
@@ -91,7 +88,6 @@ import uk.ac.ed.epcc.webapp.session.RoleUpdate;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.session.SignupDateComposite;
 import uk.ac.ed.epcc.webapp.session.WebNameFinder;
-import uk.ac.ed.epcc.webapp.time.Period;
 
 /** An {@link AppUserFactory} that supports accounting properties and parse mechanisms.
  * 
@@ -422,20 +418,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		super.release();
 	}
 	
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator#getProperty(uk.ac.ed.epcc.safe.accounting.properties.PropertyTag, java.lang.Object)
-	 */
-	@Override
-	public <X> X getProperty(PropertyTag<X> tag, T record) throws InvalidExpressionException {
-		return getAccessorMap().getProxy(record).getProperty(tag);
-	}
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator#evaluateExpression(uk.ac.ed.epcc.safe.accounting.properties.PropExpression, java.lang.Object)
-	 */
-	@Override
-	public <I> I evaluateExpression(PropExpression<I> expr, T record) throws InvalidExpressionException {
-		return getAccessorMap().getProxy(record).evaluateExpression(expr);
-	}
+	
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#addSummaryContent(uk.ac.ed.epcc.webapp.content.ContentBuilder)
 	 */
@@ -471,4 +454,18 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		
 		return map;
 	}
+
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator#getExpressionTarget(java.lang.Object)
+	 */
+	@Override
+	public ExpressionTargetContainer getExpressionTarget(P record) {
+		return getAccessorMap().getProxy(record);
+	}
+
+	@Override
+	public boolean isMyTarget(P record) {
+		return isMine(record);
+	}
+	
 }

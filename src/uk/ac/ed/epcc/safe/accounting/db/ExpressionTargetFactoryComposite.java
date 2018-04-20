@@ -9,8 +9,8 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.PropertyInfoGenerator;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -30,7 +30,6 @@ import uk.ac.ed.epcc.webapp.model.data.Composite;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
-import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 /** A {@link Composite} that implements {@link ExpressionTargetFactory}
@@ -251,17 +250,14 @@ public class ExpressionTargetFactoryComposite<T extends DataObject & ExpressionT
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator#getProperty(uk.ac.ed.epcc.safe.accounting.properties.PropertyTag, java.lang.Object)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator#getExpressionTarget(java.lang.Object)
 	 */
 	@Override
-	public <X> X getProperty(PropertyTag<X> tag, T record) throws InvalidExpressionException {
-		return getAccessorMap().getProxy(record).getProperty(tag);
+	public ExpressionTargetContainer getExpressionTarget(T record) {
+		return getAccessorMap().getProxy(record);
 	}
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator#evaluateExpression(uk.ac.ed.epcc.safe.accounting.properties.PropExpression, java.lang.Object)
-	 */
 	@Override
-	public <I> I evaluateExpression(PropExpression<I> expr, T record) throws InvalidExpressionException {
-		return getAccessorMap().getProxy(record).evaluateExpression(expr);
+	public boolean isMyTarget(T record) {
+		return getFactory().isMine(record);
 	}
 }

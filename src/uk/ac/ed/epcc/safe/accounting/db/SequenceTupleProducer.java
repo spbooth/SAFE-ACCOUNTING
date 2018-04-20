@@ -110,8 +110,8 @@ extends TupleUsageProducer<A,AF,UR> {
 
 	public static  class PeriodTuple<A extends DataObject & ExpressionTarget> extends TupleUsageProducer.TupleUsageRecord<A> implements TimePeriod{
 
-		public PeriodTuple(AppContext conn, TupleAccessorMap map) {
-			super(conn, map);
+		public PeriodTuple(SequenceTupleProducer prod) {
+			super(prod);
 		}
 
 		@Override
@@ -132,7 +132,7 @@ extends TupleUsageProducer<A,AF,UR> {
 	 */
 	@Override
 	public UR makeTuple() {
-		return (UR) new PeriodTuple<A>(getContext(), map);
+		return (UR) new PeriodTuple<A>(this);
 	}
 
 	/* (non-Javadoc)

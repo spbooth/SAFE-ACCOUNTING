@@ -19,7 +19,6 @@ package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.db.GeneratorReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.webapp.Tagged;
 
 /** Interface implemented by classes that can provide Usage information to the reports.
@@ -37,5 +36,4 @@ ExpressionTargetGenerator<UR>,
 Tagged, 
 ReductionProducer<UR>{	    
    
-
 }

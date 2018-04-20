@@ -39,7 +39,7 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 	 */
 	@Override
 	public UR makeTuple() {
-		return (UR) new TupleUsageRecord<A>(getContext(), map);
+		return (UR) new TupleUsageRecord<A>(this);
 	}
 
 	/* (non-Javadoc)
@@ -57,8 +57,8 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 	
 	public static  class TupleUsageRecord<A extends DataObject> extends PropertyTupleFactory.PropertyTuple<A> implements ExpressionTargetContainer, Identified{
 
-		public TupleUsageRecord(AppContext conn,TupleAccessorMap map) {
-			super(conn,map);
+		public TupleUsageRecord(TupleUsageProducer prod) {
+			super(prod);
 		}
 
 		@Override

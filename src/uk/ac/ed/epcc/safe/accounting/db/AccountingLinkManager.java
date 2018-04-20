@@ -13,7 +13,6 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,7 +31,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
-import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -42,9 +40,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureListener;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
@@ -52,7 +48,6 @@ import uk.ac.ed.epcc.webapp.model.data.LinkManager;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
-import uk.ac.ed.epcc.webapp.time.Period;
 
 /** A LinkManager that also supports properties.
  * 
@@ -256,7 +251,7 @@ public final PropExpressionMap getDerivedProperties() {
 	}
 
 	
-
+	@Override
 	public <I> boolean compatible(PropExpression<I> expr) {
 		return getAccessorMap().resolves(expr,false);
 	}
@@ -322,10 +317,21 @@ public final PropExpressionMap getDerivedProperties() {
 		}
 		
 	}
-	
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator#getExpressionTarget(java.lang.Object)
+	 */
+	@Override
+	public ExpressionTargetContainer getExpressionTarget(T record) {
+		return getAccessorMap().getProxy(record);
+	}
 	public final T find(RecordSelector sel) throws DataException, CannotFilterException {
 		return find(getFilter(sel));
 	}
+	@Override
+	public boolean isMyTarget(T record) {
+		return isMine(record);
+	}
+	
 	@Override
 	public void release() {
 		if( map != null){

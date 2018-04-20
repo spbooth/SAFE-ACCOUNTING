@@ -34,11 +34,8 @@ import org.w3c.dom.Text;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -53,7 +50,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  */
 
 
-public class FormatExtension extends ReportExtension {
+public class FormatExtension<T> extends ReportExtension {
     public static final String FORMAT_LOC="http://safe.epcc.ed.ac.uk/format";
 	public FormatExtension(AppContext conn, NumberFormat nf)
 			throws ParserConfigurationException {
@@ -74,7 +71,7 @@ public class FormatExtension extends ReportExtension {
 		Document doc = getDocument();
 		try {
 		DocumentFragment result = doc.createDocumentFragment();
-		UsageProducer<?> prod = recordSet.getUsageProducer();
+		UsageProducer<T> prod = recordSet.getUsageProducer();
 		ExpressionExpander expander = new ExpressionExpander(getContext(),parse_vis);
 		AndRecordSelector sel = recordSet.getPeriodSelector(period);
 		
@@ -95,8 +92,7 @@ public class FormatExtension extends ReportExtension {
 			count = getIntParam("Count", -1, limit);
 
 		}
-		
-		Iterator<? extends ExpressionTargetContainer> it=null;
+		Iterator<T> it=null;
 		
 			if( start == -1 && count == -1){
 				it = prod.getIterator(sel);
@@ -106,7 +102,8 @@ public class FormatExtension extends ReportExtension {
 		
 		
 		while(it.hasNext()){
-			ExpressionTargetContainer rec = it.next();
+			T obj = it.next();
+			ExpressionTargetContainer rec = prod.getExpressionTarget(obj);
 			expander.setExpressionTarget(rec);
 			for(int i=0;i<template.getLength();i++){
 				Node new_n = copyNode(expander,doc, template.item(i));
@@ -115,6 +112,7 @@ public class FormatExtension extends ReportExtension {
 				}
 			}
 			result.appendChild(doc.createTextNode("\n"));
+			rec.release();
 		}
 		//result.normalize();
 		return result;

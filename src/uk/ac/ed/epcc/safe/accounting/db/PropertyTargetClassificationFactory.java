@@ -23,6 +23,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.PropertyInfoGenerator;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -46,7 +47,6 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
-import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 public abstract class PropertyTargetClassificationFactory<T extends AccountingClassification> extends
@@ -184,17 +184,16 @@ public abstract class PropertyTargetClassificationFactory<T extends AccountingCl
 		
 	}
 	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator#getProperty(uk.ac.ed.epcc.safe.accounting.properties.PropertyTag, java.lang.Object)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator#getExpressionTarget(java.lang.Object)
 	 */
 	@Override
-	public <X> X getProperty(PropertyTag<X> tag, T record) throws InvalidExpressionException {
-		return getAccessorMap().getProxy(record).getProperty(tag);
+	public ExpressionTargetContainer getExpressionTarget(T record) {
+		return getAccessorMap().getProxy(record);
 	}
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator#evaluateExpression(uk.ac.ed.epcc.safe.accounting.properties.PropExpression, java.lang.Object)
-	 */
+
+	
 	@Override
-	public <I> I evaluateExpression(PropExpression<I> expr, T record) throws InvalidExpressionException {
-		return getAccessorMap().getProxy(record).evaluateExpression(expr);
+	public boolean isMyTarget(T record) {
+		return isMine(record);
 	}
 }
