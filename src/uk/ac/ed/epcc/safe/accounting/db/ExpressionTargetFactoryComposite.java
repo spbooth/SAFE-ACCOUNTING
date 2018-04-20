@@ -8,7 +8,6 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.PropertyInfoGenerator;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -41,7 +40,7 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
  *
  * @param <T>
  */
-public class ExpressionTargetFactoryComposite<T extends DataObject & ExpressionTarget> extends AccountingComposite implements ExpressionTargetFactory<T>, TableContentProvider {
+public class ExpressionTargetFactoryComposite<T extends DataObject> extends Composite<T,ExpressionTargetFactoryComposite> implements ExpressionTargetFactory<T>, TableContentProvider {
 
 	public ExpressionTargetFactoryComposite(DataObjectFactory fac) {
 		super(fac);
@@ -259,5 +258,9 @@ public class ExpressionTargetFactoryComposite<T extends DataObject & ExpressionT
 	@Override
 	public boolean isMyTarget(T record) {
 		return getFactory().isMine(record);
+	}
+	@Override
+	protected Class<? super ExpressionTargetFactoryComposite> getType() {
+		return ExpressionTargetFactoryComposite.class;
 	}
 }

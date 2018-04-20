@@ -104,11 +104,11 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 			throws Exception {
 		return namePropExpression.getTargetRef().accept(this);
 	}
-	public <T extends DataObject & ExpressionTarget> Boolean visitDoubleDeRefExpression(
+	public <T extends DataObject> Boolean visitDoubleDeRefExpression(
 			DoubleDeRefExpression<T, ?> deRefExpression) throws Exception {
 		return visitDeRefExpression(deRefExpression);
 	}
-	public <T extends DataObject & ExpressionTarget> Boolean visitDeRefExpression(
+	public <T extends DataObject> Boolean visitDeRefExpression(
 			DeRefExpression<T, ?> deRefExpression) throws Exception {
 		ReferenceExpression<T> ref = deRefExpression.getTargetObject();
 		Boolean accept = ref.accept(this);
@@ -117,8 +117,13 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 				// ok we now the reference property exists can we check the remote
 				// expression we need an AppContext to do this
 				@SuppressWarnings("unchecked")
-				ExpressionTargetFactory<T> fac  = (ExpressionTargetFactory<T>) ref.getFactory(conn);
-				return fac.getAccessorMap().resolves(deRefExpression.getExpression(), false);
+				
+				ExpressionTargetFactory<T> fac  = ExpressionCast.getExpressionTargetFactory(ref.getFactory(conn));
+				if( fac != null) {
+					return fac.getAccessorMap().resolves(deRefExpression.getExpression(), false);
+				}else{
+					return false;
+				}
 			}
 		}
 		return accept;

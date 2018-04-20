@@ -24,7 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.IndexReduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionProducer;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -35,10 +35,10 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
  * 
  * @author spb
  *
- * @param <E> type of {@link ExpressionTarget}
+ * @param <E> type of target
  * @param <F> type of {@link ExpressionTargetGenerator}
  */
-public class GeneratorReductionHandler<E extends ExpressionTarget,F extends ExpressionTargetGenerator<E>> implements ReductionProducer<E> {
+public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>> implements ReductionProducer<E> {
 
 	public GeneratorReductionHandler(F fac) {
 		super();
@@ -89,7 +89,8 @@ public class GeneratorReductionHandler<E extends ExpressionTarget,F extends Expr
 			Map<ExpressionTuple, ReductionMapResult> result = new HashMap<ExpressionTuple, ReductionMapResult>();
 			Iterator<E> it = fac.getIterator(selector);
 			while(it.hasNext()){
-				E rec = it.next();
+				E record = it.next();
+				ExpressionTargetContainer rec = fac.getExpressionTarget(record);
 				ExpressionTuple tup = new ExpressionTuple(keys, rec);
 				Map<ReductionTarget,Object> old = result.get(tup);
 				if( old == null ){
@@ -103,6 +104,7 @@ public class GeneratorReductionHandler<E extends ExpressionTarget,F extends Expr
 						old.put(r, r.combine(old.get(r), rec.evaluateExpression(r.getExpression(),r.getDefault())));
 					}
 				}
+				rec.release();
 			}
 			return result;
 	}
@@ -118,7 +120,9 @@ public class GeneratorReductionHandler<E extends ExpressionTarget,F extends Expr
 		Iterator<E> it = fac.getIterator(sel);
 		while(it.hasNext()){
 			E o = it.next();
-			result = type.combine(result, o.evaluateExpression(type.getExpression()));
+			ExpressionTargetContainer et = fac.getExpressionTarget(o);
+			result = type.combine(result, et.evaluateExpression(type.getExpression()));
+			et.release();
 		}
 		
 		return result;
@@ -135,12 +139,14 @@ public class GeneratorReductionHandler<E extends ExpressionTarget,F extends Expr
 		Iterator<E> it = fac.getIterator(selector);
 		while(it.hasNext()){
 			E o = it.next();
-			I ind = o.evaluateExpression(index);
+			ExpressionTargetContainer et = fac.getExpressionTarget(o);
+			I ind = et.evaluateExpression(index);
 			Number old = result.get(ind);
 			if( old == null ){
 				old = property.getDefault();
 			}
-			result.put(ind, property.combine(old, o.evaluateExpression(property.getExpression())));
+			result.put(ind, property.combine(old, et.evaluateExpression(property.getExpression())));
+			et.release();
 		}
 		
 		return result;

@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
@@ -195,7 +196,7 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	public SQLExpression visitDurationSecondPropExpression(DurationSecondsPropExpression expr) throws Exception{
 		throw new InvalidSQLPropertyException("DurationSecondsPropExpression not representable as SQLExpression");
 	}
-	public <T extends DataObject & ExpressionTarget> SQLExpression visitDoubleDeRefExpression(
+	public <T extends DataObject> SQLExpression visitDoubleDeRefExpression(
 			DoubleDeRefExpression<T, ?> dre) throws Exception {
 		
 		return visitDeRefExpression(dre);
@@ -203,13 +204,17 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	
 	public abstract <T> SQLValue<T> getSQLValue(PropExpression<T> expr) throws InvalidSQLPropertyException;
 	@SuppressWarnings("unchecked")
-	public <T extends DataObject & ExpressionTarget> SQLExpression visitDeRefExpression(
+	public <T extends DataObject> SQLExpression visitDeRefExpression(
 			DeRefExpression<T, ?> dre) throws Exception {
 		SQLValue a =  getSQLValue(dre.getTargetObject());
 		
 		if( a != null && a instanceof IndexedSQLValue ){
 			IndexedSQLValue ifv = (IndexedSQLValue)a;
-			SQLExpression remote = ((ExpressionTargetFactory)ifv.getFactory()).getAccessorMap().getSQLExpression(dre.getExpression());
+			ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(ifv.getFactory());
+			if( etf == null) {
+				throw new InvalidSQLPropertyException(dre.getTargetObject());
+			}
+			SQLExpression remote = etf.getAccessorMap().getSQLExpression(dre.getExpression());
 			if( remote instanceof DateSQLExpression){
 				return new DateDerefSQLExpression<>(ifv, (DateSQLExpression)remote);
 			}

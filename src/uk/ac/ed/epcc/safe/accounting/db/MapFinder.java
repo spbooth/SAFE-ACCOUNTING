@@ -15,8 +15,6 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.util.Map;
 
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MapMapper;
@@ -28,7 +26,7 @@ import uk.ac.ed.epcc.webapp.model.data.Repository;
 
 
 
-public class MapFinder<T extends DataObject&ExpressionTarget,K,R> extends FilterFinder<T, Map<K,R>> {
+public class MapFinder<T extends DataObject,K,R> extends FilterFinder<T, Map<K,R>> {
 	private final Repository res;
 	public MapFinder(AccessorMap<T> map,Repository res, PropertyTag<K> key,
 			PropertyTag<R> value) throws InvalidSQLPropertyException {

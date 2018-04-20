@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
@@ -36,6 +37,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
@@ -49,20 +51,22 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  */
 
 
-public class DerefSQLValue<H extends DataObject,R extends DataObject & ExpressionTarget, T> extends
+public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 		RemoteSQLValue<H,R, T> implements FilterProvider<H,T>{
 	
 	protected final PropExpression<T> expr;
 	protected final Class<? super H> h_type;
+	protected final ExpressionTargetFactory<R> etf;
 	public DerefSQLValue(IndexedSQLValue<H,R> a, PropExpression<T> expr,
 			AppContext conn) throws Exception {
 		super(conn, a);
 		this.expr = expr;
 		this.h_type=a.getFilterType();
-		Class r_class=a.getFactory().getTarget();
+		DataObjectFactory<R> factory = a.getFactory();
+		etf=ExpressionCast.getExpressionTargetFactory(factory);
 		// run-time check that this really is an ExpressionTarget
-		if( ! ExpressionTarget.class.isAssignableFrom(r_class)){
-			throw new PropertyCastException("Class "+r_class.getCanonicalName()+" referenced from DerefExpression does not implement ExpressionTarget");
+		if(  etf == null){
+			throw new PropertyCastException("Class "+factory.getClass().getCanonicalName()+" from DerefExpression Cannot be converted to an ExpressionTargetFactory");
 		}
 	}
 	
@@ -85,7 +89,12 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 			if (o == null) {
 				return null;
 			}
-			T result = o.evaluateExpression(expr);
+			ExpressionTarget et = etf.getExpressionTarget(o);
+			if( et == null) {
+				getLogger().error("Not an ExpressionTarget "+o.getClass().getCanonicalName());
+				return null;
+			}
+			T result = et.evaluateExpression(expr);
 			assert(result == null || getTarget().isAssignableFrom(result.getClass()));
 			return result;
 		} catch (InvalidExpressionException e) {
@@ -126,8 +135,9 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 				throw new CannotFilterException(e);
 			}
 			// AccessorMap always can generate filters
-			if( producer instanceof ExpressionTargetFactory){
-				ExpressionFilterTarget eft = ((ExpressionTargetFactory) producer).getAccessorMap();
+			ExpressionTargetFactory tmp = ExpressionCast.getExpressionTargetFactory(producer);
+			if( tmp != null){
+				ExpressionFilterTarget eft = tmp.getAccessorMap();
 				
 				return a.getSQLFilter(FilterConverter.convert(eft.getFilter(expr, match, val)));
 				
@@ -158,9 +168,10 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 			} catch (Exception e) {
 				throw new CannotFilterException(e);
 			}
-			if( producer instanceof ExpressionTargetFactory){
+			ExpressionTargetFactory tmp = ExpressionCast.getExpressionTargetFactory(producer);
+			if( tmp != null){
 				// Get filter from AccessorMap
-				ExpressionFilterTarget eft = ((ExpressionTargetFactory) producer).getAccessorMap();
+				ExpressionFilterTarget eft = tmp.getAccessorMap();
 				
 				return a.getSQLFilter(FilterConverter.convert(eft.getOrderFilter(descending, expr)));
 				
@@ -188,8 +199,9 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject & Expressio
 				throw new CannotFilterException(e);
 			}
 			// Get filters from AccessorMap
-			if( producer instanceof ExpressionTargetFactory){
-				ExpressionFilterTarget eft = ((ExpressionTargetFactory) producer).getAccessorMap();
+			ExpressionTargetFactory tmp = ExpressionCast.getExpressionTargetFactory(producer);
+			if( tmp != null){
+				ExpressionFilterTarget eft = tmp.getAccessorMap();
 				
 				return a.getSQLFilter(FilterConverter.convert(eft.getNullFilter(expr, is_null)));
 				

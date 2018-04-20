@@ -74,7 +74,7 @@ public abstract class EvaluatePropExpressionVisitor implements
 	
 
 	@SuppressWarnings("unchecked")
-	public <T extends DataObject & ExpressionTarget> Object visitDeRefExpression(
+	public <T extends DataObject> Object visitDeRefExpression(
 			DeRefExpression<T, ?> deRefExpression) throws Exception {
 		IndexedReference ref = (IndexedReference) deRefExpression
 				.getTargetObject().accept(this);
@@ -95,22 +95,23 @@ public abstract class EvaluatePropExpressionVisitor implements
 		}
 		Indexed target = ref.getIndexed(getContext());
 		PropExpression<?> expression = deRefExpression.getExpression();
-		if (target instanceof ExpressionTarget) {
+		ExpressionTarget et = ExpressionCast.getExpressionTarget(target);
+		if (et != null) {
 
-			return ((ExpressionTarget) target).evaluateExpression(expression);
+			return et.evaluateExpression(expression);
 		} else if (target instanceof PropertyTarget) {
 			PropertyTargetEvaluatePropExpressionVisitor vis = new PropertyTargetEvaluatePropExpressionVisitor(getContext(), (PropertyTarget) target);
 			return expression.accept(vis);
 		}
 		throw new PropertyCastException(
-				"Target of DeRefExpresion not an ExpressionTarget");
+				"Target of DeRefExpresion cannot be converted to ExpressionTarget");
 	}
 
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor#visitdoubleDeRefExpression(uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression)
 	 */
 	@Override
-	public <T extends DataObject & ExpressionTarget> Object visitDoubleDeRefExpression(
+	public <T extends DataObject> Object visitDoubleDeRefExpression(
 			DoubleDeRefExpression<T, ?> deRefExpression) throws Exception {
 		// No special handling
 		return visitDeRefExpression(deRefExpression);

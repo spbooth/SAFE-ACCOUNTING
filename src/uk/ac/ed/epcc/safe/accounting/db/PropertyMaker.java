@@ -24,7 +24,7 @@ import uk.ac.ed.epcc.webapp.model.data.SetMapper;
 
 
 
-public class PropertyMaker<T extends DataObject&ExpressionTarget,PT> extends SetMaker<T, PT> {
+public class PropertyMaker<T extends DataObject,PT> extends SetMaker<T, PT> {
 	private final Repository res;
 	public PropertyMaker(AccessorMap<T> map,Repository res,PropertyTag<PT> propertyTag, boolean distinct) throws InvalidSQLPropertyException {
 		super(map.getContext(),map.getTarget());			

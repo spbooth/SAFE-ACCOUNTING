@@ -16,7 +16,6 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.AverageMapMapper;
@@ -30,7 +29,7 @@ import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 
 
 
-public class MapReductionFinder<T extends ExpressionTarget,K> extends FilterFinder<T, Map<K,Number>> {
+public class MapReductionFinder<T,K> extends FilterFinder<T, Map<K,Number>> {
 	private final AccessorMap<T> map;
 	public MapReductionFinder(AccessorMap<T> map, PropExpression<K> key,
 			ReductionTarget<Number> value) throws InvalidSQLPropertyException {

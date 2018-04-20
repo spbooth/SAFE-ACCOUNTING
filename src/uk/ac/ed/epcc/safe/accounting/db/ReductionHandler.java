@@ -38,9 +38,9 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
  * @see GeneratorReductionHandler
  * @author spb
  *
- * @param <E> type of {@link ExpressionTarget}
+ * @param <E> type of record
  */
-public class ReductionHandler<E extends ExpressionTarget,F extends ExpressionTargetFactory<E>> extends GeneratorReductionHandler<E, F> {
+public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends GeneratorReductionHandler<E, F> {
 
 	public ReductionHandler(F fac) {
 		super(fac);

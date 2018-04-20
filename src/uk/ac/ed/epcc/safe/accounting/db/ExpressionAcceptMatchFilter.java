@@ -37,6 +37,9 @@ public class ExpressionAcceptMatchFilter<T,I> extends AbstractAcceptFilter<T>{
 	public boolean accept(T t) {
 		try {
 			ExpressionTarget o = map.getProxy(t);
+			if( o == null) {
+				return false;
+			}
 			I res1 = o.evaluateExpression(expr1);
 			I res2 = o.evaluateExpression(expr2);
 			if( res1 == null || res1 == null) {

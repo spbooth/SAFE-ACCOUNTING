@@ -45,7 +45,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.ResultMapper;
  *
  * @param <T>
  */
-public class IndexReductionMapper<T extends ExpressionTarget> extends GeneralMapMapper<ExpressionTuple, ReductionMapResult>{
+public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, ReductionMapResult>{
 		private Set<ReductionTarget> sum;
 		private Set<ReductionTarget> skip;
 		private Map<ReductionTarget,Object> default_map;

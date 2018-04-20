@@ -14,14 +14,13 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ReductionMapper;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterFinder;
 
 
 
-public class FilterReduction<T extends ExpressionTarget,R> extends FilterFinder<T, R> {
+public class FilterReduction<T,R> extends FilterFinder<T, R> {
 	private final AccessorMap<T> map;
 	public FilterReduction(AccessorMap<T> map,ReductionTarget<R> tag) throws InvalidSQLPropertyException {
 		super(map.getContext(),map.getTarget(),true);

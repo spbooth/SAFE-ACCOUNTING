@@ -76,7 +76,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  */
 
 
-public class RepositoryAccessorMap<X extends DataObject&ExpressionTarget> extends AccessorMap<X>{
+public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 	private static final Feature CACHE_CUTOFFS = new Preference("reporting.cache_cutoff",true,"Cache the cutoffs in session");
 
 	private final DataObjectFactory<X> fac;

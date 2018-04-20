@@ -27,7 +27,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.FilterFinder;
 
 
 
-public class IndexReductionFinder<T extends ExpressionTarget> extends FilterFinder<T,Map<ExpressionTuple,ReductionMapResult>>{
+public class IndexReductionFinder<T> extends FilterFinder<T,Map<ExpressionTuple,ReductionMapResult>>{
 	private final AccessorMap<T> map;
 	public IndexReductionFinder(AccessorMap<T> map,Set<ReductionTarget> sum,ReductionMapResult defs) throws InvalidPropertyException, IllegalReductionException, CannotUseSQLException {
 		super(map.getContext(),map.getTarget(),true);

@@ -13,7 +13,6 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
@@ -40,6 +39,6 @@ public interface AccessorContributer {
 	 * @param finder
 	 * @param derived
 	 */
-	public <P extends DataObject&ExpressionTarget> void customAccessors(AccessorMap<P> mapi2,
+	public <P extends DataObject> void customAccessors(AccessorMap<P> mapi2,
 			MultiFinder finder, PropExpressionMap derived);
 }
