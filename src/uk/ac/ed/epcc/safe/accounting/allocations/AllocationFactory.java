@@ -141,7 +141,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 
 		@SuppressWarnings("unchecked")
 		public ViewTransitionResult getViewTransition() {
-			return new ViewTransitionResult((AllocationFactory)getFac(), this);
+			return new ViewTransitionResult((AllocationFactory)getFactory(), this);
 		}
 
 

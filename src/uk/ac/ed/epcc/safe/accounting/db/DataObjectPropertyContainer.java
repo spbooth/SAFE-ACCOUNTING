@@ -27,6 +27,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.Owned;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
@@ -38,7 +39,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  */
 
 
-public class DataObjectPropertyContainer extends DataObject implements ExpressionTargetContainer{
+public class DataObjectPropertyContainer extends DataObject implements ExpressionTargetContainer, Owned{
     private final DataObjectPropertyFactory<?> fac;
     private final ExpressionTargetContainer proxy;
 	@SuppressWarnings("unchecked")
@@ -77,15 +78,16 @@ public class DataObjectPropertyContainer extends DataObject implements Expressio
 	
 	@SuppressWarnings("unchecked")
 	public final boolean supports(PropertyTag<?> tag){
-		return getFac().getAccessorMap().hasProperty(tag);
+		return getFactory().getAccessorMap().hasProperty(tag);
 	}
 	public final boolean writable(PropertyTag<?> tag){
-		return getFac().getAccessorMap().writable(tag);
+		return getFactory().getAccessorMap().writable(tag);
 	}
 	public ExpressionTargetFactory getExpressionTargetFactory() {
-		return getFac();
+		return getFactory();
 	}
-	protected DataObjectPropertyFactory getFac() {
+	@Override
+	public final DataObjectPropertyFactory getFactory() {
 		return fac;
 	}
 	public Set<PropertyTag> getDefinedProperties() {

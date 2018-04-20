@@ -152,8 +152,8 @@ public abstract class AggregateUsageRecordFactory
 				return false;
 			}
 			
-			for( PropertyTag t : ((AggregateUsageRecordFactory)getFac()).getKeyProperties()){
-				if( getFac().hasProperty(t) ){
+			for( PropertyTag t : ((AggregateUsageRecordFactory)getFactory()).getKeyProperties()){
+				if( getFactory().hasProperty(t) ){
 					Object a = getProperty(t,null);
 					if( a != null ){
 						if(! a.equals(rec.getProperty(t,null))){

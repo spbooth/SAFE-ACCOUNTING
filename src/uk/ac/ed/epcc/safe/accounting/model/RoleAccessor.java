@@ -20,9 +20,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Accessor;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
-import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
-import uk.ac.ed.epcc.webapp.jdbc.filter.OrderFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.session.AppUser;
 import uk.ac.ed.epcc.webapp.session.AppUserFactory;
@@ -36,7 +34,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class RoleAccessor<T extends AppUser & PropertyTarget> implements Accessor<Boolean,T>, FilterProvider<T,Boolean> {
+public class RoleAccessor<T extends AppUser> implements Accessor<Boolean,T>, FilterProvider<T,Boolean> {
     private final SessionService<T> serv;
 	private final String role;
 	RoleAccessor(SessionService<T> serv, String property){

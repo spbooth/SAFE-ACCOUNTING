@@ -45,12 +45,11 @@ import uk.ac.ed.epcc.webapp.model.data.reference.ReferenceProvider;
 
 
 public class AccountingClassification extends Classification implements PropertyContainer, ExpressionTarget , ReferenceProvider, ExpressionTargetContainer{
-    protected final PropertyTargetClassificationFactory fac;
+  
     protected final ExpressionTargetContainer proxy;
 	@SuppressWarnings("unchecked")
 	protected AccountingClassification(PropertyTargetClassificationFactory<?> fac,Record res) {
 		super(res, fac);
-		this.fac=fac;
 		AccessorMap map = fac.getAccessorMap();
 		proxy = map.getProxy(this);
 	}
@@ -94,13 +93,10 @@ public class AccountingClassification extends Classification implements Property
     }
 
 	public ExpressionTargetFactory getExpressionTargetFactory() {
-		return fac;
+		return (ExpressionTargetFactory) getFactory();
 	}
 
-	@SuppressWarnings("unchecked")
-	public PropertyTargetClassificationFactory<? extends AccountingClassification> getFactory(){
-		return fac;
-	}
+	
 
 	@SuppressWarnings("unchecked")
 	public IndexedReference getReference() {

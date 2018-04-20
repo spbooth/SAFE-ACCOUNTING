@@ -211,7 +211,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 	
 	
 	
-	public void resetStructure() {
+	public final void resetStructure() {
 		initAccessorMap(getContext(), getConfigTag());
 	}
 

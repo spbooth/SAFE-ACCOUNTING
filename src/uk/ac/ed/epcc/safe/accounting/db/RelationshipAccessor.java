@@ -16,7 +16,6 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Accessor;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
@@ -40,7 +39,7 @@ import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
  */
 
 
-public class RelationshipAccessor<T extends DataObject & PropertyTarget> implements Accessor<Boolean,T>, FilterProvider<T,Boolean> {
+public class RelationshipAccessor<T extends DataObject> implements Accessor<Boolean,T>, FilterProvider<T,Boolean> {
     
 	private DataObjectFactory<T> fac;
 	private String role;
