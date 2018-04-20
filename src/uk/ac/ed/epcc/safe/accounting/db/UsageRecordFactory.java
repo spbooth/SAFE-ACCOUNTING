@@ -107,7 +107,7 @@ public abstract class UsageRecordFactory<T extends UsageRecordFactory.Use> exten
 			record.setOptionalProperty(INSERTED_TIMESTAMP, start);
 		}
 		public UsageRecordFactory getUsageRecordFactory(){
-			return (UsageRecordFactory) getFac();
+			return (UsageRecordFactory) getFactory();
 		}
 
 //		
