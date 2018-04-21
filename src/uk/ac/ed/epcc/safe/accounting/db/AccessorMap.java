@@ -115,6 +115,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 public abstract class AccessorMap<X extends ExpressionTarget> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
 	public static final Feature EVALUATE_CACHE_FEATURE = new Feature("evaluate.cache",true,"cache expression evaluations in ExpressionTargets");
+	public static final Feature FORCE_SQLVALUE_FEATURE = new Feature("accounting.force_sqlvalue",false,"Use SQLValues in preference to SQLExpressions");
 	protected final Class<? super X> target;
 	
 	protected final String config_tag;
@@ -549,12 +550,16 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
 	private SQLExpressionVisitor sql_expression_visitor = null;
 	@SuppressWarnings("unchecked")
 	public final <T> SQLExpression<T> getSQLExpression(PropExpression<T> expr) throws InvalidSQLPropertyException {
+	
 		if( expr instanceof PropertyTag){
 			PropertyTag<T> tag = (PropertyTag<T>) expr;
 			SQLExpression<T> a = expression_map.get(tag);
 			if( a != null ){
 				return a;
 			}
+		}
+		if( FORCE_SQLVALUE_FEATURE.isEnabled(getContext())) {
+			throw new InvalidSQLPropertyException(expr);
 		}
 		if( sql_expression_visitor == null ){
 			sql_expression_visitor= new SQLExpressionVisitor(getContext());

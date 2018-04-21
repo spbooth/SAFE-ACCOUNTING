@@ -250,7 +250,7 @@ public abstract class EvaluatePropExpressionVisitor implements
 			throws Exception {
 		for(CasePropExpression.Case<T> c: expr.getCases()){
 			if(matches(c.sel)){
-				c.expr.accept(this);
+				return c.expr.accept(this);
 			}
 		}
 		PropExpression<? extends T> def = expr.getDefaultExpression();
