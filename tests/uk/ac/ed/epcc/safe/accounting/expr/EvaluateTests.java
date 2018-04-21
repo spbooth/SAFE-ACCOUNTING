@@ -108,11 +108,11 @@ public class EvaluateTests extends WebappTestBase {
 		Calendar c = Calendar.getInstance();
 		
 		c.clear();
-		c.set(1965, 12, 12);
+		c.set(1965,Calendar.DECEMBER, 12);
 		DerivedPropertyMap obj = new DerivedPropertyMap(ctx);
 		obj.setProperty(DATE_A, c.getTime());
 		
-		c.set(1965, 12,25);
+		c.set(1965,Calendar.DECEMBER,25);
 		obj.setProperty(DATE_B, c.getTime());
 		
 		Duration d = obj.evaluateExpression(new DurationPropExpression(DATE_A, DATE_B));
@@ -123,11 +123,11 @@ public class EvaluateTests extends WebappTestBase {
 		Calendar c = Calendar.getInstance();
 		
 		c.clear();
-		c.set(1965, 12, 12);
+		c.set(1965,Calendar.DECEMBER, 12);
 		DerivedPropertyMap obj = new DerivedPropertyMap(ctx);
 		obj.setProperty(DATE_A, c.getTime());
 		
-		c.set(1965, 12,25);
+		c.set(1965,Calendar.DECEMBER,25);
 		obj.setProperty(DATE_B, c.getTime());
 		
 		Number n = obj.evaluateExpression(new DurationSecondsPropExpression(new DurationPropExpression(DATE_A, DATE_B)));
@@ -138,7 +138,7 @@ public class EvaluateTests extends WebappTestBase {
 		Calendar c = Calendar.getInstance();
 		
 		c.clear();
-		c.set(1965, 12, 12);
+		c.set(1965,Calendar.DECEMBER, 12);
 		DerivedPropertyMap obj = new DerivedPropertyMap(ctx);
 		obj.setProperty(DATE_A, c.getTime());
 		
@@ -245,7 +245,7 @@ public class EvaluateTests extends WebappTestBase {
 		Calendar c = Calendar.getInstance();
 		
 		c.clear();
-		c.set(1965, 12, 12);
+		c.set(1965,Calendar.DECEMBER, 12);
 		obj.setProperty(LONG_A, c.getTimeInMillis());
 		
 		Object res = obj.evaluateExpression(new ConvertMillisecondToDatePropExpression(LONG_A));
@@ -267,15 +267,16 @@ public class EvaluateTests extends WebappTestBase {
 	}
 	@Test
 	public void arrayFuncDate() throws InvalidPropertyException, PropertyCastException {
+		DerivedPropertyMap obj = new DerivedPropertyMap(ctx);
 		Calendar c = Calendar.getInstance();
 		
 		c.clear();
-		c.set(1965, 12, 12);
-		DerivedPropertyMap obj = new DerivedPropertyMap(ctx);
+		c.set(1965,Calendar.DECEMBER, 12);
+		
 		Date least = c.getTime();
 		obj.setProperty(DATE_A, least);
 		
-		c.set(1965, 12,25);
+		c.set(1965,Calendar.DECEMBER,25);
 		Date later = c.getTime();
 		obj.setProperty(DATE_B, later);
 		Date res = obj.evaluateExpression(new ArrayFuncPropExpression<Date>(Date.class, ArrayFunc.LEAST,new PropExpression[] { DATE_A,DATE_B}));
@@ -307,12 +308,12 @@ public class EvaluateTests extends WebappTestBase {
 		Calendar c = Calendar.getInstance();
 		
 		c.clear();
-		c.set(1965, 12, 12);
+		c.set(1965,Calendar.DECEMBER, 12);
 		DerivedPropertyMap obj = new DerivedPropertyMap(ctx);
 		Date least = c.getTime();
 		obj.setProperty(DATE_A, least);
 		
-		c.set(1965, 12,25);
+		c.set(1965,Calendar.DECEMBER,25);
 		Date later = c.getTime();
 		obj.setProperty(DATE_B, later);
 		Boolean res = obj.evaluateExpression(new ComparePropExpression<>(DATE_B, MatchCondition.GT, DATE_A));
