@@ -8,19 +8,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.StringBufferInputStream;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.TestTimeService;
+import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
 import uk.ac.ed.epcc.webapp.model.data.stream.MimeStreamData;
 import uk.ac.ed.epcc.webapp.model.serv.ServeDataProducer;
 import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
 import uk.ac.ed.epcc.webapp.servlet.AbstractTransitionServletTest;
 import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.time.CalendarFieldSplitPeriod;
 
 public class ReportTransitionTest extends AbstractTransitionServletTest {
 
@@ -56,6 +61,59 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		checkFormContent("/normalize.xsl", "initial_show.xml");
 	}
 	
+	@Test
+	public void testWithPeriod() throws Exception {
+		TestTimeService serv = new TestTimeService();
+		Calendar test_time = Calendar.getInstance();
+		test_time.clear();
+		test_time.set(2018, Calendar.APRIL, 23);
+		serv.setResult(test_time.getTime());
+		ctx.setService(serv);
+		
+		setupPerson("fred@example.com");
+		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(ctx);
+		Report report = new Report("SimpleTestReportWithPeriod.xml");
+		setTransition(prov, null, report);
+		runTransition();
+		checkForward("/scripts/transition.jsp");
+		checkFormContent("/normalize.xsl", "initial_show_with_period.xml");
+		setTransition(prov, ReportTemplateTransitionProvider.PREVIEW, report);
+		addParam("Message", "hello world");
+		setAction("Preview");
+		runTransition();
+		
+		// This should redirect to PREVIEW of the report with the 
+		// report parameters encoded in the context
+		// reports are given RESTFUL urls with their parameters
+		// so you can link to them this means we need to encode the
+		// current parameters in the transition target
+		
+		// Need deined order as URL will depend on this
+		LinkedHashMap<String, Object> params=new LinkedHashMap<>();
+		
+		
+		// default period is the previous month
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(test_time.getTime()); // start form test time
+		cal.set(Calendar.MILLISECOND,0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MINUTE,0);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		cal.add(Calendar.MONTH, -1);
+		CalendarFieldSplitPeriod period = new CalendarFieldSplitPeriod(cal, Calendar.MONTH, 1, 1);
+		CalendarFieldPeriodInput tmp = new CalendarFieldPeriodInput();
+		tmp.setValue(period);
+		tmp.setKey("Period");
+		SetParamsVisitor vis = new SetParamsVisitor(true, params);
+		tmp.accept(vis);
+		
+		params.put("Message", "hello world");
+		Report report2 = new Report("SimpleTestReportWithPeriod.xml",params);
+		checkRedirectToTransition(prov, ReportTemplateTransitionProvider.PREVIEW, report2);
+		
+		checkFormContent("/normalize.xsl", "test_preview_with_period.xml");
+	}
 	@Test
 	public void testPreview() throws Exception {
 		setupPerson("fred@example.com");
