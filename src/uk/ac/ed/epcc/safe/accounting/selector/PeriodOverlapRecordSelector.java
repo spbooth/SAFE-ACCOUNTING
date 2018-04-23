@@ -156,5 +156,14 @@ public class PeriodOverlapRecordSelector implements RecordSelector {
 				return false;
 			return true;
 		}
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			return "PeriodOverlapRecordSelector [period=" + period + ", start=" + start + ", end=" + end + ", type="
+					+ type + ", cutoff=" + cutoff + "]";
+		}
+		
 
 }
