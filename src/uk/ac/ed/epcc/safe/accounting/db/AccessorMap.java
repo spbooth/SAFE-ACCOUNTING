@@ -80,6 +80,8 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 /** Common {@link PropExpression} logic that can be incorporated (by composition) into factory classes for {@link DataObject}s to support {@link PropExpression}s
@@ -162,6 +164,7 @@ public abstract class AccessorMap<X> implements Contexed, ExpressionFilterTarget
 		}
 		public ExpressionTargetProxy(AppContext conn,X r){
 			this(conn,r,EVALUATE_CACHE_FEATURE.isEnabled(conn));
+			assert(r != null);
 			assert(conn != null);
 		}
 		@SuppressWarnings("unchecked")
@@ -312,7 +315,23 @@ public abstract class AccessorMap<X> implements Contexed, ExpressionFilterTarget
 			cache=null;
 			match_visitor=null;
 		}
-		
+		@Override
+		public boolean commit() throws DataFault {
+			if( record instanceof DataObject) {
+				return ((DataObject)record).commit();
+			}
+			throw new ConsistencyError("Can only commit DataObjects");
+		}
+		@Override
+		public boolean delete() throws DataFault {
+			if( record instanceof DataObject) {
+				return ((DataObject)record).delete();
+			}
+			throw new ConsistencyError("Can only delete DataObjects");
+		}
+		public X getRecord() {
+			return record;
+		}
 	}
 	public class SQLExpressionVisitor extends CreateSQLExpressionPropExpressionVisitor{
 		public SQLExpressionVisitor(AppContext c) {
@@ -639,6 +658,9 @@ public abstract class AccessorMap<X> implements Contexed, ExpressionFilterTarget
 		return defined;
 	}
 	public final ExpressionTargetContainer getProxy(X record){
+		if( record == null ) {
+			return null;
+		}
 		return new ExpressionTargetProxy(getContext(),record);
 	}
 	

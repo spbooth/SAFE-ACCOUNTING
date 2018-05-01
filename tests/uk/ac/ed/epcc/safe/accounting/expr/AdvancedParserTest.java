@@ -55,13 +55,14 @@ public class AdvancedParserTest extends WebappTestBase{
 		Parser p = new Parser(ctx,prop_fac.getFinder());
 		
 		DummyPropertyContainer prop_con = prop_fac.makeBDO();
+		ExpressionTargetContainer proxy = prop_fac.getExpressionTarget(prop_con);
 		prop_con.setData("Boris");
 		prop_con.commit(); // Need to have one record
 		
 		for( LocateData d : data){
 			//System.out.println(d.getConstExpression());
 			PropExpression expr = p.parse(d.getConstExpression());
-			Object res = prop_con.evaluateExpression(expr);
+			Object res = proxy.evaluateExpression(expr);
 			assertEquals(d.expected,((Number)res).intValue());
 			//System.out.println("  ->"+d.getConstExpression()+"="+res.toString());
 			
@@ -103,9 +104,10 @@ public class AdvancedParserTest extends WebappTestBase{
 		
 		for(Integer id : expected.keySet()){
 			DummyPropertyContainer prop_con = prop_fac.find(id);
+			ExpressionTargetContainer proxy = prop_fac.getExpressionTarget(prop_con);
 			LocateData d = expected.get(id);
 			
-			Object res = prop_con.evaluateExpression(expr);
+			Object res = proxy.evaluateExpression(expr);
 			assertEquals(d.expected,((Number)res).intValue());
 			//System.out.println("  ->"+expr_text+"="+res.toString());
 			
@@ -141,6 +143,7 @@ public class AdvancedParserTest extends WebappTestBase{
 						
 		for(Integer id : expected.keySet()){
 			DummyPropertyContainer prop_con = prop_fac.find(id);
+			ExpressionTargetContainer proxy = prop_fac.getExpressionTarget(prop_con);
 			LocateData d = expected.get(id);
 		
 			// Use field name for the data field only.
@@ -149,7 +152,7 @@ public class AdvancedParserTest extends WebappTestBase{
 			SQLExpression sql_expr = prop_fac.getAccessorMap().getSQLExpression(expr);
 			SQLValue sql_val = prop_fac.getAccessorMap().getSQLValue(expr);
 			
-			Object res = prop_con.evaluateExpression(expr);
+			Object res = proxy.evaluateExpression(expr);
 			assertEquals(d.expected,((Number)res).intValue());
 			//System.out.println("  ->"+expr_text+"="+res.toString());
 			

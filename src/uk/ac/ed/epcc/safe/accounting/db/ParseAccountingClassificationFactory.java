@@ -69,7 +69,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 public class ParseAccountingClassificationFactory<T extends AccountingClassification,R>
 extends PropertyTargetClassificationFactory<T> implements PlugInOwner<R> ,
-UploadParseTarget<T,R>, FilterSelector<DataObjectItemInput<T>>,
+UploadParseTarget<R>, FilterSelector<DataObjectItemInput<T>>,
 TableTransitionContributor, TableStructureListener{
 	private PropertyFinder reg=null;
 	private RepositoryAccessorMap<T> map=null;

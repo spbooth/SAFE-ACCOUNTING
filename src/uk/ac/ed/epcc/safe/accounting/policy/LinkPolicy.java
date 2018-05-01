@@ -104,13 +104,13 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider,TableTransitionContributor {
+public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements SummaryProvider,TableTransitionContributor {
 
 	private static final String LINK_POLICY_TARGET = "LinkPolicy.target.";
 	private AppContext c;
 	private ReferenceTag remote_tag=null;
 	private ReferenceTag back_ref=null;
-	private UsageRecordFactory<?> remote_fac=null;
+	private UsageRecordFactory<R> remote_fac=null;
 	private Map<PropertyTag,PropertyTag> match_map=null;
 	private Map<PropertyTag,PropertyTag> copy_properties=null;
 	private Set<PropertyTag> inside_date_properties=null;
@@ -251,17 +251,19 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 	@SuppressWarnings("unchecked")
 	@Override
 	public void postCreate(PropertyContainer props, ExpressionTargetContainer r) throws Exception {
-		IndexedReference<UsageRecordFactory.Use> peer_ref = (IndexedReference<Use>) props.getProperty(remote_tag, null);
-        Use rec = (Use) r;
+		IndexedReference<R> peer_ref = (IndexedReference<R>) props.getProperty(remote_tag, null);
+        
         
         //System.out.println("In post create ");
 		if( peer_ref != null && peer_ref.getID() > 0){
-			Use peer = remote_fac.find(peer_ref.getID());
-			if( back_ref != null && peer.writable(back_ref)){
+			R peer = remote_fac.find(peer_ref.getID());
+			ExpressionTargetContainer proxy = remote_fac.getExpressionTarget(peer);
+			if( back_ref != null && proxy.writable(back_ref)){
 				log.debug("set back reference");
 				
 				// if the table has a reference back to us set it.
-				back_ref.set(peer, rec);
+				IndexedReference<R> self = r.getProperty(back_ref);
+				proxy.setProperty(back_ref, self);
 				
 			}else{
 				log.debug("No back reference");
@@ -269,17 +271,17 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 			// set all of the copy properties without values
 			for(PropertyTag t: copy_properties.keySet()){
 				PropertyTag remote_tag = copy_properties.get(t);
-				Object old_peer_value = peer.getProperty(remote_tag,null);
+				Object old_peer_value = proxy.getProperty(remote_tag,null);
 				
 				if( old_peer_value == null || ( old_peer_value instanceof IndexedReference && ((IndexedReference)old_peer_value).isNull())){
 					Object value = props.getProperty(t);
 					if( value != null ){
 					  log.debug("setting "+remote_tag.getFullName());
-					  peer.setOptionalProperty(remote_tag, value);
+					  proxy.setOptionalProperty(remote_tag, value);
 					}
 				}
 			}
-			peer.commit();
+			proxy.commit();
 		}
 	}
 

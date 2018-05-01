@@ -32,7 +32,7 @@ public class ParsePersonTest extends PersonTest {
 	@Test
 	public void testUpload() throws InvalidExpressionException, DataException, ParseException{
 		PropertyPersonFactory<PropertyPerson> fac = new PropertyPersonFactory<PropertyPerson>(ctx);
-		UploadParseTargetUpdater<PropertyPerson,String> updater = new UploadParseTargetUpdater<PropertyPerson,String>(ctx, fac);
+		UploadParseTargetUpdater<String> updater = new UploadParseTargetUpdater<String>(ctx, fac);
 		
 		ErrorSet errors = new ErrorSet();
     	ErrorSet skip_list = new ErrorSet();

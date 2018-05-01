@@ -18,6 +18,7 @@ import java.util.Iterator;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
@@ -47,8 +48,10 @@ public class ReParser<T extends UsageRecordFactory.Use,R> {
 			int error_count=0;
 			target.startParse(meta_data);
 			PropertyContainerParser<R> parser = target.getParser();
+			AccessorMap<T> am = target.getAccessorMap();
 			for(Iterator<T> it = target.getIterator(sel); it.hasNext();){
-				T record = it.next();
+				T t = it.next();
+				ExpressionTargetContainer record=am.getProxy(t);
 				String current_line = record.getProperty(StandardProperties.TEXT_PROP);
 				try{
 					DerivedPropertyMap map = new DerivedPropertyMap(conn);
@@ -61,11 +64,12 @@ public class ReParser<T extends UsageRecordFactory.Use,R> {
 						map.setProperty(StandardProperties.INSERTED_PROP, start);
 						map.setProperty(StandardProperties.TEXT_PROP, current_line);
 						// make an un-commited record from the map
-						T new_record = target.prepareRecord(map);
+						ExpressionTargetContainer new_record = target.prepareRecord(map);
 						target.deleteRecord(record);
 						target.commitRecord(map, new_record);
 						count++;
 					}
+					
 				}catch(Exception e){
 					conn.getService(LoggerService.class).getLogger(getClass()).error("Error in reparse",e);
 					error_count++;
@@ -74,6 +78,7 @@ public class ReParser<T extends UsageRecordFactory.Use,R> {
 					}
 					errors.add("Re-parse error", current_line);
 				}
+				record.release();
 			}
 			StringBuilder result = target.endParse();
 			result.append(errors.toString());

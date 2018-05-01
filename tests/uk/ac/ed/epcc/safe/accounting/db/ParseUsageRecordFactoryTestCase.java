@@ -21,7 +21,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.db.AccessorMap.ExpressionTargetProxy;
+import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
@@ -30,14 +33,8 @@ import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
-import uk.ac.ed.epcc.webapp.content.XMLPrinter;
-import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
-import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.model.data.Dumper;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
-import uk.ac.ed.epcc.webapp.model.data.XMLDataUtils;
-import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
 public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecordFactory<R,I>,R extends UsageRecordFactory.Use,I>
 		extends UsageRecordFactoryTestCase<F,R> {
@@ -194,9 +191,10 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 				if (fac.parse(map, current_line)) {
 
 					R record = fac.makeBDO();
-					map.setContainer(record);
+					ExpressionTargetContainer proxy = fac.getExpressionTarget(record);
+					map.setContainer(proxy);
 
-					Number runtime = record.getProperty(StandardProperties.RUNTIME_PROP, Long
+					Number runtime = proxy.getProperty(StandardProperties.RUNTIME_PROP, Long
 							.valueOf(0L));
 					assertNotNull(runtime);
 					Date begin = record.getStart();
@@ -206,7 +204,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 						assertEquals("Runtime check", end.getTime() - begin.getTime(),
 								runtime.longValue());
 					}
-					R old = (R) fac.findDuplicate(record);
+					ExpressionTargetContainer old =  fac.findDuplicate(proxy);
 
 					/*
 					 * If there is an identical record already in the database, make sure
@@ -214,12 +212,19 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 					 * parsed everything correctly
 					 */
 					if (old != null) {
+						Use u = null;
+						if( old instanceof Use) {
+							u = (Use) old;
+						}else if( old instanceof AccessorMap.ExpressionTargetProxy) {
+							u = (Use) ((ExpressionTargetProxy)old).getRecord();
+						}
+						assertNotNull("DataObject not found", u);
 						//System.out.println("Found old record");
 						// System.out.println("Parser Charge "+record.getProperty(SafePolicy.SU_PROP,0L)+" "+old.getProperty(SafePolicy.SU_PROP,0L));
 						// assertEquals("Charge mismatch ",old.getProperty(SafePolicy.SU_PROP,0L).longValue(),
 						// record.getProperty(SafePolicy.SU_PROP,0L).longValue());
 						// assertEquals("Raw mis-match",old.getProperty(SafePolicy.RAW_SU_PROP,0L).longValue(),record.getProperty(SafePolicy.RAW_SU_PROP,0L).longValue());
-						Map old_map = old.getRecord().getValues();
+						Map old_map = u.getRecord().getValues();
 						assertTrue(old_map.size() > 0);
 						// old_map.remove(UsageRecordFactory.INSERTED_TIMESTAMP);
 						old_map.remove("Text");

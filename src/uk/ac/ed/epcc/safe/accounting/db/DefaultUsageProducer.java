@@ -37,7 +37,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  * @param <T> class of UsageRecord
  *
  */ 
-public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContainer & ExpressionTargetContainer>  extends DataObjectPropertyFactory<T> implements UsageProducer<T> ,PropertyImplementationProvider{
+public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContainer>  extends DataObjectPropertyFactory<T> implements UsageProducer<T> ,PropertyImplementationProvider{
 	
 
 	protected Logger log;
@@ -99,7 +99,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	 */
 	@Override
 	public ExpressionTargetContainer getExpressionTarget(T record) {
-		return record;
+		return getAccessorMap().getProxy(record);
 	}
 	@Override
 	public boolean isMyTarget(T record) {

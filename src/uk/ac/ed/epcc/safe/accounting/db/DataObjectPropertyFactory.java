@@ -195,13 +195,17 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 			return new HashSet<PT>();
 		}
 		BaseFilter<T> filter = getFilter(selector);	
+		RepositoryAccessorMap<T> map = getAccessorMap();
 		try{
-			PropertyMaker<T,PT> finder = new PropertyMaker<T,PT>(getAccessorMap(),res,tag, true);			
+			PropertyMaker<T,PT> finder = new PropertyMaker<T,PT>(map,res,tag, true);			
 			return finder.find(FilterConverter.convert(filter));
 		}catch(CannotUseSQLException e){
 			Set<PT> result = new HashSet<PT>();
 			for(T o : new FilterSet(filter)){
-				result.add(o.getProperty(tag));
+				ExpressionTargetContainer proxy = map.getProxy(o);
+				result.add(proxy.getProperty(tag));
+				proxy.release();
+				o.release();
 			}
 			return result;
 		}
@@ -236,11 +240,15 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 		}catch(Exception e){
 			//do things the hard way
 			int count=0;
+			AccessorMap<T> map = getAccessorMap();
 			for(T ur : new FilterSet(filter)){
-				ur.setProperty(tag, value);
+				ExpressionTargetContainer proxy = map.getProxy(ur);
+				proxy.setProperty(tag, value);
 				if( ur.commit()){
 					count++;
 				}
+				proxy.release();
+				ur.release();
 			}
 			return count;
 		}
@@ -276,11 +284,15 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 		}catch(Exception e){
 			//do things the hard way
 			int count=0;
-			for(T ur : new FilterSet(filter)){
+			AccessorMap<T> map = getAccessorMap();
+			for(T dat : new FilterSet(filter)){
+				ExpressionTargetContainer ur = map.getProxy(dat);
 				ur.setProperty(tag, ur.evaluateExpression(value));
-				if( ur.commit()){
+				if( dat.commit()){
 					count++;
 				}
+				ur.release();
+				dat.release();
 			}
 			return count;
 		}

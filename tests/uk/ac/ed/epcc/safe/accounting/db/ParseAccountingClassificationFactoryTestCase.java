@@ -69,7 +69,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		//System.out.println(updateText);
 		ErrorSet errors = new ErrorSet();
 		ErrorSet skips = new ErrorSet();
-		UploadParseTargetUpdater<R,I> updater = new UploadParseTargetUpdater<R,I>(ctx, fac);
+		UploadParseTargetUpdater<R> updater = new UploadParseTargetUpdater<R>(ctx, (UploadParseTarget<R>) fac);
 		String result = updater.receiveData(getUpdateMap(), updateText,errors,skips);
 		//TestDataHelper.saveDataSet("NGSRecord", "NGSRecord", "lsf");
 		Assert.assertEquals(0,errors.size());

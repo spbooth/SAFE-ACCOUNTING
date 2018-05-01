@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -54,11 +55,12 @@ public abstract class DataObjectPropertyFactoryTestCase<D extends DataObjectProp
 		if( fac.isValid()){
 		Set<PropertyTag> set = fac.getProperties();
 		O dat =  fac.makeBDO();
+		ExpressionTargetContainer proxy = fac.getExpressionTarget(dat);
 		for(PropertyTag<?> t : set){
 			boolean has = fac.hasProperty(t);
 			
-			boolean supports = dat.supports(t);
-			boolean writable = dat.writable(t);
+			boolean supports = proxy.supports(t);
+			boolean writable = proxy.writable(t);
 			if( ! has ){
 				assertFalse(t.getFullName(),supports);
 				assertFalse(t.getFullName(),writable);
@@ -69,7 +71,7 @@ public abstract class DataObjectPropertyFactoryTestCase<D extends DataObjectProp
 			// Some properties are constant values so 
 			// only check those we can write
 			if( writable ){
-				Object property = dat.getProperty(t);
+				Object property = proxy.getProperty(t);
 				if( t.getTarget() == IndexedReference.class){
 					assertNotNull("indexed reference property returned null",property);
 					assertTrue("refernce not null for "+t.getFullName(),((IndexedReference)property).isNull());

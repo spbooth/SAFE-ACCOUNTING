@@ -21,7 +21,7 @@ import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
@@ -29,7 +29,6 @@ import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 /** Parses an external source of property data.
  * 
  * Data for the same table may also be generated on the fly as part of the accounting parse process
@@ -39,21 +38,20 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
  * 
  * @author spb
  *
-  * @param <T> Type of record generated
  * @param <R> Type of intermediate record (type input is split into) for parse
  */
 
 
 
 
-public class UploadParseTargetUpdater<T extends DataObject & PropertyContainer,R> {
+public class UploadParseTargetUpdater<R> {
 	private final AppContext conn;
-	private final UploadParseTarget<T,R> target;
+	private final UploadParseTarget<R> target;
 	// These defined as object attributes to allow unit tests
 	int n_lines=0;
 	int skip=0;
 	int updates=0;
-    public UploadParseTargetUpdater(AppContext c, UploadParseTarget<T,R> target){
+    public UploadParseTargetUpdater(AppContext c, UploadParseTarget<R> target){
     	this.conn=c;
     	this.target=target;
     }
@@ -105,7 +103,7 @@ public class UploadParseTargetUpdater<T extends DataObject & PropertyContainer,R
     				meta_data.setContainer(map);
     			}
     			if( target.parse(map, current_line) ){
-    			    T record = target.make(map);
+    			    ExpressionTargetContainer record = target.make(map);
     			   
     			    if( record == null ){
     			    	throw new AccountingParseException("No record made");

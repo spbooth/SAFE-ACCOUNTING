@@ -151,10 +151,10 @@ public abstract class AggregateUsageRecordFactory
 			if( ! end_point.equals(getEnd()) ){
 				return false;
 			}
-			
+			ExpressionTargetContainer proxy = getProxy();
 			for( PropertyTag t : ((AggregateUsageRecordFactory)getFactory()).getKeyProperties()){
 				if( getFactory().hasProperty(t) ){
-					Object a = getProperty(t,null);
+					Object a = proxy.getProperty(t,null);
 					if( a != null ){
 						if(! a.equals(rec.getProperty(t,null))){
 							return false;
@@ -173,14 +173,14 @@ public abstract class AggregateUsageRecordFactory
 		 */
 		@Override
 		public Date getEnd() {
-			return getProperty(AGGREGATE_ENDED_PROP,null);
+			return getProxy().getProperty(AGGREGATE_ENDED_PROP,null);
 		}
 		/* (non-Javadoc)
 		 * @see uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use#getStart()
 		 */
 		@Override
 		public Date getStart() {
-			return getProperty(AGGREGATE_STARTED_PROP,null);
+			return getProxy().getProperty(AGGREGATE_STARTED_PROP,null);
 		}
 	}
 	private final UsageProducer<Use> master;
@@ -425,7 +425,8 @@ public abstract class AggregateUsageRecordFactory
 		raw_counter++;
 		Date start_point = mapStart(rec.getProperty(start_target_prop));
 		Date end_point = mapEnd(rec.getProperty(end_target_prop));
-		AggregateRecord agg = findTarget(rec, start_point, end_point);
+		AggregateRecord target = findTarget(rec, start_point, end_point);
+		ExpressionTargetContainer agg = target.getProxy();
 		
 		// Don't need atomic update as we can re-generate
 		for (PropertyTag t : getSumProperties()) {
@@ -444,7 +445,7 @@ public abstract class AggregateUsageRecordFactory
 
 		}
 		
-		return agg;
+		return target;
 	}
 
 	public void deAggregate(ExpressionTargetContainer rec) throws InvalidExpressionException,
@@ -526,12 +527,13 @@ public abstract class AggregateUsageRecordFactory
 		AggregateRecord result = find(fil, true);
 		if (result == null) {
 			result = makeBDO();
-			result.setProperty(AGGREGATE_STARTED_PROP, start);
-			result.setProperty(AGGREGATE_ENDED_PROP, end);
+			ExpressionTargetContainer proxy = result.getProxy();
+			proxy.setProperty(AGGREGATE_STARTED_PROP, start);
+			proxy.setProperty(AGGREGATE_ENDED_PROP, end);
 			for(PropertyTag t : getKeyProperties()){
 				Object val = source.getProperty(t, null);
 				if( val != null){
-					result.setOptionalProperty(t, val);
+					proxy.setOptionalProperty(t, val);
 				}
 			}
 			//result.commit();
@@ -571,7 +573,7 @@ public abstract class AggregateUsageRecordFactory
 			Use rec = it.next();
 			// This could be such a large and expensive operation that it is worth
 			// supressing the record by record update operations.
-			aggregateNoCommit(rec,true);
+			aggregateNoCommit(rec.getProxy(),true);
 			rec.release();
 			i++;
 			if(0 ==  i % 1000 ) {
@@ -658,9 +660,10 @@ public abstract class AggregateUsageRecordFactory
 				}
 				PropertyTuple key = new PropertyTuple(tmap);
 				Use agg2 = makeTarget(key, p_start, p_end);
+				ExpressionTargetContainer proxy =agg2.getProxy();
 				Map<ReductionTarget,Object> data = map.get(et);
 				for(ReductionTarget target : data.keySet()){
-					agg2.setProperty((PropertyTag)target.getExpression(), data.get(target));
+					proxy.setProperty((PropertyTag)target.getExpression(), data.get(target));
 				}
 				agg2.commit();
 			}
@@ -675,7 +678,7 @@ public abstract class AggregateUsageRecordFactory
 					Use rec = ov_it.next();
 					// This could be such a large and expensive operation that it is worth
 					// supressing the record by record update operations.
-					aggregateNoCommit(rec,true);
+					aggregateNoCommit(rec.getProxy(),true);
 					rec.release();
 				}
 				clear(); // commit cached records

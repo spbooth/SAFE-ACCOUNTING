@@ -17,7 +17,6 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
@@ -25,15 +24,14 @@ import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 
 /** Common interface for classes that receive upload data.
- * This is the class implemented by the actual destination factory that will contain
- * a nested parser that implements {@link PropertyContainerParser}.
+ * This is the class implemented by the actual destination factory or composite
+ * that will contain a nested parser that implements {@link PropertyContainerParser}.
  * 
  * @author spb
  * @see PropertyContainerParser
- * @param <T> Type of record parsed to
  * @param <R> Type of intermediate record for parse
  */
-public interface PropertyContainerParseTarget<T extends DataObject & PropertyContainer,R> {
+public interface PropertyContainerParseTarget<R> {
 	/** Parse a text line into a DerivedPropertyMap. This will add
 	 * derived definitions as well as terminal data values.
 	 * 

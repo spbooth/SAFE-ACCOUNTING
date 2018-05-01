@@ -50,7 +50,7 @@ public abstract class UsageRecordFactory<T extends UsageRecordFactory.Use> exten
 		DefaultUsageProducer<T> {
 	
 
-	public static class Use extends DataObjectPropertyContainer implements ExpressionTargetContainer, ExpressionTarget, TimePeriod {
+	public static class Use extends DataObjectPropertyContainer implements TimePeriod {
 		
 		protected Use(UsageRecordFactory fac,Record r) {
 			super(fac,r);
@@ -61,12 +61,12 @@ public abstract class UsageRecordFactory<T extends UsageRecordFactory.Use> exten
 			return record;
 		}
 		public Date getEnd() {
-			return getProperty(StandardProperties.ENDED_PROP,null);
+			return getProxy().getProperty(StandardProperties.ENDED_PROP,null);
 		}		
 
 		
 		public Date getStart()  {
-			return getProperty(StandardProperties.STARTED_PROP,null);
+			return getProxy().getProperty(StandardProperties.STARTED_PROP,null);
 		}
 		
 		/** get the fraction of the {@link TimePeriod} that is elapsed.

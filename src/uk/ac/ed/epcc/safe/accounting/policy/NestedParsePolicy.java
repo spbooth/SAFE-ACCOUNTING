@@ -50,7 +50,7 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy implements SummaryP
 	PropertyTag<String> nested_prop;
 	ReferenceTag parent_tag;
 	UsageRecordFactory parent_fac;
-	UsageRecordParseTarget<Use, String> parse_target;
+	UsageRecordParseTarget<String> parse_target;
 	
 	public NestedParsePolicy() {
 	}
@@ -98,7 +98,7 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy implements SummaryP
 				PropertyMap meta_data = new PropertyMap();      
 			    meta_data.setAll(props);
 			    if (parent_tag != null) {
-			    	parent_tag.set(meta_data, (Indexed)rec);
+			    	meta_data.setProperty(parent_tag, rec.getProperty(parent_tag));
 			    }
 				
 				AccountingUpdater<Use, String> updater = new AccountingUpdater<Use, String>(conn, meta_data, parse_target);

@@ -21,6 +21,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -86,7 +87,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  *
  */
 
-public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R> extends UsageRecordFactory<T> implements UsageRecordParseTarget<T,R>, PlugInOwner<R>, TableStructureListener {
+public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R> extends UsageRecordFactory<T> implements UsageRecordParseTarget<R>, PlugInOwner<R>, TableStructureListener {
 
 	 
 	
@@ -237,17 +238,17 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 		return property_finder;
 	}
 	
-	private  UsageRecordParseTarget<T,R> parse_target=null;
-	private final UsageRecordParseTarget<T,R> getParseTarget(){
+	private  UsageRecordParseTarget<R> parse_target=null;
+	private final UsageRecordParseTarget<R> getParseTarget(){
 		if( parse_target == null ){
 			parse_target = makeParseTarget(getPlugInOwner());
 		}
 		return parse_target;
 	}
-	protected UsageRecordParseTarget<T,R> makeParseTarget(PlugInOwner<R> owner){
+	protected UsageRecordParseTarget<R> makeParseTarget(PlugInOwner<R> owner){
 		return new UsageRecordParseTargetPlugIn<T,R>(getContext(), owner, this);
 	}
-	public T findDuplicate(T r)throws Exception {
+	public ExpressionTargetContainer findDuplicate(PropertyContainer r)throws Exception {
 		// Note this method is commonly overridden in sub-classes.
 		return getParseTarget().findDuplicate(r);
 	}
@@ -261,33 +262,33 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseTarget#deleteRecord(T)
 	 */
-	public final void deleteRecord(T old_record) throws Exception, DataFault {
+	public final void deleteRecord(ExpressionTargetContainer old_record) throws Exception, DataFault {
 		getParseTarget().deleteRecord(old_record);
 	}
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseTarget#commitRecord(uk.ac.ed.epcc.safe.accounting.PropertyContainer, T)
 	 */
-	public final boolean commitRecord(PropertyContainer map, T record)
+	public final boolean commitRecord(PropertyContainer map, ExpressionTargetContainer record)
 			throws DataFault {
 		return getParseTarget().commitRecord(map, record);
 	}
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseTarget#updateRecord(uk.ac.ed.epcc.safe.accounting.PropertyContainer, T)
 	 */
-	public final boolean updateRecord(DerivedPropertyMap map, T record)
+	public final boolean updateRecord(DerivedPropertyMap map, ExpressionTargetContainer record)
 			throws Exception {
 		return getParseTarget().updateRecord(map, record);
 	}
-	public final boolean allowReplace(DerivedPropertyMap map, T record){
+	public final boolean allowReplace(DerivedPropertyMap map, ExpressionTargetContainer record){
 		return getParseTarget().allowReplace(map, record);
 	}
-	public final boolean isComplete(T record){
+	public final boolean isComplete(ExpressionTargetContainer record){
 		return getParseTarget().isComplete(record);
 	}
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseTarget#prepareRecord(uk.ac.ed.epcc.safe.accounting.DerivedPropertyMap)
 	 */
-	public final T prepareRecord(DerivedPropertyMap map) throws DataFault, InvalidPropertyException, AccountingParseException {
+	public final ExpressionTargetContainer prepareRecord(DerivedPropertyMap map) throws DataFault, InvalidPropertyException, AccountingParseException {
 		return getParseTarget().prepareRecord(map);
 	}
 	public final StringBuilder endParse() {
@@ -391,8 +392,9 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 		int fail=0;
 		int updates=0;
 		if( hasProperty(StandardProperties.TEXT_PROP)){
-			
-			for(T rec : new FilterSet(getFilter(sel))){
+			AccessorMap<T> amap = getAccessorMap();
+			for(T o : new FilterSet(getFilter(sel))){
+				ExpressionTargetContainer rec = amap.getProxy(o);
 				count++;
 				try{
 					// make all previous props available to start parse

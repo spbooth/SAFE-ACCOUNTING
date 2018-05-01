@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
@@ -43,8 +44,8 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  * a {@link UsageRecordFactory}.  This is usually used in composition so that the UsageRecordFactory
  * can implement the interface directly.
  * 
- * Note that the default implementation of {@link #findDuplicate(uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use)} method
- * provided in this class is independent of the other methods in UsageParseTarget so sub-classes can overrride and 
+ * Note that the default implementation of {@link #findDuplicate(PropertyContainer)} method
+ * provided in this class is independent of the other methods in UsageParseTarget so sub-classes can override and 
  * Factories using this class in composition can re-implement this method.
  * @author spb
  *
@@ -52,7 +53,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  * @param <R> Parser IR type
  */
 public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> implements
-		UsageRecordParseTarget<T,R>,Contexed{
+		UsageRecordParseTarget<R>,Contexed{
 
 	private final AppContext conn;
 	private final PlugInOwner<R> plugin_owner;
@@ -170,7 +171,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 		return unique_properties;
 	}
 	@SuppressWarnings("unchecked")
-	public T findDuplicate(T r) throws Exception {
+	public ExpressionTargetContainer findDuplicate(PropertyContainer r) throws Exception {
 		// This is a default implementation. Many factories 
 		// implement this method directly ignoring this implementation
 		try{
@@ -180,13 +181,18 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 					sel.add(new SelectClause(t,r));
 				}
 			}
-			return factory.find(sel);
+			T record = factory.find(sel);
+			if( record == null) {
+				return null;
+			}
+			AccessorMap<T> map = factory.getAccessorMap();
+			return map.getProxy(record);
 		}catch(Exception e){
 			throw new ConsistencyError("Required property not present",e);
 		}
 	}
 
-	public boolean isComplete(T r) {
+	public boolean isComplete(ExpressionTargetContainer r) {
 		PropertyContainerParser parser= plugin_owner.getParser();
 		if( parser instanceof IncrementalPropertyContainerParser){
 		   return ((IncrementalPropertyContainerParser)parser).isComplete(r);	
@@ -195,7 +201,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 		return true;
 	}
 
-	public void deleteRecord(T old_record) throws Exception, DataFault {
+	public void deleteRecord(ExpressionTargetContainer old_record) throws Exception, DataFault {
 		for(PropertyContainerPolicy pol : plugin_owner.getPolicies()){
 			if( pol instanceof UsageRecordPolicy){
 				((UsageRecordPolicy)pol).preDelete(old_record);
@@ -204,7 +210,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 		old_record.delete();
 	}
 
-	public boolean commitRecord(PropertyContainer map, T record)
+	public boolean commitRecord(PropertyContainer map, ExpressionTargetContainer record)
 			throws DataFault {
 		record.commit(); // create it
 		if( isComplete(record)){
@@ -226,7 +232,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 		}
 		return false;
 	}
-	public boolean updateRecord(DerivedPropertyMap map, T record)
+	public boolean updateRecord(DerivedPropertyMap map, ExpressionTargetContainer record)
 			throws Exception {
 		// incomplete records have not called postCreate
 		if( isComplete(record)){
@@ -268,7 +274,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 		return false;
 	}
 
-	public boolean allowReplace(DerivedPropertyMap map, T record) {
+	public boolean allowReplace(DerivedPropertyMap map, ExpressionTargetContainer record) {
 		for(PropertyContainerPolicy pol : plugin_owner.getPolicies()){
 			if( pol instanceof UsageRecordPolicy){
 				if( ! ((UsageRecordPolicy)pol).allowReplace(map, record)){
@@ -280,10 +286,11 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	}
 
 
-	public T prepareRecord(DerivedPropertyMap map) throws DataFault,
+	public ExpressionTargetContainer prepareRecord(DerivedPropertyMap map) throws DataFault,
 			InvalidPropertyException, AccountingParseException {
-		T record =  factory.makeBDO(); 
-		int count=map.setContainer(record);
+		T record =  factory.makeBDO();
+		ExpressionTargetContainer proxy = factory.getAccessorMap().getProxy(record);
+		int count=map.setContainer(proxy);
 		
 		
 		if( count == 0 ){
@@ -292,9 +299,10 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 //		if( record.getProperty(BaseParser.ENDED_PROP, null)== null ){
 //			throw new AccountingParseException("No end date");
 //		}
-		return record;
+		return proxy;
 	}
-	public String getUniqueID(T r) throws Exception {
+	@Deprecated
+	public String getUniqueID(ExpressionTargetContainer r) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		sb.append(factory.getTag());
 		for(PropertyTag t : getUniqueProperties()){

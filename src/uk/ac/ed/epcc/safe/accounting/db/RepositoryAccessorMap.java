@@ -371,10 +371,11 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 					}
 				}
 		}
+		
+		
 		// Self reference
-		// only really needed when filtering on a specific recordID
-		
-		
+		// Needed when filtering on a specific recordID
+		// Also a way of getting the id from a proxy wrapper
 		ReferenceTag tag=(ReferenceTag) reference_registry.find(IndexedReference.class, res.getTag());
 		if( tag != null && ! selector_map.containsValue(tag)){
 			put(tag, new SelfSQLValue<X>(fac));

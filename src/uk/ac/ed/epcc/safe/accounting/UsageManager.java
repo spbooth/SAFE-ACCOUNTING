@@ -58,7 +58,7 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.NestedIterator;
  * @param <UR>
  */
 
-public abstract class UsageManager<UR extends ExpressionTargetContainer> implements
+public abstract class UsageManager<UR> implements
 		UsageProducer<UR> , Selector<ListInput<String, UsageProducer>>, 
 		DerivedPropertyFactory,FormUpdateProducer<UR>{
 

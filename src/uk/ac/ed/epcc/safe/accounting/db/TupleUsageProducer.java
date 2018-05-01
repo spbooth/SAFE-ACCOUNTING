@@ -7,12 +7,8 @@ import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -55,46 +51,12 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 	}
 
 	
-	public static  class TupleUsageRecord<A extends DataObject> extends PropertyTupleFactory.PropertyTuple<A> implements ExpressionTargetContainer, Identified{
+	public static  class TupleUsageRecord<A extends DataObject> extends PropertyTupleFactory.PropertyTuple<A> implements  Identified{
 
 		public TupleUsageRecord(TupleUsageProducer prod) {
 			super(prod);
 		}
 
-		@Override
-		public boolean supports(PropertyTag<?> tag) {
-			return proxy.supports(tag);
-		}
-
-		@Override
-		public boolean writable(PropertyTag<?> tag) {
-			return false;
-		}
-
-		@Override
-		public <T> T getProperty(PropertyTag<T> key) throws InvalidExpressionException {
-			return proxy.getProperty(key);
-		}
-
-		@Override
-		public <T> void setProperty(PropertyTag<? super T> key, T value) throws InvalidPropertyException {
-			proxy.setProperty(key, value);
-		}
-
-		@Override
-		public <T> void setOptionalProperty(PropertyTag<? super T> key, T value) {
-			proxy.setOptionalProperty(key, value);
-		}
-
-		@Override
-		public Set<PropertyTag> getDefinedProperties() {
-			return proxy.getDefinedProperties();
-		}
-
-		@Override
-		public void setAll(PropertyContainer source) {
-			proxy.setAll(source);
-		}
 
 
 		@Override
@@ -109,12 +71,7 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 			return sb.toString();
 		}
 
-		@Override
-		public void release() {
-			proxy.release();
-			clear();
-		}
-
+		
 		@Override
 		public String getIdentifier(int max_length) {
 			return getIdentifier();

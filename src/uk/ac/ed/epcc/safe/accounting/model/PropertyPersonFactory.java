@@ -96,7 +96,7 @@ import uk.ac.ed.epcc.webapp.session.WebNameFinder;
  * @param <P>
  */
 
-public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFactory<P> implements ExpressionTargetFactory<P>, TableContentProvider, TableTransitionContributor, TableStructureListener,UploadParseTarget<P,String>, PlugInOwner<String>, FilterSelector<DataObjectItemInput<P>>{
+public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFactory<P> implements ExpressionTargetFactory<P>, TableContentProvider, TableTransitionContributor, TableStructureListener,UploadParseTarget<String>, PlugInOwner<String>, FilterSelector<DataObjectItemInput<P>>{
 
 	
 	public static final Feature MAKE_ON_UPLOAD_FEATURE = new Feature("person.make_on_upload",true,"On a person upload unknown users will be created as well as existing ones updated");
@@ -232,7 +232,7 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 	private final boolean makeOnUpload(){
 		return MAKE_ON_UPLOAD_FEATURE.isEnabled(getContext());
 	}
-	public P make(PropertyContainer value) throws AccountingParseException{
+	public ExpressionTargetContainer make(PropertyContainer value) throws AccountingParseException{
 		if( match_prop == null ){
 			throw new AccountingParseException("No match property specified for "+getTag());
 		}
@@ -242,12 +242,12 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 		}
 		if( makeOnUpload()){
 			try {
-				return makeFromString(name);
+				return getAccessorMap().getProxy(makeFromString(name));
 			} catch (Exception e) {
 				throw new AccountingParseException("Cannot make new record",e);
 			}
 		}
-		return findFromString(name);
+		return getAccessorMap().getProxy(findFromString(name));
 		
 	}
 

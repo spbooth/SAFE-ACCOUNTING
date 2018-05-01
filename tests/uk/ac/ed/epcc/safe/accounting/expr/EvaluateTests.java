@@ -152,9 +152,10 @@ public class EvaluateTests extends WebappTestBase {
 	public void testRemoteExpression() throws InvalidPropertyException, DataFault, PropertyCastException {
 		RemoteTargetFactory fac = new RemoteTargetFactory<>(ctx);
 		DataObjectPropertyContainer rec = (DataObjectPropertyContainer) fac.makeBDO();
-		rec.setProperty(RemoteTargetFactory.INT_A, 7);
-		rec.setProperty(RemoteTargetFactory.INT_B, 5);
-		rec.commit();
+		ExpressionTargetContainer proxy = fac.getExpressionTarget(rec);
+		proxy.setProperty(RemoteTargetFactory.INT_A, 7);
+		proxy.setProperty(RemoteTargetFactory.INT_B, 5);
+		proxy.commit();
 		DerivedPropertyMap obj = new DerivedPropertyMap(ctx);
 		REMOTE.set(obj, rec);
 		obj.setProperty(INT_A, 2);

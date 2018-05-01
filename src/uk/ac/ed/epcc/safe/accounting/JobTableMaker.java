@@ -28,7 +28,7 @@ import uk.ac.ed.epcc.webapp.forms.Identified;
  */
 
 
-public class JobTableMaker<UR extends ExpressionTargetContainer> extends ExpressionTargetTableMaker<UR, UsageProducer<UR>>{
+public class JobTableMaker<UR> extends ExpressionTargetTableMaker<UR, UsageProducer<UR>>{
 	
 	public JobTableMaker(AppContext c,UsageProducer up){
 		super(c,up);

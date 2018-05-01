@@ -32,9 +32,11 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.ConfigUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ShortTextPeriodFormatter;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
+import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -146,7 +148,80 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 
 
 
-		
+		@Override
+		public boolean supports(PropertyTag<?> tag) {
+			return getProxy().supports(tag);
+		}
+
+
+
+		@Override
+		public boolean writable(PropertyTag<?> tag) {
+			return getProxy().writable(tag);
+		}
+
+
+
+		@Override
+		public <T> T getProperty(PropertyTag<T> key) throws InvalidExpressionException {
+			return getProxy().getProperty(key);
+		}
+
+
+
+		@Override
+		public <T> void setProperty(PropertyTag<? super T> key, T value) throws InvalidPropertyException {
+			getProxy().setProperty(key, value);
+		}
+
+
+
+		@Override
+		public <T> void setOptionalProperty(PropertyTag<? super T> key, T value) {
+			getProxy().setOptionalProperty(key, value);
+		}
+
+
+
+		@Override
+		public Set<PropertyTag> getDefinedProperties() {
+			return getProxy().getDefinedProperties();
+		}
+
+
+
+		@Override
+		public void setAll(PropertyContainer source) {
+			getProxy().setAll(source);
+		}
+
+
+
+		@Override
+		public <T> T getProperty(PropertyTag<T> tag, T def) {
+			return getProxy().getProperty(tag, def);
+		}
+
+
+
+		@Override
+		public Parser getParser() {
+			return getProxy().getParser();
+		}
+
+
+
+		@Override
+		public <T> T evaluateExpression(PropExpression<T> expr) throws InvalidExpressionException {
+			return getProxy().evaluateExpression(expr);
+		}
+
+
+
+		@Override
+		public <T> T evaluateExpression(PropExpression<T> expr, T def) {
+			return getProxy().evaluateExpression(expr, def);
+		}
 		
 	}
 	
