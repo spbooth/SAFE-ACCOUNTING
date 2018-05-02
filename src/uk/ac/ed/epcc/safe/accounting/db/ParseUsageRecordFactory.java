@@ -89,7 +89,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R> extends UsageRecordFactory<T> implements UsageRecordParseTarget<R>, PlugInOwner<R>, TableStructureListener {
 
-	 
+	 private UsageRecordParseTargetPlugIn<T, R> parse_target = new UsageRecordParseTargetPlugIn<>(this);
 	
 	  private  PropertyFinder property_finder=null;
 	 
@@ -238,16 +238,12 @@ public abstract class ParseUsageRecordFactory<T extends UsageRecordFactory.Use,R
 		return property_finder;
 	}
 	
-	private  UsageRecordParseTarget<R> parse_target=null;
+	
 	private final UsageRecordParseTarget<R> getParseTarget(){
-		if( parse_target == null ){
-			parse_target = makeParseTarget(getPlugInOwner());
-		}
+		
 		return parse_target;
 	}
-	protected UsageRecordParseTarget<R> makeParseTarget(PlugInOwner<R> owner){
-		return new UsageRecordParseTargetPlugIn<T,R>(getContext(), owner, this);
-	}
+	
 	public ExpressionTargetContainer findDuplicate(PropertyContainer r)throws Exception {
 		// Note this method is commonly overridden in sub-classes.
 		return getParseTarget().findDuplicate(r);

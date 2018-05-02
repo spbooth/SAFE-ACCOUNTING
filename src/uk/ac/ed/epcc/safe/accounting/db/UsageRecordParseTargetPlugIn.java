@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -33,11 +34,10 @@ import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.safe.accounting.update.UsageRecordPolicy;
-import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.Composite;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** Class to implement {@link UsageRecordParseTarget} using a {@link PlugInOwner} and
@@ -52,25 +52,18 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  * @param <T> type of usage record
  * @param <R> Parser IR type
  */
-public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> implements
+public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> extends Composite<T, UsageRecordParseTargetPlugIn>implements
 		UsageRecordParseTarget<R>,Contexed{
 
-	private final AppContext conn;
-	private final PlugInOwner<R> plugin_owner;
-	private final UsageRecordFactory<T> factory;
-	public UsageRecordParseTargetPlugIn(AppContext conn,PlugInOwner<R> owner,UsageRecordFactory<T> fac){
-		this.conn=conn;
-		this.plugin_owner=owner;
-		this.factory=fac;
+	
+	
+	public UsageRecordParseTargetPlugIn(UsageRecordFactory<T> fac){
+		super(fac);
 	}
-	public AppContext getContext(){
-		return conn;
-	}
-	protected final Logger getLogger(){
-		return conn.getService(LoggerService.class).getLogger(getClass());
-	}
+	
 	public boolean parse(DerivedPropertyMap map, R current_line)
 			throws AccountingParseException {
+		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		// Note each stage of the parse sees the derived properties 
 				// as defined in the previous stage. Once its own parse is complete
 				// It can then override the definition if it wants to
@@ -100,11 +93,30 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	}
 
 	public PropertyContainerParser<R> getParser(){
-		return plugin_owner.getParser();
+		return getPlugInOwner().getParser();
 	}
-	
-
+	private PlugInOwner<R> getPlugInOwner(){
+		DataObjectFactory<T> fac = getFactory();
+		if( fac instanceof PlugInOwner) {
+			return  (PlugInOwner<R>) fac;
+		}
+		// TODO look for composites that implement PlugInOwner
+		throw new ConsistencyError("No PlugInOwner");
+	}
+	private ExpressionTargetFactory<T> getExpressionTargetFactory(){
+		DataObjectFactory<T> fac = getFactory();
+		if( fac instanceof ExpressionTargetFactory) {
+			return (ExpressionTargetFactory<T>) fac;
+		}
+		ExpressionTargetFactory<T> comp =fac.getComposite(ExpressionTargetFactoryComposite.class);
+		if( comp != null) {
+			return comp;
+		}
+		throw new ConsistencyError("No ExpressionTargetFactory");
+	}
+ 
 	public void startParse(PropertyMap defaults) throws Exception {
+		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		PropertyContainerParser tmp_parser = plugin_owner.getParser();
 		tmp_parser.startParse(defaults);
 		for(PropertyContainerPolicy pol : plugin_owner.getPolicies()){
@@ -113,6 +125,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	}
 
 	public StringBuilder endParse() {
+		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		StringBuilder tmp = new StringBuilder();
     	for(PropertyContainerPolicy pol : plugin_owner.getPolicies()){
     		//tmp.append(pol.getClass().getCanonicalName());
@@ -129,17 +142,18 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	}
 
 	public PropertyFinder getFinder() {
-		return factory.getFinder();
+		return getExpressionTargetFactory().getFinder();
 	}
 	public static final String UNIQUE_PROPERTIES_PREFIX = "unique-properties.";
 	Set<PropertyTag> unique_properties=null; // records where all properties match are considered duplicates
 	protected Set<PropertyTag> parsePropertyList(String list) throws InvalidPropertyException{
     	HashSet<PropertyTag> res = new HashSet<PropertyTag>();
+    	ExpressionTargetFactory<T> etf = getExpressionTargetFactory();
     	PropertyFinder finder = getFinder();
     	if( finder != null ){
     		for( String name : list.trim().split(",")){
     			PropertyTag<?> t = finder.make(name);
-    			if( ! factory.hasProperty(t)){
+    			if( ! etf.hasProperty(t)){
     				throw new InvalidPropertyException(t);
     			}
     			res.add(t);
@@ -152,9 +166,10 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	 * @return
 	 */
 	protected Set<PropertyTag> getUniqueProperties(){
+		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		if(unique_properties == null ){
 			// Must evaluate late as we need to parser/policies to define supported properties
-	    	String unique_prop_list = getContext().getInitParameter(UNIQUE_PROPERTIES_PREFIX+factory.getConfigTag());
+	    	String unique_prop_list = getContext().getInitParameter(UNIQUE_PROPERTIES_PREFIX+getFactory().getConfigTag());
 	    	if( unique_prop_list != null ){ 
 	    		try {
 					unique_properties=parsePropertyList(unique_prop_list);
@@ -165,27 +180,28 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	    		unique_properties = plugin_owner.getParser().getDefaultUniqueProperties();
 	    	}
 	    	if( unique_properties == null){
-	    		throw new ConsistencyError("No unique properties defined for "+factory.getConfigTag());
+	    		throw new ConsistencyError("No unique properties defined for "+getFactory().getConfigTag());
 	    	}
 		}
 		return unique_properties;
 	}
 	@SuppressWarnings("unchecked")
 	public ExpressionTargetContainer findDuplicate(PropertyContainer r) throws Exception {
+		ExpressionTargetFactory<T> etf = getExpressionTargetFactory();
 		// This is a default implementation. Many factories 
 		// implement this method directly ignoring this implementation
 		try{
 			AndRecordSelector sel = new AndRecordSelector();
 			for(PropertyTag<?> t : getUniqueProperties()){
-				if( factory.hasProperty(t)){
+				if( etf.hasProperty(t)){
 					sel.add(new SelectClause(t,r));
 				}
 			}
-			T record = factory.find(sel);
+			T record = getFactory().find(sel.visit(new FilterSelectVisitor<>(etf)),true);
 			if( record == null) {
 				return null;
 			}
-			AccessorMap<T> map = factory.getAccessorMap();
+			AccessorMap<T> map = etf.getAccessorMap();
 			return map.getProxy(record);
 		}catch(Exception e){
 			throw new ConsistencyError("Required property not present",e);
@@ -193,6 +209,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	}
 
 	public boolean isComplete(ExpressionTargetContainer r) {
+		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		PropertyContainerParser parser= plugin_owner.getParser();
 		if( parser instanceof IncrementalPropertyContainerParser){
 		   return ((IncrementalPropertyContainerParser)parser).isComplete(r);	
@@ -202,6 +219,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	}
 
 	public void deleteRecord(ExpressionTargetContainer old_record) throws Exception, DataFault {
+		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		for(PropertyContainerPolicy pol : plugin_owner.getPolicies()){
 			if( pol instanceof UsageRecordPolicy){
 				((UsageRecordPolicy)pol).preDelete(old_record);
@@ -212,6 +230,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 
 	public boolean commitRecord(PropertyContainer map, ExpressionTargetContainer record)
 			throws DataFault {
+		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		record.commit(); // create it
 		if( isComplete(record)){
 			// apply post create once complete
@@ -234,6 +253,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	}
 	public boolean updateRecord(DerivedPropertyMap map, ExpressionTargetContainer record)
 			throws Exception {
+		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		// incomplete records have not called postCreate
 		if( isComplete(record)){
 			
@@ -275,6 +295,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	}
 
 	public boolean allowReplace(DerivedPropertyMap map, ExpressionTargetContainer record) {
+		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		for(PropertyContainerPolicy pol : plugin_owner.getPolicies()){
 			if( pol instanceof UsageRecordPolicy){
 				if( ! ((UsageRecordPolicy)pol).allowReplace(map, record)){
@@ -288,8 +309,8 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 
 	public ExpressionTargetContainer prepareRecord(DerivedPropertyMap map) throws DataFault,
 			InvalidPropertyException, AccountingParseException {
-		T record =  factory.makeBDO();
-		ExpressionTargetContainer proxy = factory.getAccessorMap().getProxy(record);
+		T record =  getFactory().makeBDO();
+		ExpressionTargetContainer proxy = getExpressionTargetFactory().getAccessorMap().getProxy(record);
 		int count=map.setContainer(proxy);
 		
 		
@@ -304,7 +325,7 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 	@Deprecated
 	public String getUniqueID(ExpressionTargetContainer r) throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append(factory.getTag());
+		sb.append(getFactory().getTag());
 		for(PropertyTag t : getUniqueProperties()){
 			Object o = r.getProperty(t, null);
 			if( o != null ){
@@ -319,6 +340,10 @@ public class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use,R> im
 			}
 		}
 		return sb.toString();
+	}
+	@Override
+	protected Class<? super UsageRecordParseTargetPlugIn> getType() {
+		return UsageRecordParseTargetPlugIn.class;
 	}
 	
 	
