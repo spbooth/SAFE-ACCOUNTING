@@ -8,14 +8,24 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import uk.ac.ed.epcc.webapp.TestDataHelper;
+import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
 public class ChartExtensionTest extends ExtensionTestCase {
 
@@ -39,6 +49,69 @@ public class ChartExtensionTest extends ExtensionTestCase {
 	public void testCSVTimeChartPlot() throws Exception {
 		testChart("testTimeCharts.xml","csv", new File(getOutputDir()+"TimeChart.csv"));
 
+	}
+	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testBadTimeChartPlot() throws Exception {
+		String template = "testBadTimeCharts.xml";
+		ReportBuilder reportBuilder = runBadTemplate(template);
+		
+		// Look for errors
+		Set<String> errors = ReportBuilderTest.expectErrors(2, reportBuilder.getErrors());
+		assertTrue(errors.contains("Bad PlotEntry"));
+		assertTrue(errors.contains("Error parsing plot expression"));
+		//System.out.println(out.toString());
+		
+	}
+	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testBadTimeChartGroup() throws Exception {
+		String template = "testBadTimeCharts2.xml";
+		ReportBuilder reportBuilder = runBadTemplate(template);
+		
+		// Look for errors
+		Set<String> errors = ReportBuilderTest.expectErrors(1, reportBuilder.getErrors());
+		assertTrue(errors.contains("Error parsing group tag/expression"));
+		//System.out.println(out.toString());
+		
+	}
+	/**
+	 * @param template
+	 * @return
+	 * @throws ParserConfigurationException
+	 * @throws DataFault
+	 * @throws InvalidArgument
+	 * @throws TransformerFactoryConfigurationError
+	 * @throws TransformerException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws Exception
+	 */
+	private ReportBuilder runBadTemplate(String template)
+			throws ParserConfigurationException, DataFault, InvalidArgument, TransformerFactoryConfigurationError,
+			TransformerException, SAXException, IOException, URISyntaxException, Exception {
+		// Create a HTMLForm.
+		HTMLForm form = new HTMLForm(ctx);
+		
+		// Get the params values from the Form
+		Map<String, Object> params = new HashMap<String, Object>();
+		
+		ReportBuilderTest.setupParams(ctx, params);
+		
+		
+		ReportBuilder reportBuilder = new ReportBuilder(ctx, template,
+				"report.xsd");
+		ReportType reportType=reportBuilder.getReportTypeReg().getReportType("csv");
+		params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, reportType);
+		reportBuilder.setupExtensions(reportType,params);
+		reportBuilder.buildReportParametersForm(form, params);
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		reportBuilder.renderXML(params, out);
+		return reportBuilder;
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
