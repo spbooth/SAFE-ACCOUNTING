@@ -81,7 +81,11 @@ public abstract class DataObjectPropertyFactory<T extends DataObjectPropertyCont
 	 * @return
 	 */
 	public Set<String> getConfigProperties(){
-		return new LinkedHashSet<>();
+		Set<String> params = new  LinkedHashSet<>();
+		for(ConfigParamProvider c : getComposites(ConfigParamProvider.class)) {
+			c.addConfigParameters(params);
+		}
+		return params;
 	}
 
 	public abstract RepositoryAccessorMap<T> getAccessorMap();

@@ -16,7 +16,6 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.update;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +45,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * @param <T> target type for {@link TransitionSource}
  * @param <R> {@link PropertyContainerParser} IR type
  */
-public abstract class AbstractPlugInOwner<T extends DataObjectFactory & PlugInOwner<R>,R> implements Contexed, PlugInOwner<R>, SummaryProvider, TableTransitionContributor, ConfigParamProvider {
+public abstract class AbstractPlugInOwner<T extends DataObjectFactory,R> implements Contexed, PlugInOwner<R>, SummaryProvider, TableTransitionContributor, ConfigParamProvider {
   
 	private final AppContext c;
     private final String tag;

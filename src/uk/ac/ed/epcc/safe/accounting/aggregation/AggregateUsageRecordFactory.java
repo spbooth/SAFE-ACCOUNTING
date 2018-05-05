@@ -33,8 +33,8 @@ import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageManager;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.UsageRecordListener;
+import uk.ac.ed.epcc.safe.accounting.db.AccessorContributer;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
-import uk.ac.ed.epcc.safe.accounting.db.RepositoryAccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
@@ -47,7 +47,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -118,7 +117,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  *
  */
 public abstract class AggregateUsageRecordFactory
-		extends UsageRecordFactory<AggregateUsageRecordFactory.AggregateRecord> implements UsageRecordListener{
+		extends UsageRecordFactory<AggregateUsageRecordFactory.AggregateRecord> implements UsageRecordListener, AccessorContributer<AggregateUsageRecordFactory.AggregateRecord>{
 	public static final String MASTER_PREFIX = "master.";
 	private static final String COMPLETED_TIMESTAMP = "CompletedTimestamp";
 	private static final String STARTED_TIMESTAMP = "StartedTimestamp";
@@ -183,10 +182,8 @@ public abstract class AggregateUsageRecordFactory
 			return getProxy().getProperty(AGGREGATE_STARTED_PROP,null);
 		}
 	}
-	private final UsageProducer<Use> master;
+	private UsageProducer<Use> master;
 	
-	private  RepositoryAccessorMap<AggregateRecord> map;
-	private  PropertyFinder finder;
 	private  PropertyTag<Date> end_target_prop;
 	private  PropertyTag<Date> start_target_prop;
 	private  Set<PropertyTag> key_set;
@@ -199,11 +196,11 @@ public abstract class AggregateUsageRecordFactory
     private int replace=0;
 	private AggregateRecord cache[] = new AggregateRecord[CACHE_SIZE];
     private ReferencePropertyRegistry ref_registry;
-    private final String master_producer;
+    private String master_producer=null;
   
     @Override
     protected TableSpecification getDefaultTableSpecification(AppContext ctx, String homeTable){
-    	TableSpecification spec = new TableSpecification();
+    	TableSpecification spec = super.getDefaultTableSpecification(ctx, homeTable);
 		spec.setField(STARTED_TIMESTAMP, new DateFieldType(true, null));
 		spec.setField(COMPLETED_TIMESTAMP, new DateFieldType(true, null));
 		UsageProducer prod = master;
@@ -233,24 +230,8 @@ public abstract class AggregateUsageRecordFactory
 		return spec;
     }
 	@SuppressWarnings("unchecked")
-	protected AggregateUsageRecordFactory(AppContext c, String table, UsageRecordFactory master_factory) {
-		setContext(c,table);
-		Logger log = c.getService(LoggerService.class).getLogger(getClass());
-		log.debug("table is " + table);
-		master_producer = c.getInitParameter(MASTER_PREFIX + table);
-		log.debug("Master tag is " + master_producer);
-
-		if( master_factory == null ){
-			if( master_producer != null){
-				master = c.getService(AccountingService.class).getUsageManager(master_producer);
-
-			}else{
-				master=null;
-			}
-		}else{
-			master=master_factory;
-		}
-		initAccessorMap(c, table);
+	protected AggregateUsageRecordFactory(UsageRecordFactory master_factory) {	
+		this.master = master_factory;
 	}
 
 
@@ -280,30 +261,33 @@ public abstract class AggregateUsageRecordFactory
 	private String getConfigName(PropertyTag t) {
 		return "key."+getConfigTag()+"."+t.getName();
 	}
-	@SuppressWarnings("unchecked")
-	private void initAccessorMap(AppContext c, String tag) {
-		map = new RepositoryAccessorMap(this,res);
+	@Override
+	public void customAccessors(AccessorMap<AggregateUsageRecordFactory.AggregateRecord> map, MultiFinder finder,PropExpressionMap derived) {
+		AppContext c = getContext();
+		String tag = getTag();
 		Logger log = c.getService(LoggerService.class).getLogger(getClass());
-		ref_registry = ReferencePropertyRegistry.getInstance(c);
-		map.makeReferences(ref_registry);
-		MultiFinder mf = new MultiFinder();
-		mf.addFinder(ref_registry);
-		mf.addFinder(StandardProperties.base); // need the date properties
+		log.debug("table is " + tag);
+		master_producer = c.getInitParameter(MASTER_PREFIX + tag);
+		log.debug("Master tag is " + master_producer);
+
+		if( master == null ){
+			if( master_producer != null){
+				master = c.getService(AccountingService.class).getUsageManager(master_producer);
+			}
+		}
+
+		finder.addFinder(StandardProperties.base); // need the date properties
 		if( master != null ){
-			mf.addFinder(master.getFinder());
+			finder.addFinder(master.getFinder());
 		}
 		assert(aggregate.hasProperty(AGGREGATE_STARTED_PROP));
-		mf.addFinder(aggregate); // match these in preference we don't want date properties
+		finder.addFinder(aggregate); // match these in preference we don't want date properties
 		// from the master binding to the date fields
 
 
 
-		finder = mf;
-		map.populate(finder, null,false);
 
 
-		assert(hasProperty(AGGREGATE_STARTED_PROP));
-		assert(hasProperty(AGGREGATE_ENDED_PROP));
 
 		if( c.getBooleanParameter(tag+".aggregate_using_end", false)){
 			// Use just end date to define aggregate limits
@@ -314,11 +298,51 @@ public abstract class AggregateUsageRecordFactory
 
 		end_target_prop = StandardProperties.ENDED_PROP;
 
+		
+		// add derived properties from master but we don't want any that use the 
+		// date values as the definitions may not be correct. so we add the alises to
+		// base start/end  after clearing expressions that don't resolve
+
+		if( master instanceof DerivedPropertyFactory){
+			PropExpressionMap props = ((DerivedPropertyFactory)master).getDerivedProperties();
+			log.debug(tag+" got derived props from master "+props.size());
+			map.addDerived(c, props);
+			map.clearUnresolvableDefinitions();
+			int propsize=map.getDerivedProperties().size();
+			log.debug(tag+" after clear number of definitions is "+propsize);
+		}else{
+			log.debug(tag+" master not a derived property factory");
+		}
+
+
+		PropExpressionMap tmp = new PropExpressionMap();
+		try{
+			tmp.put(StandardProperties.STARTED_PROP, AGGREGATE_STARTED_PROP);
+			tmp.put(StandardProperties.ENDED_PROP,AGGREGATE_ENDED_PROP);
+			map.addDerived(c, tmp);
+		}catch(PropertyCastException e){
+			getLogger().error("Failed to make time aliases",e);
+		}
+
+		// Add explicit expressions for this table
+		PropExpressionMap explicit = new PropExpressionMap();
+		explicit.addFromProperties(finder,c , tag);
+		map.addDerived(c, explicit);
+
+	}
+
+	/** Create the sum and key property sets.
+	 * This needs to be called after the accessormap is fully built.
+	 * 
+	 */
+	private void makePropSets() {
+		AccessorMap<AggregateUsageRecordFactory.AggregateRecord> map=getAccessorMap();
+		AppContext c = getContext();
 		sum_set =new HashSet<PropertyTag<? extends Number>>();
 		key_set =new HashSet<PropertyTag>();
 		if( master != null ){
 			for(PropertyTag t : map.getProperties()){
-				log.debug("consider aggregation of "+t.getFullName());
+				//log.debug("consider aggregation of "+t.getFullName());
 				if( map.writable(t)){
 
 					if( master.hasProperty(t) && t.getTarget() != Date.class){
@@ -332,39 +356,8 @@ public abstract class AggregateUsageRecordFactory
 						}
 					}
 				}
-
-				// add derived properties from master but we don't want any that use the 
-				// date values as the definitions may not be correct. so we add the alises to
-				// base start/end  after clearing expressions that don't resolve
-
-				if( master instanceof DerivedPropertyFactory){
-					PropExpressionMap props = ((DerivedPropertyFactory)master).getDerivedProperties();
-					log.debug(tag+" got derived props from master "+props.size());
-					map.addDerived(c, props);
-					map.clearUnresolvableDefinitions();
-					int propsize=map.getDerivedProperties().size();
-					log.debug(tag+" after clear number of definitions is "+propsize);
-				}else{
-					log.debug(tag+" master not a derived property factory");
-				}
 			}
 		}
-		PropExpressionMap tmp = new PropExpressionMap();
-		try{
-			tmp.put(StandardProperties.STARTED_PROP, AGGREGATE_STARTED_PROP);
-			tmp.put(StandardProperties.ENDED_PROP,AGGREGATE_ENDED_PROP);
-			map.addDerived(c, tmp);
-		}catch(PropertyCastException e){
-			getLogger().error("Failed to make time aliases",e);
-		}
-		
-		assert(hasProperty(AGGREGATE_STARTED_PROP));
-		assert(hasProperty(AGGREGATE_ENDED_PROP));
-		// Add explicit expressions for this table
-		PropExpressionMap explicit = new PropExpressionMap();
-		explicit.addFromProperties(finder,c , tag);
-		map.addDerived(c, explicit);
-
 	}
 
 	private Number combineNumber(boolean add, Number old, Number val) {
@@ -421,7 +414,7 @@ public abstract class AggregateUsageRecordFactory
 	@SuppressWarnings("unchecked")
 	private Use aggregateNoCommit(ExpressionTargetContainer rec, boolean add)
 			throws InvalidExpressionException, DataException, CannotFilterException, NoSQLFilterException {
-		
+		getFinder(); // make sure init has been called
 		raw_counter++;
 		Date start_point = mapStart(rec.getProperty(start_target_prop));
 		Date end_point = mapEnd(rec.getProperty(end_target_prop));
@@ -455,17 +448,10 @@ public abstract class AggregateUsageRecordFactory
 		
 	}
 
-	public final RepositoryAccessorMap<AggregateRecord> getAccessorMap() {
-		return map;
-	}
-
-	
-	
-	public PropertyFinder getFinder() {
-		return finder;
-	}
-
 	public UsageProducer getMaster() {
+		if( master == null) {
+			getFinder();
+		}
 		return master;
 	}
 	/** Find an aggregate in the cache or create a new one
@@ -694,13 +680,16 @@ public abstract class AggregateUsageRecordFactory
 	}
 
 	Set<PropertyTag> getKeyProperties() {
-		
+		if( key_set == null ) {
+			makePropSets();
+		}
 		return key_set;
 	}
 
 	Set<PropertyTag<? extends Number>> getSumProperties() {
-		
-		
+		if( sum_set == null) {
+			makePropSets();
+		}
 		return sum_set;
 	}
 
@@ -714,12 +703,7 @@ public abstract class AggregateUsageRecordFactory
 		return new AggregateRecord(this,res);
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.db.tranistions.TableStructureTransitionTarget#resetStructure()
-	 */
-	public void resetStructure() {
-		initAccessorMap(getContext(), getConfigTag());
-	}
+	
 	public long getRawCounter(){
 		return raw_counter;
 	}

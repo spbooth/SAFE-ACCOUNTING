@@ -27,7 +27,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
  * @author spb
  *
  */
-public interface AccessorContributer {
+public interface AccessorContributer<P extends DataObject> {
 	/** Modifies the property config. 
 	 * {@link PropertyRegistry}s can be added to the {@link MultiFinder}.
 	 * Custom {@link Accessor}s etc. can be added to the {@link AccessorMap}.
@@ -39,6 +39,6 @@ public interface AccessorContributer {
 	 * @param finder
 	 * @param derived
 	 */
-	public <P extends DataObject> void customAccessors(AccessorMap<P> mapi2,
+	public  void customAccessors(AccessorMap<P> mapi2,
 			MultiFinder finder, PropExpressionMap derived);
 }

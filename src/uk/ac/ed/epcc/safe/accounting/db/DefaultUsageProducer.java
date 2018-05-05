@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -38,9 +39,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  *
  */ 
 public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContainer>  extends DataObjectPropertyFactory<T> implements UsageProducer<T> ,PropertyImplementationProvider{
-	
-
-	protected Logger log;
+	private ExpressionTargetFactoryComposite<T> etf = new ExpressionTargetFactoryComposite<>(this);
 	    
 		protected DefaultUsageProducer(){
 			
@@ -48,7 +47,6 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 		
 		protected DefaultUsageProducer(AppContext c, String table) {
 			setContext(c, table);
-			log=c.getService(LoggerService.class).getLogger(getClass());
 		}
 		
 	/** Method to supports unit tests 
@@ -70,7 +68,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 		return new ReductionHandler<T, DefaultUsageProducer<T>>(this);
 	}
 
-	public <I> Map<I, Number> getReductionMap(PropExpression<I> index,
+	public final <I> Map<I, Number> getReductionMap(PropExpression<I> index,
 			ReductionTarget<Number> property,  RecordSelector selector)
 			throws Exception 
 	{
@@ -79,12 +77,12 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	}
 
 	
-	public  Map<ExpressionTuple, ReductionMapResult> getIndexedReductionMap( Set<ReductionTarget> sum, RecordSelector selector) throws Exception{
+	public final Map<ExpressionTuple, ReductionMapResult> getIndexedReductionMap( Set<ReductionTarget> sum, RecordSelector selector) throws Exception{
 		return getReductionHandler().getIndexedReductionMap(sum, selector);
 	}
 	
 	
-	public  <R>  R getReduction(ReductionTarget<R> type, RecordSelector selector) throws Exception {
+	public final <R>  R getReduction(ReductionTarget<R> type, RecordSelector selector) throws Exception {
 		return getReductionHandler().getReduction(type, selector);
 	}
 	
@@ -98,11 +96,22 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	 * @see uk.ac.ed.epcc.safe.accounting.UsageProducer#getExpressionTarget(java.lang.Object)
 	 */
 	@Override
-	public ExpressionTargetContainer getExpressionTarget(T record) {
+	public final ExpressionTargetContainer getExpressionTarget(T record) {
 		return getAccessorMap().getProxy(record);
 	}
 	@Override
-	public boolean isMyTarget(T record) {
+	public final boolean isMyTarget(T record) {
 		return isMine(record);
 	}
+
+	@Override
+	public final PropertyFinder getFinder() {
+		return etf.getFinder();
+	}
+
+	@Override
+	public final RepositoryAccessorMap<T> getAccessorMap() {
+		return etf.getAccessorMap();
+	}
+
 }

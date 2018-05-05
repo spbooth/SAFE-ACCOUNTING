@@ -29,7 +29,6 @@ import uk.ac.ed.epcc.safe.accounting.db.AccessorContributer;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.CompatibleSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
-import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory.RescanTableTransition;
 import uk.ac.ed.epcc.safe.accounting.db.PropertyMaker;
 import uk.ac.ed.epcc.safe.accounting.db.RepositoryAccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
@@ -444,9 +443,6 @@ public class PropertyPersonFactory<P extends PropertyPerson> extends AppUserFact
 			PlugInOwner owner = plugin_owner;
 			if( owner instanceof TableTransitionContributor){
 				map.putAll(((TableTransitionContributor)owner).getTableTransitions());
-			}
-			if( hasProperty(StandardProperties.TEXT_PROP) && hasProperty(StandardProperties.ENDED_PROP)){
-				map.put(new AdminOperationKey("Rescan", "Rescan all records stored as text"), new RescanTableTransition());
 			}
 		}
 		map.put(new AdminOperationKey("AddClassificationReference","Add a reference to a classification"), new AddClassificationReferenceTransition());

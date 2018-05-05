@@ -35,6 +35,7 @@ import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
@@ -141,7 +142,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	
 
 	@Override
-	protected void customAccessors(AccessorMap<T> map, MultiFinder finder) {
+	public void customAccessors(AccessorMap<T> map, MultiFinder finder,PropExpressionMap derived) {
 		if(master != null){
 			finder.addFinder(master.getFinder());
 			// add derived properties from master 

@@ -18,12 +18,11 @@
 
 import java.util.Date;
 
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
@@ -120,24 +119,10 @@ public abstract class UsageRecordFactory<T extends UsageRecordFactory.Use> exten
 	//protected static final String STARTED_TIMESTAMP_FIELD = "StartedTimestamp";
 
 	protected static final String INSERTED_TIMESTAMP = "InsertedTimestamp"; //optional
-    protected Logger log;
     
 	protected UsageRecordFactory(){
 		
 	}
-	
-	protected UsageRecordFactory(AppContext c, String table) {
-		setContext(c, table);
-		log=c.getService(LoggerService.class).getLogger(getClass());
-	}
-	
-	
-	
-	
-	
-
-	
-	
 
 	
 	@Override
@@ -147,6 +132,14 @@ public abstract class UsageRecordFactory<T extends UsageRecordFactory.Use> exten
 	@Override
 	public Class<? super T> getTarget(){
 		return Use.class;
+	}
+
+
+	@Override
+	protected TableSpecification getDefaultTableSpecification(AppContext c, String table) {
+		TableSpecification spec = new TableSpecification();
+		spec.setOptionalField(INSERTED_TIMESTAMP, new DateFieldType(true, null));
+		return spec;
 	}
 	
 	

@@ -19,6 +19,7 @@ import org.junit.Test;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.db.ConfigUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactoryTestCase;
+import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTargetComposite;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
@@ -77,7 +78,7 @@ public abstract class AbstractRecordTestCase<R> extends
 	}
 	@Test
 	public void testCreateTable(){
-		PlugInOwner<R> fac = getFactory();
+		PlugInOwner<R> fac = getPluginOwner();
 		
 		PropertyContainerParser<R> parser = fac.getParser();
 		PropExpressionMap map = new PropExpressionMap();
@@ -97,6 +98,7 @@ public abstract class AbstractRecordTestCase<R> extends
 	 * OVERRIDDEN METHODS
 	 * ##########################################################################
 	 */
+	
 
 	/**
 	 * Required by the superclass. The name of the machine that is associated with
@@ -184,7 +186,7 @@ public abstract class AbstractRecordTestCase<R> extends
 	protected void processBadParseErrors(Collection<String> successfulRecords,
 			ErrorSet failedRecords, ErrorSet errors) throws Exception {
 		HashMap<Integer, BadRecordText> recordTable = new HashMap<Integer, BadRecordText>();
-		PropertyContainerParser<R> parser = getFactory().getParser();
+		PropertyContainerParser<R> parser = getPluginOwner().getParser();
 		/*
 		 * Put all the record in a table referenced by hash code for fast look up
 		 * and comparison to the record that caused the error

@@ -51,7 +51,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
  */
 
 
-public class ConfigPlugInOwner<T extends DataObjectFactory & PlugInOwner<R>,R> extends AbstractPlugInOwner<T,R> {
+public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPlugInOwner<T,R> {
 	public static final String POLICIES_PREFIX = "policies.";
 	public static final String PARSER_PREFIX = "parser.";
 	final Class<? extends PropertyContainerParser> default_parser_class;

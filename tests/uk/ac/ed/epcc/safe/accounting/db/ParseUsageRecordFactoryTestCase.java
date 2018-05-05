@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
+import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
@@ -49,6 +50,21 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		return "";
 	}
 
+	public final PlugInOwner<I> getPluginOwner() {
+		F factory = getFactory();
+		if( factory instanceof PlugInOwner) {
+			return (PlugInOwner<I>) factory;
+		}
+		return factory.getComposite(PropertyContainerParseTargetComposite.class).getPlugInOwner();
+	}
+	
+	public final UsageRecordParseTarget<I> getParseTarget(){
+		F factory = getFactory();
+		if( factory instanceof UsageRecordParseTarget) {
+			return (UsageRecordParseTarget<I>) factory;
+		}
+		return (UsageRecordParseTarget<I>) factory.getComposite(PropertyContainerParseTargetComposite.class);
+	}
 	public abstract PropertyMap getDefaults();
 
 	
@@ -56,7 +72,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 	public Set getIgnore() {
 		Set res = new HashSet();
 		res.add(UsageRecordFactory.INSERTED_TIMESTAMP);
-		res.add(ParseUsageRecordFactory.TEXT);
+		res.add(UsageRecordParseTargetPlugIn.TEXT);
 		return res;
 	}
 
@@ -130,7 +146,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		if (!fac.isValid()) {
 			return;
 		}
-		PropertyContainerParser<I> p = fac.getParser();
+		PropertyContainerParser<I> p = getPluginOwner().getParser();
 
 		assertNotNull(p);
 
@@ -149,14 +165,15 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		if (!fac.isValid()) {
 			return;
 		}
-		PropertyContainerParser<I> parser = fac.getParser();
+		PlugInOwner<I> owner = getPluginOwner();
+		PropertyContainerParser<I> parser = owner.getParser();
 		PropExpressionMap dmap = new PropExpressionMap();
 		dmap = parser.getDerivedProperties(dmap);
-		for(PropertyContainerPolicy pol : fac.getPolicies()){
+		for(PropertyContainerPolicy pol : owner.getPolicies()){
 			dmap = pol.getDerivedProperties(dmap);
 		}
 		TableSpecification spec = parser.modifyDefaultTableSpecification(ctx,new TableSpecification(),dmap,fac.getTag());
-		for(PropertyContainerPolicy pol : fac.getPolicies()){
+		for(PropertyContainerPolicy pol : owner.getPolicies()){
 			pol.modifyDefaultTableSpecification(ctx,spec,dmap,fac.getTag());
 		}
 		//assert(spec != null);
@@ -174,7 +191,8 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		meta.addDerived(expr);
 		Iterator<I> lines = parser.splitRecords(updateText);
 		
-		fac.startParse(meta);
+		UsageRecordParseTarget<I> target = getParseTarget();
+		target.startParse(meta);
 
 		Set ignore = getIgnore();
 
@@ -188,7 +206,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 				if (defaults != null) {
 					defaults.setContainer(map);
 				}
-				if (fac.parse(map, current_line)) {
+				if (target.parse(map, current_line)) {
 
 					R record = fac.makeBDO();
 					ExpressionTargetContainer proxy = fac.getExpressionTarget(record);
@@ -204,7 +222,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 						assertEquals("Runtime check", end.getTime() - begin.getTime(),
 								runtime.longValue());
 					}
-					ExpressionTargetContainer old =  fac.findDuplicate(proxy);
+					ExpressionTargetContainer old =  target.findDuplicate(proxy);
 
 					/*
 					 * If there is an identical record already in the database, make sure
@@ -234,7 +252,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 						assertTrue(record_map.size() > 0);
 						// assertEquals("map size",record_map.size(), old_map.size());
 
-						boolean incremental = fac.getParser() instanceof IncrementalPropertyContainerParser;
+						boolean incremental = target.getParser() instanceof IncrementalPropertyContainerParser;
 						for (Object key : old_map.keySet()) {
 							if (old_map.get(key) != null)
 								assertTrue("Quant " + key.toString(), record_map
@@ -277,7 +295,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 			}
 		}
 
-		String errors = fac.endParse().toString();
+		String errors = target.endParse().toString();
 		if(errors.length() > 0)
 			System.err.println(errors);
 	}
@@ -295,18 +313,18 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		if (!fac.isValid()) {
 			return;
 		}
-
+		UsageRecordParseTarget<I> target = getParseTarget();
 		Collection<String> sucessfulRecords = new ArrayList<String>();
 		ErrorSet failedRecords = new ErrorSet();
 		ErrorSet errors = new ErrorSet();
 
 		PropertyMap defaults = getDefaults();
-		PropertyContainerParser<I> parser = fac.getParser();
+		PropertyContainerParser<I> parser = target.getParser();
 		Iterator<I> lines = parser.splitRecords(updateText);
 		
 		
 		try {
-			fac.startParse(defaults);
+			target.startParse(defaults);
 		} catch (Exception e) {
 			errors.add("start parse error", e.getMessage(), e);
 			this.processBadParseErrors(sucessfulRecords, failedRecords, errors);
@@ -326,7 +344,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 				defaults.setContainer(map);
 			}
 			try {
-				fac.parse(map, rec);
+				target.parse(map, rec);
 				sucessfulRecords.add(current_line);
 			} catch (Exception e) {
 				/*
@@ -338,7 +356,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		}
 
 		try {
-			System.out.println(fac.endParse());
+			System.out.println(target.endParse());
 		} catch (Exception e) {
 			errors.add("end parse error", e.getMessage(), e);
 		}
@@ -379,7 +397,7 @@ public void receiveAccounting(String updateText) {
 	}
 	
 	//System.out.println(updateText);
-	String result = new AccountingUpdater<R,I>(ctx,getDefaults(),fac).receiveAccountingData( updateText, false,false,false);
+	String result = new AccountingUpdater<R,I>(ctx,getDefaults(),getParseTarget()).receiveAccountingData( updateText, false,false,false);
 	
 	Assert.assertFalse(result.contains("Error in accounting parse"));
 }
@@ -389,7 +407,7 @@ public void receiveAccounting(String updateText) {
 		if (!fac.isValid()) {
 			return;
 		}
-		Set<PropertyContainerPolicy> s = fac.getPolicies();
+		Set<PropertyContainerPolicy> s = getPluginOwner().getPolicies();
 
 		assertNotNull(s);
 

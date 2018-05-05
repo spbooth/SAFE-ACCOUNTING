@@ -18,6 +18,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
@@ -48,35 +49,44 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	private PropertyFinder reg=null;
 	private RepositoryAccessorMap<T> map=null;
 	private PropExpressionMap expression_map=null;
-	
+	private boolean in_init=false;
 	protected final void initAccessorMap() {
-		DataObjectFactory<T> factory = getFactory();
-		String table = factory.getConfigTag();
-		map = new RepositoryAccessorMap<T>(factory,getRepository());
-		MultiFinder finder = new MultiFinder();
-		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(getContext());
-		map.makeReferences(refs);
-		finder.addFinder(refs);
-		PropertyRegistry derived = new PropertyRegistry(table+"DerivedProperties","Derived properties for table "+table);
-		expression_map = new PropExpressionMap();
-		PropertyRegistry def = new PropertyRegistry(table,"Properties for table "+table);
+		if( in_init == true ){
+			throw new ConsistencyError("recursive call to initAccessorMap");
+		}
+		in_init=true;
+		try {
+			DataObjectFactory<T> factory = getFactory();
+			String table = factory.getConfigTag();
+			map = new RepositoryAccessorMap<T>(factory,getRepository());
+			MultiFinder finder = new MultiFinder();
+			ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(getContext());
+			map.makeReferences(refs);
+			finder.addFinder(refs);
+			PropertyRegistry derived = new PropertyRegistry(table+"DerivedProperties","Derived properties for table "+table);
+			expression_map = new PropExpressionMap();
+			PropertyRegistry def = new PropertyRegistry(table,"Properties for table "+table);
 
-		for(AccessorContributer contrib : factory.getComposites(AccessorContributer.class)){
-			contrib.customAccessors(map, finder, expression_map);
+			if( factory instanceof AccessorContributer) {
+				((AccessorContributer)factory).customAccessors(map, finder, expression_map);
+			}
+			for(AccessorContributer contrib : factory.getComposites(AccessorContributer.class)){
+				contrib.customAccessors(map, finder, expression_map);
+			}
+
+			customAccessors(map, finder, expression_map);
+			map.populate( finder, def,false);
+			finder.addFinder(def);
+
+
+			expression_map.addFromProperties(derived, finder, getContext(), table);
+			map.addDerived(getContext(), expression_map);
+			finder.addFinder(derived);
+
+			reg=finder;
+		}finally{
+			in_init=false;
 		}
-		if( factory instanceof AccessorContributer) {
-			((AccessorContributer)factory).customAccessors(map, finder, expression_map);
-		}
-		customAccessors(map, finder, expression_map);
-		map.populate( finder, def,false);
-		finder.addFinder(def);
-		
-		
-		expression_map.addFromProperties(derived, finder, getContext(), table);
-		map.addDerived(getContext(), expression_map);
-		finder.addFinder(derived);
-		
-		reg=finder;
 	}
 	/** Extension point to allow custom accessors and registries to be added in sub-classes
 	 * 
@@ -93,6 +103,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	public final PropertyFinder getFinder() {
 		if( reg == null ){
 			initAccessorMap();
+			assert(reg != null);
 		}
 		return reg;
 	}
