@@ -84,7 +84,7 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
         }
 
         @Override
-        protected void customAccessors(
+        public void customAccessors(
                 AccessorMap<ReportTemplateLog> mapi,
                 MultiFinder finder,
                 PropExpressionMap derived) {

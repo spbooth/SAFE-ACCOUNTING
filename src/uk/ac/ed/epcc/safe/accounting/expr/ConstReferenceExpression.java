@@ -36,8 +36,7 @@ public class ConstReferenceExpression<I extends Indexed> extends ConstPropExpres
 	 */
 	@Override
 	public String getTable() {
-		// TODO Auto-generated method stub
-		return null;
+		return ((IndexedReference<I>) val).getTag();
 	}
 
 	/* (non-Javadoc)

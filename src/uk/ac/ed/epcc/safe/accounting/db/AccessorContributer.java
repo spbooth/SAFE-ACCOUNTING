@@ -19,12 +19,14 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Accessor;
 import uk.ac.ed.epcc.webapp.model.data.Composite;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 
-/** Interface for {@link Composite}s that add properties
+/** Interface for {@link Composite}s or {@link DataObjectFactory}s that add properties.
  * 
  * 
  * @see ExpressionTargetFactoryComposite
  * @author spb
+ * @param <P> type of {@link DataObject}
  *
  */
 public interface AccessorContributer<P extends DataObject> {

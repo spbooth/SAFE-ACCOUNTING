@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.upload;
 import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.db.AccountingUpdater;
+import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTargetComposite;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordParseTarget;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
@@ -29,6 +30,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 /** Class to upload an accounting table.
  * Upload parameters are passed as a map.
  * <ul>
@@ -67,12 +69,21 @@ public class AccountingUploadParser implements UploadParser, Contexed {
         if( table == null ){
         	throw new UploadException("No destination table specified");
         }
-		
-        UsageRecordParseTarget fac = conn.makeObject(UsageRecordParseTarget.class, table);
-        if( fac == null ){
-        	throw new UploadException("Table "+table+" does not have an accounting table configured");
+		// First check for direct implementation
+        UsageRecordParseTarget parse_target = conn.makeObject(UsageRecordParseTarget.class, table);
+        if( parse_target == null ){
+        	DataObjectFactory<?> fac = conn.makeObject(DataObjectFactory.class,table);
+        	if( fac != null) {
+        		PropertyContainerParseTargetComposite comp = fac.getComposite(PropertyContainerParseTargetComposite.class);
+        		if( comp != null && comp instanceof UsageRecordParseTarget) {
+        			parse_target = (UsageRecordParseTarget) comp;
+        		}
+        	}
+        	if( parse_target == null) {
+        		throw new UploadException("Table "+table+" does not have an accounting table configured");
+        	}
         }
-        PropertyFinder finder = fac.getFinder();
+        PropertyFinder finder = parse_target.getFinder();
         ValueParserPolicy vis = new ValueParserPolicy(getContext());
         for(String s : parameters.keySet()){
         	PropertyTag tag = finder.find(s);
@@ -93,7 +104,7 @@ public class AccountingUploadParser implements UploadParser, Contexed {
         boolean replace = (parameters.get("replace") != null);
         boolean augment = (parameters.get("augment") != null);
         boolean verify = (parameters.get("verify") != null);
-        String result = new AccountingUpdater(conn,defaults,fac).receiveAccountingData( update, replace,verify,augment);
+        String result = new AccountingUpdater(conn,defaults,parse_target).receiveAccountingData( update, replace,verify,augment);
 		
 		return result;
 	}

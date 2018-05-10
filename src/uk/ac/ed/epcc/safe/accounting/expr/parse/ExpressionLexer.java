@@ -71,7 +71,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 
 		@Override
 		public int getToken(String pattern) {
-			return ExpressionParser.REFERENCE;
+			return ExpressionParser.Lexer.REFERENCE;
 		}
 	}
 
@@ -101,7 +101,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 
 		@Override
 		public int getToken(String pattern) {
-			return ExpressionParser.MATCH;
+			return ExpressionParser.Lexer.MATCH;
 		}
 	}
 
@@ -120,7 +120,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 		}
 
 		public int getToken(String pattern) {
-			return ExpressionParser.KEYWORD;
+			return ExpressionParser.Lexer.KEYWORD;
 		}
 	}
 
@@ -140,7 +140,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 
 		public int getToken(String pattern) {
 			
-			return ExpressionParser.STRING;
+			return ExpressionParser.Lexer.STRING;
 		}
 	}
 
@@ -166,16 +166,16 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 
 		public int getToken(String pattern) {
 			if( pattern.equals("+")){
-				return ExpressionParser.PLUS;
+				return ExpressionParser.Lexer.PLUS;
 			}
 			else if( pattern.equals("-")){
-				return ExpressionParser.MINUS;
+				return ExpressionParser.Lexer.MINUS;
 			}
 			else if( pattern.equals("/")){
-				return ExpressionParser.DIV;
+				return ExpressionParser.Lexer.DIV;
 			}
 			else{
-				return ExpressionParser.MULT;
+				return ExpressionParser.Lexer.MULT;
 			}
 			
 		}
@@ -196,7 +196,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 		}
 
 		public int getToken(String pattern) {
-			return ExpressionParser.PROPTAG;
+			return ExpressionParser.Lexer.PROPTAG;
 		}
 	}
 
@@ -220,7 +220,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 
 		public int getToken(String pattern) {
 			
-			return ExpressionParser.NUMBER;
+			return ExpressionParser.Lexer.NUMBER;
 		}
 	}
 	/** a generic {@link ExpressionLexTarget} 
@@ -259,13 +259,13 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			  // operator target
 			  targets.add(new OperatorLexTarget());
 			  // Bracket literal target
-			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.COMMA, ","));
-			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.LPAREN, "\\("));
-			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.RPAREN, "\\)"));
-			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.LSQR, "\\["));
-			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.RSQR, "\\]"));
-			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.LBRACE, "\\{"));
-			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.RBRACE, "\\}"));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.Lexer.COMMA, ","));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.Lexer.LPAREN, "\\("));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.Lexer.RPAREN, "\\)"));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.Lexer.LSQR, "\\["));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.Lexer.RSQR, "\\]"));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.Lexer.LBRACE, "\\{"));
+			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.Lexer.RBRACE, "\\}"));
 		
 			  // String literal target
 			  targets.add(new StringLiteralLexTarget());
@@ -320,7 +320,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 
 	public int yylex() throws  LexException {
 		 if( m.regionStart() >= m.regionEnd()){
-			  return ExpressionParser.EOF;
+			  return ExpressionParser.Lexer.EOF;
 		  }
 		 if( m.lookingAt() ){
 			  for(int i=0 ; i< lex_targets.length ; i++){

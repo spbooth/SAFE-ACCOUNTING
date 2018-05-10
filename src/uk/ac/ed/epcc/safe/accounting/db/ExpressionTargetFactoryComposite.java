@@ -34,11 +34,13 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 
 /** A {@link Composite} that implements {@link ExpressionTargetFactory}
  * 
+ * This is the normal mechanism to property enable a {@link DataObjectFactory}
+ * 
  * The behaviour can be modified by having the parent factory or other {@link Composite}s
  * implement {@link AccessorContributer}.
  * 
  * @author spb
- *
+ * @see AccessorMap
  * @param <T>
  */
 public class ExpressionTargetFactoryComposite<T extends DataObject> extends Composite<T,ExpressionTargetFactoryComposite> implements ExpressionTargetFactory<T>, TableContentProvider {

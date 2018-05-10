@@ -15,7 +15,6 @@ package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
@@ -47,7 +46,7 @@ public interface ExpressionTargetGenerator<T> extends PropertyTargetGenerator<T>
 	   
 	  
 	   
-	   /** Is this a record from this {@link UsageProducer}.
+	   /** Is this a record from this {@link ExpressionTargetGenerator}.
 	    * 
 	    * @param record
 	    * @return

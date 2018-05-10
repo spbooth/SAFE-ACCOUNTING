@@ -1,6 +1,6 @@
-%language "Java"
-%define parser_class_name "ExpressionParser"
-%define package "uk.ac.ed.epcc.safe.accounting.expr.parse"
+%language {Java}
+%define parser_class_name {ExpressionParser}
+%define package {uk.ac.ed.epcc.safe.accounting.expr.parse}
 
 %code imports{
 import  uk.ac.ed.epcc.safe.accounting.*;
@@ -22,8 +22,8 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 @SuppressWarnings({"unchecked","unused"})
 }
 
-%define lex_throws "LexException"
-%define throws "Exception"
+%define lex_throws {LexException}
+%define throws {Exception}
 
 %token NUMBER MULT DIV PLUS MINUS LPAREN RPAREN LBRACE RBRACE LSQR RSQR PROPTAG STRING COMMA KEYWORD MATCH REFERENCE
 
@@ -144,12 +144,14 @@ expr : start_deref expr end_deref	{
 
 start_deref : expr  LSQR	{
   if( $1 instanceof ReferenceExpression ){
-  ReferenceExpression tag = (ReferenceExpression)  $1;
-  if( PropertyTargetFactory.class.isAssignableFrom(tag.getFactoryClass())){
-    PropertyTargetFactory fac = (PropertyTargetFactory) conn.makeObject(tag.getFactoryClass(), tag.getTable());
-    push(fac.getFinder());
-  }
-  $$=tag;
+    ReferenceExpression tag = (ReferenceExpression)  $1;
+    ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(tag.getFactory(conn));
+    if( etf != null){
+      push(etf.getFinder());
+    }else{
+      throw new ParseException("Illegal target of dereference "+$1.toString());
+    }
+    $$=tag;
   }else{
      throw new ParseException("Illegal dereference of "+$1.toString()); 
   }

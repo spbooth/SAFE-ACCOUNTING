@@ -2,6 +2,8 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.ExpressionTargetFactoryComposite;
+import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
+import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
@@ -20,18 +22,50 @@ public class ExpressionCast {
 	 * @param fac
 	 * @return {@link ExpressionTargetFactory} or null;
 	 */
-	public static <T extends Indexed> ExpressionTargetFactory getExpressionTargetFactory(IndexedProducer<T> fac) {
+	public static <T extends Indexed> ExpressionTargetFactory<T> getExpressionTargetFactory(IndexedProducer<T> fac) {
 		if( fac == null || fac instanceof ExpressionTargetFactory) {
 			// object implements interface directly or is null
-			return (ExpressionTargetFactory) fac;
+			return (ExpressionTargetFactory<T>) fac;
 		}
 		if( fac instanceof DataObjectFactory) {
-			return (ExpressionTargetFactory) ((DataObjectFactory)fac).getComposite(ExpressionTargetFactoryComposite.class);
+			return (ExpressionTargetFactory<T>) ((DataObjectFactory)fac).getComposite(ExpressionTargetFactoryComposite.class);
 		}
 		return null;
 	}
 
-	
+	/** get an {@link PropertyTargetGenerator} for a {@link DataObjectFactory}
+	 * 
+	 * @param fac
+	 * @return {@link PropertyTargetGenerator} or null;
+	 */
+	public static <T extends Indexed> PropertyTargetGenerator<T> getPropertyTargetGenerator(IndexedProducer<T> fac) {
+		if( fac == null || fac instanceof PropertyTargetGenerator) {
+			// object implements interface directly or is null
+			return (PropertyTargetGenerator<T>) fac;
+		}
+		if( fac instanceof DataObjectFactory) {
+			return (PropertyTargetGenerator<T>) ((DataObjectFactory)fac).getComposite(ExpressionTargetFactoryComposite.class);
+		}
+		return null;
+	}
+	/** construct an {@link ExpressionTargetFactory} from a tag.
+	 * 
+	 * @param conn
+	 * @param tag
+	 * @return
+	 */
+	public static <T extends Indexed> ExpressionTargetFactory makeExpressionTargetFactory(AppContext conn,String tag) {
+		return getExpressionTargetFactory(conn.makeObject(DataObjectFactory.class, tag));
+	}
+	/** construct an {@link ExpressionTargetFactory} from a tag.
+	 * 
+	 * @param conn
+	 * @param tag
+	 * @return
+	 */
+	public static <T extends Indexed> PropertyTargetGenerator<T> makePropertyTargetGenerator(AppContext conn,String tag) {
+		return getPropertyTargetGenerator(conn.makeObject(DataObjectFactory.class, tag));
+	}
 	public static ExpressionTarget getExpressionTarget(Object o) {
 		if( o == null || o instanceof ExpressionTarget) {
 			return (ExpressionTarget) o;

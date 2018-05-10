@@ -17,13 +17,13 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.UsageManager;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.safe.accounting.UsageProducerWrapper;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.AppContextService;
 import uk.ac.ed.epcc.webapp.Contexed;
-import uk.ac.ed.epcc.webapp.session.SessionService;
 
 /** Service used to configure the Accounting
  * @author spb
@@ -33,14 +33,15 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 public class DefaultAccountingService implements Contexed, AccountingService{
 	private AppContext c;
+	public static final String DEFAULT_PRODUCER_NAME = "accounting";
 	public DefaultAccountingService(AppContext c){
 		this.c=c;
 	}
 	public UsageManager getUsageManager(){
-		return getUsageManager("accounting");
+		return getUsageManager(DEFAULT_PRODUCER_NAME);
 	}
 	public UsageManager getUsageManager(String name){
-		return new ConfigUsageManager(c,name);
+		return ConfigUsageManager.getInstance(c,name);
 	}
 	public UsageProducer getUsageProducer(){
 		return getUsageManager();
@@ -56,8 +57,16 @@ public class DefaultAccountingService implements Contexed, AccountingService{
 			if( up != null ){
 				return up;
 			}
+			ExpressionTargetFactory etf = ExpressionCast.makeExpressionTargetFactory(getContext(), name);
+			if( etf != null) {
+				if( etf instanceof UsageProducer) {
+					return (UsageProducer) etf;
+				}else {
+					return new UsageProducerWrapper(getContext(),name,etf);
+				}
+			}
 			UsageManager man = getUsageManager(name);
-			if( man.hasProducers()){
+			if( man != null && man.hasProducers()){
 				return man;
 			}
 			return null;

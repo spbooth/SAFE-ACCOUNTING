@@ -16,6 +16,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactoryTestCase;
@@ -43,7 +45,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		if (!fac.isValid()) {
 			return;
 		}
-		PropertyContainerParser p = fac.getParser();
+		PropertyContainerParser p = fac.getComposite(PropertyContainerParseTargetComposite.class).getParser();
 
 		assertNotNull(p);
 
@@ -82,7 +84,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		if (!fac.isValid()) {
 			return;
 		}
-		Set<PropertyContainerPolicy> s = fac.getPolicies();
+		Set<PropertyContainerPolicy> s = fac.getComposite(PropertyContainerParseTargetComposite.class).getPlugInOwner().getPolicies();
 
 		assertNotNull(s);
 
@@ -93,7 +95,8 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		if (!fac.isValid()) {
 			return;
 		}
-		AccessorMap map = fac.getAccessorMap();
+		ExpressionTargetFactory<R> etf = ExpressionCast.getExpressionTargetFactory(fac);
+		AccessorMap map = etf.getAccessorMap();
 
 		assertNotNull(map);
 

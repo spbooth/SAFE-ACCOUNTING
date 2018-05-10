@@ -16,7 +16,6 @@ package uk.ac.ed.epcc.safe.accounting.selector;
 import java.util.Iterator;
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 

@@ -16,49 +16,11 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
-import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
-import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
-import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
-import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionInput;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
-import uk.ac.ed.epcc.safe.accounting.selector.FilterSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.forms.Form;
-import uk.ac.ed.epcc.webapp.forms.action.FormAction;
-import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
-import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
-import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
-import uk.ac.ed.epcc.webapp.forms.result.FormResult;
-import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
-import uk.ac.ed.epcc.webapp.forms.transition.Transition;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
-import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureListener;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.Classification;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
+import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 /** Factory class for {@link AccountingClassification} objects.
  * 
  * By default the properties are generated from the Database fields but additional properties can be
@@ -70,182 +32,23 @@ import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
 
 
 public class AccountingClassificationFactory<T extends AccountingClassification>
-		extends PropertyTargetClassificationFactory<T>  implements UsageProducer<T>,
-		FilterSelector<DataObjectItemInput<T>>,
-		PropertyImplementationProvider,
-		TableStructureListener,
-		TableTransitionContributor{
-	private PropertyFinder reg=null;
-	private RepositoryAccessorMap<T> map=null;
-	public static final PropertyRegistry classification = new PropertyRegistry("classification", "Standard properties for a Classification table");
-	public static final PropertyTag<String> NAME_PROP = new PropertyTag<String>(classification,Classification.NAME,String.class);
-	public static final PropertyTag<String> DESCRIPTION_PROP = new PropertyTag<String>(classification,Classification.DESCRIPTION,String.class);
-	static{
-		classification.lock();
-	}
+		extends PropertyClassificationFactory<T> {
 	
-	PropertyRegistry derived;
-	private PropExpressionMap expression_map=null;
+	@Override
+	protected DataObject makeBDO(Record res) throws DataFault {
+		return new AccountingClassification(this, res);
+	}
+
+	@Override
+	public Class<? super T> getTarget() {
+		return AccountingClassification.class;
+	}
 
 	public AccountingClassificationFactory(AppContext c, String table) {
-		super(c, table);
+		super();
+		setContext(c, table);
 		// Logger log = getLogger();
 		
 	}
-	/** Extension point to allow custom accessors to be added.
-	 * 
-	 * @param mapi2
-	 * @param finder
-	 * @param derived
-	 */
-	protected void customAccessors(AccessorMap<T> mapi2, MultiFinder finder,
-			PropExpressionMap derived) {
-		
-	}
 	
-	private void initAccessorMap(AppContext c, String tag) {
-		map = new RepositoryAccessorMap<T>(this,res);
-		MultiFinder finder = new MultiFinder();
-		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
-		map.makeReferences( refs);
-		finder.addFinder(refs);
-		finder.addFinder(classification);
-		derived = new PropertyRegistry(tag+"DerivedProperties","Derived properties for table "+tag);
-		expression_map = new PropExpressionMap();
-		
-		customAccessors(map, finder, expression_map);
-		PropertyRegistry def = new PropertyRegistry(tag,"Properties for table "+tag);
-		map.populate( finder, def,false);
-		finder.addFinder(def);
-		
-		finder.addFinder(map.setRelationshipProperties(this));
-		
-		
-		
-		
-		expression_map.addFromProperties(derived, finder, c, tag);
-		map.addDerived(c, expression_map);
-		finder.addFinder(derived);
-		
-		reg=finder;
-	}
-
-	public PropertyFinder getFinder() {
-		if( reg == null){
-			initAccessorMap(getContext(), getConfigTag());
-		}
-		return reg;
-	}
-
-	
-
-	public final RepositoryAccessorMap<T> getAccessorMap(){
-		if( map == null ){
-			initAccessorMap(getContext(), getConfigTag());
-		}
-		return map;
-	}
-
-	
-
-	@Override
-	public void resetStructure() {
-		initAccessorMap(getContext(), getConfigTag());
-	}
-
-	public DataObjectItemInput<T> getInput(RecordSelector sel) throws Exception {
-		
-		return new DataObjectInput(sel.visit(new FilterSelectVisitor<T>(this)));
-	}
-
-	
-	public <I> BaseFilter<T> getSelectClauseFilter(SelectClause<I> c) {
-		try {
-			if( c.data == null ){
-				// null data implies no match
-				return new GenericBinaryFilter<T>(getTarget(),false);
-			}
-			if( c.tag instanceof PropertyTag){
-				return getAccessorMap().getFilter((PropertyTag<I>)c.tag, c.match, c.data);
-			}else{
-				return getAccessorMap().getFilter(c.tag, c.match, c.data);
-			}
-		} catch (CannotFilterException e) {
-			getContext().getService(LoggerService.class).getLogger(getClass()).warn("Cannot filter", e);
-			return new GenericBinaryFilter<T>(getTarget(),false);
-		}
-	}
-	public class AddDerivedTransition extends AbstractFormTransition<AccountingClassificationFactory>{
-
-		public void buildForm(Form f, AccountingClassificationFactory target,
-				AppContext c) throws TransitionException {
-			f.addInput("Name", "Name of new property", new TextInput(false));
-			f.addInput("Expr", "Definition", new PropExpressionInput(getContext(),getFinder()));
-			// Note this class references the enclosing factory directly rather than
-			// using the target parameter as this allows it internal access
-			f.addAction("Add", new FormAction() {
-
-				@Override
-				public FormResult action(Form f)
-						throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
-					try {
-						expression_map.addConfigProperty(getContext(), derived,getFinder(), getConfigTag(), (String)f.get("Name"), (String)f.get("Expr"));
-					} catch (ParseException e) {
-						throw new ActionException("Operation failed",e);
-					}
-					return new ViewTableResult(AccountingClassificationFactory.this);
-				}
-			});
-		}		
-	}	
-	private ReductionHandler<T, AccountingClassificationFactory<T>> getReductionHandler(){
-		return new ReductionHandler<T, AccountingClassificationFactory<T>>(this);
-	}
-
-	public <I> Map<I, Number> getReductionMap(PropExpression<I> index,
-			ReductionTarget<Number> property,  RecordSelector selector)
-			throws Exception 
-	{
-		return getReductionHandler().getReductionMap(index, property, selector);
-		
-	}
-
-	
-	public  Map<ExpressionTuple, ReductionMapResult> getIndexedReductionMap( Set<ReductionTarget> sum, RecordSelector selector) throws Exception{
-		return getReductionHandler().getIndexedReductionMap(sum, selector);
-	}
-	
-	
-	public  <R>  R getReduction(ReductionTarget<R> type, RecordSelector selector) throws Exception {
-		return getReductionHandler().getReduction(type, selector);
-	}
-	
-	@Override
-	public void release() {
-		if( map != null){
-			map.release();
-			map=null;
-		}
-		reg=null;
-		super.release();
-	}
-	@Override
-	public String getImplemenationInfo(PropertyTag<?> tag) {
-		return getAccessorMap().getImplemenationInfo(tag);
-	}
-	@Override
-	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
-		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> map = new LinkedHashMap<>();
-		map.put(new AdminOperationKey("Add derived property"), new AddDerivedTransition());
-		
-		return map;
-	}
-	@Override
-	public ExpressionTargetContainer getExpressionTarget(T record) {
-		return record;
-	}
-	@Override
-	public boolean isMyTarget(T record) {
-		return isMine(record);
-	}
 }

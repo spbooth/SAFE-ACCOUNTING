@@ -48,7 +48,7 @@ public class RemoteTargetFactory<T extends DataObjectPropertyContainer> extends 
 	 * @see uk.ac.ed.epcc.safe.accounting.db.DefaultDataObjectPropertyFactory#customAccessors(uk.ac.ed.epcc.safe.accounting.db.AccessorMap, uk.ac.ed.epcc.safe.accounting.properties.MultiFinder, uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap)
 	 */
 	@Override
-	protected void customAccessors(AccessorMap<T> mapi2, MultiFinder finder, PropExpressionMap derived) {
+	public void customAccessors(AccessorMap<T> mapi2, MultiFinder finder, PropExpressionMap derived) {
 		super.customAccessors(mapi2, finder, derived);
 		finder.addFinder(test);
 	}

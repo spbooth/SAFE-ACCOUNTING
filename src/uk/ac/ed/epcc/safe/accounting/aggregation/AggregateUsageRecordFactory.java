@@ -26,6 +26,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
 import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.IndexReduction;
 import uk.ac.ed.epcc.safe.accounting.NumberSumReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
@@ -37,6 +38,7 @@ import uk.ac.ed.epcc.safe.accounting.db.AccessorContributer;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -211,7 +213,7 @@ public abstract class AggregateUsageRecordFactory
 			}
 		}
 		if( prod != null  && prod instanceof DataObjectFactory) {
-			TableSpecification master_spec = ((DataObjectFactory)prod).getFinalTableSpecification(getContext(), master.getTag());
+			TableSpecification master_spec = ((DataObjectFactory)prod).getFinalTableSpecification(getContext(), master_producer);
 			if( master_spec != null) {
 				for( String name : master_spec.getFieldNames()) {
 					FieldType f = master_spec.getField(name);
@@ -232,10 +234,25 @@ public abstract class AggregateUsageRecordFactory
 	@SuppressWarnings("unchecked")
 	protected AggregateUsageRecordFactory(UsageRecordFactory master_factory) {	
 		this.master = master_factory;
+		if( master_factory != null) {
+			this.master_producer=master_factory.getTag();
+		}
 	}
 
 
-/* (non-Javadoc)
+@Override
+	protected void postSetContext() {
+		super.postSetContext();
+		AppContext c = getContext();
+		String tag = getTag();
+		if( master == null ){
+			master_producer = c.getInitParameter(MASTER_PREFIX + tag);
+			if( master_producer != null){
+				master = c.getService(AccountingService.class).getUsageProducer(master_producer);
+			}
+		}
+	}
+	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#getConfigProperties()
 	 */
 	@Override
@@ -267,14 +284,7 @@ public abstract class AggregateUsageRecordFactory
 		String tag = getTag();
 		Logger log = c.getService(LoggerService.class).getLogger(getClass());
 		log.debug("table is " + tag);
-		master_producer = c.getInitParameter(MASTER_PREFIX + tag);
-		log.debug("Master tag is " + master_producer);
-
-		if( master == null ){
-			if( master_producer != null){
-				master = c.getService(AccountingService.class).getUsageManager(master_producer);
-			}
-		}
+		
 
 		finder.addFinder(StandardProperties.base); // need the date properties
 		if( master != null ){
@@ -302,9 +312,12 @@ public abstract class AggregateUsageRecordFactory
 		// add derived properties from master but we don't want any that use the 
 		// date values as the definitions may not be correct. so we add the alises to
 		// base start/end  after clearing expressions that don't resolve
-
+		PropExpressionMap props=null;
 		if( master instanceof DerivedPropertyFactory){
-			PropExpressionMap props = ((DerivedPropertyFactory)master).getDerivedProperties();
+			props=((DerivedPropertyFactory)master).getDerivedProperties();
+		}
+		//TODO fix this
+		if( props != null) {
 			log.debug(tag+" got derived props from master "+props.size());
 			map.addDerived(c, props);
 			map.clearUnresolvableDefinitions();

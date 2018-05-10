@@ -10,6 +10,7 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
+import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -297,5 +298,9 @@ Tagged{
 	public AccessorMap<T> getAccessorMap() {
 		// TODO Auto-generated method stub
 		return map;
+	}
+	@Override
+	public PropExpressionMap getDerivedProperties() {
+		return new PropExpressionMap();
 	}
 }

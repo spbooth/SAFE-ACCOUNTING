@@ -2,6 +2,7 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.util.regex.Pattern;
 
+import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.Matcher;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 

@@ -79,6 +79,10 @@ public class AtomExtension extends ReportExtension {
 	 * 
 	 */
 	class AtomResult<N>{
+		@Override
+		public String toString() {
+			return "AtomResult [expr=" + expr + ", value=" + value + "]";
+		}
 		public AtomResult(PropExpression<N> expr, N value) {
 			super();
 			this.expr = expr;
@@ -162,6 +166,7 @@ public class AtomExtension extends ReportExtension {
 		}else if( name.equals("Value") || name.equals("Number")){
 			Number n =  getNumberParam(null, null, element);
 			if( n == null ){
+				addError("Bad Atom","Cannot parse Value", element);
 				throw new ParseException("Invalid Number Element");
 			}
 			return new AtomResult<Number>(null,n);

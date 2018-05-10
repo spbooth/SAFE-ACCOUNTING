@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
@@ -44,58 +45,16 @@ import uk.ac.ed.epcc.webapp.model.data.reference.ReferenceProvider;
  */
 
 
-public class AccountingClassification extends Classification implements PropertyContainer, ExpressionTarget , ReferenceProvider, ExpressionTargetContainer{
+public class AccountingClassification extends Classification implements ReferenceProvider{
   
-    protected final ExpressionTargetContainer proxy;
+  
 	@SuppressWarnings("unchecked")
-	protected AccountingClassification(PropertyTargetClassificationFactory<?> fac,Record res) {
+	protected AccountingClassification(PropertyClassificationFactory<?> fac,Record res) {
 		super(res, fac);
-		AccessorMap map = fac.getAccessorMap();
-		proxy = map.getProxy(this);
 	}
 
 	
-    /* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.db.ExpressionTarget#getProperty(uk.ac.ed.epcc.safe.accounting.PropertyTag)
-	 */
-	public <T> T getProperty(PropertyTag<T> tag, T def){
-    	return proxy.getProperty(tag, def);
-    }
-    public final <T> void setProperty(PropertyTag<T> tag, PropertyContainer map) throws InvalidExpressionException{
-		setProperty(tag,map.getProperty(tag));
-	}
-   
-	public final <T> T getProperty(PropertyTag<T> tag) throws InvalidExpressionException {
-		return proxy.getProperty(tag);
-	}
-   
-	public final <T> void setProperty(PropertyTag<? super T> tag, T value) throws InvalidPropertyException {
-		proxy.setProperty(tag, value);
-	}
-  
-	public final <T> void setOptionalProperty(PropertyTag<? super T> tag, T value) {
-		proxy.setOptionalProperty(tag, value);
-	}
-	public final boolean supports(PropertyTag<?> tag){
-		return proxy.supports(tag);
-	}
-	public final boolean writable(PropertyTag<?> tag){
-		return proxy.writable(tag);
-	}
-    /* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.db.ExpressionTarget#evaluateExpression(uk.ac.ed.epcc.safe.accounting.expr.PropExpression)
-	 */
-	public <T> T evaluateExpression(PropExpression<T> expr) throws InvalidExpressionException{
-    	return proxy.evaluateExpression(expr);
-    }
-	public <T> T evaluateExpression(PropExpression<T> expr,T def){
-    	return proxy.evaluateExpression(expr,def);
-    }
-
-	public ExpressionTargetFactory getExpressionTargetFactory() {
-		return (ExpressionTargetFactory) getFactory();
-	}
-
+    
 	
 
 	@SuppressWarnings("unchecked")
@@ -104,31 +63,5 @@ public class AccountingClassification extends Classification implements Property
 	}
 
 
-	public Set<PropertyTag> getDefinedProperties() {
-		return proxy.getDefinedProperties();
-	}
-
-
-	public void setAll(PropertyContainer source) {
-		proxy.setAll(source);
-	}
-
-
-	public Parser getParser() {
-		return proxy.getParser();
-	}
-
-
-	@SuppressWarnings("unchecked")
-	public Object getKey() {
-		return fac.makeReference(this);
-	}
-
-	
-	@Override
-	public void release(){
-		super.release();
-		proxy.release();
-	}
 
 }

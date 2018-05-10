@@ -26,7 +26,6 @@ public class DummyPropertyFactory extends DefaultDataObjectPropertyFactory<Dummy
 	}
 	public DummyPropertyFactory(AppContext ctx, String table) {
 		setContext(ctx, table);
-		initAccessorMap(ctx, table);
 	}
 	
 	

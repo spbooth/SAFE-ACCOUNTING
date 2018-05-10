@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.FixedPropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
@@ -538,7 +539,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		return calc_cutoff;
 	}
 	private ReductionHandler<X, ExpressionTargetFactory<X>> getReductionHandler(){
-		return new ReductionHandler<X, ExpressionTargetFactory<X>>((ExpressionTargetFactory<X>) fac);
+		return new ReductionHandler<X, ExpressionTargetFactory<X>>(ExpressionCast.getExpressionTargetFactory(fac));
 	}
 	
 }

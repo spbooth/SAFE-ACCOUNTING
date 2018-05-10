@@ -19,21 +19,30 @@ package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.db.GeneratorReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
 import uk.ac.ed.epcc.webapp.Tagged;
 
 /** Interface implemented by classes that can provide Usage information to the reports.
  * 
  * This interface is intended to be implementable by composite objects that combine multiple tables.
+ * it therefore provides both an {@link ExpressionTargetGenerator} for iteration and a {@link ReductionHandler}
+ * for reductions.
+ * 
+ * It implements {@link DerivedPropertyFactory} so derived properties can be imported by aggregations over the
+ * {@link UsageProducer}.
  * 
  * @see ReductionHandler
  * @see GeneratorReductionHandler
+ * @see DerivedPropertyFactory
+ * @see UsageManager
  * @author spb
- * @param <UR> 
+ * @param <UR> common supertype of underlying records
  *
  */
 public interface UsageProducer<UR> extends 
 ExpressionTargetGenerator<UR>, 
-Tagged, 
-ReductionProducer<UR>{	    
+Tagged,
+ReductionProducer<UR>,
+DerivedPropertyFactory{	    
    
 }

@@ -17,13 +17,17 @@
 package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
 /** Interface for property enabled factories.
- * Essentially this means it can generate an {@link AccessorMap}
+ * Essentially this means it is a {@link ExpressionTargetGenerator} that can generate an {@link AccessorMap}.
+ * {@link AccessorMap}s are specific to a single table.
+ * 
+ * This may either be implemented directly by the factory or a composite
  * @author spb
  *
  * @param <T>
  */
-public interface ExpressionTargetFactory<T> extends ExpressionTargetGenerator<T>
+public interface ExpressionTargetFactory<T> extends ExpressionTargetGenerator<T>, DerivedPropertyFactory
 {
 	
 	public AccessorMap<T> getAccessorMap();

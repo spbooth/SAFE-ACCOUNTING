@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
@@ -33,7 +34,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  */
 
 
-public class ExpressionFormat implements DomFormatter<ExpressionTarget> {
+public class ExpressionFormat implements DomFormatter<Object> {
 
 	private final String expr;
 	private final AppContext conn;
@@ -42,8 +43,12 @@ public class ExpressionFormat implements DomFormatter<ExpressionTarget> {
 		this.expr=expr;
 	}
 	
-	public Node format(Document doc,ExpressionTarget t) throws InvalidExpressionException, ParseException {
-
+	public Node format(Document doc,Object o) throws InvalidExpressionException, ParseException {
+		ExpressionTarget t = ExpressionCast.getExpressionTarget(o);
+		if( t == null) {
+			throw new InvalidExpressionException("ExpressionTarget cannot be generated for "+o);
+		}
+		
 		Parser p = t.getParser();
 
 		PropExpression<?> e = p.parse(expr);
@@ -55,8 +60,8 @@ public class ExpressionFormat implements DomFormatter<ExpressionTarget> {
 		return null;
 	}
 
-	public Class<ExpressionTarget> getTarget() {
-		return ExpressionTarget.class;
+	public Class<Object> getTarget() {
+		return Object.class;
 	}
 
 	
