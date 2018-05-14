@@ -28,7 +28,9 @@ import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.transition.ViewTransitionProvider;
+import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.model.period.SplitManager;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** AllocationManagers are the UsageProducer classes for Allocations and
  * provide transitions to edit the allocations
@@ -40,12 +42,22 @@ import uk.ac.ed.epcc.webapp.time.Period;
  */
 public interface AllocationManager<K,T extends Allocation> extends UsageProducer<T>, ViewTransitionProvider<K,T>,SplitManager<T> ,ExpressionFilterTarget<T>{
 
-/** Role needed to modify allocations.
+/** Role needed to create allocations.
  *    Can restrict which index properties a user can set by defining a
  *    relationship {@link AllocationPeriodTransitionProvider#ALLOCATION_ADMIN_RELATIONSHIP} on the index prop.
  */
-	public static final String ALLOCATION_ADMIN_ROLE = "AllocationAdmin";
+public static final String ALLOCATION_ADMIN_ROLE = "AllocationAdmin";
 
+/** Relationship to edit an allocation.
+ * If this is not defined on a table falls back to using the AllocationAdmin role
+ * 
+ */
+public static final String EDIT_ALLOCATION_RELATIONSHIP = "AllocationEdit";
+/** Relationship to view an allocation.
+ * If this is not defined on a table falls back to using the AllocationAdmin role
+ * 
+ */
+public static final String VIEW_ALLOCATION_RELATIONSHIP = "AllocationView";
  /** Add record to a table of allocations.
   * 
   * @param tab Table to add to
@@ -81,6 +93,13 @@ public interface AllocationManager<K,T extends Allocation> extends UsageProducer
 	 */
  public Set<ReferenceTag> getIndexProperties();
 
+ /** Get a filter representing which allocations 
+  * the current user is allowed to see.
+  * 
+  * @param sess {@link SessionService}
+  * @return {@link BaseFilter} on the allocations
+  */
+ public BaseFilter<T> getViewFilter(SessionService sess);
  /** build a creation form that takes default index values.
   * 
   * @param f

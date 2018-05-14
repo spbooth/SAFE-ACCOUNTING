@@ -75,6 +75,9 @@ import uk.ac.ed.epcc.webapp.forms.transition.TargetLessTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
+import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
+import uk.ac.ed.epcc.webapp.jdbc.table.BooleanFieldType;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -94,6 +97,7 @@ import uk.ac.ed.epcc.webapp.model.period.SplitTransition;
 import uk.ac.ed.epcc.webapp.preferences.Preference;
 import uk.ac.ed.epcc.webapp.servlet.TransitionServlet;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 /** An Allocation represents a resource allocated rather than a resource consumed. 
@@ -216,7 +220,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	 * @author spb
 	 *
 	 */
-	public class AllocationEdit extends UpdateTransition<T>{
+	public class AllocationEdit extends UpdateTransition<T> implements GatedTransition<T>{
 		
 		protected AllocationEdit() {
 			super(ALLOCATION, AllocationFactory.this);
@@ -262,6 +266,13 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			f.addValidator(new ListenerUpdateValidator(o));
 			addUpdateValidator(f, o);
 			modifyAllocationForm(f, o);
+		}
+
+		@Override
+		public boolean allow(SessionService<?> serv, T target) {
+			return serv.hasRelationship(AllocationFactory.this, target, 
+					AllocationManager.EDIT_ALLOCATION_RELATIONSHIP, 
+					serv.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE));
 		}
 
 		/* (non-Javadoc)
@@ -456,6 +467,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		res.put(StandardProperties.COMPLETED_TIMESTAMP, getDateInput());
 		AccessorMap map = getAccessorMap();
 		SessionService sess = getContext().getService(SessionService.class);
+		// Restrict index properties to those we have a particular role on
 		for(ReferenceTag tag : getIndexProperties()){
 			String field = map.getField(tag);
 			if( field != null ){
@@ -809,7 +821,17 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 
 	
 	public boolean canView(T target, SessionService<?> sess) {
-		return sess.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE);
+		return sess.hasRelationship(this, target, 
+				AllocationManager.VIEW_ALLOCATION_RELATIONSHIP,
+				sess.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE));
+	}
+	@Override
+	public BaseFilter<T> getViewFilter(SessionService sess) {
+		try {
+			return sess.getRelationshipRoleFilter(this, AllocationManager.VIEW_ALLOCATION_RELATIONSHIP);
+		} catch (UnknownRelationshipException e) {
+			return new GenericBinaryFilter<>(getTarget(), sess.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE));
+		}
 	}
 
 	public <X extends ContentBuilder> X getLogContent(X cb,T target, SessionService<?> sess) {
@@ -982,9 +1004,12 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	}
 
 	public void canSplit(T orig, Date d) throws ValidateException {
-		// TODO Auto-generated method stub
+		
 		
 	}
+	
+
+	
 	
 	
 }

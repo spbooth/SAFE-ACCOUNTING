@@ -49,6 +49,7 @@ import uk.ac.ed.epcc.webapp.forms.transition.IndexTransitionFactory;
 import uk.ac.ed.epcc.webapp.forms.transition.PathTransitionProvider;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryCreator;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.OrFilter;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
@@ -263,8 +264,10 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 				manager.addIndexTable(tab, record,target);
 			}
 			manager.finishIndexTable(tab, target);
-			cb.addText("Dates in red indicate records that cross the time period of the filter. Grey End-dates indicate an allocation that is past");
-			cb.addTable(c, tab);
+			if( tab.hasData()) {
+				cb.addText("Dates in red indicate records that cross the time period of the filter. Grey End-dates indicate an allocation that is past");
+				cb.addTable(c, tab);
+			}
 		}catch(Exception e){
 			getLogger().error("Error making index table",e);
 		}
@@ -283,22 +286,8 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 			AccessorMap map = fac.getAccessorMap();
 			AndFilter fil = new AndFilter(fac.getTarget());
 			fil.addFilter(fac.getFilter(getSelector(target)));
+			fil.addFilter(manager.getViewFilter(sess));
 			
-			// Now narrow selection using relationships
-			for(ReferenceTag ref : manager.getIndexProperties()){
-				IndexedProducer prod = ref.getFactory(getContext());
-				if( prod instanceof DataObjectFactory){
-					DataObjectFactory dof = (DataObjectFactory) prod;
-					fil.addFilter(fac.getRemoteFilter(dof,map.getField(ref), sess.getRelationshipRoleFilter(dof, ALLOCATION_ADMIN_RELATIONSHIP, dof.getFinalSelectFilter())));
-//					try{
-//						fil.addFilter(map.getOrderFilter(false, new NamePropExpression(ref)));
-//					}catch(Throwable t){
-//						getLogger().error("error adding index order", t);
-//					}
-				}
-				//
-			}
-			// Add order filter (by time at the least)
 			fil.addFilter(map.getOrderFilter(false,StandardProperties.STARTED_PROP));
 			return fac.getResult(fil).iterator();
 		}
@@ -308,7 +297,6 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 	public boolean canView(AllocationPeriod target, SessionService<?> sess) {
 		return sess.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE);
 	}
-
 	@SuppressWarnings("unchecked")
 	public RecordSelector getSelector(AllocationPeriod view){
 		AndRecordSelector sel = new AndRecordSelector();
