@@ -123,7 +123,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	@SuppressWarnings("unchecked")
 	public static final AllocationKey UPDATE = new AllocationKey(AllocationRecord.class, "Update");
 	@SuppressWarnings("unchecked")
-	private static final AllocationKey CREATE = new AllocationKey(
+	public static final AllocationKey CREATE = new AllocationKey(
 					AllocationRecord.class, "Create");
 	@SuppressWarnings("unchecked")
 	private static final AllocationKey DELETE = new AllocationKey(AllocationRecord.class, "Delete");
