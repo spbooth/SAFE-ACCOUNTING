@@ -344,6 +344,7 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 		   }catch(Exception e){
 			   errors.add("Error parsing plot expression", plot_tag,e);
 			   log.warn("Error parsing plot tag", e);
+			   return null;
 		   }
 	   }
 	   PlotEntry norm=null;

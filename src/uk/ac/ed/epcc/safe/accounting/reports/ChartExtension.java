@@ -107,6 +107,10 @@ public abstract class ChartExtension extends ReportExtension {
 		String start_name = getParam("StartProp", e);
 		String end_name = getParam("EndProp",e);
 		PlotEntry result = serv.getPlotEntry( errors,finder, name,start_name,end_name);
+		if( result == null ) {
+			addError("Bad PlotEntry", "PlotEntry failed to parse",n);
+			return null;
+		}
 		if( start_name != null && start_name.trim().length() > 0 && result.getStartProperty() == null ){
 			addError("Bad property", "StartProp value "+start_name+" failed to parse", e);
 		}
@@ -143,6 +147,10 @@ public abstract class ChartExtension extends ReportExtension {
 			
 		} else {
 			entry = serv.getMapperEntry(errors, finder, "");
+			if( entry == null) {
+				addError("Bad MapperEntry", "Mapper entry failed to parse", n);
+				return null;
+			}
 			if( hasParam("Label", e)){
 				((SetMapperEntry)entry).setLabel(getExpandedParam("Label", e));
 			}

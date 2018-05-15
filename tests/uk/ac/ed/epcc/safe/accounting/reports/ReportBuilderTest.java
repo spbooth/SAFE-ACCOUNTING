@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,7 +70,20 @@ public class ReportBuilderTest extends WebappTestBase {
 		assertEquals(0,errors);
 	}
 
-	
+	public static Set<String> expectErrors(int expected, Set<ErrorSet> eset) {
+		int errors=0;
+		Set<String> error_set = new HashSet<>();
+		for(ErrorSet es : eset){
+			errors += es.size();
+			for(ErrorSet.Entry e : es.getEntries()) {
+				error_set.add(e.getText());
+			}
+			es.traceback(System.err);
+		}
+		assertEquals("Wrong number of errors reported",expected,errors);
+		return error_set;
+	}
+
 
 	@SuppressWarnings({ "unchecked" })
 	@Test
