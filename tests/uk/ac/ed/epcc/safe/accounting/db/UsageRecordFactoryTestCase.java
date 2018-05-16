@@ -16,9 +16,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.charts.MapperEntry;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntry;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
@@ -91,8 +93,9 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 		}
 	
 		PropertyFinder finder = fac.getFinder();
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(fac);
 		for (PropertyTag tag : finder.getProperties()) {
-			String info = fac.getAccessorMap().getImplemenationInfo(tag);
+			String info = etf.getAccessorMap().getImplemenationInfo(tag);
 			assertNotNull(info);
 		}
 	}

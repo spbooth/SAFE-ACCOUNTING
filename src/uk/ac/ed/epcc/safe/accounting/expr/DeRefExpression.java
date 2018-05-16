@@ -32,7 +32,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
  * @param <R> remote type
  * @param <T> target type
  */
-public class DeRefExpression<R extends DataObject & ExpressionTarget,T> implements PropExpression<T> , FormatProvider{
+public class DeRefExpression<R extends DataObject,T> implements PropExpression<T> , FormatProvider{
 
 	private final ReferenceExpression<R> target_object;
 	private final PropExpression<T> expr;

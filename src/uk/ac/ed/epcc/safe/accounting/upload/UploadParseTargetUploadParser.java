@@ -18,10 +18,12 @@ package uk.ac.ed.epcc.safe.accounting.upload;
 
 import java.util.Map;
 
+import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTargetComposite;
 import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
 import uk.ac.ed.epcc.safe.accounting.db.UploadParseTargetUpdater;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 /** UploadParser to populate an {@link UploadParseTarget} 
  * 
  * The target factory can be hard-wired by setting the parameter
@@ -56,9 +58,19 @@ public class UploadParseTargetUploadParser implements UploadParser, Contexed {
 		if( target_tag == null) {
 			throw new UploadException("No target specified for "+mode);
 		}
+		// Start by looking for an explict UploadParseTarget
 		UploadParseTarget target = conn.makeObject(UploadParseTarget.class, target_tag);
 		if( target == null ){
-			throw new UploadException("Invalid Target");
+			DataObjectFactory<?> fac = conn.makeObject(DataObjectFactory.class, target_tag);
+			if( fac != null) {
+				PropertyContainerParseTargetComposite comp = fac.getComposite(PropertyContainerParseTargetComposite.class);
+				if( comp != null && comp instanceof UploadParseTarget) {
+					target = (UploadParseTarget) comp;
+				}
+			}
+			if( target == null ) {
+				throw new UploadException("Invalid Target");
+			}
 		}
 		UploadParseTargetUpdater updater = new UploadParseTargetUpdater(conn, target);
 		return updater.receiveData(parameters, update);

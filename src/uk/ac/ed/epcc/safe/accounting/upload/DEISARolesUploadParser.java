@@ -21,9 +21,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccountingClassification;
 import uk.ac.ed.epcc.safe.accounting.db.AccountingClassificationFactory;
-import uk.ac.ed.epcc.safe.accounting.model.PropertyPerson;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.model.PropertyPersonFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -33,14 +35,16 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.model.Classification;
+import uk.ac.ed.epcc.webapp.model.ClassificationFactory;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.relationship.Relationship;
 import uk.ac.ed.epcc.webapp.model.relationship.Relationship.Link;
+import uk.ac.ed.epcc.webapp.session.AppUser;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 
-public class  DEISARolesUploadParser<P extends PropertyPerson> implements UploadParser, Contexed {
+public class  DEISARolesUploadParser<P extends AppUser> implements UploadParser, Contexed {
 	
 	
 	private final String mGlobalSiteRole="SiteAll";
@@ -48,16 +52,16 @@ public class  DEISARolesUploadParser<P extends PropertyPerson> implements Upload
 	private final String mRelationPermissionUpdate = "update";
 	
 	private final AppContext conn;
-    private final String mode;
+    
     
     // classification tables, populated by usage data upload
-    private AccountingClassificationFactory<AccountingClassification> mProjectFactory;
-    private AccountingClassificationFactory<AccountingClassification> mSiteFactory;
-    private AccountingClassificationFactory<AccountingClassification> mUserFactory;
+    private ClassificationFactory<Classification> mProjectFactory;
+    private ClassificationFactory<Classification> mSiteFactory;
+    private ClassificationFactory<Classification> mUserFactory;
     
     // relationship tables
-    private Relationship<P,AccountingClassification> mProjectRelationship;
-    private Relationship<P,AccountingClassification> mSiteRelationship;
+    private Relationship<P,Classification> mProjectRelationship;
+    private Relationship<P,Classification> mSiteRelationship;
     
     // users of the website, as distinct from users in the usage data
     private PropertyPersonFactory<P> mPersonFactory;
@@ -121,39 +125,45 @@ public class  DEISARolesUploadParser<P extends PropertyPerson> implements Upload
     @SuppressWarnings("unchecked")
 	private void updateUser(String DN, String userName) throws DataFault, InvalidExpressionException, ParseException
     {
-    	
+    	ExpressionTargetFactory<P> pETF = ExpressionCast.getExpressionTargetFactory(mPersonFactory);
     	P p = mPersonFactory.makeFromString(DN);
-    	AccountingClassification user = mUserFactory.findFromString(userName);
+    	ExpressionTargetContainer person_proxy = pETF.getExpressionTarget(p);
     	
     	
-    	AccountingClassification userClassification = mUserFactory.makeFromString(userName);
+    	//Classification user = mUserFactory.findFromString(userName);
+    	ExpressionTargetFactory mETF = ExpressionCast.getExpressionTargetFactory(mUserFactory);
+		
+    
+    	Classification userClassification = mUserFactory.makeFromString(userName);
+    	ExpressionTargetContainer user_proxy = mETF.getExpressionTarget(userClassification);
 
     	
-    	ReferenceTag person_site_tag = (ReferenceTag)mPersonFactory.getFinder().find(mSiteFactory.getTag());
-    	ReferenceTag user_site_tag = (ReferenceTag)mUserFactory.getFinder().find(mSiteFactory.getTag());
+    	ReferenceTag person_site_tag = (ReferenceTag)pETF.getFinder().find(mSiteFactory.getTag());
+    	ReferenceTag user_site_tag = (ReferenceTag)mETF.getFinder().find(mSiteFactory.getTag());
 
     	
-		ReferenceTag<P,PropertyPersonFactory<P>> person_tag = (ReferenceTag<P,PropertyPersonFactory<P>>) mUserFactory.getFinder().find(mPersonFactory.getTag());
+		ReferenceTag<P,PropertyPersonFactory<P>> person_tag = (ReferenceTag<P,PropertyPersonFactory<P>>) mETF.getFinder().find(mPersonFactory.getTag());
 
     	
         if(  person_tag != null ){
-        	userClassification.setProperty(person_tag, mPersonFactory.makeReference(p));
-        	userClassification.commit();
+        	user_proxy.setProperty(person_tag, mPersonFactory.makeReference(p));
+        	user_proxy.commit();
         } 
     	
-    	
-    	PropertyTag<? extends String> regexp_tag = mSiteFactory.getFinder().find(String.class,"UserMatch");
-    	for( AccountingClassification site: mSiteFactory.all()){
+    	ExpressionTargetFactory sETF = ExpressionCast.getExpressionTargetFactory(mSiteFactory);
+    	PropertyTag<? extends String> regexp_tag = sETF.getFinder().find(String.class,"UserMatch");
+    	for( Classification raw_site: mSiteFactory.all()){
+    		ExpressionTargetContainer site = sETF.getExpressionTarget(raw_site);
     		String regexp = site.getProperty(regexp_tag);
     		if( regexp != null ){
     		Pattern pat = Pattern.compile(regexp);
     		Matcher m = pat.matcher(userName);
     		if( m.matches()){
     			
-    			p.setProperty(person_site_tag, mSiteFactory.makeReference(site));
-                p.commit();
-                user.setProperty(user_site_tag, mSiteFactory.makeReference(site));
-                user.commit();
+    			person_proxy.setProperty(person_site_tag, mSiteFactory.makeReference(raw_site));
+                person_proxy.commit();
+                user_proxy.setProperty(user_site_tag, mSiteFactory.makeReference(raw_site));
+                user_proxy.commit();
                 break;
     		}
     		}
@@ -168,7 +178,7 @@ public class  DEISARolesUploadParser<P extends PropertyPerson> implements Upload
     	P p = mPersonFactory.makeFromString(DN);
     	
     	
-    	AccountingClassification projectClassification = mProjectFactory.makeFromString(projectName);
+    	Classification projectClassification = mProjectFactory.makeFromString(projectName);
     	
     	
     	mProjectRelationship.setRole(p, projectClassification, mRelationPermissionView, true);
@@ -260,7 +270,7 @@ public class  DEISARolesUploadParser<P extends PropertyPerson> implements Upload
     
     public DEISARolesUploadParser(AppContext c, String mode){
     	conn=c;
-    	this.mode=mode;
+    	
     }
 
 	public String upload(Map<String, Object> parameters) throws UploadException {

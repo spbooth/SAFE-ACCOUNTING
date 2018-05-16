@@ -30,15 +30,17 @@ import uk.ac.ed.epcc.webapp.AppContext;
 
 
 
-public class DailyAggregateUsageRecordFactory extends
+public final class DailyAggregateUsageRecordFactory extends
 		AggregateUsageRecordFactory {
     Calendar scratch = Calendar.getInstance();
 	public DailyAggregateUsageRecordFactory(AppContext c, String table, UsageRecordFactory fac) {
-		super(c, table, fac);
+		super(fac);
+		setContext(c, table);
 		
 	}
 	public DailyAggregateUsageRecordFactory(AppContext c, String table) {
-		super(c, table, null);
+		super(null);
+		setContext(c, table);
 	}
 	@Override
 	public Date mapEnd(Date point) {

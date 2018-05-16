@@ -16,13 +16,14 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import uk.ac.ed.epcc.safe.accounting.AccountingService;
+import uk.ac.ed.epcc.safe.accounting.UsageManager;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.ConfigurationException;
-import uk.ac.ed.epcc.webapp.session.SessionService;
 
 /** A {@link UsageRecordUsageManager} that is configured from the config service.
  * 
@@ -32,8 +33,11 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 
-public class ConfigUsageManager extends UsageRecordUsageManager {
-	public ConfigUsageManager(AppContext c,String mytag) {
+public class ConfigUsageManager extends UsageManager {
+	private static final String CONFIG_SUFFIX = ".tables";
+
+
+	private ConfigUsageManager(AppContext c,String mytag) {
 		super(c,mytag);
 	}
 
@@ -42,8 +46,9 @@ public class ConfigUsageManager extends UsageRecordUsageManager {
 	@Override
 	protected void populate(String tag) {
 		AppContext c = getContext();
-		String tables=c.getExpandedProperty(tag+".tables",tag);
+		String tables=c.getExpandedProperty(tag+CONFIG_SUFFIX,tag);
 		Logger log = c.getService(LoggerService.class).getLogger(getClass());
+		AccountingService serv = c.getService(AccountingService.class);
 		if( tables != null && ! tables.isEmpty()){
 			for(String tab : tables.split(",")){
 				tab=tab.trim();
@@ -51,7 +56,7 @@ public class ConfigUsageManager extends UsageRecordUsageManager {
 				try{
 					// don't supply a default we don't want tables created when
 					// illegal producers requested.
-					UsageProducer<UsageRecordFactory.Use> producer = c.makeObjectWithDefault(UsageProducer.class, null,tab);
+					UsageProducer producer = serv.getUsageProducer(tab);
 					if( producer != null ){
 						String desc=c.getInitParameter("description."+tab, tab);
 						if( producer instanceof DataObjectFactory){
@@ -73,17 +78,19 @@ public class ConfigUsageManager extends UsageRecordUsageManager {
 		
 		}else{
 			// Only warn as often triggered by safe default producer
-			getLogger().warn("No tables specified for ConfigUsageManager tag "+tag+".tables");
+			getLogger().warn("No tables specified for ConfigUsageManager tag "+tag+CONFIG_SUFFIX);
 		}
 
 	}
 
 
-	public boolean canUpdate(SessionService c) {
-		return true;
+	public static ConfigUsageManager getInstance(AppContext conn,String tag) {
+		String prop = conn.getInitParameter(tag+CONFIG_SUFFIX);
+		if( prop == null || prop.isEmpty()) {
+			return null;
+		}
+		return new ConfigUsageManager(conn, tag);
 	}
-
-
 	
 
 

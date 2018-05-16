@@ -16,22 +16,17 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Set;
-
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
-import uk.ac.ed.epcc.safe.accounting.expr.Parser;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
-import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Owned;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
-import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
-/** Basic extension of DataObject to implement PropertyContainer and ExpressionTarget
+/** Basic extension of DataObject to support properties directly.
+ * The factory still need to be able to generate an {@link ExpressionTargetFactory}
+ * either by implementing it directly or via a composite
  * 
  * 
  * @author spb
@@ -39,71 +34,28 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  */
 
 
-public class DataObjectPropertyContainer extends DataObject implements ExpressionTargetContainer, Owned{
-    private final DataObjectPropertyFactory<?> fac;
-    private final ExpressionTargetContainer proxy;
+public class DataObjectPropertyContainer extends DataObject implements  Owned{
+    private final DataObjectFactory<?> fac;
+    private ExpressionTargetContainer proxy=null; 
 	@SuppressWarnings("unchecked")
-	public DataObjectPropertyContainer(DataObjectPropertyFactory<?> fac,Record r) {
+	public DataObjectPropertyContainer(DataObjectFactory<?> fac,Record r) {
 		super(r);
 		this.fac=fac;
-		AccessorMap map = fac.getAccessorMap();
-		this.proxy = map.getProxy(this);
-	}
-	@SuppressWarnings("unchecked")
-	public IndexedReference getReference(){
-		return ((DataObjectPropertyFactory)fac).makeReference(this);
-	}
-	public final <T> T getProperty(PropertyTag<T> tag) throws InvalidExpressionException {
-		return proxy.getProperty(tag);
-	}
-	public final <T> T getProperty(PropertyTag<T> tag, T def) {
-		return proxy.getProperty(tag, def);
-	}
-	public final <T> T evaluateExpression(PropExpression<T> expr)
-	throws InvalidExpressionException {
-		return proxy.evaluateExpression(expr);
-	}
-	public final <T> T evaluateExpression(PropExpression<T> expr, T def){
-				return proxy.evaluateExpression(expr,def);
-			}
-	public final <T> void setProperty(PropertyTag<? super T> tag, T value) throws InvalidPropertyException {
-		proxy.setProperty(tag, value);
-	}
-	public final <T> void setOptionalProperty(PropertyTag<? super T> tag, T value) {
-		proxy.setOptionalProperty(tag, value);
-	}
-	public final <T> void setProperty(PropertyTag<T> tag, PropertyContainer map) throws InvalidExpressionException{
-		setProperty(tag,map.getProperty(tag));
 	}
 	
-	@SuppressWarnings("unchecked")
-	public final boolean supports(PropertyTag<?> tag){
-		return getFactory().getAccessorMap().hasProperty(tag);
-	}
-	public final boolean writable(PropertyTag<?> tag){
-		return getFactory().getAccessorMap().writable(tag);
-	}
-	public ExpressionTargetFactory getExpressionTargetFactory() {
-		return getFactory();
-	}
 	@Override
-	public final DataObjectPropertyFactory getFactory() {
+	public final DataObjectFactory getFactory() {
 		return fac;
 	}
-	public Set<PropertyTag> getDefinedProperties() {
-		return proxy.getDefinedProperties();
-	}
-	public void setAll(PropertyContainer source) {
-		proxy.setAll(source);
-	}
-	public Parser getParser() {
-		return proxy.getParser();
-	}
-	
-	@Override
-	public void release(){
-		super.release();
-		proxy.release();
+    public final ExpressionTargetContainer getProxy() {
+    	if( proxy == null) {
+    		proxy = getExpressionTargetFactory().getAccessorMap().getProxy(this);
+    	}
+    	return proxy;
+    }
+
+	public ExpressionTargetFactory getExpressionTargetFactory() {
+		return ExpressionCast.getExpressionTargetFactory(getFactory());
 	}
 
 

@@ -16,9 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.update.ConfigPlugInOwner;
-import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 import uk.ac.ed.epcc.webapp.AppContext;
 /** A generic UsageRecordFactory configured from the Config properties
 
@@ -32,27 +30,17 @@ import uk.ac.ed.epcc.webapp.AppContext;
  */
 
 
-public class ConfigUsageRecordFactory<T extends UsageRecordFactory.Use,R> extends ParseUsageRecordFactory<T,R> {
+public class ConfigUsageRecordFactory<T extends UsageRecordFactory.Use,R> extends UsageRecordFactory<T> {
+	public final ConfigUsageRecordParseTargetPlugIn<T, R> parse_plugin = new ConfigUsageRecordParseTargetPlugIn<T,R>(this);
 
 	public ConfigUsageRecordFactory(AppContext ctx, String table){
-    	super(ctx,table);
-    	
-    	
-
+    	super();
+    	setContext(ctx,table);
     }
-	
-	
-	
-	@Override
-	protected PlugInOwner<R> makePlugInOwner(AppContext c,PropertyFinder prev, String tag) {
-		// For accounting record tables default to no parser
-		// This will supress auto-table generation for unconfigured tables.
-		// This is important as we may try to construct this class based on
-		// a user input tag and we don't want to auto-create randomly named tables.
-		return new ConfigPlugInOwner<ConfigUsageRecordFactory<T, R>,R>(c, prev,tag);
-	}
 
-
+	
+	
+	
 
 	
 	

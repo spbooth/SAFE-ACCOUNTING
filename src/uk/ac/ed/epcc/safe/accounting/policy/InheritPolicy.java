@@ -3,7 +3,6 @@ package uk.ac.ed.epcc.safe.accounting.policy;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -16,6 +15,7 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
+import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;

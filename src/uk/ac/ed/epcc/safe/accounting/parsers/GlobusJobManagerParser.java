@@ -24,7 +24,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.policy.LinkPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -56,7 +58,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  * If the property;
  * 
  * <b>GlobusJobManagerParser.<i>table</i>.<i>jobmanager-type</i></b> is set then this is used as the
- * table name of master table (Assumed to support the batch:JobID and batch:SubmittedTimestamp and batch:JobId properties).
+ * table name of manager table (Assumed to support the batch:JobID and batch:SubmittedTimestamp and batch:JobId properties).
  * When a remote table is configured the record will not evaluate as complete until the master record has been located.
  * 
  * 
@@ -112,7 +114,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 	private static final Pattern jobid_msg = Pattern.compile("has GRAM_SCRIPT_JOB_ID ([\\S&&[^|]]+)(?:|\\S*) manager type (\\S+)");
 	private static final Pattern exit_msg = Pattern.compile("JM exiting");
 	
-	private Map<String,UsageRecordFactory<?>> master_factories=null;
+	private Map<String,UsageRecordFactory<?>> manager_factories=null;
 	private String tag;
 	private AppContext conn;
 	Logger log;
@@ -156,7 +158,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 							map.setProperty(GLOBUS_JOBID, job_id);
 							String jobmanager = jobid_matcher.group(2);
 							map.setProperty(GLOBUS_MANAGER,jobmanager );
-							UsageRecordFactory<?> fac = master_factories.get(jobmanager);
+							UsageRecordFactory fac = manager_factories.get(jobmanager);
 							if( fac == null ){
 								log.debug(jobmanager+" not a tracked factory");
 								// not a tracked factory
@@ -169,7 +171,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 								sel.add(new SelectClause<Date>(BatchParser.SUBMITTED_PROP, MatchCondition.LT, new Date(point+grace_millis)));
 								UsageRecordFactory.Use master;
 								try {
-									master = fac.find(sel);
+									master = (Use) fac.find(fac.getFilter(sel));
 								} catch (Exception e) {
 									throw new AccountingParseException("Error finding master", e);
 								}
@@ -257,8 +259,8 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 
 	@Override
 	public String endParse() {
-		master_factories.clear();
-		master_factories=null;
+		manager_factories.clear();
+		manager_factories=null;
 		return super.endParse();
 	}
 
@@ -266,7 +268,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 	public void startParse(PropertyContainer staticProps) throws Exception {
 		super.startParse(staticProps);
 		
-		master_factories = new HashMap<String,UsageRecordFactory<?>>();
+		manager_factories = new HashMap<String,UsageRecordFactory<?>>();
 		String prefix = "GlobusJobmanagerParser."+tag+".";
 		Map<String,String> props = conn.getInitParameters(prefix);
 		log.debug(prefix+" returns "+props.size()+" props");
@@ -278,7 +280,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 			log.debug("tag is "+tag);
 			UsageRecordFactory<?> fac = conn.makeObjectWithDefault(UsageRecordFactory.class, null, tag);
 			if( fac != null ){
-				master_factories.put(name, fac);
+				manager_factories.put(name, fac);
 			}else{
 				log.error("No master factory found for "+key+"->"+tag);
 			}
@@ -288,13 +290,14 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 	@SuppressWarnings("unchecked")
 	public void postComplete(ExpressionTargetContainer record) throws Exception{
 		log.debug("In postComplete");
-		UsageRecordFactory<?> fac = master_factories.get(record.getProperty(GLOBUS_MANAGER));
+		UsageRecordFactory fac = manager_factories.get(record.getProperty(GLOBUS_MANAGER));
 		if(fac != null ){
 			log.debug("Setting master");
-			UsageRecordFactory.Use master = fac.find(record.getProperty(GLOBUS_PARENT_ID));
+			ExpressionTargetContainer proxy = fac.getExpressionTarget((DataObjectPropertyContainer) fac.find(record.getProperty(GLOBUS_PARENT_ID)));
 			ReferenceTag ref = (ReferenceTag) fac.getFinder().find(IndexedReference.class,tag);
-			master.setProperty(ref, ((UsageRecordFactory.Use)record).getReference());
-			master.commit();
+			
+			proxy.setProperty(ref,record.getProperty(ref));
+			proxy.commit();
 			log.debug("Master set");
 		}
 	}

@@ -10,93 +10,96 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionRegistry;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactoryTestCase;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
-public abstract class DataObjectPropertyFactoryTestCase<D extends DataObjectPropertyFactory<O>,O extends DataObjectPropertyContainer> extends
-		DataObjectFactoryTestCase<D, O> {
+public abstract class DataObjectPropertyFactoryTestCase<D extends DataObjectFactory<O>,O extends DataObjectPropertyContainer> extends
+DataObjectFactoryTestCase<D, O> {
 
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetProperties(){
-		DataObjectPropertyFactory fac = (DataObjectPropertyFactory)getFactory();
+		DataObjectFactory fac = (DataObjectFactory)getFactory();
 		if( fac.isValid()){
-		Set<PropertyTag> set = fac.getProperties();
-		for(PropertyTag t : set){
-			boolean has = fac.hasProperty(t);
-			
-			boolean exp;
-			try {
-				exp = (fac.getAccessorMap().getSQLExpression(t)!=null);
-			} catch (InvalidSQLPropertyException e) {
-				exp = false;
+			ExpressionTargetFactory<O> etf = ExpressionCast.getExpressionTargetFactory(fac);
+			assertNotNull(etf);
+			Set<PropertyTag> set = etf.getAccessorMap().getProperties();
+			for(PropertyTag t : set){
+				boolean has = etf.hasProperty(t);
+
+				boolean exp;
+				try {
+					exp = (etf.getAccessorMap().getSQLExpression(t)!=null);
+				} catch (InvalidSQLPropertyException e) {
+					exp = false;
+				}
+				if( exp){
+					assertTrue(has);
+				}
+
+				if( ! has ){
+					assertFalse(exp);
+
+				}
+
 			}
-			if( exp){
-				assertTrue(has);
-			}
-			
-			if( ! has ){
-				assertFalse(exp);
-				
-			}
-			
-		}
 		}
 	}
 	@Test
 	public void testNullRecord() throws InvalidExpressionException, DataFault{
-		DataObjectPropertyFactory<O> fac = getFactory();
+		DataObjectFactory<O> fac = getFactory();
 		if( fac.isValid()){
-		Set<PropertyTag> set = fac.getProperties();
-		O dat =  fac.makeBDO();
-		for(PropertyTag<?> t : set){
-			boolean has = fac.hasProperty(t);
-			
-			boolean supports = dat.supports(t);
-			boolean writable = dat.writable(t);
-			if( ! has ){
-				assertFalse(t.getFullName(),supports);
-				assertFalse(t.getFullName(),writable);
-			}
-			if( writable){
-				assertTrue("writable "+t.getFullName()+" should be supported",supports);
-			}
-			// Some properties are constant values so 
-			// only check those we can write
-			if( writable ){
-				Object property = dat.getProperty(t);
-				if( t.getTarget() == IndexedReference.class){
-					assertNotNull("indexed reference property returned null",property);
-					assertTrue("refernce not null for "+t.getFullName(),((IndexedReference)property).isNull());
-				}else if( t.getTarget() ==  Boolean.class){
-					assertTrue("Null boolean defautls true",((Boolean)property));
-				}else{
-					assertNull("property "+t.getFullName()+" "+fac.getAccessorMap().getImplemenationInfo(t)+" generates "+property,property);
+			ExpressionTargetFactory<O> etf = ExpressionCast.getExpressionTargetFactory(fac);
+			assertNotNull(etf);
+			Set<PropertyTag> set = etf.getAccessorMap().getProperties();
+			O dat =  fac.makeBDO();
+			ExpressionTargetContainer proxy = etf.getExpressionTarget(dat);
+			for(PropertyTag<?> t : set){
+				boolean has = etf.hasProperty(t);
+
+				boolean supports = proxy.supports(t);
+				boolean writable = proxy.writable(t);
+				if( ! has ){
+					assertFalse(t.getFullName(),supports);
+					assertFalse(t.getFullName(),writable);
+				}
+				if( writable){
+					assertTrue("writable "+t.getFullName()+" should be supported",supports);
+				}
+				// Some properties are constant values so 
+				// only check those we can write
+				if( writable ){
+					Object property = proxy.getProperty(t);
+					if( t.getTarget() == IndexedReference.class){
+						assertNotNull("indexed reference property returned null",property);
+						assertTrue("refernce not null for "+t.getFullName(),((IndexedReference)property).isNull());
+					}else if( t.getTarget() ==  Boolean.class){
+						assertTrue("Null boolean defautls true",((Boolean)property));
+					}else{
+						assertNull("property "+t.getFullName()+" "+etf.getAccessorMap().getImplemenationInfo(t)+" generates "+property,property);
+					}
 				}
 			}
 		}
-		}
 	}
-	@Test
-	public void testGetRegistry(){
-		DataObjectPropertyFactory fac = (DataObjectPropertyFactory)getFactory();
-		if( fac.isValid()){
-		TableTransitionRegistry reg = fac.getTableTransitionRegistry();
-		assertNotNull(reg);
-		}
-	}
+
 	@Test
 	public void testGetAccessorMap(){
-		DataObjectPropertyFactory fac = (DataObjectPropertyFactory)getFactory();
+		DataObjectFactory fac = (DataObjectFactory)getFactory();
 		if( fac.isValid()){
-		AccessorMap map = fac.getAccessorMap();
-		assertNotNull(map);
+			ExpressionTargetFactory<O> etf = ExpressionCast.getExpressionTargetFactory(fac);
+			assertNotNull(etf);
+			AccessorMap map = etf.getAccessorMap();
+			assertNotNull(map);
 		}
 	}
 }

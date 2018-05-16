@@ -16,7 +16,6 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Date;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.NullSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OrRecordSelector;
@@ -28,7 +27,6 @@ import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationshipClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
-import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** A {@link SelectVisitor} that tests if a {@link RecordSelector}
  * matches an {@link ExpressionTarget}.

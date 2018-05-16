@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
@@ -199,7 +200,7 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		SQLValue a = targetRef.accept(this);
 		return new ClassificationSQLValue(conn,target,targetRef.getFactory(conn), a);
 	}
-	public <T extends DataObject & ExpressionTarget> SQLValue visitDoubleDeRefExpression(
+	public <T extends DataObject> SQLValue visitDoubleDeRefExpression(
 			DoubleDeRefExpression<T, ?> dre) throws Exception {
 		if( PARTIAL_JOIN_FEATURE.isEnabled(conn)){
 			SQLValue base = dre.getTargetObject().accept(this);
@@ -207,8 +208,9 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 				// Consider de-referencing in SQL
 				IndexedSQLValue isv = (IndexedSQLValue) base;
 				IndexedProducer prod = isv.getFactory(); // base factory for branch
-				if( prod instanceof ExpressionTargetFactory ){
-					SQLValue branch = ((ExpressionTargetFactory) prod).getAccessorMap().getSQLValue(dre.getNext());
+				ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(prod); 
+				if( etf != null ){
+					SQLValue branch = etf.getAccessorMap().getSQLValue(dre.getNext());
 					if( branch != null && branch instanceof IndexedSQLValue){
 						return new CompositeIndexedSQLValue(isv, (IndexedSQLValue)branch);
 					}
@@ -219,7 +221,7 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		return visitDeRefExpression(dre);
 	}
 	@SuppressWarnings("unchecked")
-	public <T extends DataObject & ExpressionTarget> SQLValue visitDeRefExpression(
+	public <T extends DataObject> SQLValue visitDeRefExpression(
 			DeRefExpression<T, ?> dre) throws Exception {
 		PropExpression<?> expression = dre.getExpression();
 		ReferenceExpression<T> x = dre.getTargetObject();

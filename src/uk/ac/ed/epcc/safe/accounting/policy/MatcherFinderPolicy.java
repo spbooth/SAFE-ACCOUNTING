@@ -53,15 +53,15 @@ import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.Matcher;
 import uk.ac.ed.epcc.webapp.model.MatcherFinder;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Add Owner tables to raw usage data under the control of config parameters.
@@ -77,7 +77,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class MatcherFinderPolicy extends BasePolicy implements Contexed,TransitionSource<TableTransitionTarget> , SummaryProvider{
+public class MatcherFinderPolicy extends BasePolicy implements Contexed,TableTransitionContributor , SummaryProvider{
 	private static final String OWNER= "matcher.";
 	private MultiFinder result_finder = new MultiFinder();
 	private Map<PropertyTag<String>,ReferenceTag> tagmap = new HashMap<PropertyTag<String>,ReferenceTag>();
@@ -201,8 +201,8 @@ public class MatcherFinderPolicy extends BasePolicy implements Contexed,Transiti
 	}
 	
 	public final class AddOwnerAction extends FormAction {
-		private TableTransitionTarget target;
-		public AddOwnerAction(TableTransitionTarget target){
+		private DataObjectFactory target;
+		public AddOwnerAction(DataObjectFactory target){
 			this.target=target;
 		}
 		@SuppressWarnings("unchecked")
@@ -217,11 +217,11 @@ public class MatcherFinderPolicy extends BasePolicy implements Contexed,Transiti
 			return new ViewTableResult(target);
 		}
 	}
-	public class AddOwnerTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class AddOwnerTransition extends AbstractFormTransition<DataObjectFactory>{
 
 		
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext c) throws TransitionException {
 			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
 			for(PropertyTag<String> t : available_names){
@@ -239,8 +239,8 @@ public class MatcherFinderPolicy extends BasePolicy implements Contexed,Transiti
 
 	}
 	public final class DeleteOwnerAction extends FormAction {
-		private TableTransitionTarget target;
-		public DeleteOwnerAction(TableTransitionTarget target){
+		private DataObjectFactory target;
+		public DeleteOwnerAction(DataObjectFactory target){
 			this.target=target;
 		}
 @SuppressWarnings("unchecked")
@@ -254,11 +254,11 @@ public FormResult action(Form f)
 	return new ViewTableResult(target);
 }
 }
-	public class DeleteOwnerTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class DeleteOwnerTransition extends AbstractFormTransition<DataObjectFactory>{
 
 	
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext c) throws TransitionException {
 			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
 			for(PropertyTag<String> t : tagmap.keySet()){
@@ -270,8 +270,8 @@ public FormResult action(Form f)
 		}
 	}
 	public final class RegenerateOwnerAction  extends FormAction{
-		private TableTransitionTarget target;
-		public RegenerateOwnerAction(TableTransitionTarget target){
+		private DataObjectFactory target;
+		public RegenerateOwnerAction(DataObjectFactory target){
 			this.target=target;
 		}
 
@@ -291,9 +291,9 @@ public FormResult action(Form f)
 		
 		
 	}
-	public class RegenerateOwnerTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class RegenerateOwnerTransition extends AbstractFormTransition<DataObjectFactory>{
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext conn) throws TransitionException {
 			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
 			if( target instanceof PropertyTargetGenerator){
@@ -307,11 +307,11 @@ public FormResult action(Form f)
 			
 		}
 	}
-	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddMatcher"), new AddOwnerTransition());
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "RemoveMatcher"), new DeleteOwnerTransition());
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class,"RegenerateMatcher","Regenenerate matcher references"),new RegenerateOwnerTransition());
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+		result.put(new AdminOperationKey("AddMatcher"), new AddOwnerTransition());
+		result.put(new AdminOperationKey("RemoveMatcher"), new DeleteOwnerTransition());
+		result.put(new AdminOperationKey("RegenerateMatcher","Regenenerate matcher references"),new RegenerateOwnerTransition());
 		return result;
 	}
 	public void getTableTransitionSummary(ContentBuilder hb,

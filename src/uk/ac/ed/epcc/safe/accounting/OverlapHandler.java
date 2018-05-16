@@ -80,7 +80,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  */
 
 
-public class OverlapHandler<T extends ExpressionTargetContainer> {
+public class OverlapHandler<T> {
 	private final AppContext conn;
     private final UsageProducer<T> prod;
     private Logger log=null;
@@ -194,17 +194,18 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 	 * @throws Exception
 	 * @throws InvalidPropertyException
 	 */
-	private Number addToOverlapSumByIterating(NumberReductionTarget target,
-			PropExpression<Date> start_prop, PropExpression<Date> end_prop,
-			TimePeriod period, Number result, AndRecordSelector sel2)
-			throws Exception, InvalidPropertyException {
-		for(Iterator<T> it = prod.getIterator(sel2);it.hasNext();){
-			T rec =   it.next();
-			result = combinePartial(target,result, getOverlap(rec,target,start_prop,end_prop,period));
-			rec.release();
-		}
-		return result;
-	}
+    private Number addToOverlapSumByIterating(NumberReductionTarget target,
+    		PropExpression<Date> start_prop, PropExpression<Date> end_prop,
+    		TimePeriod period, Number result, AndRecordSelector sel2)
+    				throws Exception, InvalidPropertyException {
+    	for(Iterator<T> it = prod.getIterator(sel2);it.hasNext();){
+    		T rec =   it.next();
+    		ExpressionTargetContainer et = prod.getExpressionTarget(rec);
+    		result = combinePartial(target,result, getOverlap(et,target,start_prop,end_prop,period));
+    		et.release();
+    	}
+    	return result;
+    }
 
     /** Convert a numerical property into the ReductionTarget needed to calculate
      * the overlap contribution to the time-average of records totally within the overlap period.  
@@ -459,7 +460,8 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 			Map<R, Number> result, AndRecordSelector sel2) throws Exception,
 			InvalidPropertyException {
 		for(Iterator<T> it = prod.getIterator(sel2);it.hasNext();){
-			T rec =   it.next();
+			T obj =   it.next();
+			ExpressionTargetContainer rec = prod.getExpressionTarget(obj);
 			// Make the distinction between a record that does not
 			// overlap the period and a record where the overlap value is zero
 			// this gives a true zero when a zero valued record overlaps and
@@ -691,8 +693,8 @@ public class OverlapHandler<T extends ExpressionTargetContainer> {
 		// nested UsageProducers. Add getReductionIterator to UsageProducer?
 		// add new ReductionRecordSelector?
 		for(Iterator<T> it = prod.getIterator(sel2);it.hasNext();){
-			T rec =   it.next();
-			
+			T obj =   it.next();
+			ExpressionTargetContainer rec = prod.getExpressionTarget(obj);
 				ExpressionTuple key = new ExpressionTuple(index_set, rec);
 				ReductionMapResult res = result.get(key);
 				boolean made=false;

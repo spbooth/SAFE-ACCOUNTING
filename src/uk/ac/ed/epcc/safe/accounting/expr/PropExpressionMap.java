@@ -245,7 +245,7 @@ private <T> PropertyTag<T> addExpression(PropertyRegistry reg, String name,
 	return tag;
 }
  
-  /** Register a new definition is the config service 
+  /** Register a new definition in the config service 
    * 
    * @param ctx AppContext
  * @param reg 

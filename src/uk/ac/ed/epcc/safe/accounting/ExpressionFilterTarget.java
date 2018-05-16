@@ -18,7 +18,6 @@ package uk.ac.ed.epcc.safe.accounting;
 
 import java.util.Date;
 
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.webapp.Targetted;
@@ -35,7 +34,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  *
  * @param <T> type of factory target
  */
-public interface ExpressionFilterTarget<T extends ExpressionTarget> extends Targetted<T>{
+public interface ExpressionFilterTarget<T> extends Targetted<T>{
 
 	/** get a filter based on comparing a PropExpression to a value.
 	 * 

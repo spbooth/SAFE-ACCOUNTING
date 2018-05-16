@@ -10,6 +10,7 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
+import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -18,7 +19,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
-import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -28,11 +28,9 @@ import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.BaseSQLFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
@@ -40,7 +38,6 @@ import uk.ac.ed.epcc.webapp.model.data.TupleFactory;
 import uk.ac.ed.epcc.webapp.model.data.TupleSelfSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
-import uk.ac.ed.epcc.webapp.time.Period;
 /** A property enabled {@link TupleFactory}
  * 
  * The component parts are accessible as references.
@@ -76,7 +73,7 @@ Tagged{
 	@Override
 	public T makeTuple() {
 		
-		return (T) new PropertyTuple(getContext(),map);
+		return (T) new PropertyTuple(this);
 	}
 	public PropertyTupleFactory(AppContext c,String config_tag) {
 		super(c);
@@ -113,11 +110,11 @@ Tagged{
 	}
 
 	public static class PropertyTuple<A extends DataObject> extends TupleFactory.Tuple<A> implements ExpressionTarget,Contexed{
-		private final AppContext conn;
-		 public PropertyTuple(AppContext conn,TupleAccessorMap map) {
+		 final PropertyTupleFactory fac;
+		 public PropertyTuple(PropertyTupleFactory fac) {
 			super();
-			this.conn=conn;  // set first next line will use
-			this.proxy = map.getProxy(this);
+			this.fac=fac; // set first next line will use 
+			this.proxy = fac.getAccessorMap().getProxy(this);
 			
 		}
 
@@ -145,14 +142,14 @@ Tagged{
 
 		@Override
 		public AppContext getContext() {
-			return conn;
+			return fac.getContext();
 		}
 		
 	}
 
 	@Override
 	public boolean compatible(RecordSelector sel) {
-		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,this,false);
+		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,getAccessorMap(),false);
 		try {
 			return sel.visit(vis);
 		} catch (Exception e) {
@@ -269,45 +266,26 @@ Tagged{
 
 		return map.resolves(expr, false);
 	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator#getExpressionTarget(java.lang.Object)
+	 */
+	@Override
+	public ExpressionTargetContainer getExpressionTarget(T record) {
+		return getAccessorMap().getProxy(record);
+	}
 
+	
+	@Override
+	public boolean isMyTarget(T record) {
+		return record.fac == this;
+	}
+	
 	@Override
 	public Class<? super T> getTarget() {
 		return PropertyTuple.class;
 	}
 
-	@Override
-	public BaseFilter getFilter(PropExpression expr, MatchCondition match, Object value) throws CannotFilterException {
-		return map.getFilter(expr, match, value);
-	}
-
-	@Override
-	public BaseFilter getNullFilter(PropExpression expr, boolean is_null) throws CannotFilterException {
-		return map.getNullFilter(expr, is_null);
-	}
-
-	@Override
-	public BaseFilter getRelationFilter(PropExpression left, MatchCondition match, PropExpression right)
-			throws CannotFilterException {
-		return map.getRelationFilter(left, match, right);
-	}
-
-	@Override
-	public BaseFilter getPeriodFilter(Period period, PropExpression start_prop, PropExpression end_prop,
-			OverlapType type, long cutoff) throws CannotFilterException {
-		return map.getPeriodFilter(period, start_prop, end_prop, type, cutoff);
-	}
-
-	@Override
-	public BaseSQLFilter getOrderFilter(boolean descending, PropExpression expr) throws CannotFilterException {
-		return map.getOrderFilter(descending, expr);
-	}
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget#getRelationshipFilter(java.lang.String)
-	 */
-	@Override
-	public BaseFilter getRelationshipFilter(String relationship) throws CannotFilterException {
-		return map.getRelationshipFilter(relationship);
-	}
+	
 	@Override
 	public final String getTag() {
 		return tag;
@@ -320,5 +298,9 @@ Tagged{
 	public AccessorMap<T> getAccessorMap() {
 		// TODO Auto-generated method stub
 		return map;
+	}
+	@Override
+	public PropExpressionMap getDerivedProperties() {
+		return new PropExpressionMap();
 	}
 }

@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -36,7 +37,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Class to import new accounting data and store it in a {@link UsageRecordFactory}
  * 
  * @author spb
- *
+ * @see UsageRecordParseTarget
  * @param <T>
  */
 
@@ -44,7 +45,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
 public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
-	private UsageRecordParseTarget<T,R> target;
+	private UsageRecordParseTarget<R> target;
 	private AppContext conn;
 	private DerivedPropertyMap meta_data;
 	private PropExpressionMap expr;
@@ -59,7 +60,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 	 * @param meta_data MetaData properties
 	 * @param t ParseTarget
 	 */
-	public AccountingUpdater(AppContext conn,PropertyMap initial_meta_data,UsageRecordParseTarget<T,R> t){
+	public AccountingUpdater(AppContext conn,PropertyMap initial_meta_data,UsageRecordParseTarget<R> t){
 		this.conn=conn;
 		meta_data = new DerivedPropertyMap(conn);
 		meta_data.setAll(initial_meta_data);
@@ -171,11 +172,11 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     				}
     				
                     // make an un-commited record from the map
-    				T record = target.prepareRecord(map);
+    				ExpressionTargetContainer record = target.prepareRecord(map);
     				
     				
     				
-    				T old_record = null;
+    				ExpressionTargetContainer old_record = null;
     				if( replace || check_exists){
     					old_record = target.findDuplicate(record);
     				}

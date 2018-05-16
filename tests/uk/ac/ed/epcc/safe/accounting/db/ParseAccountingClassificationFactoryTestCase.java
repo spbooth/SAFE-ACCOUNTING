@@ -16,6 +16,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactoryTestCase;
@@ -43,7 +45,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		if (!fac.isValid()) {
 			return;
 		}
-		PropertyContainerParser p = fac.getParser();
+		PropertyContainerParser p = fac.getComposite(PropertyContainerParseTargetComposite.class).getParser();
 
 		assertNotNull(p);
 
@@ -69,7 +71,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		//System.out.println(updateText);
 		ErrorSet errors = new ErrorSet();
 		ErrorSet skips = new ErrorSet();
-		UploadParseTargetUpdater<R,I> updater = new UploadParseTargetUpdater<R,I>(ctx, fac);
+		UploadParseTargetUpdater<R> updater = new UploadParseTargetUpdater<R>(ctx, (UploadParseTarget<R>) fac);
 		String result = updater.receiveData(getUpdateMap(), updateText,errors,skips);
 		//TestDataHelper.saveDataSet("NGSRecord", "NGSRecord", "lsf");
 		Assert.assertEquals(0,errors.size());
@@ -82,7 +84,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		if (!fac.isValid()) {
 			return;
 		}
-		Set<PropertyContainerPolicy> s = fac.getPolicies();
+		Set<PropertyContainerPolicy> s = fac.getComposite(PropertyContainerParseTargetComposite.class).getPlugInOwner().getPolicies();
 
 		assertNotNull(s);
 
@@ -93,7 +95,8 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		if (!fac.isValid()) {
 			return;
 		}
-		AccessorMap map = fac.getAccessorMap();
+		ExpressionTargetFactory<R> etf = ExpressionCast.getExpressionTargetFactory(fac);
+		AccessorMap map = etf.getAccessorMap();
 
 		assertNotNull(map);
 

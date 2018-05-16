@@ -18,7 +18,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AbstractAcceptFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AcceptFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FilterVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 
 
@@ -29,21 +28,25 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
  * @param <T> type filter is for
  * @param <I> data type
  */
-public class ExpressionAcceptFilter<T extends ExpressionTarget,I> extends AbstractAcceptFilter<T>{
-
+public class ExpressionAcceptFilter<T,I> extends AbstractAcceptFilter<T>{
+    private final AccessorMap<T> map;
 	private final MatchCondition m;
 	private final I data;
 	private final PropExpression<I> expr;
-	public ExpressionAcceptFilter(Class<? super T> target,PropExpression<I> expr,MatchCondition m, I data){
+	public ExpressionAcceptFilter(Class<? super T> target,AccessorMap<T> map,PropExpression<I> expr,MatchCondition m, I data){
 		super(target);
+		this.map=map;
 		this.expr=expr;
 		this.m=m;
 		this.data=data;
 		assert(data!=null);
 	}
-	@SuppressWarnings("unchecked")
-	public boolean accept(T o) {
+	public boolean accept(T t) {
 		try {
+			ExpressionTarget o = map.getProxy(t);
+			if( o == null) {
+				return false;
+			}
 			I res = o.evaluateExpression(expr);
 			if( res==null || data == null) {
 				return false;

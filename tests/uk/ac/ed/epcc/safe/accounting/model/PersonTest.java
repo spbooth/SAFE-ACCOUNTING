@@ -8,7 +8,10 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTargetComposite;
+import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
+import uk.ac.ed.epcc.webapp.session.AppUser;
 import uk.ac.ed.epcc.webapp.session.AppUserFactoryTestCase;
 
 public class PersonTest extends AppUserFactoryTestCase {
@@ -21,9 +24,10 @@ public class PersonTest extends AppUserFactoryTestCase {
 	}
 	@Test
 	public void testParser(){
-		PropertyPersonFactory<PropertyPerson> fac = new PropertyPersonFactory<PropertyPerson>(ctx);
-		
-		assertNotNull(fac.getParser());
+		PropertyPersonFactory<AppUser> fac = new PropertyPersonFactory<AppUser>(ctx);
+		UploadParseTarget target = (UploadParseTarget) fac.getComposite(PropertyContainerParseTargetComposite.class);
+		assertNotNull(target);;
+		assertNotNull(target.getParser());
 	}
 	
 	

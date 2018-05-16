@@ -30,7 +30,7 @@ import uk.ac.ed.epcc.webapp.session.WebNameFinder;
  */
 
 
-public class CertificatePerson extends PropertyPerson {
+public class CertificatePerson extends AppUser {
 
 	public final Pattern subject_pattern = Pattern.compile("CN=([\\w\\s@.:;_-]+)", Pattern.CASE_INSENSITIVE);
 	protected CertificatePerson(CertificatePersonFactory<?> fac, Record res) {

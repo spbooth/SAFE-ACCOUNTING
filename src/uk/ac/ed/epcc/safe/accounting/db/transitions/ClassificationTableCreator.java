@@ -19,7 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.db.transitions;
 
 
 //import uk.ac.ed.epcc.safe.accounting.db.AccountingClassificationFactory;
-import uk.ac.ed.epcc.safe.accounting.db.PropertyTargetClassificationFactory;
+import uk.ac.ed.epcc.safe.accounting.db.PropertyClassificationFactory;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
@@ -58,7 +58,7 @@ public class ClassificationTableCreator implements FormCreator,Contexed, ExtraCo
 	}
 	public void buildCreationForm(String type_name,Form f) throws Exception {
 		f.addInput(TABLE, "Name of table to create", new NewTableInput(conn));
-		f.addInput(TYPE,"Table type",new ClassInput<PropertyTargetClassificationFactory>(conn, PropertyTargetClassificationFactory.class));
+		f.addInput(TYPE,"Table type",new ClassInput<PropertyClassificationFactory>(conn, PropertyClassificationFactory.class));
 		f.addAction("Create", new CreateAction());
 	}
 
@@ -73,10 +73,10 @@ public class ClassificationTableCreator implements FormCreator,Contexed, ExtraCo
 			try{
 				String table_name=(String) f.get(TABLE);
 				String type_tag = (String) f.get(TYPE);
-				ClassInput<PropertyTargetClassificationFactory> input = (ClassInput<PropertyTargetClassificationFactory>) f.getInput(TYPE);
+				ClassInput<PropertyClassificationFactory> input = (ClassInput<PropertyClassificationFactory>) f.getInput(TYPE);
 				ConfigService serv = conn.getService(ConfigService.class);
 				serv.setProperty("class."+table_name, type_tag);
-			    Class<? extends PropertyTargetClassificationFactory> target = input.getItem();
+			    Class<? extends PropertyClassificationFactory> target = input.getItem();
 			    if( DataObjectFactory.AUTO_CREATE_TABLES_FEATURE.isEnabled(conn)){
 			    	conn.makeObject(target, table_name);
 			    }else{

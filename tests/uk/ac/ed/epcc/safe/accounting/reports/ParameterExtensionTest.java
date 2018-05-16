@@ -16,8 +16,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import uk.ac.ed.epcc.safe.accounting.db.AccountingClassification;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccountingClassificationFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.WebappTestBase;
@@ -47,15 +49,16 @@ public class ParameterExtensionTest extends WebappTestBase {
 	@Test
 	public void testFor() throws Exception{
 		AccountingClassificationFactory fac = ctx.makeObject(AccountingClassificationFactory.class, "TestClassifier");
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(fac);
 		assertNotNull(fac);
-		PropertyTag<Integer> count =  (PropertyTag<Integer>) fac.getFinder().find(Number.class,"count");
-		AccountingClassification a = (AccountingClassification) fac.makeFromString("A");
+		PropertyTag<Integer> count =  (PropertyTag<Integer>) etf.getFinder().find(Number.class,"count");
+		ExpressionTargetContainer a = etf.getExpressionTarget(fac.makeFromString("A"));
 		a.setProperty(count, Integer.valueOf(1));
 		a.commit();
-		AccountingClassification b = (AccountingClassification) fac.makeFromString("B");
+		ExpressionTargetContainer b = etf.getExpressionTarget(fac.makeFromString("B"));
 		b.setProperty(count, Integer.valueOf(2));
 		b.commit();
-		AccountingClassification c = (AccountingClassification) fac.makeFromString("C");
+		ExpressionTargetContainer c = etf.getExpressionTarget(fac.makeFromString("C"));
 		c.setProperty(count, Integer.valueOf(3));
 		c.commit();
 		String templateName = "testFor";

@@ -28,6 +28,7 @@ import org.w3c.dom.traversal.NodeIterator;
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.UnexpandedContentException;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
@@ -156,7 +157,7 @@ public class FilterExtension extends ReportExtension{
 	  
 	  ObjectSet result = new ObjectSet();
 	  String target = getParam( TARGET_ELEMENT, elem);
-	  ExpressionTargetGenerator gen = getContext().makeObject(ExpressionTargetGenerator.class, target);
+	  ExpressionTargetGenerator gen = ExpressionCast.makeExpressionTargetFactory(conn, target);
 	  if( gen == null ){
 		  throw new ReportException("No Expression Generator found for target "+target);
 	  }

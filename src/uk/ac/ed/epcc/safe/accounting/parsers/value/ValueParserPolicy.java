@@ -33,7 +33,6 @@ import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
@@ -194,12 +193,12 @@ public class ValueParserPolicy implements
 			NamePropExpression namePropExpression) throws Exception {
 		return getValueParser(namePropExpression.getTarget());
 	}
-	public <T extends DataObject & ExpressionTarget> ValueParser visitDoubleDeRefExpression(
+	public <T extends DataObject> ValueParser visitDoubleDeRefExpression(
 			DoubleDeRefExpression<T, ?> deRefExpression) throws Exception {
 		
 		return deRefExpression.getExpression().accept(this);
 	}
-	public <T extends DataObject & ExpressionTarget> ValueParser visitDeRefExpression(
+	public <T extends DataObject> ValueParser visitDeRefExpression(
 			DeRefExpression<T, ?> deRefExpression) throws Exception {
 		
 		return deRefExpression.getExpression().accept(this);

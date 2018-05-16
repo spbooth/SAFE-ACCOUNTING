@@ -53,136 +53,17 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.NestedIterator;
 /** A composite {@link UsageProducer} that combines results from several 
  * underlying {@link UsageProducer}s.
  * 
+ * It also supports generating an 
+ * 
  * @author spb
  *
  * @param <UR>
  */
 
-public abstract class UsageManager<UR extends ExpressionTargetContainer> implements
-		UsageProducer<UR> , Selector<ListInput<String, UsageProducer>>, 
-		DerivedPropertyFactory,FormUpdateProducer<UR>{
+public abstract class UsageManager<UR> implements
+		UsageProducer<UR> {
 
-	/**
-	 * FormInput for selecting UsageProducers.
-	 * 
-	 * Actually we may not need this as the ProducerTable input might be fine.
-	 * 
-	 * @author spb
-	 * 
-	 */
-
-
-	public class ProducerInput implements ListInput<String, UsageProducer> {
-		String value = null;
-		String key = null;
-		boolean allow_all = false;
-		
-
-		public ProducerInput(boolean allow_all) {
-			this.allow_all = allow_all;
-		}
-
-		public String convert(Object v) throws TypeError {
-			return (String) v;
-		}
-
-		public UsageProducer getItem() {
-			return getItembyValue(value);
-		}
-
-		public UsageProducer getItembyValue(String value) {
-			return parseProducer(value);
-		}
-
-		public Iterator<UsageProducer> getItems() {
-			LinkedList<UsageProducer> list = new LinkedList<UsageProducer>();
-			if (allow_all) {
-				list.add(UsageManager.this);
-			}
-			for (String key : factories.keySet()) {
-				list.add(factories.get(key));
-			}
-			return list.iterator();
-		}
-		public int getCount() {
-			int count=0;
-			if (allow_all) {
-				count++;
-			}
-			for (String key : factories.keySet()) {
-				count++;
-			}
-			return count;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public String getPrettyString(String value) {
-			if( value == null || value.equals("ALL")){
-				return "ALL";
-			}
-			return descriptions.get(value);
-		}
-
-		public String getString(String value) {
-			return value;
-		}
-
-		public String getTagByItem(UsageProducer item) {
-			if (item == UsageManager.this) {
-				return "ALL";
-			}
-			return item.getTag();
-		}
-
-		public String getTagByValue(String value) {
-			return value;
-		}
-
-		public String getText(UsageProducer item) {
-			return getPrettyString(getTagByItem(item));
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		public void setItem(UsageProducer item) {
-			value = getTagByItem(item);
-		}
-
-		public void setKey(String key) {
-			this.key = key;
-
-		}
-
-		public String setValue(String v) throws TypeError {
-			String old = value;
-			value = v;
-			return old;
-		}
-
-		public void validate() throws FieldException {
-			if (value == null) {
-				throw new MissingFieldException();
-			}
-		}
-
-		public <R> R accept(InputVisitor<R> vis) throws Exception {
-			return vis.visitListInput(this);
-		}
-
-		@Override
-		public boolean isValid(UsageProducer item) {
-			if( item.equals(UsageManager.this)){
-				return allow_all;
-			}
-			return factories.containsValue(item);
-		}
-
-	}
+	
     public class MultiIterator extends AbstractMultiIterator<UR>{
        
 
@@ -289,32 +170,22 @@ public abstract class UsageManager<UR extends ExpressionTargetContainer> impleme
 		}
 		PropExpressionMap tmp = null;
 		for( UsageProducer<UR> prod : factories.values()){
-			if( prod instanceof DerivedPropertyFactory){
-				if( tmp == null ){
-					// initial set from first seen
-					// make sure we copy as this map is edited.
-					// nested SHOULD return a copy but lets be safe as this has bitten us before
-					tmp = new PropExpressionMap(((DerivedPropertyFactory) prod).getDerivedProperties()); 
-				}else{
-					// merge definitions we only want the set common to all producers.
-				
-					PropExpressionMap merge = ((DerivedPropertyFactory) prod).getDerivedProperties(); 
-					Iterator<PropertyTag> it = tmp.keySet().iterator();
-					while(it.hasNext()){
-						PropertyTag t = it.next();
-						if( ! merge.containsKey(t) || ! tmp.get(t).equals(merge.get(t))){
-							it.remove();
-						}
+			if( tmp == null ){
+				// initial set from first seen
+				// make sure we copy as this map is edited.
+				// nested SHOULD return a copy but lets be safe as this has bitten us before
+				tmp = new PropExpressionMap( prod.getDerivedProperties()); 
+			}else{
+				// merge definitions we only want the set common to all producers.
+
+				PropExpressionMap merge = prod.getDerivedProperties(); 
+				Iterator<PropertyTag> it = tmp.keySet().iterator();
+				while(it.hasNext()){
+					PropertyTag t = it.next();
+					if( ! merge.containsKey(t) || ! tmp.get(t).equals(merge.get(t))){
+						it.remove();
 					}
 				}
-			}else{
-				// must return empty set
-				if( tmp == null ){
-					tmp = new PropExpressionMap();
-				}else{
-					tmp.clear();
-				}
-				break;
 			}
 		}
 		map=tmp;
@@ -480,33 +351,6 @@ public abstract class UsageManager<UR extends ExpressionTargetContainer> impleme
 	
 
 
-	public String getProducerSelector(String name, String key){
-		return getProducerSelector(name, key,true);
-	}
-	
-	public String getProducerSelector(String name, String key,boolean allow_all){
-		ListInput<String, UsageProducer> input = getProducerInput(allow_all);
-		input.setKey(name);
-		
-		Map<String,String> params = new HashMap<String,String>();
-		params.put(name, getProducerTag(key));
-		try {
-			HtmlBuilder hb = new HtmlBuilder();
-			EmitHtmlInputVisitor vis = new EmitHtmlInputVisitor(getContext(),hb, true, params, null);
-			input.accept(vis);
-			return hb.toString();
-			
-		} catch (Exception e) {
-			log.error("Error making selctor from input",e);
-			return null;
-		}
-	}
-
-
-
-	public ListInput<String,UsageProducer> getProducerInput(boolean allow_all) {
-		return new ProducerInput(allow_all);
-	}
 	@SuppressWarnings("unchecked")
 	public <C> Vector<C> getProducers(Class<C> target) {
 		Vector<C> res = new Vector<C>();
@@ -616,9 +460,7 @@ public abstract class UsageManager<UR extends ExpressionTargetContainer> impleme
 		}
 		return sb.toString();
 	}
-	public ListInput<String,UsageProducer> getInput() {
-		return getProducerInput(true);
-	}
+	
 	@Override
 	public String toString(){
 		return getClass().getCanonicalName()+"["+tag+"]";
@@ -668,4 +510,34 @@ public abstract class UsageManager<UR extends ExpressionTargetContainer> impleme
 //		}
 //		return null;
 //	}
+	private UsageProducer getProducerFromTarget(UR record) {
+		for(UsageProducer prod : factories.values()) {
+			if( prod.isMyTarget(record)) {
+				return prod;
+			}
+		}
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.UsageProducer#getExpressionTarget(java.lang.Object)
+	 */
+	@Override
+	public ExpressionTargetContainer getExpressionTarget(UR record) {
+		return getProducerFromTarget(record).getExpressionTarget(record);
+	}
+	
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.UsageProducer#isMyTarget(java.lang.Object)
+	 */
+	@Override
+	public boolean isMyTarget(UR record) {
+		for(UsageProducer prod : factories.values()) {
+			if( prod.isMyTarget(record)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

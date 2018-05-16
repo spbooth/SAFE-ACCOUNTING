@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 
 /** A {@link PropertyTargetFactory} that can also retrieve records using
@@ -27,7 +26,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
  * @param <UR> property target type
  *
  */
-public interface PropertyTargetGenerator<UR extends PropertyTarget> extends PropertyTargetFactory {
+public interface PropertyTargetGenerator<UR> extends PropertyTargetFactory {
 	/** Is the RecordSelector compatible with this class. 
 	 * This method will return false if it the selector is fundamentally incompatible
 	 * with the properties supported by the class and no records can match the selector.
@@ -77,5 +76,4 @@ public interface PropertyTargetGenerator<UR extends PropertyTarget> extends Prop
    	public <PT> Set<PT> getValues(PropertyTag<PT> data_tag, RecordSelector selector) 
    		throws Exception;
    	
-
 }

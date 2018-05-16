@@ -9,6 +9,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -151,10 +152,12 @@ public class EvaluateTests extends WebappTestBase {
 	@Test
 	public void testRemoteExpression() throws InvalidPropertyException, DataFault, PropertyCastException {
 		RemoteTargetFactory fac = new RemoteTargetFactory<>(ctx);
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(fac);
 		DataObjectPropertyContainer rec = (DataObjectPropertyContainer) fac.makeBDO();
-		rec.setProperty(RemoteTargetFactory.INT_A, 7);
-		rec.setProperty(RemoteTargetFactory.INT_B, 5);
-		rec.commit();
+		ExpressionTargetContainer proxy = etf.getExpressionTarget(rec);
+		proxy.setProperty(RemoteTargetFactory.INT_A, 7);
+		proxy.setProperty(RemoteTargetFactory.INT_B, 5);
+		proxy.commit();
 		DerivedPropertyMap obj = new DerivedPropertyMap(ctx);
 		REMOTE.set(obj, rec);
 		obj.setProperty(INT_A, 2);

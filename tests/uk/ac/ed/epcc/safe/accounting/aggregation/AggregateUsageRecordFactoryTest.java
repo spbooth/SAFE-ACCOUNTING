@@ -18,7 +18,9 @@ import org.junit.Test;
 import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.NumberSumReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
+import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.ConfigUsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -105,7 +107,7 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 	public void testaggregate() throws Exception{
 		ConfigUsageRecordFactory sge_fac = new ConfigUsageRecordFactory(ctx, "SGERecord");
 		AggregateUsageRecordFactory fac = ctx.makeParamObject(DailyAggregateUsageRecordFactory.class,ctx,"DailyAggregate",sge_fac);
-		UsageProducer<?> raw_fac = fac.getMaster();
+		UsageProducer<Use> raw_fac = fac.getMaster();
 		Date start = raw_fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.ENDED_PROP), new AndRecordSelector());
 		Date end = raw_fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP), new AndRecordSelector());
 		if( start == null || end == null){
@@ -120,9 +122,11 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 			System.out.println("Supress line by line regenerate, too many records");
 			return;
 		}
-		for(Iterator<? extends ExpressionTargetContainer> it = raw_fac.getIterator(sel); it.hasNext();){
-			ExpressionTargetContainer rec = it.next();
+		for(Iterator<Use> it = raw_fac.getIterator(sel); it.hasNext();){
+			Use obj = it.next();
+			ExpressionTargetContainer rec = raw_fac.getExpressionTarget(obj);
 			fac.aggregate(rec);
+			rec.release();
 		}
 		
 		verify(fac, raw_fac, sel);
@@ -240,7 +244,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 	@SuppressWarnings("unchecked")
 	private void verify(AggregateUsageRecordFactory fac, UsageProducer<?> raw_fac,
 			AndRecordSelector sel) throws Exception {
-		for( PropertyTag t : fac.getAccessorMap().getProperties()){
+		AccessorMap<?> map = fac.getAccessorMap();
+		for( PropertyTag t :  map.getProperties()){
 			if( Number.class.isAssignableFrom(t.getTarget())){
 				
 				Number agg_sum = fac.getReduction(new NumberSumReductionTarget(t), sel);

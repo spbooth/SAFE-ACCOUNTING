@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.WebappTestBase;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
@@ -52,25 +53,27 @@ public class AdvancedParserTest extends WebappTestBase{
 	public void testConstantExpressions() throws Exception{
 		
 		DummyPropertyFactory prop_fac = new DummyPropertyFactory(ctx);
-		Parser p = new Parser(ctx,prop_fac.getFinder());
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(prop_fac);
+		Parser p = new Parser(ctx,etf.getFinder());
 		
 		DummyPropertyContainer prop_con = prop_fac.makeBDO();
+		ExpressionTargetContainer proxy = etf.getExpressionTarget(prop_con);
 		prop_con.setData("Boris");
 		prop_con.commit(); // Need to have one record
 		
 		for( LocateData d : data){
 			//System.out.println(d.getConstExpression());
 			PropExpression expr = p.parse(d.getConstExpression());
-			Object res = prop_con.evaluateExpression(expr);
+			Object res = proxy.evaluateExpression(expr);
 			assertEquals(d.expected,((Number)res).intValue());
 			//System.out.println("  ->"+d.getConstExpression()+"="+res.toString());
 			
-			SQLExpression sql_expr = prop_fac.getAccessorMap().getSQLExpression(expr);
+			SQLExpression sql_expr = etf.getAccessorMap().getSQLExpression(expr);
 			res = prop_fac.evaluate(null, sql_expr);
 			assertNotNull("SQLSxpression returns null",res);
 			assertEquals("Unexpected result from SQLExpression",d.expected,((Number)res).intValue());
 			
-			SQLValue sql_val = prop_fac.getAccessorMap().getSQLValue(expr);
+			SQLValue sql_val = etf.getAccessorMap().getSQLValue(expr);
 			res = prop_fac.evaluate(null, sql_val);
 			assertNotNull("SQLValue returns null",res);
 			assertEquals("Unexpected result from SQLValue",d.expected,((Number)res).intValue());	
@@ -83,7 +86,8 @@ public class AdvancedParserTest extends WebappTestBase{
 	public void testFieldExpressions() throws Exception{
 			
 		DummyPropertyFactory prop_fac = new DummyPropertyFactory(ctx);
-		Parser p = new Parser(ctx,prop_fac.getFinder());
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(prop_fac);
+		Parser p = new Parser(ctx,etf.getFinder());
 		Map<Integer,LocateData> expected = new HashMap<>();
 		
 		for( LocateData d : data){
@@ -98,14 +102,15 @@ public class AdvancedParserTest extends WebappTestBase{
 		// Use field names these should map to the corresponding property names by default.
 		String expr_text = "@LOCATE("+DummyPropertyFactory.SEARCH_FIELD+","+DummyPropertyFactory.DATA_FIELD+","+DummyPropertyFactory.OFFSET_FIELD+")";
 		PropExpression expr = p.parse(expr_text);
-		SQLExpression sql_expr = prop_fac.getAccessorMap().getSQLExpression(expr);
-		SQLValue sql_val = prop_fac.getAccessorMap().getSQLValue(expr);
+		SQLExpression sql_expr = etf.getAccessorMap().getSQLExpression(expr);
+		SQLValue sql_val = etf.getAccessorMap().getSQLValue(expr);
 		
 		for(Integer id : expected.keySet()){
 			DummyPropertyContainer prop_con = prop_fac.find(id);
+			ExpressionTargetContainer proxy = etf.getExpressionTarget(prop_con);
 			LocateData d = expected.get(id);
 			
-			Object res = prop_con.evaluateExpression(expr);
+			Object res = proxy.evaluateExpression(expr);
 			assertEquals(d.expected,((Number)res).intValue());
 			//System.out.println("  ->"+expr_text+"="+res.toString());
 			
@@ -127,7 +132,8 @@ public class AdvancedParserTest extends WebappTestBase{
 	public void testMixedExpressions() throws Exception{
 			
 		DummyPropertyFactory prop_fac = new DummyPropertyFactory(ctx);
-		Parser p = new Parser(ctx,prop_fac.getFinder());
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(prop_fac);
+		Parser p = new Parser(ctx,etf.getFinder());
 		Map<Integer,LocateData> expected = new HashMap<>();
 		
 		for( LocateData d : data){
@@ -141,15 +147,16 @@ public class AdvancedParserTest extends WebappTestBase{
 						
 		for(Integer id : expected.keySet()){
 			DummyPropertyContainer prop_con = prop_fac.find(id);
+			ExpressionTargetContainer proxy = etf.getExpressionTarget(prop_con);
 			LocateData d = expected.get(id);
 		
 			// Use field name for the data field only.
 			String expr_text = "@LOCATE(\""+d.search+"\","+DummyPropertyFactory.DATA_FIELD+","+d.offset+")";
 			PropExpression expr = p.parse(expr_text);
-			SQLExpression sql_expr = prop_fac.getAccessorMap().getSQLExpression(expr);
-			SQLValue sql_val = prop_fac.getAccessorMap().getSQLValue(expr);
+			SQLExpression sql_expr = etf.getAccessorMap().getSQLExpression(expr);
+			SQLValue sql_val = etf.getAccessorMap().getSQLValue(expr);
 			
-			Object res = prop_con.evaluateExpression(expr);
+			Object res = proxy.evaluateExpression(expr);
 			assertEquals(d.expected,((Number)res).intValue());
 			//System.out.println("  ->"+expr_text+"="+res.toString());
 			

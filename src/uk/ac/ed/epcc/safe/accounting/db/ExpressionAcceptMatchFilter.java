@@ -21,20 +21,25 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 
 
 
-public class ExpressionAcceptMatchFilter<T extends ExpressionTarget,I> extends AbstractAcceptFilter<T>{
+public class ExpressionAcceptMatchFilter<T,I> extends AbstractAcceptFilter<T>{
+	private final AccessorMap<T> map;
 	private final MatchCondition m;
-
 	private final PropExpression<I> expr1;
 	private final PropExpression<I> expr2;
-	public ExpressionAcceptMatchFilter(Class<? super T> target,PropExpression<I> expr1,MatchCondition m, PropExpression<I> expr2){
+	public ExpressionAcceptMatchFilter(Class<? super T> target,AccessorMap<T> map,PropExpression<I> expr1,MatchCondition m, PropExpression<I> expr2){
 		super(target);
+		this.map=map;
 		this.expr1=expr1;
 		this.m=m;
 		this.expr2=expr2;
 	}
 	@SuppressWarnings("unchecked")
-	public boolean accept(T o) {
+	public boolean accept(T t) {
 		try {
+			ExpressionTarget o = map.getProxy(t);
+			if( o == null) {
+				return false;
+			}
 			I res1 = o.evaluateExpression(expr1);
 			I res2 = o.evaluateExpression(expr2);
 			if( res1 == null || res1 == null) {

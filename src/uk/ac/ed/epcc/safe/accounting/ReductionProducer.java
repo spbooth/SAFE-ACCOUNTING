@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTuple;
@@ -30,7 +29,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
  *
  * @param <UR>
  */
-public interface ReductionProducer<UR extends ExpressionTarget> {
+public interface ReductionProducer<UR> {
 
 	/** Perform a reduction over a set of records
 	 * 

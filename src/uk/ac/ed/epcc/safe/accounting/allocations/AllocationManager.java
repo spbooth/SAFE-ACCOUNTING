@@ -18,29 +18,34 @@ package uk.ac.ed.epcc.safe.accounting.allocations;
 
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
-import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
+import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.webapp.Tagged;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.transition.ViewTransitionProvider;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.period.SplitManager;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
-/** AllocationManagers are the UsageProducer classes for Allocations and
- * provide transitions to edit the allocations
+/** AllocationManagers are the factory classes for Allocations and
+ * provide transitions to edit the allocations.
+ * 
+ * To allow common interface code to work with different types of allocation this extends
+ * {@link PropertyTargetGenerator} 
+ * 
  * 
  * @author spb
  *
  * @param <K> transition key
  * @param <T> type of {@link Allocation}
  */
-public interface AllocationManager<K,T extends Allocation> extends UsageProducer<T>, ViewTransitionProvider<K,T>,SplitManager<T> ,ExpressionFilterTarget<T>{
+public interface AllocationManager<K,T extends Allocation> extends  ViewTransitionProvider<K,T>,SplitManager<T>,Tagged,PropertyTargetGenerator<T>,IndexedProducer<T> {
 
 /** Role needed to create allocations.
  *    Can restrict which index properties a user can set by defining a

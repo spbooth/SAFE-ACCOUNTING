@@ -775,16 +775,10 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	@SuppressWarnings("unchecked")
 	protected DomFormatter getFormatter(Class clazz, String name) {
 		if ( name.startsWith(EXPRESSION_PREFIX) ){
-			if( clazz != null && ExpressionTarget.class.isAssignableFrom(clazz) ){
-		
-				//TODO consider additional field with formatter for the expression
-				return new ExpressionFormat(getContext(), name.substring(EXPRESSION_PREFIX.length()));
-			}else{
-				addDeveloperError("invalid_expression_format", "Class "+clazz.getCanonicalName()+" is not an expression target");
-				return null;
-			}
-	    }else {
-	    	DomFormatter f = getContext().makeObjectWithDefault(DomFormatter.class, null,FORMATTER_PREFIX, name);
+			//TODO consider additional field with formatter for the expression
+			return new ExpressionFormat(getContext(), name.substring(EXPRESSION_PREFIX.length()));
+		}else {
+			DomFormatter f = getContext().makeObjectWithDefault(DomFormatter.class, null,FORMATTER_PREFIX, name);
 	    	if( f != null ){
 	    		log.debug("Got formatter "+f.getClass().getCanonicalName());
 	    		return f;

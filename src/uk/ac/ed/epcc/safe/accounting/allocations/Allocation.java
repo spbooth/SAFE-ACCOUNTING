@@ -14,8 +14,9 @@
 package uk.ac.ed.epcc.safe.accounting.allocations;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
+import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 
-public interface Allocation extends ExpressionTargetContainer,TimePeriod {
+public interface Allocation extends ExpressionTargetContainer,TimePeriod,Indexed {
 	
 }

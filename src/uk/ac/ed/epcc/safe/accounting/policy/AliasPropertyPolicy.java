@@ -25,8 +25,6 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionInput;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyTagInput;
-import uk.ac.ed.epcc.safe.accounting.policy.DerivedPropertyPolicy.AddDerivedTransition;
-import uk.ac.ed.epcc.safe.accounting.policy.DerivedPropertyPolicy.AddDerivedTransition.AddDerivedAction;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -39,17 +37,15 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
-import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
-import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 
 /**
  * <p>
@@ -79,7 +75,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
  */
 
 
-public class AliasPropertyPolicy extends BasePolicy implements TransitionSource<TableTransitionTarget> {
+public class AliasPropertyPolicy extends BasePolicy implements TableTransitionContributor {
 
 	/*
 	 * TODO consider merging this class with DerivedPropertyPolicy - there
@@ -149,14 +145,14 @@ public class AliasPropertyPolicy extends BasePolicy implements TransitionSource<
 		previous.getAllFrom(aliases);
 		return previous;
 	}
-	public class AddDerivedTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class AddDerivedTransition extends AbstractFormTransition<DataObjectFactory>{
 
 		private static final String EXPR_INPUT = "Expr";
 		private static final String PROPERTY_INPUT = "Property";
 
 		public final class AddDerivedAction extends FormAction {
-			private final TableTransitionTarget target;
-			public AddDerivedAction(TableTransitionTarget target){
+			private final DataObjectFactory target;
+			public AddDerivedAction(DataObjectFactory target){
 				this.target=target;
 			}
 			@Override
@@ -172,17 +168,17 @@ public class AliasPropertyPolicy extends BasePolicy implements TransitionSource<
 			}
 		}
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext ctx) throws TransitionException {
 			f.addInput(PROPERTY_INPUT, "Property to define", new PropertyTagInput(cached_finder));
 			f.addInput(EXPR_INPUT, "Definition", new PropExpressionInput(c,cached_finder));
 			f.addAction("Add", new AddDerivedAction(target));
 		}
 	}
-	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
 		// add transitions here
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddDerivedProperty"),new AddDerivedTransition());
+		result.put(new AdminOperationKey( "AddDerivedProperty"),new AddDerivedTransition());
 		return result;
 	}
 

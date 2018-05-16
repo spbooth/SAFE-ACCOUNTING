@@ -22,9 +22,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -54,12 +56,12 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.TableInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -104,13 +106,14 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider,TransitionSource<TableTransitionTarget> {
+public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements SummaryProvider,TableTransitionContributor {
 
 	private static final String LINK_POLICY_TARGET = "LinkPolicy.target.";
 	private AppContext c;
 	private ReferenceTag remote_tag=null;
 	private ReferenceTag back_ref=null;
-	private UsageRecordFactory<?> remote_fac=null;
+	private UsageRecordFactory<R> remote_fac=null;
+	private ExpressionTargetFactory<R> remote_etf=null;
 	private Map<PropertyTag,PropertyTag> match_map=null;
 	private Map<PropertyTag,PropertyTag> copy_properties=null;
 	private Set<PropertyTag> inside_date_properties=null;
@@ -132,6 +135,7 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 			if( UsageRecordFactory.class.isAssignableFrom(ref_tag.getFactoryClass())){
 			   remote_tag=ref_tag;
 			   remote_fac=(UsageRecordFactory) remote_tag.getFactory(c);
+			   remote_etf = ExpressionCast.getExpressionTargetFactory(remote_fac);
 			   match_map = new HashMap<PropertyTag, PropertyTag>();
 			   inside_date_properties = new HashSet<PropertyTag>();
 			   copy_properties = new HashMap<PropertyTag,PropertyTag>();
@@ -164,7 +168,7 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 						   // assume they should be copied.
 						   PropertyTag remote_tag = remote_finder.find(local_name);
 
-						   if( remote_tag != null && remote_tag.allowExpression(store_tag) &&remote_fac.hasProperty(remote_tag) && remote_fac.getAccessorMap().writable(remote_tag)){
+						   if( remote_tag != null && remote_tag.allowExpression(store_tag) &&remote_fac.hasProperty(remote_tag) && remote_etf.getAccessorMap().writable(remote_tag)){
 							   copy_properties.put(store_tag, remote_tag);
 						   }
 					   }
@@ -230,7 +234,7 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 		   }
 		   UsageRecordFactory.Use peer = null;
 		   try{
-			    peer =remote_fac.find(sel);
+			    peer =remote_fac.find(remote_fac.getFilter(sel),true);
 		   }catch(Exception e){
 			     getLogger().error("Error finding peer in LinkPolicy",e);
 		   }
@@ -251,17 +255,19 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 	@SuppressWarnings("unchecked")
 	@Override
 	public void postCreate(PropertyContainer props, ExpressionTargetContainer r) throws Exception {
-		IndexedReference<UsageRecordFactory.Use> peer_ref = (IndexedReference<Use>) props.getProperty(remote_tag, null);
-        Use rec = (Use) r;
+		IndexedReference<R> peer_ref = (IndexedReference<R>) props.getProperty(remote_tag, null);
+        
         
         //System.out.println("In post create ");
 		if( peer_ref != null && peer_ref.getID() > 0){
-			Use peer = remote_fac.find(peer_ref.getID());
-			if( back_ref != null && peer.writable(back_ref)){
+			R peer = remote_fac.find(peer_ref.getID());
+			ExpressionTargetContainer proxy = remote_fac.getExpressionTarget(peer);
+			if( back_ref != null && proxy.writable(back_ref)){
 				log.debug("set back reference");
 				
 				// if the table has a reference back to us set it.
-				back_ref.set(peer, rec);
+				IndexedReference<R> self = r.getProperty(back_ref);
+				proxy.setProperty(back_ref, self);
 				
 			}else{
 				log.debug("No back reference");
@@ -269,17 +275,17 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 			// set all of the copy properties without values
 			for(PropertyTag t: copy_properties.keySet()){
 				PropertyTag remote_tag = copy_properties.get(t);
-				Object old_peer_value = peer.getProperty(remote_tag,null);
+				Object old_peer_value = proxy.getProperty(remote_tag,null);
 				
 				if( old_peer_value == null || ( old_peer_value instanceof IndexedReference && ((IndexedReference)old_peer_value).isNull())){
 					Object value = props.getProperty(t);
 					if( value != null ){
 					  log.debug("setting "+remote_tag.getFullName());
-					  peer.setOptionalProperty(remote_tag, value);
+					  proxy.setOptionalProperty(remote_tag, value);
 					}
 				}
 			}
-			peer.commit();
+			proxy.commit();
 		}
 	}
 
@@ -312,8 +318,8 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 	}
 	public final class SetRemoteAction extends FormAction{
 
-		private final TableTransitionTarget target;
-		public SetRemoteAction(TableTransitionTarget target) {
+		private final DataObjectFactory target;
+		public SetRemoteAction(DataObjectFactory target) {
 			this.target=target;
 		}
 
@@ -322,16 +328,15 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 				throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
 
 			ConfigService serv = c.getService(ConfigService.class);
-			//TODO is there a better way of getting the config tag
-			serv.setProperty(LINK_POLICY_TARGET+target.getTableTransitionID(),(String) f.get("table"));
+			serv.setProperty(LINK_POLICY_TARGET+target.getConfigTag(),(String) f.get("table"));
 			return new ViewTableResult(target);
 			
 		}
 		
 	}
-	public class SetRemoteTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class SetRemoteTransition extends AbstractFormTransition<DataObjectFactory>{
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext conn) throws TransitionException {
 			TableInput<UsageRecordFactory> input = new TableInput<UsageRecordFactory>(conn,UsageRecordFactory.class);
 			f.addInput("table", "Master table", input);
@@ -341,9 +346,9 @@ public class LinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider
 			f.addAction("Set Master", new SetRemoteAction(target));
 		}
 	}
-	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "Set Master", "Set the master table for LinkPolicy"), new SetRemoteTransition());
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+		result.put(new AdminOperationKey("Set Master", "Set the master table for LinkPolicy"), new SetRemoteTransition());
 		return result;
 	}
 	protected final Logger getLogger(){

@@ -42,6 +42,7 @@ import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.charts.MapperEntryInput;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntryInput;
 import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
@@ -511,8 +512,8 @@ public class ParameterExtension extends ReportExtension {
 				if( expr_str.endsWith("]")){
 					expr_str=expr_str.substring(0, expr_str.lastIndexOf("]"));
 					value = params.get(parm_name);
-					if( value instanceof ExpressionTarget){
-						ExpressionTarget et = (ExpressionTarget)value;
+					ExpressionTarget et = ExpressionCast.getExpressionTarget(value);
+					if( et != null){
 						Parser p = et.getParser();
 						try {
 							return et.evaluateExpression(p.parse(expr_str));
@@ -520,6 +521,7 @@ public class ParameterExtension extends ReportExtension {
 							addError("Bad expression parameter", name, e);
 						}
 					}else{
+						addError("Bad parameter", "Invalid parameter expression "+name);
 						return null;
 					}
 				}
@@ -539,7 +541,10 @@ public class ParameterExtension extends ReportExtension {
 		Document doc=getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
 		Object o = getParameter(name);
-		if( o != null && o instanceof PropertyContainer && o instanceof ExpressionTarget){
+		if( o != null && ! (o instanceof ExpressionTarget)){
+			o = ExpressionCast.getExpressionTarget(o);
+		}
+		if( o != null && o instanceof ExpressionTarget){
 			ExpressionExpander expander = new ExpressionExpander(getContext(), parse_vis);
 			
 			expander.setExpressionTarget((ExpressionTarget)o);
@@ -550,6 +555,8 @@ public class ParameterExtension extends ReportExtension {
 				}
 			}
 			result.appendChild(doc.createTextNode("\n"));
+		}else {
+			addError("Invalid parameter for format", o == null ? "null" : o.getClass().getSimpleName());
 		}
 		return result;
 	}
@@ -872,7 +879,7 @@ public class ParameterExtension extends ReportExtension {
 		}
 		
 		String source = this.getAttribute(SOURCE_ATTR, element);
-		PropertyTargetGenerator split = getContext().makeObjectWithDefault(PropertyTargetGenerator.class, null, source);
+		PropertyTargetGenerator split = ExpressionCast.makePropertyTargetGenerator(conn, source);
 		if( split == null ){
 			addError("Bad For", "No Factory class defined for tag "+source);
 			return result;

@@ -17,27 +17,30 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
-/** Interface for UsageRecord {@link PropertyContainerParseTarget}.
+/** Interface extending  {@link PropertyContainerParseTarget} for parting Usage records.
  * Usage records are normally parsed once with duplicate values being ignored.
  * @author spb
+ * @see AccountingUpdater
+ * @param <R> type of intermediate record.
  *
- * @param <T>
  */
-public interface UsageRecordParseTarget<T extends UsageRecordFactory.Use,R> extends PropertyContainerParseTarget<T,R>{
+public interface UsageRecordParseTarget<R> extends PropertyContainerParseTarget<R>{
 
 	/** find a record in the database that is a previous version of the current line.
 	 * 
-	 * @param r Uncommitted AccountingRecord
+	 * @param r result of parse
 	 * @return Old AccountingRecord or null if not found
 	 * @throws Exception 
 	 */
-	public abstract T findDuplicate(T r) throws  Exception;
+	public abstract ExpressionTargetContainer findDuplicate(PropertyContainer r) throws  Exception;
 
+	
 
 //	/** Generate a unique ID string for a record that is compatible with
 //	 * the {@link #findDuplicate(uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use)} method.
@@ -52,14 +55,14 @@ public interface UsageRecordParseTarget<T extends UsageRecordFactory.Use,R> exte
 	 * @param r
 	 * @return boolean
 	 */
-	public abstract boolean isComplete(T r);
+	public abstract boolean isComplete(ExpressionTargetContainer r);
 
 	/** Delete an existing Record including any required side-effects
 	 * @param old_record
 	 * @throws Exception
 	 * @throws DataFault
 	 */
-	public abstract void deleteRecord(T old_record) throws Exception, DataFault;
+	public abstract void deleteRecord(ExpressionTargetContainer old_record) throws Exception, DataFault;
 
 	/** Commit a new record also apply any required side-effects
 	 * As the record may only contain a sub-set of the known properties
@@ -69,7 +72,7 @@ public interface UsageRecordParseTarget<T extends UsageRecordFactory.Use,R> exte
 	 * @return true if record was complete
 	 * @throws DataFault
 	 */
-	public abstract boolean commitRecord(PropertyContainer map, T record)
+	public abstract boolean commitRecord(PropertyContainer map, ExpressionTargetContainer record)
 			throws DataFault;
 
 	/** Perform a full update of an existing record. This includes applying
@@ -81,7 +84,7 @@ public interface UsageRecordParseTarget<T extends UsageRecordFactory.Use,R> exte
 	 * @throws DataFault
 	 * @throws Exception 
 	 */
-	public abstract boolean updateRecord(DerivedPropertyMap map, T record)
+	public abstract boolean updateRecord(DerivedPropertyMap map, ExpressionTargetContainer record)
 			throws DataFault, Exception;
 	/** Create an uncommitted DB record from the property map.
 	 * 
@@ -91,7 +94,7 @@ public interface UsageRecordParseTarget<T extends UsageRecordFactory.Use,R> exte
 	 * @throws InvalidPropertyException
 	 * @throws AccountingParseException
 	 */
-	public abstract T prepareRecord(DerivedPropertyMap map) throws DataFault,
+	public abstract ExpressionTargetContainer prepareRecord(DerivedPropertyMap map) throws DataFault,
 			InvalidPropertyException, AccountingParseException;
 	
 	/** Should replacement of the existing record with new values be allowed.
@@ -103,6 +106,6 @@ public interface UsageRecordParseTarget<T extends UsageRecordFactory.Use,R> exte
 	 * @param record existing record
 	 * @return boolean
 	 */
-	public abstract boolean allowReplace(DerivedPropertyMap map, T record);
+	public abstract boolean allowReplace(DerivedPropertyMap map, ExpressionTargetContainer record);
 
 }

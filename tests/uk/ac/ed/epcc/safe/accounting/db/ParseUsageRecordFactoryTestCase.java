@@ -21,25 +21,25 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.db.AccessorMap.ExpressionTargetProxy;
+import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
+import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
-import uk.ac.ed.epcc.webapp.content.XMLPrinter;
-import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
-import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.model.data.Dumper;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
-import uk.ac.ed.epcc.webapp.model.data.XMLDataUtils;
-import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
-public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecordFactory<R,I>,R extends UsageRecordFactory.Use,I>
+public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFactory<R>,R extends UsageRecordFactory.Use,I>
 		extends UsageRecordFactoryTestCase<F,R> {
 	
 	
@@ -52,6 +52,21 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		return "";
 	}
 
+	public final PlugInOwner<I> getPluginOwner() {
+		F factory = getFactory();
+		if( factory instanceof PlugInOwner) {
+			return (PlugInOwner<I>) factory;
+		}
+		return factory.getComposite(PropertyContainerParseTargetComposite.class).getPlugInOwner();
+	}
+	
+	public final UsageRecordParseTarget<I> getParseTarget(){
+		F factory = getFactory();
+		if( factory instanceof UsageRecordParseTarget) {
+			return (UsageRecordParseTarget<I>) factory;
+		}
+		return (UsageRecordParseTarget<I>) factory.getComposite(PropertyContainerParseTargetComposite.class);
+	}
 	public abstract PropertyMap getDefaults();
 
 	
@@ -59,7 +74,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 	public Set getIgnore() {
 		Set res = new HashSet();
 		res.add(UsageRecordFactory.INSERTED_TIMESTAMP);
-		res.add(ParseUsageRecordFactory.TEXT);
+		res.add(UsageRecordParseTargetPlugIn.TEXT);
 		return res;
 	}
 
@@ -129,11 +144,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 	}
 	@Test
 	public void testGetParser() {
-		ParseUsageRecordFactory<R,I> fac = getFactory();
-		if (!fac.isValid()) {
-			return;
-		}
-		PropertyContainerParser<I> p = fac.getParser();
+		PropertyContainerParser<I> p = getPluginOwner().getParser();
 
 		assertNotNull(p);
 
@@ -148,18 +159,19 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 
 	@Test
 	public void testParser() throws Exception {
-		ParseUsageRecordFactory<R,I> fac = getFactory();
+		UsageRecordFactory<R> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
 		}
-		PropertyContainerParser<I> parser = fac.getParser();
+		PlugInOwner<I> owner = getPluginOwner();
+		PropertyContainerParser<I> parser = owner.getParser();
 		PropExpressionMap dmap = new PropExpressionMap();
 		dmap = parser.getDerivedProperties(dmap);
-		for(PropertyContainerPolicy pol : fac.getPolicies()){
+		for(PropertyContainerPolicy pol : owner.getPolicies()){
 			dmap = pol.getDerivedProperties(dmap);
 		}
 		TableSpecification spec = parser.modifyDefaultTableSpecification(ctx,new TableSpecification(),dmap,fac.getTag());
-		for(PropertyContainerPolicy pol : fac.getPolicies()){
+		for(PropertyContainerPolicy pol : owner.getPolicies()){
 			pol.modifyDefaultTableSpecification(ctx,spec,dmap,fac.getTag());
 		}
 		//assert(spec != null);
@@ -177,7 +189,8 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		meta.addDerived(expr);
 		Iterator<I> lines = parser.splitRecords(updateText);
 		
-		fac.startParse(meta);
+		UsageRecordParseTarget<I> target = getParseTarget();
+		target.startParse(meta);
 
 		Set ignore = getIgnore();
 
@@ -191,12 +204,13 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 				if (defaults != null) {
 					defaults.setContainer(map);
 				}
-				if (fac.parse(map, current_line)) {
+				if (target.parse(map, current_line)) {
 
 					R record = fac.makeBDO();
-					map.setContainer(record);
+					ExpressionTargetContainer proxy = fac.getExpressionTarget(record);
+					map.setContainer(proxy);
 
-					Number runtime = record.getProperty(StandardProperties.RUNTIME_PROP, Long
+					Number runtime = proxy.getProperty(StandardProperties.RUNTIME_PROP, Long
 							.valueOf(0L));
 					assertNotNull(runtime);
 					Date begin = record.getStart();
@@ -206,7 +220,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 						assertEquals("Runtime check", end.getTime() - begin.getTime(),
 								runtime.longValue());
 					}
-					R old = (R) fac.findDuplicate(record);
+					ExpressionTargetContainer old =  target.findDuplicate(proxy);
 
 					/*
 					 * If there is an identical record already in the database, make sure
@@ -214,12 +228,19 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 					 * parsed everything correctly
 					 */
 					if (old != null) {
+						Use u = null;
+						if( old instanceof Use) {
+							u = (Use) old;
+						}else if( old instanceof AccessorMap.ExpressionTargetProxy) {
+							u = (Use) ((ExpressionTargetProxy)old).getRecord();
+						}
+						assertNotNull("DataObject not found", u);
 						//System.out.println("Found old record");
 						// System.out.println("Parser Charge "+record.getProperty(SafePolicy.SU_PROP,0L)+" "+old.getProperty(SafePolicy.SU_PROP,0L));
 						// assertEquals("Charge mismatch ",old.getProperty(SafePolicy.SU_PROP,0L).longValue(),
 						// record.getProperty(SafePolicy.SU_PROP,0L).longValue());
 						// assertEquals("Raw mis-match",old.getProperty(SafePolicy.RAW_SU_PROP,0L).longValue(),record.getProperty(SafePolicy.RAW_SU_PROP,0L).longValue());
-						Map old_map = old.getRecord().getValues();
+						Map old_map = u.getRecord().getValues();
 						assertTrue(old_map.size() > 0);
 						// old_map.remove(UsageRecordFactory.INSERTED_TIMESTAMP);
 						old_map.remove("Text");
@@ -229,7 +250,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 						assertTrue(record_map.size() > 0);
 						// assertEquals("map size",record_map.size(), old_map.size());
 
-						boolean incremental = fac.getParser() instanceof IncrementalPropertyContainerParser;
+						boolean incremental = target.getParser() instanceof IncrementalPropertyContainerParser;
 						for (Object key : old_map.keySet()) {
 							if (old_map.get(key) != null)
 								assertTrue("Quant " + key.toString(), record_map
@@ -272,7 +293,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 			}
 		}
 
-		String errors = fac.endParse().toString();
+		String errors = target.endParse().toString();
 		if(errors.length() > 0)
 			System.err.println(errors);
 	}
@@ -286,22 +307,22 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 			return;
 		}
 
-		ParseUsageRecordFactory<R,I> fac = getFactory();
+		UsageRecordFactory<R> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
 		}
-
+		UsageRecordParseTarget<I> target = getParseTarget();
 		Collection<String> sucessfulRecords = new ArrayList<String>();
 		ErrorSet failedRecords = new ErrorSet();
 		ErrorSet errors = new ErrorSet();
 
 		PropertyMap defaults = getDefaults();
-		PropertyContainerParser<I> parser = fac.getParser();
+		PropertyContainerParser<I> parser = target.getParser();
 		Iterator<I> lines = parser.splitRecords(updateText);
 		
 		
 		try {
-			fac.startParse(defaults);
+			target.startParse(defaults);
 		} catch (Exception e) {
 			errors.add("start parse error", e.getMessage(), e);
 			this.processBadParseErrors(sucessfulRecords, failedRecords, errors);
@@ -321,7 +342,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 				defaults.setContainer(map);
 			}
 			try {
-				fac.parse(map, rec);
+				target.parse(map, rec);
 				sucessfulRecords.add(current_line);
 			} catch (Exception e) {
 				/*
@@ -333,7 +354,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 		}
 
 		try {
-			System.out.println(fac.endParse());
+			System.out.println(target.endParse());
 		} catch (Exception e) {
 			errors.add("end parse error", e.getMessage(), e);
 		}
@@ -347,7 +368,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 @Test
 	public void testReceiveAccounting() throws Exception {
 		String updateText = getUpdateText();
-		ParseUsageRecordFactory<R,I> fac = getFactory();
+		UsageRecordFactory<R> fac = getFactory();
 		assertNotNull(fac);
 		if (!fac.isValid()) {
 			return;
@@ -368,23 +389,23 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
     }
 
 public void receiveAccounting(String updateText) {
-	ParseUsageRecordFactory<R,I> fac = getFactory();
+	UsageRecordFactory<R> fac = getFactory();
 	if (!fac.isValid()) {
 		return;
 	}
 	
 	//System.out.println(updateText);
-	String result = new AccountingUpdater<R,I>(ctx,getDefaults(),fac).receiveAccountingData( updateText, false,false,false);
+	String result = new AccountingUpdater<R,I>(ctx,getDefaults(),getParseTarget()).receiveAccountingData( updateText, false,false,false);
 	
 	Assert.assertFalse(result.contains("Error in accounting parse"));
 }
 @Test
 	public void testGetPolicies() {
-		ParseUsageRecordFactory<R,I> fac = getFactory();
+		UsageRecordFactory<R> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
 		}
-		Set<PropertyContainerPolicy> s = fac.getPolicies();
+		Set<PropertyContainerPolicy> s = getPluginOwner().getPolicies();
 
 		assertNotNull(s);
 
@@ -395,7 +416,8 @@ public void receiveAccounting(String updateText) {
 		if (!fac.isValid()) {
 			return;
 		}
-		AccessorMap map = fac.getAccessorMap();
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(fac);
+		AccessorMap map = etf.getAccessorMap();
 
 		assertNotNull(map);
 

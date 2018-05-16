@@ -18,7 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.db.transitions;
 
 
 
-import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.update.ConfigPlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.factory.FormCreator;
 import uk.ac.ed.epcc.webapp.forms.inputs.ClassInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
+import uk.ac.ed.epcc.webapp.jdbc.table.DataBaseHandlerService;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableListResult;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -54,7 +55,7 @@ public class AccountingTableCreator implements FormCreator,Contexed{
 	}
 	public void buildCreationForm(String type_name,Form f) throws Exception {
 		f.addInput(TABLE, "Name of table to create", new NewTableInput(conn));
-		ClassInput<ParseUsageRecordFactory> handler_input = new ClassInput<ParseUsageRecordFactory>(conn, ParseUsageRecordFactory.class);
+		ClassInput<UsageRecordFactory> handler_input = new ClassInput<UsageRecordFactory>(conn, UsageRecordFactory.class);
 		handler_input.setValue(conn.getInitParameter("accounting_handler.default", "ConfigUsageRecordFactory"));
 		f.addInput(HANDLER,"Table handler type",handler_input);
 		f.addInput(PARSER,"Parser type",new ClassInput<PropertyContainerParser>(conn, PropertyContainerParser.class));
@@ -87,7 +88,10 @@ public class AccountingTableCreator implements FormCreator,Contexed{
 					PropertyContainerParser parser = conn.makeObject(input.getItem());
 					TableSpecification spec = parser.modifyDefaultTableSpecification(conn,new TableSpecification(),null,table_name);
 					if( spec != null ){
-						ParseUsageRecordFactory.bootstrapTable(conn, table_name, spec);
+						DataBaseHandlerService dbh = conn.getService(DataBaseHandlerService.class);
+						if( dbh != null ){
+							dbh.createTable(table_name, spec);
+						}
 					}
 				}
 				return new TableListResult();

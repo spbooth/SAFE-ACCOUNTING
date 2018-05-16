@@ -80,9 +80,11 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.time.Period;
 
-/** Common {@link PropExpression} logic that can be incorporated (by composition) into factory classes for {@link DataObject}s that implement {@link ExpressionTarget}.
+/** Common {@link PropExpression} logic that can be incorporated (by composition) into factory classes for {@link DataObject}s to support {@link PropExpression}s
  * 
  * <p>
  * Contains maps from properties to the {@link Accessor}/{@link SQLValue}/{@link SQLExpression} needed to extract 
@@ -107,13 +109,13 @@ import uk.ac.ed.epcc.webapp.time.Period;
  * 
  * 
  * @author spb
- * @param <X> type of DataObject
+ * @param <X> type of {@link ExpressionTarget}
  *
  * 
  */
 
 
-public abstract class AccessorMap<X extends ExpressionTarget> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
+public abstract class AccessorMap<X> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
 	public static final Feature EVALUATE_CACHE_FEATURE = new Feature("evaluate.cache",true,"cache expression evaluations in ExpressionTargets");
 	public static final Feature FORCE_SQLVALUE_FEATURE = new Feature("accounting.force_sqlvalue",false,"Use SQLValues in preference to SQLExpressions");
 	protected final Class<? super X> target;
@@ -162,6 +164,7 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
 		}
 		public ExpressionTargetProxy(AppContext conn,X r){
 			this(conn,r,EVALUATE_CACHE_FEATURE.isEnabled(conn));
+			assert(r != null);
 			assert(conn != null);
 		}
 		@SuppressWarnings("unchecked")
@@ -312,7 +315,23 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
 			cache=null;
 			match_visitor=null;
 		}
-		
+		@Override
+		public boolean commit() throws DataFault {
+			if( record instanceof DataObject) {
+				return ((DataObject)record).commit();
+			}
+			throw new ConsistencyError("Can only commit DataObjects");
+		}
+		@Override
+		public boolean delete() throws DataFault {
+			if( record instanceof DataObject) {
+				return ((DataObject)record).delete();
+			}
+			throw new ConsistencyError("Can only delete DataObjects");
+		}
+		public X getRecord() {
+			return record;
+		}
 	}
 	public class SQLExpressionVisitor extends CreateSQLExpressionPropExpressionVisitor{
 		public SQLExpressionVisitor(AppContext c) {
@@ -639,8 +658,12 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
 		return defined;
 	}
 	public final ExpressionTargetContainer getProxy(X record){
+		if( record == null ) {
+			return null;
+		}
 		return new ExpressionTargetProxy(getContext(),record);
 	}
+	
 	/** Get the set of defines properties whose resutls may be assigned to the
 	 * specified target type
 	 * 
@@ -952,7 +975,7 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
     	}
     	
     	if( resolves(expr,false)){
-    		return new ExpressionAcceptFilter<X, I>(target,expr, match, data);
+    		return new ExpressionAcceptFilter<X, I>(target,this,expr, match, data);
     	}
     	// we might still have a derived property but cannot make a SQLfilter
 		
@@ -1000,7 +1023,7 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
 		} catch (Exception e) {
 		
 		}
-		return new ExpressionAcceptMatchFilter<X,R>(target,left, match,right);
+		return new ExpressionAcceptMatchFilter<X,R>(target,this,left, match,right);
 	}
     @SuppressWarnings("unchecked")
 	public final <I> BaseFilter<X> getNullFilter(PropExpression<I> expr,
@@ -1049,7 +1072,7 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
     	// could still have a derived property using accessors but cannot make these into
     	// an SQLFilter
     	if(resolves(expr,false)){
-    		return new ExpressionAcceptNullFilter<X, I>(target,expr, is_null);
+    		return new ExpressionAcceptNullFilter<X, I>(target,this,expr, is_null);
     	}
 
 
@@ -1077,7 +1100,7 @@ public abstract class AccessorMap<X extends ExpressionTarget> implements Contexe
 	 * @return BaseFilter
 	 * @throws CannotFilterException
 	 */
-	public final BaseFilter<X> getPeriodFilter(Period period,
+	public BaseFilter<X> getPeriodFilter(Period period,
 			PropExpression<Date> start_prop,
 			PropExpression<Date> end_prop, OverlapType type,long cutoff)
 			throws CannotFilterException {

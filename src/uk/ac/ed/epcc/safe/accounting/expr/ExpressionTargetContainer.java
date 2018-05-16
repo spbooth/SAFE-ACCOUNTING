@@ -20,9 +20,12 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 
 /** Interface for records targeted by the report generator.
+ * These may be wrapper object that proxy to the real underlying record.
  * 
  * This is a simple combination of {@link PropertyContainer} and {@link ExpressionTarget}.
  * so all {@link DataObjectPropertyContainer}s implement it.
@@ -31,6 +34,15 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
  *
  */
 public interface ExpressionTargetContainer extends PropertyContainer, ExpressionTarget{
-	
-    
+	/** flush changes to the underlying database.
+	 * @return true if changed
+	 * 
+	 * @throws DataFault
+	 */
+    public boolean commit() throws DataFault;
+    /** remove the underlying database record.
+     * 
+     * @throws DataFault
+     */
+    public boolean delete() throws DataFault;
 }

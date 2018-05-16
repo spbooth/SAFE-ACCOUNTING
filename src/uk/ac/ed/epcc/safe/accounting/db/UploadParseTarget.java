@@ -18,24 +18,26 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.util.Map;
 
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 
 
 /** Interface for Parse targets that represent mutable data.
  * Existing entries are updated each time they are parsed.
  * 
+ *  The parse methods always return an {@link ExpressionTargetContainer}
+ *  this interface may be directly implemented by the record type or it may
+ *  be a proxy-wrapper around the type that implements the interface
  * @author spb
- *
-  * @param <T> Type of record parsed to
+ * @see UploadParseTargetUpdater
  * @param <R> Type of intermediate record (type input is split into) for parse
  */
-public interface UploadParseTarget<T extends DataObject & PropertyContainer,R> extends
-		PropertyContainerParseTarget<T,R> {
-	/** Returns an uncommitted object updated to match the input container.
-	 * This is either a new object or an existing object selected using the
+public interface UploadParseTarget<R> extends
+		PropertyContainerParseTarget<R> {
+	/** Returns an uncommitted {@link ExpressionTargetContainer} to match the input container.
+	 * This is either a new object/proxy or an existing object/proxy selected using the
 	 * key properties.
 	 * 
 	 * @param value
@@ -43,7 +45,7 @@ public interface UploadParseTarget<T extends DataObject & PropertyContainer,R> e
 	 * @throws AccountingParseException 
 	 * 
 	 */
-	public T make(PropertyContainer value) throws AccountingParseException;
+	public ExpressionTargetContainer make(PropertyContainer value) throws AccountingParseException;
 	
 	/** extract global properties from post parameters.
 	 * 

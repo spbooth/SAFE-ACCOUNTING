@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
@@ -46,7 +46,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
  */
 
 
-public class ExpressionTargetTableMaker<E extends ExpressionTarget,F extends ExpressionTargetGenerator<E>>{
+public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>>{
 	private AppContext c;
 	private F up;
 	private Map<String,PropExpression> props;
@@ -117,21 +117,22 @@ public class ExpressionTargetTableMaker<E extends ExpressionTarget,F extends Exp
 	   while(it.hasNext()){
 		   E record = it.next();
 		   Object key = makeKey(record);
+		   ExpressionTargetContainer et = up.getExpressionTarget(record);
 		   for(String lab : labels){
 			   PropExpression t = props.get(lab);
 			   try{
-			   Object val = record.evaluateExpression(t);
-			   if( val != null){
-				res.put(lab, key,val );
-			   }
+				   Object val = et.evaluateExpression(t);
+				   if( val != null){
+					   res.put(lab, key,val );
+				   }
 			   }catch(InvalidPropertyException e){
-				   
+
 			   }
 		   }
 		   if( warning != null ){
 			   try{
 				   boolean set =false;
-				   Object val = record.evaluateExpression(warning);
+				   Object val = et.evaluateExpression(warning);
 				   if( val != null){
 					   if( val instanceof Boolean){
 						   set =((Boolean)val).booleanValue();
@@ -147,6 +148,9 @@ public class ExpressionTargetTableMaker<E extends ExpressionTarget,F extends Exp
 			   }catch(Throwable t){
 				   c.getService(LoggerService.class).getLogger(getClass()).error("Error evaluating warning",t);
 			   }
+		   }
+		   if( key != et) {
+			   et.release();
 		   }
 	   }
 	   for(String lab : labels){

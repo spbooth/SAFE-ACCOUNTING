@@ -22,13 +22,14 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.db.PropertyUpdater;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -48,7 +49,6 @@ import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
-import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
@@ -58,22 +58,18 @@ import uk.ac.ed.epcc.webapp.forms.transition.ExtraFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.table.AddClassificationReferenceTransition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableStructureTransitionTarget;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionTarget;
-import uk.ac.ed.epcc.webapp.jdbc.table.TransitionSource;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.NameFinder;
 import uk.ac.ed.epcc.webapp.model.data.DataCache;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
-import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Add Classification tables to raw usage data under the control of config parameters.
@@ -93,7 +89,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class ClassificationPolicy extends BasePolicy implements Contexed,TransitionSource<TableTransitionTarget> , SummaryProvider{
+public class ClassificationPolicy extends BasePolicy implements Contexed,TableTransitionContributor , SummaryProvider{
 	private static final String CLASSIFICATION = "classification.";
 	private MultiFinder result_finder = new MultiFinder();
 	private Map<PropertyTag<String>,ReferenceTag> tagmap = new HashMap<PropertyTag<String>,ReferenceTag>();
@@ -269,8 +265,8 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,Transit
 		return previous;
 	}
 	public final class AddClassifierAction extends FormAction {
-		private TableTransitionTarget target;
-		public AddClassifierAction(TableTransitionTarget target){
+		private DataObjectFactory target;
+		public AddClassifierAction(DataObjectFactory target){
 			this.target=target;
 		}
 		@SuppressWarnings("unchecked")
@@ -286,12 +282,12 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,Transit
 			return new ViewTableResult(target);
 		}
 	}
-	public class AddClassifierTransition implements ExtraFormTransition<TableTransitionTarget>{
+	public class AddClassifierTransition implements ExtraFormTransition<DataObjectFactory>{
 
 		
 
 		@SuppressWarnings("unchecked")
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext c) throws TransitionException {
 			PropertyTargetFactory fac = (PropertyTargetFactory) target;
 			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
@@ -302,7 +298,7 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,Transit
 			f.addInput("Name", "String to classify", name_input);
 			SetInput<ReferenceTag> ref_input = new SetInput<ReferenceTag>();
 			for(ReferenceTag t : available_refs){
-				if( fac.hasProperty(t) && ! target.getTableTransitionID().equals(t.getTable())){
+				if( fac.hasProperty(t) && ! target.getTag().equals(t.getTable())){
 					// Only allow supported references.
 					ref_input.addChoice(t);
 				}
@@ -312,12 +308,12 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,Transit
 			
 		}
 
-		public FormResult getResult(TransitionVisitor<TableTransitionTarget> vis) throws TransitionException {
+		public FormResult getResult(TransitionVisitor<DataObjectFactory> vis) throws TransitionException {
 			return vis.doFormTransition(this);
 		}
 
 		public <X extends ContentBuilder> X getExtraHtml(X cb,
-				SessionService<?> op, TableTransitionTarget target) {
+				SessionService<?> op, DataObjectFactory target) {
 			cb.addText("The reference field generated by the classification has to " +
 					"exist before adding the classification. You and can add additional references from the table edit page.");
 			return cb;
@@ -325,8 +321,8 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,Transit
 		
 	}
 	public final class DeleteClassifierAction extends FormAction {
-		private TableTransitionTarget target;
-		public DeleteClassifierAction(TableTransitionTarget target){
+		private DataObjectFactory target;
+		public DeleteClassifierAction(DataObjectFactory target){
 			this.target=target;
 		}
 @SuppressWarnings("unchecked")
@@ -340,11 +336,11 @@ public FormResult action(Form f)
 	return new ViewTableResult(target);
 }
 }
-	public class DeleteClassifierTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class DeleteClassifierTransition extends AbstractFormTransition<DataObjectFactory>{
 
 	
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext c) throws TransitionException {
 			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
 			for(PropertyTag<String> t : tagmap.keySet()){
@@ -356,8 +352,8 @@ public FormResult action(Form f)
 		}
 	}
 	public final class RegenerateClassifierAction  extends FormAction{
-		private TableTransitionTarget target;
-		public RegenerateClassifierAction(TableTransitionTarget target){
+		private DataObjectFactory target;
+		public RegenerateClassifierAction(DataObjectFactory target){
 			this.target=target;
 		}
 
@@ -377,12 +373,13 @@ public FormResult action(Form f)
 		
 		
 	}
-	public class RegenerateClassifierTransition extends AbstractFormTransition<TableTransitionTarget>{
+	public class RegenerateClassifierTransition extends AbstractFormTransition<DataObjectFactory>{
 
-		public void buildForm(Form f, TableTransitionTarget target,
+		public void buildForm(Form f, DataObjectFactory target,
 				AppContext conn) throws TransitionException {
 			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
-			if( target instanceof DataObjectPropertyFactory){
+			ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(target);
+			if( etf != null){
 				
 				for(PropertyTag<String> t : tagmap.keySet()){
 					name_input.addChoice(t);
@@ -392,11 +389,11 @@ public FormResult action(Form f)
 			f.addAction("Regenerate", new RegenerateClassifierAction(target));	
 		}
 	}
-	public Map<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>> getTransitions() {
-		Map<TableTransitionKey<TableTransitionTarget>,Transition<TableTransitionTarget>> result = new HashMap<TableTransitionKey<TableTransitionTarget>, Transition<TableTransitionTarget>>();
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "AddClassifier"), new AddClassifierTransition());
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class, "RemoveClassifier"), new DeleteClassifierTransition());
-		result.put(new AdminOperationKey<TableTransitionTarget>(TableTransitionTarget.class,"RegenerateClassifier","Regenenerate classifications references"),new RegenerateClassifierTransition());
+	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+		result.put(new AdminOperationKey( "AddClassifier"), new AddClassifierTransition());
+		result.put(new AdminOperationKey( "RemoveClassifier"), new DeleteClassifierTransition());
+		result.put(new AdminOperationKey("RegenerateClassifier","Regenenerate classifications references"),new RegenerateClassifierTransition());
 		return result;
 	}
 	public void getTableTransitionSummary(ContentBuilder hb,
@@ -418,19 +415,20 @@ public FormResult action(Form f)
 		}
 	}
 	@SuppressWarnings("unchecked")
-	private void regenerate(PropertyTag<String> name) throws DataException,
-			DataFault, InvalidExpressionException, CannotFilterException, ParseException {
-		DataObjectPropertyFactory fac = getContext().makeObjectWithDefault(DataObjectPropertyFactory.class, null, table);
+	private void regenerate(PropertyTag<String> name) throws Exception {
+		DataObjectFactory fac = getContext().makeObjectWithDefault(DataObjectFactory.class, null, table);
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(fac);
+		PropertyUpdater updater = new PropertyUpdater<>(fac);
 		if( fac != null ){
 			
 				ReferenceTag ref = tagmap.get(name);
 				NameFinder<? extends DataObject> nameFinder = c.makeObject(NameFinder.class,ref.getTable());
-				Set<String> values = fac.getValues(name, null);
+				Set<String> values = etf.getValues(name, null);
 				
 				for(String s : values ){
 					DataObject o = nameFinder.makeFromString(s);
 					if( o != null ){
-						fac.update(ref,ref.makeReference(o),new SelectClause<String>(name, s));
+						updater.update(ref,ref.makeReference(o),new SelectClause<String>(name, s));
 					}
 				}
 			
