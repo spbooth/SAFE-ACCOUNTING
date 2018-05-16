@@ -68,10 +68,6 @@ extends HistoryFactory<T,H> {
 		public HistoryUse(PropertyTargetHistoryFactory<T,?,?> fac,Record res) {
 			super(fac, res);
 		}
-		@SuppressWarnings("unchecked")
-		PropertyTargetHistoryFactory<T,?,HistoryUse<T>> getFac(){
-			return (PropertyTargetHistoryFactory<T, ?, HistoryUse<T>>) history_factory;
-		}
 
 		
 		public Date getEnd() {

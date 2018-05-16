@@ -50,10 +50,6 @@ public abstract static class PropertyTargetLink<L extends DataObject, R extends 
 			super(man, res);
 			
 		}
-		@SuppressWarnings("unchecked")
-		protected AccountingLinkManager<PropertyTargetLink<L,R>, L, R> getFac(){
-			return (AccountingLinkManager<PropertyTargetLink<L, R>, L, R>) getLinkManager();
-		}
 	}
 
 
