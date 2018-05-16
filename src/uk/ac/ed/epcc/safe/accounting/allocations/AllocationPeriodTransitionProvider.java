@@ -20,7 +20,6 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
-import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ShortTextPeriodFormatter;
