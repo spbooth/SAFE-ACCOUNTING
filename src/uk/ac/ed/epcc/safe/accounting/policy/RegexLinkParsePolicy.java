@@ -5,7 +5,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.db.RegexpTarget;
 import uk.ac.ed.epcc.safe.accounting.db.RegexpTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
@@ -34,6 +33,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;

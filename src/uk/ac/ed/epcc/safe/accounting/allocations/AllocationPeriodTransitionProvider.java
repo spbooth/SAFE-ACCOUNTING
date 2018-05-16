@@ -18,8 +18,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory;
+import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ShortTextPeriodFormatter;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
@@ -49,6 +52,7 @@ import uk.ac.ed.epcc.webapp.forms.transition.IndexTransitionFactory;
 import uk.ac.ed.epcc.webapp.forms.transition.PathTransitionProvider;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryCreator;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
+import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
@@ -65,7 +69,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * @param <K> transition key for {@link AllocationManager}
  *
  */
-public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
+public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,K> extends
 		AbstractViewPathTransitionProvider<AllocationPeriod, PeriodKey>implements PathTransitionProvider<PeriodKey,AllocationPeriod>,
 		IndexTransitionFactory<PeriodKey, AllocationPeriod>{
 
@@ -277,12 +281,14 @@ public class AllocationPeriodTransitionProvider<T extends Allocation,K> extends
 	 * @throws Exception
 	 */
 	public Iterator<T> getIndexIterator(AllocationPeriod target) throws Exception {
-		if( manager instanceof DataObjectPropertyFactory ){
+		ExpressionTargetFactory<T> etf = ExpressionCast.getExpressionTargetFactory(manager);
+		DataObjectFactory<T> fac = (DataObjectFactory<T>) manager;
+		if( etf != null ){
 			SessionService sess = getContext().getService(SessionService.class);
-			DataObjectPropertyFactory fac = (DataObjectPropertyFactory) manager;
-			AccessorMap map = fac.getAccessorMap();
+			
+			AccessorMap map = etf.getAccessorMap();
 			AndFilter fil = new AndFilter(fac.getTarget());
-			fil.addFilter(fac.getFilter(getSelector(target)));
+			fil.addFilter(getSelector(target).visit(new FilterSelectVisitor<>(etf)));
 			
 			// Now narrow selection using relationships
 			for(ReferenceTag ref : manager.getIndexProperties()){

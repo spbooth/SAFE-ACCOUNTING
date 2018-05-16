@@ -4,15 +4,11 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
-import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
-import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.ClassificationCreateContributor;
 import uk.ac.ed.epcc.webapp.model.ClassificationFactory;
@@ -24,39 +20,16 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
  * @param <T>
  * @param <R>
  */
-public class ClassificationUploadParseTargetPlugin<T extends Classification,R> extends UploadParseTargetPlugIn<T, R>
+public class ClassificationUploadParseTargetPlugin<T extends Classification,R> extends NameFinderUploadParseTargetPlugIn<T, R>
 		implements ClassificationCreateContributor<T> {
 	
-
-	private static final String MATCH_SUFFIX = ".match";
-	private PropertyTag<String> match_prop=null;
 	public ClassificationUploadParseTargetPlugin(ClassificationFactory<T> fac) {
 		super(fac);
 		
 	}
 
 	
-	@Override
-	public void customAccessors(AccessorMap<T> mapi2, MultiFinder finder, PropExpressionMap derived) {
-		super.customAccessors(mapi2, finder, derived);
-		ClassificationFactory<T> fac = (ClassificationFactory<T>) getFactory();
-		AppContext c = getContext();
-		match_prop = (PropertyTag<String>) finder.find(String.class,c.getInitParameter(fac.getConfigTag()+MATCH_SUFFIX,Classification.NAME));
-		if( match_prop == null ){
-			getLogger().error("No match property defined "+fac.getTag());
-		}
-		
-		if( match_prop != null && ! match_prop.equals(AccountingClassificationFactory.NAME_PROP)){
-			try {
-				derived.put(AccountingClassificationFactory.NAME_PROP, match_prop);
-			} catch (PropertyCastException e) {
-				getLogger().error("Error adding derived mapping for name",e);
-			}
-		}
-	}
-
-
-
+	
 	@Override
 	public ExpressionTargetContainer make(PropertyContainer value) throws AccountingParseException {
 		ExpressionTargetFactory<T> etf = getExpressionTargetFactory();
@@ -64,10 +37,11 @@ public class ClassificationUploadParseTargetPlugin<T extends Classification,R> e
 		if( etf == null ) {
 			throw new AccountingParseException("ClassificationUploadParseTargetPlugin installed without ExpressionTargetFactory");
 		}
-		if( match_prop == null ){
+		PropertyTag<String> match = getMatchProp();
+		if( match == null ){
 			throw new AccountingParseException("No match property specified for "+fac.getTag());
 		}
-		String name = value.getProperty(match_prop, null);
+		String name = value.getProperty(match, null);
 	
 		if( name == null ){
 			throw new AccountingParseException("No name parsed");
@@ -75,7 +49,7 @@ public class ClassificationUploadParseTargetPlugin<T extends Classification,R> e
 
 
 		try {
-			// we don't use makeByName here as it also applies the policies.
+			// we don't use makeFromString here as it also applies the policies.
 			T record = fac.findFromString(name);
 			if( record == null ){
 				record = fac.makeBDO();
@@ -97,10 +71,11 @@ public class ClassificationUploadParseTargetPlugin<T extends Classification,R> e
 		ExpressionTargetContainer container = etf.getExpressionTarget(c);
 		// apply policies in case they apply actions based on the name.
 		Set<PropertyContainerPolicy> pol = getPlugInOwner().getPolicies();
-		if(match_prop != null && pol != null && pol.size() > 0){
+		PropertyTag<String> match = getMatchProp();
+		if(match != null && pol != null && pol.size() > 0){
 			try{
 				PropertyMap map = new PropertyMap();
-				map.setProperty(match_prop, name);
+				map.setProperty(match, name);
 				for(PropertyContainerPolicy p : pol){
 					p.startParse(null);
 				}
@@ -116,9 +91,5 @@ public class ClassificationUploadParseTargetPlugin<T extends Classification,R> e
 			}
 		}
 	}
-	@Override
-	public void addConfigParameters(Set<String> params) {
-		super.addConfigParameters(params);
-		params.add(getFactory().getTag()+MATCH_SUFFIX);
-	}
+	
 }

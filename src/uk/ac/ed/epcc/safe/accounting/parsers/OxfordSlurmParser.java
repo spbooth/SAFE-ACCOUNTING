@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
@@ -27,6 +26,7 @@ import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
 import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 /** Simple field based parser of the SLURM accounting output
  * 

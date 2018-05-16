@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.policy.LinkPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -157,7 +158,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 							map.setProperty(GLOBUS_JOBID, job_id);
 							String jobmanager = jobid_matcher.group(2);
 							map.setProperty(GLOBUS_MANAGER,jobmanager );
-							UsageRecordFactory<?> fac = manager_factories.get(jobmanager);
+							UsageRecordFactory fac = manager_factories.get(jobmanager);
 							if( fac == null ){
 								log.debug(jobmanager+" not a tracked factory");
 								// not a tracked factory
@@ -170,7 +171,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 								sel.add(new SelectClause<Date>(BatchParser.SUBMITTED_PROP, MatchCondition.LT, new Date(point+grace_millis)));
 								UsageRecordFactory.Use master;
 								try {
-									master = fac.find(sel);
+									master = (Use) fac.find(fac.getFilter(sel));
 								} catch (Exception e) {
 									throw new AccountingParseException("Error finding master", e);
 								}

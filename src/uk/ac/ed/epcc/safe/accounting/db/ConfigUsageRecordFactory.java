@@ -30,7 +30,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  */
 
 
-public class ConfigUsageRecordFactory<T extends UsageRecordFactory.Use,R> extends ParseUsageRecordFactory<T,R> {
+public class ConfigUsageRecordFactory<T extends UsageRecordFactory.Use,R> extends UsageRecordFactory<T> {
 	public final ConfigUsageRecordParseTargetPlugIn<T, R> parse_plugin = new ConfigUsageRecordParseTargetPlugIn<T,R>(this);
 
 	public ConfigUsageRecordFactory(AppContext ctx, String table){

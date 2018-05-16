@@ -26,7 +26,6 @@ import uk.ac.ed.epcc.safe.accounting.db.AccountingClassification;
 import uk.ac.ed.epcc.safe.accounting.db.AccountingClassificationFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
-import uk.ac.ed.epcc.safe.accounting.model.PropertyPerson;
 import uk.ac.ed.epcc.safe.accounting.model.PropertyPersonFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -40,11 +39,12 @@ import uk.ac.ed.epcc.webapp.model.ClassificationFactory;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.relationship.Relationship;
 import uk.ac.ed.epcc.webapp.model.relationship.Relationship.Link;
+import uk.ac.ed.epcc.webapp.session.AppUser;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 
-public class  DEISARolesUploadParser<P extends PropertyPerson> implements UploadParser, Contexed {
+public class  DEISARolesUploadParser<P extends AppUser> implements UploadParser, Contexed {
 	
 	
 	private final String mGlobalSiteRole="SiteAll";
@@ -127,7 +127,7 @@ public class  DEISARolesUploadParser<P extends PropertyPerson> implements Upload
     {
     	ExpressionTargetFactory<P> pETF = ExpressionCast.getExpressionTargetFactory(mPersonFactory);
     	P p = mPersonFactory.makeFromString(DN);
-    	
+    	ExpressionTargetContainer person_proxy = pETF.getExpressionTarget(p);
     	
     	
     	//Classification user = mUserFactory.findFromString(userName);
@@ -160,8 +160,8 @@ public class  DEISARolesUploadParser<P extends PropertyPerson> implements Upload
     		Matcher m = pat.matcher(userName);
     		if( m.matches()){
     			
-    			p.setProperty(person_site_tag, mSiteFactory.makeReference(raw_site));
-                p.commit();
+    			person_proxy.setProperty(person_site_tag, mSiteFactory.makeReference(raw_site));
+                person_proxy.commit();
                 user_proxy.setProperty(user_site_tag, mSiteFactory.makeReference(raw_site));
                 user_proxy.commit();
                 break;

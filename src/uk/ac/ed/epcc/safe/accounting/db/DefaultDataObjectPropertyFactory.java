@@ -26,6 +26,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 /** Default implementation of the DataObjectPropertyFactory logic.
@@ -37,7 +38,7 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
  * @param <T>
  */
 public abstract  class DefaultDataObjectPropertyFactory<T extends DataObjectPropertyContainer> extends
-		DataObjectPropertyFactory<T> implements  AccessorContributer<T>{
+		DataObjectFactory<T> implements  AccessorContributer<T>{
 	
 	
 
@@ -56,23 +57,7 @@ public abstract  class DefaultDataObjectPropertyFactory<T extends DataObjectProp
 	}
 	
 	
-	@Override
-	public final PropExpressionMap getDerivedProperties() {
-		return etf.getDerivedProperties();
-	}
-
-
-	@Override
-	public final PropertyFinder getFinder() {
-		return etf.getFinder();
-	}
-
-
-	@Override
-	public final RepositoryAccessorMap<T> getAccessorMap() {
-		return etf.getAccessorMap();
-	}
-
+	
 
 	
 	

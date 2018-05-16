@@ -38,6 +38,7 @@ public interface ExpressionTargetGenerator<T> extends PropertyTargetGenerator<T>
 	
 	/** Get an {@link ExpressionTarget} for the target object.
 	    * This could be the record itself or a wrapper object.
+	    * If passed null it should return null.
 	    * 
 	    * @param record
 	    * @return

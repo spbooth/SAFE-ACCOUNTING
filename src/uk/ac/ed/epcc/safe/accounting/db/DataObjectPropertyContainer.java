@@ -16,22 +16,17 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Set;
-
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
-import uk.ac.ed.epcc.safe.accounting.expr.Parser;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
-import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Owned;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
-import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
-/** Basic extension of DataObject to support properties
+/** Basic extension of DataObject to support properties directly.
+ * The factory still need to be able to generate an {@link ExpressionTargetFactory}
+ * either by implementing it directly or via a composite
  * 
  * 
  * @author spb
@@ -40,24 +35,28 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 
 public class DataObjectPropertyContainer extends DataObject implements  Owned{
-    private final DataObjectPropertyFactory<?> fac;
+    private final DataObjectFactory<?> fac;
     private ExpressionTargetContainer proxy=null; 
 	@SuppressWarnings("unchecked")
-	public DataObjectPropertyContainer(DataObjectPropertyFactory<?> fac,Record r) {
+	public DataObjectPropertyContainer(DataObjectFactory<?> fac,Record r) {
 		super(r);
 		this.fac=fac;
 	}
 	
 	@Override
-	public final DataObjectPropertyFactory getFactory() {
+	public final DataObjectFactory getFactory() {
 		return fac;
 	}
     public final ExpressionTargetContainer getProxy() {
     	if( proxy == null) {
-    		proxy = getFactory().getAccessorMap().getProxy(this);
+    		proxy = getExpressionTargetFactory().getAccessorMap().getProxy(this);
     	}
     	return proxy;
     }
+
+	public ExpressionTargetFactory getExpressionTargetFactory() {
+		return ExpressionCast.getExpressionTargetFactory(getFactory());
+	}
 
 
 }

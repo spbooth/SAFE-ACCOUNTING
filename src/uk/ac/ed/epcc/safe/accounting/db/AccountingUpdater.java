@@ -37,7 +37,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Class to import new accounting data and store it in a {@link UsageRecordFactory}
  * 
  * @author spb
- *
+ * @see UsageRecordParseTarget
  * @param <T>
  */
 

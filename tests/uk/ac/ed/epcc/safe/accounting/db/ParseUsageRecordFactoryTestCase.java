@@ -21,9 +21,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap.ExpressionTargetProxy;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -37,7 +39,7 @@ import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 
-public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecordFactory<R,I>,R extends UsageRecordFactory.Use,I>
+public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFactory<R>,R extends UsageRecordFactory.Use,I>
 		extends UsageRecordFactoryTestCase<F,R> {
 	
 	
@@ -142,10 +144,6 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 	}
 	@Test
 	public void testGetParser() {
-		ParseUsageRecordFactory<R,I> fac = getFactory();
-		if (!fac.isValid()) {
-			return;
-		}
 		PropertyContainerParser<I> p = getPluginOwner().getParser();
 
 		assertNotNull(p);
@@ -161,7 +159,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 
 	@Test
 	public void testParser() throws Exception {
-		ParseUsageRecordFactory<R,I> fac = getFactory();
+		UsageRecordFactory<R> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
 		}
@@ -309,7 +307,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 			return;
 		}
 
-		ParseUsageRecordFactory<R,I> fac = getFactory();
+		UsageRecordFactory<R> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
 		}
@@ -370,7 +368,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
 @Test
 	public void testReceiveAccounting() throws Exception {
 		String updateText = getUpdateText();
-		ParseUsageRecordFactory<R,I> fac = getFactory();
+		UsageRecordFactory<R> fac = getFactory();
 		assertNotNull(fac);
 		if (!fac.isValid()) {
 			return;
@@ -391,7 +389,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends ParseUsageRecord
     }
 
 public void receiveAccounting(String updateText) {
-	ParseUsageRecordFactory<R,I> fac = getFactory();
+	UsageRecordFactory<R> fac = getFactory();
 	if (!fac.isValid()) {
 		return;
 	}
@@ -403,7 +401,7 @@ public void receiveAccounting(String updateText) {
 }
 @Test
 	public void testGetPolicies() {
-		ParseUsageRecordFactory<R,I> fac = getFactory();
+		UsageRecordFactory<R> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
 		}
@@ -418,7 +416,8 @@ public void receiveAccounting(String updateText) {
 		if (!fac.isValid()) {
 			return;
 		}
-		AccessorMap map = fac.getAccessorMap();
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(fac);
+		AccessorMap map = etf.getAccessorMap();
 
 		assertNotNull(map);
 

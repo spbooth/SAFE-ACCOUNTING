@@ -21,7 +21,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 
 /** Common interface for classes that receive upload data.
  * This is the class implemented by the actual destination factory or composite

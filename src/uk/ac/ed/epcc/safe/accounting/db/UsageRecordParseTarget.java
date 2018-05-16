@@ -23,9 +23,10 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
-/** Interface for parsing UsageRecords  {@link PropertyContainerParseTarget}.
+/** Interface extending  {@link PropertyContainerParseTarget} for parting Usage records.
  * Usage records are normally parsed once with duplicate values being ignored.
  * @author spb
+ * @see AccountingUpdater
  * @param <R> type of intermediate record.
  *
  */

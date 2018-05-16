@@ -31,7 +31,7 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
  *  this interface may be directly implemented by the record type or it may
  *  be a proxy-wrapper around the type that implements the interface
  * @author spb
- *
+ * @see UploadParseTargetUpdater
  * @param <R> Type of intermediate record (type input is split into) for parse
  */
 public interface UploadParseTarget<R> extends

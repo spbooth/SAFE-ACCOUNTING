@@ -18,6 +18,7 @@ import org.junit.Test;
 import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.NumberSumReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
+import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.ConfigUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
@@ -243,7 +244,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 	@SuppressWarnings("unchecked")
 	private void verify(AggregateUsageRecordFactory fac, UsageProducer<?> raw_fac,
 			AndRecordSelector sel) throws Exception {
-		for( PropertyTag t : fac.getAccessorMap().getProperties()){
+		AccessorMap<?> map = fac.getAccessorMap();
+		for( PropertyTag t :  map.getProperties()){
 			if( Number.class.isAssignableFrom(t.getTarget())){
 				
 				Number agg_sum = fac.getReduction(new NumberSumReductionTarget(t), sel);

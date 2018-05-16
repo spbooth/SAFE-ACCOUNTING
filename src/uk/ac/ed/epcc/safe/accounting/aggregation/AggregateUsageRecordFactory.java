@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -84,11 +85,14 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.SQLAndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.FieldType;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
@@ -119,7 +123,12 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  *
  */
 public abstract class AggregateUsageRecordFactory
-		extends UsageRecordFactory<AggregateUsageRecordFactory.AggregateRecord> implements UsageRecordListener, AccessorContributer<AggregateUsageRecordFactory.AggregateRecord>{
+		extends UsageRecordFactory<AggregateUsageRecordFactory.AggregateRecord> 
+implements UsageRecordListener, 
+AccessorContributer<AggregateUsageRecordFactory.AggregateRecord>,
+TableContentProvider,
+TableTransitionContributor,
+ConfigParamProvider{
 	public static final String MASTER_PREFIX = "master.";
 	private static final String COMPLETED_TIMESTAMP = "CompletedTimestamp";
 	private static final String STARTED_TIMESTAMP = "StartedTimestamp";
@@ -153,8 +162,9 @@ public abstract class AggregateUsageRecordFactory
 				return false;
 			}
 			ExpressionTargetContainer proxy = getProxy();
+			ExpressionTargetFactory etf = getExpressionTargetFactory();
 			for( PropertyTag t : ((AggregateUsageRecordFactory)getFactory()).getKeyProperties()){
-				if( getFactory().hasProperty(t) ){
+				if( etf.hasProperty(t) ){
 					Object a = proxy.getProperty(t,null);
 					if( a != null ){
 						if(! a.equals(rec.getProperty(t,null))){
@@ -256,8 +266,7 @@ public abstract class AggregateUsageRecordFactory
 	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#getConfigProperties()
 	 */
 	@Override
-	public Set<String> getConfigProperties() {
-		Set<String> props = super.getConfigProperties();
+	public void addConfigParameters(Set<String> props) {
 		props.add(MASTER_PREFIX+getConfigTag());
 		props.add(getConfigTag()+".aggregate_using_end");
 		// props to force/reset key/sum
@@ -271,7 +280,6 @@ public abstract class AggregateUsageRecordFactory
 				props.add(getConfigName(t));
 			}
 		}
-		return props;
 	}
 	
 	
@@ -313,9 +321,8 @@ public abstract class AggregateUsageRecordFactory
 		// date values as the definitions may not be correct. so we add the alises to
 		// base start/end  after clearing expressions that don't resolve
 		PropExpressionMap props=null;
-		if( master instanceof DerivedPropertyFactory){
-			props=((DerivedPropertyFactory)master).getDerivedProperties();
-		}
+		props=master.getDerivedProperties();
+		
 		//TODO fix this
 		if( props != null) {
 			log.debug(tag+" got derived props from master "+props.size());
@@ -342,6 +349,9 @@ public abstract class AggregateUsageRecordFactory
 		explicit.addFromProperties(finder,c , tag);
 		map.addDerived(c, explicit);
 
+	}
+	protected AccessorMap getAccessorMap() {
+		return ExpressionCast.getExpressionTargetFactory(this).getAccessorMap();
 	}
 
 	/** Create the sum and key property sets.
@@ -757,7 +767,6 @@ public abstract class AggregateUsageRecordFactory
 	 */
 	@Override
 	public void addSummaryContent(ContentBuilder hb) {
-		super.addSummaryContent(hb);
 		hb.addHeading(4,"Match properties");
 		ExtendedXMLBuilder xml = hb.getText();
 		xml.open("ul");
@@ -785,7 +794,7 @@ public abstract class AggregateUsageRecordFactory
 	@Override
 	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
 		
-		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> transitions = super.getTableTransitions();
+		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> transitions = new LinkedHashMap<>();
 		
 		
 		if( master_producer != null){

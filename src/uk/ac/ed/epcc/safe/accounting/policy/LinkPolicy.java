@@ -22,9 +22,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -111,6 +113,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	private ReferenceTag remote_tag=null;
 	private ReferenceTag back_ref=null;
 	private UsageRecordFactory<R> remote_fac=null;
+	private ExpressionTargetFactory<R> remote_etf=null;
 	private Map<PropertyTag,PropertyTag> match_map=null;
 	private Map<PropertyTag,PropertyTag> copy_properties=null;
 	private Set<PropertyTag> inside_date_properties=null;
@@ -132,6 +135,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 			if( UsageRecordFactory.class.isAssignableFrom(ref_tag.getFactoryClass())){
 			   remote_tag=ref_tag;
 			   remote_fac=(UsageRecordFactory) remote_tag.getFactory(c);
+			   remote_etf = ExpressionCast.getExpressionTargetFactory(remote_fac);
 			   match_map = new HashMap<PropertyTag, PropertyTag>();
 			   inside_date_properties = new HashSet<PropertyTag>();
 			   copy_properties = new HashMap<PropertyTag,PropertyTag>();
@@ -164,7 +168,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 						   // assume they should be copied.
 						   PropertyTag remote_tag = remote_finder.find(local_name);
 
-						   if( remote_tag != null && remote_tag.allowExpression(store_tag) &&remote_fac.hasProperty(remote_tag) && remote_fac.getAccessorMap().writable(remote_tag)){
+						   if( remote_tag != null && remote_tag.allowExpression(store_tag) &&remote_fac.hasProperty(remote_tag) && remote_etf.getAccessorMap().writable(remote_tag)){
 							   copy_properties.put(store_tag, remote_tag);
 						   }
 					   }
@@ -230,7 +234,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 		   }
 		   UsageRecordFactory.Use peer = null;
 		   try{
-			    peer =remote_fac.find(sel);
+			    peer =remote_fac.find(remote_fac.getFilter(sel),true);
 		   }catch(Exception e){
 			     getLogger().error("Error finding peer in LinkPolicy",e);
 		   }

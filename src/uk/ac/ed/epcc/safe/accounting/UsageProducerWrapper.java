@@ -13,7 +13,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
-/** wrap and {@link ExpressionTargetFactory} to make a {@link UsageProducer}
+/** wrap an {@link ExpressionTargetFactory} to make a {@link UsageProducer}
  * 
  * @author spb
  *

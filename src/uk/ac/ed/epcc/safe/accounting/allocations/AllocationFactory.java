@@ -29,9 +29,11 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.ConfigUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ShortTextPeriodFormatter;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
@@ -235,6 +237,12 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	@Override
 	protected DataObject makeBDO(Record res) throws DataFault {
 		return new AllocationRecord(this, res);
+	}
+	public final ExpressionTargetFactory<T> getExpressionTargetFactory(){
+		return ExpressionCast.getExpressionTargetFactory(this);
+	}
+	public final AccessorMap<T> getAccessorMap(){
+		return getExpressionTargetFactory().getAccessorMap();
 	}
 	
 	public AllocationFactory(AppContext c, String table){

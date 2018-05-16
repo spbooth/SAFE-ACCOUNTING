@@ -7,7 +7,6 @@ import java.util.List;
 
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyContainer;
-import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.db.DefaultDataObjectPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -20,6 +19,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.session.AppUser;
@@ -28,7 +28,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 public class ReportTemplateLog extends DataObjectPropertyContainer {
     
-    public ReportTemplateLog(DataObjectPropertyFactory<?> fac, Record r) {
+    public ReportTemplateLog(DataObjectFactory<?> fac, Record r) {
         super(fac, r);
     }
 

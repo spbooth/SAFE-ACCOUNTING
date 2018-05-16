@@ -29,7 +29,7 @@ import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-/** Parses an external source of property data.
+/** Parses an external source of property data into a {@link UploadParseTarget}
  * 
  * Data for the same table may also be generated on the fly as part of the accounting parse process
  * e.g. classification data.

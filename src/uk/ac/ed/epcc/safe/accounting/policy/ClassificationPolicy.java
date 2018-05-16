@@ -22,13 +22,14 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory;
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.db.PropertyUpdater;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -48,7 +49,6 @@ import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
-import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
@@ -58,8 +58,6 @@ import uk.ac.ed.epcc.webapp.forms.transition.ExtraFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.table.AddClassificationReferenceTransition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
@@ -72,7 +70,6 @@ import uk.ac.ed.epcc.webapp.model.NameFinder;
 import uk.ac.ed.epcc.webapp.model.data.DataCache;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Add Classification tables to raw usage data under the control of config parameters.
@@ -381,7 +378,8 @@ public FormResult action(Form f)
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext conn) throws TransitionException {
 			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
-			if( target instanceof DataObjectPropertyFactory){
+			ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(target);
+			if( etf != null){
 				
 				for(PropertyTag<String> t : tagmap.keySet()){
 					name_input.addChoice(t);
@@ -417,19 +415,20 @@ public FormResult action(Form f)
 		}
 	}
 	@SuppressWarnings("unchecked")
-	private void regenerate(PropertyTag<String> name) throws DataException,
-			DataFault, InvalidExpressionException, CannotFilterException, ParseException {
-		DataObjectPropertyFactory fac = getContext().makeObjectWithDefault(DataObjectPropertyFactory.class, null, table);
+	private void regenerate(PropertyTag<String> name) throws Exception {
+		DataObjectFactory fac = getContext().makeObjectWithDefault(DataObjectFactory.class, null, table);
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(fac);
+		PropertyUpdater updater = new PropertyUpdater<>(fac);
 		if( fac != null ){
 			
 				ReferenceTag ref = tagmap.get(name);
 				NameFinder<? extends DataObject> nameFinder = c.makeObject(NameFinder.class,ref.getTable());
-				Set<String> values = fac.getValues(name, null);
+				Set<String> values = etf.getValues(name, null);
 				
 				for(String s : values ){
 					DataObject o = nameFinder.makeFromString(s);
 					if( o != null ){
-						fac.update(ref,ref.makeReference(o),new SelectClause<String>(name, s));
+						updater.update(ref,ref.makeReference(o),new SelectClause<String>(name, s));
 					}
 				}
 			

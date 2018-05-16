@@ -57,6 +57,7 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
 import uk.ac.ed.epcc.webapp.model.data.SelfSQLValue;
+import uk.ac.ed.epcc.webapp.model.data.filter.FilterUpdate;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DurationInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -541,5 +542,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 	private ReductionHandler<X, ExpressionTargetFactory<X>> getReductionHandler(){
 		return new ReductionHandler<X, ExpressionTargetFactory<X>>(ExpressionCast.getExpressionTargetFactory(fac));
 	}
-	
+	public FilterUpdate<X> getFilterUpdate(){
+		return new FilterUpdate<>(res);
+	}
 }

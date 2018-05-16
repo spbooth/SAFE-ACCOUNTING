@@ -5,8 +5,8 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import uk.ac.ed.epcc.safe.accounting.db.ConfigUsageRecordFactory;
-import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactoryTestCase;
+import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 
@@ -22,7 +22,7 @@ public class VomsAccountingTest extends ParseUsageRecordFactoryTestCase {
 	}
 	
 	@Override
-	public ParseUsageRecordFactory getFactory() {
+	public UsageRecordFactory getFactory() {
 		return new ConfigUsageRecordFactory(ctx,"VomsAccounting");
 	}
 	

@@ -31,11 +31,12 @@ import uk.ac.ed.epcc.safe.accounting.UsageRecordListener;
 import uk.ac.ed.epcc.safe.accounting.allocations.AllocationFactory;
 import uk.ac.ed.epcc.safe.accounting.allocations.AllocationKey;
 import uk.ac.ed.epcc.safe.accounting.allocations.SequenceAllocationFactory;
+import uk.ac.ed.epcc.safe.accounting.db.AccessorContributer;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
+import uk.ac.ed.epcc.safe.accounting.db.PropertyUpdater;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
-import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
@@ -54,6 +55,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.NumberOp;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.content.InvalidArgument;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
@@ -65,6 +67,8 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -77,7 +81,6 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.model.period.MergeTransition;
 import uk.ac.ed.epcc.webapp.model.period.MoveDateTransition;
 import uk.ac.ed.epcc.webapp.model.period.SequenceTransition;
-import uk.ac.ed.epcc.webapp.session.SessionService;
 /** A ChargedAllocationFactory is 
  * a normal {@link AllocationFactory} but also implements {@link UsageRecordListener} to accumulate usage effectively acting as
  * an aggregation usage record with user defined time bounds. These aggregated properties can be paired with a manager edited value to
@@ -109,7 +112,8 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 public class ChargedAllocationFactory<T extends ChargedAllocationFactory.ChargedAllocationRecord,R> extends SequenceAllocationFactory<T,R> implements
-		ChargedAllocationManager<AllocationKey<T>, T> {
+		ChargedAllocationManager<AllocationKey<T>, T> , AccessorContributer<T>,
+		TableContentProvider,TableTransitionContributor{
 	
 
 	private final UsageProducer<Use> master;
@@ -147,12 +151,11 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 			finder.addFinder(master.getFinder());
 			// add derived properties from master 
 			// that resolve
-			if( master instanceof DerivedPropertyFactory){
-				PropExpressionMap props = ((DerivedPropertyFactory)master).getDerivedProperties();
+			
+				PropExpressionMap props = master.getDerivedProperties();
 				
 				map.addDerived(getContext(), props);
 				map.clearUnresolvableDefinitions();
-			}
 		}
 	}
 
@@ -363,15 +366,13 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	 * 
 	 * @param c
 	 * @return Iterator
-	 * @throws InvalidExpressionException 
+	 * @throws Exception 
 	 * @throws InvalidPropertyException
-	 * @throws DataFault
-	 * @throws CannotFilterException
 	 */
-	public Iterator<T> getMatches(PropertyContainer c) throws InvalidExpressionException, DataFault, CannotFilterException{
+	public Iterator<T> getMatches(PropertyContainer c) throws Exception{
     	AndRecordSelector sel;
     	sel = getMatchFilter(c);
-    	return getIterator(sel);
+    	return getExpressionTargetFactory().getIterator(sel);
     }
 	@SuppressWarnings("unchecked")
 	private AndRecordSelector getMatchFilter(PropertyContainer c) throws InvalidExpressionException {
@@ -387,8 +388,8 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	
     @SuppressWarnings("unchecked")
 	private void aggregate(PropertyContainer rec, boolean add)
-	throws InvalidExpressionException, DataException, CannotFilterException, PropertyCastException {
-
+	throws Exception {
+    	PropertyUpdater<T> updater = new PropertyUpdater<>(this);
     	// Perform in-database update so updates are atomic (avoid read/modify/write cycle)
     	AndRecordSelector fil = getMatchFilter(rec);
     	for(PropertyTag<? extends Number> t : getAccumulations()){
@@ -396,7 +397,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
     		PropExpression<? extends Number> val_expr = new ConstPropExpression<Number>(Number.class,val);
     		Operator op = add ? Operator.ADD : Operator.SUB;
     		PropExpression expr = new BinaryPropExpression(t, op, val_expr);
-    		update(t,expr,fil);
+    		updater.update(t,expr,fil);
     	}
     	for(Iterator<T> it = getMatches(rec); it.hasNext();){
     		T agg = it.next();
@@ -529,8 +530,6 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	 */
 	@Override
 	public void addSummaryContent(ContentBuilder hb) {
-		// TODO Auto-generated method stub
-		super.addSummaryContent(hb);
 		if( master == null) {
 			hb.addHeading(3, "No Master Producer");
 		}else {
@@ -545,7 +544,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	 */
 	@Override
 	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
-		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> tableTransitions = super.getTableTransitions();
+		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> tableTransitions = new LinkedHashMap<>();
 		
 		
 		tableTransitions.put(new AdminOperationKey("Regenerate"), new RegenerateAllTransition());
