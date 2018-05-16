@@ -266,7 +266,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 				log.debug("set back reference");
 				
 				// if the table has a reference back to us set it.
-				IndexedReference<R> self = r.getProperty(back_ref);
+				IndexedReference<R> self = (IndexedReference<R>) r.getProperty(back_ref);
 				proxy.setProperty(back_ref, self);
 				
 			}else{
