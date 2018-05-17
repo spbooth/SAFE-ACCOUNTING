@@ -184,8 +184,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 		PropertyMap defaults = getDefaults();
 		DerivedPropertyMap meta = new DerivedPropertyMap(getContext());
 		meta.setAll(defaults);
-		PropExpressionMap expr = new PropExpressionMap();
-		expr.addFromProperties(fac.getFinder(), ctx, fac.getTag());
+		PropExpressionMap expr = owner.getDerivedProperties();
 		meta.addDerived(expr);
 		Iterator<I> lines = parser.splitRecords(updateText);
 		
