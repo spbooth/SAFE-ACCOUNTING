@@ -96,7 +96,12 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		// Note each stage of the parse sees the derived properties
 		// as defined in the previous stage. Once its own parse is complete
-		// It can then override the definition if it wants to
+		// It can then override the definition if it wants to.
+		// When created by the calling code the map should have the final
+		// set of derivations installed. (This is needed to handle constant defaults)
+		// so the definition seen by a stage is either
+		// 1) the most recent definition set by a previous stage
+		// 2) the latest definition set by itself or subsequent stages 
 		PropExpressionMap derived = new PropExpressionMap();
 		PropertyContainerParser<R> parser = plugin_owner.getParser();
 		if (parser.parse(map, current_line)) {
@@ -105,6 +110,8 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 			// apply policy
 			for (PropertyContainerPolicy pol : plugin_owner.getPolicies()) {
 				pol.parse(map);
+				// update the derived properties, mostly this will re-install the same definitions
+				// unless the policy is overriding 
 				derived = pol.getDerivedProperties(derived);
 				map.addDerived(derived);
 			}

@@ -47,8 +47,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 	private UsageRecordParseTarget<R> target;
 	private AppContext conn;
-	private DerivedPropertyMap meta_data;
-	private PropExpressionMap expr;
+	private final PropertyMap initial_meta_data;
 	/** Create an AccountingUpdater. 
 	 * This sets the ParseTarget class used to parse the records and a set of MetaData 
 	 * properties. These are properties that come from the surrounding code (such as the person performing 
@@ -57,22 +56,13 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 	 * data from a different upload may have different values.
 	 * 
 	 * @param conn AppContext
-	 * @param meta_data MetaData properties
+	 * @param initial_meta_data MetaData properties
 	 * @param t ParseTarget
+	 * @param tag Construction tag for owning class
 	 */
-	public AccountingUpdater(AppContext conn,PropertyMap initial_meta_data,UsageRecordParseTarget<R> t){
+	public AccountingUpdater(AppContext conn,PropertyMap initial_meta_data,UsageRecordParseTarget<R> t,String tag){
 		this.conn=conn;
-		meta_data = new DerivedPropertyMap(conn);
-		meta_data.setAll(initial_meta_data);
-		if( t instanceof Tagged){
-			// Add property definitions from target
-			// This is to pick up constant Machine/Resource-Pool properties
-			expr = new PropExpressionMap();
-			expr.addFromProperties(t.getFinder(), conn, ((Tagged)t).getTag());
-			meta_data.addDerived(expr);
-		}else{
-			expr=null;
-		}
+		this.initial_meta_data = initial_meta_data;
 		this.target=t;
 	}
 	/** Parse new accounting data 
@@ -112,6 +102,15 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     	verify_list.setMaxDetails(max_verify_details);
     	
     	PropertyContainerParser<R> parser = target.getParser();
+    	// Final set of dervided properties from the ParseTarget
+    	PropExpressionMap expr=target.getDerivedProperties();
+    	
+    	//Meta-data should include all derived properties to support
+    	// derivations from the defined values and 
+    	// constants.
+    	DerivedPropertyMap meta_data = new DerivedPropertyMap(conn);
+    	meta_data.setAll(initial_meta_data);
+    	meta_data.addDerived(expr);
     
     	try{
     		
@@ -133,6 +132,9 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     				
     				meta_data.setContainer(map);
     				if( expr != null ){
+    					// start by installing the final set of derivations.
+    					// the parse operation will re-install after each parse stage
+    					// to handle the case of definitions overridden within the stack
     					map.addDerived(expr);
     				}
     			}

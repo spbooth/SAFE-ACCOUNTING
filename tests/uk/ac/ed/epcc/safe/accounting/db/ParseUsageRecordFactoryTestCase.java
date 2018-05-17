@@ -395,7 +395,7 @@ public void receiveAccounting(String updateText) {
 	}
 	
 	//System.out.println(updateText);
-	String result = new AccountingUpdater<R,I>(ctx,getDefaults(),getParseTarget()).receiveAccountingData( updateText, false,false,false);
+	String result = new AccountingUpdater<R,I>(ctx,getDefaults(),getParseTarget(),fac.getTag()).receiveAccountingData( updateText, false,false,false);
 	
 	Assert.assertFalse(result.contains("Error in accounting parse"));
 }

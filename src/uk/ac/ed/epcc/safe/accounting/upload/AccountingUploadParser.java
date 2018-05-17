@@ -104,7 +104,7 @@ public class AccountingUploadParser implements UploadParser, Contexed {
         boolean replace = (parameters.get("replace") != null);
         boolean augment = (parameters.get("augment") != null);
         boolean verify = (parameters.get("verify") != null);
-        String result = new AccountingUpdater(conn,defaults,parse_target).receiveAccountingData( update, replace,verify,augment);
+        String result = new AccountingUpdater(conn,defaults,parse_target,table).receiveAccountingData( update, replace,verify,augment);
 		
 		return result;
 	}

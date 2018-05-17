@@ -186,5 +186,12 @@ public abstract class PropertyContainerParseTargetComposite<T extends DataObject
 		}
 		return new LinkedHashMap<>();
 	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTarget#getDerivedProperties()
+	 */
+	@Override
+	public final PropExpressionMap getDerivedProperties() {
+		return getPlugInOwner().getDerivedProperties();
+	}
 
 }

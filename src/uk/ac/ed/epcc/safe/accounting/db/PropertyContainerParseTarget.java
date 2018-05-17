@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
@@ -50,7 +51,11 @@ public interface PropertyContainerParseTarget<R> {
 	 */
 	public abstract PropertyContainerParser<R> getParser();
 	
-	
+	/** get the final set of derived properties defined
+	 * 
+	 * @return
+	 */
+	public abstract PropExpressionMap getDerivedProperties();
 	/** Start a batch parse. This allocates any temporary state.
      * Some properties may be set globally for all records in the parse
 	 * rather than provided record by record. The startParse method is passed all known properties of this type 
