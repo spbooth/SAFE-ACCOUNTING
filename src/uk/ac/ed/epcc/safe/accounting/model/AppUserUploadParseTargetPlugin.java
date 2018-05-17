@@ -74,7 +74,10 @@ public class AppUserUploadParseTargetPlugin<A extends AppUser,R> extends NameFin
 
 	@Override
 	protected String getDefaultMatchPropName() {
-		return WebNameFinder.WEB_NAME;
+		if( getRepository().hasField(WebNameFinder.WEB_NAME)) {
+			return WebNameFinder.WEB_NAME;
+		}
+		return super.getDefaultMatchPropName();
 	}
 	
 	
