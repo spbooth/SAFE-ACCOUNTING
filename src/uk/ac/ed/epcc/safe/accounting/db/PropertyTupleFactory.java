@@ -303,4 +303,8 @@ Tagged{
 	public PropExpressionMap getDerivedProperties() {
 		return new PropExpressionMap();
 	}
+	@Override
+	public final Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
+		return (Iterator<ExpressionTargetContainer>) getIterator(sel);
+	}
 }

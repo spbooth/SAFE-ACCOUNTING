@@ -189,6 +189,14 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.UsageProducer#getExpressionIterator(uk.ac.ed.epcc.safe.accounting.selector.RecordSelector)
+	 */
+	@Override
+	public Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
+		return etf.getExpressionIterator(sel);
+	}
+
 
 
 }

@@ -116,7 +116,10 @@ public class PropertyMap  implements PropertyContainer{
 	}
 	@Override
 	public String toString() {
-		return "PropertyMap [data=" + data + "]";
+		return "PropertyMap ["+getContents() + "]";
+	}
+	protected String getContents() {
+		return "data=" + data;
 	}
 	public void release(){
 		data.clear();

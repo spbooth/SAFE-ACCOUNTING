@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.db.ProxyIterator;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
@@ -119,6 +120,11 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
 	@Override
 	public PropExpressionMap getDerivedProperties() {
 		return etf.getDerivedProperties();
+	}
+
+	@Override
+	public Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
+		return etf.getExpressionIterator(sel);
 	}
 
 }

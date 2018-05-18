@@ -153,9 +153,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				if( ss != null){
 					css_path = ss.encodeURL("/"+css_path);
 				}
-				params.put("CssPath", css_path);
 				if( params != null && ! builder.hasErrors())
 				{
+					params.put("CssPath", css_path);
 					builder.setupExtensions(type, params);
 					params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, type);
 					OutputStream out = new ByteArrayOutputStream();

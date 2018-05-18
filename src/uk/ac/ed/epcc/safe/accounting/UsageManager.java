@@ -19,12 +19,10 @@ package uk.ac.ed.epcc.safe.accounting;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -34,20 +32,11 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.content.HtmlBuilder;
-import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
-import uk.ac.ed.epcc.webapp.forms.exceptions.MissingFieldException;
-import uk.ac.ed.epcc.webapp.forms.factory.FormUpdateProducer;
-import uk.ac.ed.epcc.webapp.forms.html.EmitHtmlInputVisitor;
-import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
-import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
-import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.iterator.AbstractMultiIterator;
 import uk.ac.ed.epcc.webapp.model.data.iterator.NestedIterator;
 /** A composite {@link UsageProducer} that combines results from several 
@@ -538,6 +527,26 @@ public abstract class UsageManager<UR> implements
 			}
 		}
 		return false;
+	}
+	/* (non-Javadoc)
+	 * @see uk.ac.ed.epcc.safe.accounting.UsageProducer#getExpressionIterator(uk.ac.ed.epcc.safe.accounting.selector.RecordSelector)
+	 */
+	@Override
+	public Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
+		/*
+		 * Generate a Nested Iterator over the combined results of all
+		 * Factories.
+		 */
+		NestedIterator<ExpressionTargetContainer> res = new NestedIterator<ExpressionTargetContainer>();
+		for (UsageProducer<UR> prod: factories.values()) {
+			if( prod.compatible(sel)){
+				//log.debug("Using "+prod.toString());
+				res.add(prod.getExpressionIterator(sel));
+			}else{
+				log.debug("getIterator: selector not compatible with "+prod.toString());
+			}
+		}
+		return res;
 	}
 	
 }

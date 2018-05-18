@@ -276,4 +276,8 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	protected Class<? super ExpressionTargetFactoryComposite> getType() {
 		return ExpressionTargetFactoryComposite.class;
 	}
+	@Override
+	public Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
+		return new ProxyIterator<T>(this, getIterator(sel));
+	}
 }

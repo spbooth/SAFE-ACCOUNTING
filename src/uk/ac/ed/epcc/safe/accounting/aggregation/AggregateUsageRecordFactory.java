@@ -576,13 +576,13 @@ ConfigParamProvider{
 		DatabaseService db = getContext().getService(DatabaseService.class);
 		FilterDelete<AggregateRecord> del = new FilterDelete<AggregateRecord>(res);
 		del.delete(null);
-		Iterator<Use> it = master.getIterator(new AndRecordSelector());
+		Iterator<ExpressionTargetContainer> it = master.getExpressionIterator(new AndRecordSelector());
 		int i=0;
 		while (it.hasNext()) {
-			Use rec = it.next();
+			ExpressionTargetContainer rec = it.next();
 			// This could be such a large and expensive operation that it is worth
 			// supressing the record by record update operations.
-			aggregateNoCommit(rec.getProxy(),true);
+			aggregateNoCommit(rec,true);
 			rec.release();
 			i++;
 			if(0 ==  i % 1000 ) {
@@ -682,12 +682,12 @@ ConfigParamProvider{
 				AndRecordSelector overlap_sel = new AndRecordSelector(sel);
 				
 				overlap_sel.add(new SelectClause(start_target_prop, MatchCondition.LE, p_start));
-				Iterator<Use> ov_it = master.getIterator(overlap_sel);
+				Iterator<ExpressionTargetContainer> ov_it = master.getExpressionIterator(overlap_sel);
 				while(ov_it.hasNext()){
-					Use rec = ov_it.next();
+					ExpressionTargetContainer rec = ov_it.next();
 					// This could be such a large and expensive operation that it is worth
 					// supressing the record by record update operations.
-					aggregateNoCommit(rec.getProxy(),true);
+					aggregateNoCommit(rec,true);
 					rec.release();
 				}
 				clear(); // commit cached records

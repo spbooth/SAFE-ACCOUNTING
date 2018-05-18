@@ -396,7 +396,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 		SetRangeMapper map = getMapper(e);
 		Iterator iter;
 		try {
-			iter = ap.getIterator(s);
+			iter = ap.getExpressionIterator(s);
 			if( iter.hasNext()){
 				tc.addDataIterator(ds, map, iter);
 				data_added=true;
@@ -647,7 +647,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     						// (make sure we don't overcount)
 
     						try {
-    							Iterator<ExpressionTargetContainer> iter = ap.getIterator(selector);
+    							Iterator<ExpressionTargetContainer> iter = ap.getExpressionIterator(selector);
     							if( iter.hasNext()){
     								tc.addDataIterator(ds, map, iter);
     								data_added=true;
@@ -663,7 +663,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     					selector.add(new PeriodOverlapRecordSelector(new Period(tc.getPeriod()), start_prop, end_prop, OverlapType.UPPER_OUTER, cutoff));
 
     					try {
-    						Iterator<ExpressionTargetContainer> iter = ap.getIterator(selector);
+    						Iterator<ExpressionTargetContainer> iter = ap.getExpressionIterator(selector);
     						if( iter.hasNext()){
     							tc.addDataIterator(ds, map, iter);
     							data_added=true;
@@ -683,9 +683,9 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     	}
 		//log.debug("using transform");
 		SetRangeMapper map = getMapper(e);
-		Iterator iter;
+		Iterator<ExpressionTargetContainer> iter;
 		try {
-			iter = ap.getIterator(getRangeSelector(e,allow_overlap,cutoff,tc.getStartDate(), tc.getEndDate(),sel));
+			iter = ap.getExpressionIterator(getRangeSelector(e,allow_overlap,cutoff,tc.getStartDate(), tc.getEndDate(),sel));
 			if( iter.hasNext()){
 				tc.addDataIterator(ds, map, iter);
 				data_added=true;

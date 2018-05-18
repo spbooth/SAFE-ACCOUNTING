@@ -162,4 +162,11 @@ public void release() {
 	}
 	
 }
+/* (non-Javadoc)
+ * @see uk.ac.ed.epcc.safe.accounting.properties.PropertyMap#getContents()
+ */
+@Override
+protected String getContents() {
+	return super.getContents()+" derv="+derived.toString();
+}
 }

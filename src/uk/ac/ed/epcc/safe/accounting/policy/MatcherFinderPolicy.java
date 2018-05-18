@@ -23,7 +23,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -31,7 +34,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
@@ -307,7 +309,7 @@ public FormResult action(Form f)
 			
 		}
 	}
-	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+	public Map<TableTransitionKey,Transition<? extends DataObjectFactory>> getTableTransitions() {
 		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
 		result.put(new AdminOperationKey("AddMatcher"), new AddOwnerTransition());
 		result.put(new AdminOperationKey("RemoveMatcher"), new DeleteOwnerTransition());
@@ -334,8 +336,8 @@ public FormResult action(Form f)
 	}
 	@SuppressWarnings("unchecked")
 	private void regenerate(PropertyTag<String> name) throws Exception {
-		
-		PropertyTargetGenerator<?> fac = getContext().makeObjectWithDefault(PropertyTargetGenerator.class, null, table);
+		DataObjectFactory dof = getContext().makeObject(DataObjectFactory.class, table);
+		ExpressionTargetFactory fac = ExpressionCast.getExpressionTargetFactory(dof);
 		ReferenceTag ctag = tagmap.get(name);
 		MatcherFinder<?> matcherFinder = c.makeObject(MatcherFinder.class,ctag.getTable());
 		
@@ -345,15 +347,16 @@ public FormResult action(Form f)
 		Set<? extends Matcher> set = matcherFinder.getOwners();
 		ReferenceTag ref = tagmap.get(name);
 		if( fac != null ){
-			Iterator<?> it = fac.getIterator(new AndRecordSelector());
+			Iterator<ExpressionTargetContainer> it = fac.getExpressionIterator(new AndRecordSelector());
 			while(it.hasNext()){
-				PropertyTarget rec = (PropertyTarget) it.next();
+				ExpressionTargetContainer rec = it.next();
+				
 				String clientName = rec.getProperty(name, null);
 				if( clientName != null ){
 					for(Matcher m : set){
 						if(m.matches(clientName)){
 							ref.set((PropertyContainer) rec, m);
-							((DataObject)rec).commit();
+							rec.commit();
 						}
 					}
 				}

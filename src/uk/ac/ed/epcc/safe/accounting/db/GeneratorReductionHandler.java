@@ -87,10 +87,9 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 			}
 			// Build by iterating over records.
 			Map<ExpressionTuple, ReductionMapResult> result = new HashMap<ExpressionTuple, ReductionMapResult>();
-			Iterator<E> it = fac.getIterator(selector);
+			Iterator<ExpressionTargetContainer> it = fac.getExpressionIterator(selector);
 			while(it.hasNext()){
-				E record = it.next();
-				ExpressionTargetContainer rec = fac.getExpressionTarget(record);
+				ExpressionTargetContainer rec = it.next();
 				ExpressionTuple tup = new ExpressionTuple(keys, rec);
 				Map<ReductionTarget,Object> old = result.get(tup);
 				if( old == null ){
@@ -117,10 +116,9 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 		// combine operation may or may not be wrong depending on
 		// if time average.
 		R result = type.getDefault();
-		Iterator<E> it = fac.getIterator(sel);
+		Iterator<ExpressionTargetContainer> it = fac.getExpressionIterator(sel);
 		while(it.hasNext()){
-			E o = it.next();
-			ExpressionTargetContainer et = fac.getExpressionTarget(o);
+			ExpressionTargetContainer et = it.next();
 			result = type.combine(result, et.evaluateExpression(type.getExpression()));
 			et.release();
 		}
@@ -136,10 +134,9 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 			ReductionTarget<Number> property, RecordSelector selector)
 			throws Exception, InvalidPropertyException {
 		Map<I,Number> result = new HashMap<I, Number>();
-		Iterator<E> it = fac.getIterator(selector);
+		Iterator<ExpressionTargetContainer> it = fac.getExpressionIterator(selector);
 		while(it.hasNext()){
-			E o = it.next();
-			ExpressionTargetContainer et = fac.getExpressionTarget(o);
+			ExpressionTargetContainer et = it.next();
 			I ind = et.evaluateExpression(index);
 			Number old = result.get(ind);
 			if( old == null ){

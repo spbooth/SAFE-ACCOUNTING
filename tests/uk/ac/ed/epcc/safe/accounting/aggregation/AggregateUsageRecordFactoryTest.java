@@ -122,9 +122,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 			System.out.println("Supress line by line regenerate, too many records");
 			return;
 		}
-		for(Iterator<Use> it = raw_fac.getIterator(sel); it.hasNext();){
-			Use obj = it.next();
-			ExpressionTargetContainer rec = raw_fac.getExpressionTarget(obj);
+		for(Iterator<ExpressionTargetContainer> it = raw_fac.getExpressionIterator(sel); it.hasNext();){
+			ExpressionTargetContainer rec = it.next();
 			fac.aggregate(rec);
 			rec.release();
 		}

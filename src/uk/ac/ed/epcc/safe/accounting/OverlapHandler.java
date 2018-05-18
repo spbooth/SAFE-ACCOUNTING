@@ -198,9 +198,8 @@ public class OverlapHandler<T> {
     		PropExpression<Date> start_prop, PropExpression<Date> end_prop,
     		TimePeriod period, Number result, AndRecordSelector sel2)
     				throws Exception, InvalidPropertyException {
-    	for(Iterator<T> it = prod.getIterator(sel2);it.hasNext();){
-    		T rec =   it.next();
-    		ExpressionTargetContainer et = prod.getExpressionTarget(rec);
+    	for(Iterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2);it.hasNext();){
+    		ExpressionTargetContainer et = it.next();
     		result = combinePartial(target,result, getOverlap(et,target,start_prop,end_prop,period));
     		et.release();
     	}
@@ -459,9 +458,8 @@ public class OverlapHandler<T> {
 			TimePeriod period, NumberReductionTarget target,
 			Map<R, Number> result, AndRecordSelector sel2) throws Exception,
 			InvalidPropertyException {
-		for(Iterator<T> it = prod.getIterator(sel2);it.hasNext();){
-			T obj =   it.next();
-			ExpressionTargetContainer rec = prod.getExpressionTarget(obj);
+		for(Iterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2);it.hasNext();){
+			ExpressionTargetContainer rec = it.next();
 			// Make the distinction between a record that does not
 			// overlap the period and a record where the overlap value is zero
 			// this gives a true zero when a zero valued record overlaps and
@@ -692,9 +690,8 @@ public class OverlapHandler<T> {
 		//TODO Try to think of some clean way of skipping incompatible
 		// nested UsageProducers. Add getReductionIterator to UsageProducer?
 		// add new ReductionRecordSelector?
-		for(Iterator<T> it = prod.getIterator(sel2);it.hasNext();){
-			T obj =   it.next();
-			ExpressionTargetContainer rec = prod.getExpressionTarget(obj);
+		for(Iterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2);it.hasNext();){
+			ExpressionTargetContainer rec = it.next();
 				ExpressionTuple key = new ExpressionTuple(index_set, rec);
 				ReductionMapResult res = result.get(key);
 				boolean made=false;
