@@ -328,7 +328,7 @@ Tagged{
 	 */
 	@Override
 	public ExpressionTargetContainer getExpressionTarget(T record) {
-		return getAccessorMap().getProxy(record);
+		return record;
 	}
 
 	
@@ -362,6 +362,7 @@ Tagged{
 	}
 	@Override
 	public final Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
-		return (Iterator<ExpressionTargetContainer>) getIterator(sel);
+		Iterator it = getIterator(sel);
+		return it;
 	}
 }
