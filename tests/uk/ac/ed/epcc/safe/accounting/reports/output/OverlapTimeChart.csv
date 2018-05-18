@@ -1,0 +1,10 @@
+Test Plots
+Overlap Time Chart Plot
+Project, 04:30:00 04:45:00, 04:45:00 05:00:00, 05:00:00 05:15:00, 05:15:00 05:30:00
+ecdf_baseline, 21809, 98667, 138531, 125778
+inf_iccs_smt, 31936, 53347, 70344, 24960
+inf_hcrc_cstr_emime, 1596, 52845, 59888, 59400
+prdatlas, 2109, 7905, 9900, 9900
+lhcb, 0, 615, 0, 0
+atlas, 140, 24, 0, 0
+ngsadmin, 0, 1, 0, 0

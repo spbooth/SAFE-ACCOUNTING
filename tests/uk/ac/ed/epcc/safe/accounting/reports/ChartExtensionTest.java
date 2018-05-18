@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
+import uk.ac.ed.epcc.webapp.junit4.ConfigFixtures;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
@@ -51,6 +52,20 @@ public class ChartExtensionTest extends ExtensionTestCase {
 
 	}
 	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testOverlapCSVTimeChartPlot() throws Exception {
+		testChart("testOverlapTimeCharts.xml","csv", new File(getOutputDir()+"OverlapTimeChart.csv"));
+
+	}
+	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	@ConfigFixtures("overlap.properties")
+	public void testOverlapCSVTimeChartPlo2t() throws Exception {
+		testChart("testOverlapTimeCharts.xml","csv", new File(getOutputDir()+"OverlapTimeChart.csv"));
+
+	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testBadTimeChartPlot() throws Exception {
