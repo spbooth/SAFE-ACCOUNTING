@@ -12,8 +12,10 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
+import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
@@ -36,6 +38,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.TupleFactory;
 import uk.ac.ed.epcc.webapp.model.data.TupleSelfSQLValue;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** A property enabled {@link TupleFactory}
@@ -109,7 +112,7 @@ Tagged{
 		}
 	}
 
-	public static class PropertyTuple<A extends DataObject> extends TupleFactory.Tuple<A> implements ExpressionTarget,Contexed{
+	public static class PropertyTuple<A extends DataObject> extends TupleFactory.Tuple<A> implements ExpressionTargetContainer,Contexed{
 		 final PropertyTupleFactory fac;
 		 public PropertyTuple(PropertyTupleFactory fac) {
 			super();
@@ -143,6 +146,60 @@ Tagged{
 		@Override
 		public AppContext getContext() {
 			return fac.getContext();
+		}
+
+		@Override
+		public boolean supports(PropertyTag<?> tag) {
+			return proxy.supports(tag);
+		}
+
+		@Override
+		public boolean writable(PropertyTag<?> tag) {
+			return proxy.writable(tag);
+		}
+
+		@Override
+		public <T> T getProperty(PropertyTag<T> key) throws InvalidExpressionException {
+			return proxy.getProperty(key);
+		}
+
+		@Override
+		public <T> void setProperty(PropertyTag<? super T> key, T value) throws InvalidPropertyException {
+			proxy.setProperty(key, value);
+		}
+
+		@Override
+		public <T> void setOptionalProperty(PropertyTag<? super T> key, T value) {
+			proxy.setOptionalProperty(key, value);
+			
+		}
+
+		@Override
+		public Set<PropertyTag> getDefinedProperties() {
+			return proxy.getDefinedProperties();
+		}
+
+		@Override
+		public void setAll(PropertyContainer source) {
+			proxy.setAll(source);
+		}
+
+		@Override
+		public void release() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean commit() throws DataFault {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean delete() throws DataFault {
+			// TODO Auto-generated method stub
+			return false;
 		}
 		
 	}
