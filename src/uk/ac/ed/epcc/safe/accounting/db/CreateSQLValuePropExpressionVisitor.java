@@ -72,6 +72,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.StringConvertSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.ConstIndexedSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataError;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationConvertSQLValue;
@@ -232,7 +233,14 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		}
 		if(  a instanceof IndexedSQLValue ){
 			IndexedSQLValue<?,T> dra = (IndexedSQLValue)a;
-			
+			if( expression instanceof ReferenceExpression) {
+				DataObjectFactory remote = ((IndexedSQLValue) a).getFactory();
+				ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(remote);
+				SQLValue val = etf.getAccessorMap().getSQLValue(expression);
+				if( val instanceof IndexedSQLValue) {
+					return new CompositeIndexedSQLValue(dra, (IndexedSQLValue)val);
+				}
+			}
 			return new DerefSQLValue(dra, expression, conn);
 		}else if( a instanceof DerefSQLValue){
 			// We are already evaluating the de-ref in the first step

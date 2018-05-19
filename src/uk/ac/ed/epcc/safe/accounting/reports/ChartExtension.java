@@ -227,13 +227,7 @@ public abstract class ChartExtension extends ReportExtension {
 					chart = TimeChart.getInstance(ctx, period.getStart(), period.getEnd(), nSplits, timeBlocks);
 				}
 				chart.getChartData().setGraphical(graphOutput());
-				try{
-					if( hasParam("WarningLevel", e)){
-						chart.addWarningLevel(getNumberParam("WarningLevel", 0.0, e).doubleValue());
-					}
-				}catch(Exception e3){
-					addError("Bad Timechart specification", "Error setting WarningLevel",e3);
-				}
+				
 				return setChartOptions(chart,e);
 			} catch (InvalidArgument e2) {
 				addError("Bad Timechart specification", e2.getClass().getCanonicalName(),e2);
@@ -363,6 +357,7 @@ public abstract class ChartExtension extends ReportExtension {
 			addError("Bad Plot", "Non element fragment passed to makeTimeChart");
 			return result;
 		}
+		
 		if( plot == null ){
 			return result;
 		}
@@ -379,7 +374,13 @@ public abstract class ChartExtension extends ReportExtension {
 			
 			boolean added = entry.plotDataSet(ds, graphOutput(), plot, tc, up, sel, nPlots);
 			chart.has_data =  added || chart.has_data;
-			
+			try{
+				if( chart.chart instanceof TimeChart &&  hasParam("WarningLevel", (Element) node)){
+					((TimeChart)chart.chart).addWarningLevel(getNumberParam("WarningLevel", 0.0,(Element) node).doubleValue());
+				}
+			}catch(Exception e3){
+				addError("Bad Timechart specification", "Error setting WarningLevel",e3);
+			}			
 			return result;
 		}catch(Throwable t){
 			addError("Error in plot", t.getClass().getCanonicalName(), t);

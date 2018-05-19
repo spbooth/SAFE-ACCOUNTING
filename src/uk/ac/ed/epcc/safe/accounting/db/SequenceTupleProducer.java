@@ -63,7 +63,7 @@ extends TupleUsageProducer<A,AF,UR> {
 	protected void customiseAccessors(MultiFinder finder,TupleAccessorMap map,PropExpressionMap expr){
 		
 	}
-	/** collections of properties that must match in all members of the tuple. 
+	/** collections of properties that must match in <em>all</em> members of the tuple. 
 	 * 
 	 * @return
 	 */
