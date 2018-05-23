@@ -145,9 +145,9 @@ public abstract class AbstractPlugInOwner<T extends DataObjectFactory,R> impleme
 		}
 	}
 
-@SuppressWarnings("unchecked")
-public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
-	Map<TableTransitionKey, Transition<? extends DataObjectFactory>> res = new LinkedHashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+
+public Map<TableTransitionKey, Transition> getTableTransitions() {
+	Map<TableTransitionKey, Transition> res = new LinkedHashMap<TableTransitionKey, Transition>();
 	PropertyContainerParser parser = getParser();
 	if( parser != null && parser instanceof TableTransitionContributor){
 		res.putAll(((TableTransitionContributor) parser).getTableTransitions());

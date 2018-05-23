@@ -297,8 +297,8 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 				
 		}
 	}
-	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
-		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey,Transition<? extends DataObjectFactory>>();
+	public Map<TableTransitionKey, Transition> getTableTransitions() {
+		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey,Transition>();
 		result.put(new AdminOperationKey( "Add Listener"),new AddListenerTransition());
 		if( list != null  && list.length() > 0){
 			result.put(new AdminOperationKey("Remove Listener"),new DeleteListenerTransition());

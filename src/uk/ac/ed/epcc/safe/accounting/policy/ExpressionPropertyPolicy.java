@@ -172,8 +172,8 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 			f.addAction("Add", new AddDerivedAction(target));
 		}
 	}
-	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
-		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+	public Map<TableTransitionKey, Transition> getTableTransitions() {
+		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
 		// add transitions here
 		result.put(new AdminOperationKey( "AddDefinition","Add a new property definition"),new AddDerivedTransition());
 		result.put(new AdminOperationKey( "AddProperty","Define a new property"),new AddPropertyTransition());

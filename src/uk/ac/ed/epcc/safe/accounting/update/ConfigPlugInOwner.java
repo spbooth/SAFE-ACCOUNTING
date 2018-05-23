@@ -249,9 +249,9 @@ public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPl
 		}
 		
 		@Override
-		public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		public Map<TableTransitionKey, Transition> getTableTransitions() {
 			
-			Map<TableTransitionKey, Transition<? extends DataObjectFactory>> res = super.getTableTransitions();
+			Map<TableTransitionKey, Transition> res = super.getTableTransitions();
 			res.put(new AdminOperationKey("DeletePolicy","Remove one of the configured policies"), new DeletePolicyTransition());
 			res.put(new AdminOperationKey("AddPolicy","Add a new policy"), new AddPolicyTransition());
 			if( getParser().getClass() == default_parser_class){

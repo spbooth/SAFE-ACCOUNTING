@@ -309,8 +309,8 @@ public FormResult action(Form f)
 			
 		}
 	}
-	public Map<TableTransitionKey,Transition<? extends DataObjectFactory>> getTableTransitions() {
-		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+	public Map<TableTransitionKey,Transition> getTableTransitions() {
+		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
 		result.put(new AdminOperationKey("AddMatcher"), new AddOwnerTransition());
 		result.put(new AdminOperationKey("RemoveMatcher"), new DeleteOwnerTransition());
 		result.put(new AdminOperationKey("RegenerateMatcher","Regenenerate matcher references"),new RegenerateOwnerTransition());

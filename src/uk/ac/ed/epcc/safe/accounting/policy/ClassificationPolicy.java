@@ -389,8 +389,8 @@ public FormResult action(Form f)
 			f.addAction("Regenerate", new RegenerateClassifierAction(target));	
 		}
 	}
-	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
-		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+	public Map<TableTransitionKey, Transition> getTableTransitions() {
+		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
 		result.put(new AdminOperationKey( "AddClassifier"), new AddClassifierTransition());
 		result.put(new AdminOperationKey( "RemoveClassifier"), new DeleteClassifierTransition());
 		result.put(new AdminOperationKey("RegenerateClassifier","Regenenerate classifications references"),new RegenerateClassifierTransition());

@@ -107,8 +107,8 @@ public class DerivedPropertyPolicy extends BasePolicy implements TableTransition
 			f.addAction("Add", new AddDerivedAction(target));
 		}
 	}
-	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
-		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+	public Map<TableTransitionKey, Transition> getTableTransitions() {
+		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
 		// add transitions here
 		result.put(new AdminOperationKey("AddDerivedProperty"),new AddDerivedTransition());
 		return result;

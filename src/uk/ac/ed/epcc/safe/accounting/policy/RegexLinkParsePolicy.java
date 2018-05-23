@@ -236,8 +236,8 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 		
 	}
 	@Override
-	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
-		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+	public Map<TableTransitionKey, Transition> getTableTransitions() {
+		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
 		result.put(new AdminOperationKey(DataObjectFactory.class,"Relink","Re-apply regexp links to all records"),new RelinkTransition());
 		return result;
 	}

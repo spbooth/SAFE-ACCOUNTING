@@ -788,13 +788,11 @@ ConfigParamProvider{
 		xml.close();
 		xml.appendParent();
 	}
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyFactory#getTableTransitions()
-	 */
+	
 	@Override
-	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+	public Map<TableTransitionKey, Transition> getTableTransitions() {
 		
-		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> transitions = new LinkedHashMap<>();
+		Map<TableTransitionKey, Transition> transitions = new LinkedHashMap<>();
 		
 		
 		if( master_producer != null){

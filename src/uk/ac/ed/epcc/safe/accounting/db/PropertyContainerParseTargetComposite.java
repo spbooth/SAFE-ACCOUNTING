@@ -179,7 +179,7 @@ public abstract class PropertyContainerParseTargetComposite<T extends DataObject
 		
 	}
 	@Override
-	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+	public Map<TableTransitionKey, Transition> getTableTransitions() {
 		PlugInOwner<R> owner = getPlugInOwner();
 		if( owner instanceof TableTransitionContributor) {
 			return ((TableTransitionContributor) owner).getTableTransitions();

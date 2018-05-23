@@ -455,10 +455,10 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 	 * getTableTransitions()
 	 */
 	@Override
-		public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
+		public Map<TableTransitionKey, Transition> getTableTransitions() {
 			ExpressionTargetFactory<T> etf = getExpressionTargetFactory();
 			DataObjectFactory<T> fac = getFactory();
-			Map<TableTransitionKey, Transition<? extends DataObjectFactory>> map = super.getTableTransitions();
+			Map<TableTransitionKey, Transition> map = super.getTableTransitions();
 			if( fac.getConfigTag().equals(fac.getTag())){
 				// Don't allow transitions where the config is taken from
 				// a different table

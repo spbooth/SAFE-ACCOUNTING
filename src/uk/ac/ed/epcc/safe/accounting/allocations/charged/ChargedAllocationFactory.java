@@ -543,8 +543,8 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	 * @see uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactory#getTableTransitions()
 	 */
 	@Override
-	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
-		Map<TableTransitionKey, Transition<? extends DataObjectFactory>> tableTransitions = new LinkedHashMap<>();
+	public Map<TableTransitionKey, Transition> getTableTransitions() {
+		Map<TableTransitionKey, Transition> tableTransitions = new LinkedHashMap<>();
 		
 		
 		tableTransitions.put(new AdminOperationKey("Regenerate"), new RegenerateAllTransition());

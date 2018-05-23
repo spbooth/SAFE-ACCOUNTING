@@ -346,8 +346,8 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 			f.addAction("Set Master", new SetRemoteAction(target));
 		}
 	}
-	public Map<TableTransitionKey, Transition<? extends DataObjectFactory>> getTableTransitions() {
-		Map<TableTransitionKey,Transition<? extends DataObjectFactory>> result = new HashMap<TableTransitionKey, Transition<? extends DataObjectFactory>>();
+	public Map<TableTransitionKey, Transition> getTableTransitions() {
+		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
 		result.put(new AdminOperationKey("Set Master", "Set the master table for LinkPolicy"), new SetRemoteTransition());
 		return result;
 	}
