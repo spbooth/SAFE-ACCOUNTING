@@ -13,6 +13,7 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,15 +29,20 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
+import uk.ac.ed.epcc.webapp.model.TimePurgeFactory;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
+import uk.ac.ed.epcc.webapp.model.data.filter.FilterDelete;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 
 /** Common base class for turning a {@link DataObjectFactory} into a {@link UsageProducer}
@@ -49,7 +55,7 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
  * @param <T> class of UsageRecord
  *
  */ 
-public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContainer>  extends DataObjectFactory<T> implements UsageProducer<T> {
+public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContainer>  extends DataObjectFactory<T> implements UsageProducer<T>,TimePurgeFactory {
 	private ExpressionTargetFactoryComposite<T> etf = new ExpressionTargetFactoryComposite<>(this);
 	    
 		protected DefaultUsageProducer(){
@@ -195,6 +201,13 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	@Override
 	public Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
 		return etf.getExpressionIterator(sel);
+	}
+
+	@Override
+	public void purgeOldData(Date epoch) throws Exception {
+		FilterDelete<T> del = new FilterDelete<>(res);
+		del.delete(FilterConverter.convert(getFilter(new SelectClause<>(StandardProperties.ENDED_PROP, MatchCondition.LT, epoch))));
+		
 	}
 
 
