@@ -76,7 +76,13 @@
 <xsd:element name="Text" type="TextContentType" >
 	<xsd:annotation>
 		<xsd:documentation>A text paragraph</xsd:documentation>
-	</xsd:annotation></xsd:element>
+	</xsd:annotation>
+</xsd:element>
+<xsd:element name="PreFormatted" type="TextContentType" >
+	<xsd:annotation>
+		<xsd:documentation>A text paragraph with pre-formatted content</xsd:documentation>
+	</xsd:annotation>
+</xsd:element>	
 <xsd:element name="Heading" type="TextContentType" />	
 
 
@@ -165,6 +171,7 @@
 	</xsd:documentation></xsd:annotation>
 	<xsd:choice>
 	<xsd:element ref="Text" />
+	<xsd:element ref="PreFormatted" />
 	<xsd:element ref="Comment" />
 	<xsd:element ref="mac:MacroDef" />
 	<xsd:element ref="ato:Define" />
