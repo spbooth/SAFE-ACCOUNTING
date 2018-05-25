@@ -106,16 +106,21 @@
 </xsd:element>
 
 
-<xsd:complexType name="TextContentType" mixed="true">
+	<xsd:complexType name="TextContentType" mixed="true">
 		<xsd:annotation>
 			<xsd:documentation>
-				Mixed content element where the sub-elements expand to text.
+				Mixed content element where the sub-elements expand to
+				text.
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
-		<xsd:group ref="TextSubstitution" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:group ref="TextSubstitution" minOccurs="0"
+				maxOccurs="unbounded" />
 		</xsd:sequence>
-</xsd:complexType>
+		<xsd:attribute name="class" type="xsd:string" use="optional"></xsd:attribute>
+		<xsd:attribute name="count" type="xsd:int" use="optional"></xsd:attribute>
+		<xsd:attribute name="numeric" type="xsd:boolean" use="optional"></xsd:attribute>
+	</xsd:complexType>
 
 	<xsd:complexType name="ReportContentType" mixed="true">
 		<xsd:sequence>
@@ -209,11 +214,15 @@
 A static table. These may also be generated as output of a dynamic
 element but this is the format targeted by rendering transforms.
 </xsd:documentation></xsd:annotation>
-<xsd:complexType>
-    	<xsd:sequence >
-    	<xsd:group ref="TableGroup" maxOccurs="unbounded" minOccurs="0" />
-    	</xsd:sequence>
-</xsd:complexType>
+	<xsd:complexType>
+		<xsd:sequence>
+			<xsd:group ref="TableGroup" maxOccurs="unbounded"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="class" type="xsd:string" use="optional"></xsd:attribute>
+		<xsd:attribute name="rows" type="xsd:int" use="optional"></xsd:attribute>
+		<xsd:attribute name="cols" type="xsd:int" use="optional"></xsd:attribute>
+	</xsd:complexType>
 </xsd:element>
 <xsd:element name="th" type="TextContentType"></xsd:element>
 <xsd:element name="td" type="TextContentType"></xsd:element>
@@ -239,8 +248,9 @@ element but this is the format targeted by rendering transforms.
     			minOccurs="0" />
     	</xsd:sequence>
     	<xsd:attribute name="class" type="xsd:string" use="optional"></xsd:attribute>
+    	<xsd:attribute name="count" type="xsd:int" use="optional"></xsd:attribute>
     </xsd:complexType>
-<xsd:element name="NoData">
+    <xsd:element name="NoData">
 <xsd:annotation>
  <xsd:documentation>
  An empty figure

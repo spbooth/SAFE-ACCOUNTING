@@ -1339,6 +1339,7 @@ public class TableExtension extends ReportExtension {
 				addError("Bad Table", "Error setting TableFormat", e);
 			}
 		}
+		
 		DocumentFragment frag = format(table, type);
 		return frag;
 	}

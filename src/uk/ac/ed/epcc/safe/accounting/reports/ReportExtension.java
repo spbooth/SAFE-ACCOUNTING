@@ -1088,7 +1088,21 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 				return addReference(new TableXMLGenerator(getContext(), nf, table));
 			}
 		}
-		DocumentFragment frag = getDocument().createDocumentFragment();
+		Document document = getDocument();
+		String namespace=null;
+		String prefix=null;
+		NodeList list = document.getChildNodes();
+		// Look for the "report" prefix used by this document
+		// we add content in this namespace
+		for(int i=0 ; i< list.getLength(); i++) {
+			Node n = list.item(i);
+			if( n.getNodeType() == Node.ELEMENT_NODE && ReportBuilder.REPORT_LOC.equals(n.getNamespaceURI()) ) {
+				namespace=ReportBuilder.REPORT_LOC;
+				prefix=n.getPrefix();
+				break;
+			}
+		}
+		DocumentFragment frag = document.createDocumentFragment();
 		if (table != null && table.hasData()) {
 			Class<? extends TableFormatPolicy> clazz = getDefaultTableFormatPolicy();
 			if( ! empty(type)){
@@ -1096,7 +1110,10 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			}
 			TableFormatPolicy fmt;
 			try {
-				fmt = getContext().makeParamObject(clazz,new XMLDomBuilder(frag), nf);
+				XMLDomBuilder xmlDomBuilder = new XMLDomBuilder(frag);
+				xmlDomBuilder.setNameSpace(namespace);
+				xmlDomBuilder.setPrefix(prefix);
+				fmt = getContext().makeParamObject(clazz,xmlDomBuilder, nf);
 				fmt.add(table);
 			} catch (Exception e) {
 				addError("format_error", "Error formatting table", e);

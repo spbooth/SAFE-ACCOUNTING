@@ -28,6 +28,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.charts.ChartService;
@@ -447,8 +448,26 @@ public abstract class ChartExtension extends ReportExtension {
 			//TODO handle caption
 		} else {
 			Document doc = getDocument();
+			String namespace=null;
+			String prefix=null;
+			NodeList list = doc.getChildNodes();
+			// Look for the "report" prefix used by this document
+			// we add content in this namespace
+			for(int i=0 ; i< list.getLength(); i++) {
+				Node n = list.item(i);
+				if( n.getNodeType() == Node.ELEMENT_NODE && ReportBuilder.REPORT_LOC.equals(n.getNamespaceURI()) ) {
+					namespace=ReportBuilder.REPORT_LOC;
+					prefix=n.getPrefix();
+					break;
+				}
+			}
 			DocumentFragment result = doc.createDocumentFragment();
-			Element e = doc.createElementNS(ReportBuilder.REPORT_LOC,"rep:NoData");
+			Element e;
+			if( namespace == null) {
+				e = doc.createElement("NoData");
+			}else {
+				e = doc.createElementNS(namespace ,(prefix==null || prefix.trim().isEmpty())? "NoData": prefix +":NoData");
+			}
 			result.appendChild(e);
 			return result;
 		}
