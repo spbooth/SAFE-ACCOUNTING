@@ -346,7 +346,7 @@ public class ReportBuilderTest extends WebappTestBase {
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testValidate() throws URISyntaxException, DataFault, IOException, SAXException, ParserConfigurationException, InvalidArgument, TransformerFactoryConfigurationError, TransformerException {
         try{
-		  ReportBuilder rb = new ReportBuilder(ctx,"badTemplate.xml","report.xsd");
+		  ReportBuilder rb = new ReportBuilder(ctx,"badTemplate.xml_bad","report.xsd");
 		  assertTrue(rb.hasErrors());
 		  //assertFalse("illegal template validated", true);
 		}catch(SAXException e){

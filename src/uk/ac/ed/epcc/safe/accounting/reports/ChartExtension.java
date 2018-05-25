@@ -66,6 +66,8 @@ import uk.ac.ed.epcc.webapp.time.SplitPeriod;
  * 
  */
 public abstract class ChartExtension extends ReportExtension {
+	
+	
 	/** composite object holding the {@link PeriodChart}
 	 * and a record if any data has been added
 	 * 
@@ -446,7 +448,7 @@ public abstract class ChartExtension extends ReportExtension {
 		} else {
 			Document doc = getDocument();
 			DocumentFragment result = doc.createDocumentFragment();
-			Element e = doc.createElement("NoData");
+			Element e = doc.createElementNS(ReportBuilder.REPORT_LOC,"rep:NoData");
 			result.appendChild(e);
 			return result;
 		}

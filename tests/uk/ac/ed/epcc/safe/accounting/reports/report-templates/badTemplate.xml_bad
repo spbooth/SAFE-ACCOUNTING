@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!-- Copyright - The University of Edinburgh 2015 -->
-<rep:Report 
+<Report 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
   xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
   xmlns:per="http://safe.epcc.ed.ac.uk/period"
   xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
@@ -17,7 +17,7 @@
 	<per:StartTime>01-10-2008</per:StartTime>
 		<per:StartTime>01-10-2008</per:StartTime>
 	</per:Period>
-	<rep:Report>
+	<Report>
 	<fil:Filter>
 		<fil:EQ>
 			

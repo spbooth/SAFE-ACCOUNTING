@@ -163,13 +163,13 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	}
 
 	
-    private static final String BASE_LOC="http://safe.epcc.ed.ac.uk";
+    public static final String BASE_LOC="http://safe.epcc.ed.ac.uk";
 	public static final String PARAMETER_LOC = BASE_LOC+"/parameter";
 	private final URI PARAMETER_URI;
 
 
 
-	private static final String REPORT_LOC = BASE_LOC+"/report";
+	public static final String REPORT_LOC = BASE_LOC+"/report";
 	private final URI REPORT_URI=new URI(REPORT_LOC);
 	private static final String RESTRICT_LOC = BASE_LOC+"/restrict";
 	private final URI RESTRICT_URI=new URI(RESTRICT_LOC);
@@ -375,7 +375,8 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		}
 		template_name = template_name.trim();
 		String xml_name;
-		if (!template_name.endsWith(".xml")) {
+		// xml_bad extension used for tests to supress IDE schema warnings on known bad XML
+		if (!template_name.endsWith(".xml") && ! template_name.endsWith(".xml_bad")) {
 			xml_name = template_name + ".xml";
 			this.template_name = template_name;
 		} else {
