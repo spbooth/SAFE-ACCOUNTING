@@ -28,7 +28,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.charts.ChartService;
@@ -77,10 +76,12 @@ public abstract class ChartExtension extends ReportExtension {
 	 *
 	 */
 	public static class Chart<P extends PeriodChart>{
-		public Chart(P pc){
+		public Chart(P pc,String report_prefix){
 			this.chart=pc;
+			this.report_prefix=report_prefix;
 		}
 		public P chart;
+		public String report_prefix;
 		public boolean has_data=false;
 	}
 	
@@ -187,7 +188,7 @@ public abstract class ChartExtension extends ReportExtension {
 		}catch(Exception e1){
 			addError("Bad Plot", "Error setting title", e1);
 		}
-		return new Chart<P>(chart);
+		return new Chart<P>(chart,getReportPrefix(e));
 	}
 	public Chart<TimeChart> makeTimeChart(Period period, Node node) {
 		startTimer("makeTimeChart");
@@ -439,40 +440,33 @@ public abstract class ChartExtension extends ReportExtension {
 
 	}
 
-	public DocumentFragment addChartTable(Chart chart,String caption) throws Exception {
+public DocumentFragment addChartTable(Chart chart,String caption) throws Exception {
 		   
 		
 		Table t = chart.chart.getTable();
 		if (t.hasData()) {
-			return format(t, null);
+			return format(t, null,chart.report_prefix);
 			//TODO handle caption
 		} else {
-			Document doc = getDocument();
-			String namespace=null;
-			String prefix=null;
-			NodeList list = doc.getChildNodes();
-			// Look for the "report" prefix used by this document
-			// we add content in this namespace
-			for(int i=0 ; i< list.getLength(); i++) {
-				Node n = list.item(i);
-				if( n.getNodeType() == Node.ELEMENT_NODE && ReportBuilder.REPORT_LOC.equals(n.getNamespaceURI()) ) {
-					namespace=ReportBuilder.REPORT_LOC;
-					prefix=n.getPrefix();
-					break;
-				}
-			}
-			DocumentFragment result = doc.createDocumentFragment();
-			Element e;
-			if( namespace == null) {
-				e = doc.createElement("NoData");
-			}else {
-				e = doc.createElementNS(namespace ,(prefix==null || prefix.trim().isEmpty())? "NoData": prefix +":NoData");
-			}
-			result.appendChild(e);
-			return result;
+			return addNoData(chart);
 		}
 	}
-	
+	public DocumentFragment addNoData(Chart chart) throws Exception {
+	   
+		Document doc = getDocument();
+		
+		DocumentFragment result = doc.createDocumentFragment();
+		Element e;
+		String prefix=chart.report_prefix;
+		if( prefix == null) {
+			e = doc.createElement("NoData");
+		}else {
+			e = doc.createElementNS(ReportBuilder.REPORT_LOC ,(prefix==null || prefix.trim().isEmpty())? "NoData": prefix +":NoData");
+		}
+		result.appendChild(e);
+		return result;
+	}
+
 	public abstract DocumentFragment addChart(Chart chart,String caption) throws Exception;
 	
 	

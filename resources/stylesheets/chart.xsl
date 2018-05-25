@@ -51,7 +51,7 @@
 	</xsl:when>
 	<xsl:otherwise>
 	<xsl:if test="not(@quiet)">
-	<xsl:element name="NoData"/>
+	<xsl:copy-of select="plotter:addNoData($ChartExtension,$chart)"/>
 	</xsl:if>
 	</xsl:otherwise>
 	</xsl:choose>
@@ -83,7 +83,7 @@
 	</xsl:when>
 	<xsl:otherwise>
 	<xsl:if test="not(@quiet)">
-	<xsl:element name="NoData"/>
+	<xsl:copy-of select="plotter:addNoData($ChartExtension,$chart)"/>
 	</xsl:if>
 	</xsl:otherwise>
 	</xsl:choose>
@@ -117,7 +117,7 @@
 	</xsl:when>
 	<xsl:otherwise>
 	<xsl:if test="not(@quiet)">
-	<xsl:element name="NoData"/>
+	<xsl:copy-of select="plotter:addNoData($ChartExtension,$chart)"/>
 	</xsl:if>
 	</xsl:otherwise>
 	</xsl:choose>

@@ -1082,26 +1082,14 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public void setUseReference(boolean val) {
 		use_reference=val;
 	}
-	protected DocumentFragment format(Table table, String type) {
+	protected DocumentFragment format(Table table, String type,String prefix) {
 		if( use_reference ){
 			if( table != null && table.hasData()){
 				return addReference(new TableXMLGenerator(getContext(), nf, table));
 			}
 		}
 		Document document = getDocument();
-		String namespace=null;
-		String prefix=null;
-		NodeList list = document.getChildNodes();
-		// Look for the "report" prefix used by this document
-		// we add content in this namespace
-		for(int i=0 ; i< list.getLength(); i++) {
-			Node n = list.item(i);
-			if( n.getNodeType() == Node.ELEMENT_NODE && ReportBuilder.REPORT_LOC.equals(n.getNamespaceURI()) ) {
-				namespace=ReportBuilder.REPORT_LOC;
-				prefix=n.getPrefix();
-				break;
-			}
-		}
+		
 		DocumentFragment frag = document.createDocumentFragment();
 		if (table != null && table.hasData()) {
 			Class<? extends TableFormatPolicy> clazz = getDefaultTableFormatPolicy();
@@ -1111,8 +1099,10 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			TableFormatPolicy fmt;
 			try {
 				XMLDomBuilder xmlDomBuilder = new XMLDomBuilder(frag);
-				xmlDomBuilder.setNameSpace(namespace);
-				xmlDomBuilder.setPrefix(prefix);
+				if( prefix != null && ! prefix.isEmpty()) {
+					xmlDomBuilder.setNameSpace(ReportBuilder.REPORT_LOC);
+					xmlDomBuilder.setPrefix(prefix);
+				}
 				fmt = getContext().makeParamObject(clazz,xmlDomBuilder, nf);
 				fmt.add(table);
 			} catch (Exception e) {
@@ -1123,5 +1113,26 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	}
 	protected Class<?extends TableFormatPolicy> getDefaultTableFormatPolicy() {
 		return TableXMLFormatter.class;
+	}
+	/** get the xml prefix used in the input document for the report namespace
+	 * 
+	 * This is so we can create elements without defining a new prefix.
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public String getReportPrefix(Node e) {
+		Document doc  = e.getOwnerDocument();
+		String prefix=null;
+		NodeList list = doc.getChildNodes();
+		// Look for the "report" prefix used by this document
+		// we add content in this namespace
+		for(int i=0 ; i< list.getLength(); i++) {
+			Node n = list.item(i);
+			if( n.getNodeType() == Node.ELEMENT_NODE && ReportBuilder.REPORT_LOC.equals(n.getNamespaceURI()) ) {
+				return n.getPrefix();
+			}
+		}
+		return null;
 	}
 }

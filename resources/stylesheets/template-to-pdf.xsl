@@ -102,6 +102,14 @@
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
+	<!--  No page break before first section -->
+	<xsl:template match="rep:Section[1]/rep:Title|rep:Section[1]/rep:Heading|rep:Section[1]/Title">
+		<fo:block font-size="16pt" color="black" font-weight="bold"
+		keep-with-next.within-page="always"
+			space-before.optimum="20pt">
+			<xsl:apply-templates/>
+		</fo:block>
+	</xsl:template>
 	<!-- Convert sub-sections to XSL-FO headings -->
 	<xsl:template match="rep:SubSection/rep:Title|rep:SubSection/rep:Heading|rep:SubSection/Title">
 		<fo:block font-size="14pt" color="black" font-weight="bold"

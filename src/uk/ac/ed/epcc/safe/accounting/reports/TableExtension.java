@@ -1340,7 +1340,7 @@ public class TableExtension extends ReportExtension {
 			}
 		}
 		
-		DocumentFragment frag = format(table, type);
+		DocumentFragment frag = format(table, type,getReportPrefix(n));
 		return frag;
 	}
 
