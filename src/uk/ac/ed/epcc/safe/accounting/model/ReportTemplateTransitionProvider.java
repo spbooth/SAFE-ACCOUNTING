@@ -62,6 +62,7 @@ import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
 import uk.ac.ed.epcc.webapp.model.data.transition.AbstractPathTransitionProvider;
 import uk.ac.ed.epcc.webapp.model.serv.ServeDataProducer;
 import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
+import uk.ac.ed.epcc.webapp.preferences.Preference;
 import uk.ac.ed.epcc.webapp.servlet.ServletService;
 import uk.ac.ed.epcc.webapp.servlet.ViewTransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
@@ -77,7 +78,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 {
 	private static final String FORM_PARAMETER_PREFIX = "__";
 	private static final int FORM_PARAMETER_OFFSET=FORM_PARAMETER_PREFIX.length();
-	
+	public static final Preference DOWNLOAD_FROM_NEW_TAB = new Preference("reports.download_from_new_tab",true,"Open a new tab when generating pdf/csv etc. reports");
 	//private static final String SERVE_DATA_DEFAULT_TAG = "ServeData";
 	public static final Feature LOG_REPORT_USE = new Feature("reports.log_report_use",
 			false,
@@ -183,11 +184,12 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			private Report target;
 			private Object text;
 			private ReportTemplateKey next_transition;
-			public NextAction(Object text,Report target,ReportTemplateKey next_transition) {
+			public NextAction(Object text,Report target,ReportTemplateKey next_transition,boolean new_window) {
 				super();
 				this.text=text;
 				this.target = target;
 				this.next_transition=next_transition;
+				setNewWindow(new_window);
 			}
 
 			@Override
@@ -232,12 +234,12 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				builder.buildReportParametersForm(f, parameters);
 				setMap(parameters, target.getContextParameters(), f, false);
 				if( builder.hasReportParameters()){
-					f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,PREVIEW));
+					f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,PREVIEW,false));
 				}
-
-				f.addAction("HTML", new NextAction(new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, HTML));
-				f.addAction("PDF", new NextAction(new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target,PDF));
-				f.addAction("CSV", new NextAction(new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, CSV));
+				boolean new_window=DOWNLOAD_FROM_NEW_TAB.isEnabled(conn);
+				f.addAction("HTML", new NextAction(new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, HTML,new_window));
+				f.addAction("PDF", new NextAction(new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target,PDF,new_window));
+				f.addAction("CSV", new NextAction(new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, CSV,new_window));
 				
 			}
 			catch (Exception e) {
