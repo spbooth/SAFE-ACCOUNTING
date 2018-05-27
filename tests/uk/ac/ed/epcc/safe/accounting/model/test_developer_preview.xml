@@ -33,11 +33,11 @@
 <fieldset class="action_buttons">
 <button class="input_button" type="submit" title="Generate Preview" name="Preview" value="Preview">
 <img class="icon" alt="Preview" src="test/accounting/preview-file-48x48.png"/>Preview</button>
-<button class="input_button" type="submit" title="Generate HTML" name="HTML" value="HTML">
+<button class="input_button" type="submit" formtarget="_blank" title="Generate HTML" name="HTML" value="HTML">
 <img class="icon" alt="HTML" src="test/accounting/html-file-48x48.png"/>HTML</button>
-<button class="input_button" type="submit" title="Generate PDF" name="PDF" value="PDF">
+<button class="input_button" type="submit" formtarget="_blank" title="Generate PDF" name="PDF" value="PDF">
 <img class="icon" alt="PDF" src="test/accounting/pdf-file-48x48.png"/>PDF</button>
-<button class="input_button" type="submit" title="Generate CSV" name="CSV" value="CSV">
+<button class="input_button" type="submit" formtarget="_blank" title="Generate CSV" name="CSV" value="CSV">
 <img class="icon" alt="CSV" src="test/accounting/csv-file-48x48.png"/>CSV</button>
 </fieldset>
 </Form>
