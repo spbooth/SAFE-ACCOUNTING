@@ -164,7 +164,7 @@
 				<xsd:element name="Label" type="par:TextOrParameterType"
 					minOccurs="0" maxOccurs="1" >
 				<xsd:annotation><xsd:documentation>
-				A MapperEntry to assign data to catagories
+				A MapperEntry to assign data to categories
 				</xsd:documentation></xsd:annotation>	
 				</xsd:element>
 			</xsd:choice>
