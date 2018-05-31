@@ -940,7 +940,10 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			SessionService<?> sess) {
 		return cb;
 	}
-
+	public <X extends ContentBuilder> X getBottomContent(X cb, T target,
+			SessionService<?> sess) {
+		return cb;
+	}
 	public <R> R accept(TransitionFactoryVisitor<R,T, AllocationKey<T>> vis) {
 		return vis.visitTransitionProvider(this);
 		
