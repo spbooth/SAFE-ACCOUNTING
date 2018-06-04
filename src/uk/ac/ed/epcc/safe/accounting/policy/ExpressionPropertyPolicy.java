@@ -46,8 +46,8 @@ import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
-/** This policy allows derived property expressions to be defined for 
- * properties in scope. It also provides a mechanism for {@link ConfigPropertyRegistry} objects to
+/** This policy allows new properties to be defined as derived property expressions. 
+ * It also provides a mechanism for {@link ConfigPropertyRegistry} objects to
  * be included in scope so that entirely new properties can be defined.
  * This is intended to be a replacement for the {@link DerivedPropertyPolicy} so
  * the property definitions are compatible with this and the syntax supported by {@link PropExpressionMap}but it requires additional configuration parameters.

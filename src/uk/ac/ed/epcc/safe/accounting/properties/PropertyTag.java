@@ -159,5 +159,8 @@ public class PropertyTag<T> implements PropExpression<T> {
 	public PropertyTag<T> copy() {
 		return this;
 	}
+	public static boolean allowedName(String name) {
+		return name_pattern.matcher(name).matches();
+	}
 	   
 }

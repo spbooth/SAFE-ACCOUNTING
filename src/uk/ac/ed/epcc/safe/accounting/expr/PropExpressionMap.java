@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.properties.FixedPropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -127,12 +128,13 @@ public int size() {
 	return map.size();
 }
 
-/** Populate the PropExpressionMap from configuration properties.
+/** Populate the PropExpressionMap from configuration properties creating properties in a registry.
  * 
  * This is under the control of java properties of the form
  * <b>
  * properties.<em>table-name</em>.name=<em>prop-expression</em>
  * </b>
+ * 
  * 
  * 
  * @param reg PropertyRegistry to add definitions to 
@@ -152,8 +154,8 @@ public int size() {
 		for(String key : derived_properties.keySet()){
 			try {
 				resolve(reg, ctx, prefix, missing, parser, derived_properties, key);
-			} catch (UnresolvedNameException e) {
-				getLogger(ctx).error("Cannot resolve property",e);
+			} catch (Throwable e) {
+				getLogger(ctx).error("Cannot resolve property for: "+key.toString()+"="+derived_properties.get(key),e);
 			}
 		}
   }
@@ -191,7 +193,16 @@ private void resolve(PropertyRegistry reg, AppContext ctx, String prefix,
 		}
 	}
 }
-  @SuppressWarnings("unchecked")
+
+/** Add aliases to existing properties.
+ * 
+ * Note i
+ * 
+ * @param prev
+ * @param ctx
+ * @param table
+ */
+@SuppressWarnings("unchecked")
 public void addFromProperties(PropertyFinder prev, AppContext ctx, String table ){
 	  String prefix=PROPERTY_PREFIX+table+".";
 		Parser parser = new Parser(ctx,prev);
