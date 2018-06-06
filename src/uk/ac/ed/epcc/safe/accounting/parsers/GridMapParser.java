@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
@@ -41,7 +41,8 @@ public class GridMapParser extends AbstractPropertyContainerParser {
 	public static final PropertyTag<String> GRIDMAP_USER = new PropertyTag<String>(gridmap_reg, "UserName",String.class);
 	public static final PropertyTag<String> GRIDMAP_DN = new PropertyTag<String>(gridmap_reg, "Dn",String.class);
 	private static final Pattern parse_pattern = Pattern.compile("\"(.+)\"\\s+(\\w+)");
-	public boolean parse(PropertyMap map, String record)
+	@Override
+	public boolean parse(DerivedPropertyMap map, String record)
 			throws AccountingParseException {
 		Matcher m = parse_pattern.matcher(record);
 		if( m.matches()){

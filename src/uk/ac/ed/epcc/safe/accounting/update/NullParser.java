@@ -17,10 +17,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
@@ -60,8 +60,8 @@ public class NullParser implements PropertyContainerParser<String> {
 		return t;
 	}
 
-	
-	public boolean parse(PropertyMap map, String record)
+	@Override
+	public boolean parse(DerivedPropertyMap map, String record)
 			throws AccountingParseException {
 		return false;
 	}

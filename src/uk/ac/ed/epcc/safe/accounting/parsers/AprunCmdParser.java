@@ -2,12 +2,12 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.util.Iterator;
 
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.BooleanParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
 import uk.ac.ed.epcc.safe.accounting.properties.AttributePropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
@@ -326,7 +326,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	 * @return true if aprun command is successfully parsed
 	 * @throws AccountingParseException
 	 */
-	public boolean parse(PropertyMap map, String record) throws AccountingParseException {
+	public boolean parse(DerivedPropertyMap map, String record) throws AccountingParseException {
 		
 		this.cmd = record.trim();
 		

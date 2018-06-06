@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -104,6 +105,9 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		// 2) the latest definition set by itself or subsequent stages 
 		PropExpressionMap derived = new PropExpressionMap();
 		PropertyContainerParser<R> parser = plugin_owner.getParser();
+		if( parser == null) {
+			throw new AccountingParseException("No PropertyContainerParser");
+		}
 		if (parser.parse(map, current_line)) {
 			derived = parser.getDerivedProperties(derived);
 			map.addDerived(derived);
@@ -471,5 +475,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 			
 			return map;
 		}
+
+	
 
 }

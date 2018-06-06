@@ -18,14 +18,13 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
-import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.webapp.AppContext;
 
 /** Parser for standard unix password files 
@@ -47,8 +46,8 @@ public class PasswdParser extends AbstractPropertyContainerParser {
 	public static final PropertyTag<String> DIR = new PropertyTag<String>(passwd,"HomeDir",String.class,"Home directory of user");
 	public static final PropertyTag<String> SHELL = new PropertyTag<String>(passwd,"Shell",String.class,"Login shell of user");
 	
-
-	public boolean parse(PropertyMap map, String record)
+	@Override
+	public boolean parse(DerivedPropertyMap map, String record)
 			throws AccountingParseException {
 		if (record.trim().length() == 0 || record.startsWith("#")) {
 			return false;

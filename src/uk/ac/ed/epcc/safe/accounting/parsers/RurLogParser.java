@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.LongParser;
@@ -440,7 +441,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	 * @return true if rur entry is successfully parsed
 	 * @throws AccountingParseException
 	 */
-	public boolean parse(PropertyMap map, String record) throws AccountingParseException {
+	public boolean parse(DerivedPropertyMap map, String record) throws AccountingParseException {
 		
 		record = record.trim();
 		

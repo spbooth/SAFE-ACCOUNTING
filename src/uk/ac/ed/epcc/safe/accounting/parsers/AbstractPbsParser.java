@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
@@ -683,7 +684,8 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	 * uk.ac.ed.epcc.safe.accounting.UsageRecordParser#parse(uk.ac.ed.epcc.safe
 	 * .accounting.PropertyMap, java.lang.String)
 	 */
-	public boolean parse(PropertyMap pbsMap, String record)
+	@Override
+	public boolean parse(DerivedPropertyMap pbsMap, String record)
 	throws AccountingParseException {
 		String args[] = record.split(";");
 		if (args.length < 3)

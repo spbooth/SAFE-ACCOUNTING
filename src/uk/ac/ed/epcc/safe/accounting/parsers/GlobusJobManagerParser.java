@@ -27,12 +27,12 @@ import java.util.regex.Pattern;
 import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.policy.LinkPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
@@ -118,7 +118,8 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 	private String tag;
 	private AppContext conn;
 	Logger log;
-	public boolean parse(PropertyMap map, String record)
+	@Override
+	public boolean parse(DerivedPropertyMap map, String record)
 			throws AccountingParseException {
 	
 		if(record.trim().length()==0){

@@ -17,11 +17,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
-import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -78,8 +78,8 @@ public abstract class AbstractKeyPairParser extends BatchParser implements Conte
 		this.warnings = new ErrorSet();
 		
 	}
-	
-	public boolean parse(PropertyMap map, String record)
+	@Override
+	public boolean parse(DerivedPropertyMap map, String record)
 			throws AccountingParseException {
 		// split the record into keyword/value pairs
 		// fetch a ContainerEntryMaker from the keyword.

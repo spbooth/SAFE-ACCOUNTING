@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
@@ -158,7 +159,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	private Logger log;
 	private boolean parse_timezone=true;
 	@Override
-	public boolean parse(PropertyMap map, String record) throws AccountingParseException {
+	public boolean parse(DerivedPropertyMap map, String record) throws AccountingParseException {
 		
 		if (record.trim().length() == 0) {
 			return false;

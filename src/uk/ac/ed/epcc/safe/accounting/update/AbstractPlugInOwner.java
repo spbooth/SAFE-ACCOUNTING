@@ -29,6 +29,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -45,7 +46,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * @param <T> target type for {@link TransitionSource}
  * @param <R> {@link PropertyContainerParser} IR type
  */
-public abstract class AbstractPlugInOwner<T extends DataObjectFactory,R> implements Contexed, PlugInOwner<R>, SummaryProvider, TableTransitionContributor, ConfigParamProvider {
+public abstract class AbstractPlugInOwner<T extends DataObjectFactory,R> implements Contexed, PlugInOwner<R>, TableContentProvider, TableTransitionContributor, ConfigParamProvider {
   
 	private final AppContext c;
     private final String tag;
@@ -123,8 +124,8 @@ public abstract class AbstractPlugInOwner<T extends DataObjectFactory,R> impleme
     public final String getTag(){
     	return tag;
     }
-    public void getTableTransitionSummary(ContentBuilder hb,
-			SessionService operator) {
+    public void addSummaryContent(ContentBuilder hb) {
+    	SessionService operator = getContext().getService(SessionService.class);
 		hb.addHeading(3,"Parser");
 		PropertyContainerParser parser = getParser();
 		if( parser != null ){

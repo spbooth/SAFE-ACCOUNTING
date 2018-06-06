@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
@@ -449,8 +450,8 @@ public class LSFParser extends BatchParser implements  Contexed {
 		}
 		return readTime(s);
 	}
-	
-	public boolean parse(PropertyMap r,String record) throws AccountingParseException {
+	@Override
+	public boolean parse(DerivedPropertyMap r,String record) throws AccountingParseException {
 
 		
 		List<String> values = null;

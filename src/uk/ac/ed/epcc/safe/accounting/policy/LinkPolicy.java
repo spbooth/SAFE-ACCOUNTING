@@ -26,13 +26,13 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
@@ -193,7 +193,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void parse(PropertyMap rec) throws AccountingParseException {
+	public void parse(DerivedPropertyMap rec) throws AccountingParseException {
 		if( remote_tag != null ){
 		   AndRecordSelector sel = new AndRecordSelector();
 		   for(PropertyTag local : match_map.keySet()){

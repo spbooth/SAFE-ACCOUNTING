@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.ogf.ur.XMLSplitter;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.DomValueParser;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -222,7 +223,8 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 	 * uk.ac.ed.epcc.safe.accounting.UsageRecordParser#parse(uk.ac.ed.epcc.safe
 	 * .accounting.PropertyMap, java.lang.String)
 	 */
-	public boolean parse(PropertyMap map, String record)
+	@Override
+	public boolean parse(DerivedPropertyMap map, String record)
 			throws AccountingParseException {
 		try {
 		

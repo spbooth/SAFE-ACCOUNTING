@@ -8,12 +8,12 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.db.RegexpTarget;
 import uk.ac.ed.epcc.safe.accounting.db.RegexpTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
@@ -107,7 +107,7 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 	}
 	
 	@Override
-	public void parse(PropertyMap rec) throws AccountingParseException {
+	public void parse(DerivedPropertyMap rec) throws AccountingParseException {
 		records++;
 		
 		if( link_prop == null || target_prop == null){

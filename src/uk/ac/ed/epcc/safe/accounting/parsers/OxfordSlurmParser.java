@@ -5,16 +5,15 @@ import java.util.Date;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.DateParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.SlurmDurationParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.SlurmMemoryParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParseException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
@@ -106,7 +105,7 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed,ConfigPa
 	private String table;
 	
 	@Override
-	public boolean parse(PropertyMap map, String record) throws AccountingParseException {
+	public boolean parse(DerivedPropertyMap map, String record) throws AccountingParseException {
 		String fields[] = record.trim().split("\\|");
 		String state;
 		int pos=0;

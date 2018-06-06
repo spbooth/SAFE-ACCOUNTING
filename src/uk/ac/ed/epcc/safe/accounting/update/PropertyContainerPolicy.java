@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.update;
 
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
@@ -44,7 +45,7 @@ public interface PropertyContainerPolicy extends PropertyContainerUpdater {
 	 *            PropertyMap being modified
 	 * @throws AccountingParseException
 	 */
-	public void parse(PropertyMap rec) throws AccountingParseException;
+	public void parse(DerivedPropertyMap rec) throws AccountingParseException;
 	
 	
 }

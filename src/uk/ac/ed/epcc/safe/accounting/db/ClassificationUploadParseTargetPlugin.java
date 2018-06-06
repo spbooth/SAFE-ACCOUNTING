@@ -3,6 +3,7 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
@@ -74,7 +75,7 @@ public class ClassificationUploadParseTargetPlugin<T extends Classification,R> e
 		PropertyTag<String> match = getMatchProp();
 		if(match != null && pol != null && pol.size() > 0){
 			try{
-				PropertyMap map = new PropertyMap();
+				DerivedPropertyMap map = new DerivedPropertyMap(getContext());
 				map.setProperty(match, name);
 				for(PropertyContainerPolicy p : pol){
 					p.startParse(null);

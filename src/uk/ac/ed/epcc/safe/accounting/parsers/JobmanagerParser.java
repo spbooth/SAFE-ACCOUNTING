@@ -22,12 +22,12 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.DateParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
@@ -76,7 +76,8 @@ public class JobmanagerParser extends BaseParser {
 		};
 	}
 	@SuppressWarnings("unchecked")
-	public boolean parse(PropertyMap map, String record)
+	@Override
+	public boolean parse(DerivedPropertyMap map, String record)
 			throws AccountingParseException {
 		Matcher m = arg_pattern.matcher(record);
 		while( m.find() ){

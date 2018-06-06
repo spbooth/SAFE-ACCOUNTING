@@ -25,6 +25,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -32,7 +33,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
@@ -101,7 +101,7 @@ public class MatcherFinderPolicy extends BasePolicy implements Contexed,TableTra
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public void parse(PropertyMap rec) throws AccountingParseException {
+	public void parse(DerivedPropertyMap rec) throws AccountingParseException {
 
 		for(PropertyTag<String> tag : finders.keySet()){
 			log.debug("parse clientname for "+tag+" from "+rec.getClass().getCanonicalName());

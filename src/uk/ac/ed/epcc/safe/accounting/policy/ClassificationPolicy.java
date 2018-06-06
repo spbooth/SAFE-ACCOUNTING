@@ -35,7 +35,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
@@ -112,7 +111,7 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public void parse(PropertyMap rec) throws AccountingParseException {
+	public void parse(DerivedPropertyMap rec) throws AccountingParseException {
 
 		for(PropertyTag<String> tag : caches.keySet()){
 			log.debug("parse classification for "+tag+" from "+rec.getClass().getCanonicalName());

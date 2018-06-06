@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTarget;
+import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 
@@ -46,7 +47,7 @@ public interface PropertyContainerParser<R> extends PropertyContainerUpdater{
 	 * @return true if parse ok
 	 * @throws AccountingParseException
 	 */
-  public boolean parse(PropertyMap map,R record) throws AccountingParseException;
+  public boolean parse(DerivedPropertyMap map,R record) throws AccountingParseException;
   /** Split multiple usage records into individual usage records.
    * 
    * Though the individual records are usually also represented as Strings they can
