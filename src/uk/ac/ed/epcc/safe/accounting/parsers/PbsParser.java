@@ -446,9 +446,9 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
         		}else{
         			Matcher m2 = patt2.matcher(vnode);
         			if( m2.matches()) {
-        				node_set.add(m.group("VNODE"));
-        				int min = Integer.parseInt(m.group("MIN"));
-        				int max = Integer.parseInt(m.group("MAX"));
+        				node_set.add(m2.group("VNODE"));
+        				int min = Integer.parseInt(m2.group("MIN"));
+        				int max = Integer.parseInt(m2.group("MAX"));
         				if( max > min) {
         					cpus += max-min+1;
         				}else {
