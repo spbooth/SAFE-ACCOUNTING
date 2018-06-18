@@ -427,7 +427,8 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
         private int cpus;
         private Set<String> node_set = new HashSet<String>();
         private static Pattern patt = Pattern.compile("(?<VNODE>[A-Za-z0-9\\.\\-]+)/\\d+(?<COUNT>\\*\\d+)?");
-        
+        // This is not documented in the manual but has been seen in practice
+        private static Pattern patt2 = Pattern.compile("(?<VNODE>[A-Za-z0-9\\.\\-]+)/(?<MIN>\\d+)\\-(?<MAX>\\d+)?");
         private void parse(String execHost) throws AccountingParseException{
         	node_set.clear();
         	nodes=0;
@@ -439,11 +440,23 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
         			String count = m.group("COUNT");
         			if( count != null && ! count.isEmpty() ){
         				cpus += Integer.parseInt(count.substring(1));
-        			}{
+        			}else{
         				cpus++;
         			}
         		}else{
-        			throw new AccountingParseException("Bad vnode "+vnode);
+        			Matcher m2 = patt2.matcher(vnode);
+        			if( m2.matches()) {
+        				node_set.add(m.group("VNODE"));
+        				int min = Integer.parseInt(m.group("MIN"));
+        				int max = Integer.parseInt(m.group("MAX"));
+        				if( max > min) {
+        					cpus += max-min+1;
+        				}else {
+        					cpus++;
+        				}
+        			}else {
+        				throw new IllegalArgumentException("Bad vnode "+vnode);
+        			}
         		}
         	}
         	nodes=node_set.size();
