@@ -55,6 +55,7 @@ public class PropertyHistoryComposite<P extends DataObject,F extends DataObjectF
 	 */
 	public void customAccessors(AccessorMap<H> mapi2, MultiFinder finder,
 			PropExpressionMap derived) {
+		finder.addFinder(StandardProperties.time);
 		finder.addFinder(history);
 		if( useHistoryAsTimeBounds()){
 			try{

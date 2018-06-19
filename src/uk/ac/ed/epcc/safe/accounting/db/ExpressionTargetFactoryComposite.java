@@ -82,15 +82,16 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 
 
 			expression_map.addFromProperties(derived, finder, getContext(), table);
+			
+			map.addDerived(getContext(), expression_map);
+			finder.addFinder(derived);
 			// Check all definitions are registered
 			for(PropertyTag tag : expression_map.keySet()) {
 				if( ! finder.hasProperty(tag)) {
-					getLogger().error("Derived property set for "+tag.getFullName()+" but not registered in finder");
+					PropExpression expr = expression_map.get(tag);
+					getLogger().error("Derived property set for "+tag.getFullName()+"="+expr.toString()+" but not registered in finder");
 				}
 			}
-			map.addDerived(getContext(), expression_map);
-			finder.addFinder(derived);
-
 			reg=finder;
 		}finally{
 			in_init=false;
