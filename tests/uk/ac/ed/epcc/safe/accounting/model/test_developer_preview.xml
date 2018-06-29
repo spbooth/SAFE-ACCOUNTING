@@ -15,7 +15,7 @@
 <h4>Report Developer Information</h4>
 <div class="para">You have the ReportDeveloper role active. The links below give access to additional information to aid in debugging the reports.</div>
 <div class="para">This report completed without error.</div>
-<a href="test/Data/ServeData/1/logdata.txt">Logs from report generation</a>
+<a href="test/Data/ServeData/1/logdata.txt" target="_blank">Logs from report generation</a>
 <h4>Report Parameters</h4>
 <div class="para">Enter the parameters and click 'Preview' to view the report, or click on the report type to generate the report.</div>
 </ExtraContent>
