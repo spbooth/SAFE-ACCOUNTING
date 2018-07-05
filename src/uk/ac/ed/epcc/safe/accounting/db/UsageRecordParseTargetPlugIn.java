@@ -476,6 +476,13 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 			return map;
 		}
 
+	@Override
+	public void addSummaryContent(ContentBuilder cb) {
+		super.addSummaryContent(cb);
+		cb.addHeading(3, "Unique properties");
+		cb.addList(getUniqueProperties());
+	}
+
 	
 
 }
