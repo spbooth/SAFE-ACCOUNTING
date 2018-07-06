@@ -118,7 +118,8 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  *
  */
 public class ParameterExtension extends ReportExtension {
-    static final String PARAMETER_REF_ELEMENT = "ParameterRef";
+    private static final String TITLE_ATTR = "title";
+	static final String PARAMETER_REF_ELEMENT = "ParameterRef";
 	private static final String FORMAT_PARAMETER_ELEMENT = "FormatParameter";
 	private static final String FOR_ELEMENT = "For";
 	private static final String CONTENT_ELEM = "Content";
@@ -191,7 +192,12 @@ public class ParameterExtension extends ReportExtension {
 				}
 
 			}
-			form.addInput(name, label, input);
+
+			String title = getAttribute(TITLE_ATTR, param);
+			if( empty(title)) {
+				title=null;
+			}
+			form.addInput(name, label, title,input);
 
 		}
 	}
