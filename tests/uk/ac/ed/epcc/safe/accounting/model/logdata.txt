@@ -122,6 +122,7 @@ lookup attribute [length] in par:ParameterDef, found
 lookup attribute [optional] in par:ParameterDef, found 
 lookup attribute [unselected] in par:ParameterDef, found 
 lookup attribute [label] in par:ParameterDef, found 
+lookup attribute [title] in par:ParameterDef, found 
 dirs=stylesheets
 input stream resource name is stylesheets/parameters.xsl
 dirs=stylesheets

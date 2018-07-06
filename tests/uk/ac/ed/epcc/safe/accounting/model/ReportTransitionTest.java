@@ -152,7 +152,7 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		String result = out.toString().trim();
 		System.out.println("##################");
 		String expect = getResourceAsString("logdata.txt").trim();
-		String diff = TestDataHelper.diff(expect, result);
+		String diff = TestDataHelper.diff(expect.replaceAll("\r\n", "\n"), result.replaceAll("\r\n", "\n"));
 		System.out.println(diff);
 		assertTrue("log differs",diff.length()==0);
 	}
