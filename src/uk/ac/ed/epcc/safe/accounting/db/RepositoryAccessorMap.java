@@ -403,6 +403,18 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		
 	}
 	
+	/** get a unique name for this {@link AccessorMap} when caching cutoffs in the session. 
+	 * 
+	 * @return
+	 */
+	protected String getCutoffTag() {
+		String tag = res.getTable();
+		String db_tag = getDBTag();
+		if( db_tag != null ) {
+			tag = db_tag+":"+tag;
+		}
+		return tag;
+	}
 	protected String getDBTag() {
 		return res.getDBTag();
 	}
@@ -477,7 +489,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 			if(calc_cutoff ==null){
 				
 				TimerService timer = getContext().getService(TimerService.class);
-				String cutoff_name = "auto_cutoff."+getDBTag()+"_"+start.toString()+"_"+end.toString();
+				String cutoff_name = "auto_cutoff."+getCutoffTag()+"_"+start.toString()+"_"+end.toString();
 				if(CACHE_CUTOFFS.isEnabled(getContext())) {
 					sess = getContext().getService(SessionService.class);
 					if(sess !=null) {
