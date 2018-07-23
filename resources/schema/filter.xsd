@@ -99,7 +99,7 @@
 		<xsd:element name="Or" type="OperationsType" />
 		<xsd:element name="Null" type="NullType" />
 		<xsd:element name="NotNull" type="NullType" />
-		<xsd:element name="Relationship" type="xsd:string"></xsd:element>
+		<xsd:element name="Relationship" type="xsd:anyType"></xsd:element>
 	</xsd:choice>
 	</xsd:group>
 

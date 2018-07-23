@@ -1,6 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.model;
 
 import java.util.Date;
+import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.NameFinderUploadParseTargetPlugIn;
@@ -55,13 +56,13 @@ public class AppUserUploadParseTargetPlugin<A extends AppUser,R> extends NameFin
 	@Override
 	public void customAccessors(AccessorMap<A> mapi2, MultiFinder finder, PropExpressionMap derived) {
 		finder.addFinder(person_registy);
-		String role_list = getContext().getExpandedProperty(RoleUpdate.ROLE_LIST_CONFIG);
-		if( role_list != null ){
+		Set<String> role_list = getContext().getService(SessionService.class).getStandardRoles();
+		if( role_list != null && !role_list.isEmpty()){
 			@SuppressWarnings("unchecked")
 			SessionService<A> serv = getContext().getService(SessionService.class);
 
 			PropertyRegistry role_reg = new PropertyRegistry("roles", "role properties");
-			for( String role : role_list.trim().split("\\s*,\\s*") ){
+			for( String role :  role_list){
 				PropertyTag<Boolean> role_tag = new PropertyTag<Boolean>(role_reg, role, Boolean.class);
 				mapi2.put(role_tag, new RoleAccessor<A>(serv, role));
 			}
