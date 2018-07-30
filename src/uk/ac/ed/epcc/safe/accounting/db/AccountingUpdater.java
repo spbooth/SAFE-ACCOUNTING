@@ -142,7 +142,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     			if( target.parse(map, current_line) ){
     				// add date and text
     				map.setProperty(StandardProperties.INSERTED_PROP, start);
-    				map.setProperty(StandardProperties.TEXT_PROP, fmt);
+    				map.setProperty(StandardProperties.TEXT_PROP, fmt.trim());
     				
     				Date point = map.getProperty(StandardProperties.ENDED_PROP, null);
     				if( point != null ){
