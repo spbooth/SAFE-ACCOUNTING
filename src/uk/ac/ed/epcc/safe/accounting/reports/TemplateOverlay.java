@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -27,20 +28,29 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 
+import uk.ac.ed.epcc.safe.accounting.model.Report;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
 import uk.ac.ed.epcc.webapp.content.Link;
+import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.editors.xml.DomVisitor;
 import uk.ac.ed.epcc.webapp.forms.html.RedirectResult;
 import uk.ac.ed.epcc.webapp.forms.inputs.ConstantInput;
+import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.IntegerFieldType;
+import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
+import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.forms.registry.SummaryContentProvider;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedTypeProducer;
 import uk.ac.ed.epcc.webapp.model.xml.XMLOverlay;
+import uk.ac.ed.epcc.webapp.session.AppUser;
+import uk.ac.ed.epcc.webapp.session.AppUserFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
 /** A TextFileOverlay that validates updates as report templates.
@@ -51,7 +61,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X> implements SummaryContentProvider<X>{
+public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOverlay<X> implements SummaryContentProvider<X>{
 
 	public static class ReportFile extends XMLFile{
 
@@ -71,8 +81,29 @@ public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X>
 				}
 			}
 		}
+		public Date getLastModified() {
+			return record.getDateProperty(UPDATED);
+		}
+		public AppUser getLastEditor() {
+			AppUserFactory<?> loginFactory = getContext().getService(SessionService.class).getLoginFactory();
+			return record.getProperty(new IndexedTypeProducer(getContext(), UPDATED_BY, loginFactory));
+		}
+		@Override
+		protected void pre_commit(boolean dirty) throws DataFault {
+			if( dirty) {
+				try {
+					record.setOptionalProperty(UPDATED, getContext().getService(CurrentTimeService.class).getCurrentTime());
+					AppUserFactory<?> loginFactory = getContext().getService(SessionService.class).getLoginFactory();
+					record.setOptionalProperty(new IndexedTypeProducer(getContext(), UPDATED_BY, loginFactory), getContext().getService(SessionService.class).getCurrentPerson());
+				}catch(Throwable t) {
+					getLogger().error("Error logging change", t);
+				}
+			}
+		}
 	}
 	private static final String USE_COUNTER = "UseCounter";
+	private static final String UPDATED_BY = "UpdatedBy";
+	private static final String UPDATED = "Updated";
 	private ReportBuilder builder=null;
 	public TemplateOverlay(AppContext c, String table) throws URISyntaxException, ParserConfigurationException {
 		super(c, table);
@@ -146,6 +177,8 @@ public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X>
 			String table) {
 		final TableSpecification spec = super.getDefaultTableSpecification(c, table);
 		spec.setOptionalField(USE_COUNTER, new IntegerFieldType());
+		spec.setOptionalField(UPDATED, new DateFieldType(true, null));
+		spec.setOptionalField(UPDATED_BY, new ReferenceFieldType(c.getService(SessionService.class).getLoginFactory().getTag()));
 		return spec;
 	}
 
@@ -160,7 +193,43 @@ public class TemplateOverlay<X extends XMLOverlay.XMLFile> extends XMLOverlay<X>
 			}
 			cb.addList(links);
 		}
+		try {
+			Table t = new Table();
+			Date lastModified = target.getLastModified();
+			if( lastModified != null) {
+				t.put("Value", "Last updated", lastModified);
+			}
+			AppUser lastEditor = target.getLastEditor();
+			if( lastEditor != null) {
+				t.put("Value", "Updated by", lastEditor);
+			}
+			t.setKeyName("Property");
+			if( t.hasData()) {
+				cb.addColumn(c, t, "Value");
+			}
+		}catch(Throwable t) {
+			getLogger().error("Error adding edit info",t);
+		}
 		return cb;
+	}
+
+	@Override
+	protected Set<String> getSupress() {
+		Set<String> supress = super.getSupress();
+		supress.add(USE_COUNTER);
+		supress.add(UPDATED);
+		supress.add(UPDATED_BY);
+		return supress;
+	}
+
+	@Override
+	protected DataObject makeBDO(Record res) throws DataFault {
+		return new ReportFile(res, getBaseURL());
+	}
+
+	@Override
+	public Class<? super X> getTarget() {
+		return ReportFile.class;
 	}
 	
 	

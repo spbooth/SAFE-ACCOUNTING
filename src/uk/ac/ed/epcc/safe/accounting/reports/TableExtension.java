@@ -265,7 +265,8 @@ public class TableExtension extends ReportExtension {
 							String prop_name = conn.getExpandedProperty("jobtable.property."+tag, tag);
 							PropertyTag t = finder.find(prop_name);
 							if( t != null ){
-								String label = conn.getExpandedProperty("propertylabel."+t.getName());
+								// can use name or tag for label
+								String label = conn.getExpandedProperty("propertylabel."+tag,conn.getExpandedProperty("propertylabel."+t.getName()));
 								Transform tr = conn.makeObjectWithDefault(Transform.class, null, "propertytransform", t.getName());
 								if( tr == null){
 									Labeller l = conn.makeObjectWithDefault(Labeller.class, null, "propertylabeller", t.getName());
