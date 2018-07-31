@@ -84,7 +84,7 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 			return record.getDateProperty(UPDATED);
 		}
 		public void setLastModified(Date d) {
-			record.setProperty(UPDATED, d);
+			record.setOptionalProperty(UPDATED, d);
 		}
 		public <A extends AppUser> A getLastEditor() {
 			@SuppressWarnings("unchecked")
@@ -94,7 +94,7 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 		public <A extends AppUser> void setLastEditor(A person) {
 			@SuppressWarnings("unchecked")
 			AppUserFactory<A> loginFactory = getContext().getService(SessionService.class).getLoginFactory();
-			record.setProperty(new IndexedTypeProducer<A,AppUserFactory<A>>(getContext(), UPDATED_BY, loginFactory),person);
+			record.setOptionalProperty(new IndexedTypeProducer<A,AppUserFactory<A>>(getContext(), UPDATED_BY, loginFactory),person);
 		}
 		@Override
 		protected void pre_commit(boolean dirty) throws DataFault {
