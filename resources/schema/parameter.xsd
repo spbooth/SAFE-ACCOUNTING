@@ -163,7 +163,9 @@
 			</xsd:annotation>
 		</xsd:attribute>
 		<xsd:attribute name="title" type="xsd:string" use="optional"></xsd:attribute>
-	</xsd:complexType>
+		<xsd:attribute name="min" type="xsd:string"></xsd:attribute>
+            <xsd:attribute name="max" type="xsd:string"></xsd:attribute>
+        </xsd:complexType>
 	</xsd:element>
     <xsd:complexType name="ValueType">
 	<xsd:sequence>

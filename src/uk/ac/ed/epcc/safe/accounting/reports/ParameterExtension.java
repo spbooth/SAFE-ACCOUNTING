@@ -64,6 +64,7 @@ import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.BoundedInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.DayMultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.DoubleInput;
@@ -81,6 +82,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInputWrapper;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.RangedInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.RealInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.RegularPeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
@@ -133,6 +135,8 @@ public class ParameterExtension extends ReportExtension {
 	private static final String FORMAT_ATTR = "format";
 	private static final String LENGTH_ATTR = "length";
 	private static final String OPTIONAL_ATTR = "optional";
+	private static final String MIN_ATTR = "min";
+	private static final String MAX_ATTR = "max";
 	private static final String UNSELECTED_ATTR = "unselected";
 	private static final String VALUE_ATTR = "value";
 	private static final String NAME_ATTR = "name";
@@ -230,6 +234,26 @@ public class ParameterExtension extends ReportExtension {
 			if (! empty(optional)) {
 				isOptional = Boolean.parseBoolean(optional);		
 				optionalInput.setOptional(isOptional);
+			}
+		}
+		// set min/max
+		if( input instanceof BoundedInput) {
+			BoundedInput boundedInput = (BoundedInput)input;
+			String min = getAttribute(MIN_ATTR, param);
+			if( min != null) {
+				try {
+					boundedInput.setMin(input.convert(min));
+				}catch(Throwable t) {
+					addError("bad minimum", min,t);
+				}
+			}
+			String max = getAttribute(MAX_ATTR, param);
+			if( max != null) {
+				try {
+					boundedInput.setMax(input.convert(max));
+				}catch(Throwable t) {
+					addError("bad maximum", max,t);
+				}
 			}
 		}
 		String unselected = getAttribute(UNSELECTED_ATTR, param);
