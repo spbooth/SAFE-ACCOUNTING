@@ -14,7 +14,6 @@ import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.session.AppUser;
 import uk.ac.ed.epcc.webapp.session.AppUserFactory;
 import uk.ac.ed.epcc.webapp.session.EmailNameFinder;
-import uk.ac.ed.epcc.webapp.session.RoleUpdate;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.session.SignupDateComposite;
 import uk.ac.ed.epcc.webapp.session.WebNameFinder;
@@ -63,8 +62,12 @@ public class AppUserUploadParseTargetPlugin<A extends AppUser,R> extends NameFin
 
 			PropertyRegistry role_reg = new PropertyRegistry("roles", "role properties");
 			for( String role :  role_list){
-				PropertyTag<Boolean> role_tag = new PropertyTag<Boolean>(role_reg, role, Boolean.class);
-				mapi2.put(role_tag, new RoleAccessor<A>(serv, role));
+				try {
+					PropertyTag<Boolean> role_tag = new PropertyTag<Boolean>(role_reg, role, Boolean.class);
+					mapi2.put(role_tag, new RoleAccessor<A>(serv, role));
+				}catch(Throwable t) {
+					getLogger().error("Error making role accessor for ["+role+"]", t);
+				}
 			}
 			finder.addFinder(role_reg);
 		}

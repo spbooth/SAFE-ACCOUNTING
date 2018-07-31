@@ -70,10 +70,18 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 			PropertyRegistry def = new PropertyRegistry(table,"Properties for table "+table);
 
 			if( factory instanceof AccessorContributer) {
+				try {
 				((AccessorContributer)factory).customAccessors(map, finder, expression_map);
+				}catch(Throwable t) {
+					getLogger().error("Error adding accessors from factory", t);
+				}
 			}
 			for(AccessorContributer contrib : factory.getComposites(AccessorContributer.class)){
+				try {
 				contrib.customAccessors(map, finder, expression_map);
+				}catch(Throwable t) {
+					getLogger().error("Error adding accessors from composite", t);
+				}
 			}
 
 			customAccessors(map, finder, expression_map);
