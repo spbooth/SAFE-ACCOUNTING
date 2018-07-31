@@ -28,7 +28,6 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 
-import uk.ac.ed.epcc.safe.accounting.model.Report;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
@@ -84,17 +83,25 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 		public Date getLastModified() {
 			return record.getDateProperty(UPDATED);
 		}
-		public AppUser getLastEditor() {
-			AppUserFactory<?> loginFactory = getContext().getService(SessionService.class).getLoginFactory();
-			return record.getProperty(new IndexedTypeProducer(getContext(), UPDATED_BY, loginFactory));
+		public void setLastModified(Date d) {
+			record.setProperty(UPDATED, d);
+		}
+		public <A extends AppUser> A getLastEditor() {
+			@SuppressWarnings("unchecked")
+			AppUserFactory<A> loginFactory = getContext().getService(SessionService.class).getLoginFactory();
+			return record.getProperty(new IndexedTypeProducer<A,AppUserFactory<A>>(getContext(), UPDATED_BY, loginFactory));
+		}
+		public <A extends AppUser> void setLastEditor(A person) {
+			@SuppressWarnings("unchecked")
+			AppUserFactory<A> loginFactory = getContext().getService(SessionService.class).getLoginFactory();
+			record.setProperty(new IndexedTypeProducer<A,AppUserFactory<A>>(getContext(), UPDATED_BY, loginFactory),person);
 		}
 		@Override
 		protected void pre_commit(boolean dirty) throws DataFault {
 			if( dirty) {
 				try {
-					record.setOptionalProperty(UPDATED, getContext().getService(CurrentTimeService.class).getCurrentTime());
-					AppUserFactory<?> loginFactory = getContext().getService(SessionService.class).getLoginFactory();
-					record.setOptionalProperty(new IndexedTypeProducer(getContext(), UPDATED_BY, loginFactory), getContext().getService(SessionService.class).getCurrentPerson());
+					setLastModified( getContext().getService(CurrentTimeService.class).getCurrentTime());
+					setLastEditor(getContext().getService(SessionService.class).getCurrentPerson());
 				}catch(Throwable t) {
 					getLogger().error("Error logging change", t);
 				}
