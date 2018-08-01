@@ -240,7 +240,7 @@ public class ParameterExtension extends ReportExtension {
 		if( input instanceof BoundedInput) {
 			BoundedInput boundedInput = (BoundedInput)input;
 			String min = getAttribute(MIN_ATTR, param);
-			if( min != null) {
+			if( ! empty(min)) {
 				try {
 					boundedInput.setMin(input.convert(min));
 				}catch(Throwable t) {
@@ -248,7 +248,7 @@ public class ParameterExtension extends ReportExtension {
 				}
 			}
 			String max = getAttribute(MAX_ATTR, param);
-			if( max != null) {
+			if( ! empty(max)) {
 				try {
 					boundedInput.setMax(input.convert(max));
 				}catch(Throwable t) {
