@@ -262,21 +262,24 @@ public class TableExtension extends ReportExtension {
 					String prop_list = conn.getExpandedProperty("jobtable.properties","");
 					PropertyFinder finder =  recordSet.getUsageProducer().getFinder();
 					for(String tag : prop_list.split(",")){
-							String prop_name = conn.getExpandedProperty("jobtable.property."+tag, tag);
-							PropertyTag t = finder.find(prop_name);
-							if( t != null ){
-								// can use name or tag for label
-								String label = conn.getExpandedProperty("propertylabel."+tag,conn.getExpandedProperty("propertylabel."+t.getName()));
-								Transform tr = conn.makeObjectWithDefault(Transform.class, null, "propertytransform", t.getName());
-								if( tr == null){
-									Labeller l = conn.makeObjectWithDefault(Labeller.class, null, "propertylabeller", t.getName());
-									if( l != null ){
-										tr = new LabellerTransform(conn, l);
+							tag = tag.trim();
+							if( ! tag.isEmpty()) {
+								String prop_name = conn.getExpandedProperty("jobtable.property."+tag, tag);
+								PropertyTag t = finder.find(prop_name);
+								if( t != null ){
+									// can use name or tag for label
+									String label = conn.getExpandedProperty("propertylabel."+tag,conn.getExpandedProperty("propertylabel."+t.getName()));
+									Transform tr = conn.makeObjectWithDefault(Transform.class, null, "propertytransform", t.getName());
+									if( tr == null){
+										Labeller l = conn.makeObjectWithDefault(Labeller.class, null, "propertylabeller", t.getName());
+										if( l != null ){
+											tr = new LabellerTransform(conn, l);
+										}
 									}
+									tableMaker.addColumn(new ColName(t, label,tr));
+								}else {
+									extension.addError("bad default property", prop_name);
 								}
-								tableMaker.addColumn(new ColName(t, label,tr));
-							}else {
-								extension.addError("bad default property", prop_name);
 							}
 					}
 				}

@@ -46,7 +46,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
  * 
  */
 public abstract class AbstractRecordTestCase<R> extends
-		ParseUsageRecordFactoryTestCase<ConfigUsageRecordFactory<UsageRecordFactory.Use,R>,UsageRecordFactory.Use,R> {
+		ParseUsageRecordFactoryTestCase<UsageRecordFactory<UsageRecordFactory.Use>,UsageRecordFactory.Use,R> {
 	
 
 	private String machineName;
@@ -116,8 +116,8 @@ public abstract class AbstractRecordTestCase<R> extends
 	 */
 	
 	@Override
-	public final ConfigUsageRecordFactory<Use,R> getFactory() {
-		return new ConfigUsageRecordFactory<Use,R>(ctx, this.tableName);
+	public final UsageRecordFactory<Use> getFactory() {
+		return ctx.makeObjectWithDefault(UsageRecordFactory.class, ConfigUsageRecordFactory.class, this.tableName);
 	}
 
 	/**

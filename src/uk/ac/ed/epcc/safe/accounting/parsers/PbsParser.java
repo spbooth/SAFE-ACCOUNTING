@@ -592,7 +592,7 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 		public void setValue(PropertyContainer container, String valueString) throws IllegalArgumentException,
 				InvalidPropertyException, NullPointerException, AccountingParseException {
 			container.setProperty(PBS_PLACEMENT, valueString);
-			if( valueString.equals(EXCL)){
+			if( valueString.contains(EXCL)){
 				container.setProperty(BatchParser.EXCLUSIVE, Boolean.TRUE);
 			}else{
 				container.setProperty(BatchParser.EXCLUSIVE, Boolean.FALSE);
