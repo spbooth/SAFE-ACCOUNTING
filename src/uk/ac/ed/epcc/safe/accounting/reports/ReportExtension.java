@@ -71,6 +71,7 @@ import uk.ac.ed.epcc.webapp.content.TableXMLGenerator;
 import uk.ac.ed.epcc.webapp.content.XMLBuilderSaxHandler;
 import uk.ac.ed.epcc.webapp.content.XMLDomBuilder;
 import uk.ac.ed.epcc.webapp.content.XMLGenerator;
+import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -1134,5 +1135,12 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			}
 		}
 		return null;
+	}
+	
+	public void checkLimit() {
+		LimitService limit = getContext().getService(LimitService.class);
+		if( limit != null) {
+			limit.checkLimit();
+		}
 	}
 }

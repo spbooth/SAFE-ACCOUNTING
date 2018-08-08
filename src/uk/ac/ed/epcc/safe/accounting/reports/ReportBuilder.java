@@ -79,6 +79,7 @@ import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.ItemInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
+import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
@@ -195,6 +196,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	private boolean log_source=false;
 	public static final String REPORT_DEVELOPER = "ReportDeveloper";
     private final ReportTypeRegistry report_type_reg;
+    private final LimitService limits;
 	public ReportBuilder(AppContext conn) throws URISyntaxException, ParserConfigurationException {
 		this(ReportTypeRegistry.getInstance(conn));
 	}
@@ -300,6 +302,12 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		if( timer != null) {
 			timer.stopTimer("ReportTypes");
 		}
+		limits=conn.getService(LimitService.class);
+		if( limits == null) {
+			log.debug("No limit service");
+		}else {
+			log.debug("Limit service is "+limits.getClass().getCanonicalName());
+		}
 	}
 	private TransformerFactory getTransformerFactory() {
 		if( transformerFactory == null) {
@@ -308,6 +316,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			log.debug("TransformerFactory="+transformerFactory.getClass().getCanonicalName());
 			// Get the stylesheets to use the local URIs to find resources.
 			transformerFactory.setURIResolver(new Resolver());
+			
 		}
 		return transformerFactory;
 	}
@@ -812,6 +821,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 					if( timer != null){
 						timer.startTimer("xml-transform "+name);
 					}
+					checkLimits();
 					Transformer transformer = getXSLTransform(name,
 							params);
 					logSource(name, xmlSource);
@@ -1060,6 +1070,12 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	 */
 	public ReportTypeRegistry getReportTypeReg() {
 		return report_type_reg;
+	}
+	
+	protected void checkLimits() {
+		if( limits != null) {
+			limits.checkLimit();
+		}
 	}
 	
 }

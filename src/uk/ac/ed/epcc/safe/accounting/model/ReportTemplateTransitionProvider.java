@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
@@ -37,7 +38,9 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.config.OverrideConfigService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
 import uk.ac.ed.epcc.webapp.content.Icon;
+import uk.ac.ed.epcc.webapp.content.PreDefinedContent;
 import uk.ac.ed.epcc.webapp.content.SimpleXMLBuilder;
 import uk.ac.ed.epcc.webapp.forms.BaseForm;
 import uk.ac.ed.epcc.webapp.forms.Field;
@@ -55,8 +58,10 @@ import uk.ac.ed.epcc.webapp.forms.transition.DefaultingTransitionFactory;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraContent;
 import uk.ac.ed.epcc.webapp.forms.transition.TitleTransitionFactory;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
+import uk.ac.ed.epcc.webapp.limits.LimitException;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.logging.buffer.BufferLoggerService;
+import uk.ac.ed.epcc.webapp.messages.MessageBundleService;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
 import uk.ac.ed.epcc.webapp.model.data.transition.AbstractPathTransitionProvider;
@@ -168,6 +173,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 							SettableServeDataProducer.class, SessionDataProducer.class, ServeDataProducer.DEFAULT_SERVE_DATA_TAG);
 					return new ServeDataResult(producer, producer.setData(msd));
 				}
+			}catch(LimitException l) {
+				getLogger().warn("Limits exceeded in report generation", l);
+				return new MessageResult("limits_exceeded", l.getMessage());
 			} catch (Exception e) {
 				getLogger().error("Error making report", e);
 				return new MessageResult("internal_error");
@@ -486,6 +494,18 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				builder.renderContent(params, (SimpleXMLBuilder)report);
 				report.addParent();
 			}
+		}catch(LimitException l) {
+			// Show message in-line#
+			ResourceBundle mess = context.getService(MessageBundleService.class).getBundle();
+			PreDefinedContent title = new PreDefinedContent(context,mess, "limits_exceeded.title");
+			ContentBuilder heading = cb.getHeading(4);
+			heading.addObject(title);
+			heading.addParent();
+			PreDefinedContent text = new PreDefinedContent(context,mess, "limits_exceeded.text",l.getMessage());
+			ExtendedXMLBuilder para = cb.getText();
+			text.addContent(para);
+			para.appendParent();
+			
 		} catch (Exception e) {
 			hasErrors = true;
 			cb.addText("An error ocurred when generating the report.");

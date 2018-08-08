@@ -259,7 +259,8 @@ public class TableExtension extends ReportExtension {
 				// use hasChild as element is empty
 				if( extension.hasChild(DEFAULT_LIST, tableElement)){
 					AppContext conn = extension.getContext();
-					String prop_list = conn.getExpandedProperty("jobtable.properties","");
+					String config_name = "jobtable.properties";
+					String prop_list = conn.getExpandedProperty(config_name,"");
 					PropertyFinder finder =  recordSet.getUsageProducer().getFinder();
 					for(String tag : prop_list.split(",")){
 							tag = tag.trim();

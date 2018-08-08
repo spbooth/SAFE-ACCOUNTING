@@ -34,6 +34,7 @@ import uk.ac.ed.epcc.webapp.content.FormatProvider;
 import uk.ac.ed.epcc.webapp.content.LabellerTransform;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.content.Transform;
+import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
@@ -55,12 +56,14 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 	private int max_data_points=-1;
 	private int skip_data_points=0;
 	private PropExpression warning=null;
+	private final int check_every;
 	public ExpressionTargetTableMaker(AppContext c,F up){
 		this.c=c;
 		this.up=up;
 		labels=new LinkedList<String>();
 		this.props=new HashMap<String,PropExpression>();
 		this.transforms=new HashMap<String, Transform>();
+		check_every=c.getIntegerParameter("expression_target_table_maker.check_every", 500);
 	}
 	public ExpressionTargetTableMaker(AppContext c,F up, List<ColName> props){
 	    this(c,up);
@@ -114,6 +117,7 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 	   }else{
 		   it= up.getIterator(sel);
 	   }
+	   int count=0;
 	   while(it.hasNext()){
 		   E record = it.next();
 		   Object key = makeKey(record);
@@ -151,6 +155,13 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 		   }
 		   if( key != et) {
 			   et.release();
+		   }
+		   count++;
+		   if( check_every > 0 && count%check_every == 0) {
+			   LimitService limit = c.getService(LimitService.class);
+			   if( limit != null) {
+				   limit.checkLimit();
+			   }
 		   }
 	   }
 	   for(String lab : labels){
