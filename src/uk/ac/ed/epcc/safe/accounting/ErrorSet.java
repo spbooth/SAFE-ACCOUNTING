@@ -313,7 +313,9 @@ public class ErrorSet
         }
       }
     }
-    s.println("------");
+    if( ! reg.keySet().isEmpty()) {
+    	s.println("------");
+    }
   }
   public void report(AppContext c){
 	 report(c.getService(LoggerService.class).getLogger(getClass()));
