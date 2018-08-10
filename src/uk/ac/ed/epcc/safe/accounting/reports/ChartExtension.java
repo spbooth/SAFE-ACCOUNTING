@@ -365,6 +365,7 @@ public abstract class ChartExtension extends ReportExtension {
 		if( plot == null ){
 			return result;
 		}
+		checkLimit();
 		Element e = (Element) node;
 		startTimer("addPlot");
 		try{
@@ -442,7 +443,7 @@ public abstract class ChartExtension extends ReportExtension {
 
 public DocumentFragment addChartTable(Chart chart,String caption) throws Exception {
 		   
-		
+		checkLimit();
 		Table t = chart.chart.getTable();
 		if (t.hasData()) {
 			return format(t, null,chart.report_prefix);
