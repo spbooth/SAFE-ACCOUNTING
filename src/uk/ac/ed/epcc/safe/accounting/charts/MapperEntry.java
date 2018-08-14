@@ -46,7 +46,6 @@ import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.charts.BarTimeChart;
 import uk.ac.ed.epcc.webapp.charts.Chart;
-import uk.ac.ed.epcc.webapp.charts.InvalidTransformException;
 import uk.ac.ed.epcc.webapp.charts.PeriodChart;
 import uk.ac.ed.epcc.webapp.charts.PeriodPlot;
 import uk.ac.ed.epcc.webapp.charts.PeriodSequencePlot;
@@ -282,9 +281,9 @@ public abstract class MapperEntry implements Contexed,Cloneable{
      * @param nplots
      * @param overlap
      * @return dataset or null if no data
-     * @throws InvalidTransformException
+     * @throws Exception 
      */
-    public PeriodSetPlot makePieTimeChartPlot(PlotEntry e, PieTimeChart tc, UsageProducer ap,RecordSelector sel, int nplots,boolean overlap) throws InvalidTransformException {
+    public PeriodSetPlot makePieTimeChartPlot(PlotEntry e, PieTimeChart tc, UsageProducer ap,RecordSelector sel, int nplots,boolean overlap) throws Exception {
         if( ! (e.compatible(ap) && compatible(ap))){
         	return null;
         }
@@ -322,7 +321,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 		}
 	}
 	
-	public PeriodSetPlot makeBarTimeChartPlot(PlotEntry e, BarTimeChart tc, UsageProducer ap,RecordSelector sel, int nplots,boolean allow_overlap) throws InvalidTransformException {
+	public PeriodSetPlot makeBarTimeChartPlot(PlotEntry e, BarTimeChart tc, UsageProducer ap,RecordSelector sel, int nplots,boolean allow_overlap) throws Exception {
         if( ! (e.compatible(ap) && compatible(ap))){
         	return null;
         }
@@ -359,7 +358,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 	}
 	@SuppressWarnings("unchecked")
 	private boolean addData(PlotEntry e, PeriodChart tc, UsageProducer ap,
-			RecordSelector sel, PeriodPlot ds,boolean allow_overlap) throws InvalidTransformException {
+			RecordSelector sel, PeriodPlot ds,boolean allow_overlap) throws Exception {
 		
 		boolean data_added=false;
         // create dataset, don't add labels yet as labels
@@ -380,30 +379,26 @@ public abstract class MapperEntry implements Contexed,Cloneable{
         RecordSelector s =getRangeSelector(e, allow_overlap,cutoff, tc.getStartDate(), tc.getEndDate(), sel);
 		if( query_mapper_on  ){ //use fmapper if it exists for piecharts
 			try{
-        	UsageRecordQueryMapper fmapper;
-        	if( start_prop != null && allow_overlap){
-        		fmapper = getOverlapQueryMapper(s,red, prop_tag, start_prop,
-						end_prop,cutoff);
-        	}else{
-        		fmapper = getPointQueryMapper(sel, red,prop_tag, end_prop);
-        	}
-        	return ds.addMapData( fmapper, ap);
+				UsageRecordQueryMapper fmapper;
+				if( start_prop != null && allow_overlap){
+					fmapper = getOverlapQueryMapper(s,red, prop_tag, start_prop,
+							end_prop,cutoff);
+				}else{
+					fmapper = getPointQueryMapper(sel, red,prop_tag, end_prop);
+				}
+				return ds.addMapData( fmapper, ap);
 			}catch(CannotUseSQLException e1){
 				// default to iterating
 				
 			}
         }
 		SetRangeMapper map = getMapper(e);
-		Iterator iter;
-		try {
-			iter = ap.getExpressionIterator(s);
-			if( iter.hasNext()){
-				tc.addDataIterator(ds, map, iter);
-				data_added=true;
-			}
-		} catch (Exception e1) {
-			getLogger().error("Error making iterator",e1);
-		} 
+		Iterator iter = ap.getExpressionIterator(s);
+		if( iter.hasNext()){
+			tc.addDataIterator(ds, map, iter);
+			data_added=true;
+		}
+		
 
 		return data_added;
 	}
@@ -593,7 +588,7 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 	}
 	@SuppressWarnings("unchecked")
 	private boolean addTimeChartData(PlotEntry e, TimeChart tc, UsageProducer ap, RecordSelector sel,
-			PeriodSequencePlot ds,boolean allow_overlap) throws InvalidTransformException {
+			PeriodSequencePlot ds,boolean allow_overlap) throws Exception {
 		PropExpression<? extends Number> prop_tag = e.getPlotProperty();
 		PropExpression<Date> start_prop = e.getStartProperty();
 		PropExpression<Date> end_prop = e.getEndProperty();
@@ -646,15 +641,13 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     						// REcords that overlap the start of the period but end within the period
     						// (make sure we don't overcount)
 
-    						try {
-    							Iterator<ExpressionTargetContainer> iter = ap.getExpressionIterator(selector);
-    							if( iter.hasNext()){
-    								tc.addDataIterator(ds, map, iter);
-    								data_added=true;
-    							}
-    						} catch (Exception e1) {
-    							getLogger().error("Error making iterator",e1);
-    						} 
+
+    						Iterator<ExpressionTargetContainer> iter = ap.getExpressionIterator(selector);
+    						if( iter.hasNext()){
+    							tc.addDataIterator(ds, map, iter);
+    							data_added=true;
+    						}
+
     					}
 
     					// final (expensive) overlap with end
@@ -662,15 +655,13 @@ public abstract class MapperEntry implements Contexed,Cloneable{
     					AndRecordSelector selector = new AndRecordSelector(sel);
     					selector.add(new PeriodOverlapRecordSelector(new Period(tc.getPeriod()), start_prop, end_prop, OverlapType.UPPER_OUTER, cutoff));
 
-    					try {
-    						Iterator<ExpressionTargetContainer> iter = ap.getExpressionIterator(selector);
-    						if( iter.hasNext()){
-    							tc.addDataIterator(ds, map, iter);
-    							data_added=true;
-    						}
-    					} catch (Exception e1) {
-    						getLogger().error("Error making iterator",e1);
-    					} 
+
+    					Iterator<ExpressionTargetContainer> iter = ap.getExpressionIterator(selector);
+    					if( iter.hasNext()){
+    						tc.addDataIterator(ds, map, iter);
+    						data_added=true;
+    					}
+    					
     				}
     			}
     			return data_added;
@@ -684,15 +675,13 @@ public abstract class MapperEntry implements Contexed,Cloneable{
 		//log.debug("using transform");
 		SetRangeMapper map = getMapper(e);
 		Iterator<ExpressionTargetContainer> iter;
-		try {
-			iter = ap.getExpressionIterator(getRangeSelector(e,allow_overlap,cutoff,tc.getStartDate(), tc.getEndDate(),sel));
-			if( iter.hasNext()){
-				tc.addDataIterator(ds, map, iter);
-				data_added=true;
-			}
-		} catch (Exception e1) {
-			getLogger().error("Error making iterator",e1);
-		} 
+
+		iter = ap.getExpressionIterator(getRangeSelector(e,allow_overlap,cutoff,tc.getStartDate(), tc.getEndDate(),sel));
+		if( iter.hasNext()){
+			tc.addDataIterator(ds, map, iter);
+			data_added=true;
+		}
+		
 
 
     	//log.debug("data added "+data_added);
