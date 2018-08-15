@@ -79,6 +79,7 @@ import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.ItemInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
+import uk.ac.ed.epcc.webapp.limits.LimitException;
 import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -847,6 +848,9 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 				timer.stopTimer("xml-transform "+name);
 			}
 		}catch(Throwable t){
+			if( t instanceof TransformerException && t.getCause() instanceof LimitException) {
+				throw (LimitException) t.getCause();
+			}
 			log.error("Error in transform "+name,t);
 			throw new Exception(t);
 		}

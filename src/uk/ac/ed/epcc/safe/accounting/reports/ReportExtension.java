@@ -71,6 +71,7 @@ import uk.ac.ed.epcc.webapp.content.TableXMLGenerator;
 import uk.ac.ed.epcc.webapp.content.XMLBuilderSaxHandler;
 import uk.ac.ed.epcc.webapp.content.XMLDomBuilder;
 import uk.ac.ed.epcc.webapp.content.XMLGenerator;
+import uk.ac.ed.epcc.webapp.limits.LimitException;
 import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -212,6 +213,9 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public final void addError(String type,String details,Throwable t){
 		log.warn("extension error:"+type+":"+details, t);
 		errors.add(type, details,t);
+		if( t instanceof LimitException) {
+			throw (LimitException) t;
+		}
 	}
 	public ErrorSet getErrors(){
 		return errors;

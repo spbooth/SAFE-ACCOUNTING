@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?><transition_page>
+<Title>View Report</Title>
+<PageHeading>View Report</PageHeading>
+<SummaryContent/>
+<ExtraContent>
+<h4>Report Preview</h4>
+<h4>Report resource limits exceeded</h4>
+<div class="para">This report can been cancelled because "Too many calls to checkLimit". You can either try again later or change the report parameters to use fewer resources.</div>
+<h4>Report Parameters</h4>
+<div class="para">Enter the parameters and click 'Preview' to view the report, or click on the report type to generate the report.</div>
+</ExtraContent>
+<Form>
+<table class="form">
+<tr class="even">
+<th>
+<label for="transition_Plot" class="required">Quantity to Plot</label>
+</th>
+<td>
+<select id="transition_Plot" name="Plot" class="input" required="required">
+<option value="Time">Time</option>
+<option value="WaitTime">WaitTime</option>
+<option value="Count">Count</option>
+<option value="Wall" selected="selected">Wall</option>
+</select>
+</td>
+</tr>
+<tr class="odd">
+<th>
+<label for="transition_Group" class="optional">Quantity to Group by</label>
+</th>
+<td>
+<select id="transition_Group" name="Group" class="input">
+<option value="">Not Selected</option>
+<option value="Queue">Queue</option>
+<option value="CPUs">CPUs</option>
+<option value="UserName" selected="selected">UserName</option>
+<option value="MachineName">MachineName</option>
+</select>
+</td>
+</tr>
+<tr class="even">
+<th>
+<label for="transition_Period.start.hour" class="required">Report period</label>
+</th>
+<td>
+<span class="multi_input">From <span class="multi_input">
+<select id="transition_Period.start.hour" name="Period.start.hour" class="input" required="required">
+<option value="0" selected="selected">00</option>
+<option value="1">01</option>
+<option value="2">02</option>
+<option value="3">03</option>
+<option value="4">04</option>
+<option value="5">05</option>
+<option value="6">06</option>
+<option value="7">07</option>
+<option value="8">08</option>
+<option value="9">09</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+<option value="21">21</option>
+<option value="22">22</option>
+<option value="23">23</option>
+</select>:<select id="transition_Period.start.min" name="Period.start.min" class="input" required="required">
+<option value="0" selected="selected">00</option>
+<option value="1">01</option>
+<option value="2">02</option>
+<option value="3">03</option>
+<option value="4">04</option>
+<option value="5">05</option>
+<option value="6">06</option>
+<option value="7">07</option>
+<option value="8">08</option>
+<option value="9">09</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+<option value="21">21</option>
+<option value="22">22</option>
+<option value="23">23</option>
+<option value="24">24</option>
+<option value="25">25</option>
+<option value="26">26</option>
+<option value="27">27</option>
+<option value="28">28</option>
+<option value="29">29</option>
+<option value="30">30</option>
+<option value="31">31</option>
+<option value="32">32</option>
+<option value="33">33</option>
+<option value="34">34</option>
+<option value="35">35</option>
+<option value="36">36</option>
+<option value="37">37</option>
+<option value="38">38</option>
+<option value="39">39</option>
+<option value="40">40</option>
+<option value="41">41</option>
+<option value="42">42</option>
+<option value="43">43</option>
+<option value="44">44</option>
+<option value="45">45</option>
+<option value="46">46</option>
+<option value="47">47</option>
+<option value="48">48</option>
+<option value="49">49</option>
+<option value="50">50</option>
+<option value="51">51</option>
+<option value="52">52</option>
+<option value="53">53</option>
+<option value="54">54</option>
+<option value="55">55</option>
+<option value="56">56</option>
+<option value="57">57</option>
+<option value="58">58</option>
+<option value="59">59</option>
+</select>:<select id="transition_Period.start.sec" name="Period.start.sec" class="input" required="required">
+<option value="0" selected="selected">00</option>
+<option value="1">01</option>
+<option value="2">02</option>
+<option value="3">03</option>
+<option value="4">04</option>
+<option value="5">05</option>
+<option value="6">06</option>
+<option value="7">07</option>
+<option value="8">08</option>
+<option value="9">09</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+<option value="21">21</option>
+<option value="22">22</option>
+<option value="23">23</option>
+<option value="24">24</option>
+<option value="25">25</option>
+<option value="26">26</option>
+<option value="27">27</option>
+<option value="28">28</option>
+<option value="29">29</option>
+<option value="30">30</option>
+<option value="31">31</option>
+<option value="32">32</option>
+<option value="33">33</option>
+<option value="34">34</option>
+<option value="35">35</option>
+<option value="36">36</option>
+<option value="37">37</option>
+<option value="38">38</option>
+<option value="39">39</option>
+<option value="40">40</option>
+<option value="41">41</option>
+<option value="42">42</option>
+<option value="43">43</option>
+<option value="44">44</option>
+<option value="45">45</option>
+<option value="46">46</option>
+<option value="47">47</option>
+<option value="48">48</option>
+<option value="49">49</option>
+<option value="50">50</option>
+<option value="51">51</option>
+<option value="52">52</option>
+<option value="53">53</option>
+<option value="54">54</option>
+<option value="55">55</option>
+<option value="56">56</option>
+<option value="57">57</option>
+<option value="58">58</option>
+<option value="59">59</option>
+</select> on <select id="transition_Period.start.day" name="Period.start.day" class="input" required="required">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+<option value="21">21</option>
+<option value="22">22</option>
+<option value="23">23</option>
+<option value="24">24</option>
+<option value="25">25</option>
+<option value="26" selected="selected">26</option>
+<option value="27">27</option>
+<option value="28">28</option>
+<option value="29">29</option>
+<option value="30">30</option>
+<option value="31">31</option>
+</select>
+<select id="transition_Period.start.month" name="Period.start.month" class="input" required="required">
+<option value="0">Jan</option>
+<option value="1">Feb</option>
+<option value="2">Mar</option>
+<option value="3">Apr</option>
+<option value="4">May</option>
+<option value="5">Jun</option>
+<option value="6">Jul</option>
+<option value="7">Aug</option>
+<option value="8" selected="selected">Sep</option>
+<option value="9">Oct</option>
+<option value="10">Nov</option>
+<option value="11">Dec</option>
+</select>
+<input id="transition_Period.start.year" type="number" size="4" maxlength="4" name="Period.start.year" value="2008" class="input" step="1" required="required"/>
+</span> for <input id="transition_Period.splits" type="number" size="2" maxlength="3" name="Period.splits" value="1" class="input" min="1" max="500" step="1" required="required"/> blocks of <input id="transition_Period.count" type="number" size="2" maxlength="3" name="Period.count" value="1" class="input" min="1" step="1" required="required"/>
+<select id="transition_Period.field" name="Period.field" class="input" required="required">
+<option value="13">Seconds</option>
+<option value="12">Minutes</option>
+<option value="10">Hours</option>
+<option value="5">Days</option>
+<option value="3">Weeks</option>
+<option value="2" selected="selected">Months</option>
+<option value="1">Years</option>
+</select>
+</span>
+</td>
+</tr>
+</table>
+<fieldset class="action_buttons">
+<button class="input_button" type="submit" title="Generate Preview" name="Preview" value="Preview">
+<img class="icon" alt="Preview" src="test/accounting/preview-file-48x48.png"/>Preview</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate HTML" name="HTML" value="HTML">
+<img class="icon" alt="HTML" src="test/accounting/html-file-48x48.png"/>HTML</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate PDF" name="PDF" value="PDF">
+<img class="icon" alt="PDF" src="test/accounting/pdf-file-48x48.png"/>PDF</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate CSV" name="CSV" value="CSV">
+<img class="icon" alt="CSV" src="test/accounting/csv-file-48x48.png"/>CSV</button>
+</fieldset>
+</Form>
+</transition_page>

@@ -29,6 +29,8 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import javax.xml.transform.TransformerException;
+
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.model.ReportTemplateLog.ReportLogFactory;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
@@ -495,6 +497,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				report.addParent();
 			}
 		}catch(LimitException l) {
+
 			// Show message in-line#
 			ResourceBundle mess = context.getService(MessageBundleService.class).getBundle();
 			PreDefinedContent title = new PreDefinedContent(context,mess, "limits_exceeded.title");
@@ -505,7 +508,6 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			ExtendedXMLBuilder para = cb.getText();
 			text.addContent(para);
 			para.appendParent();
-			
 		} catch (Exception e) {
 			hasErrors = true;
 			cb.addText("An error ocurred when generating the report.");

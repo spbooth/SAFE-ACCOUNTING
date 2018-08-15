@@ -769,10 +769,11 @@ public class OverlapHandler<T> {
     	assert(end!=null);
     	assert(start!=null);
     	assert(end.after(start));
-    	assert(start_prop != null && end_prop != null);
+    	
     	if( start_prop==null || end_prop == null || start ==  null || end == null ){
 			return false;
 		}
+    	assert(start_prop != null && end_prop != null);
     	long start_time=start.getTime();
     	long end_time=end.getTime();
     	try{

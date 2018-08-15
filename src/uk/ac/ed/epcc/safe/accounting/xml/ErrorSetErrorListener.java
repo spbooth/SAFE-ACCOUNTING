@@ -20,6 +20,7 @@ import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.webapp.limits.LimitException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 /** An ErrorListener that forward the error to an ErrorSet
  * 
@@ -44,6 +45,10 @@ public class ErrorSetErrorListener implements ErrorListener {
 		}
 		if( set != null ){
 			set.add("Transform error "+tag, arg0.getMessage(), arg0);
+		}
+		if( arg0.getCause() instanceof LimitException) {
+			// abort processing;
+			throw arg0;
 		}
 	}
 
