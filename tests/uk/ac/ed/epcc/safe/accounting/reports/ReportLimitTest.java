@@ -82,8 +82,64 @@ public class ReportLimitTest extends AbstractTransitionServletTest {
 		addParam("Plot","Wall");
 		addParam("Group","UserName");
 		addParam(input);
+		
+		Report target = new Report("TimeChart.xml",params);
 		setAction("Preview");
 		runTransition();
-		checkRedirectToTransition(prov, ReportTemplateTransitionProvider.PREVIEW, new Report("TimeChart.xml",params));
+		checkRedirectToTransition(prov, ReportTemplateTransitionProvider.PREVIEW, target);
+	}
+	
+	private void runCsvTimechart()
+			throws DataException, TypeError, Exception, TransitionException, ServletException, IOException {
+		setupPerson("spb@epcc.ed.ac.uk");
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(0L);
+		c.set(Calendar.YEAR, 2008);
+		c.set(Calendar.MONTH,Calendar.SEPTEMBER);
+		c.set(Calendar.DAY_OF_MONTH,26);
+		c.set(Calendar.HOUR_OF_DAY,0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND,0);
+		c.set(Calendar.MILLISECOND,0);
+		CalendarFieldSplitPeriod p = new CalendarFieldSplitPeriod(c,Calendar.MONTH,1,1);
+		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(ctx);
+		
+		
+		CalendarFieldPeriodInput input = new CalendarFieldPeriodInput();
+		input.setKey("Period");
+		input.setValue(p);
+		LinkedHashMap params = new LinkedHashMap<>();
+		params.put("Plot", "Wall");
+		params.put("Group","UserName");
+		SetParamsVisitor vis = new SetParamsVisitor(true, params);
+		input.accept(vis);
+		
+		Report report = new Report("TimeChart.xml");
+		setTransition(prov, ReportTemplateTransitionProvider.PREVIEW, report);
+		addParam("Plot","Wall");
+		addParam("Group","UserName");
+		addParam(input);
+		
+		Report target = new Report("TimeChart.xml",params);
+		setAction("CSV");
+		runTransition();
+		checkRedirectToTransition(prov, ReportTemplateTransitionProvider.CSV, target);
+		runTransition(); // it is a direct transition
+	}
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testCsVTimeChart() throws Exception{
+		// TEst without limit
+		runCsvTimechart();
+		checkRedirect("/Data/ServeData/1/TimeChart.csv");
+	}
+	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	@ConfigFixtures("limit.properties")
+	public void testCsVTimeChartLimit() throws Exception{
+		ctx.setService(new CountingLimitService(ctx, 5));
+		runCsvTimechart();
+		checkMessage("limits_exceeded");
 	}
 }
