@@ -14,6 +14,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
@@ -72,7 +73,7 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
             templateFac = new ReportTemplateFactory<ReportTemplate>(ctx);
             TableSpecification spec = new TableSpecification();
             spec.setField(TIMESTAMP, new DateFieldType(true, null));
-            spec.setField(PERSON_ID, new ReferenceFieldType(userFac.getTag()));
+            spec.setOptionalField(PERSON_ID, new ReferenceFieldType(userFac.getTag()));
             spec.setField(REPORT_TEMPLATE_ID, new ReferenceFieldType(templateFac.getTag()));
             spec.setField(PARAMETERS, new StringFieldType(true, null, 1000));
             return spec;
@@ -99,7 +100,7 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
             log.record.setProperty(TIMESTAMP, new Date());
             log.record.setProperty(REPORT_TEMPLATE_ID, template);
             if (user != null) {
-                log.record.setProperty(PERSON_ID, user);
+                log.record.setOptionalProperty(PERSON_ID, user.getID());
             }
             if (parameters != null) {
             	// requires Java-8
@@ -122,9 +123,20 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
         return (ReportTemplate) record.getProperty(ReportLogFactory.REPORT_TEMPLATE_ID);
     }
 
-    public AppUser getPerson() {
-        return (AppUser) record.getProperty(ReportLogFactory.PERSON_ID);
+    public AppUser getPerson() throws DataException {
+    	if( ! recordPerson()) {
+    		return null;
+    	}
+    	AppUserFactory login = getContext().getService(SessionService.class).getLoginFactory();
+        return (AppUser) login.find(record.getNumberProperty(ReportLogFactory.PERSON_ID));
     }
+
+	/**
+	 * @return
+	 */
+	public boolean recordPerson() {
+		return record.getRepository().hasField(ReportLogFactory.PERSON_ID);
+	}
 
     public String getParameters() {
         return record.getStringProperty(ReportLogFactory.PARAMETERS);
