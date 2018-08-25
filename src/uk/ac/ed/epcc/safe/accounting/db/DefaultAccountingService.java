@@ -22,8 +22,8 @@ import uk.ac.ed.epcc.safe.accounting.UsageManager;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.UsageProducerWrapper;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 
 /** Service used to configure the Accounting
  * @author spb
@@ -31,17 +31,17 @@ import uk.ac.ed.epcc.webapp.Contexed;
  */
 
 
-public class DefaultAccountingService implements Contexed, AccountingService{
-	private AppContext c;
+public class DefaultAccountingService extends AbstractContexed implements AccountingService{
+	
 	public static final String DEFAULT_PRODUCER_NAME = "accounting";
 	public DefaultAccountingService(AppContext c){
-		this.c=c;
+		super(c);
 	}
 	public UsageManager getUsageManager(){
 		return getUsageManager(DEFAULT_PRODUCER_NAME);
 	}
 	public UsageManager getUsageManager(String name){
-		return ConfigUsageManager.getInstance(c,name);
+		return ConfigUsageManager.getInstance(getContext(),name);
 	}
 	public UsageProducer getUsageProducer(){
 		return getUsageManager();
@@ -73,18 +73,11 @@ public class DefaultAccountingService implements Contexed, AccountingService{
 		}
 	}
 	
-	public AppContext getContext() {
-		return c;
-	}
+	
 	public void cleanup() {
 		
 	}
-	public DefaultAccountingService copy(AppContext p)
-			throws CloneNotSupportedException {
-		DefaultAccountingService serv = (DefaultAccountingService) clone();
-		serv.c=p;
-		return serv;
-	}
+	
 	public Class<? super AccountingService> getType() {
 		return AccountingService.class;
 	}

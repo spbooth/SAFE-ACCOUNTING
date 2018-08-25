@@ -15,6 +15,7 @@ package uk.ac.ed.epcc.safe.accounting.charts;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.AppContextService;
 import uk.ac.ed.epcc.webapp.Contexed;
@@ -32,12 +33,9 @@ import uk.ac.ed.epcc.webapp.config.FilteredProperties;
  *
  */
 @PreRequisiteService(ConfigService.class)
-public class ChartService implements Contexed, AppContextService<ChartService>{
-
-	private final AppContext conn;
-	
+public class ChartService extends AbstractContexed implements AppContextService<ChartService>{	
 	public ChartService(AppContext c){
-		this.conn=c;
+		super(c);
 	}
 	
 	public PlotEntry getPlotEntry(ErrorSet errors,PropertyFinder finder,String name,String start,String end) throws Exception{
@@ -53,10 +51,6 @@ public class ChartService implements Contexed, AppContextService<ChartService>{
 
 	public final Class<? super ChartService> getType() {
 		return ChartService.class;
-	}
-
-	public AppContext getContext() {
-		return conn;
 	}
 
 }

@@ -20,6 +20,7 @@ package uk.ac.ed.epcc.safe.accounting.db.transitions;
 
 //import uk.ac.ed.epcc.safe.accounting.db.AccountingClassificationFactory;
 import uk.ac.ed.epcc.safe.accounting.db.PropertyClassificationFactory;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
@@ -47,14 +48,14 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class ClassificationTableCreator implements FormCreator,Contexed, ExtraContent{
+public class ClassificationTableCreator extends AbstractContexed implements FormCreator,ExtraContent{
 
 
 	private static final String TYPE = "Type";
 	private static final String TABLE = "Table";
-	private AppContext conn;
+	
 	public ClassificationTableCreator(AppContext c){
-		this.conn=c;
+		super(c);
 	}
 	public void buildCreationForm(String type_name,Form f) throws Exception {
 		f.addInput(TABLE, "Name of table to create", new NewTableInput(conn));
@@ -62,9 +63,7 @@ public class ClassificationTableCreator implements FormCreator,Contexed, ExtraCo
 		f.addAction("Create", new CreateAction());
 	}
 
-	public AppContext getContext() {
-		return conn;
-	}
+	
 	public class CreateAction extends FormAction{
 
 		@SuppressWarnings("unchecked")

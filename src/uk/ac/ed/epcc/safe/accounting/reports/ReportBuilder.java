@@ -65,8 +65,8 @@ import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.xml.ErrorSetErrorListener;
 import uk.ac.ed.epcc.safe.accounting.xml.LSResolver;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
@@ -82,7 +82,6 @@ import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
 import uk.ac.ed.epcc.webapp.limits.LimitException;
 import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay.TextFile;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
@@ -99,7 +98,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  */
 
 
-public class ReportBuilder implements Contexed, TemplateValidator {
+public class ReportBuilder extends AbstractContexed implements TemplateValidator {
 
 	private static final String AUTHENTICATED_USER_PARAMETER_NAME = "AuthenticatedUser";
 	private static final String CURRENT_TIME_PARAMETER_NAME = "CurrentTime";
@@ -120,29 +119,29 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		public Source resolve(String href, String base)
 				throws TransformerException {
 			try {
-				log.debug("URI resolve href="+href+" base="+base);
+				getLogger().debug("URI resolve href="+href+" base="+base);
 				URI base_uri = new URI(base);
 				URI target = base_uri.resolve(href);
 				URI style = STYLESHEET_URI.relativize(target);
 				if (!style.isAbsolute()) {
-					log.debug("is stylesheet "+style.getRawPath());
+					getLogger().debug("is stylesheet "+style.getRawPath());
 					return getStyleSheet(style.getRawPath());
 				}
 				URI report = REPORT_URI.relativize(target);
 				if (!report.isAbsolute()) {
-					log.debug("is report-template "+report.getRawPath());
+					getLogger().debug("is report-template "+report.getRawPath());
 					return getReport(report.getRawPath());
 				}
 				URI schema = SCHEMA_URI.relativize(target);
 				if (!schema.isAbsolute()) {
-					log.debug("is schema "+schema.getRawPath());
+					getLogger().debug("is schema "+schema.getRawPath());
 					return getSchemaSource(report.getRawPath());
 
 				}
-				log.debug("return null");
+				getLogger().debug("return null");
 				return null;
 			} catch (Exception e) {
-				log.warn("Error in Resolver",e);
+				getLogger().warn("Error in Resolver",e);
 				throw new TransformerException(e);
 			}
 		}
@@ -181,7 +180,6 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	private static final String SCHEMA_LOC = BASE_LOC;
 	private final URI SCHEMA_URI=new URI(SCHEMA_LOC);
 
-	private final AppContext conn;
 	private TextFileOverlay default_overlay, report_overlay,
 			stylesheet_overlay, schema_overlay;
 	private TextFile template;
@@ -193,7 +191,6 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	private Set<ErrorSet> error_sets;
 	ErrorSet general_error;
 	private Set<TemplateValidator> validators;
-	private final Logger log;
 	private boolean log_source=false;
 	public static final String REPORT_DEVELOPER = "ReportDeveloper";
     private final ReportTypeRegistry report_type_reg;
@@ -202,14 +199,12 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		this(ReportTypeRegistry.getInstance(conn));
 	}
 	protected ReportBuilder(ReportTypeRegistry reg) throws URISyntaxException, ParserConfigurationException {	
+		super(reg.getContext());
 		PARAMETER_URI = new URI(PARAMETER_LOC);
-		
-		this.conn = reg.getContext();
 		TimerService timer = conn.getService(TimerService.class);
 		
 		report_type_reg = reg;
 		
-		log = conn.getService(LoggerService.class).getLogger(getClass());
 		
 		if( timer != null) {
 			timer.startTimer("makeOverlays");
@@ -218,7 +213,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		try {
 			base_url = new URL(BASE_LOC);
 		} catch (MalformedURLException e) {
-			log.error("Error making base URL",e);
+			getLogger().error("Error making base URL",e);
 		}
 		default_overlay = new TextFileOverlay(conn);
 		default_overlay.setBaseURL(base_url);
@@ -297,7 +292,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 				);
 				
 			}catch(Throwable t){
-				log.error("Error making ReportType "+name,t);
+				getLogger().error("Error making ReportType "+name,t);
 			}
 		}
 		if( timer != null) {
@@ -305,16 +300,16 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		}
 		limits=conn.getService(LimitService.class);
 		if( limits == null) {
-			log.debug("No limit service");
+			getLogger().debug("No limit service");
 		}else {
-			log.debug("Limit service is "+limits.getClass().getCanonicalName());
+			getLogger().debug("Limit service is "+limits.getClass().getCanonicalName());
 		}
 	}
 	private TransformerFactory getTransformerFactory() {
 		if( transformerFactory == null) {
 			transformerFactory=TransformerFactory.newInstance();
 			
-			log.debug("TransformerFactory="+transformerFactory.getClass().getCanonicalName());
+			getLogger().debug("TransformerFactory="+transformerFactory.getClass().getCanonicalName());
 			// Get the stylesheets to use the local URIs to find resources.
 			transformerFactory.setURIResolver(new Resolver());
 			
@@ -469,9 +464,9 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 				Transformer identity = getXSLTransform(null, null);
 				identity.transform(s, new
 						StreamResult(out));
-				log.debug(text+" source XML is:"+out.toString());
+				getLogger().debug(text+" source XML is:"+out.toString());
 			}catch(Throwable t){
-				log.error("Error in logSource",t);
+				getLogger().error("Error in logSource",t);
 			}
 		}
 	}
@@ -570,12 +565,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		}
 		validators.add(re);
 	}
-	/**
-	 * @return
-	 */
-	private Logger getLogger() {
-		return getContext().getService(LoggerService.class).getLogger(getClass());
-	}
+	
 	public void setupExtensions(Map<String,Object> params) throws ParserConfigurationException{
 		setupExtensions(ReportTypeRegistry.HTML, params);
 	}
@@ -634,24 +624,24 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		// Now set the rest of the extensions from the config
 		String extension_param_name = "ReportBuilder."+reportType.name()+".extension_list";
 		String extension_list = conn.getInitParameter(extension_param_name, "");
-		log.debug("extension list "+extension_param_name+"->"+extension_list);
+		getLogger().debug("extension list "+extension_param_name+"->"+extension_list);
 		for(String extension_name : extension_list.split("\\s*,\\s*")){
 			extension_name=extension_name.trim();
 			if( extension_name.length() > 0){
 				Class<? extends ReportExtension> clazz = conn.getPropertyClass(ReportExtension.class, extension_name);
 				if( clazz == null ){
-					log.error("Extension "+extension_name+" not defined");
+					getLogger().error("Extension "+extension_name+" not defined");
 				}else{
 					try {
 						ReportExtension ext = conn.makeParamObject(clazz, conn,nf);
 						String param_name = conn.getInitParameter("ReportBuilder."+extension_name+".name",extension_name);
-						log.debug("Adding extension "+ext.getClass().getCanonicalName()+" as "+param_name);
+						getLogger().debug("Adding extension "+ext.getClass().getCanonicalName()+" as "+param_name);
 						ext.setPolicy(pol);
 						ext.setParams(parameter_names,params);
 						register(ext);
 						params.put(param_name, ext);
 					} catch (Exception e) {
-						log.error("Error making extension "+clazz.getCanonicalName(),e);
+						getLogger().error("Error making extension "+clazz.getCanonicalName(),e);
 					}
 				}
 			}
@@ -767,7 +757,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 	public void renderXML(Map<String, Object> params, OutputStream out)
 			throws Exception {
 		ReportType type = getReportTypeReg().getReportType(params);
-		log.debug("Report type is "+type);
+		getLogger().debug("Report type is "+type);
 		renderXML(type, params, type.getResult(getContext(),out));
 	}
 	/** Forward HTML output to a {@link SimpleXMLBuilder}.
@@ -811,7 +801,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 		
 		
 		String transform_list = conn.getInitParameter("ReportBuilder."+type.name()+".transform_list", "identity.xsl");
-		log.debug("Transform list ReportBuilder."+type.name()+".transform_list is "+transform_list);
+		getLogger().debug("Transform list ReportBuilder."+type.name()+".transform_list is "+transform_list);
 		String transform_names[] = transform_list.split("\\s*,\\s*");
 		String name="";
 		try{
@@ -851,7 +841,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			if( t instanceof TransformerException && t.getCause() instanceof LimitException) {
 				throw (LimitException) t.getCause();
 			}
-			log.error("Error in transform "+name,t);
+			getLogger().error("Error in transform "+name,t);
 			throw new Exception(t);
 		}
 	}
@@ -905,7 +895,7 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			try {
 				factory.setResourceResolver(new LSResolver(docBuilder.getDOMImplementation(), schema_overlay, SCHEMA_GROUP, parent));
 			} catch (ParserConfigurationException e) {
-				log.error("Error setting schema resolver",e);
+				getLogger().error("Error setting schema resolver",e);
 			}
 		}
 		Source source = getSchemaSource(name);
@@ -1017,10 +1007,6 @@ public class ReportBuilder implements Contexed, TemplateValidator {
 			}
 		}
 		return null;
-	}
-
-	public AppContext getContext() {
-		return conn;
 	}
 
 	private static final String REPORT_BUILDER_ATTR="ReportBuilderAttr";

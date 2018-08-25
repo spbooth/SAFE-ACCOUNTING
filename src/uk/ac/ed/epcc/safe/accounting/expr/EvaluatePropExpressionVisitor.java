@@ -23,8 +23,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
 import uk.ac.ed.epcc.safe.accounting.reference.IndexedTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFunc;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -36,20 +36,13 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  * @author spb
  *
  */
-public abstract class EvaluatePropExpressionVisitor implements
-		PropExpressionVisitor<Object>, Contexed {
+public abstract class EvaluatePropExpressionVisitor extends AbstractContexed implements
+		PropExpressionVisitor<Object> {
 	
 
-	private final AppContext conn;
-
 	public EvaluatePropExpressionVisitor(AppContext ctx) {
-		conn = ctx;
+		super(ctx);
 	}
-
-	public AppContext getContext() {
-		return conn;
-	}
-
 	public Number visitBinaryPropExpression(BinaryPropExpression bexpr)
 			throws Exception {
 		Number a = (Number) bexpr.a.accept(this);

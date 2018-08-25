@@ -26,6 +26,7 @@ import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -47,12 +48,11 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
  */
 
 
-public class AccountingUploadParser implements UploadParser, Contexed {
+public class AccountingUploadParser extends AbstractContexed implements UploadParser{
 	public static final String UPDATE_INPUT = "update";
 	public static final String TABLE_INPUT = "table";
-	private AppContext conn;
 	public AccountingUploadParser(AppContext c){
-		this.conn=c;
+		super(c);
 	}
 	@SuppressWarnings("unchecked")
 	public String upload(Map<String, Object> parameters) throws UploadException {
@@ -108,15 +108,4 @@ public class AccountingUploadParser implements UploadParser, Contexed {
 		
 		return result;
 	}
-	/**
-	 * @return
-	 */
-	protected Logger getLogger() {
-		return conn.getService(LoggerService.class).getLogger(getClass());
-	}
-
-	public AppContext getContext() {
-		return conn;
-	}
-
 }

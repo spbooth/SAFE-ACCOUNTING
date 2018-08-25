@@ -13,37 +13,34 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.allocations;
 
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryCreator;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
-public class AllocationPeriodTransitionCreator implements
-		Contexed, TransitionFactoryCreator<AllocationPeriodTransitionProvider> {
-	private final AppContext c;
+public class AllocationPeriodTransitionCreator extends AbstractContexed implements
+		 TransitionFactoryCreator<AllocationPeriodTransitionProvider> {
+
 	public AllocationPeriodTransitionCreator(AppContext c) {
-		this.c=c;
+		super(c);
 	}
 
 	@SuppressWarnings("unchecked")
 	public AllocationPeriodTransitionProvider getTransitionProvider(String tag) {
 		
 			try {
-				AllocationManager man = c.makeObject(AllocationManager.class, tag);
+				AllocationManager man = getContext().makeObject(AllocationManager.class, tag);
 				if(man != null){
 					return man.getTransitionProvider();
 				}
 			} catch (Exception e) {
-				c.getService(LoggerService.class).getLogger(getClass()).error("Error making AllocationPeriodTransitionProvider",e);
+				getLogger().error("Error making AllocationPeriodTransitionProvider",e);
 			}
 			
 		
 		return null;
 	}
 
-	public AppContext getContext() {
-
-		return c;
-	}
 
 }

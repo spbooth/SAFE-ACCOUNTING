@@ -49,8 +49,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.IndexedTag;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.Targetted;
@@ -76,7 +76,6 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
@@ -114,15 +113,15 @@ import uk.ac.ed.epcc.webapp.time.Period;
  */
 
 
-public abstract class AccessorMap<X> implements Contexed, ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
+public abstract class AccessorMap<X> extends AbstractContexed implements ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
 	public static final Feature EVALUATE_CACHE_FEATURE = new Feature("evaluate.cache",true,"cache expression evaluations in ExpressionTargets");
 	public static final Feature FORCE_SQLVALUE_FEATURE = new Feature("accounting.force_sqlvalue",false,"Use SQLValues in preference to SQLExpressions");
 	protected final Class<? super X> target;
 	
 	protected final String config_tag;
 	protected static final String CONFIG_PREFIX = "accounting.";
-	private final AppContext conn;
-	private Logger log;
+	
+	
 	// derived prop expressions
 	private PropExpressionMap derived;
 	// accessors for the leaf properties.
@@ -509,11 +508,10 @@ public abstract class AccessorMap<X> implements Contexed, ExpressionFilterTarget
 	 * 
 	 */
 	public AccessorMap(AppContext conn,Class<? super X> target,String config_tag) {
-		this.conn=conn;
+		super(conn);
 		this.target=target;
 		this.config_tag=config_tag;
 		derived = new PropExpressionMap();
-		log = getContext().getService(LoggerService.class).getLogger(getClass());
 		
 		// might be better to do this as an expression
 		// the following only works because we are adding a SQLAccessor
@@ -733,7 +731,7 @@ public abstract class AccessorMap<X> implements Contexed, ExpressionFilterTarget
 	 */
 	public final  <T> Boolean resolves(PropExpression<T> e,boolean require_sql){
 		if( checker == null || checker.getRequreSQL() != require_sql){
-			checker = new ResolveChecker(getContext(),log,require_sql);
+			checker = new ResolveChecker(getContext(),getLogger(),require_sql);
 		}
 		try {
 			return e.accept(checker);
@@ -1079,16 +1077,7 @@ public abstract class AccessorMap<X> implements Contexed, ExpressionFilterTarget
     			+ expr+" for "+config_tag);
     }
     
-	public final AppContext getContext(){
-		return conn;
-	}
-	protected Logger getLogger() {
-		if( log == null ){
-			log =getContext().getService(LoggerService.class).getLogger(getClass());
-		}
-		return log;
-	}
-	
+		
 	/** Generate an overlap filter
 	 * 
 	 * @param period   Period to overlap

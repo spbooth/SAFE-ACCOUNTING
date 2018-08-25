@@ -26,6 +26,7 @@ import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -44,20 +45,14 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  */
 
 
-public class MacroExpander implements Contexed{
-  private final AppContext conn;
+public class MacroExpander extends AbstractContexed{
+ 
   private final ValueParserPolicy policy;
   private PropertyContainer container=null;
   private PropertyFinder finder=null;
   public MacroExpander(AppContext c,ValueParserPolicy policy){
-	  this.conn=c;
+	  super(c);
 	  this.policy=policy;
-  }
-  public AppContext getContext() {
-	  return conn;
-  }
-  protected final Logger getLogger(){
-	  return conn.getService(LoggerService.class).getLogger(getClass());
   }
   public void setPropertyContainer(PropertyContainer cont){
 	  container=cont;

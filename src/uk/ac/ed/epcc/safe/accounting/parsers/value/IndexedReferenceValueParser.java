@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.parsers.value;
 
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.Description;
@@ -27,12 +28,10 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  */
 
 @Description("Parse a type-safe reference")
-public class IndexedReferenceValueParser implements ValueParser<IndexedReference>, Contexed {
-
-	private AppContext c;
+public class IndexedReferenceValueParser extends AbstractContexed implements ValueParser<IndexedReference> {
 	
 	public IndexedReferenceValueParser(AppContext c){
-		this.c=c;
+		super(c);
 	}
 	
 	public Class<IndexedReference> getType() {
@@ -42,15 +41,10 @@ public class IndexedReferenceValueParser implements ValueParser<IndexedReference
 
 	public IndexedReference parse(String valueString)
 			throws ValueParseException {
-		return IndexedReference.parseIndexedReference(c, valueString);
+		return IndexedReference.parseIndexedReference(getContext(), valueString);
 	}
 
 	public String format(IndexedReference value) {
 		return value.toString();
 	}
-
-	public AppContext getContext() {
-		return c;
-	}
-
 }

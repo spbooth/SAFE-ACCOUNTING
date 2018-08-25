@@ -21,8 +21,8 @@ import uk.ac.ed.epcc.safe.accounting.expr.parse.ExpressionParser;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.UnresolvedNameException;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 
 /** Simple expression parser.
  *
@@ -32,13 +32,12 @@ import uk.ac.ed.epcc.webapp.Contexed;
 
 
 
-public class Parser implements Contexed{
+public class Parser extends AbstractContexed{
 	
-	AppContext conn;
 	PropertyFinder finder;
 	int debug=0;
 	public Parser(AppContext conn,PropertyFinder reg){
-		this.conn=conn;
+		super(conn);
 		this.finder=reg;
 	}
 	/** Parse a String into a PropExpression
@@ -68,9 +67,7 @@ public class Parser implements Contexed{
 		
 		
 	}
-	public AppContext getContext() {
-		return conn;
-	}
+	
 	/**
 	 * @return the debug
 	 */

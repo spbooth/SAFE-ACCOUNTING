@@ -21,8 +21,8 @@ import java.util.Map;
 import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTargetComposite;
 import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
 import uk.ac.ed.epcc.safe.accounting.db.UploadParseTargetUpdater;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 /** UploadParser to populate an {@link UploadParseTarget} 
  * 
@@ -36,11 +36,10 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
  */
 
 
-public class UploadParseTargetUploadParser implements UploadParser, Contexed {
-    private final AppContext conn;
+public class UploadParseTargetUploadParser extends AbstractContexed implements UploadParser{
     private final String mode;
     public UploadParseTargetUploadParser(AppContext c, String mode){
-    	conn=c;
+    	super(c);
     	this.mode=mode;
     }
 	@SuppressWarnings("unchecked")
@@ -75,8 +74,4 @@ public class UploadParseTargetUploadParser implements UploadParser, Contexed {
 		UploadParseTargetUpdater updater = new UploadParseTargetUpdater(conn, target);
 		return updater.receiveData(parameters, update);
 	}
-	public AppContext getContext() {
-		return conn;
-	}
-
 }

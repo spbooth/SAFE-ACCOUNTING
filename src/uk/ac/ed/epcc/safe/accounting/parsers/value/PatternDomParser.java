@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 import org.w3c.dom.Node;
 
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 /** DomValueParser that extracts part of the target text using a
@@ -32,11 +33,10 @@ import uk.ac.ed.epcc.webapp.Contexed;
  */
 
 
-public class PatternDomParser implements DomValueParser<String>, Contexed {
-    AppContext conn;
+public class PatternDomParser extends AbstractContexed implements DomValueParser<String> {
     Pattern pat;
     public PatternDomParser(AppContext c, String tag){
-    	conn=c;
+    	super(c);
     	pat = Pattern.compile(c.getInitParameter("pattern."+tag));
     }
 	public Class<String> getType() {
@@ -49,10 +49,6 @@ public class PatternDomParser implements DomValueParser<String>, Contexed {
 			return m.group(1);
 		}
 		return null;
-	}
-
-	public AppContext getContext() {
-		return conn;
 	}
 	private String getText(Node valueNode)throws ValueParseException{
 		if( valueNode ==  null){

@@ -20,8 +20,8 @@ package uk.ac.ed.epcc.safe.accounting.db.transitions;
 
 import uk.ac.ed.epcc.safe.accounting.aggregation.AggregateUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
@@ -42,15 +42,15 @@ import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
  */
 
 
-public class AggregationTableCreator implements FormCreator,Contexed{
+public class AggregationTableCreator extends AbstractContexed implements FormCreator{
 
 	
 	private static final String MASTER_TAG = "master_tag";
 	private static final String HANDLER = "Handler";
 	private static final String TABLE = "Table";
-	private AppContext conn;
+	
 	public AggregationTableCreator(AppContext c){
-		this.conn=c;
+		super(c);
 	}
 	public void buildCreationForm(String type_name,Form f) throws Exception {
 		f.addInput(TABLE, "Name of table to create", new NewTableInput(conn));
@@ -64,9 +64,6 @@ public class AggregationTableCreator implements FormCreator,Contexed{
 		f.addAction("Create", new CreateAction());
 	}
 
-	public AppContext getContext() {
-		return conn;
-	}
 	public class CreateAction extends FormAction{
 
 		@SuppressWarnings("unchecked")

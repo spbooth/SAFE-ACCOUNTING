@@ -25,15 +25,13 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -46,9 +44,9 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * @param <T> target type for {@link TransitionSource}
  * @param <R> {@link PropertyContainerParser} IR type
  */
-public abstract class AbstractPlugInOwner<T extends DataObjectFactory,R> implements Contexed, PlugInOwner<R>, TableContentProvider, TableTransitionContributor, ConfigParamProvider {
+public abstract class AbstractPlugInOwner<T extends DataObjectFactory,R> extends AbstractContexed implements PlugInOwner<R>, TableContentProvider, TableTransitionContributor, ConfigParamProvider {
   
-	private final AppContext c;
+	
     private final String tag;
     private final PropertyFinder prev;
 	private PropertyContainerParser<R> parser=null;
@@ -57,8 +55,8 @@ public abstract class AbstractPlugInOwner<T extends DataObjectFactory,R> impleme
 	private PropExpressionMap derived=null;
 	
 	public AbstractPlugInOwner(AppContext c,PropertyFinder prev, String tag){
+		super(c);
 		this.prev=prev;
-		this.c=c;
 		this.tag=tag;
 	}
 	public final PropertyContainerParser<R> getParser() {
@@ -84,10 +82,10 @@ public abstract class AbstractPlugInOwner<T extends DataObjectFactory,R> impleme
 		multi.addFinder(prev);
 		PropertyContainerParser par = getParser();
 		if( par != null ){
-			multi.addFinder(par.initFinder(c, prev, tag));
+			multi.addFinder(par.initFinder(getContext(), prev, tag));
 		}
 		for(PropertyContainerPolicy pol : getPolicies()){
-			multi.addFinder(pol.initFinder(c, multi, tag));
+			multi.addFinder(pol.initFinder(getContext(), multi, tag));
 		}
 		return multi;
 	}
@@ -118,9 +116,7 @@ public abstract class AbstractPlugInOwner<T extends DataObjectFactory,R> impleme
 		return derived;
 	}
 	
-	public final AppContext getContext(){
-		return c;
-	}
+	
     public final String getTag(){
     	return tag;
     }
@@ -161,9 +157,6 @@ public Map<TableTransitionKey, Transition> getTableTransitions() {
 	return res;
 }
 
-	protected Logger getLogger(){
-		return c.getService(LoggerService.class).getLogger(getClass());
-	}
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.ConfigParamProvider#addConfigParameters(java.util.Set)
 	 */

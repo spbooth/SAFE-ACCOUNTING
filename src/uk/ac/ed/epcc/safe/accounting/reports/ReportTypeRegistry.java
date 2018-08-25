@@ -6,8 +6,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
@@ -15,18 +15,13 @@ import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
-public class ReportTypeRegistry implements Contexed {
+public class ReportTypeRegistry extends AbstractContexed {
 	public static final String REPORT_TYPE_PARAM = "ReportType";
-    private final AppContext conn;
 	protected ReportTypeRegistry(AppContext conn) {
-		this.conn=conn;
+		super(conn);
 		parseReportTypes();
 	}
 
-	@Override
-	public AppContext getContext() {
-		return conn;
-	}
 	private Map<String,ReportType> report_type_reg = new LinkedHashMap<String, ReportType>();
 	// Standard ReportTypes These can be extended from the config
     public static final ReportType	HTML = new ReportType("HTML","html", "text/html","HTML web page"); 

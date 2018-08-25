@@ -18,11 +18,9 @@ import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.content.Table;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 /** Class that generates Table summaries of a PropertyContainer
  * 
@@ -31,13 +29,13 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  */
 
 
-public class PropertyTableMaker implements Contexed {
-	private final AppContext conn;
+public class PropertyTableMaker extends AbstractContexed {
+
 	private final PropertyFinder finder;
 	private ValueParserPolicy policy;
 	
 	public PropertyTableMaker(AppContext conn,PropertyFinder finder){
-		this.conn=conn;
+		super(conn);
 		this.finder=finder;
 		policy = new ValueParserPolicy(conn);
 	}
@@ -67,11 +65,4 @@ public class PropertyTableMaker implements Contexed {
 			}
 		}
 	}
-	public AppContext getContext() {
-		return conn;
-	}
-	protected final Logger getLogger(){
-		return conn.getService(LoggerService.class).getLogger(getClass());
-	}
-	
 }

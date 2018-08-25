@@ -21,8 +21,8 @@ package uk.ac.ed.epcc.safe.accounting.db.transitions;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.update.ConfigPlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
@@ -44,14 +44,13 @@ import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
  */
 
 
-public class AccountingTableCreator implements FormCreator,Contexed{
+public class AccountingTableCreator extends AbstractContexed implements FormCreator{
 
 	private static final String PARSER = "Parser";
 	private static final String HANDLER = "Handler";
 	private static final String TABLE = "Table";
-	private AppContext conn;
 	public AccountingTableCreator(AppContext c){
-		this.conn=c;
+		super(c);
 	}
 	public void buildCreationForm(String type_name,Form f) throws Exception {
 		f.addInput(TABLE, "Name of table to create", new NewTableInput(conn));
@@ -63,9 +62,6 @@ public class AccountingTableCreator implements FormCreator,Contexed{
 		f.addAction("Create", new CreateAction());
 	}
 
-	public AppContext getContext() {
-		return conn;
-	}
 	public class CreateAction extends FormAction{
 
 		@SuppressWarnings("unchecked")

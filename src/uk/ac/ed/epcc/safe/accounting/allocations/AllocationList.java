@@ -16,28 +16,17 @@ package uk.ac.ed.epcc.safe.accounting.allocations;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.UIGenerator;
 import uk.ac.ed.epcc.webapp.forms.result.IndexTransitionResult;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 
-public class AllocationList implements UIGenerator, Contexed {
+public class AllocationList extends AbstractContexed implements UIGenerator {
 
-	private final AppContext conn;
 	public AllocationList(AppContext c) {
-		this.conn=c;
-	}
-
-	public AppContext getContext() {
-		return conn;
-	}
-
-	public Logger getLogger(){
-		return conn.getService(LoggerService.class).getLogger(getClass());
+		super(c);
 	}
 	public ContentBuilder addContent(ContentBuilder builder) {
 		if( getContext().getService(SessionService.class).hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE)){

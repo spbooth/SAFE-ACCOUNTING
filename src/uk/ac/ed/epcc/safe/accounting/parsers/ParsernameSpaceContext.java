@@ -27,10 +27,8 @@ import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
 /** A simple run-time configurable {@link NamespaceContext} based on a map.
@@ -38,29 +36,26 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  * @author spb
  *
  */
-public class ParsernameSpaceContext implements NamespaceContext,Contexed{
-    private final AppContext ctx;
+public class ParsernameSpaceContext extends AbstractContexed implements NamespaceContext{
 	private final Map<String,String> namespaces;
-	private final Logger log;
 	public ParsernameSpaceContext(AppContext conn){
-		this.ctx=conn;
+		super(conn);
 		namespaces = new HashMap<String,String>();
 		namespaces.put(XMLConstants.DEFAULT_NS_PREFIX, XMLConstants.NULL_NS_URI);
 		namespaces.put(XMLConstants.XML_NS_PREFIX,XMLConstants.XML_NS_URI);
 		namespaces.put(XMLConstants.XMLNS_ATTRIBUTE, XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
-		log = conn.getService(LoggerService.class).getLogger(getClass());
 	}
 	public String getNamespaceURI(String arg0) {
 		if( arg0 == null){
 			throw new IllegalArgumentException("Null prefix");
 		}
-		log.debug("lookup prefix "+arg0);
+		getLogger().debug("lookup prefix "+arg0);
 		
 		String res = namespaces.get(arg0);
 		if( res == null ){
 			res = XMLConstants.NULL_NS_URI;
 		}
-		log.debug(" returns "+res);
+		getLogger().debug(" returns "+res);
 		return res;
 	}
 
@@ -68,7 +63,7 @@ public class ParsernameSpaceContext implements NamespaceContext,Contexed{
 		if( arg0 == null){
 			throw new IllegalArgumentException("Null namespace");
 		}
-		log.debug("lookup uri "+arg0);
+		getLogger().debug("lookup uri "+arg0);
 		if( namespaces.containsValue(arg0)){
 			for(String prefix : namespaces.keySet()){
 				if( arg0.equals(namespaces.get(prefix))){
@@ -94,8 +89,4 @@ public class ParsernameSpaceContext implements NamespaceContext,Contexed{
 	public void addNamespace(String prefix, String namespace){
 		namespaces.put(prefix, namespace);
 	}
-	public AppContext getContext() {
-		return ctx;
-	}
-	
 }

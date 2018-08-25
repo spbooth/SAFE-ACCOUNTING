@@ -25,8 +25,8 @@ import uk.ac.ed.epcc.safe.accounting.parsers.value.DefaultFormatter;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -41,18 +41,16 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  */
 
 
-public class ExpressionExpander implements Contexed{
-  private final AppContext conn;
+public class ExpressionExpander extends AbstractContexed{
+  
   private final ValueParserPolicy policy;
   private ExpressionTarget container=null;
   private Parser parser=null;
   public ExpressionExpander(AppContext c,ValueParserPolicy policy){
-	  this.conn=c;
+	  super(c);
 	  this.policy=policy;
   }
-  public AppContext getContext() {
-	  return conn;
-  }
+  
   public void setExpressionTarget(ExpressionTarget cont){
 	  container=cont;
 	  parser = cont.getParser();
@@ -165,7 +163,5 @@ public <T> T evaluate(PropExpression<T> expr){
 	  return null;
   }
 
-	private Logger getLogger(){
-		return getContext().getService(LoggerService.class).getLogger(getClass());
-	}
+	
 }

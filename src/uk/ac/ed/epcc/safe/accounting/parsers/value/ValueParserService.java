@@ -19,10 +19,10 @@ package uk.ac.ed.epcc.safe.accounting.parsers.value;
 import java.util.HashMap;
 import java.util.Map;
 
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.AppContextService;
 import uk.ac.ed.epcc.webapp.ClassTableCreator;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.content.Table;
 
 /**
@@ -55,13 +55,10 @@ import uk.ac.ed.epcc.webapp.content.Table;
  */
 
 
-public class ValueParserService implements Contexed, AppContextService<ValueParserService> {
+public class ValueParserService extends AbstractContexed implements  AppContextService<ValueParserService> {
 
 	private static final String VALUE_PARSER_PATH = "value_parser";
-	/*
-	 * The context under which this service operates
-	 */
-	private AppContext context;
+	
 	/*
 	 * A mapping of all the currently loaded parsers to their names
 	 */
@@ -80,25 +77,13 @@ public class ValueParserService implements Contexed, AppContextService<ValuePars
 	 *          The environment within which this service operates.
 	 */
 	public ValueParserService(AppContext context) {
-		if (context == null)
-			throw new NullPointerException("Context cannot be null");
-
-		this.context = context;
+		super(context);
 		this.cachedParsers = new HashMap<String, ValueParser>();
        
 		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see uk.ac.ed.epcc.webapp.Contexed#getContext()
-	 */
-	public AppContext getContext() {
-		return this.context;
-	}
 
-	
 
 	/**
 	 * Returns a <code>ValueParser</code> with the specified name. Several names
@@ -153,7 +138,7 @@ public class ValueParserService implements Contexed, AppContextService<ValuePars
 
 		ValueParser<?> parser;
 		try {
-			parser = this.context.makeObjectWithDefault(ValueParser.class, null,VALUE_PARSER_PATH, parserName);
+			parser = getContext().makeObjectWithDefault(ValueParser.class, null,VALUE_PARSER_PATH, parserName);
 			if( parser == null ){
 				return null;
 			}
@@ -174,7 +159,7 @@ public class ValueParserService implements Contexed, AppContextService<ValuePars
 	}
 
 	public Table getDocumentationTable(){
-		ClassTableCreator creator = new ClassTableCreator(context);
+		ClassTableCreator creator = new ClassTableCreator(getContext());
 		return creator.getList(ValueParser.class, VALUE_PARSER_PATH);
 	}
 	public Class<? super ValueParserService> getType() {

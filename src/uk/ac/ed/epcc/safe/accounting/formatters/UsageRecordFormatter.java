@@ -35,11 +35,10 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay.TextFile;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
@@ -142,7 +141,7 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 @Deprecated
 
 
-public class UsageRecordFormatter implements Contexed {
+public class UsageRecordFormatter extends AbstractContexed {
 
 	// STATIC FIELDS ############################################################
 
@@ -212,10 +211,7 @@ public class UsageRecordFormatter implements Contexed {
 	 * operations for variables
 	 */
 	private Matcher templateVariableMatcher;
-	/**
-	 * The context in which this object operates
-	 */
-	private AppContext context;
+	
 	/**
 	 * For recording errors during writing. The errors are reported as the return
 	 * argument of the {@link #endFormatting()} method
@@ -257,7 +253,7 @@ public class UsageRecordFormatter implements Contexed {
 		 * always present, even if the object isn't valid until the init(...) method
 		 * is called
 		 */
-		this.context = context;
+		super(context);
 	}
 
 	/**
@@ -347,15 +343,6 @@ public class UsageRecordFormatter implements Contexed {
 		return recordText.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see uk.ac.ed.epcc.webapp.Contexed#getContext()
-	 */
-	public AppContext getContext() {
-		return this.context;
-	}
-
 	/**
 	 * Initialises this formatter. Properties used to configure the formatter will
 	 * be fetched from <code>context</code>. Most importantly, the template to use
@@ -382,7 +369,7 @@ public class UsageRecordFormatter implements Contexed {
 		assert context != null : "The AppContext should not be null";
 		assert finder != null : "The PropertyFinder should not be null";
 
-		this.context = context;
+		
 		// this should occur in startWrite(...) but added here too just to be safe
 		this.errors = new ErrorSet();
 
@@ -532,9 +519,9 @@ public class UsageRecordFormatter implements Contexed {
 		
 		// TODO let this be able to define it's own overlay table
 		// See ReportBuilder constructor in webacct.
-		String urTemplateName = context.getInitParameter("ur-template");	
+		String urTemplateName = getContext().getInitParameter("ur-template");	
 		
-		TextFileOverlay urTemplateOverlay = new TextFileOverlay(context);			
+		TextFileOverlay urTemplateOverlay = new TextFileOverlay(getContext());			
 		try {
 			TextFile templateTextFile = 
 				urTemplateOverlay.find(UR_TEMPLATE_GROUP, urTemplateName);
@@ -583,8 +570,5 @@ public class UsageRecordFormatter implements Contexed {
 		}		
 		return "";
 
-	}
-	private Logger getLogger(){
-		return context.getService(LoggerService.class).getLogger(getClass());
 	}
 }
