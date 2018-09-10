@@ -458,7 +458,10 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 		
 		DocumentFragment result = doc.createDocumentFragment();
 		Element e;
-		String prefix=chart.report_prefix;
+		String prefix=null;
+		if( chart != null ) {
+			prefix=chart.report_prefix;
+		}
 		if( prefix == null) {
 			e = doc.createElement("NoData");
 		}else {
