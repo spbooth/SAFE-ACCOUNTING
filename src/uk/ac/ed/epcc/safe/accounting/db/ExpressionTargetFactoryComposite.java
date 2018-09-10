@@ -97,7 +97,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 			for(PropertyTag tag : expression_map.keySet()) {
 				if( ! finder.hasProperty(tag)) {
 					PropExpression expr = expression_map.get(tag);
-					getLogger().error("Derived property set for "+tag.getFullName()+"="+expr.toString()+" but not registered in finder");
+					getLogger().error("Derived property set for "+tag.getFullName()+"="+expr.toString()+" but not registered in finder of "+getFactory().getTag());
 				}
 			}
 			reg=finder;
