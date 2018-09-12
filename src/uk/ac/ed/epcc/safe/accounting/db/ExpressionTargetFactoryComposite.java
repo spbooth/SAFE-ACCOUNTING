@@ -164,10 +164,11 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 
 	@Override
 	public boolean compatible(RecordSelector sel) {
-		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,getAccessorMap(),false);
+		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(getLogger(),getAccessorMap(),false);
 		try {
 			return sel.visit(vis);
 		} catch (Exception e) {
+			getLogger().error("Exception checking for compatible selector", e);
 			return false;
 		}
 	}

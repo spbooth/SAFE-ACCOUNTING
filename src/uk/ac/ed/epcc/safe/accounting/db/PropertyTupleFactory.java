@@ -205,10 +205,11 @@ Tagged{
 
 	@Override
 	public boolean compatible(RecordSelector sel) {
-		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(null,getAccessorMap(),false);
+		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(getLogger(),getAccessorMap(),false);
 		try {
 			return sel.visit(vis);
 		} catch (Exception e) {
+			getLogger().error("Error checking compatible", e);
 			return false;
 		}
 	}
