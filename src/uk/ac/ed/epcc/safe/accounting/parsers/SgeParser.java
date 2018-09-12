@@ -48,10 +48,10 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 public class SgeParser extends BatchParser implements Contexed {
 	private final AppContext c;
 	private String table;
-	private static final boolean DEFAULT_SKIP_SLAVE=true;
+	private static final boolean DEFAULT_SKIP_INNER=true;
 	private static final boolean DEFAULT_SKIP_FAILED=false;
 	private static final boolean DEFAULT_SKIP_SUBTASK=true;
-	private boolean skip_slave_job = DEFAULT_SKIP_SLAVE;
+	private boolean skip_inner_job = DEFAULT_SKIP_INNER;
 	private boolean skip_failed_job = DEFAULT_SKIP_FAILED;
 	private boolean skip_sub_task = DEFAULT_SKIP_SUBTASK;
 	public SgeParser(AppContext c){
@@ -144,7 +144,7 @@ public class SgeParser extends BatchParser implements Contexed {
 	}
 	@Override
 	public boolean parse(DerivedPropertyMap r,String record) throws AccountingParseException {
-		boolean is_slave=false;
+		boolean is_inner=false;
 		boolean is_sub_task=false;
 		
 		if( record.startsWith("#")){
@@ -167,9 +167,9 @@ public class SgeParser extends BatchParser implements Contexed {
 		r.setProperty(SGE_PRIORITY_PROP,readInteger(args[7]));
 
 		Date submission = readTime(args[8]);
-		is_slave = (submission.getTime() == 0L);  // slave job
-		if(  is_slave && skip_slave_job ){
-			throw new SkipRecord("Slave SGE job");
+		is_inner = (submission.getTime() == 0L);  // inner job
+		if(  is_inner && skip_inner_job ){
+			throw new SkipRecord("Inner SGE job");
 		}
 		r.setProperty(SGE_SUBMITTED_PROP,submission);
 
@@ -291,7 +291,7 @@ public class SgeParser extends BatchParser implements Contexed {
 	InvalidExpressionException {
 		String machine_name = defaults.getProperty(StandardProperties.MACHINE_NAME_PROP);
 		if( machine_name != null ){
-			skip_slave_job = c.getBooleanParameter("skip_slave_job."+machine_name, DEFAULT_SKIP_SLAVE);
+			skip_inner_job = c.getBooleanParameter("skip_inner_job."+machine_name, DEFAULT_SKIP_INNER);
 			skip_failed_job = c.getBooleanParameter("skip_failed_job."+machine_name, DEFAULT_SKIP_FAILED);
 			skip_sub_task = c.getBooleanParameter("skip_sub_task."+machine_name, DEFAULT_SKIP_SUBTASK);
 		}
@@ -299,7 +299,7 @@ public class SgeParser extends BatchParser implements Contexed {
 
 	@Override
 	public String endParse() {
-		skip_slave_job=DEFAULT_SKIP_SLAVE;
+		skip_inner_job=DEFAULT_SKIP_INNER;
 		skip_failed_job=DEFAULT_SKIP_FAILED;
 		skip_sub_task=DEFAULT_SKIP_SUBTASK;
 		return "";
