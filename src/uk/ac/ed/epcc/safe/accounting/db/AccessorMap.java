@@ -736,7 +736,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		try {
 			return e.accept(checker);
 		} catch (Exception e1) {
-			//log.debug("AccessorMap.resolves fails "+config_tag,e1);
+			getLogger().error("AccessorMap.resolves fails "+config_tag,e1);
 			return Boolean.FALSE;
 		//}finally{
 		//	checker.reset();
@@ -744,6 +744,9 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	}
 
 
+	public final <T> boolean resolves(PropExpression<T> expr) {
+		return resolves(expr,false);
+	}
 
 
 	public final String getImplemenationInfo(PropertyTag<?> tag) {

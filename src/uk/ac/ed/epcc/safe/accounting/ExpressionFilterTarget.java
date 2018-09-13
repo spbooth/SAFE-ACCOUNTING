@@ -36,6 +36,13 @@ import uk.ac.ed.epcc.webapp.time.Period;
  */
 public interface ExpressionFilterTarget<T> extends Targetted<T>{
 
+	/** A lightweight test if the {@link PropExpression} resolves.
+	 * 
+	 * @param expr
+	 * @return
+	 */
+	public <R> boolean resolves(PropExpression<R> expr);
+	
 	/** get a filter based on comparing a PropExpression to a value.
 	 * 
 	 * @param <R> type of prop-expression

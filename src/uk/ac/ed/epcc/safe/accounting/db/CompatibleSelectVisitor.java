@@ -70,6 +70,10 @@ public class CompatibleSelectVisitor implements SelectorVisitor<Boolean>{
 		if( c == null || c.tag==null){
 			return false;
 		}
+		// shortcut test for a simple un-defined proeprty
+		if( ! eft.resolves(c.tag)) {
+			return false;
+		}
 		//expensive but only way to ensure this accurately reflects all the
 		//behaviour of getFilter
 		try{
@@ -86,7 +90,8 @@ public class CompatibleSelectVisitor implements SelectorVisitor<Boolean>{
 			}
 		}catch(CannotFilterException e){
 			if( log != null ){
-				log.debug("cannot make filter"+e.getMessage());
+				// This is probably a real problem as the expression resolves but can't filter
+				log.error("cannot make filter"+e.getMessage());
 			}
 			return false;
 		}
@@ -103,6 +108,9 @@ public class CompatibleSelectVisitor implements SelectorVisitor<Boolean>{
 	}
 	public <I> Boolean visitNullSelector(NullSelector<I> n) throws Exception {
 		if(n == null){
+			return false;
+		}
+		if( ! eft.resolves(n.expr)) {
 			return false;
 		}
 		try{
@@ -129,6 +137,9 @@ public class CompatibleSelectVisitor implements SelectorVisitor<Boolean>{
 	public <I> Boolean visitRelationClause(RelationClause<I> c)
 			throws Exception {
 		if( c == null ){
+			return false;
+		}
+		if( ! eft.resolves(c.left) || ! eft.resolves(c.right)) {
 			return false;
 		}
 		try{
