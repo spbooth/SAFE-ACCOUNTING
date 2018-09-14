@@ -70,7 +70,7 @@ public class FilterExtension extends ReportExtension{
 	  try{
 		  AccountingService serv = getContext().getService(AccountingService.class);
 		  return new RecordSet(serv);
-	  }catch(Throwable t){
+	  }catch(Exception t){
 		  addError("RecordSet Error","Error making default selector" , t);
 		  return null;
 	  }
@@ -117,14 +117,14 @@ public class FilterExtension extends ReportExtension{
 				  addError("Bad Filter Specification","unexpected type "+filters.getClass().getCanonicalName());
 			  }
 
-		  }catch(Throwable t){
+		  }catch(Exception t){
 			  getLogger().error("Error parsing filter clause",t);
 			  addError("Filter parse error", t.getMessage());
 			  prev.addRecordSelector(new SelectClause());
 			  prev.setError(true);
 		  }
 		  return prev;
-	  }catch(Throwable t){
+	  }catch(Exception t){
 		  getLogger().error("Error parsing filter clause",t);
 		  addError("Filter parse error", t.getMessage());
 		  return null;
@@ -145,7 +145,7 @@ public class FilterExtension extends ReportExtension{
 			  addError("Bad ObjectSet Specification","unexpected type "+filters.getClass().getCanonicalName());
 		  }
 
-	  }catch(Throwable t){
+	  }catch(Exception t){
 		  getLogger().error("Error parsing filter clause",t);
 		  addError("ObjectSet parse error", t.getMessage());
 	  }

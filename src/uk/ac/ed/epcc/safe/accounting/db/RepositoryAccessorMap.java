@@ -336,7 +336,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 				    reg.lock();
 				    finder.addFinder(reg);
 				}
-			   }catch(Throwable e){
+			   }catch(Exception e){
 				   getLogger().error("Error adding relationship "+t+" to "+tag,e);
 			   }
 			}

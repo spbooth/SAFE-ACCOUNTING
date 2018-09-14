@@ -131,7 +131,7 @@ public abstract class ChartExtension extends ReportExtension {
 		if( red != null){
 			try{
 				result.setReduction(Reduction.valueOf(red));
-			}catch(Throwable t){
+			}catch(Exception t){
 				addError("Bad Reduction", red, t);
 			}
 		}
@@ -237,7 +237,7 @@ public abstract class ChartExtension extends ReportExtension {
 				addError("Bad Timechart specification", e2.getClass().getCanonicalName(),e2);
 				return null;
 			}
-		} catch(Throwable t){
+		} catch(Exception t){
 			addError("internal error", "Error making TimeChart", t);
 
 		}finally{
@@ -288,7 +288,7 @@ public abstract class ChartExtension extends ReportExtension {
 			MapperEntry entry = getMapperEntry(set, (Element) node);
 			Plot ds = makeDataSet(null, set, p, entry, chart, node);
 			return addPlot(ds,set,p,entry,chart,node);
-		}catch(Throwable t){
+		}catch(Exception t){
 			addError("Error in plot", t.getClass().getCanonicalName(), t);
 			Document doc = getDocument();
 			return doc.createDocumentFragment();
@@ -342,7 +342,7 @@ public abstract class ChartExtension extends ReportExtension {
 		try {
 			Plot ds = makeDataSet(null, set, plot, entry, chart, node);
 			return addPlot(ds,set,plot,entry,chart,node);
-		}catch(Throwable t){
+		}catch(Exception t){
 			addError("Error in plot", t.getClass().getCanonicalName(), t);
 			Document doc = getDocument();
 			return doc.createDocumentFragment();
@@ -387,7 +387,7 @@ public abstract class ChartExtension extends ReportExtension {
 				addError("Bad Timechart specification", "Error setting WarningLevel",e3);
 			}			
 			return result;
-		}catch(Throwable t){
+		}catch(Exception t){
 			addError("Error in plot", t.getClass().getCanonicalName(), t);
 			return result;
 		}finally{
@@ -409,7 +409,7 @@ public abstract class ChartExtension extends ReportExtension {
 			return  setChartOptions(chart,(Element) node);
 
 
-		}catch(Throwable t){
+		}catch(Exception t){
 			addError("Error in makePieTimeChart", t.getClass().getCanonicalName(), t);
 			return null;
 		}

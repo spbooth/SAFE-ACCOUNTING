@@ -240,7 +240,7 @@ Tagged{
 						PropExpression pe1 = p.parse(exp1);
 						PropExpression pe2 = p.parse(exp2);
 						and.addFilter(getRawFilter(new RelationClause<>(pe1, pe2)));
-					}catch(Throwable t) {
+					}catch(Exception t) {
 						getLogger().error("Bad mandatory filter clause "+clause,t);
 						// default to generate nothing on error as a bad filter can
 						// result in a very expensive query

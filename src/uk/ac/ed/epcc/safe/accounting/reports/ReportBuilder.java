@@ -291,7 +291,7 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 						conn.getInitParameter("description."+name,name+" ReportType")
 				);
 				
-			}catch(Throwable t){
+			}catch(Exception t){
 				getLogger().error("Error making ReportType "+name,t);
 			}
 		}
@@ -432,7 +432,7 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 					logSource("Initial ",new DOMSource(reportTemplateDocument));
 				}
 				param_document= reportTemplateDocument;
-			}catch(Throwable t) {
+			}catch(Exception t) {
 				general_error.add("initial_transform", "Failed to make parameter document", t);
 				// prevent re-run
 				param_document=docBuilder.newDocument();
@@ -465,7 +465,7 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 				identity.transform(s, new
 						StreamResult(out));
 				getLogger().debug(text+" source XML is:"+out.toString());
-			}catch(Throwable t){
+			}catch(Exception t){
 				getLogger().error("Error in logSource",t);
 			}
 		}
@@ -837,7 +837,7 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 			if( timer != null){
 				timer.stopTimer("xml-transform "+name);
 			}
-		}catch(Throwable t){
+		}catch(Exception t){
 			if( t instanceof TransformerException && t.getCause() instanceof LimitException) {
 				throw (LimitException) t.getCause();
 			}

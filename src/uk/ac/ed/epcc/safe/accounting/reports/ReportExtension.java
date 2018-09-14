@@ -718,7 +718,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 				if( e.hasAttribute(MAXIMUM_INTEGER_DIGITS)){
 					result.setMaximumIntegerDigits(Integer.parseInt(e.getAttribute(MAXIMUM_INTEGER_DIGITS)));
 				}
-			}catch(Throwable t){
+			}catch(Exception t){
 				addError("Bad Number Format", t.getMessage(),e);
 			}
 			return result;

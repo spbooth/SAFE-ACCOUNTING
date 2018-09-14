@@ -251,7 +251,7 @@ public class AtomExtension extends ReportExtension {
 				if( max != null && max.trim().length() > 0){
 					pf.setMaximumFractionDigits(Integer.parseInt(max));
 				}
-			}catch(Throwable t){
+			}catch(Exception t){
 				addError("bad format","Invalid percentage format", t);
 			}
 		}
@@ -281,7 +281,7 @@ public class AtomExtension extends ReportExtension {
 					  }
 					  params.put(name, num);
 					  return "";
-				  }catch(Throwable t){
+				  }catch(Exception t){
 					  addError("BadDefine", "Error calculating value",t);
 				  }
 			  }

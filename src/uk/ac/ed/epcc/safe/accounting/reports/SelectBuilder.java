@@ -232,7 +232,7 @@ public abstract class SelectBuilder {
 					  }else{
 						  try{
 							  cond= MatchCondition.valueOf(e.getLocalName());
-						  }catch(Throwable t){
+						  }catch(Exception t){
 							  cond=null;
 						  }
 						  if(cond == null ){

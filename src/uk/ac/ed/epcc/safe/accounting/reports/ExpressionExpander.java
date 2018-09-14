@@ -110,7 +110,7 @@ public <T> String expand(String input){
 			  }else{
 				  getLogger().error("bad expression "+name);
 			  }
-		  }catch(Throwable t){
+		  }catch(Exception t){
 			  getLogger().error("Cannot parse expression",t);
 		  }
 		  text = text.replace("\\", "\\\\");
@@ -136,7 +136,7 @@ public <T> boolean isDefined(String name){
 			  return false;
 		  }
 		  return true;
-	  }catch(Throwable t){
+	  }catch(Exception t){
 		  
 	  }
 	  return false;
@@ -144,7 +144,7 @@ public <T> boolean isDefined(String name){
   public PropExpression parse(String name){
 	  try {
 		return parser.parse(name);
-	} catch (Throwable e) {
+	} catch (Exception e) {
 		getLogger().error("Error parsing expression",e);
 		return null;
 	}
@@ -157,7 +157,7 @@ public <T> T evaluate(PropExpression<T> expr){
 		  }
 		  T val = container.evaluateExpression(expr);
 		  return val;
-	  }catch(Throwable t){
+	  }catch(Exception t){
 		  getLogger().error( "Error expanding expression",t);
 	  }
 	  return null;

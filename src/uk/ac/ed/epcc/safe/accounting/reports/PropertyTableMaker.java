@@ -60,7 +60,7 @@ public class PropertyTableMaker extends AbstractContexed {
 			t.put("Name", tag, tag.getName());
 			t.put("Description",tag,tag.getDescription());
 			t.put("Value",tag,vp.format(dat));
-			}catch(Throwable te){
+			}catch(Exception te){
 				getLogger().error("Error formatting property",te);
 			}
 		}

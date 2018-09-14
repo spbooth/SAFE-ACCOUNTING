@@ -211,7 +211,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     								if( ! ok ){
     									n_bad_verify++;
     								}
-    							}catch(Throwable t){
+    							}catch(Exception t){
     								verify_list.add("Error in verify", fmt, t);
     							}
     						}
@@ -233,7 +233,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     									old_record.commit();
     									n_update_dup++;
     								}
-    							}catch(Throwable t){
+    							}catch(Exception t){
     								verify_list.add("Error in augment existing", fmt, t);
     							}
     						}

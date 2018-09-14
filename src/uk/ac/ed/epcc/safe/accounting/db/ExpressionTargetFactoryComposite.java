@@ -72,14 +72,14 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 			if( factory instanceof AccessorContributer) {
 				try {
 				((AccessorContributer)factory).customAccessors(map, finder, expression_map);
-				}catch(Throwable t) {
+				}catch(Exception t) {
 					getLogger().error("Error adding accessors from factory", t);
 				}
 			}
 			for(AccessorContributer contrib : factory.getComposites(AccessorContributer.class)){
 				try {
 				contrib.customAccessors(map, finder, expression_map);
-				}catch(Throwable t) {
+				}catch(Exception t) {
 					getLogger().error("Error adding accessors from composite", t);
 				}
 			}

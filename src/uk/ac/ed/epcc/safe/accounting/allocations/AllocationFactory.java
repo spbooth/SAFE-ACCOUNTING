@@ -264,7 +264,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 					if( l != null ){
 						result.add(l);
 					}
-				}catch(Throwable t){
+				}catch(Exception t){
 					getLogger().error("Error making allocation listener "+name, t);
 				}
 			}
@@ -629,7 +629,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		}
 		try{
 			return find(Integer.parseInt(id));
-		}catch(Throwable t){
+		}catch(Exception t){
 			return null;
 		}
 	}
@@ -897,7 +897,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 						}
 					}
 				}
-		}catch(Throwable tr){
+		}catch(Exception tr){
 			getLogger().error("Error formating property as HTML",tr);
 		}
 	}

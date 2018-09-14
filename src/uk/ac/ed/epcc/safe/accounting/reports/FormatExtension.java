@@ -241,7 +241,7 @@ public class FormatExtension<T> extends ReportExtension {
 						if( match != null && match.length() > 0){
 							try{
 							m = MatchCondition.valueOf(match);
-							}catch(Throwable x){
+							}catch(Exception x){
 								addError("bad match code", "match code "+match+" illegal", e);
 							}
 						}

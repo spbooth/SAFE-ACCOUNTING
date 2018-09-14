@@ -334,7 +334,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 					temp.setTemplate(template);
 					temp.setGroup(group);
 					temp.commit();
-				}catch(Throwable t){
+				}catch(Exception t){
 					getLogger().error("Error bootstrapping report "+base, t);
 				}
 				}

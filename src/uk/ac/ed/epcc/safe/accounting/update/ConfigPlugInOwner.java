@@ -101,7 +101,7 @@ public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPl
 	    				}else{
 	    					getLogger().error("Bad Policy class "+pol);
 	    				}
-	    			}catch(Throwable e){
+	    			}catch(Exception e){
 	    				getLogger().error("Error making policy ",e);
 	    			}
 	    		}

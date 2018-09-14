@@ -409,7 +409,7 @@ public FormResult action(Form f)
 			if( t.hasData()){
 				hb.addTable(getContext(), t);
 			}
-		}catch(Throwable e){
+		}catch(Exception e){
 			log.error("Error making ClassificationPolicy summary table",e);
 		}
 	}

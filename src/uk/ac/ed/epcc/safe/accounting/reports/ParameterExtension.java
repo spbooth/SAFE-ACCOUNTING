@@ -49,7 +49,6 @@ import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserService;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ParameterParseException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
@@ -82,7 +81,6 @@ import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInputWrapper;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.RangedInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.RealInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.RegularPeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
@@ -180,7 +178,7 @@ public class ParameterExtension extends ReportExtension {
 			}else{
 				try{
 					setValue(name,value, input,param);
-				}catch(Throwable t){
+				}catch(Exception t){
 					addError("bad_parameter_value", "input name="+name+" type="+input.getClass().getName()+" value="+value, t);
 				}
 
@@ -243,7 +241,7 @@ public class ParameterExtension extends ReportExtension {
 			if( ! empty(min)) {
 				try {
 					boundedInput.setMin(input.convert(min));
-				}catch(Throwable t) {
+				}catch(Exception t) {
 					addError("bad minimum", min,t);
 				}
 			}
@@ -251,7 +249,7 @@ public class ParameterExtension extends ReportExtension {
 			if( ! empty(max)) {
 				try {
 					boundedInput.setMax(input.convert(max));
-				}catch(Throwable t) {
+				}catch(Exception t) {
 					addError("bad maximum", max,t);
 				}
 			}
@@ -689,7 +687,7 @@ public class ParameterExtension extends ReportExtension {
 						if( match != null && match.length() > 0){
 							try{
 							m = MatchCondition.valueOf(match);
-							}catch(Throwable x){
+							}catch(Exception x){
 								addError("bad match code", "match code "+match+" illegal", e);
 							}
 						}

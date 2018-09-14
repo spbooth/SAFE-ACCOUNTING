@@ -773,14 +773,14 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 					sb.append(")");
 				}catch(InvalidPropertyException e2){
 					return "Not Saved/Defined";
-				}catch (Throwable e3) {
+				}catch (Exception e3) {
 					getLogger().error("Error calculating implementation of "+tag.getFullName(),e3);
 					sb.append("Error");
 				}
 			}else{
 				sb.append(a.toString());
 			}
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			getLogger().error("Error calculating implementation of "+tag.getFullName(),e);
 			sb.append("Error");
 		}

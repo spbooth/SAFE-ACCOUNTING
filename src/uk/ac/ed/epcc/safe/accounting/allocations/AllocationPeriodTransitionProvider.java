@@ -337,8 +337,8 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 					  map.setProperty(t,t.makeReference(Integer.parseInt(s.substring(pos+1))));
 					  
 				  }
-				}catch(Throwable t){
-					
+				}catch(Exception t){
+					getLogger().warn("Error setting period property", t);
 				}
 			}
 		}

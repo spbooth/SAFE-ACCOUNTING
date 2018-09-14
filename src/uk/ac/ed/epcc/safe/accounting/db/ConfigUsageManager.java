@@ -71,7 +71,7 @@ public class ConfigUsageManager extends UsageManager {
 						}
 						getLogger().error("No valid producer for "+tab);
 					}
-				}catch(Throwable e){
+				}catch(Exception e){
 					getLogger().error("Error making UsageProducer "+tag,e);
 				}
 			}

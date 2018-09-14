@@ -102,7 +102,7 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 				try {
 					setLastModified( getContext().getService(CurrentTimeService.class).getCurrentTime());
 					setLastEditor(getContext().getService(SessionService.class).getCurrentPerson());
-				}catch(Throwable t) {
+				}catch(Exception t) {
 					getLogger().error("Error logging change", t);
 				}
 			}
@@ -214,7 +214,7 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 			if( t.hasData()) {
 				cb.addColumn(c, t, "Value");
 			}
-		}catch(Throwable t) {
+		}catch(Exception t) {
 			getLogger().error("Error adding edit info",t);
 		}
 		return cb;

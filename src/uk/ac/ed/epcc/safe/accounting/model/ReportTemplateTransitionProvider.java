@@ -591,7 +591,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				ReportType type = builder.getReportTypeReg().getReportType("RXML");
 				builder.renderXML(type, reportParameters, type.getResult(conn,raw.getOutputStream()));
 				result = new ServeDataResult(producer, producer.setData(raw));
-			} catch(Throwable t) {
+			} catch(Exception t) {
 				getLogger().error("Error generating raw XML", t);
 			}
 		}

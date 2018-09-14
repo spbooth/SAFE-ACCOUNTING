@@ -65,7 +65,7 @@ public class AppUserUploadParseTargetPlugin<A extends AppUser,R> extends NameFin
 				try {
 					PropertyTag<Boolean> role_tag = new PropertyTag<Boolean>(role_reg, role, Boolean.class);
 					mapi2.put(role_tag, new RoleAccessor<A>(serv, role));
-				}catch(Throwable t) {
+				}catch(Exception t) {
 					getLogger().error("Error making role accessor for ["+role+"]", t);
 				}
 			}

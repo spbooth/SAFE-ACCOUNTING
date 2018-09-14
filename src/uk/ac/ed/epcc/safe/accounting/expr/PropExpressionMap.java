@@ -226,7 +226,7 @@ public void addFromProperties(PropertyFinder prev, AppContext ctx, String table 
 					getLogger(ctx).error("Type of expression and PropertyTag don't match",e);
 				} catch (InvalidPropertyException e) {
 					getLogger(ctx).error("Error making property "+name+" from "+def,e);
-				} catch(Throwable t){
+				} catch(Exception t){
 					getLogger(ctx).error("Serious Error making property "+name+" from "+def,t);
 				}
 			}

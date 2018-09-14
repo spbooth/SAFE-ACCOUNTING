@@ -91,7 +91,7 @@ public class InheritPolicy extends BasePolicy implements SummaryProvider,ConfigP
 				}
 			}
 			return finder;
-		}catch(Throwable t){
+		}catch(Exception t){
 			getLogger(ctx).error("Error setting  up InheritPolicy",t);
 			return null;
 		}

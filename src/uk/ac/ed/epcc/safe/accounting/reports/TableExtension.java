@@ -520,7 +520,7 @@ public class TableExtension extends ReportExtension {
 			} catch (InvalidPropertyException e) {
 				getLogger(conn).error("Unsupported property in table",e);
 				extension.addError("Property Error", "Unsupported property in summary table", e);
-			}catch(Throwable t){
+			}catch(Exception t){
 				getLogger(conn).error("Error making table",t);
 				extension.addError("Internal error", "Error making table",t);
 			}
@@ -773,7 +773,7 @@ public class TableExtension extends ReportExtension {
 			} catch (InvalidPropertyException e) {
 				getLogger(conn).error("Unsupported property in table",e);
 				extension.addError("Property Error", "Unsupported property in summary table", e);
-			}catch(Throwable t){
+			}catch(Exception t){
 				getLogger(conn).error("Error making table",t);
 				extension.addError("Internal error", "Error making table",t);
 			}
@@ -1274,14 +1274,14 @@ public class TableExtension extends ReportExtension {
 					if( min != null  ) {
 						try {
 							target.thresholdRows(col, MatchCondition.LT, min);
-						}catch(Throwable t) {
+						}catch(Exception t) {
 							addError("Bad threshold", "Minimum", t);
 						}
 					}
 					if( max != null ) {
 						try {
 							target.thresholdRows(col, MatchCondition.GT, max);
-						}catch(Throwable t) {
+						}catch(Exception t) {
 							addError("Bad threshold", "Maximum", t);
 						}
 					}

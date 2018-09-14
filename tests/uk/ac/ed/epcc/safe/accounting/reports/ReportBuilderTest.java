@@ -37,6 +37,8 @@ import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.logging.debug.DebugLoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.session.AppUser;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -346,6 +348,13 @@ public class ReportBuilderTest extends WebappTestBase {
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testValidate() throws URISyntaxException, DataFault, IOException, SAXException, ParserConfigurationException, InvalidArgument, TransformerFactoryConfigurationError, TransformerException {
         try{
+        // Need to supress the debug-logger throw as we expect an Error
+        	LoggerService serv = ctx.getService(LoggerService.class);
+        	if( serv instanceof DebugLoggerService) {
+        		DebugLoggerService dbg = (DebugLoggerService) serv;
+        		ctx.setService(dbg.getNested());
+        	}
+        	
 		  ReportBuilder rb = new ReportBuilder(ctx,"badTemplate.xml_bad","report.xsd");
 		  assertTrue(rb.hasErrors());
 		  //assertFalse("illegal template validated", true);
