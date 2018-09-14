@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
@@ -102,7 +103,7 @@ public class ClassificationSQLValue<H extends DataObject, T extends DataObject> 
 		return a.add(sb, qualify);
 	}
 
-	public String makeObject(ResultSet rs, int pos) throws DataException {
+	public String makeObject(ResultSet rs, int pos) throws DataException, SQLException {
 		return NamePropExpression.refToName(ctx, a.makeObject(rs, pos));
 	}
 	

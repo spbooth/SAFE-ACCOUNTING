@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class PropertyContainerMapper extends SQLGroupMapper<PropertyContainer> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public PropertyContainer makeObject(ResultSet rs) throws DataException {
+	public PropertyContainer makeObject(ResultSet rs) throws DataException, SQLException {
 		PropertyMap res = new PropertyMap();
 		int pos=0;
 		for(PropertyTag t : fields){

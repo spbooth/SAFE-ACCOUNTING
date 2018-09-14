@@ -14,6 +14,7 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -153,7 +154,7 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 		}
 
 		@Override
-		protected ExpressionTuple makeKey(ResultSet rs) throws DataException {
+		protected ExpressionTuple makeKey(ResultSet rs) throws DataException, SQLException {
 			Map<PropExpression,Object> map = new HashMap<PropExpression, Object>();
 			int pos=0;  // This is expression count NOT fields super-class keeps track
 			for(ReductionTarget target : sum){
@@ -172,7 +173,7 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 		}
 
 		@Override
-		protected ReductionMapResult makeResult(ResultSet rs) throws DataException {
+		protected ReductionMapResult makeResult(ResultSet rs) throws DataException, SQLException {
 			ReductionMapResult map = new ReductionMapResult();
 			int pos=0; // This is expression count not fields superclass keeps track
 			for(ReductionTarget t : sum){
