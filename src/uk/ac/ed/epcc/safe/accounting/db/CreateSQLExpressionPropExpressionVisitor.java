@@ -80,9 +80,11 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	public CreateSQLExpressionPropExpressionVisitor(Class target,AppContext c){
 		this.target=target;
 		this.conn=c;
+		DatabaseService db_service = conn.getService(DatabaseService.class);
 		try {
-			sql=conn.getService(DatabaseService.class).getSQLContext();
+			sql=db_service.getSQLContext();
 		} catch (SQLException e) {
+			db_service.logError("Error making SQLContext", e);
 			throw new DataError("Error making SQLContext",e);
 		}
 	}
