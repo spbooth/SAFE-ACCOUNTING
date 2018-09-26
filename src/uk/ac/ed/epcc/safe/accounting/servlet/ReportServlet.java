@@ -168,7 +168,7 @@ public class ReportServlet extends SessionServlet {
 					} else {
 						log.debug("parsing form");
 						// We parse the for for hidden parameter
-
+						HTMLForm.setFormUrl(req, "/accounting/report_parameters.jsp");
 						HTMLReportParametersForm form = 
 							new HTMLReportParametersForm(builder, report_params,reportType);		
 						boolean valid = form.parseForm(req);

@@ -83,7 +83,6 @@ may be omitted.
    action="<%=response.encodeURL(web_path + "/ReportServlet/"
 					+ templateFileName)%>">
   <input type="hidden" name="action" value="GENERATE_REPORT">
-  <input type="hidden" name="form_url" value="<%=HTMLForm.getFormURL(request)%>">
   <%=form.getFormAsHTML(request)%>
   <div class="action_buttons">
 
