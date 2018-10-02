@@ -240,7 +240,7 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 			}
 			return false;
 			
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			if( e instanceof AccountingParseException){
 				throw (AccountingParseException)e;
 			}

@@ -546,7 +546,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 						getContext().getService(SessionService.class).getCurrentPerson(), 
 						getReportTemplate(target),
 						getID(target));
-			} catch (Throwable e) {
+			} catch (Exception e) {
 				getLogger().error("Error logging report use", e);
 			}
 		}

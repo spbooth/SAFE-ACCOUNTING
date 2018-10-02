@@ -318,7 +318,7 @@ public class AtomExtension extends ReportExtension {
 				
 			
 
-		} catch (Throwable tr) {
+		} catch (Exception tr) {
 			addError("Error retrieving atomic value", tr.getClass().getCanonicalName(),tr);	
 		}
 
@@ -340,7 +340,7 @@ public class AtomExtension extends ReportExtension {
 			String result = display(getNumberFormat(node),ar.expr, ar.value);
 			return result;
 			
-		} catch (Throwable tr) {
+		} catch (Exception tr) {
 			addError("Error retrieving atomic value", tr.getClass().getCanonicalName(),tr);	
 		}
 
@@ -361,7 +361,7 @@ public class AtomExtension extends ReportExtension {
 			String result = ar.value.toString();
 			return result;
 			
-		} catch (Throwable tr) {
+		} catch (Exception tr) {
 			addError("Error retrieving atomic value", tr.getClass().getCanonicalName(),tr);	
 		}
 

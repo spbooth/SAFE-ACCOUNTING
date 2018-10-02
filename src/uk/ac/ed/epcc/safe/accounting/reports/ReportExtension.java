@@ -885,7 +885,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 				  } catch (FilterParseException e1) {
 					  rs.addRecordSelector(new SelectClause()); // default to no select on exception
 					  addError("Bad Filter",e1.getMessage(),e1);
-				  } catch (Throwable e1) {
+				  } catch (Exception e1) {
 					  rs.addRecordSelector(new SelectClause()); // default to no select on exception
 					  addError("Parse error", e1.getMessage(),e1);
 				  } 

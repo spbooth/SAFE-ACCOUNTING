@@ -358,7 +358,7 @@ public class TableExtension extends ReportExtension {
 				UsageProducer<?> up = recordSet.getUsageProducer();
 				table = tableMaker.makeTable(selector);
 				
-			} catch (Throwable e) {
+			} catch (Exception e) {
 				extension.addError("Table Error", "Error making JobTable", e);
 				table = new Table<String,Object>();
 			}		
@@ -700,7 +700,7 @@ public class TableExtension extends ReportExtension {
 				}else{
 					extension.addError("Bad Namespace", "Unexpected namespace "+columnNode.getNamespaceURI());
 				}
-			} catch (Throwable tr) {
+			} catch (Exception tr) {
 				extension.addError("Error adding Data Column to table", 
 						tr.getClass().getCanonicalName(), tr);
 		
@@ -887,7 +887,7 @@ public class TableExtension extends ReportExtension {
 			try {
 				// We ignore the period for a ObjectTable
 				table = tableMaker.makeTable(set.getRecordSelector());
-			} catch (Throwable e) {
+			} catch (Exception e) {
 				throw new BadTableException("Error making JobTable", e);
 			}		
 			AppContext conn = extension.getContext();
@@ -1289,7 +1289,7 @@ public class TableExtension extends ReportExtension {
 			}else if(instruction.equals("PrintHeadings")){
 				target.setPrintHeadings(getBooleanParam("Value", true, inst));
 			}
-		} catch (Throwable t) {
+		} catch (Exception t) {
 			getLogger().error( "Error processing table " + instruction,t);
 
 		}

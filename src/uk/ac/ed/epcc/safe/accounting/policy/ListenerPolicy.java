@@ -149,7 +149,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 						UsageRecordListener tmp = ctx.makeObjectWithDefault(UsageRecordListener.class, null,aggregate_table);
 						tmp.startListenerParse();
 						result.add(tmp);
-					} catch (Throwable e) {
+					} catch (Exception e) {
 						getLogger().error("Error making UsageRecordListner list="+list+" table="+tables[i],e);
 					}
 				}

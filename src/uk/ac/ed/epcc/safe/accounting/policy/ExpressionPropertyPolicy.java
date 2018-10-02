@@ -157,7 +157,7 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 				try {
 					PropertyTagInput input = (PropertyTagInput) f.getInput("Prop");
 					defs.addConfigProperty(c, finder, table, input.getItem(), (String)f.get("Expr"));
-				} catch (Throwable e) {
+				} catch (Exception e) {
 					getLogger().error( "Error setting derived prop",e);
 					throw new ActionException("Operation failed",e);
 				}

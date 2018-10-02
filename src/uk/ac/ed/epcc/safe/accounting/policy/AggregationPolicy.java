@@ -102,7 +102,7 @@ public class AggregationPolicy extends BaseUsageRecordPolicy{
 					try {	
 						aggregators[i] = ctx.makeObjectWithDefault(AggregateUsageRecordFactory.class, DailyAggregateUsageRecordFactory.class,aggregate_table);
 
-					} catch (Throwable e) {
+					} catch (Exception e) {
 						log.error("Error making AggregateUsageFactory list="+list+" table="+tables[i],e);
 						aggregators[i]=null;
 					}

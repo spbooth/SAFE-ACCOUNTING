@@ -178,7 +178,7 @@ public class FilterExtension extends ReportExtension{
 				  result.addRecordSelector(new SelectClause()); // default to no select on exception
 				  result.setError(true);
 				  addError("Bad Filter",e1.getMessage(),e1);
-			  } catch (Throwable e1) {
+			  } catch (Exception e1) {
 				  result.addRecordSelector(new SelectClause()); // default to no select on exception
 				  result.setError(true);
 				  addError("Parse error", e1.getMessage(),e1);
@@ -217,7 +217,7 @@ public class FilterExtension extends ReportExtension{
 		AndRecordSelector selector = set.getPeriodSelector(period);
 		try {
 			return producer.getRecordCount(selector) > 0;
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			addError("Filter Error", "Error checking for records", e);
 			return false;
 		}

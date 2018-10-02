@@ -432,7 +432,7 @@ public abstract class ChartExtension extends ReportExtension {
 			BarTimeChart chart = BarTimeChart.getInstance(ctx,  period);
 			chart.getChartData().setGraphical(graphOutput());
 			return  setChartOptions(chart,(Element) node);
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			addError("Bad Plot", "Error making BarChart", e);
 			return null;
 		}

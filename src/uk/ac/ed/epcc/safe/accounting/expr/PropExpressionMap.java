@@ -154,7 +154,7 @@ public int size() {
 		for(String key : derived_properties.keySet()){
 			try {
 				resolve(reg, ctx, prefix, missing, parser, derived_properties, key);
-			} catch (Throwable e) {
+			} catch (Exception e) {
 				getLogger(ctx).error("Cannot resolve property for: "+key.toString()+"="+derived_properties.get(key),e);
 			}
 		}
