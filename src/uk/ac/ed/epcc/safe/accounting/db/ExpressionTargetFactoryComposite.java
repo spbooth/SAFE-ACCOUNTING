@@ -17,6 +17,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
@@ -48,6 +49,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	public ExpressionTargetFactoryComposite(DataObjectFactory fac) {
 		super(fac);
 	}
+	public static final Feature REPORT_BAD_DERIVATIONS = new Feature("expression_target.report_bad_derivations",true,"Report an error if there is a derivation for a property not in the finder");
 	private PropertyFinder reg=null;
 	private RepositoryAccessorMap<T> map=null;
 	private PropExpressionMap expression_map=null;
@@ -93,11 +95,14 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 			
 			map.addDerived(getContext(), expression_map);
 			finder.addFinder(derived);
+			boolean report = REPORT_BAD_DERIVATIONS.isEnabled(getContext());
 			// Check all definitions are registered
 			for(PropertyTag tag : expression_map.keySet()) {
 				if( ! finder.hasProperty(tag)) {
 					PropExpression expr = expression_map.get(tag);
-					getLogger().error("Derived property set for "+tag.getFullName()+"="+expr.toString()+" but not registered in finder of "+getFactory().getTag());
+					if( report ) {
+						getLogger().error("Derived property set for "+tag.getFullName()+"="+expr.toString()+" but not registered in finder of "+getFactory().getTag());
+					}
 				}
 			}
 			reg=finder;
