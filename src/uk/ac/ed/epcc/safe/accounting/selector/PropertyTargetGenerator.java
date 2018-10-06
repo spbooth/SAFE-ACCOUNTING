@@ -18,6 +18,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
+import uk.ac.ed.epcc.webapp.model.data.Composable;
 
 /** A {@link PropertyTargetFactory} that can also retrieve records using
  * a {@link RecordSelector}
@@ -26,7 +27,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
  * @param <UR> property target type
  *
  */
-public interface PropertyTargetGenerator<UR> extends PropertyTargetFactory {
+public interface PropertyTargetGenerator<UR> extends PropertyTargetFactory, Composable {
 	/** Is the RecordSelector compatible with this class. 
 	 * This method will return false if it the selector is fundamentally incompatible
 	 * with the properties supported by the class and no records can match the selector.

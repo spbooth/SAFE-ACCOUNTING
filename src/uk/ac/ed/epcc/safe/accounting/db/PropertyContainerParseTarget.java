@@ -22,6 +22,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
+import uk.ac.ed.epcc.webapp.model.data.Composable;
 
 /** Common interface for classes that receive upload data.
  * This is the class implemented by the actual destination factory or composite
@@ -31,7 +32,7 @@ import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
  * @see PropertyContainerParser
  * @param <R> Type of intermediate record for parse
  */
-public interface PropertyContainerParseTarget<R> {
+public interface PropertyContainerParseTarget<R> extends Composable{
 	/** Parse a text line into a DerivedPropertyMap. This will add
 	 * derived definitions as well as terminal data values.
 	 * 

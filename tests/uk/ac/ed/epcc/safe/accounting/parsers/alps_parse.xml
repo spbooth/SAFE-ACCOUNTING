@@ -1,0 +1,686 @@
+<Diff><TableSpecification name='ALPSLog'>
+<apid type='Integer' nullable='true'/>
+<alpsBootTime type='Long' nullable='true'/>
+<aprun_entry_tag type='String' nullable='true' max='32'/>
+<apsys_entry_tag type='String' nullable='true' max='32'/>
+<batch_string_id type='String' nullable='true' max='32'/>
+<batch_id type='Integer' nullable='true'/>
+<batch_array_index type='String' nullable='true' max='32'/>
+<user type='Integer' nullable='true'/>
+<hostname type='String' nullable='true' max='32'/>
+<num_nodes type='Integer' nullable='true'/>
+<node_list type='String' nullable='true' max='5592405'/>
+<aprunStartTime type='Long' nullable='true'/>
+<apsysEndTime type='Long' nullable='true'/>
+<cwd type='String' nullable='true' max='5592405'/>
+<cmd_line type='String' nullable='true' max='5592405'/>
+<exit_code type='String' nullable='true' max='32'/>
+<exitcode_array type='String' nullable='true' max='5592405'/>
+<exitsignal_array type='String' nullable='true' max='5592405'/>
+<duplicate_key type='Index' unique='true'><Column name='apid'/><Column name='alpsBootTime'/></duplicate_key>
+<alps_time type='Index' unique='false'><Column name='aprunStartTime'/><Column name='apsysEndTime'/></alps_time>
+<time type='Index' unique='false'><Column name='apsysEndTime'/></time>
+</TableSpecification>
+<ALPSLog id='1'>
+<apid>22444371</apid>
+<alpsBootTime>1466608299</alpsBootTime>
+<aprun_entry_tag>2035</aprun_entry_tag>
+<apsys_entry_tag>2039</apsys_entry_tag>
+<batch_string_id>3815975.sdb</batch_string_id>
+<batch_id>3815975</batch_id>
+<batch_array_index></batch_array_index>
+<user>15269</user>
+<hostname>c2-1c0s0n1</hostname>
+<num_nodes>8</num_nodes>
+<node_list>2258-2259,2263,2322,2991,3005-3006,3016</node_list>
+<aprunStartTime>1468105580</aprunStartTime>
+<apsysEndTime>1468106421</apsysEndTime>
+<cwd>/fs3/e89/e89/zd242/work/3815975.sdb</cwd>
+<cmd_line>/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 192 /work/e89/e89/zd242/src/vasp.5.4.1/bin/vasp_ncl </cmd_line>
+<exit_code>0</exit_code>
+<exitcode_array>0</exitcode_array>
+<exitsignal_array>0</exitsignal_array>
+</ALPSLog>
+<ALPSLog id='2'>
+<apid>22444398</apid>
+<alpsBootTime>1466608299</alpsBootTime>
+<aprun_entry_tag>18934</aprun_entry_tag>
+<apsys_entry_tag>18939</apsys_entry_tag>
+<batch_string_id>3813206[16].sdb</batch_string_id>
+<batch_id>3813206</batch_id>
+<batch_array_index>16</batch_array_index>
+<user>14217</user>
+<hostname>c0-1c0s0n1</hostname>
+<num_nodes>2</num_nodes>
+<node_list>22-23</node_list>
+<aprunStartTime>1468106327</aprunStartTime>
+<apsysEndTime>1468106578</apsysEndTime>
+<cwd>/fs3/e89/e89/eae32/KDP/VI/1x1x1_Anh/Supercell_1/kpoint.1/configurations/mode.94.7</cwd>
+<cmd_line>/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 40 castep.mpi VI </cmd_line>
+<exit_code>0</exit_code>
+<exitcode_array>0</exitcode_array>
+<exitsignal_array>0</exitsignal_array>
+</ALPSLog>
+<ALPSLog id='3'>
+<apid>22444442</apid>
+<alpsBootTime>1466608299</alpsBootTime>
+<aprun_entry_tag>31070</aprun_entry_tag>
+<apsys_entry_tag>31074</apsys_entry_tag>
+<batch_string_id>3812810.sdb</batch_string_id>
+<batch_id>3812810</batch_id>
+<batch_array_index></batch_array_index>
+<user>16626</user>
+<hostname>c2-0c1s1n1</hostname>
+<num_nodes>44</num_nodes>
+<node_list>451,456,490,496-498,515-521,523-528,541-546,551-553,560,564-565,572-573,595-598,628,643,645,785,787-789</node_list>
+<aprunStartTime>1468108008</aprunStartTime>
+<apsysEndTime>1468108447</apsysEndTime>
+<cwd>/fs2/e446/e446/mgschn2/Slipids/gold/ribbonslab/PMFsingle/mod95</cwd>
+<cmd_line>/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 1056 mdrun_mpi -cpi state.cpt -append -nsteps 250000 </cmd_line>
+<exit_code>0</exit_code>
+<exitcode_array>0</exitcode_array>
+<exitsignal_array>0</exitsignal_array>
+</ALPSLog>
+<ALPSLog id='4'>
+<apid>21701310</apid>
+<alpsBootTime>1462786798</alpsBootTime>
+<aprun_entry_tag>9259</aprun_entry_tag>
+<apsys_entry_tag>9282</apsys_entry_tag>
+<batch_string_id>3695119.sdb</batch_string_id>
+<batch_id>3695119</batch_id>
+<batch_array_index></batch_array_index>
+<user>14597</user>
+<hostname>c4-1c0s0n1</hostname>
+<num_nodes>8</num_nodes>
+<node_list>2502-2504,2511-2513,4200,4983</node_list>
+<aprunStartTime>1463704656</aprunStartTime>
+<apsysEndTime>1463705574</apsysEndTime>
+<cwd>/fs2/n02/n02/bdong/um/xmnub/dataw</cwd>
+<cmd_line>/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -N 1 -n 1 -S 1 /work/n02/n02/pappas/src/oasis/crayxe6_cce-20160403/bin/oasis3.MPI1.x : -N 24 -d 1 -n 144 -S 12 -ss /work/n02/n02/pappas/um/xgspt/bin/ga30_kpp.exe-20160403 : -N 1 -n 1 -d 24 /work/n02/n02/bdong/um/xmnub/dataw/KPP_ocean </cmd_line>
+<exit_code>137</exit_code>
+<exitcode_array>139:0</exitcode_array>
+<exitsignal_array>9:0</exitsignal_array>
+</ALPSLog>
+<ALPSLog id='5'>
+<apid>21699839</apid>
+<alpsBootTime>1462786798</alpsBootTime>
+<aprun_entry_tag>30934</aprun_entry_tag>
+<apsys_entry_tag>30938</apsys_entry_tag>
+<batch_string_id>3696699.sdb</batch_string_id>
+<batch_id>3696699</batch_id>
+<batch_array_index></batch_array_index>
+<user>15998</user>
+<hostname>c4-1c0s0n1</hostname>
+<num_nodes>43</num_nodes>
+<node_list>1131-1133,1135-1142,2515-2516,2726-2732,2736-2738,2823-2838,3381-3382,4379-4380</node_list>
+<aprunStartTime>1463698800</aprunStartTime>
+<apsysEndTime>1463698829</apsysEndTime>
+<cwd>/fs4/d89/d89/s1514982/Work/MPP/bitbucket/mpp/coursework1/src/unstriped</cwd>
+<cmd_line>/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 1024 ./imagenew 1024 1 </cmd_line>
+<exit_code>0</exit_code>
+<exitcode_array>0</exitcode_array>
+<exitsignal_array>0</exitsignal_array>
+</ALPSLog>
+<ALPSLog id='6'>
+<apid>21699856</apid>
+<alpsBootTime>1462786798</alpsBootTime>
+<aprun_entry_tag>334</aprun_entry_tag>
+<apsys_entry_tag>338</apsys_entry_tag>
+<batch_string_id>3696699.sdb</batch_string_id>
+<batch_id>3696699</batch_id>
+<batch_array_index></batch_array_index>
+<user>15998</user>
+<hostname>c4-1c0s0n1</hostname>
+<num_nodes>43</num_nodes>
+<node_list>1131-1133,1135-1142,2515-2516,2726-2732,2736-2738,2823-2838,3381-3382,4379-4380</node_list>
+<aprunStartTime>1463698959</aprunStartTime>
+<apsysEndTime>1463698985</apsysEndTime>
+<cwd>/fs4/d89/d89/s1514982/Work/MPP/bitbucket/mpp/coursework1/src/unstriped</cwd>
+<cmd_line>/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 1024 ./imagenew 1024 1 </cmd_line>
+<exit_code>0</exit_code>
+<exitcode_array>0</exitcode_array>
+<exitsignal_array>0</exitsignal_array>
+</ALPSLog>
+<ALPSLog id='7'>
+<apid>21699984</apid>
+<alpsBootTime>1462786798</alpsBootTime>
+<aprun_entry_tag>26297</aprun_entry_tag>
+<apsys_entry_tag>26725</apsys_entry_tag>
+<batch_string_id>3696734.sdb</batch_string_id>
+<batch_id>3696734</batch_id>
+<batch_array_index></batch_array_index>
+<user>16257</user>
+<hostname>c4-1c0s0n1</hostname>
+<num_nodes>1</num_nodes>
+<node_list>4830</node_list>
+<aprunStartTime>1463701163</aprunStartTime>
+<apsysEndTime>1463701204</apsysEndTime>
+<cwd>/fs2/e280/e280/sv375/carbonic_anhydrase_2/2NNG/Cluster</cwd>
+<cmd_line>/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -n 1 /work/e280/e280/sv375/Solvaware_v1.3/Solvaware_Trunk/HydrationSiteAnalysis/Utilities/WriteDensityProfile /fs2/e280/e280/sv375/carbonic_anhydrase_2/2NNG/Equilibration/2NNG_system.pdb /fs2/e280/e280/sv375/carbonic_anhydrase_2/2NNG/Equilibration/2NNG_system.psf /fs2/e280/e280/sv375/carbonic_anhydrase_2/2NNG/Dynamics/2NNG_system_dynamics.dcd 0 9000 1 1.2 59 59 59 108 480 </cmd_line>
+<exit_code>0</exit_code>
+<exitcode_array>0</exitcode_array>
+<exitsignal_array>0</exitsignal_array>
+</ALPSLog>
+<ALPSLog id='8'>
+<apid>21705594</apid>
+<alpsBootTime>1462786798</alpsBootTime>
+<aprun_entry_tag>2270</aprun_entry_tag>
+<apsys_entry_tag>2274</apsys_entry_tag>
+<batch_string_id>3692330.sdb</batch_string_id>
+<batch_id>3692330</batch_id>
+<batch_array_index></batch_array_index>
+<user>5833</user>
+<hostname>c4-1c0s0n1</hostname>
+<num_nodes>82</num_nodes>
+<node_list>970-971,1534,1540-1555,1560-1587,1597-1603,1608-1615,1620,1622-1640</node_list>
+<aprunStartTime>1463712021</aprunStartTime>
+<apsysEndTime>1463750046</apsysEndTime>
+<cwd>/fs2/n02/n02/wmcginty/VERA/um/xmrjc</cwd>
+<cmd_line>/opt/cray/alps/5.2.3-2.0502.9295.14.14.ari/bin/aprun -ss -n 1920 -N 24 -d 1 -S 12 -j 1 -e OMP_NUM_THREADS=1 /work/n02/n02/wmcginty/um/xmrfd/bin/xmrfd.exe : -ss -n 24 -N 12 -d 2 -S 6 -j 1 -e OMP_NUM_THREADS=2 /work/n02/n02/wmcginty/um/xmrfd/bin/xmrfd.exe </cmd_line>
+<exit_code>0</exit_code>
+<exitcode_array>0</exitcode_array>
+<exitsignal_array>0</exitsignal_array>
+</ALPSLog>
+<TableSpecification name='AprunCommandLog'>
+<alps_id type='Integer' nullable='true'/>
+<aprun_cmd_num type='Integer' nullable='true'/>
+<architecture type='String' nullable='true' max='32'/>
+<bypass_app_transfer type='Boolean' nullable='false'/>
+<batch_args type='Boolean' nullable='false'/>
+<reconnect type='Boolean' nullable='false'/>
+<cpu_binding type='String' nullable='true' max='128'/>
+<cpu_binding_file type='String' nullable='true' max='32'/>
+<cpus_per_pe type='Integer' nullable='true'/>
+<debug type='Integer' nullable='true'/>
+<environment type='String' nullable='true' max='32'/>
+<exclude_node_list type='String' nullable='true' max='128'/>
+<exclude_node_list_file type='String' nullable='true' max='32'/>
+<cpus type='Integer' nullable='true'/>
+<xeon_phi_placement type='Boolean' nullable='false'/>
+<node_list type='String' nullable='true' max='128'/>
+<node_list_file type='String' nullable='true' max='32'/>
+<memory_per_pe type='String' nullable='true' max='32'/>
+<pes type='Integer' nullable='true'/>
+<pes_per_node type='Integer' nullable='true'/>
+<access_mode type='String' nullable='true' max='32'/>
+<protection_domain type='String' nullable='true' max='32'/>
+<p_governor type='String' nullable='true' max='32'/>
+<p_state type='String' nullable='true' max='32'/>
+<quiet type='Boolean' nullable='false'/>
+<specialized_cpus type='String' nullable='true' max='32'/>
+<relaunch type='String' nullable='true' max='32'/>
+<pes_per_numa_node type='Integer' nullable='true'/>
+<numa_node_list type='String' nullable='true' max='32'/>
+<numa_nodes_per_node type='Integer' nullable='true'/>
+<strict_memory_containment type='Boolean' nullable='false'/>
+<sync_output type='Boolean' nullable='false'/>
+<cpu_time_limit type='Integer' nullable='true'/>
+<app_exe_path type='String' nullable='true' max='5592405'/>
+<app_exe_name type='String' nullable='true' max='128'/>
+<app_attrs type='String' nullable='true' max='5592405'/>
+<app_id type='Integer' nullable='true'/>
+<ParentID reference='ALPSLog'/>
+<AprunApplicationID reference='AprunApplication'/>
+<duplicate_key type='Index' unique='true'><Column name='alps_id'/><Column name='aprun_cmd_num'/></duplicate_key>
+</TableSpecification>
+<AprunCommandLog id='1'>
+<alps_id>22444371</alps_id>
+<aprun_cmd_num>-1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>192</pes>
+<pes_per_node>24</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>/work/e89/e89/zd242/src/vasp.5.4.1/bin/vasp_ncl</app_exe_path>
+<app_exe_name>vasp_ncl</app_exe_name>
+<app_attrs></app_attrs>
+<app_id>0</app_id>
+<ParentID>1</ParentID>
+<AprunApplicationID>75</AprunApplicationID>
+</AprunCommandLog>
+<AprunCommandLog id='2'>
+<alps_id>22444398</alps_id>
+<aprun_cmd_num>-1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>40</pes>
+<pes_per_node>24</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>castep.mpi</app_exe_path>
+<app_exe_name>castep.mpi</app_exe_name>
+<app_attrs>VI</app_attrs>
+<app_id>0</app_id>
+<ParentID>2</ParentID>
+<AprunApplicationID>6</AprunApplicationID>
+</AprunCommandLog>
+<AprunCommandLog id='3'>
+<alps_id>22444442</alps_id>
+<aprun_cmd_num>-1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>1056</pes>
+<pes_per_node>24</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>mdrun_mpi</app_exe_path>
+<app_exe_name>mdrun_mpi</app_exe_name>
+<app_attrs>-cpi state.cpt -append -nsteps 250000</app_attrs>
+<app_id>0</app_id>
+<ParentID>3</ParentID>
+<AprunApplicationID>36</AprunApplicationID>
+</AprunCommandLog>
+<AprunCommandLog id='4'>
+<alps_id>21701310</alps_id>
+<aprun_cmd_num>0</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>1</pes>
+<pes_per_node>1</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>1</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>/work/n02/n02/pappas/src/oasis/crayxe6_cce-20160403/bin/oasis3.MPI1.x</app_exe_path>
+<app_exe_name>oasis3.MPI1.x</app_exe_name>
+<app_attrs></app_attrs>
+<app_id>0</app_id>
+<ParentID>4</ParentID>
+<AprunApplicationID>54</AprunApplicationID>
+</AprunCommandLog>
+<AprunCommandLog id='5'>
+<alps_id>21701310</alps_id>
+<aprun_cmd_num>1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>144</pes>
+<pes_per_node>24</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>true</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>/work/n02/n02/pappas/um/xgspt/bin/ga30_kpp.exe-20160403</app_exe_path>
+<app_exe_name>ga30_kpp.exe-20160403</app_exe_name>
+<app_attrs></app_attrs>
+<app_id>0</app_id>
+<ParentID>4</ParentID>
+</AprunCommandLog>
+<AprunCommandLog id='6'>
+<alps_id>21701310</alps_id>
+<aprun_cmd_num>2</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>24</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>1</pes>
+<pes_per_node>1</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>/work/n02/n02/bdong/um/xmnub/dataw/KPP_ocean</app_exe_path>
+<app_exe_name>KPP_ocean</app_exe_name>
+<app_attrs></app_attrs>
+<app_id>0</app_id>
+<ParentID>4</ParentID>
+<AprunApplicationID>73</AprunApplicationID>
+</AprunCommandLog>
+<AprunCommandLog id='7'>
+<alps_id>21699839</alps_id>
+<aprun_cmd_num>-1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>1024</pes>
+<pes_per_node>24</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>./imagenew</app_exe_path>
+<app_exe_name>imagenew</app_exe_name>
+<app_attrs>1024 1</app_attrs>
+<app_id>0</app_id>
+<ParentID>5</ParentID>
+<AprunApplicationID>71</AprunApplicationID>
+</AprunCommandLog>
+<AprunCommandLog id='8'>
+<alps_id>21699856</alps_id>
+<aprun_cmd_num>-1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>1024</pes>
+<pes_per_node>24</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>./imagenew</app_exe_path>
+<app_exe_name>imagenew</app_exe_name>
+<app_attrs>1024 1</app_attrs>
+<app_id>0</app_id>
+<ParentID>6</ParentID>
+<AprunApplicationID>71</AprunApplicationID>
+</AprunCommandLog>
+<AprunCommandLog id='9'>
+<alps_id>21699984</alps_id>
+<aprun_cmd_num>-1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>1</pes>
+<pes_per_node>24</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>/work/e280/e280/sv375/Solvaware_v1.3/Solvaware_Trunk/HydrationSiteAnalysis/Utilities/WriteDensityProfile</app_exe_path>
+<app_exe_name>WriteDensityProfile</app_exe_name>
+<app_attrs>/fs2/e280/e280/sv375/carbonic_anhydrase_2/2NNG/Equilibration/2NNG_system.pdb /fs2/e280/e280/sv375/carbonic_anhydrase_2/2NNG/Equilibration/2NNG_system.psf /fs2/e280/e280/sv375/carbonic_anhydrase_2/2NNG/Dynamics/2NNG_system_dynamics.dcd 0 9000 1 1.2 59 59 59 108 480</app_attrs>
+<app_id>0</app_id>
+<ParentID>7</ParentID>
+</AprunCommandLog>
+<AprunCommandLog id='10'>
+<alps_id>21705594</alps_id>
+<aprun_cmd_num>0</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment>OMP_NUM_THREADS=1</environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>1</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>1920</pes>
+<pes_per_node>24</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>true</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>/work/n02/n02/wmcginty/um/xmrfd/bin/xmrfd.exe</app_exe_path>
+<app_exe_name>xmrfd.exe</app_exe_name>
+<app_attrs></app_attrs>
+<app_id>0</app_id>
+<ParentID>8</ParentID>
+</AprunCommandLog>
+<AprunCommandLog id='11'>
+<alps_id>21705594</alps_id>
+<aprun_cmd_num>1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>2</cpus_per_pe>
+<debug>0</debug>
+<environment>OMP_NUM_THREADS=2</environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>1</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>24</pes>
+<pes_per_node>12</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>6</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>true</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>/work/n02/n02/wmcginty/um/xmrfd/bin/xmrfd.exe</app_exe_path>
+<app_exe_name>xmrfd.exe</app_exe_name>
+<app_attrs></app_attrs>
+<app_id>0</app_id>
+<ParentID>8</ParentID>
+</AprunCommandLog>
+<TableSpecification name='Properties'>
+<Name type='String' nullable='false' max='255'/>
+<Value type='String' nullable='false' max='255'/>
+<name_key type='Index' unique='true'><Column name='Name'/></name_key>
+</TableSpecification>
+<Properties id='1'>
+<Name>reference.AprunCommandLog.ParentID</Name>
+<Value>ALPSLog</Value>
+</Properties>
+<Properties id='2'>
+<Name>reference.AprunCommandLog.AprunApplicationID</Name>
+<Value>AprunApplication</Value>
+</Properties>
+</Diff>

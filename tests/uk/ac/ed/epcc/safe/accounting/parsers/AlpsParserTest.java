@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.Date;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
+import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
 
 
@@ -93,5 +95,18 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 		long orig_time = orig.getTime();
 		long mod_time = mod.getTime();
 		assertEquals(orig.getTime() , mod.getTime());
+	}
+
+	@Override
+	public String getUpdateText()   {
+		try {
+			return getResourceAsString("ALPSData.txt");
+		} catch (IOException e) {
+			throw new ConsistencyError("update text", e);
+		}
+	}
+	@Override
+	public String getReceiveAccountingExpected() {
+		return "alps_parse.xml";
 	}
 }

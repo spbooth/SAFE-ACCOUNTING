@@ -246,6 +246,11 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		return false;
 	}
 
+	/** update an existing record with values from a new {@link DerivedPropertyMap}
+	 * @param map
+	 * @param record
+	 * @return true if record modified
+	 */
 	public boolean updateRecord(DerivedPropertyMap map, ExpressionTargetContainer record) throws Exception {
 		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		// incomplete records have not called postCreate
@@ -277,15 +282,17 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 			} catch (Exception e) {
 				getLogger().error("Error in record post-create", e);
 			}
-
+			// assme an update becasue of side effects
+			return true;
 		} else {
 			// do a rescan of an incomplete record (no side effects)
+			// we are assuming a rescan can't generate the missing properties
 			// Note record is the old record being replaced.
 			// overwrite any properties generated in the new parse
 			map.setContainer(record);
 			return record.commit(); // update it
 		}
-		return false;
+		
 	}
 
 	public boolean allowReplace(DerivedPropertyMap map, ExpressionTargetContainer record) {
@@ -381,8 +388,10 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 					if (text != null && text.trim().length() > 0) {
 						R ir = getParser().getRecord(text);
 						if (parse(map, ir)) {
-							if (updateRecord(map, rec)) {
-								updates++;
+							if( allowReplace(map, rec)) {
+								if (updateRecord(map, rec)) {
+									updates++;
+								}
 							}
 							good++;
 						} else {
@@ -397,7 +406,51 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		}
 		return new int[] { good, fail, updates };
 	}
+	/**
+	 * Re-apply side effects for a set of records. This will only work if any
+	 * meta-data properties consumed by parsers or policies in the startParse method
+	 * have been persisted within the database. 
+	 * Unlike {@link #rescan(RecordSelector)} this does not require a text field to re-parse
+	 * 
+	 * @param sel
+	 * @return array or status counts [good,fails,updates]
+	 * 
+	 * @throws Exception
+	 */
+	public int[] reEvaluate(RecordSelector sel) throws Exception {
+		int count = 0;
+		int good = 0;
+		int fail = 0;
+		int updates = 0;
+		ExpressionTargetFactory<T> etf = getExpressionTargetFactory();
+		
+			AccessorMap<T> amap = etf.getAccessorMap();
+			for (Iterator<T> it = etf.getIterator(sel); it.hasNext();) {
+				T o = it.next();
+				ExpressionTargetContainer rec = amap.getProxy(o);
+				count++;
+				try {
+					// make all previous props available to start parse
+					// as we may need some initial properties to perfrom setup
+					DerivedPropertyMap map = new DerivedPropertyMap(getContext());
+					map.setAll(rec);
+					startParse(map);
 
+					if( allowReplace(map, rec)) {
+						if (updateRecord(map, rec)) {
+							updates++;
+						}
+					}
+					good++;
+
+				} catch (AccountingParseException e) {
+					fail++;
+					getLogger().error("Error in re-evaluate", e);
+				}
+			}
+
+			return new int[] { good, fail, updates };
+	}
 	public static class RescanTableTransition<P extends UsageRecordParseTargetPlugIn> extends AbstractFormTransition<P>
 			implements ExtraFormTransition<P> {
 
@@ -441,7 +494,47 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 			return cb;
 		}
 	}
+	public static class ReEvaluateTableTransition<P extends UsageRecordParseTargetPlugIn> extends AbstractFormTransition<P>
+	implements ExtraFormTransition<P> {
 
+private static final String PERIOD = "Period";
+
+public  class ReEvaluateAction extends FormAction {
+	private final P target;
+
+	public ReEvaluateAction(P target) {
+		this.target = target;
+	}
+
+	@Override
+	public FormResult action(Form f) throws ActionException {
+		Period p = (Period) f.get(PERIOD);
+		try {
+			AndRecordSelector sel = new AndRecordSelector();
+			sel.add(new PeriodOverlapRecordSelector(p, StandardProperties.ENDED_PROP));
+			int result[] = target.reEvaluate(sel);
+			return new MessageResult("data_loaded", "Stored text", Integer.toString(result[0]),
+					Integer.toString(result[1]), Integer.toBinaryString(result[2]));
+		} catch (Exception e) {
+			target.getContext().getService(LoggerService.class).getLogger(getClass()).error("Error rescaning",
+					e);
+			return new MessageResult("internal_error");
+		}
+	}
+
+}
+
+public void buildForm(Form f, P target, AppContext conn) throws TransitionException {
+	f.addInput(PERIOD, PERIOD, new SimplePeriodInput());
+	f.addAction("Regenerate", new ReEvaluateAction(target));
+}
+
+@Override
+public <X extends ContentBuilder> X getExtraHtml(X cb, SessionService<?> op, P target) {
+	cb.addText("This operation will re-apply side effects such as charging to the selected records");
+	return cb;
+}
+}
 	// public String getUniqueID(T r) throws Exception {
 	//
 	// return getParseTarget().getUniqueID(r);
@@ -468,6 +561,9 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 				// a different table
 				if( etf.hasProperty(StandardProperties.TEXT_PROP) && etf.hasProperty(StandardProperties.ENDED_PROP)){
 					map.put(new AdminOperationKey("Rescan", "Rescan all records stored as text"), new RescanTableTransition());
+				}
+				if( etf.hasProperty(StandardProperties.ENDED_PROP)){
+					map.put(new AdminOperationKey("ReEvaluate", "Re-apply post-create side effects"), new ReEvaluateTableTransition());
 				}
 			}
 			map.put(new AdminOperationKey("AddClassificationReference","Add a reference to a classification"), new AddClassificationReferenceTransition());
