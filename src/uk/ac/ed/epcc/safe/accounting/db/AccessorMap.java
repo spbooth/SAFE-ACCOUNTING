@@ -1166,6 +1166,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	
 	protected abstract String getDBTag() ;
 	
+	protected abstract Set<Repository> getSourceTables();
 	
 	protected final <T> CaseExpression<X,T> getCaseExpression(CasePropExpression<T> expr) throws NoSQLFilterException, InvalidSQLPropertyException, Exception{
 		LinkedList<CaseExpression.Clause<X,T>> list = new LinkedList<CaseExpression.Clause<X,T>>();

@@ -18,14 +18,15 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.FixedPropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -556,5 +557,13 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 	}
 	public FilterUpdate<X> getFilterUpdate(){
 		return new FilterUpdate<>(res);
+	}
+
+
+	@Override
+	protected final Set<Repository> getSourceTables() {
+		HashSet<Repository> set = new HashSet<>();
+		set.add(res);
+		return set;
 	}
 }

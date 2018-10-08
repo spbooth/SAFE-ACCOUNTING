@@ -13,10 +13,13 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.Set;
+
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SetMaker;
+import uk.ac.ed.epcc.webapp.model.data.Repository;
 import uk.ac.ed.epcc.webapp.model.data.SetMapper;
 
 
@@ -41,6 +44,10 @@ public class TuplePropertyMaker<T extends PropertyTupleFactory.PropertyTuple,PT>
 	@Override
 	protected String getDBTag() {
 		return fac.getDBTag();
+	}
+	@Override
+	protected Set<Repository> getSourceTables() {
+		return fac.getSourceTables();
 	}
 
 }

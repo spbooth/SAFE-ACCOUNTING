@@ -13,6 +13,9 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -44,6 +47,12 @@ public class PropertyMaker<T extends DataObject,PT> extends SetMaker<T, PT> {
 	@Override
 	protected String getDBTag() {
 		return res.getDBTag();
+	}
+	@Override
+	protected Set<Repository> getSourceTables() {
+		HashSet<Repository> set = new HashSet<>();
+		set.add(res);
+		return set;
 	}
 
 }

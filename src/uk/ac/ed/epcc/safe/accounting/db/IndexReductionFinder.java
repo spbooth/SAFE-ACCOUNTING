@@ -19,27 +19,15 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FilterFinder;
 
 
 
-public class IndexReductionFinder<T> extends FilterFinder<T,Map<ExpressionTuple,ReductionMapResult>>{
-	private final AccessorMap<T> map;
+public class IndexReductionFinder<T> extends AccessorMapFilterFinder<T,Map<ExpressionTuple,ReductionMapResult>>{
 	public IndexReductionFinder(AccessorMap<T> map,Set<ReductionTarget> sum,ReductionMapResult defs) throws InvalidPropertyException, IllegalReductionException, CannotUseSQLException {
-		super(map.getContext(),map.getTarget(),true);
+		super(map);
 		setMapper(new IndexReductionMapper<T>(map, sum,defs));
-		this.map=map;
-	}
-	@Override
-	protected void addSource(StringBuilder sb) {
-		map.addSource(sb);
-	}
-	@Override
-	protected String getDBTag() {
-		return map.getDBTag();
 	}
 }

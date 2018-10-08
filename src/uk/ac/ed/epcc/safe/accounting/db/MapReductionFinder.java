@@ -24,17 +24,14 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.MinimumMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SumMapMapper;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FilterFinder;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 
 
 
-public class MapReductionFinder<T,K> extends FilterFinder<T, Map<K,Number>> {
-	private final AccessorMap<T> map;
+public class MapReductionFinder<T,K> extends AccessorMapFilterFinder<T, Map<K,Number>> {
 	public MapReductionFinder(AccessorMap<T> map, PropExpression<K> key,
 			ReductionTarget<Number> value) throws InvalidSQLPropertyException {
-		super(map.getContext(), map.getTarget(),true); // can return null
-		this.map=map;
+		super(map); // can return null
 		assert(key != null);
 		assert(value != null);
 		
@@ -58,14 +55,4 @@ public class MapReductionFinder<T,K> extends FilterFinder<T, Map<K,Number>> {
 		}
 		
 	}
-	@Override
-	protected void addSource(StringBuilder sb) {
-		map.addSource(sb);
-		
-	}
-	@Override
-	protected String getDBTag() {
-		return map.getDBTag();
-	}
-	
 }
