@@ -4,6 +4,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -60,8 +61,9 @@ public class BackLinkPolicy extends BaseUsageRecordPolicy implements SummaryProv
 			return;
 		}
 		Indexed remote = remote_tag.get(c, props);
-		if( remote != null && remote instanceof PropertyContainer && remote instanceof DataObject){
-			back_ref.set((PropertyContainer)remote, (Indexed) rec);
+		if( remote != null &&  remote instanceof DataObject){
+			PropertyContainer container = ExpressionCast.getPrpertyContainer(remote);
+			back_ref.set(container, rec);
 			((DataObject)remote).commit();
 		}
 	}

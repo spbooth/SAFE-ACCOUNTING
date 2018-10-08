@@ -471,7 +471,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 					sel.add(new NullSelector<String>(StandardProperties.TEXT_PROP, false));
 					int result[] = target.rescan(sel);
 					return new MessageResult("data_loaded", "Stored text", Integer.toString(result[0]),
-							Integer.toString(result[1]), Integer.toBinaryString(result[2]));
+							Integer.toString(result[1]), Integer.toString(result[2]));
 				} catch (Exception e) {
 					target.getContext().getService(LoggerService.class).getLogger(getClass()).error("Error rescaning",
 							e);
@@ -517,7 +517,7 @@ public  class ReEvaluateAction extends FormAction {
 			sel.add(new PeriodOverlapRecordSelector(p, StandardProperties.ENDED_PROP));
 			int result[] = target.reEvaluate(sel);
 			return new MessageResult("re_evaluate",  Integer.toString(result[0]),
-					Integer.toString(result[1]), Integer.toBinaryString(result[2]));
+					Integer.toString(result[1]), Integer.toString(result[2]));
 		} catch (Exception e) {
 			target.getContext().getService(LoggerService.class).getLogger(getClass()).error("Error rescaning",
 					e);
