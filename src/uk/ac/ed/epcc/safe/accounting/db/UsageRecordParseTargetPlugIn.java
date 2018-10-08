@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -451,15 +450,15 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 
 			return new int[] { good, fail, updates };
 	}
-	public static class RescanTableTransition<P extends UsageRecordParseTargetPlugIn> extends AbstractFormTransition<P>
+	public static class RescanTableTransition<P extends DataObjectFactory<?>> extends AbstractFormTransition<P>
 			implements ExtraFormTransition<P> {
 
 		private static final String PERIOD = "Period";
 
 		public  class RescanAction extends FormAction {
-			private final P target;
+			private final UsageRecordParseTargetPlugIn target;
 
-			public RescanAction(P target) {
+			public RescanAction(UsageRecordParseTargetPlugIn target) {
 				this.target = target;
 			}
 
@@ -484,7 +483,11 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 
 		public void buildForm(Form f, P target, AppContext conn) throws TransitionException {
 			f.addInput(PERIOD, PERIOD, new SimplePeriodInput());
-			f.addAction("Regenerate", new RescanAction(target));
+			PropertyContainerParseTargetComposite plugin = target.getComposite(PropertyContainerParseTargetComposite.class);
+			if( plugin == null || ! (plugin instanceof UsageRecordParseTargetPlugIn)) {
+				throw new ConsistencyError("Expected composite not found");
+			}
+			f.addAction("Regenerate", new RescanAction((UsageRecordParseTargetPlugIn) plugin));
 		}
 
 		@Override
@@ -494,15 +497,15 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 			return cb;
 		}
 	}
-	public static class ReEvaluateTableTransition<P extends UsageRecordParseTargetPlugIn> extends AbstractFormTransition<P>
+	public static class ReEvaluateTableTransition<P extends DataObjectFactory<?>> extends AbstractFormTransition<P>
 	implements ExtraFormTransition<P> {
 
 private static final String PERIOD = "Period";
 
 public  class ReEvaluateAction extends FormAction {
-	private final P target;
+	private final UsageRecordParseTargetPlugIn target;
 
-	public ReEvaluateAction(P target) {
+	public ReEvaluateAction(UsageRecordParseTargetPlugIn target) {
 		this.target = target;
 	}
 
@@ -513,7 +516,7 @@ public  class ReEvaluateAction extends FormAction {
 			AndRecordSelector sel = new AndRecordSelector();
 			sel.add(new PeriodOverlapRecordSelector(p, StandardProperties.ENDED_PROP));
 			int result[] = target.reEvaluate(sel);
-			return new MessageResult("data_loaded", "Stored text", Integer.toString(result[0]),
+			return new MessageResult("re_evaluate",  Integer.toString(result[0]),
 					Integer.toString(result[1]), Integer.toBinaryString(result[2]));
 		} catch (Exception e) {
 			target.getContext().getService(LoggerService.class).getLogger(getClass()).error("Error rescaning",
@@ -526,7 +529,11 @@ public  class ReEvaluateAction extends FormAction {
 
 public void buildForm(Form f, P target, AppContext conn) throws TransitionException {
 	f.addInput(PERIOD, PERIOD, new SimplePeriodInput());
-	f.addAction("Regenerate", new ReEvaluateAction(target));
+	PropertyContainerParseTargetComposite plugin = target.getComposite(PropertyContainerParseTargetComposite.class);
+	if( plugin == null || ! (plugin instanceof UsageRecordParseTargetPlugIn)) {
+		throw new ConsistencyError("Expected composite not found");
+	}
+	f.addAction("Re-evaluate", new ReEvaluateAction((UsageRecordParseTargetPlugIn) plugin));
 }
 
 @Override
