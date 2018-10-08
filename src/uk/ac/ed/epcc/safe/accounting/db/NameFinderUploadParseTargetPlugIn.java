@@ -11,7 +11,6 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.webapp.model.NameFinder;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.session.AppUserFactory;
 /** An {@link UploadParseTargetPlugIn} for factories that implement {@link NameFinder}
  * 
  * @author spb
