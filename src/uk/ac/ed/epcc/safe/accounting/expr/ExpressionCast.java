@@ -72,19 +72,19 @@ public class ExpressionCast {
 			return (ExpressionTarget) o;
 		}
 		if( o instanceof DataObject) {
-			ExpressionTargetFactory etf = getExpressionTargetFactory(DataObject.getFactory((DataObject)o));
+			ExpressionTargetFactory etf = getExpressionTargetFactory(DataObject.getOwningFactory((DataObject)o));
 			if( etf != null) {
 				return etf.getExpressionTarget(o);
 			}
 		}
 		return null;
 	}
-	public static PropertyContainer getPrpertyContainer(Object o) {
+	public static PropertyContainer getPropertyContainer(Object o) {
 		if( o == null || o instanceof PropertyContainer) {
 			return (PropertyContainer) o;
 		}
 		if( o instanceof DataObject) {
-			ExpressionTargetFactory etf = getExpressionTargetFactory(DataObject.getFactory((DataObject)o));
+			ExpressionTargetFactory etf = getExpressionTargetFactory(DataObject.getOwningFactory((DataObject)o));
 			if( etf != null) {
 				return etf.getExpressionTarget(o);
 			}

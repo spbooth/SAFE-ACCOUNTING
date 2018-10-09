@@ -62,7 +62,7 @@ public class BackLinkPolicy extends BaseUsageRecordPolicy implements SummaryProv
 		}
 		Indexed remote = remote_tag.get(c, props);
 		if( remote != null &&  remote instanceof DataObject){
-			PropertyContainer container = ExpressionCast.getPrpertyContainer(remote);
+			PropertyContainer container = ExpressionCast.getPropertyContainer(remote);
 			back_ref.set(container, rec);
 			((DataObject)remote).commit();
 		}
