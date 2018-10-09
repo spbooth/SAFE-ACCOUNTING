@@ -1,0 +1,103 @@
+<Diff><TableSpecification name='LASSiLog'>
+<ap_id type='Integer' nullable='true'/>
+<read_kb type='Integer' nullable='true'/>
+<read_ops type='Integer' nullable='true'/>
+<write_kb type='Integer' nullable='true'/>
+<write_ops type='Integer' nullable='true'/>
+<other type='Integer' nullable='true'/>
+<open type='Integer' nullable='true'/>
+<close type='Integer' nullable='true'/>
+<mknod type='Integer' nullable='true'/>
+<link type='Integer' nullable='true'/>
+<unlink type='Integer' nullable='true'/>
+<mkdir type='Integer' nullable='true'/>
+<rmdir type='Integer' nullable='true'/>
+<ren type='Integer' nullable='true'/>
+<getattr type='Integer' nullable='true'/>
+<setattr type='Integer' nullable='true'/>
+<getxattr type='Integer' nullable='true'/>
+<setxattr type='Integer' nullable='true'/>
+<statfs type='Integer' nullable='true'/>
+<sync type='Integer' nullable='true'/>
+<sdr type='Integer' nullable='true'/>
+<cdr type='Integer' nullable='true'/>
+<ALPSLogID reference='ALPSLog'/>
+<aprun_index type='Index' unique='true'><Column name='ap_id'/></aprun_index>
+<ALPSLogID_idx type='Index' unique='false'><Column name='ALPSLogID'/></ALPSLogID_idx>
+</TableSpecification>
+<LASSiLog id='1'>
+<ap_id>22542623</ap_id>
+<read_kb>774</read_kb>
+<read_ops>2</read_ops>
+<write_kb>107612</write_kb>
+<write_ops>145</write_ops>
+<other>345</other>
+<open>1775</open>
+<close>314</close>
+<mknod>0</mknod>
+<link>0</link>
+<unlink>0</unlink>
+<mkdir>0</mkdir>
+<rmdir>0</rmdir>
+<ren>2</ren>
+<getattr>407</getattr>
+<setattr>0</setattr>
+<getxattr>0</getxattr>
+<setxattr>0</setxattr>
+<statfs>0</statfs>
+<sync>8</sync>
+<sdr>2</sdr>
+<cdr>0</cdr>
+<ALPSLogID>1</ALPSLogID>
+</LASSiLog>
+<LASSiLog id='2'>
+<ap_id>22542637</ap_id>
+<read_kb>22</read_kb>
+<read_ops>8</read_ops>
+<write_kb>25183</write_kb>
+<write_ops>27</write_ops>
+<other>94</other>
+<open>294</open>
+<close>294</close>
+<mknod>0</mknod>
+<link>0</link>
+<unlink>0</unlink>
+<mkdir>0</mkdir>
+<rmdir>0</rmdir>
+<ren>0</ren>
+<getattr>360</getattr>
+<setattr>4</setattr>
+<getxattr>0</getxattr>
+<setxattr>0</setxattr>
+<statfs>0</statfs>
+<sync>0</sync>
+<sdr>0</sdr>
+<cdr>0</cdr>
+<ALPSLogID>2</ALPSLogID>
+</LASSiLog>
+<LASSiLog id='3'>
+<ap_id>22543522</ap_id>
+<read_kb>13500</read_kb>
+<read_ops>43</read_ops>
+<write_kb>110668</write_kb>
+<write_ops>172</write_ops>
+<other>725</other>
+<open>97</open>
+<close>143</close>
+<mknod>0</mknod>
+<link>0</link>
+<unlink>1</unlink>
+<mkdir>0</mkdir>
+<rmdir>0</rmdir>
+<ren>0</ren>
+<getattr>672</getattr>
+<setattr>599</setattr>
+<getxattr>0</getxattr>
+<setxattr>0</setxattr>
+<statfs>0</statfs>
+<sync>0</sync>
+<sdr>0</sdr>
+<cdr>0</cdr>
+<ALPSLogID>3</ALPSLogID>
+</LASSiLog>
+</Diff>

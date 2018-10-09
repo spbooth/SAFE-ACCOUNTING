@@ -2,6 +2,7 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,14 +10,18 @@ import java.util.Collection;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
+import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
 
 
-@DataBaseFixtures({"AprunApplication.xml", "RurParserTest.xml"})
-public class RurParserTest extends AbstractRecordTestCase {
+@DataBaseFixtures({"RurParserTest.xml"})
+public class LASSiParserTest extends AbstractRecordTestCase {
 
-	public RurParserTest() {
-		super("ARCHER", "RURLog");
+	
+
+
+	public LASSiParserTest() {
+		super("ARCHER","LASSiLog");
 	}
 
 
@@ -28,9 +33,10 @@ public class RurParserTest extends AbstractRecordTestCase {
 		
 	}
 
-	private static final String testDataPath = "./RURData.txt";
+	private static final String testDataPath = "./LASSiData.txt";
 	private static final Collection<RecordText> goodRecords = new ArrayList<RecordText>();
 	private static final Collection<BadRecordText> badTexts = new ArrayList<BadRecordText>();
+	
 	
 	@Test
 	public void testParse() { 
@@ -57,7 +63,15 @@ public class RurParserTest extends AbstractRecordTestCase {
 		}
 		
 	}
-
+	@Override
+	public String getUpdateText() {
+		
+		try {
+			return getResourceAsString(testDataPath);
+		} catch (IOException e) {
+			throw new ConsistencyError("Error getting data",e);
+		}
+	}
 
 	@Override
 	public Collection<BadRecordText> getBadRecords() {
@@ -73,4 +87,8 @@ public class RurParserTest extends AbstractRecordTestCase {
 		return goodRecords;
 	}
 
+	@Override
+	public String getReceiveAccountingExpected() {
+		return "lassi_parse.xml";
+	}
 }

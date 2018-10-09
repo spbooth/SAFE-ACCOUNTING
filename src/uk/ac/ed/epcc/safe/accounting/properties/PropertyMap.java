@@ -19,8 +19,6 @@ package uk.ac.ed.epcc.safe.accounting.properties;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
-
-import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 /** A map of Property values keyed by PropertyTag
  * 
  * This class provides a memory resident implementation of PropertyContainer that is capable of
