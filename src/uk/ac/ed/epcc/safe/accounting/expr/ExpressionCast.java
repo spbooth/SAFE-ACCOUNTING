@@ -2,6 +2,7 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.ExpressionTargetFactoryComposite;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
@@ -71,7 +72,19 @@ public class ExpressionCast {
 			return (ExpressionTarget) o;
 		}
 		if( o instanceof DataObject) {
-			ExpressionTargetFactory etf = getExpressionTargetFactory(DataObject.getFactory((DataObject)o));
+			ExpressionTargetFactory etf = getExpressionTargetFactory(DataObject.getOwningFactory((DataObject)o));
+			if( etf != null) {
+				return etf.getExpressionTarget(o);
+			}
+		}
+		return null;
+	}
+	public static PropertyContainer getPropertyContainer(Object o) {
+		if( o == null || o instanceof PropertyContainer) {
+			return (PropertyContainer) o;
+		}
+		if( o instanceof DataObject) {
+			ExpressionTargetFactory etf = getExpressionTargetFactory(DataObject.getOwningFactory((DataObject)o));
 			if( etf != null) {
 				return etf.getExpressionTarget(o);
 			}

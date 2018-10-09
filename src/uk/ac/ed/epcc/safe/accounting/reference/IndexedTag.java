@@ -16,6 +16,8 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.reference;
 
+import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ReferenceValueParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserProvider;
@@ -58,6 +60,19 @@ public class IndexedTag<I extends Indexed, F extends IndexedProducer> extends Pr
 	   }
 	   public void set(PropertyContainer cont, I value) throws InvalidPropertyException{
 		   cont.setProperty(this, makeReference(value));
+	   }
+	   public void set(PropertyContainer cont, ExpressionTarget exp) throws InvalidPropertyException {
+		   if( exp instanceof Indexed) {
+			   set(cont,(I) exp);
+			   return;
+		   }else if( exp instanceof AccessorMap.ExpressionTargetProxy) {
+			   Object o = ((AccessorMap.ExpressionTargetProxy)exp).getRecord();
+			   if( o instanceof Indexed) {
+				   set(cont,(I) o);
+				   return;
+			   }
+		   }
+		   throw new InvalidPropertyException("Cannot cast to Indexed");
 	   }
 	public IndexedReference<I> makeReference(I value) {
 		if( value == null ){
