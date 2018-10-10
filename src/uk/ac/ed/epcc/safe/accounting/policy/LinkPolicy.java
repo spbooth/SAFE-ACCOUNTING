@@ -100,7 +100,10 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * where they can be set by the PostCreate method.
  * <p> 
  * If the mapping is not one-to-one for example a log of executables run inside a batch job then it does not make sense to copy properties into the main table.
- * 
+ * <p>
+ * If the mapping is one-to-one 
+ * you should also set the <b>LinkPolicy.unique.<i>table-name</i></b> property to false before the table is created so the table
+ * index is created as a unique key,
  * @author spb
  *
  */
@@ -360,14 +363,14 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 			PropExpressionMap map, String table_name) {
 	
 		TableSpecification result = super.modifyDefaultTableSpecification(c, spec, map, table_name);
-		String remote_table = c.getInitParameter("LinkPolicy.target."+table_name);
+		String remote_table = c.getInitParameter(LINK_POLICY_TARGET+table_name);
 		if( remote_table != null){
 			String name = remote_table+"ID";
 			spec.setField(name, new ReferenceFieldType(remote_table));
 		
 			try {
 				// Add an index to optimise back-joins from the master table to this one.
-				spec.new Index(name+"_idx", false, name);
+				spec.new Index(name+"_idx", c.getBooleanParameter("LinkPolicy.unique."+table_name, false), name);
 			} catch (InvalidArgument e) {
 				c.getService(LoggerService.class).getLogger(getClass()).error("Error making index",e);
 			}
