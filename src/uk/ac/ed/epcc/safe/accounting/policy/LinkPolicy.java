@@ -61,6 +61,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.TableInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -109,8 +110,12 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 
 
-public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements SummaryProvider,TableTransitionContributor {
+public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements SummaryProvider,TableTransitionContributor,ConfigParamProvider {
 
+	private static final String LINK_POLICY_UNIQUE = "LinkPolicy.unique.";
+	private static final String LINK_POLICY_LINK = "LinkPolicy.link.";
+	private static final String LINK_POLICY_REQUIRE_LINK = "LinkPolicy.require_link.";
+	private static final String LINK_POLICY_GRACE = "LinkPolicy.grace.";
 	private static final String LINK_POLICY_TARGET = "LinkPolicy.target.";
 	private AppContext c;
 	private ReferenceTag remote_tag=null;
@@ -123,12 +128,14 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	private long grace_millis;
 	private boolean require_link=true;
 	private Logger log;
+	private String my_table;
 	@SuppressWarnings("unchecked")
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
 			String table) {
 		c = ctx;
-		grace_millis = 1000L * ctx.getLongParameter("LinkPolicy.grace."+table, 4000L);
-		require_link = ctx.getBooleanParameter("LinkPolicy.require_link."+table, true);
+		my_table=table;
+		grace_millis = 1000L * ctx.getLongParameter(LINK_POLICY_GRACE+table, 4000L);
+		require_link = ctx.getBooleanParameter(LINK_POLICY_REQUIRE_LINK+table, true);
 		log = c.getService(LoggerService.class).getLogger(getClass());
 		//System.out.println("grace is "+grace_millis);
 		String target_name = c.getInitParameter(LINK_POLICY_TARGET+table);
@@ -142,7 +149,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 			   match_map = new HashMap<PropertyTag, PropertyTag>();
 			   inside_date_properties = new HashSet<PropertyTag>();
 			   copy_properties = new HashMap<PropertyTag,PropertyTag>();
-			   String prefix ="LinkPolicy.link."+table+".";
+			   String prefix =LINK_POLICY_LINK+table+".";
 			   PropertyFinder remote_finder=remote_fac.getFinder();
 			   for(PropertyTag local_tag : prev.getProperties()){
 				   String local_name = local_tag.getName();
@@ -370,11 +377,23 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 		
 			try {
 				// Add an index to optimise back-joins from the master table to this one.
-				spec.new Index(name+"_idx", c.getBooleanParameter("LinkPolicy.unique."+table_name, false), name);
+				spec.new Index(name+"_idx", c.getBooleanParameter(LINK_POLICY_UNIQUE+table_name, false), name);
 			} catch (InvalidArgument e) {
 				c.getService(LoggerService.class).getLogger(getClass()).error("Error making index",e);
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public void addConfigParameters(Set<String> params) {
+		if( my_table != null ) {
+		params.add(LINK_POLICY_GRACE+my_table);
+		params.add(LINK_POLICY_LINK+my_table);
+		params.add(LINK_POLICY_REQUIRE_LINK+my_table);
+		params.add(LINK_POLICY_TARGET+my_table);
+		params.add(LINK_POLICY_UNIQUE+my_table);
+		}
+		
 	}
 }

@@ -15,6 +15,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.jdbc.table.IntegerFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 /** LASSi is a cray developed IO stat tool. It reports lustre IO statistics in A
  * CSV format per aprun instance
  * Both peak and total values are generated in different files with the same format. For convenience the sameparser can be used
@@ -24,9 +25,10 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
  * @author Stephen Booth
  *
  */
-public class LASSiParser extends AbstractPropertyContainerParser {
+public class LASSiParser extends AbstractPropertyContainerParser implements ConfigParamProvider{
 
 	
+	private static final String LASSI_USE_PEAK = "lassi.use_peak.";
 	public static final PropertyRegistry lassi_props = new PropertyRegistry("lassi", "IO stats from LASSi");
 	public static final PropertyRegistry lassi_peak_props = new PropertyRegistry("peaklassi", "Peak IO stats from LASSi");
 	public static String names[] = {"ap_id","read_kb","read_ops","write_kb","write_ops","other","open","close","mknod","link","unlink","mkdir","rmdir","ren","getattr","setattr","getxattr","setxattr","statfs","sync","sdr","cdr"};
@@ -63,13 +65,14 @@ public class LASSiParser extends AbstractPropertyContainerParser {
 		}
 		return true;
 	}
-
+	private String my_table;
 	@Override
 	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
-		use_peak = ctx.getBooleanParameter("lassi.use_peak."+table, false);
+		use_peak = ctx.getBooleanParameter(LASSI_USE_PEAK+table, false);
 		if( use_peak) {
 			return lassi_peak_props;
 		}
+		my_table=table;
 		return lassi_props;
 	}
 	@Override
@@ -91,6 +94,13 @@ public class LASSiParser extends AbstractPropertyContainerParser {
 		Set<PropertyTag> unique = new HashSet<PropertyTag>();
 		unique.add(use_peak ? peak_tags[0]: tags[0]); // just ap_id
 		return unique;
+	}
+
+	@Override
+	public void addConfigParameters(Set<String> params) {
+		if( my_table != null ) {
+		params.add(LASSI_USE_PEAK+my_table);
+		}
 	}
 
 }
