@@ -1,26 +1,26 @@
 <Diff><TableSpecification name='LASSiLog'>
 <ap_id type='Integer' nullable='true'/>
-<read_kb type='Integer' nullable='true'/>
-<read_ops type='Integer' nullable='true'/>
-<write_kb type='Integer' nullable='true'/>
-<write_ops type='Integer' nullable='true'/>
-<other type='Integer' nullable='true'/>
-<open type='Integer' nullable='true'/>
-<close type='Integer' nullable='true'/>
-<mknod type='Integer' nullable='true'/>
-<link type='Integer' nullable='true'/>
-<unlink type='Integer' nullable='true'/>
-<mkdir type='Integer' nullable='true'/>
-<rmdir type='Integer' nullable='true'/>
-<ren type='Integer' nullable='true'/>
-<getattr type='Integer' nullable='true'/>
-<setattr type='Integer' nullable='true'/>
-<getxattr type='Integer' nullable='true'/>
-<setxattr type='Integer' nullable='true'/>
-<statfs type='Integer' nullable='true'/>
-<sync type='Integer' nullable='true'/>
-<sdr type='Integer' nullable='true'/>
-<cdr type='Integer' nullable='true'/>
+<read_kb type='Long' nullable='true'/>
+<read_ops type='Long' nullable='true'/>
+<write_kb type='Long' nullable='true'/>
+<write_ops type='Long' nullable='true'/>
+<other type='Long' nullable='true'/>
+<open type='Long' nullable='true'/>
+<close type='Long' nullable='true'/>
+<mknod type='Long' nullable='true'/>
+<link type='Long' nullable='true'/>
+<unlink type='Long' nullable='true'/>
+<mkdir type='Long' nullable='true'/>
+<rmdir type='Long' nullable='true'/>
+<ren type='Long' nullable='true'/>
+<getattr type='Long' nullable='true'/>
+<setattr type='Long' nullable='true'/>
+<getxattr type='Long' nullable='true'/>
+<setxattr type='Long' nullable='true'/>
+<statfs type='Long' nullable='true'/>
+<sync type='Long' nullable='true'/>
+<sdr type='Long' nullable='true'/>
+<cdr type='Long' nullable='true'/>
 <ALPSLogID reference='ALPSLog'/>
 <aprun_index type='Index' unique='true'><Column name='ap_id'/></aprun_index>
 <ALPSLogID_idx type='Index' unique='false'><Column name='ALPSLogID'/></ALPSLogID_idx>

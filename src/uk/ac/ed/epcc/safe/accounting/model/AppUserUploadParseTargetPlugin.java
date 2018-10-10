@@ -55,6 +55,7 @@ public class AppUserUploadParseTargetPlugin<A extends AppUser,R> extends NameFin
 	@Override
 	public void customAccessors(AccessorMap<A> mapi2, MultiFinder finder, PropExpressionMap derived) {
 		finder.addFinder(person_registy);
+		try {
 		Set<String> role_list = getContext().getService(SessionService.class).getStandardRoles();
 		if( role_list != null && !role_list.isEmpty()){
 			@SuppressWarnings("unchecked")
@@ -70,6 +71,9 @@ public class AppUserUploadParseTargetPlugin<A extends AppUser,R> extends NameFin
 				}
 			}
 			finder.addFinder(role_reg);
+		}
+		}catch(Exception e) {
+			getLogger().error("Error making role accessors", e);
 		}
 		// initialise the plug-in
 		super.customAccessors(mapi2, finder, derived);
