@@ -507,7 +507,9 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 					continue;
 				}
 				
-				Matcher attr_matcher = attribute_pattern.matcher(plugin_matcher.group("ATTRS"));
+				String attrs = plugin_matcher.group("ATTRS");
+				if( attrs !=null) {
+				Matcher attr_matcher = attribute_pattern.matcher(attrs);
 				while (attr_matcher.find()) {
 				
 					String alias = attr_matcher.group("ATTRNAME");
@@ -538,6 +540,9 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 					else {
 						unrecognised_attr.add(alias);
 					}
+				}
+				}else {
+					log.error("Null attributes from plugin");
 				}
 			}
 			
