@@ -109,4 +109,5 @@ public class AlpsParserTest extends AbstractRecordTestCase {
 	public String getReceiveAccountingExpected() {
 		return "alps_parse.xml";
 	}
+
 }

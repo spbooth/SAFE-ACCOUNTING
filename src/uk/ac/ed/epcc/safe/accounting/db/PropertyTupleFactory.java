@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.Tagged;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
@@ -106,7 +107,11 @@ Tagged{
 		if( nested != null){
 			for(String tag : nested.split("\\s*,\\s*")){
 				AF fac = (AF) c.makeObject(DataObjectFactory.class, tag);
-				addFactory(fac);
+				if( fac != null) {
+					addFactory(fac);
+				}else {
+					getLogger().error("No member factory generated for tuple tag "+config_tag+"->"+tag);
+				}
 			}
 		}
 	}
@@ -222,9 +227,10 @@ Tagged{
 	 * @return
 	 */
 	protected BaseFilter<T> addMandatoryFilter(BaseFilter<T> fil){
+		TupleAndFilter and = new TupleAndFilter(fil);
 		String config_spec = getContext().getInitParameter(getTag()+".mandatory_filter");
 		if( config_spec != null ) {
-			AndFilter<T> and = new AndFilter<>(getTarget(),fil);
+			
 			for(String clause : config_spec.split("\\s*,\\s*")) {
 				int pos = clause.indexOf('=');
 				if( pos < 1 || pos == (clause.length()-1)) {
@@ -249,7 +255,8 @@ Tagged{
 				}
 			}
 		}
-		return fil;
+		
+		return and;
 	}
 	protected final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
 		return addMandatoryFilter(getRawFilter(selector));
