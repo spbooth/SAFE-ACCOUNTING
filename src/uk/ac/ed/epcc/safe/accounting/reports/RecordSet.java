@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.safe.accounting.reports.exceptions.RecordSelectException;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
@@ -57,7 +58,9 @@ private final AccountingService serv;
   public RecordSet(RecordSet orig){
 	  super(orig);
 	  this.serv=orig.serv;
-	  this.bounds=orig.bounds.clone();
+	  if( orig.bounds != null ) {
+		  this.bounds=orig.bounds.clone();
+	  }
   }
   public UsageProducer getUsageProducer(){
 	  return getGenerator();
@@ -76,14 +79,20 @@ private final AccountingService serv;
 	 * 
 	 * @param period
 	 * @return
+	 * @throws RecordSelectException 
 	 */
-	public AndRecordSelector getPeriodSelector(Period period){
+	public AndRecordSelector getPeriodSelector(Period period) throws RecordSelectException{
 		AndRecordSelector sel = new AndRecordSelector(getRecordSelector());
+		if( bounds == null ) {
+			throw new RecordSelectException("No time bounds set");
+		}
 		ExpressionTargetGenerator<?> up = getGenerator();
 		if( bounds.length == 1 && up.compatible(bounds[0])){
-			sel.add(new PeriodOverlapRecordSelector(period, bounds[0]));
-		}else if( hasOverlapBounds()){
+				 sel.add(new PeriodOverlapRecordSelector(period, bounds[0]));
+		}else if( hasOverlapBounds() && up.compatible(bounds[0]) && up.compatible(bounds[1])){
 			sel.add(new PeriodOverlapRecordSelector(period, bounds[0], bounds[1]));
+		}else {
+			throw new RecordSelectException("No valid time bounds");
 		}
 		return sel;
 	}
@@ -93,7 +102,7 @@ private final AccountingService serv;
 	 */
 	private boolean hasOverlapBounds() {
 		ExpressionTargetGenerator<?> up = getGenerator();
-		return bounds.length == 2 && up.compatible(bounds[0]) && up.compatible(bounds[1]);
+		return bounds != null && bounds.length == 2 && up.compatible(bounds[0]) && up.compatible(bounds[1]);
 	}
 	/** Are overlap calculations requested
 	 * @param up
@@ -103,8 +112,12 @@ private final AccountingService serv;
 		//return use_overlap && bounds.length == 2 && up.compatible(bounds[0]) && up.compatible(bounds[1]);
 		return use_overlap && hasOverlapBounds() ;
 	}
-  public void setUsageProducer(String name){
-	  setUsageProducer(serv.getUsageProducer(name));
+  public void setUsageProducer(String name) throws RecordSelectException{
+	  UsageProducer usageProducer = serv.getUsageProducer(name);
+	  if( usageProducer == null) {
+		  throw new RecordSelectException("Bad producer: "+name);
+	  }
+	setUsageProducer(usageProducer);
   }
   public void setUsageProducer(UsageProducer up){
 	  // Note that setting a usage producer clear all existing selectors.

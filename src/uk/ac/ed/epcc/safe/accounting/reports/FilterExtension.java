@@ -213,14 +213,15 @@ public class FilterExtension extends ReportExtension{
 	  if(set.hasError()) {
 		  return false;
 	  }
-	  UsageProducer<?> producer = set.getUsageProducer();
-		AndRecordSelector selector = set.getPeriodSelector(period);
-		try {
-			return producer.getRecordCount(selector) > 0;
-		} catch (Exception e) {
-			addError("Filter Error", "Error checking for records", e);
-			return false;
-		}
+	  try {
+		  UsageProducer<?> producer = set.getUsageProducer();
+		  AndRecordSelector selector = set.getPeriodSelector(period);
+
+		  return producer.getRecordCount(selector) > 0;
+	  } catch (Exception e) {
+		  addError("Filter Error", "Error checking for records", e);
+		  return false;
+	  }
   }
 
 @Override

@@ -16,9 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting;
 
-import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContextService;
-import uk.ac.ed.epcc.webapp.session.SessionService;
 
 /** Service used to configure the Accounting
  * @author spb
