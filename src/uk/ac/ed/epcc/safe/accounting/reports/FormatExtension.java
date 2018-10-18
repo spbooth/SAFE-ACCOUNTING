@@ -38,6 +38,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** Extension to format a number of selected records using a template NodeList.
@@ -92,27 +93,22 @@ public class FormatExtension<T> extends ReportExtension {
 			count = getIntParam("Count", -1, limit);
 
 		}
-		Iterator<T> it=null;
-		
-			if( start == -1 && count == -1){
-				it = prod.getIterator(sel);
-			}else{
-				it=prod.getIterator(sel, start, count);
-			}
-		
-		
-		while(it.hasNext()){
-			T obj = it.next();
-			ExpressionTargetContainer rec = prod.getExpressionTarget(obj);
-			expander.setExpressionTarget(rec);
-			for(int i=0;i<template.getLength();i++){
-				Node new_n = copyNode(expander,doc, template.item(i));
-				if( new_n != null){
-					result.appendChild(new_n);
+		try(CloseableIterator<T> it=( start == -1 && count == -1) ? prod.getIterator(sel) : prod.getIterator(sel, start, count)){
+
+
+			while(it.hasNext()){
+				T obj = it.next();
+				ExpressionTargetContainer rec = prod.getExpressionTarget(obj);
+				expander.setExpressionTarget(rec);
+				for(int i=0;i<template.getLength();i++){
+					Node new_n = copyNode(expander,doc, template.item(i));
+					if( new_n != null){
+						result.appendChild(new_n);
+					}
 				}
+				result.appendChild(doc.createTextNode("\n"));
+				rec.release();
 			}
-			result.appendChild(doc.createTextNode("\n"));
-			rec.release();
 		}
 		//result.normalize();
 		return result;

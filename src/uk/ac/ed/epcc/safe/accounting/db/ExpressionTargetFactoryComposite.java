@@ -1,7 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,6 +26,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.Composite;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
@@ -179,7 +179,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	}
 
 	@Override
-	public Iterator<T> getIterator(RecordSelector sel, int skip, int count) throws Exception {
+	public CloseableIterator<T> getIterator(RecordSelector sel, int skip, int count) throws Exception {
 		DataObjectFactory<T> fac = getFactory();
 		BaseFilter<T> filter = getFilter(sel);
 		try{
@@ -190,7 +190,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	}
 
 	@Override
-	public Iterator<T> getIterator(RecordSelector sel) throws Exception {
+	public CloseableIterator<T> getIterator(RecordSelector sel) throws Exception {
 		DataObjectFactory<T> fac = getFactory();
 		return fac.getResult(getFilter(sel)).iterator();
 	}
@@ -298,7 +298,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 		return ExpressionTargetFactoryComposite.class;
 	}
 	@Override
-	public Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
+	public CloseableIterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
 		return new ProxyIterator<T>(this, getIterator(sel));
 	}
 }

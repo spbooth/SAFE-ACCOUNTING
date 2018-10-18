@@ -60,6 +60,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -373,33 +374,36 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		ExpressionTargetFactory<T> etf = getExpressionTargetFactory();
 		if (etf.hasProperty(StandardProperties.TEXT_PROP)) {
 			AccessorMap<T> amap = etf.getAccessorMap();
-			for (Iterator<T> it = etf.getIterator(sel); it.hasNext();) {
-				T o = it.next();
-				ExpressionTargetContainer rec = amap.getProxy(o);
-				count++;
-				try {
-					// make all previous props available to start parse
-					// as we may need some initial properties to perfrom setup
-					DerivedPropertyMap map = new DerivedPropertyMap(getContext());
-					map.setAll(rec);
-					startParse(map);
-					String text = rec.getProperty(StandardProperties.TEXT_PROP, null);
-					if (text != null && text.trim().length() > 0) {
-						R ir = getParser().getRecord(text);
-						if (parse(map, ir)) {
-							if( allowReplace(map, rec)) {
-								if (updateRecord(map, rec)) {
-									updates++;
+			try(CloseableIterator<T> it = etf.getIterator(sel)){
+				while(it.hasNext()) {
+
+					T o = it.next();
+					ExpressionTargetContainer rec = amap.getProxy(o);
+					count++;
+					try {
+						// make all previous props available to start parse
+						// as we may need some initial properties to perfrom setup
+						DerivedPropertyMap map = new DerivedPropertyMap(getContext());
+						map.setAll(rec);
+						startParse(map);
+						String text = rec.getProperty(StandardProperties.TEXT_PROP, null);
+						if (text != null && text.trim().length() > 0) {
+							R ir = getParser().getRecord(text);
+							if (parse(map, ir)) {
+								if( allowReplace(map, rec)) {
+									if (updateRecord(map, rec)) {
+										updates++;
+									}
 								}
+								good++;
+							} else {
+								fail++;
 							}
-							good++;
-						} else {
-							fail++;
 						}
+					} catch (AccountingParseException e) {
+						fail++;
+						getLogger().error("Error in re-parse", e);
 					}
-				} catch (AccountingParseException e) {
-					fail++;
-					getLogger().error("Error in re-parse", e);
 				}
 			}
 		}
@@ -424,27 +428,30 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		ExpressionTargetFactory<T> etf = getExpressionTargetFactory();
 		
 			AccessorMap<T> amap = etf.getAccessorMap();
-			for (Iterator<T> it = etf.getIterator(sel); it.hasNext();) {
-				T o = it.next();
-				ExpressionTargetContainer rec = amap.getProxy(o);
-				count++;
-				try {
-					// make all previous props available to start parse
-					// as we may need some initial properties to perfrom setup
-					DerivedPropertyMap map = new DerivedPropertyMap(getContext());
-					map.setAll(rec);
-					startParse(map);
+			try(CloseableIterator<T> it = etf.getIterator(sel)){
+				while(it.hasNext()) {
 
-					if( allowReplace(map, rec)) {
-						if (updateRecord(map, rec)) {
-							updates++;
+					T o = it.next();
+					ExpressionTargetContainer rec = amap.getProxy(o);
+					count++;
+					try {
+						// make all previous props available to start parse
+						// as we may need some initial properties to perfrom setup
+						DerivedPropertyMap map = new DerivedPropertyMap(getContext());
+						map.setAll(rec);
+						startParse(map);
+
+						if( allowReplace(map, rec)) {
+							if (updateRecord(map, rec)) {
+								updates++;
+							}
 						}
-					}
-					good++;
+						good++;
 
-				} catch (AccountingParseException e) {
-					fail++;
-					getLogger().error("Error in re-evaluate", e);
+					} catch (AccountingParseException e) {
+						fail++;
+						getLogger().error("Error in re-evaluate", e);
+					}
 				}
 			}
 

@@ -36,10 +36,8 @@ import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.PropertyUpdater;
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -55,15 +53,12 @@ import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.NumberOp;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
-import uk.ac.ed.epcc.webapp.content.InvalidArgument;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
-import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
@@ -73,8 +68,8 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -369,7 +364,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	 * @throws Exception 
 	 * @throws InvalidPropertyException
 	 */
-	public Iterator<T> getMatches(PropertyContainer c) throws Exception{
+	public CloseableIterator<T> getMatches(PropertyContainer c) throws Exception{
     	AndRecordSelector sel;
     	sel = getMatchFilter(c);
     	return getExpressionTargetFactory().getIterator(sel);

@@ -36,6 +36,7 @@ import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.AbstractMultiIterator;
 import uk.ac.ed.epcc.webapp.model.data.iterator.NestedIterator;
@@ -225,7 +226,7 @@ public abstract class UsageManager<UR> implements
 		}
 		return result;
 	}
-	public  Iterator<UR> getIterator( RecordSelector sel) throws Exception {
+	public  CloseableIterator<UR> getIterator( RecordSelector sel) throws Exception {
 		/*
 		 * Generate a Nested Iterator over the combined results of all
 		 * Factories.
@@ -241,7 +242,7 @@ public abstract class UsageManager<UR> implements
 		}
 		return res;
 	}
-	public  Iterator<UR> getIterator( RecordSelector sel,int skip, int count) throws DataFault {
+	public  CloseableIterator<UR> getIterator( RecordSelector sel,int skip, int count) throws DataFault {
 		return new MultiIterator(sel,skip,count);
 	}
 //	@Deprecated
@@ -532,7 +533,7 @@ public abstract class UsageManager<UR> implements
 	 * @see uk.ac.ed.epcc.safe.accounting.UsageProducer#getExpressionIterator(uk.ac.ed.epcc.safe.accounting.selector.RecordSelector)
 	 */
 	@Override
-	public Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
+	public CloseableIterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
 		/*
 		 * Generate a Nested Iterator over the combined results of all
 		 * Factories.

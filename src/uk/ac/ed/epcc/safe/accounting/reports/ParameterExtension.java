@@ -20,7 +20,6 @@ import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -91,6 +90,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.RoleSelector;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
@@ -928,18 +928,20 @@ public class ParameterExtension extends ReportExtension {
 				}
 			}
 		}	 
-		for(Iterator it=split.getIterator(sel); it.hasNext();){
-			Object o = it.next();
-			try{
-				params.put(variable, o);
-				NodeList content_list = element.getElementsByTagNameNS(element.getNamespaceURI(), CONTENT_ELEM);
-				for(int j=0; j<content_list.getLength();j++){
-					result.appendChild(expand(doc,content_list.item(j).getChildNodes()));
+		try(CloseableIterator it=split.getIterator(sel)){
+			while(it.hasNext()){
+
+				Object o = it.next();
+				try{
+					params.put(variable, o);
+					NodeList content_list = element.getElementsByTagNameNS(element.getNamespaceURI(), CONTENT_ELEM);
+					for(int j=0; j<content_list.getLength();j++){
+						result.appendChild(expand(doc,content_list.item(j).getChildNodes()));
+					}
+				}catch(Exception e){
+					addError("For error", "Error expanding For content", e);
 				}
-			}catch(Exception e){
-				addError("For error", "Error expanding For content", e);
-			}
-			
+			}	
 		}
 		}catch(Exception e){
 			addError("For error","Error generating expansion set",e);

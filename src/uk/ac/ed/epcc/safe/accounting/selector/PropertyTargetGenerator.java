@@ -18,6 +18,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.Composable;
 
 /** A {@link PropertyTargetFactory} that can also retrieve records using
@@ -45,14 +46,14 @@ public interface PropertyTargetGenerator<UR> extends PropertyTargetFactory, Comp
      * @return  Iterator over selected records
      * @throws Exception
      */
-    public abstract  Iterator<UR> getIterator(RecordSelector sel,int skip, int count) throws Exception;
+    public abstract  CloseableIterator<UR> getIterator(RecordSelector sel,int skip, int count) throws Exception;
     /** Get an Iterator over selected records. 
 	
      * @param sel RecordSelector to select data
      * @return  Iterator over selected records
      * @throws Exception
      */
-    public abstract  Iterator<UR> getIterator(RecordSelector sel) throws Exception;
+    public abstract  CloseableIterator<UR> getIterator(RecordSelector sel) throws Exception;
     /** get the number of records matching the selector
      * 
      * @param selector

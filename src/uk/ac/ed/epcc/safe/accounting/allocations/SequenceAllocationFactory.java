@@ -34,6 +34,7 @@ import uk.ac.ed.epcc.webapp.NumberOp;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.model.period.SequenceManager;
 import uk.ac.ed.epcc.webapp.time.Period;
@@ -112,9 +113,10 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 			for(ReferenceTag t : getIndexProperties()){
 				sel.add(new SelectClause<IndexedReference>(t,current));
 			}
-			Iterator<T> it = getIterator(sel, 0, 1);
-			if( it.hasNext()){
-				return it.next();
+			try(CloseableIterator<T> it = getIterator(sel, 0, 1)){
+				if( it.hasNext()){
+					return it.next();
+				}
 			}
 			return null;
 		}catch(Exception e){

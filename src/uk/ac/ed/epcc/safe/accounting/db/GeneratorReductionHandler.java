@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 
 /** A wrapper round an {@link ExpressionTargetGenerator} that implements {@link ReductionProducer}
  * 
@@ -87,23 +88,24 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 			}
 			// Build by iterating over records.
 			Map<ExpressionTuple, ReductionMapResult> result = new HashMap<ExpressionTuple, ReductionMapResult>();
-			Iterator<ExpressionTargetContainer> it = fac.getExpressionIterator(selector);
-			while(it.hasNext()){
-				ExpressionTargetContainer rec = it.next();
-				ExpressionTuple tup = new ExpressionTuple(keys, rec);
-				Map<ReductionTarget,Object> old = result.get(tup);
-				if( old == null ){
-					ReductionMapResult dat = new ReductionMapResult();
-					for(ReductionTarget r : sum){
-						dat.put(r,rec.evaluateExpression(r.getExpression(),r.getDefault()));
+			try(CloseableIterator<ExpressionTargetContainer> it = fac.getExpressionIterator(selector)){
+				while(it.hasNext()){
+					ExpressionTargetContainer rec = it.next();
+					ExpressionTuple tup = new ExpressionTuple(keys, rec);
+					Map<ReductionTarget,Object> old = result.get(tup);
+					if( old == null ){
+						ReductionMapResult dat = new ReductionMapResult();
+						for(ReductionTarget r : sum){
+							dat.put(r,rec.evaluateExpression(r.getExpression(),r.getDefault()));
+						}
+						result.put(tup, dat);
+					}else{
+						for(ReductionTarget r : sum ){
+							old.put(r, r.combine(old.get(r), rec.evaluateExpression(r.getExpression(),r.getDefault())));
+						}
 					}
-					result.put(tup, dat);
-				}else{
-					for(ReductionTarget r : sum ){
-						old.put(r, r.combine(old.get(r), rec.evaluateExpression(r.getExpression(),r.getDefault())));
-					}
+					rec.release();
 				}
-				rec.release();
 			}
 			return result;
 	}
@@ -116,13 +118,13 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 		// combine operation may or may not be wrong depending on
 		// if time average.
 		R result = type.getDefault();
-		Iterator<ExpressionTargetContainer> it = fac.getExpressionIterator(sel);
-		while(it.hasNext()){
-			ExpressionTargetContainer et = it.next();
-			result = type.combine(result, et.evaluateExpression(type.getExpression()));
-			et.release();
+		try(CloseableIterator<ExpressionTargetContainer> it = fac.getExpressionIterator(sel)){
+			while(it.hasNext()){
+				ExpressionTargetContainer et = it.next();
+				result = type.combine(result, et.evaluateExpression(type.getExpression()));
+				et.release();
+			}
 		}
-		
 		return result;
 	}
 	
@@ -134,18 +136,18 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 			ReductionTarget<Number> property, RecordSelector selector)
 			throws Exception, InvalidPropertyException {
 		Map<I,Number> result = new HashMap<I, Number>();
-		Iterator<ExpressionTargetContainer> it = fac.getExpressionIterator(selector);
-		while(it.hasNext()){
-			ExpressionTargetContainer et = it.next();
-			I ind = et.evaluateExpression(index);
-			Number old = result.get(ind);
-			if( old == null ){
-				old = property.getDefault();
+		try(CloseableIterator<ExpressionTargetContainer> it = fac.getExpressionIterator(selector)){
+			while(it.hasNext()){
+				ExpressionTargetContainer et = it.next();
+				I ind = et.evaluateExpression(index);
+				Number old = result.get(ind);
+				if( old == null ){
+					old = property.getDefault();
+				}
+				result.put(ind, property.combine(old, et.evaluateExpression(property.getExpression())));
+				et.release();
 			}
-			result.put(ind, property.combine(old, et.evaluateExpression(property.getExpression())));
-			et.release();
 		}
-		
 		return result;
 	}
 

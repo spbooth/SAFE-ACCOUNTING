@@ -19,7 +19,6 @@ package uk.ac.ed.epcc.safe.accounting;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +36,7 @@ import uk.ac.ed.epcc.webapp.content.Transform;
 import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 /** Class to build a table of expressions values with one row per record.
  * 
@@ -111,56 +111,55 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 	   Table res = new Table();
 	  
 	 
-	   Iterator<E> it;
-	   if( max_data_points >= 0 ){
-		   it = up.getIterator(sel, skip_data_points, max_data_points > 0 ?(skip_data_points+max_data_points):-1);
-	   }else{
-		   it= up.getIterator(sel);
-	   }
-	   int count=0;
-	   while(it.hasNext()){
-		   E record = it.next();
-		   Object key = makeKey(record);
-		   ExpressionTargetContainer et = up.getExpressionTarget(record);
-		   for(String lab : labels){
-			   PropExpression t = props.get(lab);
-			   try{
-				   Object val = et.evaluateExpression(t);
-				   if( val != null){
-					   res.put(lab, key,val );
-				   }
-			   }catch(InvalidPropertyException e){
+	   try(CloseableIterator<E> it = ( max_data_points >= 0 )?
+			   up.getIterator(sel, skip_data_points, max_data_points > 0 ?(skip_data_points+max_data_points):-1)
+			   : up.getIterator(sel)){
 
-			   }
-		   }
-		   if( warning != null ){
-			   try{
-				   boolean set =false;
-				   Object val = et.evaluateExpression(warning);
-				   if( val != null){
-					   if( val instanceof Boolean){
-						   set =((Boolean)val).booleanValue();
+		   int count=0;
+		   while(it.hasNext()){
+			   E record = it.next();
+			   Object key = makeKey(record);
+			   ExpressionTargetContainer et = up.getExpressionTarget(record);
+			   for(String lab : labels){
+				   PropExpression t = props.get(lab);
+				   try{
+					   Object val = et.evaluateExpression(t);
+					   if( val != null){
+						   res.put(lab, key,val );
 					   }
-					   if( val instanceof String){
-						   set = val.toString().trim().length() > 0;
-					   }
-					   if( val instanceof Number){
-						   set = ((Number)val).intValue() > 0;
-					   }
+				   }catch(InvalidPropertyException e){
+
 				   }
-				   res.setWarning(key, set);
-			   }catch(Exception t){
-				   c.getService(LoggerService.class).getLogger(getClass()).error("Error evaluating warning",t);
 			   }
-		   }
-		   if( key != et) {
-			   et.release();
-		   }
-		   count++;
-		   if( check_every > 0 && count%check_every == 0) {
-			   LimitService limit = c.getService(LimitService.class);
-			   if( limit != null) {
-				   limit.checkLimit();
+			   if( warning != null ){
+				   try{
+					   boolean set =false;
+					   Object val = et.evaluateExpression(warning);
+					   if( val != null){
+						   if( val instanceof Boolean){
+							   set =((Boolean)val).booleanValue();
+						   }
+						   if( val instanceof String){
+							   set = val.toString().trim().length() > 0;
+						   }
+						   if( val instanceof Number){
+							   set = ((Number)val).intValue() > 0;
+						   }
+					   }
+					   res.setWarning(key, set);
+				   }catch(Exception t){
+					   c.getService(LoggerService.class).getLogger(getClass()).error("Error evaluating warning",t);
+				   }
+			   }
+			   if( key != et) {
+				   et.release();
+			   }
+			   count++;
+			   if( check_every > 0 && count%check_every == 0) {
+				   LimitService limit = c.getService(LimitService.class);
+				   if( limit != null) {
+					   limit.checkLimit();
+				   }
 			   }
 		   }
 	   }

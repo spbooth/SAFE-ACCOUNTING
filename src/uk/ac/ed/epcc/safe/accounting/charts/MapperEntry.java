@@ -64,6 +64,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.preferences.Preference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -386,12 +387,12 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 			}
         }
 		SetRangeMapper map = getMapper(e);
-		Iterator iter = ap.getExpressionIterator(s);
-		if( iter.hasNext()){
-			tc.addDataIterator(ds, map, iter);
-			data_added=true;
+		try(CloseableIterator iter = ap.getExpressionIterator(s)){
+			if( iter.hasNext()){
+				tc.addDataIterator(ds, map, iter);
+				data_added=true;
+			}
 		}
-		
 
 		return data_added;
 	}
@@ -635,12 +636,12 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     						// (make sure we don't overcount)
 
 
-    						Iterator<ExpressionTargetContainer> iter = ap.getExpressionIterator(selector);
-    						if( iter.hasNext()){
-    							tc.addDataIterator(ds, map, iter);
-    							data_added=true;
+    						try(CloseableIterator<ExpressionTargetContainer> iter = ap.getExpressionIterator(selector)){
+    							if( iter.hasNext()){
+    								tc.addDataIterator(ds, map, iter);
+    								data_added=true;
+    							}
     						}
-
     					}
 
     					// final (expensive) overlap with end

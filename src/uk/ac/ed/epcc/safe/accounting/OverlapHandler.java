@@ -51,6 +51,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 import uk.ac.ed.epcc.webapp.timer.TimerService;
@@ -198,10 +199,13 @@ public class OverlapHandler<T> {
     		PropExpression<Date> start_prop, PropExpression<Date> end_prop,
     		TimePeriod period, Number result, AndRecordSelector sel2)
     				throws Exception, InvalidPropertyException {
-    	for(Iterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2);it.hasNext();){
-    		ExpressionTargetContainer et = it.next();
-    		result = combinePartial(target,result, getOverlap(et,target,start_prop,end_prop,period));
-    		et.release();
+    	try(CloseableIterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2)){
+    		while(it.hasNext()){
+
+    			ExpressionTargetContainer et = it.next();
+    			result = combinePartial(target,result, getOverlap(et,target,start_prop,end_prop,period));
+    			et.release();
+    		}
     	}
     	return result;
     }
@@ -458,28 +462,30 @@ public class OverlapHandler<T> {
 			TimePeriod period, NumberReductionTarget target,
 			Map<R, Number> result, AndRecordSelector sel2) throws Exception,
 			InvalidPropertyException {
-		for(Iterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2);it.hasNext();){
-			ExpressionTargetContainer rec = it.next();
-			// Make the distinction between a record that does not
-			// overlap the period and a record where the overlap value is zero
-			// this gives a true zero when a zero valued record overlaps and
-			// a null if no record overlaps.
-			if( overlaps(rec, start_prop, end_prop, period.getStart(),period.getEnd())){
-				Number temp = getOverlap(rec,target,start_prop,end_prop,period);
+		try(CloseableIterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2)){
+			while(it.hasNext()){
+				ExpressionTargetContainer rec = it.next();
+				// Make the distinction between a record that does not
+				// overlap the period and a record where the overlap value is zero
+				// this gives a true zero when a zero valued record overlaps and
+				// a null if no record overlaps.
+				if( overlaps(rec, start_prop, end_prop, period.getStart(),period.getEnd())){
+					Number temp = getOverlap(rec,target,start_prop,end_prop,period);
 
 
-				R key = rec.evaluateExpression(tag);
-				assert(key != null);
-				Number n = result.get(key);
-				if( n == null){
-					n=temp;
-				}else{
-					n = combinePartial(target, temp, n);
+					R key = rec.evaluateExpression(tag);
+					assert(key != null);
+					Number n = result.get(key);
+					if( n == null){
+						n=temp;
+					}else{
+						n = combinePartial(target, temp, n);
+					}
+					result.put(key, n);
+
 				}
-				result.put(key, n);
-			
+				rec.release();
 			}
-			rec.release();
 		}
 	}
 	/**
@@ -690,8 +696,9 @@ public class OverlapHandler<T> {
 		//TODO Try to think of some clean way of skipping incompatible
 		// nested UsageProducers. Add getReductionIterator to UsageProducer?
 		// add new ReductionRecordSelector?
-		for(Iterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2);it.hasNext();){
-			ExpressionTargetContainer rec = it.next();
+		try(CloseableIterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2)){
+			while(it.hasNext()){
+				ExpressionTargetContainer rec = it.next();
 				ExpressionTuple key = new ExpressionTuple(index_set, rec);
 				ReductionMapResult res = result.get(key);
 				boolean made=false;
@@ -729,6 +736,7 @@ public class OverlapHandler<T> {
 					result.put(key, res);
 				}
 				rec.release();
+			}
 		}
 		return records;
 	}

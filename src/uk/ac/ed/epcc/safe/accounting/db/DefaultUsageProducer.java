@@ -15,7 +15,6 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,6 +39,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.model.TimePurgeFactory;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.filter.FilterDelete;
@@ -154,7 +154,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 			throw new CannotFilterException(e);
 		}
 	}
-	public  final Iterator<T> getIterator(RecordSelector sel,int skip,int count) throws DataFault, CannotFilterException {
+	public  final CloseableIterator<T> getIterator(RecordSelector sel,int skip,int count) throws DataFault, CannotFilterException {
 		BaseFilter<T> filter = getFilter(sel);
 		try{
 			return this.new FilterIterator(FilterConverter.convert(filter),skip,count);
@@ -164,7 +164,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	}
 
 	@Override
-	public final Iterator<T> getIterator(RecordSelector sel) throws Exception {
+	public final CloseableIterator<T> getIterator(RecordSelector sel) throws Exception {
 		return getResult(getFilter(sel)).iterator();
 	}
 
@@ -199,7 +199,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	 * @see uk.ac.ed.epcc.safe.accounting.UsageProducer#getExpressionIterator(uk.ac.ed.epcc.safe.accounting.selector.RecordSelector)
 	 */
 	@Override
-	public Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
+	public CloseableIterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
 		return etf.getExpressionIterator(sel);
 	}
 

@@ -34,6 +34,7 @@ import uk.ac.ed.epcc.webapp.charts.TimeChart;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>,T extends UsageRecordFactory.Use> extends DataObjectPropertyFactoryTestCase<F, T> {
 
 	
@@ -47,17 +48,18 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 		if(fac.hasProperty(StandardProperties.STARTED_PROP)){
 			AndRecordSelector selector = new AndRecordSelector();
 			selector.add(new SelectClause<Date>(StandardProperties.STARTED_PROP, MatchCondition.GT, new Date(0L)));
-			Iterator<T> it = fac.getIterator(selector);
-			// only check if we have records Note the earliest job may not be delivered first
-			if( it.hasNext() ){
-				// exclude failed jobs
-				
-				Date d = fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.STARTED_PROP),selector);
-				assertNotNull(d);
-				//System.out.println("Reduction "+d.toString());
-				assertTrue("after epoch", d.after(new Date(0L)));
-				assertTrue(" before now", d.before(new Date()));
-				
+			try(CloseableIterator<T> it = fac.getIterator(selector)){
+				// only check if we have records Note the earliest job may not be delivered first
+				if( it.hasNext() ){
+					// exclude failed jobs
+
+					Date d = fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.STARTED_PROP),selector);
+					assertNotNull(d);
+					//System.out.println("Reduction "+d.toString());
+					assertTrue("after epoch", d.after(new Date(0L)));
+					assertTrue(" before now", d.before(new Date()));
+
+				}
 			}
 		}
 	}
@@ -72,15 +74,15 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 			Date d = null;
 
 			AndRecordSelector selector = new AndRecordSelector();
-			Iterator<T> iter = fac.getIterator(selector);
-			if( iter.hasNext()){
-				d = fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP),selector);
-				assertNotNull(d);
-				//System.out.println(d.toString());
-				assertTrue("after epoch", d.after(new Date(0L)));
-				assertTrue(" before now", d.before(new Date()));
+			try(CloseableIterator<T> iter = fac.getIterator(selector)){
+				if( iter.hasNext()){
+					d = fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP),selector);
+					assertNotNull(d);
+					//System.out.println(d.toString());
+					assertTrue("after epoch", d.after(new Date(0L)));
+					assertTrue(" before now", d.before(new Date()));
+				}
 			}
-
 
 		}
 	}

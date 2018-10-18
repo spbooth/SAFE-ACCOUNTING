@@ -62,6 +62,7 @@ import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.Matcher;
 import uk.ac.ed.epcc.webapp.model.MatcherFinder;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -347,21 +348,21 @@ public FormResult action(Form f)
 		Set<? extends Matcher> set = matcherFinder.getOwners();
 		ReferenceTag ref = tagmap.get(name);
 		if( fac != null ){
-			Iterator<ExpressionTargetContainer> it = fac.getExpressionIterator(new AndRecordSelector());
-			while(it.hasNext()){
-				ExpressionTargetContainer rec = it.next();
-				
-				String clientName = rec.getProperty(name, null);
-				if( clientName != null ){
-					for(Matcher m : set){
-						if(m.matches(clientName)){
-							ref.set((PropertyContainer) rec, m);
-							rec.commit();
+			try(CloseableIterator<ExpressionTargetContainer> it = fac.getExpressionIterator(new AndRecordSelector())){
+				while(it.hasNext()){
+					ExpressionTargetContainer rec = it.next();
+
+					String clientName = rec.getProperty(name, null);
+					if( clientName != null ){
+						for(Matcher m : set){
+							if(m.matches(clientName)){
+								ref.set((PropertyContainer) rec, m);
+								rec.commit();
+							}
 						}
 					}
 				}
 			}
-
 		}
 		
 	}

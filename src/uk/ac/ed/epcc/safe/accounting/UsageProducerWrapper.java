@@ -1,10 +1,8 @@
 package uk.ac.ed.epcc.safe.accounting;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import uk.ac.ed.epcc.safe.accounting.db.ProxyIterator;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
@@ -14,6 +12,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 /** wrap an {@link ExpressionTargetFactory} to make a {@link UsageProducer}
  * 
  * @author spb
@@ -53,12 +52,12 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
 	}
 
 	@Override
-	public Iterator<UR> getIterator(RecordSelector sel, int skip, int count) throws Exception {
+	public CloseableIterator<UR> getIterator(RecordSelector sel, int skip, int count) throws Exception {
 		return etf.getIterator(sel, skip, count);
 	}
 
 	@Override
-	public Iterator<UR> getIterator(RecordSelector sel) throws Exception {
+	public CloseableIterator<UR> getIterator(RecordSelector sel) throws Exception {
 		return etf.getIterator(sel);
 	}
 
@@ -123,7 +122,7 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
 	}
 
 	@Override
-	public Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
+	public CloseableIterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
 		return etf.getExpressionIterator(sel);
 	}
 

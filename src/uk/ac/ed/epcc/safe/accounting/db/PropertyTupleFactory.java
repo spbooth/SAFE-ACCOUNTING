@@ -34,6 +34,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.TupleFactory;
@@ -274,7 +275,7 @@ Tagged{
 		}
 	}
 	@Override
-	public Iterator<T> getIterator(RecordSelector sel, int skip, int count) throws Exception {
+	public CloseableIterator<T> getIterator(RecordSelector sel, int skip, int count) throws Exception {
 		BaseFilter<T> filter = getFilter(sel);
 		try{
 			return this.new TupleIterator(FilterConverter.convert(filter),skip,count);
@@ -284,7 +285,7 @@ Tagged{
 	}
 
 	@Override
-	public Iterator<T> getIterator(RecordSelector sel) throws Exception {
+	public CloseableIterator<T> getIterator(RecordSelector sel) throws Exception {
 		return makeResult(getFilter(sel)).iterator();
 	}
 
@@ -368,8 +369,8 @@ Tagged{
 		return new PropExpressionMap();
 	}
 	@Override
-	public final Iterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
-		Iterator it = getIterator(sel);
+	public final CloseableIterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
+		CloseableIterator it = getIterator(sel);
 		return it;
 	}
 }

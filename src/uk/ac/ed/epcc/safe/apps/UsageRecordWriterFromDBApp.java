@@ -16,22 +16,17 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.apps;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Iterator;
-import java.util.Date;
-
-import java.io.File;
-import java.io.FileWriter;
-
-
-
 
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
 import uk.ac.ed.epcc.safe.accounting.UsageManager;
@@ -43,15 +38,16 @@ import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.apps.Command;
+import uk.ac.ed.epcc.webapp.apps.CommandLauncher;
+import uk.ac.ed.epcc.webapp.apps.Option;
+import uk.ac.ed.epcc.webapp.apps.Options;
+import uk.ac.ed.epcc.webapp.config.ConfigService;
+import uk.ac.ed.epcc.webapp.config.OverrideConfigService;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.apps.Command;
-import uk.ac.ed.epcc.webapp.apps.CommandLauncher;
-import uk.ac.ed.epcc.webapp.apps.Options;
-import uk.ac.ed.epcc.webapp.apps.Option;
-import uk.ac.ed.epcc.webapp.config.ConfigService;
-import uk.ac.ed.epcc.webapp.config.OverrideConfigService;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 
 /**
  * Front end command line application for parsing usage records and formatting
@@ -283,8 +279,8 @@ public class UsageRecordWriterFromDBApp implements Command {
 		}
 		
 		
-		try {
-			for(Iterator<? extends ExpressionTargetContainer> it = um.getIterator(sel); it.hasNext();){
+		try(CloseableIterator<? extends ExpressionTargetContainer> it = um.getIterator(sel)) {
+			while( it.hasNext()){
 				ExpressionTargetContainer rec = it.next();
 						
 				String formattedRecord = urf.format(rec);
