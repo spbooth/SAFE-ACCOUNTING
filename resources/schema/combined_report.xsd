@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--| Copyright - The University of Edinburgh 2015                             |-->
+<!--|                                                                          |-->
+<!--| Licensed under the Apache License, Version 2.0 (the "License");          |-->
+<!--| you may not use this file except in compliance with the License.         |-->
+<!--| You may obtain a copy of the License at                                  |-->
+<!--|                                                                          |-->
+<!--|    http://www.apache.org/licenses/LICENSE-2.0                            |-->
+<!--|                                                                          |-->
+<!--| Unless required by applicable law or agreed to in writing, software      |-->
+<!--| distributed under the License is distributed on an "AS IS" BASIS,        |-->
+<!--| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |-->
+<!--| See the License for the specific language governing permissions and      |-->
+<!--| limitations under the License.                                           |-->
+<?xml-stylesheet type="text/xsl" href="../stylesheets/xs3p/xs3p.xsl"?>
+<xsd:schema 
+	xmlns="http://safe.epcc.ed.ac.uk/report"
+	targetNamespace="http://safe.epcc.ed.ac.uk/report" 
+	elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+    xmlns:mac="http://safe.epcc.ed.ac.uk/macro"
+    xmlns:sub="http://safe.epcc.ed.ac.uk/substitute"
+    xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+    xmlns:fmt="http://safe.epcc.ed.ac.uk/format"
+    xmlns:per="http://safe.epcc.ed.ac.uk/period"
+    xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+    xmlns:acc="http://safe.epcc.ed.ac.uk/restrict"
+    xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+    xmlns:ato="http://safe.epcc.ed.ac.uk/atom"
+    xmlns:safe="http://safe.epcc.ed.ac.uk/safe"
+    xmlns:sched="http://safe.epcc.ed.ac.uk/schedule">
+    
+ <xsd:import namespace="http://safe.epcc.ed.ac.uk/safe" 
+		schemaLocation="safe.xsd"/>	
+<xsd:import namespace="http://safe.epcc.ed.ac.uk/schedule"
+		schemaLocation="schedule.xsd" />
+		
+
+<xsd:redefine schemaLocation="report.xsd">
+<xsd:group name="Content">
+	<xsd:annotation><xsd:documentation>
+	General content elements extended with safe elements
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+	<xsd:group ref="Content"/>
+	<xsd:group ref="safe:SafeContent"/>
+	<xsd:element ref="sched:Schedule"/>
+	</xsd:choice>
+</xsd:group>  
+<!-- We don't need to redifine the group as elements extend
+TextExtensionBase  
+<xsd:group name="TextSubstitution">
+	<xsd:annotation><xsd:documentation>
+	General content elements extended with safe elements
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+	<xsd:group ref="TextSubstitution"/>
+	<xsd:group ref="safe:SafeTextSubstitution"/>
+	</xsd:choice>
+</xsd:group>
+-->
+</xsd:redefine>
+</xsd:schema>
