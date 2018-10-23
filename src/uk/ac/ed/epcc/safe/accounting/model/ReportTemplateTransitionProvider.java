@@ -59,6 +59,7 @@ import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.DefaultingTransitionFactory;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraContent;
 import uk.ac.ed.epcc.webapp.forms.transition.TitleTransitionFactory;
+import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.limits.LimitException;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -176,6 +177,8 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 					return new ServeDataResult(producer, producer.setData(msd));
 				}
 			}catch(LimitException l) {
+				DatabaseService db = c.getService(DatabaseService.class);
+				db.closeRetainedClosables();
 				getLogger().warn("Limits exceeded in report generation", l);
 				return new MessageResult("limits_exceeded", l.getMessage());
 			} catch (Exception e) {
@@ -497,7 +500,8 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				report.addParent();
 			}
 		}catch(LimitException l) {
-
+			DatabaseService db = context.getService(DatabaseService.class);
+			db.closeRetainedClosables();
 			// Show message in-line#
 			ResourceBundle mess = context.getService(MessageBundleService.class).getBundle();
 			PreDefinedContent title = new PreDefinedContent(context,mess, "limits_exceeded.title");
