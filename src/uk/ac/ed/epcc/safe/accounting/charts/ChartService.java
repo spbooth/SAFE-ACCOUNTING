@@ -18,7 +18,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.AppContextService;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.PreRequisiteService;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
 import uk.ac.ed.epcc.webapp.config.FilteredProperties;

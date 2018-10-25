@@ -38,6 +38,7 @@ import uk.ac.ed.epcc.webapp.config.OverrideConfigService;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.result.ServeDataResult;
+import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.logging.buffer.BufferLoggerService;
@@ -83,9 +84,9 @@ public class ReportServlet extends SessionServlet {
 		if( isReportDeveloper){
 			logService = new BufferLoggerService(conn);
 			conn.setService(logService);
-			Properties props = new Properties();
-			props.setProperty("service.feature.log_query", "on");
-			conn.setService(new OverrideConfigService(props, conn));
+			// set cached value of feature to ON
+			// This applies for rest of AppContext life-time (request)
+			conn.setAttribute(DatabaseService.LOG_QUERY_FEATURE, Boolean.TRUE);
 		}
 		// Get the arguments and parameters
 		List<String> args=conn.getService(ServletService.class).getArgs();
