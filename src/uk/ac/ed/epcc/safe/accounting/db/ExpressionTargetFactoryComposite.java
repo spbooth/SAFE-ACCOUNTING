@@ -181,7 +181,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	@Override
 	public CloseableIterator<T> getIterator(RecordSelector sel, int skip, int count) throws Exception {
 		DataObjectFactory<T> fac = getFactory();
-		BaseFilter<T> filter = getFilter(sel);
+		BaseFilter<T> filter = map.getFilter(sel);
 		try{
 			return fac.getResult(FilterConverter.convert(filter),skip,count).iterator();
 		}catch(NoSQLFilterException e){
@@ -192,31 +192,12 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	@Override
 	public CloseableIterator<T> getIterator(RecordSelector sel) throws Exception {
 		DataObjectFactory<T> fac = getFactory();
-		return fac.getResult(getFilter(sel)).iterator();
+		return fac.getResult(map.getFilter(sel)).iterator();
 	}
 
 	@Override
 	public long getRecordCount(RecordSelector selector) throws Exception {
-		return getFactory().getCount(getFilter(selector));
-	}
-	/** Get a filter from a {@link RecordSelector}
-	 * 
-	 * @param selector
-	 * @return
-	 * @throws CannotFilterException 
-	 */
-	
-	public final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
-		if( selector == null ){
-			return addDefaultFilter(null);
-		}
-		try {
-			return addDefaultFilter(selector.visit(new FilterSelectVisitor<T>(this)));
-		}catch(CannotFilterException e){
-			throw e;
-		} catch (Exception e) {
-			throw new CannotFilterException(e);
-		}
+		return getFactory().getCount(map.getFilter(selector));
 	}
 	/** extension method to augment
 	 * 
@@ -240,7 +221,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 		if( ! hasProperty(tag)){
 			return new HashSet<PT>();
 		}
-		BaseFilter<T> filter = getFilter(selector);	
+		BaseFilter<T> filter = map.getFilter(selector);	
 		try{
 			PropertyMaker<T,PT> finder = new PropertyMaker<T,PT>(getAccessorMap(),getRepository(),tag, true);			
 			return finder.find(FilterConverter.convert(filter));

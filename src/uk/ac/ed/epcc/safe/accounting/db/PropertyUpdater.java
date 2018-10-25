@@ -46,13 +46,7 @@ public class PropertyUpdater<T extends DataObject> {
 
 	
 	public BaseFilter<T> getFilter(RecordSelector sel) throws CannotFilterException{
-		try {
-			return sel.visit(new FilterSelectVisitor<>(map));
-		}catch(CannotFilterException cfe) {
-			throw cfe;
-		} catch (Exception e) {
-			throw new CannotFilterException(e);
-		}
+		return map.getFilter(sel);
 	}
 	/**  Perform an update in the database
 	 * 

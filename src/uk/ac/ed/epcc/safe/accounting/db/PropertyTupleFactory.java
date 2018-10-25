@@ -2,7 +2,6 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -24,11 +23,9 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
-import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.Tagged;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
@@ -40,6 +37,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.TupleFactory;
 import uk.ac.ed.epcc.webapp.model.data.TupleSelfSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
+import uk.ac.ed.epcc.webapp.model.data.TupleFactory.TupleAndFilter;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** A property enabled {@link TupleFactory}
@@ -86,11 +84,12 @@ Tagged{
 		if( ! hasMemberFactories()) {
 			getLogger().error("PropertyTupleFactory "+tag+" has no members");
 		}
-		map = new TupleAccessorMap(this, config_tag);
+		
 		finder.addFinder(StandardProperties.time); // for JobCount
 		member_tags = new LinkedList<>();
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 		finder.addFinder(refs);
+		map = new TupleAccessorMap(this, config_tag,finder);
 		for(AF fac : getMemberFactories()){
 			ReferenceTag<A, AF> tag = (ReferenceTag<A, AF>) refs.find(IndexedReference.class,fac.getTag());
 			if( tag != null ){
@@ -220,6 +219,7 @@ Tagged{
 		}
 	}
 	
+	
 	/** Augment the filter generated from the {@link RecordSelector} with a standard set of additional filter
 	 * 
 	 * This is to add a mandatory set of filters to restrict the join.
@@ -227,7 +227,7 @@ Tagged{
 	 * @param fil
 	 * @return
 	 */
-	protected BaseFilter<T> addMandatoryFilter(BaseFilter<T> fil){
+	protected  BaseFilter<T> addMandatoryFilter(BaseFilter<T> fil){
 		TupleAndFilter and = new TupleAndFilter(fil);
 		String config_spec = getContext().getInitParameter(getTag()+".mandatory_filter");
 		if( config_spec != null ) {
@@ -260,19 +260,10 @@ Tagged{
 		return and;
 	}
 	protected final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
-		return addMandatoryFilter(getRawFilter(selector));
+		return map.getFilter(selector);
 	}
 	protected final BaseFilter<T> getRawFilter(RecordSelector selector) throws CannotFilterException {
-		if( selector == null ){
-			return null;
-		}
-		try {
-			return selector.visit(new FilterSelectVisitor<T>(this));
-		}catch(CannotFilterException e){
-			throw e;
-		} catch (Exception e) {
-			throw new CannotFilterException(e);
-		}
+		return map.getRawFilter(selector);
 	}
 	@Override
 	public CloseableIterator<T> getIterator(RecordSelector sel, int skip, int count) throws Exception {
@@ -373,4 +364,5 @@ Tagged{
 		CloseableIterator it = getIterator(sel);
 		return it;
 	}
+
 }

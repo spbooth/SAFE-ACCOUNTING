@@ -192,7 +192,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 					sel.add(new SelectClause(t, r));
 				}
 			}
-			T record = getFactory().find(sel.visit(new FilterSelectVisitor<>(etf)), true);
+			T record = getFactory().find(etf.getAccessorMap().getFilter(sel), true);
 			if (record == null) {
 				return null;
 			}

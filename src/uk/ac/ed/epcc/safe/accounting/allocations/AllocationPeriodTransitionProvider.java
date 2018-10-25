@@ -289,7 +289,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 			
 			AccessorMap map = etf.getAccessorMap();
 			AndFilter fil = new AndFilter(fac.getTarget());
-			fil.addFilter(getSelector(target).visit(new FilterSelectVisitor<>(etf)));
+			fil.addFilter(map.getFilter(getSelector(target)));
 			fil.addFilter(manager.getViewFilter(sess));
 
 			fil.addFilter(map.getOrderFilter(false,StandardProperties.STARTED_PROP));

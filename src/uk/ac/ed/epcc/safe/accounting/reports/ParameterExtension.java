@@ -442,8 +442,7 @@ public class ParameterExtension extends ReportExtension {
 								  }
 							  }	  
 						}
-						FilterSelectVisitor vis = new FilterSelectVisitor(ptf);
-						fil.addFilter((BaseFilter) selector.visit(vis));
+						fil.addFilter((BaseFilter) ptf.getAccessorMap().getFilter(selector));
 					}
 				}
 				return fac.getInput(fil);

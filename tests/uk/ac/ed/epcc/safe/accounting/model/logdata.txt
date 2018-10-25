@@ -1,15 +1,19 @@
+Query is SELECT * FROM `ReportTemplateOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:report-templates 2:Name:SimpleTestReport.xml
 dirs=tests/uk/ac/ed/epcc/safe/accounting/reports/report-templates,report-templates
 input stream resource name is tests/uk/ac/ed/epcc/safe/accounting/reports/report-templates/SimpleTestReport.xml
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:initial.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/initial.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/initial.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:restrict.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/restrict.xsl
 dirs=stylesheets
@@ -18,6 +22,7 @@ stream found
 dirs=tests/uk/ac/ed/epcc/safe/accounting/reports/report-templates,report-templates
 input stream resource name is tests/uk/ac/ed/epcc/safe/accounting/reports/report-templates/SimpleTestReport.xml
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:report.xsd
 dirs=schema
 input stream resource name is schema/report.xsd
 dirs=schema
@@ -26,6 +31,7 @@ stream found
 resolveResource called http://www.w3.org/2001/XMLSchema http://safe.epcc.ed.ac.uk/parameter null parameter.xsd http://safe.epcc.ed.ac.uk/report.xsd
 base url is http://safe.epcc.ed.ac.uk
 go for overlay lookup
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:parameter.xsd
 dirs=schema
 input stream resource name is schema/parameter.xsd
 dirs=schema
@@ -34,6 +40,7 @@ stream found
 resolveResource called http://www.w3.org/2001/XMLSchema http://safe.epcc.ed.ac.uk/filter null filter.xsd null
 base url is http://safe.epcc.ed.ac.uk
 go for overlay lookup
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:filter.xsd
 dirs=schema
 input stream resource name is schema/filter.xsd
 dirs=schema
@@ -42,6 +49,7 @@ stream found
 resolveResource called http://www.w3.org/2001/XMLSchema http://safe.epcc.ed.ac.uk/propexpression null propexpression.xsd null
 base url is http://safe.epcc.ed.ac.uk
 go for overlay lookup
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:propexpression.xsd
 dirs=schema
 input stream resource name is schema/propexpression.xsd
 dirs=schema
@@ -50,6 +58,7 @@ stream found
 resolveResource called http://www.w3.org/2001/XMLSchema http://safe.epcc.ed.ac.uk/substitute null substitute.xsd http://safe.epcc.ed.ac.uk/report.xsd
 base url is http://safe.epcc.ed.ac.uk
 go for overlay lookup
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:substitute.xsd
 dirs=schema
 input stream resource name is schema/substitute.xsd
 dirs=schema
@@ -58,6 +67,7 @@ stream found
 resolveResource called http://www.w3.org/2001/XMLSchema http://safe.epcc.ed.ac.uk/macro null macro.xsd null
 base url is http://safe.epcc.ed.ac.uk
 go for overlay lookup
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:macro.xsd
 dirs=schema
 input stream resource name is schema/macro.xsd
 dirs=schema
@@ -66,6 +76,7 @@ stream found
 resolveResource called http://www.w3.org/2001/XMLSchema http://safe.epcc.ed.ac.uk/atom null atom.xsd null
 base url is http://safe.epcc.ed.ac.uk
 go for overlay lookup
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:atom.xsd
 dirs=schema
 input stream resource name is schema/atom.xsd
 dirs=schema
@@ -74,6 +85,7 @@ stream found
 resolveResource called http://www.w3.org/2001/XMLSchema http://safe.epcc.ed.ac.uk/period null period.xsd null
 base url is http://safe.epcc.ed.ac.uk
 go for overlay lookup
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:period.xsd
 dirs=schema
 input stream resource name is schema/period.xsd
 dirs=schema
@@ -82,6 +94,7 @@ stream found
 resolveResource called http://www.w3.org/2001/XMLSchema http://safe.epcc.ed.ac.uk/restrict null restrict.xsd null
 base url is http://safe.epcc.ed.ac.uk
 go for overlay lookup
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:restrict.xsd
 dirs=schema
 input stream resource name is schema/restrict.xsd
 dirs=schema
@@ -90,6 +103,7 @@ stream found
 resolveResource called http://www.w3.org/2001/XMLSchema http://safe.epcc.ed.ac.uk/format null format.xsd http://safe.epcc.ed.ac.uk/report.xsd
 base url is http://safe.epcc.ed.ac.uk
 go for overlay lookup
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:format.xsd
 dirs=schema
 input stream resource name is schema/format.xsd
 dirs=schema
@@ -98,6 +112,7 @@ stream found
 resolveResource called http://www.w3.org/2001/XMLSchema http://safe.epcc.ed.ac.uk/chart null chart.xsd http://safe.epcc.ed.ac.uk/report.xsd
 base url is http://safe.epcc.ed.ac.uk
 go for overlay lookup
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:chart.xsd
 dirs=schema
 input stream resource name is schema/chart.xsd
 dirs=schema
@@ -106,6 +121,7 @@ stream found
 resolveResource called http://www.w3.org/2001/XMLSchema http://safe.epcc.ed.ac.uk/table null table.xsd http://safe.epcc.ed.ac.uk/report.xsd
 base url is http://safe.epcc.ed.ac.uk
 go for overlay lookup
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:schema 2:Name:table.xsd
 dirs=schema
 input stream resource name is schema/table.xsd
 dirs=schema
@@ -123,6 +139,7 @@ lookup attribute [optional] in par:ParameterDef, found
 lookup attribute [unselected] in par:ParameterDef, found 
 lookup attribute [label] in par:ParameterDef, found 
 lookup attribute [title] in par:ParameterDef, found 
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:parameters.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/parameters.xsl
 dirs=stylesheets
@@ -130,11 +147,13 @@ input stream resource name is stylesheets/parameters.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/parameters.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:restrict.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/restrict.xsl
 dirs=stylesheets
@@ -143,6 +162,7 @@ stream found
 lookup attribute [name] in par:Parameter, found Message
 lookup attribute [format] in par:Parameter, found 
  format is  uk.ac.ed.epcc.safe.accounting.formatters.value.DomValueFormatter value is java.lang.String Hello world
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:macro.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/macro.xsl
 dirs=stylesheets
@@ -150,11 +170,13 @@ input stream resource name is stylesheets/macro.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/macro.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:atom.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/atom.xsl
 dirs=stylesheets
@@ -162,11 +184,13 @@ input stream resource name is stylesheets/atom.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/atom.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:report.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/report.xsl
 dirs=stylesheets
@@ -174,11 +198,13 @@ input stream resource name is stylesheets/report.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/report.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:filter.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/filter.xsl
 dirs=stylesheets
@@ -186,6 +212,7 @@ input stream resource name is stylesheets/filter.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/filter.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:period.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/period.xsl
 dirs=stylesheets
@@ -193,6 +220,7 @@ input stream resource name is stylesheets/period.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/period.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:tables.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/tables.xsl
 dirs=stylesheets
@@ -200,6 +228,7 @@ input stream resource name is stylesheets/tables.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/tables.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:chart.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/chart.xsl
 dirs=stylesheets
@@ -207,6 +236,7 @@ input stream resource name is stylesheets/chart.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/chart.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:format.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/format.xsl
 dirs=stylesheets
@@ -214,6 +244,7 @@ input stream resource name is stylesheets/format.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/format.xsl
 stream found
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:template-to-ehtml.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/template-to-ehtml.xsl
 dirs=stylesheets

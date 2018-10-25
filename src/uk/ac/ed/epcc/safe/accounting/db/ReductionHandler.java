@@ -52,16 +52,7 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 	
 	
 	protected final BaseFilter<E> getFilter(RecordSelector selector) throws CannotFilterException {
-		if( selector == null ){
-			return null;
-		}
-		try {
-			return selector.visit(new FilterSelectVisitor<E>(fac));
-		}catch(CannotFilterException e){
-			throw e;
-		} catch (Exception e) {
-			throw new CannotFilterException(e);
-		}
+		return map.getFilter(selector);
 	}
 	
 	public final boolean compatible(RecordSelector sel){

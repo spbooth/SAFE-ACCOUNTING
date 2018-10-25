@@ -143,16 +143,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	 */
 	
 	public final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
-		if( selector == null ){
-			return null;
-		}
-		try {
-			return selector.visit(new FilterSelectVisitor<T>(etf));
-		}catch(CannotFilterException e){
-			throw e;
-		} catch (Exception e) {
-			throw new CannotFilterException(e);
-		}
+		return etf.getAccessorMap().getFilter(selector);
 	}
 	public  final CloseableIterator<T> getIterator(RecordSelector sel,int skip,int count) throws DataFault, CannotFilterException {
 		BaseFilter<T> filter = getFilter(sel);

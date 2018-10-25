@@ -1161,7 +1161,18 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			throw new CannotFilterException(e);
 		}
 	}
-	
+	public  BaseFilter<X> getFilter(RecordSelector selector) throws CannotFilterException {
+		if( selector == null ){
+			return null;
+		}
+		try {
+			return selector.visit(new FilterSelectVisitor<X>(this));
+		}catch(CannotFilterException e){
+			throw e;
+		} catch (Exception e) {
+			throw new CannotFilterException(e);
+		}
+	}
 	protected abstract void addSource(StringBuilder sb) ;
 	
 	protected abstract String getDBTag() ;
