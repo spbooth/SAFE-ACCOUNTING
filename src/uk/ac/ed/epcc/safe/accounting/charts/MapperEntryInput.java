@@ -87,7 +87,7 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 		return items.size();
 	}
 	public String getTagByItem(MapperEntry item) {
-		return item.getName();
+		return prefix+item.getName();
 	}
 
 	public String getTagByValue(String value) {
@@ -95,7 +95,7 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 	}
 	
 	public String getText(MapperEntry item) {
-		return prefix+item.getDescription();
+		return item.getDescription();
 	}
 	@Override
 	public <R> R accept(InputVisitor<R> vis) throws Exception {
