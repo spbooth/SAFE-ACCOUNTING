@@ -19,6 +19,7 @@ import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.config.FilteredProperties;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
@@ -26,6 +27,9 @@ import uk.ac.ed.epcc.webapp.forms.inputs.ParseAbstractInput;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Form Input for selecting a MapperEntry
  *  
+ *  * {@link MapperEntry}s are built using {@link FilteredProperties} if a <b>tag</b> is specified
+ * this is used to set the <i>mode</i> allowing a customised set of {@link MapperEntry}s and the
+ * string values generated are qualified using the same tag.
  * @author spb
  *
  */
@@ -33,11 +37,14 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 	
 	private final Map<String,MapperEntry> items;
 	public MapperEntryInput(AppContext conn,UsageProducer producer,String tag){
-		
+		String prefix = "";
+		if( tag != null && ! tag.isEmpty()) {
+			prefix=tag+".";
+		}
 		items = new LinkedHashMap<String, MapperEntry>();
 		if( producer != null){
 			for( MapperEntry e : MapperEntry.getMappers(conn, producer, tag)){
-				items.put(e.getName(),e);
+				items.put(prefix+e.getName(),e);
 			}
 		}else{
 			conn.getService(LoggerService.class).getLogger(getClass()).warn("No UsageProducer in MapperEntryInput");

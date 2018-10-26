@@ -27,6 +27,10 @@ import uk.ac.ed.epcc.webapp.config.FilteredProperties;
  * (as implemented by the static factory methods in the target classes)
  * but an extended version can be 
  * substituted to customise the behaviour.
+ * <p>
+ * The <i>name</i> parameters may be prefixed with a mode string (separated by a <b>.</b>) to
+ * set the mode parameter for the {@link FilteredProperties} used to make the {@link PlotEntry}.
+ * Any parameter not set in the qualified form will be inherited from the un-qualified version.
  * 
  * @author spb
  *
@@ -38,10 +42,24 @@ public class ChartService extends AbstractContexed implements AppContextService<
 	}
 	
 	public PlotEntry getPlotEntry(ErrorSet errors,PropertyFinder finder,String name,String start,String end) throws Exception{
-		return PlotEntry.getConfigPlotEntry(conn,errors, new FilteredProperties(conn.getService(ConfigService.class).getServiceProperties(),"PlotEntry"),finder, name, start, end);
+		String mode=null;
+		
+		int i = name.indexOf('.');
+		if( i > 0) {
+			mode = name.substring(0,i);
+			name = name.substring(i+1);
+		}
+		return PlotEntry.getConfigPlotEntry(conn,errors, new FilteredProperties(conn.getService(ConfigService.class).getServiceProperties(),"PlotEntry",mode),finder, name, start, end);
 	}
 	public MapperEntry getMapperEntry(ErrorSet errors,PropertyFinder finder,String name) throws Exception{
-		return MapperEntry.getConfigMapperEntry(conn,errors,new FilteredProperties(conn.getService(ConfigService.class).getServiceProperties(),MapperEntry.GROUP_ENTRY_BASE), finder, name);
+		String mode=null;
+		
+		int i = name.indexOf('.');
+		if( i > 0) {
+			mode = name.substring(0,i);
+			name = name.substring(i+1);
+		}
+		return MapperEntry.getConfigMapperEntry(conn,errors,new FilteredProperties(conn.getService(ConfigService.class).getServiceProperties(),MapperEntry.GROUP_ENTRY_BASE,mode), finder, name);
 	}
 	
 	public void cleanup() {

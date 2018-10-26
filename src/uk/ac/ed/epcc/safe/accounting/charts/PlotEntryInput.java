@@ -19,27 +19,41 @@ import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.config.FilteredProperties;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseAbstractInput;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-/** Form Input for selecting a PlotEntry
- *  
+/** Form Input for selecting a PlotEntry defined in the config properties.
+ * 
+ * {@link PlotEntry}s are built using {@link FilteredProperties} if a <b>tag</b> is specified
+ * this is used to set the <i>mode</i> allowing a customised set of {@link PlotEntry}s and the
+ * string values generated are qualified using the same tag.
+ * 
+ * @see ChartService
  * @author spb
  *
  */
 public class PlotEntryInput extends ParseAbstractInput<String> implements ListInput<String, PlotEntry> {
 	
 	private final Map<String,PlotEntry> items;
-	
+	/** 
+	 * 
+	 * @param conn {@link AppContext}
+	 * @param producer {@link UsageProducer}
+	 * @param tag Optional mode String.
+	 */
 	public PlotEntryInput(AppContext conn,UsageProducer producer,String tag){
-
+		String prefix = "";
+		if( tag != null && ! tag.isEmpty()) {
+			prefix=tag+".";
+		}
 		items = new LinkedHashMap<String, PlotEntry>();
 		if( producer != null){
 			for( PlotEntry e : PlotEntry.getPlotSet(producer.getFinder(),conn, tag)){
 				if( e.compatible(producer)){
-					items.put(e.getName(),e);
+					items.put(prefix+e.getName(),e);
 				}
 			}
 		}else{

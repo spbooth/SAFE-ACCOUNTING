@@ -104,7 +104,12 @@
 	<xsd:group name="PlotEntryGroup">
 		<xsd:sequence>
 			<xsd:element name="Plot" type="par:TextOrParameterType"
-				minOccurs="1" maxOccurs="1" />
+				minOccurs="1" maxOccurs="1" >
+				<xsd:annotation><xsd:documentation>
+				This can be either; A parameter-ref to containing a PlotEntry, The name of a PlotEntry defined
+				using configuration parameters or a PropExpression for the value to plot.
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
 			<xsd:element name="PlotLabel" type="par:TextOrParameterType"
 				minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Reduction" type="ReductionType"
@@ -205,4 +210,6 @@
 	</xsd:simpleType>
 
     
+
+    <xsd:complexType name="PlotType"></xsd:complexType>
 </xsd:schema>

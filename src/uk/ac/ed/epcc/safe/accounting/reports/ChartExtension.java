@@ -104,13 +104,23 @@ public abstract class ChartExtension extends ReportExtension {
 			return null;
 		}
 		PropertyFinder finder = set.getUsageProducer().getFinder();
-		String name = getExpandedParam("Plot",e);
-		if( name == null  || name.isEmpty()){
-			throw new ReportException("No Plot quantity was specified");
+		Element plot_e = getParamElement("Plot", e);
+		PlotEntry result=null;
+		String start_name=null;
+		String end_name=null;
+		String name="";
+		Object o = getParameterRef(plot_e);
+		if( o != null && o instanceof PlotEntry) {
+			result = (PlotEntry) o;
+		}else {
+			name = getExpandedParam("Plot",e);
+			if( name == null  || name.isEmpty()){
+				throw new ReportException("No Plot quantity was specified");
+			}
+			start_name = getParam("StartProp", e);
+			end_name = getParam("EndProp",e);
+			result = serv.getPlotEntry( errors,finder, name,start_name,end_name);
 		}
-		String start_name = getParam("StartProp", e);
-		String end_name = getParam("EndProp",e);
-		PlotEntry result = serv.getPlotEntry( errors,finder, name,start_name,end_name);
 		if( result == null ) {
 			addError("Bad PlotEntry", "PlotEntry failed to parse",n);
 			return null;
@@ -147,8 +157,13 @@ public abstract class ChartExtension extends ReportExtension {
 		AppContext ctx = getContext();
 		PropertyFinder finder = set.getUsageProducer().getFinder();
 		if (hasParam("GroupBy", e)) {
-			entry = serv.getMapperEntry(errors,finder,getParam("GroupBy", e));
-			
+			Element group_e = getParamElement("GroupBy", e);
+			Object o = getParameterRef(group_e);
+			if( o != null && o instanceof MapperEntry) {
+				entry = (MapperEntry) o;
+			}else {
+				entry = serv.getMapperEntry(errors,finder,getParam("GroupBy", e));
+			}
 		} else {
 			entry = serv.getMapperEntry(errors, finder, "");
 			if( entry == null) {
