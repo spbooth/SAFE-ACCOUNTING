@@ -27,17 +27,26 @@ import uk.ac.ed.epcc.webapp.AppContextService;
 public interface AccountingService extends AppContextService<AccountingService>{
 	/** Get the default {@link UsageManager}
 	 * 
+	 * 
+	 * Unless you need to process nested {@link UsageProducer}s explicitly you normally need
+	 * {@link #getUsageProducer()}
+	 * 
 	 * @return {@link UsageManager}
 	 */
 	public UsageManager getUsageManager();
 	/** Get a named non-default {@link UsageManager}
+	 * 
+	 * 
+	 * Unless you need to process nested {@link UsageProducer}s explicitly you normally need
+	 * {@link #getUsageProducer(String)}
 	 * 
 	 * @param name
 	 * @return {@link UsageManager}
 	 */
 	public UsageManager getUsageManager(String name);
 	/** Get the default {@link UsageProducer}
-	 * Usually this will return the same as {@link #getUsageManager()}
+	 * Usually this will return the same as {@link #getUsageManager()} and will be a combination
+	 * of the standard accounting tables defined using the <b>accounting</b> tag.
 	 * @return {@link UsageProducer}
 	 */
 	

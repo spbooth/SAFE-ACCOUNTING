@@ -365,9 +365,9 @@ public class ParameterExtension extends ReportExtension {
 			String tag=getAttribute("tag", param);
 			UsageProducer producer;
 			if( empty(prod)  ){
-				producer= service.getUsageManager();
+				producer= service.getUsageProducer();
 			}else{
-				producer = service.getUsageManager(prod);
+				producer = service.getUsageProducer(prod);
 			}
 			return new PlotEntryInput(conn, producer, tag);
 
@@ -377,9 +377,9 @@ public class ParameterExtension extends ReportExtension {
 			String tag=getAttribute("tag", param);
 			UsageProducer producer;
 			if( empty(prod)  ){
-				producer= service.getUsageManager();
+				producer= service.getUsageProducer();
 			}else{
-				producer = service.getUsageManager(prod);
+				producer = service.getUsageProducer(prod);
 			}
 			return new MapperEntryInput(conn, producer, tag);
 						

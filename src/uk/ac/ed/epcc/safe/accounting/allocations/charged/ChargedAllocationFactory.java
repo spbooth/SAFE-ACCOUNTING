@@ -128,9 +128,9 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 			AccountingService acct_service = c.getService(AccountingService.class);
 
 			if( master_producer != null){
-				master = acct_service.getUsageManager(master_producer);
+				master = acct_service.getUsageProducer(master_producer);
 			}else{
-				master=acct_service.getUsageManager();
+				master=acct_service.getUsageProducer();
 			}
 		}else{
 			master=master_factory;

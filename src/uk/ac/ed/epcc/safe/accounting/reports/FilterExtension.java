@@ -232,9 +232,9 @@ public boolean checkNode(Element e) throws TemplateValidateException {
 				String name = getText(e);
 				AccountingService serv = getContext().getService(AccountingService.class);
 				if( name == null || name.trim().length() == 0){
-					serv.getUsageManager();
+					serv.getUsageProducer();
 				}else{
-					serv.getUsageManager(name.trim());
+					serv.getUsageProducer(name.trim());
 				}
 			}catch(UnexpandedContentException e1){
 				return false;
