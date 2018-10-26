@@ -38,6 +38,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 public class PlotEntryInput extends ParseAbstractInput<String> implements ListInput<String, PlotEntry> {
 	
 	private final Map<String,PlotEntry> items;
+	private final String prefix;
 	/** 
 	 * 
 	 * @param conn {@link AppContext}
@@ -45,9 +46,10 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 	 * @param tag Optional mode String.
 	 */
 	public PlotEntryInput(AppContext conn,UsageProducer producer,String tag){
-		String prefix = "";
 		if( tag != null && ! tag.isEmpty()) {
 			prefix=tag+".";
+		}else {
+			prefix="";
 		}
 		items = new LinkedHashMap<String, PlotEntry>();
 		if( producer != null){
@@ -103,7 +105,7 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 		return items.size();
 	}
 	public String getTagByItem(PlotEntry item) {
-		return item.getName();
+		return prefix+item.getName();
 	}
 	
 	public String getTagByValue(String value) {

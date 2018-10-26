@@ -36,10 +36,12 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 public class MapperEntryInput extends ParseAbstractInput<String> implements ListInput<String, MapperEntry> {
 	
 	private final Map<String,MapperEntry> items;
+	private final String prefix;
 	public MapperEntryInput(AppContext conn,UsageProducer producer,String tag){
-		String prefix = "";
 		if( tag != null && ! tag.isEmpty()) {
 			prefix=tag+".";
+		}else {
+			prefix="";
 		}
 		items = new LinkedHashMap<String, MapperEntry>();
 		if( producer != null){
@@ -93,7 +95,7 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 	}
 	
 	public String getText(MapperEntry item) {
-		return item.getDescription();
+		return prefix+item.getDescription();
 	}
 	@Override
 	public <R> R accept(InputVisitor<R> vis) throws Exception {
