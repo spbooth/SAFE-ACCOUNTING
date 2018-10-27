@@ -98,11 +98,13 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     private boolean use_line=false;
     private boolean cumulative=false;
     private boolean stacked=true;
+    private String mode=null;
     
-    public MapperEntry(AppContext c,String name,String description){
+    public MapperEntry(AppContext c,String name,String mode,String description){
     	super(c);
     	this.name=name;
     	this.description=description;
+    	this.mode=mode;
     }
     public void setColours(Color custom[]){
     	custom_colour=custom;
@@ -122,6 +124,15 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 	}
     public String getName(){
     	return name;
+    }
+    /** get the {@link FilteredProperties} mode tag used to create this object.
+	 * 
+	 * Effectively this is a name-space for extended versions of the {@link MapperEntry}
+	 * 
+	 * @return
+	 */
+    public String getMode() {
+    	return mode;
     }
 	/** Should the data be converted to a stacked plot
 	 * 
@@ -505,7 +516,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     		}
         	PlotEntry s = e.getScaleEntry();
     		if( s != null ){
-    			SetMapperEntry se = new SetMapperEntry(conn, "norm", "normalisation");
+    			SetMapperEntry se = new SetMapperEntry(conn, "norm", null,"normalisation");
     			P norm = se.makeTimeChartPlot(s, tc, ap, request_sel, nplots, allow_overlap, use_line, graph_transforms);
     			if( norm != null ){
     				ds.datasetScale( 1.0, norm);
@@ -830,7 +841,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 	   MapperEntry me=null;
 	   // Cumulative
 	   if (group == null ) {
-		   me= new SetMapperEntry(conn, name,desc);   
+		   me= new SetMapperEntry(conn, name,prop.getMode(),desc);   
 	   } else {
 		   Labeller lab = null;
 		   String lab_tag = prop.getProperty(tag+"labeller");
@@ -855,7 +866,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		   if(lab == null && group instanceof FormatProvider ){
 			   lab = ((FormatProvider)group).getLabeller();
 		   }		   
-		   me= new KeyMapperEntry(conn,group,lab,name,desc);
+		   me= new KeyMapperEntry(conn,group,lab,name,prop.getMode(),desc);
 		   
 	   }
 	   me.setCumulative(prop.getBooleanProperty(tag+"cumulative", me.isCumulative()));

@@ -16,6 +16,11 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.formatters.value;
 
+import java.security.Principal;
+
+import uk.ac.ed.epcc.webapp.Indexed;
+import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
+
 /**
  * A simple default formatting object. This formatter will format any type of
  * object. All it does is call the object's <code>toString</code> method.
@@ -40,8 +45,18 @@ public class DefaultFormatter implements ValueFormatter<Object> {
 	 * uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter#format(java
 	 * .lang.Object)
 	 */
-	public String format(Object object) {
-		return object.toString();
+	public String format(Object value) {
+			
+			if( value == null ){
+				return null;
+			}
+			if( value instanceof Principal){
+				return ((Principal)value).getName();
+			}
+			if( value instanceof Indexed){
+				return Integer.toString(((Indexed)value).getID());
+			}
+			return value.toString();
 	}
 
 	/*

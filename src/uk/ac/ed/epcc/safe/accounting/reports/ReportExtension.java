@@ -822,7 +822,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 					format = getFormatter(param.getClass(),parameterFormat);	
 					if( format == null ){
 						// developer will want to know this did not work
-						addDeveloperError("unresolved format", "No formatter fount name="+parameterFormat+" class="+param.getClass().getCanonicalName());
+						addDeveloperError("unresolved format", "No formatter found name="+parameterFormat+" class="+param.getClass().getCanonicalName());
 					}
 				} else {
 					// Don't panic, just ignore it and carry on....

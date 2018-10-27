@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
+import uk.ac.ed.epcc.safe.accounting.formatters.value.PlotEntryFormatter;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.config.FilteredProperties;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
@@ -32,6 +33,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  * string values generated are qualified using the same tag.
  * 
  * @see ChartService
+ * @see PlotEntryFormatter
  * @author spb
  *
  */
@@ -71,7 +73,7 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 		if( item == null ){
 			setValue(null);
 		}else{
-			setValue(item.getName());
+			setValue(getTagByItem(item));
 		}
 	}
 	
@@ -113,6 +115,9 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 	}
 	
 	public String getText(PlotEntry item) {
+		if( item == null ) {
+			return null;
+		}
 		String text = item.getDescription();
 		if( text == null ){
 			text=item.getName();

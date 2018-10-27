@@ -33,8 +33,8 @@
 	
 
     
-    <rep:Text>This is a plot of <par:Parameter name="Plot"/> against time. The plot is divided into a number of
-    classes according to <par:Parameter name="Group"/>. This is a stacked plot so the top of the plot represents the total usage at a given time.</rep:Text>
+    <rep:Text>This is a plot of <par:Parameter name="Plot" format="Default"/> against time. The plot is divided into a number of
+    classes according to <par:Parameter name="Group" format="Default"/>. This is a stacked plot so the top of the plot represents the total usage at a given time.</rep:Text>
     <rep:Text>The reporting period is <per:StartDate format="dd-MM-yyyy"/> to <per:EndDate format="dd-MM-yyyy"/></rep:Text>
 	<cha:TimeChart>
 		<cha:Plot><par:Parameter name="Plot"/></cha:Plot>

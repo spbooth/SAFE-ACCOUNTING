@@ -43,8 +43,8 @@ public class KeyMapperEntry<K> extends MapperEntry {
     private final PropertyKeyLabeller pkl; // need to use the same labeller for all data adds
 
     @SuppressWarnings("unchecked")
-	public  KeyMapperEntry(AppContext conn,PropExpression<K> key,Labeller<K,?> lab,String name,String description){
-    	super(conn,name,description);
+	public  KeyMapperEntry(AppContext conn,PropExpression<K> key,Labeller<K,?> lab,String name,String mode,String description){
+    	super(conn,name,mode,description);
     	Labeller labeller;
     	if( lab != null ){
     		key_tag=key;

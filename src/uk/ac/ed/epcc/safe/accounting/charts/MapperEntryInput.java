@@ -61,7 +61,7 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 		if( item == null ){
 			setValue(null);
 		}else{
-			setValue(item.getName());
+			setValue(getTagByItem(item));
 		}
 	}
 	
@@ -95,7 +95,14 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 	}
 	
 	public String getText(MapperEntry item) {
-		return item.getDescription();
+		if(item == null) {
+			return null;
+		}
+		String description = item.getDescription();
+		if( description != null && ! description.isEmpty()) {
+			return description;
+		}
+		return item.getName();
 	}
 	@Override
 	public <R> R accept(InputVisitor<R> vis) throws Exception {

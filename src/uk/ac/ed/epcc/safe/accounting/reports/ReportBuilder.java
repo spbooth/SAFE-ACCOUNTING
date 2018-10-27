@@ -370,7 +370,6 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 			timer.startTimer("ReportBuilder.setTemplate");
 		}
 		try {
-			log_source=false;
 		if( template != null){
 			resetErrors();
 			param_document=null;
@@ -441,9 +440,10 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 		return param_document;
 	}
 	protected void setTemplate(String template_name,String schema_name) throws DataFault, ParserConfigurationException, InvalidArgument, TransformerFactoryConfigurationError, TransformerException, SAXException, IOException{
+		log_source=true;
 		setTemplate(template_name);
 		getParameterDocument(); // Generate any errors 
-		log_source=true;
+		
 		try{
 			Schema s = getSchema(schema_name);
 			if( s != null ){
@@ -1025,6 +1025,7 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
     	boolean isDeveloper = person.hasRole(ReportBuilder.REPORT_DEVELOPER);
 		if( person != null && isDeveloper){
 			builder.setTemplate(templateName,conn.getInitParameter(REPORT_SCHEMA_CONFIG, DEFAULT_REPORT_SCHEMA));
+			builder.log_source=true;
 		}else{
 			builder.setTemplate(templateName);
 		}

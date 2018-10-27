@@ -58,20 +58,22 @@ public class PlotEntry {
 	  private boolean rate_scale=true;
 	  private String label=null;
 	  private String time_unit=null;
+	  private String mode=null;
 	 
 	 
 	  private Reduction red=Reduction.SUM;
 
-	  public PlotEntry(PropExpression<? extends Number> prop, PlotEntry norm,PropExpression<Date> start, PropExpression<Date> end,String name,String desc){
+	  public PlotEntry(PropExpression<? extends Number> prop, String mode,PlotEntry norm,PropExpression<Date> start, PropExpression<Date> end,String name,String desc){
 		  this.name=name;
 		  this.description=desc;
 		  this.prop_tag=prop;
 		  this.norm=norm;
 		  this.start_prop=start;
 		  this.end_prop=end;
+		  this.mode=mode;
 	  }
 	  public PlotEntry(PropExpression<? extends Number> prop, PropExpression<Date> start, PropExpression<Date> end,String name,String desc){
-		  this(prop,null,start,end,name,desc);
+		  this(prop,null,null,start,end,name,desc);
 	  }
 			
 	  public PlotEntry(PropExpression<? extends Number> prop, PropExpression<Date> target,String name,String desc){
@@ -144,6 +146,15 @@ public class PlotEntry {
 	}
 	public void setScale(double scale) {
 		this.scale = scale;
+	}
+	/** get the {@link FilteredProperties} mode tag used to create this object.
+	 * 
+	 * Effectively this is a name-space for extended versions of the {@link PlotEntry}
+	 * 
+	 * @return
+	 */
+	public String getMode() {
+		return mode;
 	}
 	
 	public Reduction getReduction(){
@@ -362,7 +373,7 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 		   return null;
 	   }
 	   
-	   PlotEntry pe = new PlotEntry(plot,norm,start_prop,end_prop,name,desc);
+	   PlotEntry pe = new PlotEntry(plot,prop.getMode(),norm,start_prop,end_prop,name,desc);
 	   //set the reduction type if set
 	   String reduction = prop.getProperty(tag+"reduction");
 	   if(reduction != null ){

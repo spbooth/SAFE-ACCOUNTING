@@ -32,8 +32,8 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 public class SetMapperEntry extends MapperEntry {
 	private static final int set=0;
 	private String label=null;
-	public  SetMapperEntry(AppContext c,String name,String description){
-    	super(c,name,description);
+	public  SetMapperEntry(AppContext c,String name,String mode,String description){
+    	super(c,name,mode,description);
     }
 	public void setLabel(String lab){
 		label=lab;
