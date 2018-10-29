@@ -212,12 +212,11 @@ public void addFromProperties(PropertyFinder prev, AppContext ctx, String table 
 			String def = derived_properties.get(key);
 			if( def !=  null && def.trim().length() > 0){
 				try{
-
-					PropExpression e = parser.parse(def);
 					PropertyTag tag = prev.find( name);
 					if( tag == null ){
 						getLogger(ctx).error("Tag "+name+" not found setting derived properties for "+table);
 					}else{
+						PropExpression e = parser.parse(def);
 						put(tag,e);
 					}
 				}catch(ParseException e){

@@ -37,7 +37,6 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.TupleFactory;
 import uk.ac.ed.epcc.webapp.model.data.TupleSelfSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
-import uk.ac.ed.epcc.webapp.model.data.TupleFactory.TupleAndFilter;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** A property enabled {@link TupleFactory}
@@ -97,6 +96,10 @@ Tagged{
 				map.put(tag, new TupleSelfSQLValue<A,AF,T>(this, fac));
 			}
 		}
+		// Allow derived properties to be set for references (and time) properties.
+		PropExpressionMap derived = new PropExpressionMap();
+		derived.addFromProperties(finder, c, config_tag);
+		map.addDerived(c, derived);
 	}
 	/**
 	 * @param c
@@ -357,7 +360,7 @@ Tagged{
 	}
 	@Override
 	public PropExpressionMap getDerivedProperties() {
-		return new PropExpressionMap();
+		return map.getDerivedProperties();
 	}
 	@Override
 	public final CloseableIterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
