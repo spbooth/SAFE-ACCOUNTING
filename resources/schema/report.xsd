@@ -106,7 +106,7 @@
 <xsd:complexType mixed="true">
 		<xsd:sequence>
 		<xsd:element ref="Title" maxOccurs="1" minOccurs="0"></xsd:element>
-		<xsd:group ref="Content" maxOccurs="unbounded" minOccurs="0"/>
+		<xsd:group ref="SectionGroup" maxOccurs="unbounded" minOccurs="0"/>
 		</xsd:sequence>	
 </xsd:complexType>
 </xsd:element>
@@ -142,6 +142,7 @@
 	</xsd:documentation></xsd:annotation>
 	<xsd:choice>
 				<xsd:element ref="Section" ></xsd:element>
+				<xsd:element ref="SubSection" ></xsd:element>
 				<xsd:group ref="Content" />
 				<xsd:element ref="par:ParameterDef" />
 				
