@@ -341,7 +341,7 @@ Tagged{
 	
 	@Override
 	public Class<T> getTarget() {
-		return (Class<T>) PropertyTuple.class;
+		return (Class) PropertyTuple.class;
 	}
 
 	

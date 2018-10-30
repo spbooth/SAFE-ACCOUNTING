@@ -43,7 +43,7 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 	 */
 	@Override
 	public Class<UR> getTarget() {
-		return (Class<UR>) TupleUsageRecord.class;
+		return (Class) TupleUsageRecord.class;
 	}
 
 	public TupleUsageProducer(AppContext c, String config_tag) {

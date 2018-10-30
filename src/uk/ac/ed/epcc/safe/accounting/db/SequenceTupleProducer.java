@@ -140,6 +140,6 @@ extends TupleUsageProducer<A,AF,UR> {
 	 */
 	@Override
 	public Class<UR> getTarget() {
-		return (Class<UR>) PeriodTuple.class;
+		return (Class) PeriodTuple.class;
 	}
 }

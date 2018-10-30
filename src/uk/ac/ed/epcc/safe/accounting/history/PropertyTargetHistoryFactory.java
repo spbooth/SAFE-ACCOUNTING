@@ -115,7 +115,7 @@ extends HistoryFactory<T,H> {
 	
 	@Override
 	public Class<H> getTarget() {
-		return (Class<H>) HistoryUse.class;
+		return (Class) HistoryUse.class;
 	}
 	@Override
 	protected DataObject makeBDO(Record res) throws DataFault {
