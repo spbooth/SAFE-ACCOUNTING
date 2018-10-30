@@ -46,19 +46,19 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 
 public class ClassificationSQLValue<H extends DataObject, T extends DataObject> implements SQLValue<String>, FilterProvider<H,String>{
-	private final Class<? super H> target;
+	private final Class<H> target;
 	// has to be at least an SQLAccessor to support any filtering.
 	// 
 	private final  SQLValue<IndexedReference<T>> a;
 	private final AppContext ctx;
 	private final IndexedProducer<T> producer;
-	public ClassificationSQLValue(AppContext c,Class<? super H> target,IndexedProducer<T> prod,SQLValue<IndexedReference<T>> acc) {
+	public ClassificationSQLValue(AppContext c,Class<H> target,IndexedProducer<T> prod,SQLValue<IndexedReference<T>> acc) {
 		this.target=target;
 		this.a=acc;
 		this.producer=prod;
 		ctx=c;
 	}
-	public Class<? super String> getTarget() {
+	public Class<String> getTarget() {
 		return String.class;
 	}
 	@Override
@@ -110,7 +110,7 @@ public class ClassificationSQLValue<H extends DataObject, T extends DataObject> 
 	public SQLFilter getRequiredFilter() {
 		return a.getRequiredFilter();
 	}
-	public Class<? super H> getFilterType() {
+	public Class<H> getFilterType() {
 		return target;
 	}
 	

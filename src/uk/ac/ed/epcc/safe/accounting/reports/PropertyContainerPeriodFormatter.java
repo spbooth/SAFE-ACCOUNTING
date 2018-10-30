@@ -33,7 +33,7 @@ import uk.ac.ed.epcc.webapp.time.SplitPeriod;
 @Description("Generate a period element from the StartedTimestamp and CompletedTimestamp of the target.")
 public class PropertyContainerPeriodFormatter implements DomFormatter<PropertyContainer>{
 
-	public Class<? super PropertyContainer> getTarget() {
+	public Class<PropertyContainer> getTarget() {
 		return PropertyContainer.class;
 	}
 

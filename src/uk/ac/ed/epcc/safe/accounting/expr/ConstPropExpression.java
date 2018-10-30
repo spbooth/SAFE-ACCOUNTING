@@ -29,8 +29,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
  */
 public class ConstPropExpression<N> implements PropExpression<N> {
   public final N val;
-  private final Class<? super N> target;
-  public ConstPropExpression(Class<? super N> target,N n){
+  private final Class<N> target;
+  public ConstPropExpression(Class<N> target,N n){
 	  this.target=target;
 	  val=n;
   }
@@ -39,7 +39,7 @@ public class ConstPropExpression<N> implements PropExpression<N> {
 	  return val.toString();
   }
 
-public Class<? super N> getTarget() {
+public Class<N> getTarget() {
 	return target;
 }
 

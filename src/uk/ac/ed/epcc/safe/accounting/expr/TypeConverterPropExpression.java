@@ -39,7 +39,7 @@ public class TypeConverterPropExpression<T, D> implements PropExpression<T> {
 		assert(this.converter !=null);
 		assert(this.inner != null);
 	}
-	public Class<? super T> getTarget() {
+	public Class<T> getTarget() {
 		return converter.getTarget();
 	}
 	public TypeConverter<T, D> getConverter(){

@@ -65,8 +65,8 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClass
 	}
 
 	@Override
-	public Class<? super T> getTarget() {
-		return RegexpTarget.class;
+	public Class<T> getTarget() {
+		return (Class<T>) RegexpTarget.class;
 	}
 
 	@Override

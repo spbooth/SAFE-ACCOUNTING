@@ -44,7 +44,7 @@ public class DeRefExpression<R extends DataObject,T> implements PropExpression<T
 		return target_object;
 	}
 	
-	public Class<? super T> getTarget() {
+	public Class<T> getTarget() {
 		return expr.getTarget();
 	}
 	public PropExpression<T> getExpression(){

@@ -55,7 +55,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 		RemoteSQLValue<H,R, T> implements FilterProvider<H,T>{
 	
 	protected final PropExpression<T> expr;
-	protected final Class<? super H> h_type;
+	protected final Class<H> h_type;
 	protected final ExpressionTargetFactory<R> etf;
 	public DerefSQLValue(IndexedSQLValue<H,R> a, PropExpression<T> expr,
 			AppContext conn) throws Exception {
@@ -74,7 +74,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 	public PropExpression<T> getExpression(){
 		return expr;
 	}
-	public Class<? super T> getTarget() {
+	public Class<T> getTarget() {
 		return expr.getTarget();
 	}
 
@@ -123,7 +123,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 	@SuppressWarnings("unchecked")
 	public SQLFilter<H> getFilter(MatchCondition match, T val) throws CannotFilterException, NoSQLFilterException {
 		
-		SQLValue<IndexedReference<R>> v = getReferenceValue();
+		SQLValue<IndexedReference> v = getReferenceValue();
 		if( v instanceof IndexedSQLValue){
 
 			IndexedSQLValue a = (IndexedSQLValue)v;
@@ -157,7 +157,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 	@SuppressWarnings("unchecked")
 	public SQLFilter<H> getOrderFilter(boolean descending) throws CannotFilterException, NoSQLFilterException {
 		
-		SQLValue<IndexedReference<R>> v = getReferenceValue();
+		SQLValue<IndexedReference> v = getReferenceValue();
 		if( v instanceof IndexedSQLValue){
 
 			IndexedSQLValue a = (IndexedSQLValue)v;
@@ -189,7 +189,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 	}
 	@SuppressWarnings("unchecked")
 	public SQLFilter<H> getNullFilter(boolean is_null) throws CannotFilterException, NoSQLFilterException {
-		SQLValue<IndexedReference<R>> v = getReferenceValue();
+		SQLValue<IndexedReference> v = getReferenceValue();
 		if( v instanceof IndexedSQLValue){
 			IndexedSQLValue a = (IndexedSQLValue)v;
 			IndexedProducer<R> producer;
@@ -219,7 +219,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 	}
 
 
-	public Class<? super H> getFilterType() {
+	public Class<H> getFilterType() {
 		return h_type;
 	}
 

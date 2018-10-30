@@ -30,7 +30,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  *
  * @param <I> type of reference
  */
-public interface ReferenceExpression<I extends Indexed> extends PropExpression<IndexedReference<I>> {
+public interface ReferenceExpression<I extends Indexed> extends PropExpression<IndexedReference> {
 
 	public IndexedProducer<I> getFactory(AppContext c);
 	

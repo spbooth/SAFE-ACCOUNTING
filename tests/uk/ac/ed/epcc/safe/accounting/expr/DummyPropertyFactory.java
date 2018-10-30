@@ -35,7 +35,7 @@ public class DummyPropertyFactory extends DefaultDataObjectPropertyFactory<Dummy
 	}
 
 	@Override
-	public Class<? super DummyPropertyContainer> getTarget() {
+	public Class<DummyPropertyContainer> getTarget() {
 		return DummyPropertyContainer.class;
 	}
 	@Override

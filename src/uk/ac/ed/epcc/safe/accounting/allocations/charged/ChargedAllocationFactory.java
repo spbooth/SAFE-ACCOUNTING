@@ -237,8 +237,8 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	}
 
 	@Override
-	public Class<? super T> getTarget() {
-		return ChargedAllocationRecord.class;
+	public Class<T> getTarget() {
+		return (Class<T>) ChargedAllocationRecord.class;
 	}
 
 	

@@ -130,8 +130,8 @@ public abstract class UsageRecordFactory<T extends UsageRecordFactory.Use> exten
 		return new Use(this,res);
 	}
 	@Override
-	public Class<? super T> getTarget(){
-		return Use.class;
+	public Class<T> getTarget(){
+		return (Class<T>) Use.class;
 	}
 
 

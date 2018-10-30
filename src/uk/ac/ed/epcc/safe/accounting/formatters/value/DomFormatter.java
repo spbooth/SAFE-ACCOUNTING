@@ -31,7 +31,7 @@ public interface DomFormatter<T> extends Targetted<T>{
 	 * 
 	 * @return Class of target
 	 */
-	Class<? super T> getTarget();
+	Class<T> getTarget();
 	
 	/** format the input value as a Dom Node.
 	 * @param doc document to create result in

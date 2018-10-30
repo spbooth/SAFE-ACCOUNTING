@@ -35,7 +35,7 @@ public class DoubleCastPropExpression<T> implements PropExpression<Double> {
     public PropExpression<T> getExpression(){
    		return exp;
    	}
-	public Class<? super Double> getTarget() {
+	public Class<Double> getTarget() {
 		return Double.class;
 	}
 

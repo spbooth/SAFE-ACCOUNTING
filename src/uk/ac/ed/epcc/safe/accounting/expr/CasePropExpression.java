@@ -88,7 +88,7 @@ public class CasePropExpression<T> implements PropExpression<T>{
 	public PropExpression<? extends T> getDefaultExpression(){
 		return default_expression;
 	}
-	public Class<? super T> getTarget() {
+	public Class<T> getTarget() {
 		return target;
 	}
 

@@ -234,8 +234,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	private Map<AllocationKey<T>, Transition<T>> transitions; 
 	private Set<AllocationListener<T>> listeners;
 	@Override
-	public Class<? super T> getTarget() {
-		return AllocationRecord.class;
+	public Class<T> getTarget() {
+		return (Class<T>) AllocationRecord.class;
 	}
 
 	@Override

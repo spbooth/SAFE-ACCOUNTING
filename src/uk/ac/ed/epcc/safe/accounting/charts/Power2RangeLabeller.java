@@ -96,7 +96,7 @@ public class Power2RangeLabeller<T extends Number> implements Labeller<T,Power2R
 		}
 		return false;
 	}
-	public Class<? super Range> getTarget(){
+	public Class<Range> getTarget(){
 		return Range.class;
 	}
 }

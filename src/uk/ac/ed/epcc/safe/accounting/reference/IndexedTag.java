@@ -41,7 +41,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  */
 
 
-public class IndexedTag<I extends Indexed, F extends IndexedProducer> extends PropertyTag<IndexedReference<I>> implements ReferenceExpression<I>, ValueParserProvider<IndexedReference<I>>{
+public class IndexedTag<I extends Indexed, F extends IndexedProducer> extends PropertyTag<IndexedReference> implements ReferenceExpression<I>, ValueParserProvider<IndexedReference>{
 	   protected final Class<? extends F> fac;
 	   protected final String table; // optional table parameter, may not be needed as the target class may have the table hardwired
 	   				
@@ -86,8 +86,8 @@ public class IndexedTag<I extends Indexed, F extends IndexedProducer> extends Pr
 		}
 		return new IndexedReference<I>(value,fac,table);
 	}
-	public SelectClause<IndexedReference<I>> makeSelect(I value){
-		return new SelectClause<IndexedReference<I>>(this,makeReference(value));
+	public SelectClause<IndexedReference> makeSelect(I value){
+		return new SelectClause<IndexedReference>(this,makeReference(value));
 	}
 	   public void setOptional(PropertyContainer cont, I value) {
 		   if( cont.supports(this)){

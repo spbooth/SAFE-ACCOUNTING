@@ -69,8 +69,8 @@ public void customAccessors(AccessorMap<T> mapi2, MultiFinder finder,
 
 
 	@Override
-	public Class<? super T> getTarget() {
-		return PropertyTargetLink.class;
+	public Class<T> getTarget() {
+		return (Class<T>) PropertyTargetLink.class;
 	}
 
 	

@@ -101,15 +101,15 @@ public class PropertyTag<T> implements PropExpression<T> {
     
     protected final PropertyRegistry registry;
 	protected final String name;
-	private final Class<? super T> property_type;
+	private final Class<T> property_type;
 	private final String description;
 	   
 	   
-	public PropertyTag(PropertyRegistry registry,String name, Class<? super T> property_type){
+	public PropertyTag(PropertyRegistry registry,String name, Class<T> property_type){
 	   this(registry,name,property_type,null);
 	}
 	
-	public PropertyTag(PropertyRegistry registry,String name, Class<? super T> property_type,String description){
+	public PropertyTag(PropertyRegistry registry,String name, Class<T> property_type,String description){
 		
 		this.name = name;
 		
@@ -147,7 +147,7 @@ public class PropertyTag<T> implements PropExpression<T> {
 	   return description;
 	}
 	  
-	public Class<? super T> getTarget(){
+	public final  Class<T> getTarget(){
 	   return property_type;
 	}
 	public PropertyRegistry getRegistry(){

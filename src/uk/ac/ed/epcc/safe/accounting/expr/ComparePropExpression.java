@@ -31,7 +31,7 @@ public class ComparePropExpression<C extends Comparable> implements PropExpressi
 	public final PropExpression<C> e1;
 	public final PropExpression<C> e2;
 	@Override
-	public Class<? super Boolean> getTarget() {
+	public Class<Boolean> getTarget() {
 		return Boolean.class;
 	}
 

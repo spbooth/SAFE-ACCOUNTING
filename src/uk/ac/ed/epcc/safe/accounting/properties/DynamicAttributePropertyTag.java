@@ -51,7 +51,7 @@ public class DynamicAttributePropertyTag<T> extends AttributePropertyTag<T> {
 	
 	public DynamicAttributePropertyTag(PropertyRegistry registry,
 			String name, String regex, String[] aliases,
-			Class<? super T> property_type,	String description, T default_value,
+			Class<T> property_type,	String description, T default_value,
 			boolean subattrs, boolean multattrs) {
 		
 		super(registry,name,aliases,property_type,description,default_value);

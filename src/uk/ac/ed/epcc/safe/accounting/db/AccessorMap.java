@@ -116,7 +116,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
 public abstract class AccessorMap<X> extends AbstractContexed implements ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
 	public static final Feature EVALUATE_CACHE_FEATURE = new Feature("evaluate.cache",true,"cache expression evaluations in ExpressionTargets");
 	public static final Feature FORCE_SQLVALUE_FEATURE = new Feature("accounting.force_sqlvalue",false,"Use SQLValues in preference to SQLExpressions");
-	protected final Class<? super X> target;
+	protected final Class<X> target;
 	
 	protected final String config_tag;
 	protected static final String CONFIG_PREFIX = "accounting.";
@@ -507,7 +507,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	 * @param config_tag 
 	 * 
 	 */
-	public AccessorMap(AppContext conn,Class<? super X> target,String config_tag) {
+	public AccessorMap(AppContext conn,Class<X> target,String config_tag) {
 		super(conn);
 		this.target=target;
 		this.config_tag=config_tag;
@@ -1194,7 +1194,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		Class<T> clazz = (Class<T>) expr.getTarget();
 		return new CaseExpression<X,T>(clazz, def_sql, list);
 	}
-	public final Class<? super X> getTarget() {
+	public final Class<X> getTarget() {
 		return target;
 	}
 	

@@ -26,7 +26,7 @@ public class ExpressionAcceptNullFilter<T,I> extends AbstractAcceptFilter<T>{
 	private final boolean is_null;
 	private final PropExpression<I> expr;
 	
-	public ExpressionAcceptNullFilter(Class<? super T> target,AccessorMap<T> map,PropExpression<I> expr, boolean is_null){
+	public ExpressionAcceptNullFilter(Class<T> target,AccessorMap<T> map,PropExpression<I> expr, boolean is_null){
 		super(target);
 		this.map=map;
 		this.expr=expr;

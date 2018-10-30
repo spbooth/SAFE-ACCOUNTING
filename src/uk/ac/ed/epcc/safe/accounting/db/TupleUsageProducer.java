@@ -42,8 +42,8 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 	 * @see uk.ac.ed.epcc.safe.accounting.db.PropertyTupleFactory#getTarget()
 	 */
 	@Override
-	public Class<? super UR> getTarget() {
-		return TupleUsageRecord.class;
+	public Class<UR> getTarget() {
+		return (Class<UR>) TupleUsageRecord.class;
 	}
 
 	public TupleUsageProducer(AppContext c, String config_tag) {

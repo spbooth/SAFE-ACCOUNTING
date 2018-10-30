@@ -47,13 +47,13 @@ public class AttributePropertyTag<T> extends PropertyTag<T> {
 	private final T default_value;
 	
 	
-	public AttributePropertyTag(PropertyRegistry registry, String name, String[] aliases, Class<? super T> property_type, T default_value) {
+	public AttributePropertyTag(PropertyRegistry registry, String name, String[] aliases, Class<T> property_type, T default_value) {
 		super(registry,name,property_type,null);
 		this.aliases = aliases;
 		this.default_value = default_value;
 	}
 	
-	public AttributePropertyTag(PropertyRegistry registry, String name, String[] aliases, Class<? super T> property_type, String description, T default_value) {
+	public AttributePropertyTag(PropertyRegistry registry, String name, String[] aliases, Class<T> property_type, String description, T default_value) {
 		super(registry,name,property_type,description);
 		this.aliases = aliases;
 		this.default_value = default_value;

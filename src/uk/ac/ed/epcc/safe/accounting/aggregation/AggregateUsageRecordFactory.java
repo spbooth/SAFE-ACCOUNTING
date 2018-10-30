@@ -721,7 +721,7 @@ ConfigParamProvider{
 	}
 
 	@Override
-	public Class<? super AggregateRecord> getTarget() {
+	public Class<AggregateRecord> getTarget() {
 		return AggregateRecord.class;
 	}
 

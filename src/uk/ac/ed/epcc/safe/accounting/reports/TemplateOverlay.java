@@ -235,8 +235,8 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 	}
 
 	@Override
-	public Class<? super X> getTarget() {
-		return ReportFile.class;
+	public Class<X> getTarget() {
+		return (Class<X>) ReportFile.class;
 	}
 	
 	

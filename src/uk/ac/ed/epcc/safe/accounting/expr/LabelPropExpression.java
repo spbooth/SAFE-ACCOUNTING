@@ -36,7 +36,7 @@ public class LabelPropExpression<T,R> implements PropExpression<R> {
 		this.expr = expr;
 	}
 
-	public Class<? super R> getTarget() {
+	public Class<R> getTarget() {
 		return labeller.getTarget();
 	}
 

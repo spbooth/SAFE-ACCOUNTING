@@ -34,7 +34,7 @@ public class TextPeriodFormatter implements DomFormatter<TimePeriod> {
 
 	DateFormat df = new SimpleDateFormat("dd MMMMMMM yyyy");
 	
-	public Class<? super TimePeriod> getTarget() {
+	public Class<TimePeriod> getTarget() {
 		return TimePeriod.class;
 	}
 

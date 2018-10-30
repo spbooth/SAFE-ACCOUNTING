@@ -49,7 +49,7 @@ public class ConvertMillisecondToDatePropExpression implements
 	public ConvertMillisecondToDatePropExpression(PropExpression<? extends Number> millis) {
 		this.milli_expr=millis;
 	}
-	public Class<? super Date> getTarget() {
+	public Class<Date> getTarget() {
 		return Date.class;
 	}
 	public <R> R accept(BasePropExpressionVisitor<R> vis) throws Exception {

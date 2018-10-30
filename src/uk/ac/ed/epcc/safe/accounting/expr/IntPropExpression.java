@@ -35,7 +35,7 @@ public class IntPropExpression<T> implements PropExpression<Integer> {
     public PropExpression<T> getExpression(){
    		return exp;
    	}
-	public Class<? super Integer> getTarget() {
+	public Class<Integer> getTarget() {
 		return Integer.class;
 	}
 

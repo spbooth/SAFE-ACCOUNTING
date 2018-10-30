@@ -37,7 +37,7 @@ public class Power2Labeller<T extends Number> implements Labeller<T,Integer> {
 		return j;
 	}
 	
-	public Class<? super Integer> getTarget(){
+	public Class<Integer> getTarget(){
 		return Integer.class;
 	}
 

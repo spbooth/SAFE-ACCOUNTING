@@ -28,7 +28,7 @@ public class DurationSecondsPropExpression implements PropExpression<Number>{
 		this.expr=d;
 	}
 
-	public Class<? super Number> getTarget() {
+	public Class<Number> getTarget() {
 		return Number.class;
 	}
 	public PropExpression<Duration> getDuration(){

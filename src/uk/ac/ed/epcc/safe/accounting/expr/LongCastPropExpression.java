@@ -37,7 +37,7 @@ public class LongCastPropExpression<T> implements PropExpression<Long> {
     public PropExpression<T> getExpression(){
    		return exp;
    	}
-	public Class<? super Long> getTarget() {
+	public Class<Long> getTarget() {
 		return Long.class;
 	}
 

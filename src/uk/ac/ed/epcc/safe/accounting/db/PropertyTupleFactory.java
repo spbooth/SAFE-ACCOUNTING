@@ -340,8 +340,8 @@ Tagged{
 	}
 	
 	@Override
-	public Class<? super T> getTarget() {
-		return PropertyTuple.class;
+	public Class<T> getTarget() {
+		return (Class<T>) PropertyTuple.class;
 	}
 
 	

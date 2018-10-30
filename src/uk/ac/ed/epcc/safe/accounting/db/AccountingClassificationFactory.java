@@ -39,8 +39,8 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 	}
 
 	@Override
-	public Class<? super T> getTarget() {
-		return AccountingClassification.class;
+	public Class<T> getTarget() {
+		return (Class<T>) AccountingClassification.class;
 	}
 
 	public AccountingClassificationFactory(AppContext c, String table) {

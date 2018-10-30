@@ -40,13 +40,13 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 public class SelectPropExpression<T> implements PropExpression<T> , Iterable<PropExpression<T>>{
 	private final boolean use_any;
 	private final PropExpression<T> alts[];
-	private final Class<? super T> target;
+	private final Class<T> target;
 	
-	public SelectPropExpression(Class<? super T> target, PropExpression<T> ... alts){
+	public SelectPropExpression(Class<T> target, PropExpression<T> ... alts){
 		this(false,target,alts);
 	}
 	@SuppressWarnings("unchecked")
-	public SelectPropExpression(boolean use_any,Class<? super T> target, PropExpression<T> alts[]){
+	public SelectPropExpression(boolean use_any,Class<T> target, PropExpression<T> alts[]){
 		this.use_any = use_any;
 		this.target=target;
 		this.alts=new PropExpression[alts.length];
@@ -70,7 +70,7 @@ public class SelectPropExpression<T> implements PropExpression<T> , Iterable<Pro
 		throw new UnsupportedExpressionException(this);
 	}
 
-	public Class<? super T> getTarget() {
+	public Class<T> getTarget() {
 		return target;
 	}
 

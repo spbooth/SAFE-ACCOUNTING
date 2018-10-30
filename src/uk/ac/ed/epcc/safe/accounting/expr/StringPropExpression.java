@@ -35,7 +35,7 @@ public class StringPropExpression<T> implements PropExpression<String> {
    	public PropExpression<T> getExpression(){
    		return exp;
    	}
-	public Class<? super String> getTarget() {
+	public Class<String> getTarget() {
 		return String.class;
 	}
 

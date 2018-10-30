@@ -21,7 +21,7 @@ import uk.ac.ed.epcc.webapp.model.data.expr.TableMaker;
 
 public abstract class ReportTableMaker<O extends UsageRecordFactory.Use> extends TableMaker<O> {
 
-	public ReportTableMaker(AppContext c, Class<? super O> target) {
+	public ReportTableMaker(AppContext c, Class<O> target) {
 		super(c,target);
 	}
 

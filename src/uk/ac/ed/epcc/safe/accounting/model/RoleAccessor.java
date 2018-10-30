@@ -41,7 +41,7 @@ public class RoleAccessor<T extends AppUser> implements Accessor<Boolean,T>, Fil
 		this.serv=serv;
 		this.role=property;
 	}
-	public Class<? super Boolean> getTarget() {
+	public Class<Boolean> getTarget() {
 		
 		return Boolean.class;
 	}
@@ -74,7 +74,7 @@ public class RoleAccessor<T extends AppUser> implements Accessor<Boolean,T>, Fil
 			throws CannotFilterException {
 		throw new CannotFilterException("Order filter not supported");
 	}
-	public Class<? super T> getFilterType() {
+	public Class<T> getFilterType() {
 		return serv.getLoginFactory().getTarget();
 	}
 	

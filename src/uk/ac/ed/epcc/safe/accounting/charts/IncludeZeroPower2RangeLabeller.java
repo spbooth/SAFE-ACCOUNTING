@@ -25,15 +25,17 @@ import uk.ac.ed.epcc.webapp.content.Labeller;
  *
  * @param <T>
  */
-public class IncludeZeroPower2RangeLabeller<T extends Number> implements Labeller<T,IncludeZeroPower2RangeLabeller<T>.Range> {
+public class IncludeZeroPower2RangeLabeller<T extends Number> implements Labeller<T,IncludeZeroPower2RangeLabeller.Range> {
 
 	private Range lowest;
-	public class Range implements Comparable<Range>{
-		public Range(int lower, int upper) {
+	public static class Range implements Comparable<Range>{
+		public Range(IncludeZeroPower2RangeLabeller parent,int lower, int upper) {
 			super();
+			this.parent=parent;
 			this.lower = lower;
 			this.upper = upper;
 		}
+		private IncludeZeroPower2RangeLabeller parent;
 		private final int lower;
 		private final int upper;
 		@Override
@@ -61,7 +63,7 @@ public class IncludeZeroPower2RangeLabeller<T extends Number> implements Labelle
 		}
 		@Override
 		public String toString() {
-			if( lowest != null && this.equals(lowest)){
+			if( parent.lowest != null && this.equals(parent.lowest)){
 				return "<="+upper;
 			}
 			if( lower == upper){
@@ -92,7 +94,7 @@ public class IncludeZeroPower2RangeLabeller<T extends Number> implements Labelle
 		while(upper< i){
 			upper*=2;
 		}
-		Range range = new Range((upper/2)+1,upper);
+		Range range = new Range(this,(upper/2)+1,upper);
 		if(  lowest == null || range.compareTo(lowest) < 0){
 			lowest=range;
 		}
@@ -104,7 +106,7 @@ public class IncludeZeroPower2RangeLabeller<T extends Number> implements Labelle
 		}
 		return false;
 	}
-	public Class<? super Range> getTarget(){
+	public Class<Range> getTarget(){
 		return Range.class;
 	}
 }

@@ -13,7 +13,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  *
  * @param <I>
  */
-public class ConstReferenceExpression<I extends Indexed> extends ConstPropExpression<IndexedReference<I>> implements ReferenceExpression<I>{
+public class ConstReferenceExpression<I extends Indexed> extends ConstPropExpression<IndexedReference> implements ReferenceExpression<I>{
 
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression#getFactory(uk.ac.ed.epcc.webapp.AppContext)

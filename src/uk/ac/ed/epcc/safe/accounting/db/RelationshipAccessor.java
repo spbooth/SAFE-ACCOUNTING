@@ -47,7 +47,7 @@ public class RelationshipAccessor<T extends DataObject> implements Accessor<Bool
 		this.fac=fac;
 		this.role=property;
 	}
-	public Class<? super Boolean> getTarget() {
+	public Class<Boolean> getTarget() {
 		
 		return Boolean.class;
 	}
@@ -83,7 +83,7 @@ public class RelationshipAccessor<T extends DataObject> implements Accessor<Bool
 		}
 		if( check){
 			try {
-				BaseFilter<? super T> fil = user.getRelationshipRoleFilter(fac, role);
+				BaseFilter<T> fil = user.getRelationshipRoleFilter(fac, role);
 				return fil.acceptVisitor(new FilterConverter<T>());
 			} catch (Exception e) {
 				throw new CannotFilterException("Cannot make relationship filter", e);
@@ -107,7 +107,7 @@ public class RelationshipAccessor<T extends DataObject> implements Accessor<Bool
 			throws CannotFilterException {
 		throw new CannotFilterException("Order filter not supported");
 	}
-	public Class<? super T> getFilterType() {
+	public Class<T> getFilterType() {
 		return fac.getTarget();
 	}
 	

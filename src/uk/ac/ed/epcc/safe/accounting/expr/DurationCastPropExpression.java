@@ -36,7 +36,7 @@ public class DurationCastPropExpression<N extends Number> implements PropExpress
     	this.resolution=resolution;
     }
    	
-	public Class<? super Duration> getTarget() {
+	public Class<Duration> getTarget() {
 		return Duration.class;
 	}
  

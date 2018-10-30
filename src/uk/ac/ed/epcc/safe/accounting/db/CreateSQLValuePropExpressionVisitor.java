@@ -229,7 +229,7 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		PropExpression<?> expression = dre.getExpression();
 		ReferenceExpression<T> x = dre.getTargetObject();
 		// SQLValue to create the remote object
-		SQLValue<IndexedReference<T>> a =  x.accept(this);
+		SQLValue<IndexedReference> a =  x.accept(this);
 		if( a == null ){
 			throw new InvalidSQLPropertyException(x);
 		}
@@ -247,8 +247,8 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		}else if( a instanceof DerefSQLValue){
 			// We are already evaluating the de-ref in the first step
 			// need to split out the IndexedSQLValue and combine the two expressions.
-			DerefSQLValue<?,?,IndexedReference<T>> dsv = (DerefSQLValue<?, ?, IndexedReference<T>>) a;
-			PropExpression<IndexedReference<T>> ref = dsv.getExpression();
+			DerefSQLValue<?,?,IndexedReference> dsv = (DerefSQLValue<?, ?, IndexedReference>) a;
+			PropExpression<IndexedReference> ref = dsv.getExpression();
 			if( ref instanceof ReferenceExpression){
 				if( expression instanceof DeRefExpression){
 					return new DerefSQLValue( dsv.getReferenceValue(), new DoubleDeRefExpression(((ReferenceExpression<T>)ref), (ReferenceExpression<?>)expression), conn);

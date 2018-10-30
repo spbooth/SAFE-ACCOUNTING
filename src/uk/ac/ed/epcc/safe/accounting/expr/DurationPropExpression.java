@@ -37,7 +37,7 @@ public class DurationPropExpression implements PropExpression<Duration> {
 		this.start=start.copy();
 		this.end=end.copy();
 	}
-	public Class<? super Duration> getTarget() {
+	public Class<Duration> getTarget() {
 		return Duration.class;
 	}
 

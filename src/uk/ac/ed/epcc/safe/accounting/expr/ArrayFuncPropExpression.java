@@ -24,7 +24,6 @@ import java.util.Iterator;
 import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFunc;
-import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 /** An expression that selects a result from a
  * list of expressions.
@@ -43,11 +42,11 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 public class ArrayFuncPropExpression<T extends Comparable> implements PropExpression<T> , Iterable<PropExpression<T>>{
 	private final ArrayFunc func;
 	private final PropExpression<T> alts[];
-	private final Class<? super T> target;
+	private final Class<T> target;
 	
 	
 	@SuppressWarnings("unchecked")
-	public ArrayFuncPropExpression(Class<? super T> target, ArrayFunc func,PropExpression<T> alts[]){
+	public ArrayFuncPropExpression(Class<T> target, ArrayFunc func,PropExpression<T> alts[]){
 		
 		this.target=target;
 		this.func=func;
@@ -70,7 +69,7 @@ public class ArrayFuncPropExpression<T extends Comparable> implements PropExpres
 		throw new UnsupportedExpressionException(this);
 	}
 
-	public Class<? super T> getTarget() {
+	public Class<T> getTarget() {
 		return target;
 	}
 

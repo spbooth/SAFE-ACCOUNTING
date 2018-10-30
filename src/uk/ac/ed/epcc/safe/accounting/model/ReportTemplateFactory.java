@@ -88,8 +88,8 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 	protected ReportTemplate makeBDO(Record res) throws DataFault {
 		return new ReportTemplate(res);
 	}
-	public Class<? super R> getTarget(){
-		return ReportTemplate.class;
+	public Class<R> getTarget(){
+		return (Class<R>) ReportTemplate.class;
 	}
 	@Override
 	protected List<OrderClause> getOrder() {

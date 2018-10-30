@@ -42,7 +42,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  */
 
 
-public class DoubleDeRefExpression<R extends DataObject,T extends Indexed> extends DeRefExpression<R, IndexedReference<T>> implements ReferenceExpression<T>{
+public class DoubleDeRefExpression<R extends DataObject,T extends Indexed> extends DeRefExpression<R, IndexedReference> implements ReferenceExpression<T>{
 
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression#accept(uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor)

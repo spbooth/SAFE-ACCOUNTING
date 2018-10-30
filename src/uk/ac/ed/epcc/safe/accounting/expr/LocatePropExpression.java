@@ -44,7 +44,7 @@ public class LocatePropExpression implements PropExpression<Integer> {
     	this.pos=pos.copy();
     }
    	
-	public Class<? super Integer> getTarget() {
+	public Class<Integer> getTarget() {
 		return Integer.class;
 	}
 	

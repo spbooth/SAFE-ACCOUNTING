@@ -27,7 +27,7 @@ import uk.ac.ed.epcc.webapp.content.XMLDomBuilder;
 public class TableFormatter implements DomFormatter<Table>{
 
 	
-	public Class<? super Table> getTarget() {
+	public Class<Table> getTarget() {
 		return Table.class;
 	}
 
