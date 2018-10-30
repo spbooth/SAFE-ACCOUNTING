@@ -89,7 +89,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 		return new ReportTemplate(res);
 	}
 	public Class<R> getTarget(){
-		return (Class<R>) ReportTemplate.class;
+		return (Class) ReportTemplate.class;
 	}
 	@Override
 	protected List<OrderClause> getOrder() {
