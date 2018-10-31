@@ -48,10 +48,10 @@ public class MapReductionFinder<T,K> extends AccessorMapFilterFinder<T, Map<K,Nu
 		}
 		
 		switch(value.getReduction()){
-		case SUM: setMapper(new SumMapMapper<K>(map.getContext(),a,key_name,e,value_name)); break;
-		case MIN: setMapper(new MinimumMapMapper<K>(map.getContext(),a,key_name,e,value_name)); break;
-		case MAX: setMapper(new MaximumMapMapper<K>(map.getContext(),a,key_name,e,value_name)); break;
-		case AVG: setMapper(new AverageMapMapper<K>(map.getContext(),a,key_name,e,value_name)); break;
+		case SUM: setMapper(new SumMapMapper<>(map.getContext(),a,key_name,e,value_name)); break;
+		case MIN: setMapper(new MinimumMapMapper<>(map.getContext(),a,key_name,e,value_name)); break;
+		case MAX: setMapper(new MaximumMapMapper<>(map.getContext(),a,key_name,e,value_name)); break;
+		case AVG: setMapper(new AverageMapMapper<>(map.getContext(),a,key_name,e,value_name)); break;
 		}
 		
 	}

@@ -34,7 +34,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 
 	
 	public Map<String,Object> getUpdateMap(){
-		return new HashMap<String, Object>();
+		return new HashMap<>();
 	}
 	
 
@@ -71,7 +71,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		//System.out.println(updateText);
 		ErrorSet errors = new ErrorSet();
 		ErrorSet skips = new ErrorSet();
-		UploadParseTargetUpdater<R> updater = new UploadParseTargetUpdater<R>(ctx, (UploadParseTarget<R>) fac);
+		UploadParseTargetUpdater<R> updater = new UploadParseTargetUpdater<>(ctx, (UploadParseTarget<R>) fac);
 		String result = updater.receiveData(getUpdateMap(), updateText,errors,skips);
 		//TestDataHelper.saveDataSet("NGSRecord", "NGSRecord", "lsf");
 		Assert.assertEquals(0,errors.size());

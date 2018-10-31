@@ -42,7 +42,7 @@ public class ExpressionAcceptMatchFilter<T,I> extends AbstractAcceptFilter<T>{
 			}
 			I res1 = o.evaluateExpression(expr1);
 			I res2 = o.evaluateExpression(expr2);
-			if( res1 == null || res1 == null) {
+			if( m !=null && (res1 == null || res1 == null)) {
 				return false;
 			}
 			if( m == null ){

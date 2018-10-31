@@ -85,7 +85,7 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
 	
 
 	private ReductionHandler<UR, ExpressionTargetFactory<UR>> getReductionHandler(){
-		return new ReductionHandler<UR, ExpressionTargetFactory<UR>>(etf);
+		return new ReductionHandler<>(etf);
 	}
 
 

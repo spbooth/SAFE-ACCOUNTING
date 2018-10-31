@@ -38,8 +38,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
 public class GridMapParser extends AbstractPropertyContainerParser {
 
 	public static final PropertyRegistry gridmap_reg = new PropertyRegistry("gridmap", "Properties from the gridmap file");
-	public static final PropertyTag<String> GRIDMAP_USER = new PropertyTag<String>(gridmap_reg, "UserName",String.class);
-	public static final PropertyTag<String> GRIDMAP_DN = new PropertyTag<String>(gridmap_reg, "Dn",String.class);
+	public static final PropertyTag<String> GRIDMAP_USER = new PropertyTag<>(gridmap_reg, "UserName",String.class);
+	public static final PropertyTag<String> GRIDMAP_DN = new PropertyTag<>(gridmap_reg, "Dn",String.class);
 	private static final Pattern parse_pattern = Pattern.compile("\"(.+)\"\\s+(\\w+)");
 	@Override
 	public boolean parse(DerivedPropertyMap map, String record)

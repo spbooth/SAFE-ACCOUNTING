@@ -146,7 +146,7 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 
 	@Override
 	public void startParse(PropertyContainer staticProps) throws Exception {
-		targets = new LinkedHashSet<RegexpTarget>();
+		targets = new LinkedHashSet<>();
 		RegexpTargetFactory rt_fac = conn.makeObject(RegexpTargetFactory.class,target_table);
 		rt_fac.all().toCollection(targets);
 		links=0;
@@ -237,7 +237,7 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 	}
 	@Override
 	public Map<TableTransitionKey, Transition> getTableTransitions() {
-		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
+		Map<TableTransitionKey,Transition> result = new HashMap<>();
 		result.put(new AdminOperationKey(DataObjectFactory.class,"Relink","Re-apply regexp links to all records"),new RelinkTransition());
 		return result;
 	}

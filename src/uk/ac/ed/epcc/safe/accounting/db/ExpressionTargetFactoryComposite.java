@@ -62,7 +62,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 		try {
 			DataObjectFactory<T> factory = getFactory();
 			String table = factory.getConfigTag();
-			map = new RepositoryAccessorMap<T>(factory,getRepository());
+			map = new RepositoryAccessorMap<>(factory,getRepository());
 			MultiFinder finder = new MultiFinder();
 			ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(getContext());
 			map.makeReferences(refs);
@@ -185,7 +185,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 		try{
 			return fac.getResult(FilterConverter.convert(filter),skip,count).iterator();
 		}catch(NoSQLFilterException e){
-			return new SkipIterator<T>(fac.getResult(filter).iterator(), skip, count);
+			return new SkipIterator<>(fac.getResult(filter).iterator(), skip, count);
 		}
 	}
 
@@ -219,14 +219,14 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	@Override
 	public <PT> Set<PT> getValues(PropertyTag<PT> tag, RecordSelector selector) throws Exception {
 		if( ! hasProperty(tag)){
-			return new HashSet<PT>();
+			return new HashSet<>();
 		}
 		BaseFilter<T> filter = map.getFilter(selector);	
 		try{
-			PropertyMaker<T,PT> finder = new PropertyMaker<T,PT>(getAccessorMap(),getRepository(),tag, true);			
+			PropertyMaker<T,PT> finder = new PropertyMaker<>(getAccessorMap(),getRepository(),tag, true);			
 			return finder.find(FilterConverter.convert(filter));
 		}catch(CannotUseSQLException e){
-			Set<PT> result = new HashSet<PT>();
+			Set<PT> result = new HashSet<>();
 			DataObjectFactory<T> fac = getFactory();
 			AccessorMap m = getAccessorMap();
 			for(T o : fac.getResult(filter)){
@@ -280,6 +280,6 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	}
 	@Override
 	public CloseableIterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
-		return new ProxyIterator<T>(this, getIterator(sel));
+		return new ProxyIterator<>(this, getIterator(sel));
 	}
 }

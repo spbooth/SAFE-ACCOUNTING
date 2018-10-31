@@ -60,9 +60,9 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 	public ExpressionTargetTableMaker(AppContext c,F up){
 		this.c=c;
 		this.up=up;
-		labels=new LinkedList<String>();
-		this.props=new HashMap<String,PropExpression>();
-		this.transforms=new HashMap<String, Transform>();
+		labels=new LinkedList<>();
+		this.props=new HashMap<>();
+		this.transforms=new HashMap<>();
 		check_every=c.getIntegerParameter("expression_target_table_maker.check_every", 500);
 	}
 	public ExpressionTargetTableMaker(AppContext c,F up, List<ColName> props){

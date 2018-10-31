@@ -76,14 +76,14 @@ public class CasePropExpression<T> implements PropExpression<T>{
 	public CasePropExpression(Class<T> target, PropExpression<? extends T> def, Case<T> ... args ) {
 		this.target=target;
 		this.default_expression=def;
-		cases=new LinkedList<CasePropExpression.Case<T>>();
+		cases=new LinkedList<>();
 		for( Case<T> c : args){
 			cases.add(c);
 		}
 	}
 
 	public LinkedList<CasePropExpression.Case<T>> getCases(){
-		return new LinkedList<CasePropExpression.Case<T>>(cases);
+		return new LinkedList<>(cases);
 	}
 	public PropExpression<? extends T> getDefaultExpression(){
 		return default_expression;

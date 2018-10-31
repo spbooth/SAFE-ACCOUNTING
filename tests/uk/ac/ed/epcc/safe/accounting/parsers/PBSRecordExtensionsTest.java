@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
-import uk.ac.ed.epcc.webapp.AppContext;
 
 /**
  * Adds records to test. These records test the extensions mechanism of the
@@ -21,8 +20,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
  */
 public class PBSRecordExtensionsTest extends AbstractRecordTestCase {
 
-	private static final Collection<RecordText> goodRecords = new ArrayList<RecordText>();
-	private static final Collection<BadRecordText> badTexts = new ArrayList<BadRecordText>();
+	private static final Collection<RecordText> goodRecords = new ArrayList<>();
+	private static final Collection<BadRecordText> badTexts = new ArrayList<>();
 
 	public PBSRecordExtensionsTest() {
 		super("PBSMachine", "PBSRecord");

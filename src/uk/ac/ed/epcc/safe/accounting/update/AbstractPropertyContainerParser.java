@@ -51,7 +51,7 @@ public abstract class AbstractPropertyContainerParser extends AbstractPropertyCo
 	 */
 	public  TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpecification spec,PropExpressionMap map,String table_name) {
 		
-		unique = new LinkedHashSet<String>();
+		unique = new LinkedHashSet<>();
 		TableSpecification result = super.modifyDefaultTableSpecification(c, spec,map, table_name);
 		if( result == null ){
 			return result;
@@ -75,7 +75,7 @@ public abstract class AbstractPropertyContainerParser extends AbstractPropertyCo
 		return spec;
 	}
 	public Set<PropertyTag> getDefaultUniqueProperties() {
-		Set<PropertyTag> unique = new HashSet<PropertyTag>();
+		Set<PropertyTag> unique = new HashSet<>();
 		Class myclass= getClass();
         for( Field f : myclass.getFields()){
         	//log.debug("consider field "+f.getName()+" "+f.getType().getCanonicalName());

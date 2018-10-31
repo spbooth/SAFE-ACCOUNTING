@@ -36,7 +36,7 @@ public final class ExpressionTuple {
 	private final Map<PropExpression,Object> data;
 	private final int hash;
 	public ExpressionTuple(Map<PropExpression,Object> values){
-		data=new HashMap<PropExpression, Object>();
+		data=new HashMap<>();
 		int tmp=0;
 		for(PropExpression e : values.keySet()){
 			Object val = values.get(e);
@@ -51,7 +51,7 @@ public final class ExpressionTuple {
 		hash=tmp;
 	}
 	public ExpressionTuple(Set<PropExpression> keys, ExpressionTarget rec) throws InvalidExpressionException {
-		data=new HashMap<PropExpression, Object>();
+		data=new HashMap<>();
 		int tmp=0;
 		for(PropExpression e : keys){
 			@SuppressWarnings("unchecked")

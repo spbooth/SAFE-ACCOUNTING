@@ -47,7 +47,7 @@ public class ReferenceTag<D extends DataObject, F extends DataObjectFactory> ext
 
    public Labeller<IndexedReference<D>,Object> getLabeller() {
 
-	   return new ReferenceLabeller<D>();
+	   return new ReferenceLabeller<>();
    }
 
  

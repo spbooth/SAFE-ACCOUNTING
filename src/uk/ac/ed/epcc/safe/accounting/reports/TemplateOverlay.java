@@ -89,12 +89,12 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 		public <A extends AppUser> A getLastEditor() {
 			@SuppressWarnings("unchecked")
 			AppUserFactory<A> loginFactory = getContext().getService(SessionService.class).getLoginFactory();
-			return record.getProperty(new IndexedTypeProducer<A,AppUserFactory<A>>(getContext(), UPDATED_BY, loginFactory));
+			return record.getProperty(new IndexedTypeProducer<>(getContext(), UPDATED_BY, loginFactory));
 		}
 		public <A extends AppUser> void setLastEditor(A person) {
 			@SuppressWarnings("unchecked")
 			AppUserFactory<A> loginFactory = getContext().getService(SessionService.class).getLoginFactory();
-			record.setOptionalProperty(new IndexedTypeProducer<A,AppUserFactory<A>>(getContext(), UPDATED_BY, loginFactory),person);
+			record.setOptionalProperty(new IndexedTypeProducer<>(getContext(), UPDATED_BY, loginFactory),person);
 		}
 		@Override
 		protected void pre_commit(boolean dirty) throws DataFault {
@@ -132,8 +132,8 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 	 */
 	@Override
 	protected Map<String, Object> getSelectors() {
-		Map<String,Object> sel = new HashMap<String,Object>(super.getSelectors());
-		ConstantInput<String> group_input = new ConstantInput<String>(ReportBuilder.REPORT_TEMPLATE_GROUP);
+		Map<String,Object> sel = new HashMap<>(super.getSelectors());
+		ConstantInput<String> group_input = new ConstantInput<>(ReportBuilder.REPORT_TEMPLATE_GROUP);
 		group_input.setValue(ReportBuilder.REPORT_TEMPLATE_GROUP);
 		sel.put(TextFileOverlay.GROUP, group_input);
 		

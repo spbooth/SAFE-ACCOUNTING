@@ -51,7 +51,7 @@ public class MakerMap extends HashMap<String, ContainerEntryMaker> {
 	 *          The parser used to generate values from value strings
 	 */
 	public <T> ContainerEntryMaker addParser(String name,PropertyTag<T> tag, ValueParser<? extends T> parser){
-		PropertyEntryMaker<T> propertyMaker = new PropertyEntryMaker<T>(tag, parser);
+		PropertyEntryMaker<T> propertyMaker = new PropertyEntryMaker<>(tag, parser);
 		ContainerEntryMaker maker = (ContainerEntryMaker) propertyMaker;
 		return put(name, maker);
 	}

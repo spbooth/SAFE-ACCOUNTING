@@ -31,7 +31,6 @@ import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
@@ -270,7 +269,7 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	@SuppressWarnings("unchecked")
 	public SQLValue visitSelectPropExpression(SelectPropExpression<?> sel)
 			throws Exception {
-		LinkedList<SQLValue> list = new LinkedList<SQLValue>();
+		LinkedList<SQLValue> list = new LinkedList<>();
 
 		for(int i=0;i<sel.length();i++){
 			if( includeSelectClause(sel.get(i))){
@@ -306,7 +305,7 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	@SuppressWarnings("unchecked")
 	public <T,R> SQLValue<R> visitLabelPropExpression(LabelPropExpression<T,R> expr)
 			throws Exception {
-		return new LabellerSQLValue<T,R>(conn, expr.getLabeller(), expr.getExpr().accept(this));
+		return new LabellerSQLValue<>(conn, expr.getLabeller(), expr.getExpr().accept(this));
 	}
 
 

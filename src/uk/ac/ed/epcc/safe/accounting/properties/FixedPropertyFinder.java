@@ -108,7 +108,7 @@ public class FixedPropertyFinder implements PropertyFinder {
 
 	}
 	public Set<PropertyTag> getProperties() {
-		return new HashSet<PropertyTag>(registry.values());
+		return new HashSet<>(registry.values());
 
 	}
 	public boolean hasProperty(PropertyTag tag){
@@ -116,7 +116,7 @@ public class FixedPropertyFinder implements PropertyFinder {
 	}
 	@SuppressWarnings("unchecked")
 	public <T> Set<PropertyTag<? extends T>> getProperties(Class<T> clazz) {
-		Set<PropertyTag<? extends T>> result = new LinkedHashSet<PropertyTag<? extends T>>();
+		Set<PropertyTag<? extends T>> result = new LinkedHashSet<>();
 		for(PropertyTag t : registry.values()){
 			if( clazz.isAssignableFrom(t.getTarget())){
 				result.add(t);

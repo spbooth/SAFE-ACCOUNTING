@@ -341,7 +341,7 @@ public abstract class SelectBuilder {
 						if( string != null ){
 							PropExpression<T> expr2=getExpression(up, string);
 							if( expr2 != null ){
-								return new RelationClause<T>(expr, cond,expr2);
+								return new RelationClause<>(expr, cond,expr2);
 							}
 						}
 						throw new FilterParseException("No value or second property in select clause");
@@ -349,7 +349,7 @@ public abstract class SelectBuilder {
 					// assume optional form input if no value
 					return null;
 				}
-				return new SelectClause<T>(expr,cond,value);
+				return new SelectClause<>(expr,cond,value);
 			}
 
 	/** Get the text body of the Element

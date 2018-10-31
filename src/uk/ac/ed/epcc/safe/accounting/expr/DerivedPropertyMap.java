@@ -57,8 +57,7 @@ public class DerivedPropertyMap extends PropertyMap implements ExpressionTarget{
 	  derived.getAllFrom(map);
   }
   
-  @SuppressWarnings("unchecked")
-@Override
+  @Override
 public <T> T getProperty(PropertyTag<T> key) {
 	T value = getNonDerivedProperty(key);
 	if( value != null ){
@@ -83,7 +82,7 @@ public <T> T getNonDerivedProperty(PropertyTag<T> key) {
 }
 @Override
 public Set<PropertyTag> propertySet() {
-	Set<PropertyTag> res = new HashSet<PropertyTag>();
+	Set<PropertyTag> res = new HashSet<>();
 	res.addAll(super.propertySet());
 	res.addAll(derived.keySet());
 	return res;
@@ -122,7 +121,7 @@ public <T> T evaluate(Class<T> target,PropExpression texpr) throws Exception{
 
 		@Override
 		protected boolean matches(RecordSelector sel) throws Exception {
-			MatchSelectVisitor<DerivedPropertyMap> vis = new MatchSelectVisitor<DerivedPropertyMap>(DerivedPropertyMap.this);
+			MatchSelectVisitor<DerivedPropertyMap> vis = new MatchSelectVisitor<>(DerivedPropertyMap.this);
 			return sel.visit(vis).booleanValue();
 		}
 	};

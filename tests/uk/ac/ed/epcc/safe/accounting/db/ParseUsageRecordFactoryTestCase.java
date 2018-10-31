@@ -311,7 +311,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 			return;
 		}
 		UsageRecordParseTarget<I> target = getParseTarget();
-		Collection<String> sucessfulRecords = new ArrayList<String>();
+		Collection<String> sucessfulRecords = new ArrayList<>();
 		ErrorSet failedRecords = new ErrorSet();
 		ErrorSet errors = new ErrorSet();
 

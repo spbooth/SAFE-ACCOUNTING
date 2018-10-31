@@ -94,7 +94,7 @@ public class MimeMessageReportBuilder extends ReportBuilder{
 		this.report_template=report_template;
 		setTemplate(report_template);
 		if( params == null ){
-			this.params = new HashMap<String, Object>();
+			this.params = new HashMap<>();
 		}else{
 			this.params=params;
 		}

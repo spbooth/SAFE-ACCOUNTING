@@ -250,7 +250,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 	}
 	  private static ExpressionLexTarget lex_targets[];
 	   static Pattern makePattern(){
-		   List<ExpressionLexTarget> targets=new LinkedList<ExpressionLexTarget>();
+		   List<ExpressionLexTarget> targets=new LinkedList<>();
 			
 		   // Number target
 			  targets.add(new NumberLexTarget());

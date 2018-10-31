@@ -45,7 +45,7 @@ public class XMLRecordTest extends AbstractRecordTestCase {
 	@Before
 	public void setup() throws IOException{
 		// Load all good records from the text files specified
-				Collection<String> goodRecordFileNames = new ArrayList<String>();
+				Collection<String> goodRecordFileNames = new ArrayList<>();
 				//goodRecordFileNames.add("no-namespace.xml");
 				goodRecordFileNames.add("valid-eg1.xml");
 				goodRecordFileNames.add("valid-eg2.xml");
@@ -55,7 +55,7 @@ public class XMLRecordTest extends AbstractRecordTestCase {
 				goodRecordFileNames.add("valid-safe_generated-4.xml");
 				goodRecordFileNames.add("valid-safe_generated-5.xml");
 				// Set good records
-				this.goodRecords = new ArrayList<RecordText>();
+				this.goodRecords = new ArrayList<>();
 				for(String fileName : goodRecordFileNames) {
 					File file = new File(getFixtureDir(), fileName);
 					String record = TestDataHelper.readFileAsString(file);

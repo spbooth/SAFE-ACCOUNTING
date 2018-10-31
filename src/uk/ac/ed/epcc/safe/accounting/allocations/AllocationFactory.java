@@ -81,7 +81,6 @@ import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
-import uk.ac.ed.epcc.webapp.jdbc.table.BooleanFieldType;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -255,7 +254,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		listeners=makeListeners(c, table);
 	}
 	public Set<AllocationListener<T>> makeListeners(AppContext c,String table){
-		Set<AllocationListener<T>> result = new LinkedHashSet<AllocationListener<T>>();
+		Set<AllocationListener<T>> result = new LinkedHashSet<>();
 		String list = c.getInitParameter(table+".allocation_listeners");
 		if( list != null ){
 			for(String name : list.split("\\s,\\s")){
@@ -310,7 +309,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		}
 
 		public FormResult getResult(String typeName, T dat, Form f) {
-			return new ChainedTransitionResult<T, AllocationKey<T>>(AllocationFactory.this, dat, null);
+			return new ChainedTransitionResult<>(AllocationFactory.this, dat, null);
 		}
 
 		@Override
@@ -318,7 +317,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			// Don't edit index properties.
 			Set<String> supress = super.getSupress();
 			if( supress == null){
-				supress = new HashSet<String>();
+				supress = new HashSet<>();
 			}
 			if( ! editEnds()){
 				supress.add(StandardProperties.STARTED_TIMESTAMP);
@@ -436,12 +435,12 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			addCreationValidator(f);
 		}
 		public FormResult getResult(String type_name, T dat, Form f) {
-			return new ChainedTransitionResult<T, AllocationKey<T>>(AllocationFactory.this, dat, null);
+			return new ChainedTransitionResult<>(AllocationFactory.this, dat, null);
 		}
 
 		
 		public Map<String, Object> getDefaults() {
-			Map<String,Object> result = new HashMap<String, Object>();
+			Map<String,Object> result = new HashMap<>();
 			Map<String,Object> more = super.getDefaults();
 			if( more != null ){
 				result.putAll(more);
@@ -477,7 +476,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 
 		public FormResult doTransition(T target, AppContext c)
 				throws TransitionException {
-			return new ViewTransitionResult<T, AllocationKey<T>>(AllocationFactory.this, target);
+			return new ViewTransitionResult<>(AllocationFactory.this, target);
 		}
 		
 	}
@@ -501,10 +500,10 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	
 	@SuppressWarnings("unchecked")
 	protected LinkedHashMap<AllocationKey<T>, Transition<T>> makeTransitions() {
-		LinkedHashMap<AllocationKey<T>,Transition<T>> result = new LinkedHashMap<AllocationKey<T>, Transition<T>>();
-		result.put(SPLIT, new SplitTransition<T,AllocationKey<T>>(this, this));
+		LinkedHashMap<AllocationKey<T>,Transition<T>> result = new LinkedHashMap<>();
+		result.put(SPLIT, new SplitTransition<>(this, this));
 		result.put(CREATE, new CreateAllocation());
-		result.put(DELETE, new ConfirmTransition<T>("Are you sure you want to delete this allocation?", new AllocationDelete(), new AllocationView()));
+		result.put(DELETE, new ConfirmTransition<>("Are you sure you want to delete this allocation?", new AllocationDelete(), new AllocationView()));
 		result.put(INDEX, new ReturnIndexTransition());
 		result.put(UPDATE, new AllocationEdit());
 		return result;
@@ -513,7 +512,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	public void buildCreationForm(Form f, Period p, PropertyMap defaults) throws TransitionException{
 		PropertyMap def_props = new PropertyMap();
 		def_props.setAll(defaults);
-		Map<String,Object> defs = new HashMap<String, Object>();
+		Map<String,Object> defs = new HashMap<>();
 		defs.put(StandardProperties.STARTED_TIMESTAMP, p.getStart());
 		defs.put(StandardProperties.COMPLETED_TIMESTAMP, p.getEnd());
 		def_props.setProperty(StandardProperties.STARTED_PROP, p.getStart());
@@ -599,7 +598,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	 * @return
 	 */
 	protected Set<PropertyTag> getSummaryProperties(){
-		LinkedHashSet<PropertyTag> result = new LinkedHashSet<PropertyTag>();
+		LinkedHashSet<PropertyTag> result = new LinkedHashSet<>();
 		result.addAll(getIndexProperties());
 		result.addAll(getAllocationProperties());
 		return result;
@@ -611,7 +610,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	}
 
 	protected Table<String, String> getSummaryTable(T target) {
-		Table<String,String> tab = new Table<String,String>();
+		Table<String,String> tab = new Table<>();
 		ShortTextPeriodFormatter fmt = new ShortTextPeriodFormatter();
 		tab.put(VALUE_COL, "Period", fmt.format(target));
 		for(PropertyTag<?> t : getSummaryProperties()){
@@ -639,7 +638,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	}
 
 	public Set<AllocationKey<T>> getTransitions(T target) {
-		LinkedHashSet<AllocationKey<T>> result = new LinkedHashSet<AllocationKey<T>>();
+		LinkedHashSet<AllocationKey<T>> result = new LinkedHashSet<>();
 		AppContext context = getContext();
 		
 		for(AllocationKey<T> k : transitions.keySet()){
@@ -720,7 +719,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		return index_properties;
 	}
 	protected  Set<ReferenceTag> makeIndexProperties(){
-		HashSet<ReferenceTag> result = new HashSet<ReferenceTag>();
+		HashSet<ReferenceTag> result = new HashSet<>();
 		for( PropertyTag<?> t : ReferencePropertyRegistry.getInstance(getContext()).getProperties()){
 			if( hasProperty(t) && t instanceof ReferenceTag){
 				result.add((ReferenceTag) t);
@@ -755,7 +754,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	 * @return
 	 */
 	protected Set<PropertyTag> getListProperties(){
-		Set<PropertyTag> result = new LinkedHashSet<PropertyTag>();
+		Set<PropertyTag> result = new LinkedHashSet<>();
 		for(ReferenceTag<?,?> t : getIndexProperties()){
 			if( hasProperty(t)){
 				result.add(t);
@@ -931,7 +930,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	@Override
 	protected Set<String> getOptional() {
 		// require all fields in allocations
-		return new HashSet<String>();
+		return new HashSet<>();
 	}
 
 	
@@ -951,7 +950,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 
 	@Override
 	protected Map<String, String> getTranslations() {
-		Map<String,String> result = new HashMap<String, String>();
+		Map<String,String> result = new HashMap<>();
 		result.put(StandardProperties.STARTED_TIMESTAMP, "Allocation Start");
 		result.put(StandardProperties.COMPLETED_TIMESTAMP, "Allocation End");
 		return result;

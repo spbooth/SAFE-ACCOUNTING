@@ -67,25 +67,25 @@ public class ConfigPropertyRegistry extends PropertyRegistry {
 			
 			
 		    if( type.equalsIgnoreCase("String")){
-		    	new PropertyTag<String>(this, prop_name,String.class,description);
+		    	new PropertyTag<>(this, prop_name,String.class,description);
 		    	continue;
 		    }else if ( type.equalsIgnoreCase("Number")){
-		    	new PropertyTag<Number>(this, prop_name, Number.class,description);
+		    	new PropertyTag<>(this, prop_name, Number.class,description);
 		    	continue;
 		    }else if ( type.equalsIgnoreCase("Double")){
-		    	new PropertyTag<Double>(this, prop_name, Double.class,description);
+		    	new PropertyTag<>(this, prop_name, Double.class,description);
 		    	continue;
 		    }else if ( type.equalsIgnoreCase("Long")){
-		    	new PropertyTag<Long>(this, prop_name, Long.class,description);
+		    	new PropertyTag<>(this, prop_name, Long.class,description);
 		    	continue;
 		    }else if ( type.equalsIgnoreCase("Float")){
-		    	new PropertyTag<Float>(this, prop_name, Float.class,description);
+		    	new PropertyTag<>(this, prop_name, Float.class,description);
 		    	continue;
 		    }else if ( type.equalsIgnoreCase("Integer")){
-		    	new PropertyTag<Integer>(this, prop_name, Integer.class,description);
+		    	new PropertyTag<>(this, prop_name, Integer.class,description);
 		    	continue;
 		    }else if ( type.equalsIgnoreCase("Date")){
-		    	new PropertyTag<Date>(this, prop_name,Date.class,description);
+		    	new PropertyTag<>(this, prop_name,Date.class,description);
 		    	continue;
 		    }else{
 		    	Class<? extends DataObjectFactory> clazz = c.getPropertyClass(DataObjectFactory.class, null, type);

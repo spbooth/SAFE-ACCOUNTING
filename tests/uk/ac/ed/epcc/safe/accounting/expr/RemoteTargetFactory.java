@@ -21,17 +21,17 @@ public class RemoteTargetFactory<T extends DataObjectPropertyContainer> extends 
 	
 	public static final PropertyRegistry test = new PropertyRegistry("remotetest", "Remote Test registry");
 	
-	public static final PropertyTag<Integer> INT_A = new PropertyTag<Integer>(test,"IntA",Integer.class);
+	public static final PropertyTag<Integer> INT_A = new PropertyTag<>(test,"IntA",Integer.class);
 	
-	public static final PropertyTag<Integer> INT_B = new PropertyTag<Integer>(test,"IntB",Integer.class);
+	public static final PropertyTag<Integer> INT_B = new PropertyTag<>(test,"IntB",Integer.class);
 	
-	public static final PropertyTag<Double> DOUBLE_A = new PropertyTag<Double>(test,"DoubleA",Double.class);
+	public static final PropertyTag<Double> DOUBLE_A = new PropertyTag<>(test,"DoubleA",Double.class);
 	
-	public static final PropertyTag<Double> DOUBLE_B = new PropertyTag<Double>(test,"DoubleB",Double.class);
+	public static final PropertyTag<Double> DOUBLE_B = new PropertyTag<>(test,"DoubleB",Double.class);
 	
-	public static final PropertyTag<Date> DATE_A = new PropertyTag<Date>(test,"DateA",Date.class);
+	public static final PropertyTag<Date> DATE_A = new PropertyTag<>(test,"DateA",Date.class);
 
-	public static final PropertyTag<Date> DATE_B = new PropertyTag<Date>(test,"DateB",Date.class);
+	public static final PropertyTag<Date> DATE_B = new PropertyTag<>(test,"DateB",Date.class);
 
 	public static final String DEFAULT_TABLE="RemoteTest";
 	public RemoteTargetFactory(AppContext conn) {

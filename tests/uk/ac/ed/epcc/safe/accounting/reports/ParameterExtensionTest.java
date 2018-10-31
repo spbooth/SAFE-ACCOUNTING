@@ -65,7 +65,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx, params);
 		
 
@@ -89,7 +89,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx, params);
 		
 
@@ -124,7 +124,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx, params);
 		
 
@@ -156,7 +156,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx, params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -191,7 +191,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -225,7 +225,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
@@ -260,7 +260,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
@@ -295,7 +295,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
@@ -330,7 +330,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -365,7 +365,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
@@ -401,7 +401,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -438,7 +438,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -475,7 +475,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -514,7 +514,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -552,7 +552,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
@@ -578,7 +578,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -608,7 +608,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -646,7 +646,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -687,7 +687,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -739,7 +739,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -767,7 +767,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
@@ -801,7 +801,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
@@ -833,7 +833,7 @@ public void testParameterUserExpression() throws Exception {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
@@ -866,7 +866,7 @@ public void testParameterUserExpression() throws Exception {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -900,7 +900,7 @@ public void testParameterReportType2() throws Exception {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx,params);
 		
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
@@ -936,7 +936,7 @@ public void testParameterReportType3() throws Exception {
 	HTMLForm form = new HTMLForm(ctx);
 	
 	// Get the params values from the Form
-	Map<String,Object> params = new HashMap<String,Object>();
+	Map<String,Object> params = new HashMap<>();
 	ReportBuilderTest.setupParams(ctx,params);
 	
 	ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");

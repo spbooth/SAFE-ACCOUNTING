@@ -17,7 +17,7 @@ public class Power2LabellerTest extends WebappTestBase{
 	
 	@Test
 	public void testLabeller(){
-		Power2Labeller<Number> lab = new Power2Labeller<Number>();
+		Power2Labeller<Number> lab = new Power2Labeller<>();
 		
 		assertEquals(Integer.valueOf(1), lab.getLabel(ctx, 1));
 		assertEquals(Integer.valueOf(2), lab.getLabel(ctx, 2));

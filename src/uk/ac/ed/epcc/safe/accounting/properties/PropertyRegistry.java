@@ -74,7 +74,7 @@ public class PropertyRegistry extends FixedPropertyFinder {
 	
 	@Override
 	public PropertyFinder copy() {
-		return new FixedPropertyFinder(name,getDescription(),new HashMap<String, PropertyTag>(registry));
+		return new FixedPropertyFinder(name,getDescription(),new HashMap<>(registry));
 	}
 	/** prevent further modifications to this regismenttry
 	 * For a statically allocated PropertyREgistry this can be

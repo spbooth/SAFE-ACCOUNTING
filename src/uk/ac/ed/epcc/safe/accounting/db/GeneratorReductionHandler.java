@@ -15,7 +15,6 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -76,10 +75,10 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 	public  Map<ExpressionTuple, ReductionMapResult> getIndexedReductionMap( Set<ReductionTarget> sum, RecordSelector selector) throws Exception{
 		if( ! compatible(sum)){
 			// can't do anything
-			return new HashMap<ExpressionTuple, ReductionMapResult>();
+			return new HashMap<>();
 		}
 			// default to iterating. e.g a non SQL filter or property
-			Set<PropExpression> keys = new HashSet<PropExpression>();
+			Set<PropExpression> keys = new HashSet<>();
 			
 			for(ReductionTarget r : sum){
 				if(r.getReduction() == Reduction.INDEX){
@@ -87,7 +86,7 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 				}
 			}
 			// Build by iterating over records.
-			Map<ExpressionTuple, ReductionMapResult> result = new HashMap<ExpressionTuple, ReductionMapResult>();
+			Map<ExpressionTuple, ReductionMapResult> result = new HashMap<>();
 			try(CloseableIterator<ExpressionTargetContainer> it = fac.getExpressionIterator(selector)){
 				while(it.hasNext()){
 					ExpressionTargetContainer rec = it.next();
@@ -135,7 +134,7 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 	public <I> Map<I, Number> getReductionMap(PropExpression<I> index,
 			ReductionTarget<Number> property, RecordSelector selector)
 			throws Exception, InvalidPropertyException {
-		Map<I,Number> result = new HashMap<I, Number>();
+		Map<I,Number> result = new HashMap<>();
 		try(CloseableIterator<ExpressionTargetContainer> it = fac.getExpressionIterator(selector)){
 			while(it.hasNext()){
 				ExpressionTargetContainer et = it.next();

@@ -33,9 +33,9 @@ public class AppUserUploadParseTargetPlugin<A extends AppUser,R> extends NameFin
 	public static final Feature MAKE_ON_UPLOAD_FEATURE = new Feature("person.make_on_upload",true,"On a person upload unknown users will be created as well as existing ones updated");
 	
 	private static final PropertyRegistry person_registy = new PropertyRegistry("appuser","Properties associated with the Person class");
-    public static final PropertyTag<String> WEBNAME_PROP = new PropertyTag<String>(person_registy,WebNameFinder.WEB_NAME,String.class,"Web authenticated REMOTE_USER name");
-    public static final PropertyTag<String> EMAIL_PROP = new PropertyTag<String>(person_registy,EmailNameFinder.EMAIL,String.class,"Users Email address");
-    public static final PropertyTag<Date> SIGNUP_PROP = new PropertyTag<Date>(person_registy,SignupDateComposite.SIGNUP_DATE,Date.class,"First access to system");
+    public static final PropertyTag<String> WEBNAME_PROP = new PropertyTag<>(person_registy,WebNameFinder.WEB_NAME,String.class,"Web authenticated REMOTE_USER name");
+    public static final PropertyTag<String> EMAIL_PROP = new PropertyTag<>(person_registy,EmailNameFinder.EMAIL,String.class,"Users Email address");
+    public static final PropertyTag<Date> SIGNUP_PROP = new PropertyTag<>(person_registy,SignupDateComposite.SIGNUP_DATE,Date.class,"First access to system");
 	
     
 	
@@ -64,8 +64,8 @@ public class AppUserUploadParseTargetPlugin<A extends AppUser,R> extends NameFin
 			PropertyRegistry role_reg = new PropertyRegistry("roles", "role properties");
 			for( String role :  role_list){
 				try {
-					PropertyTag<Boolean> role_tag = new PropertyTag<Boolean>(role_reg, role, Boolean.class);
-					mapi2.put(role_tag, new RoleAccessor<A>(serv, role));
+					PropertyTag<Boolean> role_tag = new PropertyTag<>(role_reg, role, Boolean.class);
+					mapi2.put(role_tag, new RoleAccessor<>(serv, role));
 				}catch(Exception t) {
 					getLogger().error("Error making role accessor for ["+role+"]", t);
 				}

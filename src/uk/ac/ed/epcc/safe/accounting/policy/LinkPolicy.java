@@ -146,9 +146,9 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 			   remote_tag=ref_tag;
 			   remote_fac=(UsageRecordFactory) remote_tag.getFactory(c);
 			   remote_etf = ExpressionCast.getExpressionTargetFactory(remote_fac);
-			   match_map = new HashMap<PropertyTag, PropertyTag>();
-			   inside_date_properties = new HashSet<PropertyTag>();
-			   copy_properties = new HashMap<PropertyTag,PropertyTag>();
+			   match_map = new HashMap<>();
+			   inside_date_properties = new HashSet<>();
+			   copy_properties = new HashMap<>();
 			   String prefix =LINK_POLICY_LINK+table+".";
 			   PropertyFinder remote_finder=remote_fac.getFinder();
 			   for(PropertyTag local_tag : prev.getProperties()){
@@ -317,7 +317,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 		hb.addTable(operator.getContext(),makeMappingTable(copy_properties));
 	}
 	private Table makeMappingTable(Map<PropertyTag,PropertyTag> map){
-		Table<String,PropertyTag> t = new Table<String,PropertyTag>();
+		Table<String,PropertyTag> t = new Table<>();
 		if( map != null ){
 			for(PropertyTag key : map.keySet()){
 				t.put("Local property", key, key.getFullName());
@@ -348,7 +348,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext conn) throws TransitionException {
-			TableInput<UsageRecordFactory> input = new TableInput<UsageRecordFactory>(conn,UsageRecordFactory.class);
+			TableInput<UsageRecordFactory> input = new TableInput<>(conn,UsageRecordFactory.class);
 			f.addInput("table", "Master table", input);
 			if( remote_tag != null ){
 				f.put("table", remote_tag.getTable());
@@ -357,7 +357,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 		}
 	}
 	public Map<TableTransitionKey, Transition> getTableTransitions() {
-		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
+		Map<TableTransitionKey,Transition> result = new HashMap<>();
 		result.put(new AdminOperationKey("Set Master", "Set the master table for LinkPolicy"), new SetRemoteTransition());
 		return result;
 	}

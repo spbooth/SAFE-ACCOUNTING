@@ -34,14 +34,14 @@ public class LASSiParserTest extends AbstractRecordTestCase {
 	}
 
 	private static final String testDataPath = "./LASSiData.txt";
-	private static final Collection<RecordText> goodRecords = new ArrayList<RecordText>();
-	private static final Collection<BadRecordText> badTexts = new ArrayList<BadRecordText>();
+	private static final Collection<RecordText> goodRecords = new ArrayList<>();
+	private static final Collection<BadRecordText> badTexts = new ArrayList<>();
 	
 	
 	@Test
 	public void testParse() { 
 		
-		ArrayList<String> records = new ArrayList<String>();
+		ArrayList<String> records = new ArrayList<>();
 		
 		try {
 			DataInputStream in = new DataInputStream( getClass().getResourceAsStream(testDataPath) );

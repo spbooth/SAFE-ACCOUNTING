@@ -70,8 +70,8 @@ public class ValueParserPolicy implements
 	private ValueParserService serv;
 	private boolean use_xml=false;
 	private String format;
-	private Map<PropertyTag,ValueParser> cache=new HashMap<PropertyTag,ValueParser>();
-	private Map<Class,ValueParser> defaultParsers= new HashMap<Class,ValueParser>();
+	private Map<PropertyTag,ValueParser> cache=new HashMap<>();
+	private Map<Class,ValueParser> defaultParsers= new HashMap<>();
 	
 	public ValueParserPolicy(AppContext conn){
 		serv = conn.getService(ValueParserService.class);

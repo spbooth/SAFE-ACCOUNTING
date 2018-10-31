@@ -44,50 +44,50 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 
 	private static final PropertyRegistry alps_reg = new PropertyRegistry("alps", "Properties from the alps log");
 	@AutoTable(target=Integer.class, unique=true)
-	public static final PropertyTag<Integer> ALPS_ID = new PropertyTag<Integer>(alps_reg, "apid", Integer.class, "Alps job id");
+	public static final PropertyTag<Integer> ALPS_ID = new PropertyTag<>(alps_reg, "apid", Integer.class, "Alps job id");
 	@AutoTable(target=Date.class, unique=true)
-	public static final PropertyTag<Date> SUBMISSION_TIMESTAMP = new PropertyTag<Date>(alps_reg, "alpsBootTime", Date.class, "Time alps system started");
+	public static final PropertyTag<Date> SUBMISSION_TIMESTAMP = new PropertyTag<>(alps_reg, "alpsBootTime", Date.class, "Time alps system started");
 
 	
 	@AutoTable(target=String.class)
-	public static final PropertyTag<String> APRUN_TAG = new PropertyTag<String>(alps_reg, "aprun_entry_tag", String.class, "Alps log aprun tag");
+	public static final PropertyTag<String> APRUN_TAG = new PropertyTag<>(alps_reg, "aprun_entry_tag", String.class, "Alps log aprun tag");
 	@AutoTable(target=String.class)
-	public static final PropertyTag<String> APSYS_TAG = new PropertyTag<String>(alps_reg, "apsys_entry_tag", String.class, "Alps log apsys tag");
+	public static final PropertyTag<String> APSYS_TAG = new PropertyTag<>(alps_reg, "apsys_entry_tag", String.class, "Alps log apsys tag");
 	
 
 	@AutoTable(target=String.class, length=32)
-	public static final PropertyTag<String> PBS_STRING_ID = new PropertyTag<String>(alps_reg,"batch_string_id",String.class,"Full Batch job identifier");
+	public static final PropertyTag<String> PBS_STRING_ID = new PropertyTag<>(alps_reg,"batch_string_id",String.class,"Full Batch job identifier");
 	@AutoTable(target=Integer.class)
-	public static final PropertyTag<Integer> PBS_ID = new PropertyTag<Integer>(alps_reg, "batch_id", Integer.class, "Batch job id");
+	public static final PropertyTag<Integer> PBS_ID = new PropertyTag<>(alps_reg, "batch_id", Integer.class, "Batch job id");
 	@AutoTable(target=String.class)
-	public static final PropertyTag<String> PBS_ARRAY_INDEX = new PropertyTag<String>(alps_reg, "batch_array_index", String.class, "Batch job array index");
+	public static final PropertyTag<String> PBS_ARRAY_INDEX = new PropertyTag<>(alps_reg, "batch_array_index", String.class, "Batch job array index");
 
 	
 	@AutoTable(target=Integer.class)
-	public static final PropertyTag<Integer> USER_ID = new PropertyTag<Integer>(alps_reg, "user", Integer.class, "User");
+	public static final PropertyTag<Integer> USER_ID = new PropertyTag<>(alps_reg, "user", Integer.class, "User");
 	@AutoTable(target=String.class)
-	public static final PropertyTag<String> HOST_NAME = new PropertyTag<String>(alps_reg, "hostname", String.class, "Hostname");
+	public static final PropertyTag<String> HOST_NAME = new PropertyTag<>(alps_reg, "hostname", String.class, "Hostname");
 	@AutoTable(target=Integer.class)
-	public static final PropertyTag<Integer> NODE_COUNT = new PropertyTag<Integer>(alps_reg, "num_nodes", Integer.class, "Number of nodes");
+	public static final PropertyTag<Integer> NODE_COUNT = new PropertyTag<>(alps_reg, "num_nodes", Integer.class, "Number of nodes");
 	@AutoTable(target=String.class, length=1024)
-	public static final PropertyTag<String> NODE_LIST = new PropertyTag<String>(alps_reg, "node_list", String.class, "Node list");
+	public static final PropertyTag<String> NODE_LIST = new PropertyTag<>(alps_reg, "node_list", String.class, "Node list");
 	
 		
 	@AutoTable(target=Date.class)
-	public static final PropertyTag<Date> APRUN_START_TIMESTAMP = new PropertyTag<Date>(alps_reg, "aprunStartTime", Date.class, "Timestamp of starting aprun record");
+	public static final PropertyTag<Date> APRUN_START_TIMESTAMP = new PropertyTag<>(alps_reg, "aprunStartTime", Date.class, "Timestamp of starting aprun record");
 	@AutoTable(target=Date.class)
-	public static final PropertyTag<Date> APSYS_END_TIMESTAMP = new PropertyTag<Date>(alps_reg, "apsysEndTime", Date.class, "Timestamp of finishing apsys record");
+	public static final PropertyTag<Date> APSYS_END_TIMESTAMP = new PropertyTag<>(alps_reg, "apsysEndTime", Date.class, "Timestamp of finishing apsys record");
 	@AutoTable(target=String.class, length=512)
-	public static final PropertyTag<String> CWD = new PropertyTag<String>(alps_reg, "cwd", String.class, "Current working directory");
+	public static final PropertyTag<String> CWD = new PropertyTag<>(alps_reg, "cwd", String.class, "Current working directory");
 	@AutoTable(target=String.class, length=4096)
-	public static final PropertyTag<String> APRUN_CMD_STRING = new PropertyTag<String>(alps_reg, "cmd_line", String.class, "Command line");
+	public static final PropertyTag<String> APRUN_CMD_STRING = new PropertyTag<>(alps_reg, "cmd_line", String.class, "Command line");
 	
 	@AutoTable(target=String.class)
-	public static final PropertyTag<String> EXIT_CODE = new PropertyTag<String>(alps_reg, "exit_code", String.class, "Exit code");
+	public static final PropertyTag<String> EXIT_CODE = new PropertyTag<>(alps_reg, "exit_code", String.class, "Exit code");
 	@AutoTable(target=String.class, length=512)
-	public static final PropertyTag<String> EXIT_CODE_ARRAY = new PropertyTag<String>(alps_reg, "exitcode_array", String.class, "Exit code array");
+	public static final PropertyTag<String> EXIT_CODE_ARRAY = new PropertyTag<>(alps_reg, "exitcode_array", String.class, "Exit code array");
 	@AutoTable(target=String.class, length=512)
-	public static final PropertyTag<String> EXIT_SIGNAL_ARRAY = new PropertyTag<String>(alps_reg, "exitsignal_array", String.class, "Exit signal array");
+	public static final PropertyTag<String> EXIT_SIGNAL_ARRAY = new PropertyTag<>(alps_reg, "exitsignal_array", String.class, "Exit signal array");
 	public static class PBSIdParser implements ContainerEntryMaker{
 
 		@Override

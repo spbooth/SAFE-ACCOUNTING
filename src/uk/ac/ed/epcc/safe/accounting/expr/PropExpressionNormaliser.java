@@ -171,8 +171,8 @@ public class PropExpressionNormaliser implements PropExpressionVisitor<PropExpre
 				return expression;
 			}
 			// convert numerically as this may allow SQLExpression optimisation
-			return new BinaryPropExpression(new BinaryPropExpression(expression, Operator.MUL, new ConstPropExpression<Number>(Number.class, resolution)),
-				Operator.DIV, new ConstPropExpression<Number>(Number.class, 1000L));
+			return new BinaryPropExpression(new BinaryPropExpression(expression, Operator.MUL, new ConstPropExpression<>(Number.class, resolution)),
+				Operator.DIV, new ConstPropExpression<>(Number.class, 1000L));
 		}
 			
 		return d;

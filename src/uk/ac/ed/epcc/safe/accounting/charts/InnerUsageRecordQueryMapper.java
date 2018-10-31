@@ -91,7 +91,7 @@ public class InnerUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 		AndRecordSelector selector = new AndRecordSelector(sel);
 		selector.add(new PeriodOverlapRecordSelector(new Period(start,end), start_prop, end_prop,OverlapType.INNER,cutoff));
 		
-		Map<Integer,Number> res = new HashMap<Integer,Number>();
+		Map<Integer,Number> res = new HashMap<>();
 		try{
 			NumberReductionTarget sum_target;
 			if( red == Reduction.AVG){
@@ -105,7 +105,7 @@ public class InnerUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 					res.put(set,n);
 				}
 			}else{
-				Set<ReductionTarget> req = new LinkedHashSet<ReductionTarget>();
+				Set<ReductionTarget> req = new LinkedHashSet<>();
 				req.add(new IndexReduction(key_prop));
 				req.add(sum_target);
 				Map<ExpressionTuple, ReductionMapResult> dat = o.getIndexedReductionMap(req, selector);

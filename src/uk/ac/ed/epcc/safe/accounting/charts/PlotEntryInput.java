@@ -53,7 +53,7 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 		}else {
 			prefix="";
 		}
-		items = new LinkedHashMap<String, PlotEntry>();
+		items = new LinkedHashMap<>();
 		if( producer != null){
 			for( PlotEntry e : PlotEntry.getPlotSet(producer.getFinder(),conn, tag)){
 				if( e.compatible(producer)){

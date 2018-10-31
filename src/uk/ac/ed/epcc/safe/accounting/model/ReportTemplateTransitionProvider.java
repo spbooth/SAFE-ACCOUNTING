@@ -25,11 +25,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import javax.xml.transform.TransformerException;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.model.ReportTemplateLog.ReportLogFactory;
@@ -38,7 +35,6 @@ import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
-import uk.ac.ed.epcc.webapp.config.OverrideConfigService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
 import uk.ac.ed.epcc.webapp.content.Icon;
@@ -185,7 +181,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				getLogger().error("Error making report", e);
 				return new MessageResult("internal_error");
 			}
-			return new ChainedTransitionResult<Report, ReportTemplateKey>(ReportTemplateTransitionProvider.this, target, PREVIEW);
+			return new ChainedTransitionResult<>(ReportTemplateTransitionProvider.this, target, PREVIEW);
 		}
 		
 	}
@@ -287,7 +283,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	public ReportTemplateTransitionProvider(AppContext conn){
 		super(conn);
 		ReportTypeRegistry reg = ReportTypeRegistry.getInstance(conn);
-		this.fac = new ReportTemplateFactory<ReportTemplate>(conn);
+		this.fac = new ReportTemplateFactory<>(conn);
 		if (LOG_REPORT_USE.isEnabled(conn)) {
 			this.logFac = new ReportLogFactory(conn, conn.getService(SessionService.class).getLoginFactory(), fac);
 		}
@@ -314,8 +310,8 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		
 		
 			
-			Map<String, Object> parameters = new HashMap<String, Object>();
-			Set<String> contextParameters = new HashSet<String>();
+			Map<String, Object> parameters = new HashMap<>();
+			Set<String> contextParameters = new HashSet<>();
 			for (String p : id) {
 				boolean isContextParam = false; 
 				if (p.startsWith(FORM_PARAMETER_PREFIX)) {
@@ -342,7 +338,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 
 	@Override
 	public LinkedList<String> getID(Report target) {
-		LinkedList<String> result = new LinkedList<String>();
+		LinkedList<String> result = new LinkedList<>();
 		Map<String, Object> parameters = target.getParameters();
 		Collection<String> contextParameters = target.getContextParameters();
 		if (parameters != null) {
@@ -426,7 +422,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	 * @throws ActionException
 	 */
 	public Report getTargetReport(Form f,Report orig) throws ActionException{
-		LinkedHashMap<String,Object> new_param = new LinkedHashMap<String, Object>();
+		LinkedHashMap<String,Object> new_param = new LinkedHashMap<>();
 		Map<String, Object> param = orig.getParameters();
 		Collection<String> contextParameters = orig.getContextParameters();
 		setMap(new_param, orig.getContextParameters(), f, true);
@@ -458,7 +454,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			// access control
 			return null;
 		}
-		Map<String, Object> params = new HashMap<String, Object>(reportParameters);
+		Map<String, Object> params = new HashMap<>(reportParameters);
 		boolean isValid = builder.extractReportParametersFromForm(form, params);
 		if (!isValid) {
 			return null;

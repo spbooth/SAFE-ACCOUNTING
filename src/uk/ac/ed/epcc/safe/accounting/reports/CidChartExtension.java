@@ -43,7 +43,7 @@ import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
 
 
 public class CidChartExtension extends ChartExtension {
-    private final Map<String,MimeStreamData>  data = new HashMap<String, MimeStreamData>();
+    private final Map<String,MimeStreamData>  data = new HashMap<>();
     private int count=0;
     private Random rng;
 	public CidChartExtension(AppContext c,NumberFormat nf) throws ParserConfigurationException {

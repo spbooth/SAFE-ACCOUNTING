@@ -91,7 +91,7 @@ public class ErrorSet
       this.max_details = max_details;
     }
 
-    Set<Detail> fails = new HashSet<Detail>();
+    Set<Detail> fails = new HashSet<>();
 
     public void add(String value, Throwable t)
     {
@@ -133,7 +133,7 @@ public class ErrorSet
   }
   private String name="";
 
-  private java.util.Map<String, Entry> reg = new TreeMap<String, Entry>();
+  private java.util.Map<String, Entry> reg = new TreeMap<>();
 
   private int max_details=-1;
   private int max_entry=-1;
@@ -287,7 +287,7 @@ public class ErrorSet
    */
   public Collection<Detail> getAllErrorDetails()
   {
-    ArrayList<Detail> allDetails = new ArrayList<Detail>();
+    ArrayList<Detail> allDetails = new ArrayList<>();
     for(Entry e : this.reg.values())
       for(Detail d : e.fails)
         allDetails.add(d);

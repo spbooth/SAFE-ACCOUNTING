@@ -54,10 +54,10 @@ public class AccountingTableCreator extends AbstractContexed implements FormCrea
 	}
 	public void buildCreationForm(String type_name,Form f) throws Exception {
 		f.addInput(TABLE, "Name of table to create", new NewTableInput(conn));
-		ClassInput<UsageRecordFactory> handler_input = new ClassInput<UsageRecordFactory>(conn, UsageRecordFactory.class);
+		ClassInput<UsageRecordFactory> handler_input = new ClassInput<>(conn, UsageRecordFactory.class);
 		handler_input.setValue(conn.getInitParameter("accounting_handler.default", "ConfigUsageRecordFactory"));
 		f.addInput(HANDLER,"Table handler type",handler_input);
-		f.addInput(PARSER,"Parser type",new ClassInput<PropertyContainerParser>(conn, PropertyContainerParser.class));
+		f.addInput(PARSER,"Parser type",new ClassInput<>(conn, PropertyContainerParser.class));
 	
 		f.addAction("Create", new CreateAction());
 	}

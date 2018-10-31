@@ -176,7 +176,7 @@ public class AliasPropertyPolicy extends BasePolicy implements TableTransitionCo
 		}
 	}
 	public Map<TableTransitionKey, Transition> getTableTransitions() {
-		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
+		Map<TableTransitionKey,Transition> result = new HashMap<>();
 		// add transitions here
 		result.put(new AdminOperationKey( "AddDerivedProperty"),new AddDerivedTransition());
 		return result;

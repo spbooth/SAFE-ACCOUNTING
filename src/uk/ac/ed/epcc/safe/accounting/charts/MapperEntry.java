@@ -213,8 +213,8 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 						// we can save the time back by narrowing the cutoff based on the filter
 						AndRecordSelector fil = new AndRecordSelector(sel);
 						fil.add(new PeriodOverlapRecordSelector(period, start,end,OverlapType.ANY,cutoff));
-						fil.add(new SelectClause<Duration>(duration,MatchCondition.GT,new Duration(0L,1L)));
-						fil.add(new SelectClause<Date>(start,MatchCondition.GT,new Date(0L)));
+						fil.add(new SelectClause<>(duration,MatchCondition.GT,new Duration(0L,1L)));
+						fil.add(new SelectClause<>(start,MatchCondition.GT,new Date(0L)));
 						
 						Number calc_cutoff = null;
 						
@@ -265,8 +265,8 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     	if( e.getStartProperty() != null && allow_overlap){
     		res.add(new PeriodOverlapRecordSelector(new Period(start,end), e.getStartProperty(), e.getEndProperty(),OverlapType.ANY,cutoff));
     	}else{
-    		res.add(new SelectClause<Date>(e.getEndProperty(), MatchCondition.GT, start));
-    		res.add(new SelectClause<Date>(e.getEndProperty(), MatchCondition.LE, end));
+    		res.add(new SelectClause<>(e.getEndProperty(), MatchCondition.GT, start));
+    		res.add(new SelectClause<>(e.getEndProperty(), MatchCondition.LE, end));
     	}
     	return res;
     	
@@ -799,7 +799,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 	   FilteredProperties prop = new FilteredProperties(c.getService(ConfigService.class).getServiceProperties(), GROUP_ENTRY_BASE,mode);
 		   
 		  
-		   Set<MapperEntry> set = new LinkedHashSet<MapperEntry>();
+		   Set<MapperEntry> set = new LinkedHashSet<>();
 		   
 		   String list = prop.getProperty("list");
 		   if( list != null ){
@@ -881,7 +881,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
    public static Set<MapperEntry> getMappers(AppContext c,UsageProducer up,String mode){
 	   // force load of properties
 	   PropertyFinder finder = up.getFinder();
-	   Set<MapperEntry> res = new LinkedHashSet<MapperEntry>();
+	   Set<MapperEntry> res = new LinkedHashSet<>();
 	   for(MapperEntry e: getMapperSet(finder,c,mode)){
 		   if( e.compatible(up)){
 			   res.add(e);

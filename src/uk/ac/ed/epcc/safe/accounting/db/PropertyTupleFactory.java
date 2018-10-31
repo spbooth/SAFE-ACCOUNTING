@@ -93,7 +93,7 @@ Tagged{
 			ReferenceTag<A, AF> tag = (ReferenceTag<A, AF>) refs.find(IndexedReference.class,fac.getTag());
 			if( tag != null ){
 				member_tags.add(tag);
-				map.put(tag, new TupleSelfSQLValue<A,AF,T>(this, fac));
+				map.put(tag, new TupleSelfSQLValue<>(this, fac));
 			}
 		}
 		// Allow derived properties to be set for references (and time) properties.
@@ -274,7 +274,7 @@ Tagged{
 		try{
 			return this.new TupleIterator(FilterConverter.convert(filter),skip,count);
 		}catch(NoSQLFilterException e){
-			return new SkipIterator<T>(new TupleIterator(filter), skip, count);
+			return new SkipIterator<>(new TupleIterator(filter), skip, count);
 		}
 	}
 
@@ -292,14 +292,14 @@ Tagged{
 	@Override
 	public final <PT> Set<PT> getValues(PropertyTag<PT> tag, RecordSelector selector) throws DataException, InvalidExpressionException, CannotFilterException {
 		if( ! hasProperty(tag)){
-			return new HashSet<PT>();
+			return new HashSet<>();
 		}
 		BaseFilter<T> filter = getFilter(selector);	
 		try{
 			TuplePropertyMaker<T,PT> finder = new TuplePropertyMaker<T,PT>(map,this,tag, true);			
 			return finder.find(FilterConverter.convert(filter));
 		}catch(CannotUseSQLException e){
-			Set<PT> result = new HashSet<PT>();
+			Set<PT> result = new HashSet<>();
 			for(T o : makeResult(filter)){
 				result.add(o.evaluateExpression(tag));
 			}

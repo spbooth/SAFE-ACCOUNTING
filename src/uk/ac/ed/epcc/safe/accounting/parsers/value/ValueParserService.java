@@ -78,7 +78,7 @@ public class ValueParserService extends AbstractContexed implements  AppContextS
 	 */
 	public ValueParserService(AppContext context) {
 		super(context);
-		this.cachedParsers = new HashMap<String, ValueParser>();
+		this.cachedParsers = new HashMap<>();
        
 		
 	}

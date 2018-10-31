@@ -145,7 +145,7 @@ public class ReportGeneratorApp implements Command {
 		}
 		boolean verbose = opts.containsOption(OPT_VERB);
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		
 		String reportTemplateFileName = null;	
 		File outputFile = null;

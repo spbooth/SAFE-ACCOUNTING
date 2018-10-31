@@ -54,7 +54,7 @@ public class AggregationTableCreator extends AbstractContexed implements FormCre
 	}
 	public void buildCreationForm(String type_name,Form f) throws Exception {
 		f.addInput(TABLE, "Name of table to create", new NewTableInput(conn));
-		ClassInput<AggregateUsageRecordFactory> handler_input = new ClassInput<AggregateUsageRecordFactory>(conn, AggregateUsageRecordFactory.class);
+		ClassInput<AggregateUsageRecordFactory> handler_input = new ClassInput<>(conn, AggregateUsageRecordFactory.class);
 		handler_input.setValue(conn.getInitParameter("aggregate_handler.default", "DailyUsageRecordFactory"));
 		f.addInput(HANDLER,"Table handler type",handler_input);
 		ConstructedObjectInput<UsageRecordFactory> master_input = new ConstructedObjectInput<>(conn, UsageRecordFactory.class);
@@ -66,7 +66,6 @@ public class AggregationTableCreator extends AbstractContexed implements FormCre
 
 	public class CreateAction extends FormAction{
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public FormResult action(Form f) throws ActionException {
 			try{

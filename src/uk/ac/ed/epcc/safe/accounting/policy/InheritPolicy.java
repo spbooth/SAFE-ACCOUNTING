@@ -57,7 +57,7 @@ public class InheritPolicy extends BasePolicy implements SummaryProvider,ConfigP
 						continue;
 					}
 					if( parents == null ){
-						parents = new LinkedHashSet<ReferenceTag>();
+						parents = new LinkedHashSet<>();
 					}
 					parents.add(parent);
 					IndexedProducer prod = parent.getFactory(ctx);

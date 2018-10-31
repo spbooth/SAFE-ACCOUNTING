@@ -28,7 +28,7 @@ public class NegatePropExpression extends BinaryPropExpression {
 
 	public NegatePropExpression(PropExpression<? extends Number> b)
 			throws PropertyCastException {
-		super(new ConstPropExpression<Double>(Double.class,0.0), Operator.SUB, b);
+		super(new ConstPropExpression<>(Double.class,0.0), Operator.SUB, b);
 	}
 
 }

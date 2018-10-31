@@ -42,7 +42,7 @@ public class Eddie2TestCase extends WebappTestBase {
 	public void testProject() throws Exception {		
 		
 		ReportBuilder builder = new ReportBuilder(ctx,"ProjectUsage.xml","report.xsd");
-		Map<String,Object> params=new HashMap<String,Object>();	
+		Map<String,Object> params=new HashMap<>();	
 	    setupParams(ctx, params);
 	    builder.setupExtensions(builder.getReportTypeReg().getReportType("XML"),params);
 	    params.put("StartDate", new Date(110,9,1));

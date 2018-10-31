@@ -25,7 +25,6 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
@@ -62,7 +61,7 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 			int skips=0;
 			default_map=defs;
 			// Make sure iteration order is consistent
-			this.sum=new LinkedHashSet<ReductionTarget>(targets);
+			this.sum=new LinkedHashSet<>(targets);
 			//Logger log = getContext().getService(LoggerService.class).getLogger(getClass());
 			//TODO consider using a wider variety of exceptions here.
 			for(ReductionTarget target : sum){
@@ -86,7 +85,7 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 					}
 					// the expression does not resolve
 					if( skip == null ){
-						skip = new HashSet<ReductionTarget>();
+						skip = new HashSet<>();
 					}
 					skip.add(target);
 					skips++;
@@ -155,7 +154,7 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 
 		@Override
 		protected ExpressionTuple makeKey(ResultSet rs) throws DataException, SQLException {
-			Map<PropExpression,Object> map = new HashMap<PropExpression, Object>();
+			Map<PropExpression,Object> map = new HashMap<>();
 			int pos=0;  // This is expression count NOT fields super-class keeps track
 			for(ReductionTarget target : sum){
 		

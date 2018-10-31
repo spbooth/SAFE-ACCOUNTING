@@ -136,7 +136,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 	 * 
 	 */
 	protected LinkedList<UsageRecordListener> makeListeners() {
-		LinkedList<UsageRecordListener> result= new LinkedList<UsageRecordListener>();
+		LinkedList<UsageRecordListener> result= new LinkedList<>();
 		log.debug("ListenerPolicy list="+list);
 		if( list != null && list.trim().length() > 0){
 			String tables[] = list.trim().split(",");
@@ -244,7 +244,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext c) throws TransitionException {
-			SetInput<String> input = new SetInput<String>();
+			SetInput<String> input = new SetInput<>();
 			for(String s : list.split(",")){
 				input.addChoice(s);
 			}
@@ -268,7 +268,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 				TableInput<UsageRecordListener> input = (TableInput<UsageRecordListener>) f.getInput("Listener");
 				ConfigService serv = ctx.getService(ConfigService.class);
 				String list = serv.getServiceProperties().getProperty(PREFIX+table);
-				Set<String> set = new HashSet<String>();
+				Set<String> set = new HashSet<>();
 				for(String s : list.split(",")){
 					set.add(s);
 				}
@@ -290,7 +290,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 		public void buildForm(Form f, DataObjectFactory target,
 			AppContext c) throws TransitionException {
 			
-			TableInput<UsageRecordListener> input = new TableInput<UsageRecordListener>(ctx, UsageRecordListener.class);
+			TableInput<UsageRecordListener> input = new TableInput<>(ctx, UsageRecordListener.class);
 			
 			f.addInput("Listener", "Listener to Add", input);
 			f.addAction("Add", new AddListenerAction(target));
@@ -298,7 +298,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 		}
 	}
 	public Map<TableTransitionKey, Transition> getTableTransitions() {
-		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey,Transition>();
+		Map<TableTransitionKey,Transition> result = new HashMap<>();
 		result.put(new AdminOperationKey( "Add Listener"),new AddListenerTransition());
 		if( list != null  && list.length() > 0){
 			result.put(new AdminOperationKey("Remove Listener"),new DeleteListenerTransition());

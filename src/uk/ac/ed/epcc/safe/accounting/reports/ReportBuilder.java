@@ -258,7 +258,7 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 		}
 		resetErrors();
 		
-		validators=new LinkedHashSet<TemplateValidator>();
+		validators=new LinkedHashSet<>();
 		if( timer != null) {
 			timer.startTimer("docBuilder");
 		}
@@ -320,7 +320,7 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 	 * 
 	 */
 	private void resetErrors() {
-		error_sets=new HashSet<ErrorSet>();
+		error_sets=new HashSet<>();
 		general_error=new ErrorSet();
 		general_error.setName("general");
 		general_error.setMaxDetails(16);
@@ -350,7 +350,7 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 	public static final String REPORT_PARAMS_ATTR = "report.params";
 	
 	private Set<String> getParameterDefNames(){
-		Set<String> names = new HashSet<String>();
+		Set<String> names = new HashSet<>();
 		Document pdoc = getParameterDocument();
 		if( pdoc != null ) {
 			NodeList paramNodes = pdoc.getElementsByTagNameNS(
@@ -419,7 +419,7 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 
 
 				// perform the initial transform before everything else.
-				Map<String, Object> p = new HashMap<String, Object>();
+				Map<String, Object> p = new HashMap<>();
 				p.put(RESTRICT_EXTENSION_TAG, new RestrictExtension(conn, null));
 				Transformer transformer = getXSLTransform("initial.xsl",
 						p);

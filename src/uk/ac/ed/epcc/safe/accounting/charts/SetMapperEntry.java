@@ -68,7 +68,7 @@ public class SetMapperEntry extends MapperEntry {
 		if( label == null ){
 			return null;
 		}
-		Vector<String> result = new Vector<String>();
+		Vector<String> result = new Vector<>();
 		result.add(label);
 		return result;
 	}

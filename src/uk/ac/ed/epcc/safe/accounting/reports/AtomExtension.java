@@ -73,7 +73,7 @@ public class AtomExtension extends ReportExtension {
 	private static final String SUM_ELEMENT = "Sum";
 	public static final Feature CACHE_ATOM_RESULTS = new Feature("cache.atom_results",true,"Cache atom results to optimise repeated queries in the same report");
 
-	private Map<CacheKey,AtomResult> result_cache=new HashMap<CacheKey, AtomResult>();
+	private Map<CacheKey,AtomResult> result_cache=new HashMap<>();
 	/** simple composite of a value and the corresponding expression (if known)
 	 * this allows the expression to be passed up to the formatting code.
 	 * 
@@ -169,7 +169,7 @@ public class AtomExtension extends ReportExtension {
 				addError("Bad Atom","Cannot parse Value", element);
 				throw new ParseException("Invalid Number Element");
 			}
-			return new AtomResult<Number>(null,n);
+			return new AtomResult<>(null,n);
 		}else if (SUM_ELEMENT.equals(name)) {
 			return expandSimpleReduction(element, set, period, Reduction.SUM);
 		} else if (AVERAGE_ELEMENT.equals(name)) {
@@ -179,7 +179,7 @@ public class AtomExtension extends ReportExtension {
 		} else if (MAXIMUM_ELEMENT.equals(name)) {
 			return expandSimpleReduction(element, set, period, Reduction.MAX);
 		} else if (COUNT_ELEMENT.equals(name)) {
-				return new AtomResult<Long>(StandardProperties.COUNT_PROP,producer.getRecordCount(selector));
+				return new AtomResult<>(StandardProperties.COUNT_PROP,producer.getRecordCount(selector));
 		} else if (ADD_ELEMENT.equals(name)){
 			return combine(Operator.ADD, period, set, element);
 		}else if (SUB_ELEMENT.equals(name)){
@@ -236,7 +236,7 @@ public class AtomExtension extends ReportExtension {
 		if( pos != 2 ){
 			throw new ReportException( "atom:Combine Expecting two child nodes");	
 		}
-		return new AtomResult<Number>(null,op.operate((Number)expandNumberGroup(period, set, arg[0]).value, (Number)expandNumberGroup(period, set, arg[1]).value));
+		return new AtomResult<>(null,op.operate((Number)expandNumberGroup(period, set, arg[0]).value, (Number)expandNumberGroup(period, set, arg[1]).value));
 	}
 	public String percent(Period period, RecordSet set, Node e) {
 		NumberFormat pf = NumberFormat.getPercentInstance();

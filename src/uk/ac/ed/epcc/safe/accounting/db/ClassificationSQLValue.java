@@ -73,7 +73,7 @@ public class ClassificationSQLValue<H extends DataObject, T extends DataObject> 
 			T peer = ((NameFinder<T>)producer).findFromString(val);
 			IndexedReference ref = producer.makeReference(peer);
 			if( peer == null ){
-				return new FalseFilter<H>(target);
+				return new FalseFilter<>(target);
 			}
 			return ((FilterProvider)a).getFilter(match, ref);
 		}

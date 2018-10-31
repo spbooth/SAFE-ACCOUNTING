@@ -21,9 +21,6 @@ import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.jdbc.table.IntegerFieldType;
-import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
@@ -65,7 +62,7 @@ public class ReportTemplate extends DataObject implements Retirable{
 		try {
 			ReportBuilder b;
 			b = getBuilder();
-			Map<String,Object> params = new HashMap<String, Object>();
+			Map<String,Object> params = new HashMap<>();
 			// Only need the minimum set of extensions needed to check access
 			// so pass a null ReportType
 			b.setupExtensions(null,params);

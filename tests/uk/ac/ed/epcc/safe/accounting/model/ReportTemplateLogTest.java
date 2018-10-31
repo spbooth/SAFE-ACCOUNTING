@@ -153,7 +153,7 @@ public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<Rep
 		AppUser person = getContext().getService(SessionService.class).getCurrentPerson();
 		assertNotNull(person);
 		ReportTemplate expectedTarget = getTarget();
-		List<String> expectedParameters = new LinkedList<String>();
+		List<String> expectedParameters = new LinkedList<>();
 		fac.logReport(person, expectedTarget, expectedParameters);
 		List<ReportTemplateLog> r = fac.all().toCollection(); 
 		TestCase.assertEquals(1, r.size());
@@ -172,7 +172,7 @@ public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<Rep
 	}
 
 	private List<String> getParameters() {
-		List<String> parameters = new ArrayList<String>();
+		List<String> parameters = new ArrayList<>();
 		parameters.add("a:1");
 		parameters.add("b:2");
 		return parameters;
@@ -184,7 +184,7 @@ public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<Rep
 		return new ReportTemplateLog.ReportLogFactory(
 				context, 
 				context.getService(SessionService.class).getLoginFactory(), 
-				new ReportTemplateFactory<ReportTemplate>(context));
+				new ReportTemplateFactory<>(context));
 	}
 
 }

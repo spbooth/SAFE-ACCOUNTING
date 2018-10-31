@@ -100,7 +100,7 @@ public class TemplateServlet extends SessionServlet {
 			}
 			res.setContentType("text/html");
 			String transform_name = conn.getInitParameter("html_transform."+group,def_transform);
-			Map<String,Object> p = new HashMap<String, Object>();
+			Map<String,Object> p = new HashMap<>();
 			Transformer t = builder.getXSLTransform(transform_name, p);
 			Source s = new StreamSource(file.getResourceStream());
 			Result r = new StreamResult(res.getOutputStream());

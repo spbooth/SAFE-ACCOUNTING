@@ -71,7 +71,7 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 	public  Map<ExpressionTuple, ReductionMapResult> getIndexedReductionMap( Set<ReductionTarget> sum, RecordSelector selector) throws Exception{
 		if( ! (compatible(selector) && compatible(sum))){
 			// can't do anything
-			return new HashMap<ExpressionTuple, ReductionMapResult>();
+			return new HashMap<>();
 		}
 		try{
 			IndexReductionFinder<E> finder = new IndexReductionFinder<E>(map, sum,makeDef(sum));
@@ -117,7 +117,7 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 		
 		if( !(compatible(index) && compatible(property.getExpression())&& compatible(selector))){
 			// no matching property
-			return new HashMap<I,Number>();
+			return new HashMap<>();
 			
 		}
 		

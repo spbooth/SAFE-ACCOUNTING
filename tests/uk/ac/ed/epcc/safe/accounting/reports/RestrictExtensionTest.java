@@ -54,7 +54,7 @@ public class RestrictExtensionTest extends ExtensionTestCase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params = new HashMap<>();
 		
 		ReportBuilderTest.setupParams(ctx, params);
 		
@@ -91,7 +91,7 @@ public class RestrictExtensionTest extends ExtensionTestCase {
 		AppUser target = s.getLoginFactory().findByEmail("spb@epcc.ed.ac.uk");
 				
 		s.setCurrentPerson(target);
-		Map<String,Object> params=new HashMap<String, Object>();
+		Map<String,Object> params=new HashMap<>();
 		reportBuilder.setupExtensions(params);
 		assertFalse(reportBuilder.canUse(s,params));
 		target=s.getLoginFactory().getRealmFinder(WebNameFinder.WEB_NAME).findFromString("ngsadminuser");
@@ -111,7 +111,7 @@ public class RestrictExtensionTest extends ExtensionTestCase {
 		AppUser target = s.getLoginFactory().findByEmail("spb@epcc.ed.ac.uk");
 				
 		s.setCurrentPerson(target);
-		Map<String,Object> params=new HashMap<String, Object>();
+		Map<String,Object> params=new HashMap<>();
 		reportBuilder.setupExtensions(params);
 		assertFalse(reportBuilder.canUse(s,params));
 		
@@ -132,7 +132,7 @@ public class RestrictExtensionTest extends ExtensionTestCase {
 		AppUser target = s.getLoginFactory().findByEmail("spb@epcc.ed.ac.uk");
 				
 		s.setCurrentPerson(target);
-		Map<String,Object> params=new HashMap<String, Object>();
+		Map<String,Object> params=new HashMap<>();
 		reportBuilder.setupExtensions(params);
 		assertFalse(reportBuilder.canUse(s,params));
 		

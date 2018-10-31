@@ -71,7 +71,7 @@ public class FormatExtensionTest extends ExtensionTestCase {
 		HTMLForm form = new HTMLForm(ctx);
 
 		// Get the params values from the Form
-		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params = new HashMap<>();
 		
 		ReportBuilderTest.setupParams(ctx, params);
 		

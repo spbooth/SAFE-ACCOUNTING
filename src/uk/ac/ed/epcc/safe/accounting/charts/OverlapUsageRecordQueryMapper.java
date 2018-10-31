@@ -23,7 +23,6 @@ import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
@@ -75,7 +74,7 @@ public class OverlapUsageRecordQueryMapper<K,D extends Number> extends UsageReco
 
 	public Map<Integer, Number> getOverlapMap(UsageProducer<?> o, Date start,
 			Date end) {
-		Map<Integer,Number> res = new HashMap<Integer,Number>();
+		Map<Integer,Number> res = new HashMap<>();
 		@SuppressWarnings("unchecked")
 		OverlapHandler<?> handler = new OverlapHandler(labeller.getContext(), o);
 		try{

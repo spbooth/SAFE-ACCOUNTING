@@ -32,7 +32,7 @@ public class ReportGeneratorAppTest extends WebappTestBase{
 @Test
 	public void testHelpOption() throws Exception
 	{		
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 		//args.add("ReportGenerator");
 		args.add("-h");
 		try{
@@ -45,7 +45,7 @@ public class ReportGeneratorAppTest extends WebappTestBase{
 
 @Test
 public void testHTMLReport() throws Exception {
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 		//args.add("--");
 		args.add("-r");
 		args.add("testReport.xml");
@@ -61,7 +61,7 @@ public void testHTMLReport() throws Exception {
 	
 @Test
 public void testPDFReport() throws Exception {
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 		//args.add("--");
 		args.add("-r");
 		args.add("testReport.xml");
@@ -76,7 +76,7 @@ public void testPDFReport() throws Exception {
 	
 @Test
 public void testXMLReport() throws Exception {
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 		//args.add("--");
 		args.add("-r");
 		args.add("testReport.xml");
@@ -91,7 +91,7 @@ public void testXMLReport() throws Exception {
 	
 @Test
 public void testCSVReport() throws Exception {
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 		//args.add("--");
 		args.add("-r");
 		args.add("testReport.xml");
@@ -122,7 +122,7 @@ public void testCSVReport() throws Exception {
 		AccountingClassificationFactory school_fac = new AccountingClassificationFactory(ctx, "School");
 		Classification school = school_fac.findFromString("Biological Sciences");
 		
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 		//args.add("--");
 		args.add("-r");
 		args.add("testParameters.xml");
@@ -152,7 +152,7 @@ public void testCSVReport() throws Exception {
 	
 @Test
 	public void testChartReport() throws Exception {
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 		//args.add("--");
 		args.add("-r");
 		args.add("testCharts.xml");
@@ -181,7 +181,7 @@ public void testCSVReport() throws Exception {
 			TestDataHelper.redirectStdOut();
 		}
 		ReportGeneratorApp app = new ReportGeneratorApp(ctx);
-		app.run( new LinkedList<String>(args) );
+		app.run( new LinkedList<>(args) );
 		
 		String stdOutString;		
 		if (outputFile == null) {

@@ -37,14 +37,14 @@ import uk.ac.ed.epcc.webapp.AppContext;
 public class PasswdParser extends AbstractPropertyContainerParser {
 
 	private static final PropertyRegistry passwd = new PropertyRegistry("passwd", "Properties from a unix passwd file");
-	public static final PropertyTag<String> USERNAME = new PropertyTag<String>(passwd,"Username",String.class,"login name of user");
-	public static final PropertyTag<String> PW = new PropertyTag<String>(passwd,"Password",String.class,"encrypted password");
-	public static final PropertyTag<Number> UID = new PropertyTag<Number>(passwd,"UID",Number.class,"numerical user id");
-	public static final PropertyTag<Number> GID = new PropertyTag<Number>(passwd,"GID",Number.class,"primary group id");
+	public static final PropertyTag<String> USERNAME = new PropertyTag<>(passwd,"Username",String.class,"login name of user");
+	public static final PropertyTag<String> PW = new PropertyTag<>(passwd,"Password",String.class,"encrypted password");
+	public static final PropertyTag<Number> UID = new PropertyTag<>(passwd,"UID",Number.class,"numerical user id");
+	public static final PropertyTag<Number> GID = new PropertyTag<>(passwd,"GID",Number.class,"primary group id");
 	@AutoTable
-	public static final PropertyTag<String> GECOS = new PropertyTag<String>(passwd,"FullName",String.class,"Full name of user");
-	public static final PropertyTag<String> DIR = new PropertyTag<String>(passwd,"HomeDir",String.class,"Home directory of user");
-	public static final PropertyTag<String> SHELL = new PropertyTag<String>(passwd,"Shell",String.class,"Login shell of user");
+	public static final PropertyTag<String> GECOS = new PropertyTag<>(passwd,"FullName",String.class,"Full name of user");
+	public static final PropertyTag<String> DIR = new PropertyTag<>(passwd,"HomeDir",String.class,"Home directory of user");
+	public static final PropertyTag<String> SHELL = new PropertyTag<>(passwd,"Shell",String.class,"Login shell of user");
 	
 	@Override
 	public boolean parse(DerivedPropertyMap map, String record)

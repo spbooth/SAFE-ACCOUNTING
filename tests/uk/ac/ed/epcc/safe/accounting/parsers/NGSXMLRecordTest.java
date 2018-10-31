@@ -46,7 +46,7 @@ public class NGSXMLRecordTest extends AbstractRecordTestCase {
 	
 	@Before
 	public void setup() throws IOException{
-		Collection<String> goodRecordFileNames = new ArrayList<String>();
+		Collection<String> goodRecordFileNames = new ArrayList<>();
 		//goodRecordFileNames.add("no-namespace.xml");
 		goodRecordFileNames.add("record.0.xml");
 		goodRecordFileNames.add("record.1.xml");
@@ -61,7 +61,7 @@ public class NGSXMLRecordTest extends AbstractRecordTestCase {
 
 //		
 		// Set good records
-		this.goodRecords = new ArrayList<RecordText>();
+		this.goodRecords = new ArrayList<>();
 		for(String fileName : goodRecordFileNames) {
 			File file = new File(getFixtureDir(), fileName);
 			String record = TestDataHelper.readFileAsString(file);

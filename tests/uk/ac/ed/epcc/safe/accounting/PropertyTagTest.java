@@ -18,9 +18,9 @@ public class PropertyTagTest  {
 	public void testPattern(){
 		PropertyRegistry reg = new PropertyRegistry("test","Test properties");
 		
-		new PropertyTag<String>( reg,"good",String.class);
+		new PropertyTag<>( reg,"good",String.class);
 		try{
-			new PropertyTag<String>( reg,"bad.value",String.class);
+			new PropertyTag<>( reg,"bad.value",String.class);
 			assertTrue(" Bad value fails",false);
 		}catch(ConsistencyError e){
 			

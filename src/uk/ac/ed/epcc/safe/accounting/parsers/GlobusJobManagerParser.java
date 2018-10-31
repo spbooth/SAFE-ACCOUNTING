@@ -72,31 +72,31 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 
 	private static final PropertyRegistry globus_reg = new PropertyRegistry("globus","Properties from the globus jobmanager log");
 	@AutoTable(target=String.class)
-	public static final PropertyTag<String> GLOBUS_USERNAME = new PropertyTag<String>(globus_reg, "UserName",String.class,"Local username mapped to");
+	public static final PropertyTag<String> GLOBUS_USERNAME = new PropertyTag<>(globus_reg, "UserName",String.class,"Local username mapped to");
 	@AutoTable(target=String.class,length=128)
-	public static final PropertyTag<String> GLOBUS_DN = new PropertyTag<String>(globus_reg, "Dn",String.class,"DN used to submit job");
+	public static final PropertyTag<String> GLOBUS_DN = new PropertyTag<>(globus_reg, "Dn",String.class,"DN used to submit job");
 	@AutoTable(target=String.class,length=512)
-	public static final PropertyTag<String> GLOBUS_SUBMIT_HOST = new PropertyTag<String>(globus_reg, "SubmitHost",String.class);
+	public static final PropertyTag<String> GLOBUS_SUBMIT_HOST = new PropertyTag<>(globus_reg, "SubmitHost",String.class);
 	@AutoTable(target=String.class)
-	public static final PropertyTag<String> GLOBUS_MANAGER = new PropertyTag<String>(globus_reg, "Manager",String.class);
+	public static final PropertyTag<String> GLOBUS_MANAGER = new PropertyTag<>(globus_reg, "Manager",String.class);
 	@AutoTable(target=String.class)
-	public static final PropertyTag<String> GLOBUS_JOBID = new PropertyTag<String>(globus_reg, "JobID",String.class,"Batch system id");
+	public static final PropertyTag<String> GLOBUS_JOBID = new PropertyTag<>(globus_reg, "JobID",String.class,"Batch system id");
 	@AutoTable(target=String.class,unique=true,length=128)
-	public static final PropertyTag<String> GLOBUS_JOBTYPEID = new PropertyTag<String>(globus_reg, "JobTypeID",String.class);
+	public static final PropertyTag<String> GLOBUS_JOBTYPEID = new PropertyTag<>(globus_reg, "JobTypeID",String.class);
 	@OptionalTable
-	public static final PropertyTag<String> GLOBUS_JOBTYPE = new PropertyTag<String>(globus_reg, "JobType",String.class);
+	public static final PropertyTag<String> GLOBUS_JOBTYPE = new PropertyTag<>(globus_reg, "JobType",String.class);
 
 	@AutoTable(target=Date.class)
-	public static final PropertyTag<Date> GLOBUS_START_DATE = new PropertyTag<Date>(globus_reg, "StartTime",Date.class);
+	public static final PropertyTag<Date> GLOBUS_START_DATE = new PropertyTag<>(globus_reg, "StartTime",Date.class);
 	@AutoTable(target=Date.class)
-	public static final PropertyTag<Date> GLOBUS_END_DATE = new PropertyTag<Date>(globus_reg, "EndTime",Date.class);
+	public static final PropertyTag<Date> GLOBUS_END_DATE = new PropertyTag<>(globus_reg, "EndTime",Date.class);
 	@AutoTable(target=Date.class)
-	public static final PropertyTag<Date> GLOBUS_EXEC_DATE = new PropertyTag<Date>(globus_reg, "ExecTime",Date.class);
+	public static final PropertyTag<Date> GLOBUS_EXEC_DATE = new PropertyTag<>(globus_reg, "ExecTime",Date.class);
 	/** Id of parent record. This can't be a reference tag as there may be multiple parent tables.
 	 * This field is needed in order to identify complete records/
 	 */
 	@AutoTable(target=Integer.class)
-	public static final PropertyTag<Integer> GLOBUS_PARENT_ID = new PropertyTag<Integer>(globus_reg, "ParentID", Integer.class);
+	public static final PropertyTag<Integer> GLOBUS_PARENT_ID = new PropertyTag<>(globus_reg, "ParentID", Integer.class);
 	static{
 		globus_reg.lock();
 	}
@@ -167,9 +167,9 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 							}else{
 								long point = d.getTime();
 								AndRecordSelector sel = new AndRecordSelector();
-								sel.add(new SelectClause<String>(BatchParser.JOB_ID_PROP, job_id));
-								sel.add(new SelectClause<Date>(BatchParser.SUBMITTED_PROP, MatchCondition.GT, new Date(point-grace_millis)));
-								sel.add(new SelectClause<Date>(BatchParser.SUBMITTED_PROP, MatchCondition.LT, new Date(point+grace_millis)));
+								sel.add(new SelectClause<>(BatchParser.JOB_ID_PROP, job_id));
+								sel.add(new SelectClause<>(BatchParser.SUBMITTED_PROP, MatchCondition.GT, new Date(point-grace_millis)));
+								sel.add(new SelectClause<>(BatchParser.SUBMITTED_PROP, MatchCondition.LT, new Date(point+grace_millis)));
 								UsageRecordFactory.Use master;
 								try {
 									master = (Use) fac.find(fac.getFilter(sel));
@@ -269,7 +269,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 	public void startParse(PropertyContainer staticProps) throws Exception {
 		super.startParse(staticProps);
 		
-		manager_factories = new HashMap<String,UsageRecordFactory<?>>();
+		manager_factories = new HashMap<>();
 		String prefix = "GlobusJobmanagerParser."+tag+".";
 		Map<String,String> props = conn.getInitParameters(prefix);
 		log.debug(prefix+" returns "+props.size()+" props");

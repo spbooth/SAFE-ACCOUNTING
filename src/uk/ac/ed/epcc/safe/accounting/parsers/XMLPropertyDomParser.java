@@ -228,17 +228,17 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 			String name=key.substring(prefix.length());
 			String type=props.get(key);
 			if( type.equalsIgnoreCase("string")){
-			    new PropertyTag<String>(reg, name,String.class);
+			    new PropertyTag<>(reg, name,String.class);
 			}else if( type.equalsIgnoreCase("date")){
-				new PropertyTag<Date>(reg, name,Date.class);
+				new PropertyTag<>(reg, name,Date.class);
 			}else if( type.equalsIgnoreCase("number")){
-				new PropertyTag<Number>(reg,name, Number.class);
+				new PropertyTag<>(reg,name, Number.class);
 			}
 		}
 		// construct the target
 		
-		targets = new HashMap<PropertyTag, XPathExpression>();
-		parsers = new HashMap<PropertyTag, DomValueParser>();
+		targets = new HashMap<>();
+		parsers = new HashMap<>();
 		
 		XPath xpath = XPathFactory.newInstance().newXPath();
 	
@@ -370,7 +370,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 
 
 	public Set<PropertyTag> defines(Node record) {
-		Set<PropertyTag> result = new HashSet<PropertyTag>();
+		Set<PropertyTag> result = new HashSet<>();
 		for(PropertyTag t : targets.keySet()){
 			XPathExpression e = targets.get(t);
 			try {
@@ -431,25 +431,25 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 		// by properties
 		log.debug("typeinfo is "+info.getTypeNamespace()+" "+info.getTypeName());
 		if( info.isDerivedFrom(SCHEMA_URI, "duration", TypeInfo.DERIVATION_EXTENSION)){
-			return new DomParserAdapter<T>((ValueParser<T>) new XMLDurationParser());
+			return new DomParserAdapter<>((ValueParser<T>) new XMLDurationParser());
 		}
 		
 		if( info.isDerivedFrom(SCHEMA_URI, "dateTime", TypeInfo.DERIVATION_EXTENSION)){
 			
-			return new DomParserAdapter<T>((ValueParser<T>) new XMLDateTimeParser());
+			return new DomParserAdapter<>((ValueParser<T>) new XMLDateTimeParser());
 		}
 		
 		if( info.isDerivedFrom(SCHEMA_URI, "decimal", TypeInfo.DERIVATION_EXTENSION)){			
-			return new DomParserAdapter<T>((ValueParser<T>) new NumberParser());
+			return new DomParserAdapter<>((ValueParser<T>) new NumberParser());
 		}
 		if( info.isDerivedFrom(SCHEMA_URI, "float", TypeInfo.DERIVATION_EXTENSION)){			
-			return new DomParserAdapter<T>((ValueParser<T>) new FloatParser());
+			return new DomParserAdapter<>((ValueParser<T>) new FloatParser());
 		}
 		if( info.isDerivedFrom(SCHEMA_URI, "double", TypeInfo.DERIVATION_EXTENSION)){			
-			return new DomParserAdapter<T>((ValueParser<T>) new DoubleParser());
+			return new DomParserAdapter<>((ValueParser<T>) new DoubleParser());
 		}
 		if( info.isDerivedFrom(SCHEMA_URI, "string", TypeInfo.DERIVATION_EXTENSION)){
-			return new DomParserAdapter<T>((ValueParser<T>) new StringParser());
+			return new DomParserAdapter<>((ValueParser<T>) new StringParser());
 		}
 		return null;
 		
@@ -490,36 +490,36 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
     	// default to using target type.
 		if( clazz == String.class){
 			log.debug("string");
-			return new DomParserAdapter<T>((ValueParser<T>) new StringParser());
+			return new DomParserAdapter<>((ValueParser<T>) new StringParser());
 		}
 		if( clazz.isAssignableFrom(Date.class)){
 			log.debug("date");
-			return new DomParserAdapter<T>((ValueParser<T>) new XMLDateTimeParser());
+			return new DomParserAdapter<>((ValueParser<T>) new XMLDateTimeParser());
 		}
 		// Number first as otehrwise sub-class parsers will match
 		if( clazz.isAssignableFrom(Number.class)){
 			log.debug("number");
-			return new DomParserAdapter<T>((ValueParser<T>) new NumberParser());
+			return new DomParserAdapter<>((ValueParser<T>) new NumberParser());
 		}
 		if( clazz.isAssignableFrom(Integer.class)){
 			log.debug("integer");
-			return new DomParserAdapter<T>((ValueParser<T>)new IntegerParser());
+			return new DomParserAdapter<>((ValueParser<T>)new IntegerParser());
 		}
 		if( clazz.isAssignableFrom(Long.class)){
 			log.debug("long");
-			return new DomParserAdapter<T>((ValueParser<T>)new LongParser());
+			return new DomParserAdapter<>((ValueParser<T>)new LongParser());
 		}
 		if( clazz.isAssignableFrom(Double.class)){
 			log.debug("double");
-			return new DomParserAdapter<T>((ValueParser<T>)new DoubleParser());
+			return new DomParserAdapter<>((ValueParser<T>)new DoubleParser());
 		}
 		if( clazz.isAssignableFrom(Float.class)){
 			log.debug("float");
-			return new DomParserAdapter<T>((ValueParser<T>)new FloatParser());
+			return new DomParserAdapter<>((ValueParser<T>)new FloatParser());
 		}
 		if( clazz.isAssignableFrom(Duration.class)){
 			log.debug("duration");
-			return new DomParserAdapter<T>((ValueParser<T>) new XMLDurationParser());
+			return new DomParserAdapter<>((ValueParser<T>) new XMLDurationParser());
 		}
 	
     	return null;

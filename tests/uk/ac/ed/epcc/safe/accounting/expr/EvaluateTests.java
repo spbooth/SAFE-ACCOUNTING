@@ -26,15 +26,15 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 public class EvaluateTests extends WebappTestBase {
 	
 	public static final PropertyRegistry test = new PropertyRegistry("test", "Test registry");
-	public static final PropertyTag<Integer> INT_A = new PropertyTag<Integer>(test,"IntA",Integer.class);
-	public static final PropertyTag<Integer> INT_B = new PropertyTag<Integer>(test,"IntB",Integer.class);
-	public static final PropertyTag<Double> DOUBLE_A = new PropertyTag<Double>(test,"DoubleA",Double.class);
-	public static final PropertyTag<Double> DOUBLE_B = new PropertyTag<Double>(test,"DoubleB",Double.class);
-	public static final PropertyTag<Date> DATE_A = new PropertyTag<Date>(test,"DateA",Date.class);
-	public static final PropertyTag<Date> DATE_B = new PropertyTag<Date>(test,"DateB",Date.class);
-    public static final PropertyTag<String> STRING_A = new PropertyTag<String>(test,"StringA",String.class);
+	public static final PropertyTag<Integer> INT_A = new PropertyTag<>(test,"IntA",Integer.class);
+	public static final PropertyTag<Integer> INT_B = new PropertyTag<>(test,"IntB",Integer.class);
+	public static final PropertyTag<Double> DOUBLE_A = new PropertyTag<>(test,"DoubleA",Double.class);
+	public static final PropertyTag<Double> DOUBLE_B = new PropertyTag<>(test,"DoubleB",Double.class);
+	public static final PropertyTag<Date> DATE_A = new PropertyTag<>(test,"DateA",Date.class);
+	public static final PropertyTag<Date> DATE_B = new PropertyTag<>(test,"DateB",Date.class);
+    public static final PropertyTag<String> STRING_A = new PropertyTag<>(test,"StringA",String.class);
 	public static final ReferenceTag<DataObjectPropertyContainer, RemoteTargetFactory> REMOTE = new ReferenceTag<>(test, "Remote", RemoteTargetFactory.class, RemoteTargetFactory.DEFAULT_TABLE);
-	public static final PropertyTag<Long> LONG_A = new PropertyTag<Long>(test,"LongA",Long.class);
+	public static final PropertyTag<Long> LONG_A = new PropertyTag<>(test,"LongA",Long.class);
 
 	public EvaluateTests() {
 		// TODO Auto-generated constructor stub
@@ -99,7 +99,7 @@ public class EvaluateTests extends WebappTestBase {
 		DerivedPropertyMap obj = new DerivedPropertyMap(ctx);
 		obj.setProperty(DOUBLE_A, 7.0);
 		//obj.setProperty(DOUBLE_B, 5.0);
-		Number res = obj.evaluateExpression(new BinaryPropExpression(DOUBLE_A, Operator.ADD, new ConstPropExpression<Double>(Double.class, 5.0)));
+		Number res = obj.evaluateExpression(new BinaryPropExpression(DOUBLE_A, Operator.ADD, new ConstPropExpression<>(Double.class, 5.0)));
 		assertEquals(12.0, res);
 		assertTrue( res instanceof Double);
 	}

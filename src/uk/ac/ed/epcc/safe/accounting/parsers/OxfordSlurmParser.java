@@ -48,43 +48,43 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed,ConfigPa
 			new PropertyRegistry("slurm","The SLURM batch properties");
 
 	@AutoTable(unique=true)
-	public static final PropertyTag<String> JOB_ID = new PropertyTag<String>(slurm, "JobID", String.class,"Slurm JOB id");
+	public static final PropertyTag<String> JOB_ID = new PropertyTag<>(slurm, "JobID", String.class,"Slurm JOB id");
 	@AutoTable
-	public static final PropertyTag<String> JOB_ID_RAW = new PropertyTag<String>(slurm, "JobIDRaw", String.class,"RAW Slurm JOB id");
+	public static final PropertyTag<String> JOB_ID_RAW = new PropertyTag<>(slurm, "JobIDRaw", String.class,"RAW Slurm JOB id");
 	@AutoTable
-	public static final PropertyTag<String> UserName = new PropertyTag<String>(slurm, "User", String.class,"User name");
+	public static final PropertyTag<String> UserName = new PropertyTag<>(slurm, "User", String.class,"User name");
 	@AutoTable
-	public static final PropertyTag<String> GroupName = new PropertyTag<String>(slurm, "GroupName", String.class,"Group name");
+	public static final PropertyTag<String> GroupName = new PropertyTag<>(slurm, "GroupName", String.class,"Group name");
 	@AutoTable(length=64)
-	public static final PropertyTag<String> AccountName = new PropertyTag<String>(slurm, "Account", String.class,"Account name");
+	public static final PropertyTag<String> AccountName = new PropertyTag<>(slurm, "Account", String.class,"Account name");
 	@AutoTable(unique=true,length=200)
-	public static final PropertyTag<String> JobName = new PropertyTag<String>(slurm, "JobName", String.class,"Job name");
+	public static final PropertyTag<String> JobName = new PropertyTag<>(slurm, "JobName", String.class,"Job name");
 	@AutoTable
-	public static final PropertyTag<String> Partition = new PropertyTag<String>(slurm, "Partition", String.class);
+	public static final PropertyTag<String> Partition = new PropertyTag<>(slurm, "Partition", String.class);
 	@AutoTable
-	public static final PropertyTag<String> QOS = new PropertyTag<String>(slurm, "QOS", String.class,"Quality of service");
+	public static final PropertyTag<String> QOS = new PropertyTag<>(slurm, "QOS", String.class,"Quality of service");
 
 	@AutoTable(unique=true)
-	public static final PropertyTag<Date> Start = new PropertyTag<Date>(slurm,"Start",Date.class,"Job start");
+	public static final PropertyTag<Date> Start = new PropertyTag<>(slurm,"Start",Date.class,"Job start");
 	@AutoTable
-	public static final PropertyTag<Date> End = new PropertyTag<Date>(slurm,"End",Date.class,"Job end");
+	public static final PropertyTag<Date> End = new PropertyTag<>(slurm,"End",Date.class,"Job end");
 	@AutoTable
-	public static final PropertyTag<Date> Submit = new PropertyTag<Date>(slurm,"Submit",Date.class,"Job submit");
+	public static final PropertyTag<Date> Submit = new PropertyTag<>(slurm,"Submit",Date.class,"Job submit");
 
 	@AutoTable
-	public static final PropertyTag<Integer> ALLOC_CPUS = new PropertyTag<Integer>(slurm, "AllocCPUS", Integer.class,"Allocated cpus");
+	public static final PropertyTag<Integer> ALLOC_CPUS = new PropertyTag<>(slurm, "AllocCPUS", Integer.class,"Allocated cpus");
 	@AutoTable
-	public static final PropertyTag<String> ALLOC_GRES = new PropertyTag<String>(slurm, "AllocGRES", String.class,"Allocated GRES");
+	public static final PropertyTag<String> ALLOC_GRES = new PropertyTag<>(slurm, "AllocGRES", String.class,"Allocated GRES");
 	@AutoTable
-	public static final PropertyTag<Integer> NNODE = new PropertyTag<Integer>(slurm, "NNodes", Integer.class,"Nodes");
+	public static final PropertyTag<Integer> NNODE = new PropertyTag<>(slurm, "NNodes", Integer.class,"Nodes");
 	@AutoTable
-	public static final PropertyTag<Duration> ELAPSED_PROP = new PropertyTag<Duration>(slurm, "Elapsed", Duration.class);
+	public static final PropertyTag<Duration> ELAPSED_PROP = new PropertyTag<>(slurm, "Elapsed", Duration.class);
 	@AutoTable
-	public static final PropertyTag<Duration> TIMELIMIT_PROP = new PropertyTag<Duration>(slurm, "Timelimit", Duration.class);
+	public static final PropertyTag<Duration> TIMELIMIT_PROP = new PropertyTag<>(slurm, "Timelimit", Duration.class);
 	@AutoTable
-	public static final PropertyTag<String> STATE_PROP = new PropertyTag<String>(slurm, "State", String.class);
+	public static final PropertyTag<String> STATE_PROP = new PropertyTag<>(slurm, "State", String.class);
 	@OptionalTable
-    public static final PropertyTag<Integer> ALOCGRES_GPU_PROP = new PropertyTag<Integer>(slurm,"AllocGRESgpu",Integer.class,"gres/gpu field");
+    public static final PropertyTag<Integer> ALOCGRES_GPU_PROP = new PropertyTag<>(slurm,"AllocGRESgpu",Integer.class,"gres/gpu field");
   
 	public static final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
 	private static MakerMap GRES = new MakerMap();

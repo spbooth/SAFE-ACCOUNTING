@@ -9,7 +9,6 @@ import java.util.Collection;
 
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
-import uk.ac.ed.epcc.webapp.AppContext;
 
 /**
  * Adds records to test. Some are good records that the parser should be able to
@@ -21,8 +20,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
  */
 public class PBSRecordTest extends AbstractRecordTestCase {
 
-	private static final Collection<RecordText> goodRecords = new ArrayList<RecordText>();
-	private static final Collection<BadRecordText> badTexts = new ArrayList<BadRecordText>();
+	private static final Collection<RecordText> goodRecords = new ArrayList<>();
+	private static final Collection<BadRecordText> badTexts = new ArrayList<>();
 
 	public PBSRecordTest() {
 		super("PBSMachine", "PBSRecord");

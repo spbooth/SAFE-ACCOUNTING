@@ -137,7 +137,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 	Set<PropertyTag> unique_properties = null; // records where all properties match are considered duplicates
 
 	protected Set<PropertyTag> parsePropertyList(String list) throws InvalidPropertyException {
-		HashSet<PropertyTag> res = new HashSet<PropertyTag>();
+		HashSet<PropertyTag> res = new HashSet<>();
 		ExpressionTargetFactory<T> etf = getExpressionTargetFactory();
 		PropertyFinder finder = getFinder();
 		if (finder != null) {
@@ -475,7 +475,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 				try {
 					AndRecordSelector sel = new AndRecordSelector();
 					sel.add(new PeriodOverlapRecordSelector(p, StandardProperties.ENDED_PROP));
-					sel.add(new NullSelector<String>(StandardProperties.TEXT_PROP, false));
+					sel.add(new NullSelector<>(StandardProperties.TEXT_PROP, false));
 					int result[] = target.rescan(sel);
 					return new MessageResult("data_loaded", "Stored text", Integer.toString(result[0]),
 							Integer.toString(result[1]), Integer.toString(result[2]));

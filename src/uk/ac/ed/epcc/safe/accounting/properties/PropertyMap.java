@@ -30,7 +30,7 @@ import java.util.Set;
 
 
 public class PropertyMap  implements PropertyContainer{
-	private final LinkedHashMap<PropertyTag,Object> data= new LinkedHashMap<PropertyTag,Object>();
+	private final LinkedHashMap<PropertyTag,Object> data= new LinkedHashMap<>();
 	
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.PropertyContainer#getProperty(uk.ac.ed.epcc.safe.accounting.PropertyTag)
@@ -101,7 +101,7 @@ public class PropertyMap  implements PropertyContainer{
 		return data.size();
 	}
 	public Set<PropertyTag> getDefinedProperties() {
-		return new HashSet<PropertyTag>(data.keySet());
+		return new HashSet<>(data.keySet());
 	}
 	public void setAll(PropertyContainer source) {
 		for(PropertyTag t : source.getDefinedProperties()){

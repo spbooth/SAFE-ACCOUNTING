@@ -139,7 +139,7 @@ public class XMLGeneratorApp implements Command {
 		}
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		
 		String reportTemplateFileName = "format.xml";	
 		File outputFile = null;

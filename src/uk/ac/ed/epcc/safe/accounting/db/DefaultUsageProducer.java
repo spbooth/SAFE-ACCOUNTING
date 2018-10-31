@@ -82,7 +82,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 
 	
 	private ReductionHandler<T, ExpressionTargetFactoryComposite<T>> getReductionHandler(){
-		return new ReductionHandler<T, ExpressionTargetFactoryComposite<T>>(etf);
+		return new ReductionHandler<>(etf);
 	}
 
 	public final <I> Map<I, Number> getReductionMap(PropExpression<I> index,
@@ -150,7 +150,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 		try{
 			return this.new FilterIterator(FilterConverter.convert(filter),skip,count);
 		}catch(NoSQLFilterException e){
-			return new SkipIterator<T>(new FilterIterator(filter), skip, count);
+			return new SkipIterator<>(new FilterIterator(filter), skip, count);
 		}
 	}
 
@@ -167,15 +167,15 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	@Override
 	public final  <PT> Set<PT> getValues(PropertyTag<PT> tag, RecordSelector selector) throws Exception {
 		if( ! hasProperty(tag)){
-			return new HashSet<PT>();
+			return new HashSet<>();
 		}
 		BaseFilter<T> filter = getFilter(selector);	
 		RepositoryAccessorMap<T> map = etf.getAccessorMap();
 		try{
-			PropertyMaker<T,PT> finder = new PropertyMaker<T,PT>(map,res,tag, true);			
+			PropertyMaker<T,PT> finder = new PropertyMaker<>(map,res,tag, true);			
 			return finder.find(FilterConverter.convert(filter));
 		}catch(CannotUseSQLException e){
-			Set<PT> result = new HashSet<PT>();
+			Set<PT> result = new HashSet<>();
 			for(T o : new FilterSet(filter)){
 				ExpressionTargetContainer proxy = map.getProxy(o);
 				result.add(proxy.getProperty(tag));

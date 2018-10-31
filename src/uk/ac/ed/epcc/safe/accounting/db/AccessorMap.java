@@ -125,11 +125,11 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	// derived prop expressions
 	private PropExpressionMap derived;
 	// accessors for the leaf properties.
-	private Map<PropertyTag, Accessor> accessor_map = new HashMap<PropertyTag, Accessor>();
+	private Map<PropertyTag, Accessor> accessor_map = new HashMap<>();
     // SQLValue for leaf values
-	private Map<PropertyTag, SQLValue> value_map = new HashMap<PropertyTag, SQLValue>();
+	private Map<PropertyTag, SQLValue> value_map = new HashMap<>();
 	// SQL expressions for leaf values.
-	private Map<PropertyTag, SQLExpression> expression_map = new HashMap<PropertyTag, SQLExpression>();
+	private Map<PropertyTag, SQLExpression> expression_map = new HashMap<>();
 
 	
 	
@@ -157,7 +157,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		public ExpressionTargetProxy(AppContext conn,X r,boolean use_cache){
 			super(conn);
 			this.record=r;
-			missing=new HashSet<PropertyTag>();
+			missing=new HashSet<>();
 			this.use_cache=use_cache;
 		}
 		public ExpressionTargetProxy(AppContext conn,X r){
@@ -169,7 +169,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		public <R> R evaluateExpression(PropExpression<R> expr) throws InvalidExpressionException{
 			if( use_cache){
 			if( cache == null ){
-				cache=new HashMap<PropExpression, Object>();
+				cache=new HashMap<>();
 			}else{
 				if(cache.containsKey(expr)){
 					return (R) cache.get(expr);
@@ -300,7 +300,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		@Override
 		protected boolean matches(RecordSelector sel) throws Exception {
 			if(match_visitor == null){
-				match_visitor=new MatchSelectVisitor<AccessorMap<X>.ExpressionTargetProxy>(this);
+				match_visitor=new MatchSelectVisitor<>(this);
 			}
 		
 			return sel.visit(match_visitor).booleanValue();
@@ -335,7 +335,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		public SQLExpressionVisitor(AppContext c) {
 			super(target,c);
 		}
-		private Set<PropertyTag> missing = new HashSet<PropertyTag>();
+		private Set<PropertyTag> missing = new HashSet<>();
 		public SQLExpression visitPropertyTag(PropertyTag<?> tag)
 				throws Exception {
 			SQLExpression exp = expression_map.get(tag);
@@ -381,7 +381,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		public SQLValueVisitor(AppContext c) {
 			super(target,c);
 		}
-		private Set<PropertyTag> missing = new HashSet<PropertyTag>();
+		private Set<PropertyTag> missing = new HashSet<>();
 		public SQLValue visitPropertyTag(PropertyTag<?> tag)
 				throws Exception {
 			SQLValue exp = value_map.get(tag);
@@ -425,7 +425,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		
 	}
 	public class ResolveChecker extends ResolveCheckVisitor{
-		private final Set<PropertyTag> missing = new HashSet<PropertyTag>();
+		private final Set<PropertyTag> missing = new HashSet<>();
 		private final boolean require_sql;
 		public ResolveChecker(AppContext conn,Logger log,boolean require_sql) {
 			super(conn,log);
@@ -472,7 +472,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		}
 	}
 	public class ImplementationVisitor extends ImplementationPropExpressionVisitor{
-		private Set<PropertyTag> missing = new HashSet<PropertyTag>();
+		private Set<PropertyTag> missing = new HashSet<>();
 		public String visitPropertyTag(PropertyTag<?> tag) throws Exception {
 			// Just return tag names for defined leaf properties
 			if( value_map.containsKey(tag)){
@@ -520,7 +520,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		try {
 			// This is only a fall-back expression. Aggregate records may store the
 			// job count as a DB field so we can't hardwire this as an accessor
-			derived.put(StandardProperties.COUNT_PROP,  new ConstPropExpression<Long>(Long.class, Long.valueOf(1L)));
+			derived.put(StandardProperties.COUNT_PROP,  new ConstPropExpression<>(Long.class, Long.valueOf(1L)));
 		} catch (PropertyCastException e) {
 			getLogger().error("Error adding count expression",e);
 		}
@@ -642,7 +642,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	public final Set<PropertyTag> getProperties() {
 
 		
-			Set<PropertyTag> defined=new LinkedHashSet<PropertyTag>();
+			Set<PropertyTag> defined=new LinkedHashSet<>();
 			defined.addAll(accessor_map.keySet());
 			if( derived != null){
 			for(PropertyTag<?> t : derived.keySet()){
@@ -668,7 +668,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	 * @return Set<PropertyTag
 	 */
 	public final Set<PropertyTag> getProperties(Class<?> c){
-		LinkedHashSet<PropertyTag> set = new LinkedHashSet<PropertyTag>();
+		LinkedHashSet<PropertyTag> set = new LinkedHashSet<>();
 		for(PropertyTag t : getProperties()){
 			if( c.isAssignableFrom(t.getTarget())){
 				set.add(t);
@@ -677,7 +677,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		return set;
 	}
 	
-	private Map<PropertyTag,Boolean> defined_props_cache=new HashMap<PropertyTag,Boolean>();
+	private Map<PropertyTag,Boolean> defined_props_cache=new HashMap<>();
 	/** Is this a defined property
 	 * 
 	 * @param tag
@@ -849,7 +849,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	 * @return Set<String> of field names
 	 */
     public final Set<String> getFieldSet(Set<PropertyTag> input){
-    	Set<String> result = new HashSet<String>();
+    	Set<String> result = new HashSet<>();
     	for(PropertyTag t : input){
     		String name = getField(t);
     		if( name != null ){
@@ -866,7 +866,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
      * @return Map<String,R> map keyed by field names
      */
     public final <R> Map<String,R> getFieldMap(Map<PropertyTag,R> input){
-    	Map<String,R> result = new HashMap<String,R>();
+    	Map<String,R> result = new HashMap<>();
     	for(PropertyTag t : input.keySet()){
     		String name = getField(t);
     		if( name != null ){
@@ -975,7 +975,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
     	}
     	
     	if( resolves(expr,false)){
-    		return new ExpressionAcceptFilter<X, I>(target,this,expr, match, data);
+    		return new ExpressionAcceptFilter<>(target,this,expr, match, data);
     	}
     	// we might still have a derived property but cannot make a SQLfilter
 		
@@ -1023,7 +1023,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		} catch (Exception e) {
 		
 		}
-		return new ExpressionAcceptMatchFilter<X,R>(target,this,left, match,right);
+		return new ExpressionAcceptMatchFilter<>(target,this,left, match,right);
 	}
     @SuppressWarnings("unchecked")
 	public final <I> BaseFilter<X> getNullFilter(PropExpression<I> expr,
@@ -1072,7 +1072,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
     	// could still have a derived property using accessors but cannot make these into
     	// an SQLFilter
     	if(resolves(expr,false)){
-    		return new ExpressionAcceptNullFilter<X, I>(target,this,expr, is_null);
+    		return new ExpressionAcceptNullFilter<>(target,this,expr, is_null);
     	}
 
 
@@ -1095,7 +1095,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			PropExpression<Date> start_prop,
 			PropExpression<Date> end_prop, OverlapType type,long cutoff)
 			throws CannotFilterException {
-		AndFilter<X> res = new AndFilter<X>(getTarget());
+		AndFilter<X> res = new AndFilter<>(getTarget());
 		assert(end_prop != null);
 		boolean use_simple = start_prop == null || start_prop.equals(end_prop);
 		
@@ -1166,7 +1166,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			return null;
 		}
 		try {
-			return selector.visit(new FilterSelectVisitor<X>(this));
+			return selector.visit(new FilterSelectVisitor<>(this));
 		}catch(CannotFilterException e){
 			throw e;
 		} catch (Exception e) {
@@ -1180,8 +1180,8 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	protected abstract Set<Repository> getSourceTables();
 	
 	protected final <T> CaseExpression<X,T> getCaseExpression(CasePropExpression<T> expr) throws NoSQLFilterException, InvalidSQLPropertyException, Exception{
-		LinkedList<CaseExpression.Clause<X,T>> list = new LinkedList<CaseExpression.Clause<X,T>>();
-		FilterSelectVisitor<X> vis = new FilterSelectVisitor<X>(this);
+		LinkedList<CaseExpression.Clause<X,T>> list = new LinkedList<>();
+		FilterSelectVisitor<X> vis = new FilterSelectVisitor<>(this);
 		for( CasePropExpression.Case<T> c : expr.getCases()){
 			list.add( new CaseExpression.Clause<X,T>(FilterConverter.convert(c.sel.visit(vis)), getSQLExpression(c.expr)));
 		}
@@ -1190,9 +1190,8 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		if( def != null ){
 			def_sql=getSQLExpression(def);
 		}
-		@SuppressWarnings("unchecked")
 		Class<T> clazz = (Class<T>) expr.getTarget();
-		return new CaseExpression<X,T>(clazz, def_sql, list);
+		return new CaseExpression<>(clazz, def_sql, list);
 	}
 	public final Class<X> getTarget() {
 		return target;

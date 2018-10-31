@@ -115,8 +115,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 			return;
 		}
 		AndRecordSelector sel = new AndRecordSelector();
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.GT,fac.mapStart(start)));
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.LE,fac.mapEnd(end)));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.GT,fac.mapStart(start)));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.LE,fac.mapEnd(end)));
 		long raw_count = raw_fac.getRecordCount(sel);
 		if( raw_count > 100000){
 			System.out.println("Supress line by line regenerate, too many records");
@@ -161,8 +161,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 			return;
 		}
 		AndRecordSelector sel = new AndRecordSelector();
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.GT,fac.mapStart(start)));
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.LE,fac.mapEnd(end)));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.GT,fac.mapStart(start)));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.LE,fac.mapEnd(end)));
 		long raw_count = raw_fac.getRecordCount(sel);
 		if( raw_count > 100000){
 			System.out.println("Supress line by line regenerate, too many records");
@@ -209,8 +209,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		
 		
 		AndRecordSelector sel = new AndRecordSelector();
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.GT,fac.mapStart(start)));
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.LE,fac.mapEnd(end)));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.GT,fac.mapStart(start)));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.LE,fac.mapEnd(end)));
 		verify(fac, raw_fac, sel);
 		long count = fac.getRecordCount(sel);
 		long raw_count = raw_fac.getRecordCount(sel);
@@ -283,8 +283,8 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		
 		
 		AndRecordSelector sel = new AndRecordSelector();
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.GT,fac.mapStart(start)));
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.LE,fac.mapEnd(end)));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.GT,fac.mapStart(start)));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.LE,fac.mapEnd(end)));
 		verify(fac, raw_fac, sel);
 		long count = fac.getRecordCount(sel);
 		long raw_count = raw_fac.getRecordCount(sel);

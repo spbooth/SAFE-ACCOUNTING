@@ -411,7 +411,7 @@ public class UsageRecordWriter implements Contexed {
 		Properties ctxProperties = this.context.getService(ConfigService.class)
 				.getServiceProperties();
 
-		Set<UsageRecordPolicy> policies = new LinkedHashSet<UsageRecordPolicy>();
+		Set<UsageRecordPolicy> policies = new LinkedHashSet<>();
 		String policyList = FilteredProperties.getProperty(ctxProperties,
 				"policies", mode);
 		logger.debug("policy list = " + policyList);

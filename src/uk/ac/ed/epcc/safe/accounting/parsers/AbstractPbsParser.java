@@ -149,29 +149,29 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 
 	// maps to BaseParser.ENDED_PROP
 	@AutoTable(unique=true)
-	public static final PropertyTag<Date> PBS_ENDED_PROP = new PropertyTag<Date>(
+	public static final PropertyTag<Date> PBS_ENDED_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "end", Date.class,"Time when the job ended execution");
 
 	// maps to BaseParser.EXIT_PROP
 	@AutoTable
-	public static final PropertyTag<Integer> PBS_EXIT_PROP = new PropertyTag<Integer>(
+	public static final PropertyTag<Integer> PBS_EXIT_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "Exit_status", Integer.class,
 	"Numerical exit status of job");
 
 	// maps to BaseParser.GROUPNAME_PROP
 	@AutoTable(length=128)
-	public static final PropertyTag<String> PBS_GROUP_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_GROUP_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "group",String.class,
 	"The name of the group under which the job executed");
 
 	// maps to BaseParser.STARTED_PROP
 	@AutoTable
-	public static final PropertyTag<Date> PBS_STARTED_PROP = new PropertyTag<Date>(
+	public static final PropertyTag<Date> PBS_STARTED_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "start", Date.class,"Time when job execution started");
 
 	// maps to BaseParser.USERNAME_PROP
 	@AutoTable
-	public static final PropertyTag<String> PBS_USER_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_USER_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "user",String.class,
 	"The name of the user under which the job executed");
 
@@ -182,116 +182,116 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 
 	// maps to BatchParser.ACCOUNT_PROP
 	@AutoTable(length=128)
-	public static final PropertyTag<String> PBS_ACCOUNT_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_ACCOUNT_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "account",String.class,
 	"If submitter supplied a string to be recorded in accounting");
 
 	// maps to BatchParser.JOB_ID_PROP
 	@AutoTable(unique=true,length=128)
-	public static final PropertyTag<String> PBS_ID_STRING_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_ID_STRING_PROP = new PropertyTag<>(
 			PBS_REGISTRY,
 			"id_string",String.class,
 	"Identifies the job, reservation or reservation-job identifier.  This is not the job's name");
 
 	// maps to BatchParser.JOB_NAME_PROP
 	@AutoTable(length=128)
-	public static final PropertyTag<String> PBS_JOB_NAME_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_JOB_NAME_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "jobname", String.class,"The name of the job");
 
 	// maps to BatchParser.QUEUE_PROP
 	@AutoTable
-	public static final PropertyTag<String> PBS_QUEUE_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_QUEUE_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "queue", String.class,"The name of the queue in which the job executed");
 
 	// maps to BatchParser.SUBMITTED_PROP
 	@AutoTable
-	public static final PropertyTag<Date> PBS_SUBMITTED_PROP = new PropertyTag<Date>(
+	public static final PropertyTag<Date> PBS_SUBMITTED_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "ctime", Date.class,"Time when the job was first submitted");
 
 	// //////////////////////////////////////////////////////////////////////////
 	// PROPERTY TAGS SPECIFIC TO PBS RECORDS
 	// //////////////////////////////////////////////////////////////////////////
 	@AutoTable	
-	public static final PropertyTag<String> PBS_ACCOUNTING_ID_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_ACCOUNTING_ID_PROP = new PropertyTag<>(
 			PBS_REGISTRY,
 			"accounting_id",String.class,
 	"Accounting identifier associated with system-generated accounting data (CSA JID, job container ID)");
 	@OptionalTable
-	public static final PropertyTag<String> PBS_ALTERNATE_ID_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_ALTERNATE_ID_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "alt_id",String.class, "An optional alternate job identifier");
 	@OptionalTable(length=512)
-	public static final PropertyTag<String> PBS_AUTHORIZED_USERS_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_AUTHORIZED_USERS_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "authorized_users",String.class,
 	"List of authorised acl users of the queue that services the reservation");
 	@OptionalTable(length=512)
-	public static final PropertyTag<String> PBS_AUTHORIZED_GROUPS_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_AUTHORIZED_GROUPS_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "authorized_groups",String.class,
 	"List of authorised acl groups of the queue that services the reservation");
 	@OptionalTable(length=1024)
-	public static final PropertyTag<String> PBS_AUTHORIZED_HOSTS_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_AUTHORIZED_HOSTS_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "authorized_hosts",String.class,
 	"List of authorised acl hosts of the queue that services the reservation");
 	@OptionalTable
-	public static final PropertyTag<Date> PBS_ELIGIBLE_TIME_PROP = new PropertyTag<Date>(
+	public static final PropertyTag<Date> PBS_ELIGIBLE_TIME_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "etime", Date.class,"The time the job became eligible to run");
 	@OptionalTable
-	public static final PropertyTag<Date> PBS_ENTERED_QUEUE_PROP = new PropertyTag<Date>(
+	public static final PropertyTag<Date> PBS_ENTERED_QUEUE_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "qtime",Date.class,
 	"Time when the job was queued into the current queue");
 	@OptionalTable(length=1024)
-	public static final PropertyTag<String> PBS_EXEC_HOST_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_EXEC_HOST_PROP = new PropertyTag<>(
 			PBS_REGISTRY,
 			"exec_host",String.class,
 	"A list of host/cpu-ids (delimiter = plus sign (+)) with the resources used in them.  Format varies depending on the version of PBS used");
 	@OptionalTable(length=1024)
-	public static final PropertyTag<String> PBS_EXEC_VNODE_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_EXEC_VNODE_PROP = new PropertyTag<>(
 			PBS_REGISTRY,
 			"exec_vnode",String.class,
 	"A list of vnodes (delimiter = plus sign (+)) with the resources used in them.  Format varies depending on the version of PBS used");
 
 	@OptionalTable
-	public static final PropertyTag<Date> PBS_JOB_TIMESTAMP_PROP = new PropertyTag<Date>
+	public static final PropertyTag<Date> PBS_JOB_TIMESTAMP_PROP = new PropertyTag<>
 	(
 			PBS_REGISTRY, "date_time",Date.class,
 	"Time supplied at the beginning of the record (first argument)");
 
 	@OptionalTable(length=128)
-	public static final PropertyTag<String> PBS_OWNER_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_OWNER_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "owner",String.class,
 	"The name of the party who submitted the resource reservation request");
 	@OptionalTable(length=1)
-	public static final PropertyTag<String> PBS_RECORD_TYPE_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_RECORD_TYPE_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "record_type",String.class,
 	"Single character indicating the type of record");
 	@OptionalTable(target=Long.class)
-	public static final PropertyTag<Number> PBS_RESERVATION_DURATION_PROP = new PropertyTag<Number>(
+	public static final PropertyTag<Number> PBS_RESERVATION_DURATION_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "duration", Number.class,
 	"The duration specified or computed for the resource reservation (in seconds)");
 	@OptionalTable
-	public static final PropertyTag<String> PBS_RESERVATION_NAME_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_RESERVATION_NAME_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "resvname", String.class,"The name of the reservation period");
 
 	// Not sure if this is the same as PBS_RESERVATION_NAME - used in a different
 	// record type but may mean the same thing
 
-	public static final PropertyTag<String> PBS_RESERVATION_ID_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_RESERVATION_ID_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "resvID", String.class,"The id of the reservation period");
 	@OptionalTable
-	public static final PropertyTag<Number> PBS_SESSION_PROP = new PropertyTag<Number>(
+	public static final PropertyTag<Number> PBS_SESSION_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "session", Number.class, "The session number of the job");
 	@OptionalTable
-	public static final PropertyTag<Number> PBS_SESSION_RUN_COUNT = new PropertyTag<Number>(
+	public static final PropertyTag<Number> PBS_SESSION_RUN_COUNT = new PropertyTag<>(
 			PBS_REGISTRY, "run_count", Number.class, "The run_count of the job");
     @AutoTable
-	public static final PropertyTag<Number> PBS_TIME_USED_PROP = new PropertyTag<Number>(
+	public static final PropertyTag<Number> PBS_TIME_USED_PROP = new PropertyTag<>(
 			PBS_REGISTRY, "runtime", Number.class, "The runtime of the job");
 
     @OptionalTable
-    public static final PropertyTag<Integer> PBS_SEQUENCE_PROP = new PropertyTag<Integer>(PBS_REGISTRY, "sequence", Integer.class,"Numerical PBS sequence number");
+    public static final PropertyTag<Integer> PBS_SEQUENCE_PROP = new PropertyTag<>(PBS_REGISTRY, "sequence", Integer.class,"Numerical PBS sequence number");
     @OptionalTable
-	public static final PropertyTag<Integer> PBS_ARRAY_INDEX_PROP = new PropertyTag<Integer>(PBS_REGISTRY, "array_index", Integer.class,"Numerical PBS array index");
+	public static final PropertyTag<Integer> PBS_ARRAY_INDEX_PROP = new PropertyTag<>(PBS_REGISTRY, "array_index", Integer.class,"Numerical PBS array index");
 	@AutoTable
-	public static final PropertyTag<Boolean> PBS_IS_ARRAY_PROP = new PropertyTag<Boolean>(PBS_REGISTRY, "is_array", Boolean.class,"Is this an array job");
+	public static final PropertyTag<Boolean> PBS_IS_ARRAY_PROP = new PropertyTag<>(PBS_REGISTRY, "is_array", Boolean.class,"Is this an array job");
 	
 	// //////////////////////////////////////////////////////////////////////////
 	// Standard attributes
@@ -635,7 +635,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 		// Note the contents of the registry depend on the mode so the name should as well
 		
 		String recordTypeList = ctx.getInitParameter(PBS_RECORD_TYPE_PROPERTY_BASE + mode);
-		recordTypes = new HashSet<String>();
+		recordTypes = new HashSet<>();
 		if (recordTypeList == null || mode == null) {
 			this.recordTypes.add("E");
 		} else {

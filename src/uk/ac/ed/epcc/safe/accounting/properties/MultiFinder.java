@@ -35,8 +35,8 @@ import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 
 public final class MultiFinder implements PropertyFinder{
 	// The set iterates in inserted order the list runs backwards.
-    Set<FixedPropertyFinder> finders=new HashSet<FixedPropertyFinder>();
-    LinkedList<FixedPropertyFinder> search_list = new LinkedList<FixedPropertyFinder>();
+    Set<FixedPropertyFinder> finders=new HashSet<>();
+    LinkedList<FixedPropertyFinder> search_list = new LinkedList<>();
     /** Add a PropertyFinder to the Set of finders to be searched.
      * Finders are always searched in the reverse order they were added.
      * 
@@ -122,7 +122,7 @@ public final class MultiFinder implements PropertyFinder{
 	}
 	
 	public Set<PropertyTag> getProperties() {
-		LinkedHashSet<PropertyTag> result = new LinkedHashSet<PropertyTag>();
+		LinkedHashSet<PropertyTag> result = new LinkedHashSet<>();
 		for( PropertyFinder f : search_list){
 			result.addAll(f.getProperties());
 		}
@@ -139,7 +139,7 @@ public final class MultiFinder implements PropertyFinder{
 	}
 	
 	public <T> Set<PropertyTag<? extends T>> getProperties(Class<T> clazz) {
-		Set<PropertyTag<? extends T>> result = new LinkedHashSet<PropertyTag<? extends T>>();
+		Set<PropertyTag<? extends T>> result = new LinkedHashSet<>();
 		for(PropertyFinder f: search_list){
 			// though the result does not have to be sorted
 			// put the higher pri tags first.
@@ -156,7 +156,7 @@ public final class MultiFinder implements PropertyFinder{
 	}
 	
     public Set<FixedPropertyFinder> getNested(){
-    	return new LinkedHashSet<FixedPropertyFinder>(search_list);
+    	return new LinkedHashSet<>(search_list);
     }
 	@Override
 	public String toString() {

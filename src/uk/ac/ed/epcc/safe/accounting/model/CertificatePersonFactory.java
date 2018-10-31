@@ -42,7 +42,7 @@ public class CertificatePersonFactory<P extends CertificatePerson> extends Prope
 
 	// This should take precidence over any other static NameFinder using WebName as the realm
 	// as superclasses are constructed first
-	public final DNNameFinder<P> dn_finder = new DNNameFinder<P>(this, WebNameFinder.WEB_NAME);
+	public final DNNameFinder<P> dn_finder = new DNNameFinder<>(this, WebNameFinder.WEB_NAME);
 
 	public CertificatePersonFactory() {
 		super();

@@ -80,7 +80,7 @@ public class XMLSplitter implements ContentHandler {
 		 * size
 		 */
 		this.recorder = new XMLTextRecorder(1024);
-		this.usageRecordQueue = new LinkedList<String>();
+		this.usageRecordQueue = new LinkedList<>();
 	}
 	public XMLSplitter(String targets[]){
 		this();

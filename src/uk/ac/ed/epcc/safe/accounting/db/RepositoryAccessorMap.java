@@ -87,7 +87,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 	// additional selectors that cannot be determined directly from repository
 		// These have to be selectors as inputs are not immutable and may have their
 		// state changed after being returned the first time,
-		private Map<String,Selector> selector_map = new HashMap<String,Selector>();
+		private Map<String,Selector> selector_map = new HashMap<>();
 	
 	/** Encodes the rules for which kind of fields can
 	 * be implemented as a numberif database field.
@@ -204,12 +204,12 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 				}
 
 				if (info.isString()) {
-					tag = new PropertyTag<String>(orphan_registy, prop_name,String.class);
+					tag = new PropertyTag<>(orphan_registy, prop_name,String.class);
 				} else if (info.isDate() || (info.isNumeric()&&force_date)) {
-					tag = new PropertyTag<Date>(orphan_registy, prop_name,Date.class);
+					tag = new PropertyTag<>(orphan_registy, prop_name,Date.class);
 				} else if (info.isNumeric()) {
 
-					tag = new PropertyTag<Number>(orphan_registy, prop_name,
+					tag = new PropertyTag<>(orphan_registy, prop_name,
 							Number.class);
 				}
 				//						if( tag != null ){
@@ -332,7 +332,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 				if( rel != null ){
 					PropertyRegistry reg = new PropertyRegistry(t,"Relationships via "+t);
 				    for(String role : rel.getRelationships()){
-				    	put(new PropertyTag<Boolean>(reg, role,Boolean.class), new RelationshipAccessor<X>(fac, tag+"."+role));
+				    	put(new PropertyTag<>(reg, role,Boolean.class), new RelationshipAccessor<>(fac, tag+"."+role));
 				    }
 				    reg.lock();
 				    finder.addFinder(reg);
@@ -381,7 +381,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		// Also a way of getting the id from a proxy wrapper
 		ReferenceTag tag=(ReferenceTag) reference_registry.find(IndexedReference.class, res.getTag());
 		if( tag != null && ! selector_map.containsValue(tag)){
-			put(tag, new SelfSQLValue<X>(fac));
+			put(tag, new SelfSQLValue<>(fac));
 		}
 				
 	}
@@ -395,7 +395,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
      * @return Map of seelctors
      */
     public Map<String,Object> getSelectors(){
-    	return new HashMap<String,Object>(selector_map);
+    	return new HashMap<>(selector_map);
     }
 	
 	
@@ -482,7 +482,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		}else if(AUTO_CUTOFF_FEATURE.isEnabled(getContext())){
 			if( cutoff <= 0L) {
 			if( cutoffs == null ){
-				cutoffs=new HashMap<CutoffKey, Long>();
+				cutoffs=new HashMap<>();
 			}
 			CutoffKey key = new CutoffKey(start, end);
 			Long calc_cutoff = cutoffs.get(key);
@@ -546,14 +546,14 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		// answer in Sql level and independent of period so can cheaply cache
 		// at this level. Alternative would need map keyed by props and period.
 		AndRecordSelector sel = new AndRecordSelector(narrow);
-		sel.add(new SelectClause<Duration>(duration,MatchCondition.GT,new Duration(0L,1L)));
-		sel.add(new SelectClause<Date>(start,MatchCondition.GT,new Date(0L)));
+		sel.add(new SelectClause<>(duration,MatchCondition.GT,new Duration(0L,1L)));
+		sel.add(new SelectClause<>(start,MatchCondition.GT,new Date(0L)));
 		long l = getReductionHandler().getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), sel).longValue()+1L;
 		calc_cutoff = new Long(l);
 		return calc_cutoff;
 	}
 	private ReductionHandler<X, ExpressionTargetFactory<X>> getReductionHandler(){
-		return new ReductionHandler<X, ExpressionTargetFactory<X>>(ExpressionCast.getExpressionTargetFactory(fac));
+		return new ReductionHandler<>(ExpressionCast.getExpressionTargetFactory(fac));
 	}
 	public FilterUpdate<X> getFilterUpdate(){
 		return new FilterUpdate<>(res);

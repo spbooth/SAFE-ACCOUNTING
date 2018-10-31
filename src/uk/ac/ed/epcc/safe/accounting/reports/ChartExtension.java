@@ -121,8 +121,8 @@ public abstract class ChartExtension extends ReportExtension {
 			end_name = getParam("EndProp",e);
 			result = serv.getPlotEntry( errors,finder, name,start_name,end_name);
 		}
-		if( result == null ) {
-			addError("Bad PlotEntry", "PlotEntry failed to parse",n);
+		if( result == null ){
+			addError("Invalid Plot Quantity","The specified quantity "+name+" does not correspond to a plottable quantity");
 			return null;
 		}
 		if( start_name != null && start_name.trim().length() > 0 && result.getStartProperty() == null ){
@@ -131,9 +131,7 @@ public abstract class ChartExtension extends ReportExtension {
 		if( end_name != null && end_name.trim().length() > 0 && result.getEndProperty() == null ){
 			addError("Bad property", "EndProp value "+end_name+" failed to parse", e);
 		}
-		if( result == null ){
-			addError("Invalid Plot Quantity","The specified quantity "+name+" does not correspond to a plottable quantity");
-		}
+		
 		//TODO make this an element with additional params for label and scale.
 		result.setRateScale( getBooleanParam("RateScale",result.isRateScale(), e));
 		result.setScale(getNumberParam("Scale", result.getScale(), e).doubleValue());
@@ -181,7 +179,7 @@ public abstract class ChartExtension extends ReportExtension {
 			entry.setCumulative(getBooleanParam("Cumulative", false, e));
 		}
 		if(hasParam("Colours", e)){
-			List<Color> list = new LinkedList<Color>();
+			List<Color> list = new LinkedList<>();
 			for(String s : getParam("Colours", e).split("\\s+")){
 				Color color = Color.decode(ctx.getInitParameter("colour."+s, s));
 				if( color != null ){
@@ -203,7 +201,7 @@ public abstract class ChartExtension extends ReportExtension {
 		}catch(Exception e1){
 			addError("Bad Plot", "Error setting title", e1);
 		}
-		return new Chart<P>(chart,getReportPrefix(e));
+		return new Chart<>(chart,getReportPrefix(e));
 	}
 	public Chart<TimeChart> makeTimeChart(Period period, Node node) {
 		startTimer("makeTimeChart");

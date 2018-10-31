@@ -24,7 +24,7 @@ public class PersonTest extends AppUserFactoryTestCase {
 	}
 	@Test
 	public void testParser(){
-		PropertyPersonFactory<AppUser> fac = new PropertyPersonFactory<AppUser>(ctx);
+		PropertyPersonFactory<AppUser> fac = new PropertyPersonFactory<>(ctx);
 		UploadParseTarget target = (UploadParseTarget) fac.getComposite(PropertyContainerParseTargetComposite.class);
 		assertNotNull(target);;
 		assertNotNull(target.getParser());

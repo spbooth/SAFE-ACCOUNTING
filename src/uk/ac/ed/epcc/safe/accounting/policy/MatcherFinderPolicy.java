@@ -19,7 +19,6 @@ package uk.ac.ed.epcc.safe.accounting.policy;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -83,7 +82,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 public class MatcherFinderPolicy extends BasePolicy implements Contexed,TableTransitionContributor , SummaryProvider{
 	private static final String OWNER= "matcher.";
 	private MultiFinder result_finder = new MultiFinder();
-	private Map<PropertyTag<String>,ReferenceTag> tagmap = new HashMap<PropertyTag<String>,ReferenceTag>();
+	private Map<PropertyTag<String>,ReferenceTag> tagmap = new HashMap<>();
   
 	private final AppContext c;
 	
@@ -91,8 +90,8 @@ public class MatcherFinderPolicy extends BasePolicy implements Contexed,TableTra
 	
 	// Info for edit transitions
 	private String prefix;
-	private Set<PropertyTag<String>> available_names = new HashSet<PropertyTag<String>>();
-	private Set<ReferenceTag> available_refs = new HashSet<ReferenceTag>();
+	private Set<PropertyTag<String>> available_names = new HashSet<>();
+	private Set<ReferenceTag> available_refs = new HashSet<>();
 	private String table;
 	private final Logger log;
 	public MatcherFinderPolicy(AppContext c){
@@ -137,7 +136,7 @@ public class MatcherFinderPolicy extends BasePolicy implements Contexed,TableTra
 	public void startParse(PropertyContainer defaults) throws DataException,
 			InvalidPropertyException {
 		log.debug("MatcherFinderPolicy: start parse");
-		finders= new HashMap<PropertyTag<String>,MatcherFinder>();
+		finders= new HashMap<>();
 		for(PropertyTag<String> tag : tagmap.keySet()){
 			ReferenceTag ctag = tagmap.get(tag);
 			MatcherFinder fac = c.makeObject(MatcherFinder.class,ctag.getTable());
@@ -226,12 +225,12 @@ public class MatcherFinderPolicy extends BasePolicy implements Contexed,TableTra
 
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext c) throws TransitionException {
-			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
+			SetInput<PropertyTag<String>> name_input = new SetInput<>();
 			for(PropertyTag<String> t : available_names){
 				name_input.addChoice(t);
 			}
 			f.addInput("Name", "String to classify", name_input);
-			SetInput<ReferenceTag> ref_input = new SetInput<ReferenceTag>();
+			SetInput<ReferenceTag> ref_input = new SetInput<>();
 			for(ReferenceTag t : available_refs){
 				ref_input.addChoice(t);
 			}
@@ -263,7 +262,7 @@ public FormResult action(Form f)
 
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext c) throws TransitionException {
-			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
+			SetInput<PropertyTag<String>> name_input = new SetInput<>();
 			for(PropertyTag<String> t : tagmap.keySet()){
 				name_input.addChoice(t);
 			}
@@ -298,7 +297,7 @@ public FormResult action(Form f)
 
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext conn) throws TransitionException {
-			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
+			SetInput<PropertyTag<String>> name_input = new SetInput<>();
 			if( target instanceof PropertyTargetGenerator){
 				
 				for(PropertyTag<String> t : tagmap.keySet()){
@@ -311,7 +310,7 @@ public FormResult action(Form f)
 		}
 	}
 	public Map<TableTransitionKey,Transition> getTableTransitions() {
-		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
+		Map<TableTransitionKey,Transition> result = new HashMap<>();
 		result.put(new AdminOperationKey("AddMatcher"), new AddOwnerTransition());
 		result.put(new AdminOperationKey("RemoveMatcher"), new DeleteOwnerTransition());
 		result.put(new AdminOperationKey("RegenerateMatcher","Regenenerate matcher references"),new RegenerateOwnerTransition());
@@ -322,7 +321,7 @@ public FormResult action(Form f)
 		hb.addText("This policy generates references to a entries in an Owner table based"
 				+" on a string property.");
 		try{
-			Table<String,String> t = new Table<String,String>();
+			Table<String,String> t = new Table<>();
 			for(PropertyTag<String> name : tagmap.keySet()){
 				t.put("Matcher",name.getFullName(),tagmap.get(name));
 			}

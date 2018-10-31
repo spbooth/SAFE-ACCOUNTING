@@ -55,10 +55,10 @@ public class TypeConverterPropertyTag<T> extends PropertyTag<T> implements
 	}
 
 	public ValueParser<T> getValueParser(AppContext c) {
-		return new TypeConverterValueParser<T>(clazz, converter);
+		return new TypeConverterValueParser<>(clazz, converter);
 	}
 	public RecordSelector makeSelector(T val){
-		return new SelectClause<T>(this,val);
+		return new SelectClause<>(this,val);
 	}
 
 }

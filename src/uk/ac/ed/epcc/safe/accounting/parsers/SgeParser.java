@@ -60,84 +60,84 @@ public class SgeParser extends BatchParser implements Contexed {
 	public static  final PropertyRegistry sge = new PropertyRegistry("sge","The SGE batch parser accounting properties");
 
 	@AutoTable
-	public static final PropertyTag<String> SGE_QUEUE_PROP = new PropertyTag<String>(sge,"Queue",String.class,"SGE queue");
+	public static final PropertyTag<String> SGE_QUEUE_PROP = new PropertyTag<>(sge,"Queue",String.class,"SGE queue");
 	@OptionalTable
-	public static final PropertyTag<String> SGE_HOSTNAME_PROP = new PropertyTag<String>(sge,"Hostname",String.class,"SGE hostname");
+	public static final PropertyTag<String> SGE_HOSTNAME_PROP = new PropertyTag<>(sge,"Hostname",String.class,"SGE hostname");
 	@AutoTable
-	public static final PropertyTag<String> SGE_GROUPNAME_PROP = new PropertyTag<String>(sge,"GroupName",String.class,"SGE group name");
+	public static final PropertyTag<String> SGE_GROUPNAME_PROP = new PropertyTag<>(sge,"GroupName",String.class,"SGE group name");
 	@AutoTable
-	public static final PropertyTag<String> SGE_USERNAME_PROP = new PropertyTag<String>(sge,"UserName",String.class,"SGE user name");
+	public static final PropertyTag<String> SGE_USERNAME_PROP = new PropertyTag<>(sge,"UserName",String.class,"SGE user name");
 	@AutoTable(length=128)
-	public static final PropertyTag<String> SGE_JOBNAME_PROP = new PropertyTag<String>(sge,"JobName",String.class,"SGE job name");
+	public static final PropertyTag<String> SGE_JOBNAME_PROP = new PropertyTag<>(sge,"JobName",String.class,"SGE job name");
 	@AutoTable
-	public static final PropertyTag<String> SGE_ACCOUNT_PROP = new PropertyTag<String>(sge,"Account",String.class,"SGE Account");
+	public static final PropertyTag<String> SGE_ACCOUNT_PROP = new PropertyTag<>(sge,"Account",String.class,"SGE Account");
 	@OptionalTable
-	public static final PropertyTag<Number> SGE_PRIORITY_PROP=new PropertyTag<Number>(sge,"Priority",Number.class,"Priority value assigned to job");
+	public static final PropertyTag<Number> SGE_PRIORITY_PROP=new PropertyTag<>(sge,"Priority",Number.class,"Priority value assigned to job");
 	@AutoTable
-	public static final PropertyTag<String> SGE_PE_PROP = new PropertyTag<String>(sge,"PE",String.class,"SGE PE used for job");
+	public static final PropertyTag<String> SGE_PE_PROP = new PropertyTag<>(sge,"PE",String.class,"SGE PE used for job");
 	@AutoTable
-	public static final PropertyTag<Date> SGE_SUBMITTED_PROP = new PropertyTag<Date>(sge,"SubmittedTimestamp",Date.class,"Time job was submitted");
+	public static final PropertyTag<Date> SGE_SUBMITTED_PROP = new PropertyTag<>(sge,"SubmittedTimestamp",Date.class,"Time job was submitted");
 	@AutoTable
-	public static final PropertyTag<Date> SGE_STARTED_PROP = new PropertyTag<Date>(sge,"StartedTimestamp",Date.class,"Time job was started");
+	public static final PropertyTag<Date> SGE_STARTED_PROP = new PropertyTag<>(sge,"StartedTimestamp",Date.class,"Time job was started");
 	// In field order ended goes here but we want to force order in auto-created table index.
 	@AutoTable(target=Integer.class,unique=true)
-	public static final PropertyTag<Number> SGE_JOB_ID = new PropertyTag<Number>(sge,"SgeId",Number.class,"Integer Job id used by SGE");
+	public static final PropertyTag<Number> SGE_JOB_ID = new PropertyTag<>(sge,"SgeId",Number.class,"Integer Job id used by SGE");
 	@AutoTable(target=Integer.class,unique=true)
-	public static final PropertyTag<Number> SGE_TASK_PROP = new PropertyTag<Number>(sge,"Task",Number.class,"SGE Task id, this is the index of this task within an array job");
+	public static final PropertyTag<Number> SGE_TASK_PROP = new PropertyTag<>(sge,"Task",Number.class,"SGE Task id, this is the index of this task within an array job");
 
 	@AutoTable(unique=true)
-	public static final PropertyTag<Date> SGE_ENDED_PROP = new PropertyTag<Date>(sge,"CompletedTimestamp",Date.class,"Time job completed");
+	public static final PropertyTag<Date> SGE_ENDED_PROP = new PropertyTag<>(sge,"CompletedTimestamp",Date.class,"Time job completed");
 	
 	
 	@OptionalTable
-	public static final PropertyTag<Integer> SGE_EXIT_PROP = new PropertyTag<Integer>(sge,"Exit",Integer.class,"Numerical exit status of job or command");
+	public static final PropertyTag<Integer> SGE_EXIT_PROP = new PropertyTag<>(sge,"Exit",Integer.class,"Numerical exit status of job or command");
 	@OptionalTable
-	public static  final PropertyTag<String> SGE_PE_TASK_PROP = new PropertyTag<String>(sge,"PeTaskId",String.class,"SGE PE Task id, this is the index of an MPI sub-task started through SGE");
+	public static  final PropertyTag<String> SGE_PE_TASK_PROP = new PropertyTag<>(sge,"PeTaskId",String.class,"SGE PE Task id, this is the index of an MPI sub-task started through SGE");
 	@OptionalTable
-	public static final PropertyTag<Number> SGE_FAILED_PROP = new PropertyTag<Number>(sge,"Failed",Number.class);
+	public static final PropertyTag<Number> SGE_FAILED_PROP = new PropertyTag<>(sge,"Failed",Number.class);
     @AutoTable
-	public static final PropertyTag<Number> SGE_WALLCLOCK_PROP = new PropertyTag<Number>(sge,"Wall",Number.class,"Wallclock in seconds as reported directly by SGE");
+	public static final PropertyTag<Number> SGE_WALLCLOCK_PROP = new PropertyTag<>(sge,"Wall",Number.class,"Wallclock in seconds as reported directly by SGE");
 	@OptionalTable
-    public static final PropertyTag<String> SGE_CATEGORY_PROP = new PropertyTag<String>(sge,"Category",String.class,"SGE job Category");
+    public static final PropertyTag<String> SGE_CATEGORY_PROP = new PropertyTag<>(sge,"Category",String.class,"SGE job Category");
 	@AutoTable(target=Integer.class)
-	public static final PropertyTag<Integer> SGE_SLOTS = new PropertyTag<Integer>(sge,"Slots",Integer.class,"Number of SGE slots allocated to the job");
+	public static final PropertyTag<Integer> SGE_SLOTS = new PropertyTag<>(sge,"Slots",Integer.class,"Number of SGE slots allocated to the job");
 	@AutoTable
-	public static final PropertyTag<String> SGE_PROJECT_PROP = new PropertyTag<String>(sge,"Project",String.class,"SGE Project");
+	public static final PropertyTag<String> SGE_PROJECT_PROP = new PropertyTag<>(sge,"Project",String.class,"SGE Project");
 	@AutoTable(target=Double.class)
-	public static final PropertyTag<Number> SGE_CPU_TIME_PROP = new PropertyTag<Number>(sge,"CPUTime",Number.class,"Total CPU time (seconds) used by all processes");
+	public static final PropertyTag<Number> SGE_CPU_TIME_PROP = new PropertyTag<>(sge,"CPUTime",Number.class,"Total CPU time (seconds) used by all processes");
 	@AutoTable
-	public static final PropertyTag<String> SGE_DEPARTMENT_PROP = new PropertyTag<String>(sge,"Department",String.class,"SGE Department");
+	public static final PropertyTag<String> SGE_DEPARTMENT_PROP = new PropertyTag<>(sge,"Department",String.class,"SGE Department");
 
 
-	public static final PropertyTag<Number> SGE_MEMORY_PROP = new PropertyTag<Number>(sge,"Mem",Number.class,"SGE measured memory usage in Gbyte cpu seconds");
+	public static final PropertyTag<Number> SGE_MEMORY_PROP = new PropertyTag<>(sge,"Mem",Number.class,"SGE measured memory usage in Gbyte cpu seconds");
 
-	public static final PropertyTag<Number> SGE_IOWAIT_PROP = new PropertyTag<Number>(sge,"IOWait",Number.class,"SGE IO wait time in seconds");
+	public static final PropertyTag<Number> SGE_IOWAIT_PROP = new PropertyTag<>(sge,"IOWait",Number.class,"SGE IO wait time in seconds");
 
-	public static final PropertyTag<Number> SGE_IODATA_PROP = new PropertyTag<Number>(sge,"IOData",Number.class,"SGE IO data transfered");
+	public static final PropertyTag<Number> SGE_IODATA_PROP = new PropertyTag<>(sge,"IOData",Number.class,"SGE IO data transfered");
 
 
-	public static final PropertyTag<Number> SGE_VMEM_PROP = new PropertyTag<Number>(sge,"Vmem",Number.class,"SGE max Vmem in bytes");
+	public static final PropertyTag<Number> SGE_VMEM_PROP = new PropertyTag<>(sge,"Vmem",Number.class,"SGE max Vmem in bytes");
 
-	public static final PropertyTag<Number> SGE_ARID_PROP = new PropertyTag<Number>(sge,"ARID",Number.class,"SGE Advance reservation identifier");
-	public static final PropertyTag<Number> SGE_AR_TIME_PROP = new PropertyTag<Number>(sge,"ARTime",Number.class,"SGE Advance reservation submission time");
+	public static final PropertyTag<Number> SGE_ARID_PROP = new PropertyTag<>(sge,"ARID",Number.class,"SGE Advance reservation identifier");
+	public static final PropertyTag<Number> SGE_AR_TIME_PROP = new PropertyTag<>(sge,"ARTime",Number.class,"SGE Advance reservation submission time");
 
-	public static final PropertyTag<Number> SGE_UTIME_PROP = new PropertyTag<Number>(sge,"ru_utime",Number.class,"SGE ru_utime field");
-	public static final PropertyTag<Number> SGE_IDRSS_PROP = new PropertyTag<Number>(sge,"ru_idrss",Number.class,"SGE ru_idrss field");
-	public static final PropertyTag<Number> SGE_INBLOCK_PROP = new PropertyTag<Number>(sge,"ru_inblock",Number.class,"SGE ru_inblock field");
-	public static final PropertyTag<Number> SGE_ISMRSS_PROP = new PropertyTag<Number>(sge,"ru_ismrss",Number.class,"SGE ru_ismrss field");
-	public static final PropertyTag<Number> SGE_IXRSS_PROP = new PropertyTag<Number>(sge,"ru_ixrss",Number.class,"SGE ru_ixrss field");
-	public static final PropertyTag<Number> SGE_MAJFLT_PROP = new PropertyTag<Number>(sge,"ru_majflt",Number.class,"SGE ru_majflt field");
-	public static final PropertyTag<Number> SGE_ISRSS_PROP = new PropertyTag<Number>(sge,"ru_isrss",Number.class,"SGE ru_isrss field");
-	public static final PropertyTag<Number> SGE_MAXRSS_PROP = new PropertyTag<Number>(sge,"ru_maxrss",Number.class,"SGE ru_maxrss field");
-	public static final PropertyTag<Number> SGE_MINFLT_PROP = new PropertyTag<Number>(sge,"ru_minflt",Number.class,"SGE ru_minflt field");
-	public static final PropertyTag<Number> SGE_MSGRCV_PROP = new PropertyTag<Number>(sge,"ru_msgrcv",Number.class,"SGE ru_msgrcv field");
-	public static final PropertyTag<Number> SGE_MSGSND_PROP = new PropertyTag<Number>(sge,"ru_msgsnd",Number.class,"SGE ru_msgsnd field");
-	public static final PropertyTag<Number> SGE_NIVCSW_PROP = new PropertyTag<Number>(sge,"ru_nivcsw",Number.class,"SGE ru_nivcsw field");   
-	public static final PropertyTag<Number> SGE_NSIGNALS_PROP = new PropertyTag<Number>(sge,"ru_nsignals",Number.class,"SGE ru_nsignals field");
-	public static final PropertyTag<Number> SGE_STIME_PROP = new PropertyTag<Number>(sge,"ru_stime",Number.class,"SGE ru_stime field");
-	public static final PropertyTag<Number> SGE_OUTBLOCK_PROP = new PropertyTag<Number>(sge,"ru_outblock",Number.class,"SGE ru_outblock field");
-	public static final PropertyTag<Number> SGE_NSWAP_PROP = new PropertyTag<Number>(sge,"ru_nswap",Number.class,"SGE ru_nswap field");
-	public static final PropertyTag<Number> SGE_NVCSW_PROP = new PropertyTag<Number>(sge,"ru_nvcsw",Number.class,"SGE ru_nvcsw field");
+	public static final PropertyTag<Number> SGE_UTIME_PROP = new PropertyTag<>(sge,"ru_utime",Number.class,"SGE ru_utime field");
+	public static final PropertyTag<Number> SGE_IDRSS_PROP = new PropertyTag<>(sge,"ru_idrss",Number.class,"SGE ru_idrss field");
+	public static final PropertyTag<Number> SGE_INBLOCK_PROP = new PropertyTag<>(sge,"ru_inblock",Number.class,"SGE ru_inblock field");
+	public static final PropertyTag<Number> SGE_ISMRSS_PROP = new PropertyTag<>(sge,"ru_ismrss",Number.class,"SGE ru_ismrss field");
+	public static final PropertyTag<Number> SGE_IXRSS_PROP = new PropertyTag<>(sge,"ru_ixrss",Number.class,"SGE ru_ixrss field");
+	public static final PropertyTag<Number> SGE_MAJFLT_PROP = new PropertyTag<>(sge,"ru_majflt",Number.class,"SGE ru_majflt field");
+	public static final PropertyTag<Number> SGE_ISRSS_PROP = new PropertyTag<>(sge,"ru_isrss",Number.class,"SGE ru_isrss field");
+	public static final PropertyTag<Number> SGE_MAXRSS_PROP = new PropertyTag<>(sge,"ru_maxrss",Number.class,"SGE ru_maxrss field");
+	public static final PropertyTag<Number> SGE_MINFLT_PROP = new PropertyTag<>(sge,"ru_minflt",Number.class,"SGE ru_minflt field");
+	public static final PropertyTag<Number> SGE_MSGRCV_PROP = new PropertyTag<>(sge,"ru_msgrcv",Number.class,"SGE ru_msgrcv field");
+	public static final PropertyTag<Number> SGE_MSGSND_PROP = new PropertyTag<>(sge,"ru_msgsnd",Number.class,"SGE ru_msgsnd field");
+	public static final PropertyTag<Number> SGE_NIVCSW_PROP = new PropertyTag<>(sge,"ru_nivcsw",Number.class,"SGE ru_nivcsw field");   
+	public static final PropertyTag<Number> SGE_NSIGNALS_PROP = new PropertyTag<>(sge,"ru_nsignals",Number.class,"SGE ru_nsignals field");
+	public static final PropertyTag<Number> SGE_STIME_PROP = new PropertyTag<>(sge,"ru_stime",Number.class,"SGE ru_stime field");
+	public static final PropertyTag<Number> SGE_OUTBLOCK_PROP = new PropertyTag<>(sge,"ru_outblock",Number.class,"SGE ru_outblock field");
+	public static final PropertyTag<Number> SGE_NSWAP_PROP = new PropertyTag<>(sge,"ru_nswap",Number.class,"SGE ru_nswap field");
+	public static final PropertyTag<Number> SGE_NVCSW_PROP = new PropertyTag<>(sge,"ru_nvcsw",Number.class,"SGE ru_nvcsw field");
 
 	static{
 		sge.lock();
@@ -330,7 +330,7 @@ public class SgeParser extends BatchParser implements Contexed {
 			derived = super.getDerivedProperties(previous);
 			// convert SGE_JOB_ID to string for JOB_ID
 			try {
-				derived.put(JOB_ID_PROP, new StringPropExpression<Number>(SGE_JOB_ID));
+				derived.put(JOB_ID_PROP, new StringPropExpression<>(SGE_JOB_ID));
 				addAlias(derived,SGE_QUEUE_PROP,QUEUE_PROP);
 				addAlias(derived, StandardProperties.GROUPNAME_PROP, SGE_GROUPNAME_PROP);
 				addAlias(derived, SGE_USERNAME_PROP, StandardProperties.USERNAME_PROP);
@@ -343,7 +343,7 @@ public class SgeParser extends BatchParser implements Contexed {
 				if( getContext().getBooleanParameter("sge_parser.wallclock_runtime."+table, true)){
 					// Use the SGE computed wallclock for charging calc
 					derived.put( StandardProperties.RUNTIME_PROP, new BinaryPropExpression(SGE_WALLCLOCK_PROP, Operator.MUL,
-							new ConstPropExpression<Long>(Long.class,1000L)));
+							new ConstPropExpression<>(Long.class,1000L)));
 				}
 
 				addAlias(derived, SGE_SUBMITTED_PROP, SUBMITTED_PROP);

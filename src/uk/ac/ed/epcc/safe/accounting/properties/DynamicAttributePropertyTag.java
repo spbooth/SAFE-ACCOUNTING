@@ -77,7 +77,7 @@ public class DynamicAttributePropertyTag<T> extends AttributePropertyTag<T> {
 	 * 
 	 */
 	private static Set<String> getGroupNames(String regex) {
-        Set<String> names = new TreeSet<String>();
+        Set<String> names = new TreeSet<>();
         Matcher m = Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]*)>").matcher(regex);
 
         while (m.find()) {

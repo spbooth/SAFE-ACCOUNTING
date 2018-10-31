@@ -85,7 +85,7 @@ public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPl
 		protected Set<PropertyContainerPolicy> makePolicies() {
 			AppContext ctx = getContext();
 			Logger log = ctx.getService(LoggerService.class).getLogger(getClass());
-			Set<PropertyContainerPolicy> policies= new LinkedHashSet<PropertyContainerPolicy>();
+			Set<PropertyContainerPolicy> policies= new LinkedHashSet<>();
 	    	String policy_list = ctx.getInitParameter(POLICIES_PREFIX+getTag());
 	    	log.debug("policy list="+policy_list);
 	    	if( policy_list != null){
@@ -112,7 +112,7 @@ public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPl
 		
 		protected SetInput getPolicyInput(){
 			 AppContext ctx = getContext();
-			SetInput<Class> input = new SetInput<Class>();
+			SetInput<Class> input = new SetInput<>();
 			String policy_list = ctx.getInitParameter(POLICIES_PREFIX+getTag());
 	       
 	    	if( policy_list != null){
@@ -202,7 +202,7 @@ public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPl
 			public void buildForm(Form f, T target,
 				AppContext c) throws TransitionException {
 				
-				ClassInput<PropertyContainerPolicy> input = new ClassInput<PropertyContainerPolicy>(getContext(), PropertyContainerPolicy.class);
+				ClassInput<PropertyContainerPolicy> input = new ClassInput<>(getContext(), PropertyContainerPolicy.class);
 				
 				f.addInput("Policy", "Policy to Add", input);
 				f.addAction("Add", new AddPolicyAction(target));
@@ -241,7 +241,7 @@ public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPl
 
 			public void buildForm(Form f, T target, AppContext conn)
 					throws TransitionException {
-				ClassInput<PropertyContainerParser> input = new ClassInput<PropertyContainerParser>(conn, PropertyContainerParser.class);
+				ClassInput<PropertyContainerParser> input = new ClassInput<>(conn, PropertyContainerParser.class);
 				f.addInput("parser", "Parser class", input);
 				f.addAction("Set",new SetParserAction(target) );
 			}

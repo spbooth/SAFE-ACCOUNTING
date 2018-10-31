@@ -30,7 +30,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  */
 public class EmbeddedExtension extends ReportExtension {
 
-	Map<String,Object> fragments = new HashMap<String, Object>();
+	Map<String,Object> fragments = new HashMap<>();
 	public EmbeddedExtension(AppContext conn, NumberFormat nf)
 			throws ParserConfigurationException {
 		super(conn, nf);

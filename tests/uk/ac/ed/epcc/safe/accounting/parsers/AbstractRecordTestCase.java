@@ -185,7 +185,7 @@ public abstract class AbstractRecordTestCase<R> extends
 	@Override
 	protected void processBadParseErrors(Collection<String> successfulRecords,
 			ErrorSet failedRecords, ErrorSet errors) throws Exception {
-		HashMap<Integer, BadRecordText> recordTable = new HashMap<Integer, BadRecordText>();
+		HashMap<Integer, BadRecordText> recordTable = new HashMap<>();
 		PropertyContainerParser<R> parser = getPluginOwner().getParser();
 		/*
 		 * Put all the record in a table referenced by hash code for fast look up

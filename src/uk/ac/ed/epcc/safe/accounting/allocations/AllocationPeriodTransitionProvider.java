@@ -20,7 +20,6 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
-import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ShortTextPeriodFormatter;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -87,7 +86,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 		public FormResult doTransition(AllocationPeriod target, AppContext c)
 				throws TransitionException {
 			
-			return new ViewTransitionResult<AllocationPeriod, PeriodKey>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(target.getPeriod().up(), target.getIndex()));
+			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(target.getPeriod().up(), target.getIndex()));
 		}
 		
 	}
@@ -96,7 +95,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 		public FormResult doTransition(AllocationPeriod target, AppContext c)
 				throws TransitionException {
 			
-			return new ViewTransitionResult<AllocationPeriod, PeriodKey>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(target.getPeriod().down(), target.getIndex()));
+			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(target.getPeriod().down(), target.getIndex()));
 		}
 		
 	}
@@ -125,7 +124,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 					}					
 				}
 			}
-			return new ViewTransitionResult<AllocationPeriod,PeriodKey>(AllocationPeriodTransitionProvider.this, 
+			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, 
 					new AllocationPeriod(period, map));
 		}
 		
@@ -179,7 +178,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 	};
 	public class IndexTransition extends AbstractDirectTargetlessTransition<AllocationPeriod>{
 		public FormResult doTransition(AppContext c) throws TransitionException {
-			return new ViewTransitionResult<AllocationPeriod, PeriodKey>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(ViewPeriod.getViewPeriod(c)));
+			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(ViewPeriod.getViewPeriod(c)));
 		}
 		
 	}
@@ -346,7 +345,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 	}
 
 	public LinkedList<String> getID(AllocationPeriod target) {
-		LinkedList<String> result = new LinkedList<String>();
+		LinkedList<String> result = new LinkedList<>();
 		result.add(target.getPeriod().toString());
 		PropertyMap map = target.getIndex();
 		for(ReferenceTag<?,?> tag : manager.getIndexProperties()){

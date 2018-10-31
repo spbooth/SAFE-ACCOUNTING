@@ -145,28 +145,28 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 	// Not part of PBS specification - used as part of 'requester' which is
 	// represented as user@host
     @AutoTable(length=64)
-	public static final PropertyTag<String> PBS_USER_HOST_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_USER_HOST_PROP = new PropertyTag<>(
 			ADDITIONAL_REGISTRY, "host", String.class,"The name of the host a user is associated with");
 
   
 
 	@AutoTable
-	public static final PropertyTag<String> PBS_NODES_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> PBS_NODES_PROP = new PropertyTag<>(
 			ADDITIONAL_REGISTRY, "nodes",String.class, "The list of node numbers and types used in the execution");
 
 	@AutoTable
-	public static final PropertyTag<Integer> PBS_NUM_NODES_PROP = new PropertyTag<Integer>(
+	public static final PropertyTag<Integer> PBS_NUM_NODES_PROP = new PropertyTag<>(
 			ADDITIONAL_REGISTRY, "num_nodes", Integer.class, "The number of nodes used, derived from the nodes list.");
 
 	@AutoTable
-	public static final PropertyTag<Integer> PBS_NUM_CPUS_PROP = new PropertyTag<Integer>(
+	public static final PropertyTag<Integer> PBS_NUM_CPUS_PROP = new PropertyTag<>(
 			ADDITIONAL_REGISTRY, "num_cpus", Integer.class, "The number of cpus used, set explicitly");
 
-	public static final PropertyTag<Integer> PBS_PROC_PER_NODE_PROP = new PropertyTag<Integer>(
+	public static final PropertyTag<Integer> PBS_PROC_PER_NODE_PROP = new PropertyTag<>(
 			ADDITIONAL_REGISTRY, "ppn", Integer.class, "The number of cpus used per node, derived from the nodes list");
 
 	@AutoTable(target=String.class,length=16)
-	public static final PropertyTag<String> PBS_PLACEMENT = new PropertyTag<String>(ADDITIONAL_REGISTRY,
+	public static final PropertyTag<String> PBS_PLACEMENT = new PropertyTag<>(ADDITIONAL_REGISTRY,
 			"place",String.class,"Requested placement");
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -425,7 +425,7 @@ public class PbsParser extends AbstractPbsParser implements Contexed{
 		}
         private int nodes;
         private int cpus;
-        private Set<String> node_set = new HashSet<String>();
+        private Set<String> node_set = new HashSet<>();
         private static Pattern patt = Pattern.compile("(?<VNODE>[A-Za-z0-9\\.\\-]+)/\\d+(?<COUNT>\\*\\d+)?");
         // This is not documented in the manual but has been seen in practice
         private static Pattern patt2 = Pattern.compile("(?<VNODE>[A-Za-z0-9\\.\\-]+)/(?<MIN>\\d+)\\-(?<MAX>\\d+)?");

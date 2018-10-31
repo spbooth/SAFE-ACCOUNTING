@@ -91,8 +91,8 @@ public abstract class RegexpParser extends AbstractPropertyContainerParser {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void startParse(PropertyContainer staticProps) throws Exception {
-		targets=new HashMap<PropertyTag,Pattern>();
-		parsers=new HashMap<PropertyTag,ValueParser>();
+		targets=new HashMap<>();
+		parsers=new HashMap<>();
 		Class myclass=getClass();
 		// Set default targets for field tags.
 		ValueParserPolicy vis = new ValueParserPolicy(getContext());

@@ -65,26 +65,26 @@ public class OGFXMLRecordParser extends XMLRecordParser {
 
 	// Record identity properties
 	@Path("//ur:RecordIdentity")
-    public static final PropertyTag<String> OGFUR_RECORD_IDENTITY_PROP = new PropertyTag<String>(
+    public static final PropertyTag<String> OGFUR_RECORD_IDENTITY_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "RecordIdentity",String.class);
 	@Path("//ur:RecordIdentity/@ur:createTime")
 	@OptionalTable
-	public static final PropertyTag<Date> OGFUR_CREATE_TIME_PROP = new PropertyTag<Date>(
+	public static final PropertyTag<Date> OGFUR_CREATE_TIME_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "createTime",Date.class);
 	@Path("//ur:RecordIdentity/@ur:recordId")
-	@AutoTable(unique=true,length=128) public static final PropertyTag<String> OGFUR_RECORD_ID_PROP = new PropertyTag<String>(
+	@AutoTable(unique=true,length=128) public static final PropertyTag<String> OGFUR_RECORD_ID_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "recordId",String.class);
 
 	// Job identity properties
 	@Path("//ur:GlobalJobId")
-	@AutoTable public static final PropertyTag<String> OGFUR_GLOBAL_JOB_ID_PROP = new PropertyTag<String>(
+	@AutoTable public static final PropertyTag<String> OGFUR_GLOBAL_JOB_ID_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "GlobalJobId",String.class);
     @Path("//ur:LocalJobId")
-	@AutoTable public static final PropertyTag<String> OGFUR_LOCAL_JOB_ID_PROP = new PropertyTag<String>(
+	@AutoTable public static final PropertyTag<String> OGFUR_LOCAL_JOB_ID_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "LocalJobId",String.class);
 	@Path("//ur:ProcessId")
 	@OptionalTable(length=256)
-    public static final PropertyTag<String> OGFUR_PROCESS_ID_PROP = new PropertyTag<String>(
+    public static final PropertyTag<String> OGFUR_PROCESS_ID_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "ProcessId",String.class);
 
 	// User Identity properties
@@ -96,65 +96,65 @@ public class OGFXMLRecordParser extends XMLRecordParser {
 	*/
     @Path("//ur:GlobalUserName|//ur:GlobalUsername")
 	@AutoTable(length=512)
-    public static final PropertyTag<String> OGFUR_GLOBAL_USERNAME_PROP = new PropertyTag<String>(
+    public static final PropertyTag<String> OGFUR_GLOBAL_USERNAME_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "GlobalUsername",String.class);
 	
     @Path("//ur:LocalUserId")
-    @AutoTable public static final PropertyTag<String> OGFUR_LOCAL_USER_ID_PROP = new PropertyTag<String>(
+    @AutoTable public static final PropertyTag<String> OGFUR_LOCAL_USER_ID_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "LocalUserId",String.class);
 
 	@Path("//ur:UserIdentity/xd:KeyInfo/xd:X509Data/xd:X509SubjectName")
 	@AutoTable(length=512)
-	public static final PropertyTag<String> OGFUR_SUBJECT_NAME_PROP = new PropertyTag<String>(OGFUR_DEFAULT_REGISTRY, "X509SubjectName",String.class);
+	public static final PropertyTag<String> OGFUR_SUBJECT_NAME_PROP = new PropertyTag<>(OGFUR_DEFAULT_REGISTRY, "X509SubjectName",String.class);
 	// Base Properties
 	@Path("//ur:Charge")
 	@OptionalTable
-	public static final PropertyTag<Number> OGFUR_CHARGE_PROP = new PropertyTag<Number>(
+	public static final PropertyTag<Number> OGFUR_CHARGE_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "Charge", Number.class);
 	@Path("//ur:Charge/@ur:unit")
 	@OptionalTable
-	public static final PropertyTag<String> OGFUR_CHARGE_UNIT_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> OGFUR_CHARGE_UNIT_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "Charge_unit",String.class);
 	@Path("//ur:EndTime")
-	@AutoTable(unique=true) public static final PropertyTag<Date> OGFUR_END_TIME_PROP = new PropertyTag<Date>(
+	@AutoTable(unique=true) public static final PropertyTag<Date> OGFUR_END_TIME_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "EndTime",Date.class);
 	@Path("//ur:Host")
 	@OptionalTable(length=512)
-	public static final PropertyTag<String> OGFUR_HOST_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> OGFUR_HOST_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "Host",String.class);
 	@Path("//ur:JobName")
-	@AutoTable(length=128) public static final PropertyTag<String> OGFUR_JOB_NAME_PROP = new PropertyTag<String>(
+	@AutoTable(length=128) public static final PropertyTag<String> OGFUR_JOB_NAME_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "JobName",String.class);
     @Path("//ur:MachineName")
     @OptionalTable(length=128)
-	public static final PropertyTag<String> OGFUR_MACHINE_NAME_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> OGFUR_MACHINE_NAME_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "MachineName",String.class);
     @Path("//ur:ProjectName")
     @OptionalTable(length=128)
-    public static final PropertyTag<String> OGFUR_PROJECT_NAME_PROP = new PropertyTag<String>(
+    public static final PropertyTag<String> OGFUR_PROJECT_NAME_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "ProjectName",String.class);
     @Path("//ur:Queue")
-    @AutoTable public static final PropertyTag<String> OGFUR_QUEUE_PROP = new PropertyTag<String>(
+    @AutoTable public static final PropertyTag<String> OGFUR_QUEUE_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "Queue",String.class);
     @Path("//ur:StartTime")
-    @AutoTable public static final PropertyTag<Date> OGFUR_START_TIME_PROP = new PropertyTag<Date>(
+    @AutoTable public static final PropertyTag<Date> OGFUR_START_TIME_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "StartTime",Date.class);
     @Path("//ur:Status")
-    @AutoTable public static final PropertyTag<String> OGFUR_STATUS_PROP = new PropertyTag<String>(
+    @AutoTable public static final PropertyTag<String> OGFUR_STATUS_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "Status",String.class);
     @Path("//ur:SubmitHost")
     @OptionalTable(length=128)
-    public static final PropertyTag<String> OGFUR_SUBMIT_HOST_PROP = new PropertyTag<String>(
+    public static final PropertyTag<String> OGFUR_SUBMIT_HOST_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "SubmitHost",String.class);
 	@Path("//ur:WallDuration")
 	@OptionalTable(target=Long.class)
-    public static final PropertyTag<Duration> OGFUR_WALL_DURATION_PROP = new PropertyTag<Duration>(
+    public static final PropertyTag<Duration> OGFUR_WALL_DURATION_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "WallDuration", Duration.class);
 
 	// Differentiated Properties
     @Path("//ur:CpuDuration")
     @OptionalTable(target=Long.class)
-	@AutoTable public static final PropertyTag<Duration> OGFUR_CPU_DURATION_PROP = new PropertyTag<Duration>(
+	@AutoTable public static final PropertyTag<Duration> OGFUR_CPU_DURATION_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "CpuDuration", Duration.class);
 //   @Path("//ur:Disk[metric='total'")
 //    @ParseClass(parser=IntervallicVolumeParser.class)
@@ -170,15 +170,15 @@ public class OGFXMLRecordParser extends XMLRecordParser {
 //			OGFUR_DEFAULT_REGISTRY, "Network", Number.class);
     @Path("//ur:NodeCount")
     @AutoTable(target=Integer.class) 
-	public static final PropertyTag<Integer> OGFUR_NODE_COUNT_PROP = new PropertyTag<Integer>(
+	public static final PropertyTag<Integer> OGFUR_NODE_COUNT_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "NodeCount", Integer.class);
     @Path("//ur:Processors")
     @AutoTable(target=Integer.class) 
-	public static final PropertyTag<Integer> OGFUR_PROCESSORS_PROP = new PropertyTag<Integer>(
+	public static final PropertyTag<Integer> OGFUR_PROCESSORS_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "Processors", Integer.class);
     @Path("//ur:ServiceLevel")
     @OptionalTable
-	public static final PropertyTag<String> OGFUR_SERVICE_LEVEL_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> OGFUR_SERVICE_LEVEL_PROP = new PropertyTag<>(
 			OGFUR_DEFAULT_REGISTRY, "ServiceLevel",String.class);
 //    @Path("//ur:Swap")
 //  @ParseClass(parser=IntervallicVolumeParser.class)
@@ -261,7 +261,7 @@ public class OGFXMLRecordParser extends XMLRecordParser {
 		
 			//ADD_DERIVATON(map,BatchParser.WALLCLOCK_PROP, OGFUR_WALL_DURATION_PROP);
 			try{
-			map.put(OGFXMLRecordParser.OGFUR_WALL_DURATION_PROP, new DurationCastPropExpression<Number>(BatchParser.WALLCLOCK_PROP,1000L));
+			map.put(OGFXMLRecordParser.OGFUR_WALL_DURATION_PROP, new DurationCastPropExpression<>(BatchParser.WALLCLOCK_PROP,1000L));
 			map.put(BatchParser.WALLCLOCK_PROP, new DurationSecondsPropExpression(OGFXMLRecordParser.OGFUR_WALL_DURATION_PROP));
 			}catch(PropertyCastException e){
 				getLogger().error("Error adding Derivations in OGFUsageRecordParser",e);

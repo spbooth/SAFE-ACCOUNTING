@@ -14,7 +14,6 @@
 package uk.ac.ed.epcc.safe.accounting.allocations;
 
 import java.util.Date;
-import java.util.Iterator;
 
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
@@ -104,11 +103,11 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 		try{
 			AndRecordSelector sel = new AndRecordSelector();
 			if( move_up ){
-				sel.add(new SelectClause<Date>(StandardProperties.STARTED_PROP,MatchCondition.GT,current.getStart()));
-				sel.add(new OrderClause<Date>(false, StandardProperties.STARTED_PROP));
+				sel.add(new SelectClause<>(StandardProperties.STARTED_PROP,MatchCondition.GT,current.getStart()));
+				sel.add(new OrderClause<>(false, StandardProperties.STARTED_PROP));
 			}else{
-				sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.LT,current.getEnd()));
-				sel.add(new OrderClause<Date>(true, StandardProperties.ENDED_PROP));
+				sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.LT,current.getEnd()));
+				sel.add(new OrderClause<>(true, StandardProperties.ENDED_PROP));
 			}
 			for(ReferenceTag t : getIndexProperties()){
 				sel.add(new SelectClause<IndexedReference>(t,current));

@@ -169,7 +169,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	 * @return
 	 */
 	protected Set<PropertyTag<? extends Number>> makeAccumulations(){
-		LinkedHashSet<PropertyTag<? extends Number>> result = new LinkedHashSet<PropertyTag<? extends Number>>();
+		LinkedHashSet<PropertyTag<? extends Number>> result = new LinkedHashSet<>();
 		if( master == null ){
 			return result;
 		}
@@ -197,7 +197,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	
 	protected Map<PropertyTag<? extends Number>,PropertyTag<? extends Number>> makeConstraints(){
 		// default to an empty map the subclasses will have to provide the constraints.
-		return new HashMap<PropertyTag<? extends Number>, PropertyTag<? extends Number>>();
+		return new HashMap<>();
 	}
 	@Override
 	protected Set<PropertyTag> getSummaryProperties() {
@@ -274,7 +274,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 				getLogger().error("Error from regenerate",e);
 				throw new TransitionException("Internal error");
 			}
-			return new ChainedTransitionResult<T, AllocationKey<T>>(ChargedAllocationFactory.this, target, null);
+			return new ChainedTransitionResult<>(ChargedAllocationFactory.this, target, null);
 		}
 		
 	}
@@ -282,17 +282,17 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	@Override
 	protected final LinkedHashMap<AllocationKey<T>, Transition<T>> makeTransitions() {
 		
-		LinkedHashMap<AllocationKey<T>, Transition<T>> result = new LinkedHashMap<AllocationKey<T>, Transition<T>>();
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class, "<<<"), new SequenceTransition<T, AllocationKey<T>>(this, this, false));
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"<Merge"), new MergeTransition<T, AllocationKey<T>>(this, this, false));
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"ChangeStart","Change the start date"), new MoveDateTransition<T,AllocationKey<T>>(this,this,true));
+		LinkedHashMap<AllocationKey<T>, Transition<T>> result = new LinkedHashMap<>();
+		result.put(new AllocationKey<T>(ChargedAllocationRecord.class, "<<<"), new SequenceTransition<>(this, this, false));
+		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"<Merge"), new MergeTransition<>(this, this, false));
+		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"ChangeStart","Change the start date"), new MoveDateTransition<>(this,this,true));
 		result.putAll(super.makeTransitions());
 		addTransitions(result);
 		result.put(new AllocationKey<T>(ChargedAllocationRecord.class, "Regenerate","recalculate time used from accounting data"),new RegenerateTransition());
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"ChangeEnd","Change the end date"), new MoveDateTransition<T,AllocationKey<T>>(this,this,false));
+		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"ChangeEnd","Change the end date"), new MoveDateTransition<>(this,this,false));
 
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"Merge>"), new MergeTransition<T, AllocationKey<T>>(this, this, true));
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class, ">>>"), new SequenceTransition<T, AllocationKey<T>>(this, this, true));
+		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"Merge>"), new MergeTransition<>(this, this, true));
+		result.put(new AllocationKey<T>(ChargedAllocationRecord.class, ">>>"), new SequenceTransition<>(this, this, true));
 
 		return result;
 	}
@@ -310,14 +310,14 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	 */
 	@SuppressWarnings("unchecked")
 	protected void regenerate(T record) throws Exception{
-		Set<ReductionTarget> list = new LinkedHashSet<ReductionTarget>();
+		Set<ReductionTarget> list = new LinkedHashSet<>();
 		Set<PropertyTag<? extends Number>> acc = getAccumulations();
 		for( PropertyTag t : acc){
 			list.add(new NumberSumReductionTarget( t));
 		}
 		AndRecordSelector sel = new AndRecordSelector();
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.GE, record.getStart()));
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.LT, record.getEnd()));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.GE, record.getStart()));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.LT, record.getEnd()));
 		for(ReferenceTag t : getIndexProperties()){
 			sel.add(new SelectClause<IndexedReference>(t, record));
 		}
@@ -373,8 +373,8 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	private AndRecordSelector getMatchFilter(PropertyContainer c) throws InvalidExpressionException {
 		AndRecordSelector sel;
 		sel = new AndRecordSelector();
-    	sel.add(new SelectClause<Date>(StandardProperties.STARTED_PROP,MatchCondition.LE,c.getProperty(StandardProperties.ENDED_PROP)));
-    	sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.GT,c.getProperty(StandardProperties.ENDED_PROP)));
+    	sel.add(new SelectClause<>(StandardProperties.STARTED_PROP,MatchCondition.LE,c.getProperty(StandardProperties.ENDED_PROP)));
+    	sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.GT,c.getProperty(StandardProperties.ENDED_PROP)));
     	for(ReferenceTag t : getIndexProperties()){
     		sel.add(new SelectClause<IndexedReference>(t,c));
     	}
@@ -389,7 +389,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
     	AndRecordSelector fil = getMatchFilter(rec);
     	for(PropertyTag<? extends Number> t : getAccumulations()){
     		Number val = (Number) rec.getProperty(t);
-    		PropExpression<? extends Number> val_expr = new ConstPropExpression<Number>(Number.class,val);
+    		PropExpression<? extends Number> val_expr = new ConstPropExpression<>(Number.class,val);
     		Operator op = add ? Operator.ADD : Operator.SUB;
     		PropExpression expr = new BinaryPropExpression(t, op, val_expr);
     		updater.update(t,expr,fil);
@@ -440,7 +440,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	protected Set<String> getSupress() {
 		// We don't want to edit the accumulated fields 
 		AccessorMap map = getAccessorMap();
-		Set<String> supress_fields = new HashSet<String>();
+		Set<String> supress_fields = new HashSet<>();
 		for(PropertyTag local : getAccumulations()){
 			String field = map.getField(local);
 			if( field != null ){

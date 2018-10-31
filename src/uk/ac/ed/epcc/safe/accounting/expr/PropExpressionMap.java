@@ -50,10 +50,10 @@ public final class PropExpressionMap {
   private final Map<PropertyTag,PropExpression> map; 
   private static final PropExpressionNormaliser norm = new PropExpressionNormaliser();
   public PropExpressionMap(){
-	 map  = new LinkedHashMap<PropertyTag,PropExpression>();
+	 map  = new LinkedHashMap<>();
   }
   public PropExpressionMap(PropExpressionMap orig){
-	  map = new LinkedHashMap<PropertyTag, PropExpression>(orig.map);
+	  map = new LinkedHashMap<>(orig.map);
   }
   @SuppressWarnings("unchecked")
 public <T> void put(PropertyTag<T> key, PropExpression<? extends T> expr) throws PropertyCastException{
@@ -146,7 +146,7 @@ public int size() {
 	  String prefix=PROPERTY_PREFIX+table+".";
 	  // allow expressions to depend on other derived properties as well.
 	  MultiFinder parse_finder=new MultiFinder();
-	  Set<String> missing = new HashSet<String>(); // tags already not found.
+	  Set<String> missing = new HashSet<>(); // tags already not found.
 	  parse_finder.addFinder(reg);
 	  parse_finder.addFinder(prev);
 		Parser parser = new Parser(ctx,parse_finder);
@@ -249,7 +249,7 @@ private <T> PropertyTag<T> addExpression(PropertyRegistry reg, String name,
 		// can be considered part of the expression type.
 		tag = new ReferenceTag(reg, name, ((ReferenceExpression)e).getFactoryClass(),((ReferenceExpression)e).getTable());
 	}else{
-		tag = new PropertyTag<T>(reg,name,e.getTarget(),e.toString());
+		tag = new PropertyTag<>(reg,name,e.getTarget(),e.toString());
 	}
 	put(tag, e);
 	return tag;

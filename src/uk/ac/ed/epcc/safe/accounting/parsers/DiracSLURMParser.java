@@ -45,71 +45,71 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
     public static final PropertyRegistry slurm_reg = new PropertyRegistry("diracslurm", "Dirac slurm properties");
     
     @AutoTable(unique=true)
-    public static final PropertyTag<String> JOB_ID_PROP = new PropertyTag<String>(slurm_reg, "JobID", String.class);
+    public static final PropertyTag<String> JOB_ID_PROP = new PropertyTag<>(slurm_reg, "JobID", String.class);
 	
     @AutoTable
-	public static final PropertyTag<String> USER_PROP = new PropertyTag<String>(slurm_reg, "User", String.class);
+	public static final PropertyTag<String> USER_PROP = new PropertyTag<>(slurm_reg, "User", String.class);
     
     @AutoTable
-	public static final PropertyTag<String> GROUP_PROP = new PropertyTag<String>(slurm_reg, "Group", String.class);
+	public static final PropertyTag<String> GROUP_PROP = new PropertyTag<>(slurm_reg, "Group", String.class);
     
     @AutoTable
-	public static final PropertyTag<String> ACCOUNT_PROP = new PropertyTag<String>(slurm_reg, "Account", String.class);
+	public static final PropertyTag<String> ACCOUNT_PROP = new PropertyTag<>(slurm_reg, "Account", String.class);
     
     @AutoTable(length=128)
-	public static final PropertyTag<String> JOB_NAME_PROP = new PropertyTag<String>(slurm_reg, "JobName", String.class);
+	public static final PropertyTag<String> JOB_NAME_PROP = new PropertyTag<>(slurm_reg, "JobName", String.class);
     
     @AutoTable
-	public static final PropertyTag<String> PARTITION_PROP = new PropertyTag<String>(slurm_reg, "Partition", String.class);
+	public static final PropertyTag<String> PARTITION_PROP = new PropertyTag<>(slurm_reg, "Partition", String.class);
     
     @AutoTable
-	public static final PropertyTag<Date> SUBMIT_PROP = new PropertyTag<Date>(slurm_reg, "Submit", Date.class);
+	public static final PropertyTag<Date> SUBMIT_PROP = new PropertyTag<>(slurm_reg, "Submit", Date.class);
     
     @AutoTable
-	public static final PropertyTag<Duration> RESERVED_PROP = new PropertyTag<Duration>(slurm_reg, "Reserved", Duration.class);
+	public static final PropertyTag<Duration> RESERVED_PROP = new PropertyTag<>(slurm_reg, "Reserved", Duration.class);
     
     @AutoTable(unique=true)
-	public static final PropertyTag<Date> START_PROP = new PropertyTag<Date>(slurm_reg, "Start", Date.class);
+	public static final PropertyTag<Date> START_PROP = new PropertyTag<>(slurm_reg, "Start", Date.class);
     
     @AutoTable
-	public static final PropertyTag<Date> END_PROP = new PropertyTag<Date>(slurm_reg, "End", Date.class);
+	public static final PropertyTag<Date> END_PROP = new PropertyTag<>(slurm_reg, "End", Date.class);
     
     @AutoTable
-	public static final PropertyTag<Duration> ELAPSED_PROP = new PropertyTag<Duration>(slurm_reg, "Elapsed", Duration.class);
+	public static final PropertyTag<Duration> ELAPSED_PROP = new PropertyTag<>(slurm_reg, "Elapsed", Duration.class);
     
     @AutoTable
-	public static final PropertyTag<Integer> N_NODES_PROP = new PropertyTag<Integer>(slurm_reg, "NNodes", Integer.class);
+	public static final PropertyTag<Integer> N_NODES_PROP = new PropertyTag<>(slurm_reg, "NNodes", Integer.class);
     
     @AutoTable
-	public static final PropertyTag<Integer> N_CPUS_PROP = new PropertyTag<Integer>(slurm_reg, "NCPUS", Integer.class);
+	public static final PropertyTag<Integer> N_CPUS_PROP = new PropertyTag<>(slurm_reg, "NCPUS", Integer.class);
     
     @AutoTable
-	public static final PropertyTag<Duration> TIME_LIMIT_PROP = new PropertyTag<Duration>(slurm_reg, "Timelimit", Duration.class);
+	public static final PropertyTag<Duration> TIME_LIMIT_PROP = new PropertyTag<>(slurm_reg, "Timelimit", Duration.class);
     
     @AutoTable(target=Long.class)
-	public static final PropertyTag<Number> REQ_MEM_PROP = new PropertyTag<Number>(slurm_reg, "ReqMem", Number.class);
+	public static final PropertyTag<Number> REQ_MEM_PROP = new PropertyTag<>(slurm_reg, "ReqMem", Number.class);
     @AutoTable(target=Long.class)
-	public static final PropertyTag<Number> USED_MEM_PROP = new PropertyTag<Number>(slurm_reg, "resources_used_mem", Number.class);
+	public static final PropertyTag<Number> USED_MEM_PROP = new PropertyTag<>(slurm_reg, "resources_used_mem", Number.class);
 
     @AutoTable
-	public static final PropertyTag<String> EXIT_CODE_PROP = new PropertyTag<String>(slurm_reg, "ExitCode", String.class);
+	public static final PropertyTag<String> EXIT_CODE_PROP = new PropertyTag<>(slurm_reg, "ExitCode", String.class);
     
     @AutoTable
-	public static final PropertyTag<String> STATE_PROP = new PropertyTag<String>(slurm_reg, "State", String.class);
+	public static final PropertyTag<String> STATE_PROP = new PropertyTag<>(slurm_reg, "State", String.class);
     
     @OptionalTable
-    public static final PropertyTag<String> CLUSTER_PROP = new PropertyTag<String>(slurm_reg,"Cluster", String.class);
+    public static final PropertyTag<String> CLUSTER_PROP = new PropertyTag<>(slurm_reg,"Cluster", String.class);
     
     @OptionalTable(target=Long.class)
-    public static final PropertyTag<Number> CPU_TIME_RAW_PROP = new PropertyTag<Number>(slurm_reg,"CPUTimeRAW",Number.class,"Residency seconds from SLURM");
+    public static final PropertyTag<Number> CPU_TIME_RAW_PROP = new PropertyTag<>(slurm_reg,"CPUTimeRAW",Number.class,"Residency seconds from SLURM");
     @OptionalTable
-    public static final PropertyTag<Integer> ALOCTRES_CPU_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTREScpu",Integer.class,"cpu field from AllocTRES");
+    public static final PropertyTag<Integer> ALOCTRES_CPU_PROP = new PropertyTag<>(slurm_reg,"AllocTREScpu",Integer.class,"cpu field from AllocTRES");
     @OptionalTable(target=Long.class)
-    public static final PropertyTag<Number> ALOCTRES_MEM_PROP = new PropertyTag<Number>(slurm_reg,"AllocTRESmem",Number.class,"mem field from AllocTRES");
+    public static final PropertyTag<Number> ALOCTRES_MEM_PROP = new PropertyTag<>(slurm_reg,"AllocTRESmem",Number.class,"mem field from AllocTRES");
     @OptionalTable
-    public static final PropertyTag<Integer> ALOCTRES_NODE_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTRESnode",Integer.class,"node field from AllocTRES");
+    public static final PropertyTag<Integer> ALOCTRES_NODE_PROP = new PropertyTag<>(slurm_reg,"AllocTRESnode",Integer.class,"node field from AllocTRES");
     @OptionalTable
-    public static final PropertyTag<Integer> ALOCTRES_GPU_PROP = new PropertyTag<Integer>(slurm_reg,"AllocTRESgpu",Integer.class,"gres/gpu field from AllocTRES");
+    public static final PropertyTag<Integer> ALOCTRES_GPU_PROP = new PropertyTag<>(slurm_reg,"AllocTRESgpu",Integer.class,"gres/gpu field from AllocTRES");
               
     private static final MakerMap SLURM_ATTRIBUTES = new MakerMap();
 	static {

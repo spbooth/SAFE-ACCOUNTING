@@ -74,7 +74,7 @@ public class NullParser implements PropertyContainerParser<String> {
 
 
 	public Set<PropertyTag> getDefaultUniqueProperties() {
-		return new HashSet<PropertyTag>();
+		return new HashSet<>();
 	}
 
 

@@ -35,7 +35,7 @@ public class PropertyMaker<T extends DataObject,PT> extends SetMaker<T, PT> {
 		if( sqlAccessor == null ){
 			throw new InvalidSQLPropertyException(propertyTag);
 		}
-		SetMapper<PT> mapper = new SetMapper<PT>(sqlAccessor);					
+		SetMapper<PT> mapper = new SetMapper<>(sqlAccessor);					
 		setMapper(mapper);			
 		this.res=res;
 	}

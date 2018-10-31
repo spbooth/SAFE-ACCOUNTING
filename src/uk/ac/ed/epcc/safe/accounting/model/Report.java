@@ -29,11 +29,11 @@ public class Report {
 			}
 		}
 		if (parameters != null) {
-			this.parameters = new LinkedHashMap<String, Object>();
+			this.parameters = new LinkedHashMap<>();
 			this.parameters.putAll(parameters);
 		}
 		else {
-			this.parameters = new LinkedHashMap<String, Object>();
+			this.parameters = new LinkedHashMap<>();
 		}
 	}
 	
@@ -69,13 +69,13 @@ public class Report {
 	}
 	
 	public void setContextParameters(Collection<String> contextParameters) {
-		this.contextParameters = new HashSet<String>(contextParameters);
+		this.contextParameters = new HashSet<>(contextParameters);
 	}
 	
 	public Collection<String> getContextParameters() {
 		if (contextParameters == null) {
 			return null;
 		}
-		return new HashSet<String>(contextParameters);
+		return new HashSet<>(contextParameters);
 	}
 }

@@ -65,7 +65,7 @@ public abstract class CombiningRecordSelector implements Iterable<RecordSelector
 
 
 	protected CombiningRecordSelector(String tag) {
-		contents=new LinkedHashSet<RecordSelector>();
+		contents=new LinkedHashSet<>();
 		combine_tag=tag;
 	}
 

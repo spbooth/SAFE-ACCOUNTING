@@ -32,7 +32,7 @@ public class TuplePropertyMaker<T extends PropertyTupleFactory.PropertyTuple,PT>
 		if( sqlAccessor == null ){
 			throw new InvalidSQLPropertyException(propertyTag);
 		}
-		SetMapper<PT> mapper = new SetMapper<PT>(sqlAccessor);					
+		SetMapper<PT> mapper = new SetMapper<>(sqlAccessor);					
 		setMapper(mapper);			
 		this.fac=fac;
 	}

@@ -64,7 +64,6 @@ extends HistoryFactory<T,H> {
 	 */
 	public static  class HistoryUse<T extends DataObject> extends HistoryFactory.HistoryRecord<T> implements TimePeriod{
 		
-		@SuppressWarnings("unchecked")
 		public HistoryUse(PropertyTargetHistoryFactory<T,?,?> fac,Record res) {
 			super(fac, res);
 		}
@@ -120,7 +119,7 @@ extends HistoryFactory<T,H> {
 	@Override
 	protected DataObject makeBDO(Record res) throws DataFault {
 		
-		return new HistoryUse<T>(this, res);
+		return new HistoryUse<>(this, res);
 	}
 
 	

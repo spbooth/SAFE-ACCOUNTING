@@ -91,7 +91,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 public class ClassificationPolicy extends BasePolicy implements Contexed,TableTransitionContributor , SummaryProvider{
 	private static final String CLASSIFICATION = "classification.";
 	private MultiFinder result_finder = new MultiFinder();
-	private Map<PropertyTag<String>,ReferenceTag> tagmap = new HashMap<PropertyTag<String>,ReferenceTag>();
+	private Map<PropertyTag<String>,ReferenceTag> tagmap = new HashMap<>();
     private PropExpressionMap derived = new PropExpressionMap();
     private PropExpressionMap fallback = new PropExpressionMap();
 	private final AppContext c;
@@ -100,8 +100,8 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 	
 	// Info for edit transitions
 	private String prefix;
-	private Set<PropertyTag<String>> available_names = new HashSet<PropertyTag<String>>();
-	private Set<ReferenceTag> available_refs = new HashSet<ReferenceTag>();
+	private Set<PropertyTag<String>> available_names = new HashSet<>();
+	private Set<ReferenceTag> available_refs = new HashSet<>();
 	private String table;
 	private Logger log;
 	public ClassificationPolicy(AppContext c){
@@ -168,7 +168,7 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 	public void startParse(PropertyContainer defaults) throws DataException,
 			InvalidPropertyException {
 		log.debug("ClassificationPolicy: start parse");
-		caches= new HashMap<PropertyTag<String>,DataCache<String,DataObject>>();
+		caches= new HashMap<>();
 		for(PropertyTag<String> tag : tagmap.keySet()){
 			ReferenceTag ctag = tagmap.get(tag);
 			NameFinder fac = c.makeObject(NameFinder.class,ctag.getTable());
@@ -289,13 +289,13 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext c) throws TransitionException {
 			PropertyTargetFactory fac = (PropertyTargetFactory) target;
-			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
+			SetInput<PropertyTag<String>> name_input = new SetInput<>();
 			for(PropertyTag<String> t : available_names){
 				// allow all names as we can classify non saved properties parser can generate
 				name_input.addChoice(t);
 			}
 			f.addInput("Name", "String to classify", name_input);
-			SetInput<ReferenceTag> ref_input = new SetInput<ReferenceTag>();
+			SetInput<ReferenceTag> ref_input = new SetInput<>();
 			for(ReferenceTag t : available_refs){
 				if( fac.hasProperty(t) && ! target.getTag().equals(t.getTable())){
 					// Only allow supported references.
@@ -341,7 +341,7 @@ public FormResult action(Form f)
 
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext c) throws TransitionException {
-			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
+			SetInput<PropertyTag<String>> name_input = new SetInput<>();
 			for(PropertyTag<String> t : tagmap.keySet()){
 				name_input.addChoice(t);
 			}
@@ -376,7 +376,7 @@ public FormResult action(Form f)
 
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext conn) throws TransitionException {
-			SetInput<PropertyTag<String>> name_input = new SetInput<PropertyTag<String>>();
+			SetInput<PropertyTag<String>> name_input = new SetInput<>();
 			ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(target);
 			if( etf != null){
 				
@@ -389,7 +389,7 @@ public FormResult action(Form f)
 		}
 	}
 	public Map<TableTransitionKey, Transition> getTableTransitions() {
-		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
+		Map<TableTransitionKey,Transition> result = new HashMap<>();
 		result.put(new AdminOperationKey( "AddClassifier"), new AddClassifierTransition());
 		result.put(new AdminOperationKey( "RemoveClassifier"), new DeleteClassifierTransition());
 		result.put(new AdminOperationKey("RegenerateClassifier","Regenenerate classifications references"),new RegenerateClassifierTransition());
@@ -400,7 +400,7 @@ public FormResult action(Form f)
 		hb.addText("This policy generates references to a entries in a Classifier table based"
 				+" on a string property. New entries are created as required");
 		try{
-			Table<String,String> t = new Table<String,String>();
+			Table<String,String> t = new Table<>();
 			for(PropertyTag<String> name : tagmap.keySet()){
 				t.put("Classifier",name.getFullName(),tagmap.get(name));
 			}
@@ -427,7 +427,7 @@ public FormResult action(Form f)
 				for(String s : values ){
 					DataObject o = nameFinder.makeFromString(s);
 					if( o != null ){
-						updater.update(ref,ref.makeReference(o),new SelectClause<String>(name, s));
+						updater.update(ref,ref.makeReference(o),new SelectClause<>(name, s));
 					}
 				}
 			

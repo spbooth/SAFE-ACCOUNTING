@@ -41,7 +41,7 @@ public class PropertyTableMaker extends AbstractContexed {
 	}
 
 	public Table getTable(PropertyContainer pc){
-		Table<String,PropertyTag> t = new Table<String,PropertyTag>();
+		Table<String,PropertyTag> t = new Table<>();
 		for(PropertyTag<?> tag : finder.getProperties()){
 			if( pc.supports(tag)){
 				addProperty(tag, t, pc);

@@ -19,7 +19,6 @@ package uk.ac.ed.epcc.safe.accounting.aggregation;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -38,7 +37,6 @@ import uk.ac.ed.epcc.safe.accounting.UsageRecordListener;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorContributer;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
-import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
@@ -137,8 +135,8 @@ ConfigParamProvider{
 	public static final AdminOperationKey REGENERATE = new AdminOperationKey("Regenerate","Repopulate all contents from master table");
 	public static final AdminOperationKey REGENERATE_RANGE = new AdminOperationKey("RegenerateRange","Repopulate contents for a specified time period");
 	public static final PropertyRegistry aggregate = new PropertyRegistry("aggregate","Time bounds for aggregate records");
-	public static final PropertyTag<Date> AGGREGATE_STARTED_PROP = new PropertyTag<Date>(aggregate,STARTED_TIMESTAMP,Date.class);
-	public static final PropertyTag<Date> AGGREGATE_ENDED_PROP = new PropertyTag<Date>(aggregate,COMPLETED_TIMESTAMP,Date.class);
+	public static final PropertyTag<Date> AGGREGATE_STARTED_PROP = new PropertyTag<>(aggregate,STARTED_TIMESTAMP,Date.class);
+	public static final PropertyTag<Date> AGGREGATE_ENDED_PROP = new PropertyTag<>(aggregate,COMPLETED_TIMESTAMP,Date.class);
 
 
 	public final static class AggregateRecord extends UsageRecordFactory.Use{
@@ -362,8 +360,8 @@ ConfigParamProvider{
 	private void makePropSets() {
 		AccessorMap<AggregateUsageRecordFactory.AggregateRecord> map=getAccessorMap();
 		AppContext c = getContext();
-		sum_set =new HashSet<PropertyTag<? extends Number>>();
-		key_set =new HashSet<PropertyTag>();
+		sum_set =new HashSet<>();
+		key_set =new HashSet<>();
 		if( master != null ){
 			for(PropertyTag t : map.getProperties()){
 				//log.debug("consider aggregation of "+t.getFullName());
@@ -521,7 +519,7 @@ ConfigParamProvider{
 	private AggregateRecord makeTarget(PropertyContainer source, Date start,Date end)
 			throws DataException, CannotFilterException, InvalidPropertyException, NoSQLFilterException {
 		assert(start.before(end));
-		SQLAndFilter<AggregateRecord> fil = new SQLAndFilter<AggregateRecord>(getTarget());
+		SQLAndFilter<AggregateRecord> fil = new SQLAndFilter<>(getTarget());
 		AccessorMap map = getAccessorMap();
 		fil.addFilter(FilterConverter.convert(map.getFilter(AGGREGATE_STARTED_PROP, null, start)));
 		fil.addFilter(FilterConverter.convert(map.getFilter(AGGREGATE_ENDED_PROP, null, end)));
@@ -575,7 +573,7 @@ ConfigParamProvider{
 			return;
 		}
 		DatabaseService db = getContext().getService(DatabaseService.class);
-		FilterDelete<AggregateRecord> del = new FilterDelete<AggregateRecord>(res);
+		FilterDelete<AggregateRecord> del = new FilterDelete<>(res);
 		del.delete(null);
 		try(CloseableIterator<ExpressionTargetContainer> it = master.getExpressionIterator(new AndRecordSelector())){
 			int i=0;
@@ -626,10 +624,10 @@ ConfigParamProvider{
 		start = mapStart(start);
 		end = mapEnd(end);
 		log.debug("regenerate aggregate range "+start+" to "+end);
-		FilterDelete<AggregateRecord> del = new FilterDelete<AggregateRecord>(res);
+		FilterDelete<AggregateRecord> del = new FilterDelete<>(res);
 		DatabaseService db = getContext().getService(DatabaseService.class);
 
-		Set<ReductionTarget> targets = new LinkedHashSet<ReductionTarget>();
+		Set<ReductionTarget> targets = new LinkedHashSet<>();
 		
 		for( PropertyTag<? extends Number> sum_tag : getSumProperties()){
 			targets.add(new NumberSumReductionTarget( sum_tag));

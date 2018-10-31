@@ -61,7 +61,7 @@ public class PropertyInfoGenerator{
 		// put each registry into a seperate table 
 		// this lets us show the descriptions and gives more flexibility to 
 		// table layout
-		Set<PropertyRegistry> registries = new LinkedHashSet<PropertyRegistry>();
+		Set<PropertyRegistry> registries = new LinkedHashSet<>();
 		for( PropertyTag t : props){
 			registries.add(t.getRegistry());
 		}
@@ -69,7 +69,7 @@ public class PropertyInfoGenerator{
 		for( PropertyRegistry reg : registries){
 			hb.addHeading(4,reg.toString());
 			hb.addHeading(5,reg.getDescription());
-			Table<String,String> t = new Table<String,String>();
+			Table<String,String> t = new Table<>();
 			for(PropertyTag<?> tag : props){
 				if( reg.hasProperty(tag)){
 					String name = tag.getFullName();
@@ -94,7 +94,7 @@ public class PropertyInfoGenerator{
 		}		
 	}
 	public final  Table getPropertyTable(){
-		Table<String,String> t = new Table<String,String>();
+		Table<String,String> t = new Table<>();
 		PropExpressionMap expression_map = map.getDerivedProperties();
 		for(PropertyTag<?> tag : props){
 			String name = tag.getFullName();

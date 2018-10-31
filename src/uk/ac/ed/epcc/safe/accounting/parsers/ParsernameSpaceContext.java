@@ -40,7 +40,7 @@ public class ParsernameSpaceContext extends AbstractContexed implements Namespac
 	private final Map<String,String> namespaces;
 	public ParsernameSpaceContext(AppContext conn){
 		super(conn);
-		namespaces = new HashMap<String,String>();
+		namespaces = new HashMap<>();
 		namespaces.put(XMLConstants.DEFAULT_NS_PREFIX, XMLConstants.NULL_NS_URI);
 		namespaces.put(XMLConstants.XML_NS_PREFIX,XMLConstants.XML_NS_URI);
 		namespaces.put(XMLConstants.XMLNS_ATTRIBUTE, XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
@@ -78,7 +78,7 @@ public class ParsernameSpaceContext extends AbstractContexed implements Namespac
 		if( arg0 == null){
 			throw new IllegalArgumentException("Null namespace");
 		}
-		HashSet<String> keys = new HashSet<String>();
+		HashSet<String> keys = new HashSet<>();
 		for( String key : namespaces.values()){
 			if( arg0.equals(namespaces.get(key))){
 				keys.add(key);

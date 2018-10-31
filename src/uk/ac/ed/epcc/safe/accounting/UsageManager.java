@@ -150,8 +150,8 @@ public abstract class UsageManager<UR> implements
 		descriptions = (LinkedHashMap<String,String>) ctx.getAttribute(desc_key);
 		if (factories == null) {
 			// want defined iteration order
-			factories = new LinkedHashMap<String,UsageProducer<UR>>();
-			descriptions =new LinkedHashMap<String,String>();
+			factories = new LinkedHashMap<>();
+			descriptions =new LinkedHashMap<>();
 			
 			populate(tag);
 			
@@ -231,7 +231,7 @@ public abstract class UsageManager<UR> implements
 		 * Generate a Nested Iterator over the combined results of all
 		 * Factories.
 		 */
-		NestedIterator<UR> res = new NestedIterator<UR>();
+		NestedIterator<UR> res = new NestedIterator<>();
 		for (UsageProducer<UR> prod: factories.values()) {
 			if( prod.compatible(sel)){
 				//log.debug("Using "+prod.toString());
@@ -331,7 +331,7 @@ public abstract class UsageManager<UR> implements
 			}
 		}
 		if( result == null){
-			return new HashMap<ExpressionTuple, ReductionMapResult>();
+			return new HashMap<>();
 		}
 		return result;
 	}
@@ -343,7 +343,7 @@ public abstract class UsageManager<UR> implements
 
 	@SuppressWarnings("unchecked")
 	public <C> Vector<C> getProducers(Class<C> target) {
-		Vector<C> res = new Vector<C>();
+		Vector<C> res = new Vector<>();
 		for (UsageProducer p : factories.values()) {
 			if (target.isAssignableFrom(p.getClass())) {
 				res.add((C) p);
@@ -538,7 +538,7 @@ public abstract class UsageManager<UR> implements
 		 * Generate a Nested Iterator over the combined results of all
 		 * Factories.
 		 */
-		NestedIterator<ExpressionTargetContainer> res = new NestedIterator<ExpressionTargetContainer>();
+		NestedIterator<ExpressionTargetContainer> res = new NestedIterator<>();
 		for (UsageProducer<UR> prod: factories.values()) {
 			if( prod.compatible(sel)){
 				//log.debug("Using "+prod.toString());

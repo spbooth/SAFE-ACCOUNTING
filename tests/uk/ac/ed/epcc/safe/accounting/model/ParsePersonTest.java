@@ -37,13 +37,13 @@ public class ParsePersonTest extends PersonTest {
 	 */
 	@Test
 	public void testUpload() throws InvalidExpressionException, DataException, ParseException{
-		PropertyPersonFactory<AppUser> fac = new PropertyPersonFactory<AppUser>(ctx);
+		PropertyPersonFactory<AppUser> fac = new PropertyPersonFactory<>(ctx);
 		UploadParseTarget target = (UploadParseTarget) fac.getComposite(PropertyContainerParseTargetComposite.class);
 		UploadParseTargetUpdater<String> updater = new UploadParseTargetUpdater<String>(ctx, target);
 		
 		ErrorSet errors = new ErrorSet();
     	ErrorSet skip_list = new ErrorSet();
-    	Map<String,Object>  params = new HashMap<String,Object>();
+    	Map<String,Object>  params = new HashMap<>();
     	String update = "sbooth:x:73964:4047:Stephen Booth:/exports/home/sbooth:/bin/bash\n" +
     			"millingw:x:309546:4047:Malcolm Illingworth:/exports/home/millingw:/bin/bash\n";
     	String result = updater.receiveData(params, update, errors, skip_list);

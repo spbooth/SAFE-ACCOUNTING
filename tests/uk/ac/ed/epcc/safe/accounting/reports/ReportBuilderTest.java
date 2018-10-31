@@ -97,7 +97,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		setupParams(ctx, params);
 		
 	
@@ -156,7 +156,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();	
+		Map<String,Object> params = new HashMap<>();	
 		setupParams(ctx, params);
 	
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
@@ -213,7 +213,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();	
+		Map<String,Object> params = new HashMap<>();	
 		setupParams(ctx, params);
 
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
@@ -271,7 +271,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();			
+		Map<String,Object> params = new HashMap<>();			
 		setupParams(ctx, params);
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
 		reportBuilder.setupExtensions(params);
@@ -306,7 +306,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		HTMLForm form = new HTMLForm(ctx);
 		
 		// Get the params values from the Form
-		Map<String,Object> params = new HashMap<String,Object>();		
+		Map<String,Object> params = new HashMap<>();		
 		setupParams(ctx, params);
 
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
@@ -332,7 +332,7 @@ public class ReportBuilderTest extends WebappTestBase {
 	public void testComplex() throws Exception {		
 		
 		ReportBuilder builder = new ReportBuilder(ctx,"complex","report.xsd");
-		Map<String,Object> params=new HashMap<String,Object>();	
+		Map<String,Object> params=new HashMap<>();	
 	    setupParams(ctx, params);
 	    builder.setupExtensions(params);
 	    
@@ -370,7 +370,7 @@ public class ReportBuilderTest extends WebappTestBase {
 	public void testTypeSelect() throws Exception{
         // think this has been refactored away
 		ReportBuilder builder = new ReportBuilder(ctx,"testParameters","report.xsd");
-		Map<String,Object> params=new HashMap<String,Object>();	
+		Map<String,Object> params=new HashMap<>();	
 	    setupParams(ctx, params);
 	    // no report type selected
 	    params.remove("ReportType");

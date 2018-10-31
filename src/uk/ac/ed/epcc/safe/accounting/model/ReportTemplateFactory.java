@@ -121,9 +121,9 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 				if( ! useGroups()){
 					return null;
 				}
-				SQLOrFilter<R> fil = new SQLOrFilter<R>(getTarget());
+				SQLOrFilter<R> fil = new SQLOrFilter<>(getTarget());
 				for(String g : group.split("\\s*,\\s*")){
-					fil.addFilter(new SQLValueFilter<R>(getTarget(), res, ReportTemplate.REPORT_GROUP, g));
+					fil.addFilter(new SQLValueFilter<>(getTarget(), res, ReportTemplate.REPORT_GROUP, g));
 				}
 				return getResult(fil);
 			}
@@ -190,7 +190,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 		private static final String REPORT_GROUP_INDEX_CONFIG = "report_group_index";
 		private static final String DEFAULT_GROUP_CONFIG = "default_report_group";
 		private static final String REPORT_GROUPS_CONFIG = "report_groups";
-		private final Set<String> groups = new HashSet<String>();
+		private final Set<String> groups = new HashSet<>();
 		private final String default_group;
 		private final String index_list;
 		
@@ -226,9 +226,9 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 	
 	@Override
 	protected Map<String, Object> getSelectors() {
-		Map<String,Object>result = new HashMap<String,Object>();
+		Map<String,Object>result = new HashMap<>();
 		result.put(ReportTemplate.TEMPLATE_NAME, new TemplateNameInput());
-		result.put(ReportTemplate.REPORT_GROUP, new SetInput<String>(reportGroups.getGroups()));
+		result.put(ReportTemplate.REPORT_GROUP, new SetInput<>(reportGroups.getGroups()));
 		return result;
 	}
 	public R findByFileName(String fileName) throws DataException {
@@ -236,7 +236,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 			return null;
 		}
 		try {
-			return  find(new SQLValueFilter<R>(getTarget(),res,ReportTemplate.TEMPLATE_NAME ,fileName.trim()),true);
+			return  find(new SQLValueFilter<>(getTarget(),res,ReportTemplate.TEMPLATE_NAME ,fileName.trim()),true);
 			
 		} catch (DataNotFoundException e) {
 			return null;
@@ -266,7 +266,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 	public Table<String,ReportTemplate> getReportGroupTable(String group, Map<String, Object> params) throws DataFault
 	{
 		TimerService timer = getContext().getService(TimerService.class);
-		Table<String,ReportTemplate> t = new Table<String,ReportTemplate>();
+		Table<String,ReportTemplate> t = new Table<>();
 		SessionService sess = getContext().getService(SessionService.class);
 
 		if( timer != null) {
@@ -295,7 +295,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 					String reportName = reportTemplate.getReportName();
 					String reportDescription = reportTemplate.getReportDescription();
 					t.put("Name", reportTemplate, new Link(getContext(), reportName, 
-							new ChainedTransitionResult<Report, ReportTemplateKey>(
+							new ChainedTransitionResult<>(
 									prov, report, ReportTemplateTransitionProvider.PREVIEW)));
 					t.put("Description", reportTemplate, reportDescription);
 					

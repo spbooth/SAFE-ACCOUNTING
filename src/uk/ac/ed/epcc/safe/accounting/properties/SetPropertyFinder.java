@@ -27,8 +27,8 @@ import java.util.Set;
  */
 public class SetPropertyFinder implements PropertyFinder {
 
-	private Map<String,PropertyTag> qualified = new LinkedHashMap<String, PropertyTag>();
-	private Map<String,PropertyTag> base = new HashMap<String, PropertyTag>();
+	private Map<String,PropertyTag> qualified = new LinkedHashMap<>();
+	private Map<String,PropertyTag> base = new HashMap<>();
 	
 	public SetPropertyFinder(){
 		
@@ -102,7 +102,7 @@ public class SetPropertyFinder implements PropertyFinder {
 		return null;
 	}
 	public Set<PropertyTag> getProperties() {
-		return new LinkedHashSet<PropertyTag>(qualified.values());
+		return new LinkedHashSet<>(qualified.values());
 	}
 
 	public boolean hasProperty(PropertyTag t) {
@@ -113,7 +113,7 @@ public class SetPropertyFinder implements PropertyFinder {
 
 	@SuppressWarnings("unchecked")
 	public <T> Set<PropertyTag<? extends T>> getProperties(Class<T> clazz) {
-		LinkedHashSet<PropertyTag<? extends T>> result = new LinkedHashSet<PropertyTag<? extends T>>();
+		LinkedHashSet<PropertyTag<? extends T>> result = new LinkedHashSet<>();
 		for( PropertyTag t : qualified.values()){
 			if(t.allowClass(clazz)){
 				result.add(t);

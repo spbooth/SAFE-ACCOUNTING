@@ -128,7 +128,7 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 			if( target == Long.class ){
 				return intExpression.exp.accept(this);
 			}
-			return new CastLongSQLExpression<Number>(intExpression.exp.accept(this));
+			return new CastLongSQLExpression<>(intExpression.exp.accept(this));
 		}
 		throw new InvalidSQLPropertyException("LongPropExpression not representable as SQLExpression");
 		

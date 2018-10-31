@@ -28,7 +28,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
@@ -80,7 +79,7 @@ private  <T> ValueParser<T> getFormatter(Class<T> tag,String format){
 	  if( res == null ){
 		  res = policy.getValueParser(tag);
 		  if( res == null ){
-			  return new DefaultFormatter<T>(tag);
+			  return new DefaultFormatter<>(tag);
 		  }
 	  }
 	  assert(res==null || res.getType().isAssignableFrom(tag));

@@ -228,7 +228,7 @@ public class OverlapHandler<T> {
 			throws IllegalReductionException, PropertyCastException {
 		return NumberReductionTarget.getInstance(Reduction.SUM,
 				new BinaryPropExpression(type,Operator.MUL , 
-						new BinaryPropExpression(new DurationPropExpression(start_prop,end_prop), Operator.DIV, new ConstPropExpression<Double>(Double.class,(double)( end.getTime()-start.getTime())))
+						new BinaryPropExpression(new DurationPropExpression(start_prop,end_prop), Operator.DIV, new ConstPropExpression<>(Double.class,(double)( end.getTime()-start.getTime())))
 						)					
 				);
 	}
@@ -248,9 +248,9 @@ public class OverlapHandler<T> {
 			throws IllegalReductionException, PropertyCastException {
 		switch(overlap_type){
 		case INNER: return new DurationPropExpression(start_prop,end_prop);
-		case LOWER: return new DurationPropExpression(new ConstPropExpression<Date>(Date.class, start),end_prop);
-		case UPPER: return new DurationPropExpression(start_prop,new ConstPropExpression<Date>(Date.class,end));
-		case OUTER: return new DurationPropExpression(new ConstPropExpression<Date>(Date.class, start), new ConstPropExpression<Date>(Date.class, end));
+		case LOWER: return new DurationPropExpression(new ConstPropExpression<>(Date.class, start),end_prop);
+		case UPPER: return new DurationPropExpression(start_prop,new ConstPropExpression<>(Date.class,end));
+		case OUTER: return new DurationPropExpression(new ConstPropExpression<>(Date.class, start), new ConstPropExpression<>(Date.class, end));
 		default:
 			throw new ConsistencyError("Illegal overlap type requested "+overlap_type);
 		}
@@ -262,7 +262,7 @@ public class OverlapHandler<T> {
 		DurationPropExpression over = makeOverlapExpression(overlap_type, start_prop, end_prop, start, end);
 		DurationPropExpression den;
 		if( red == Reduction.AVG){
-			den = new DurationPropExpression(new ConstPropExpression<Date>(Date.class, start), new ConstPropExpression<Date>(Date.class, end));
+			den = new DurationPropExpression(new ConstPropExpression<>(Date.class, start), new ConstPropExpression<>(Date.class, end));
 			red = Reduction.SUM;
 		}else{
 			den = new DurationPropExpression(start_prop,end_prop);
@@ -294,7 +294,7 @@ public class OverlapHandler<T> {
 		DurationPropExpression den;
 		if( red == Reduction.AVG){
 			// Average becomes a time average
-			den = new DurationPropExpression(new ConstPropExpression<Date>(Date.class, start), new ConstPropExpression<Date>(Date.class, end));
+			den = new DurationPropExpression(new ConstPropExpression<>(Date.class, start), new ConstPropExpression<>(Date.class, end));
 			red = Reduction.SUM;
 		}else{
 			// otherwise scale by fraction of record
@@ -302,7 +302,7 @@ public class OverlapHandler<T> {
 		}
 		Period period = new Period(start,end);
 		return NumberReductionTarget.getInstance(red, 
-			new CasePropExpression<Number>(Number.class, 
+			new CasePropExpression<>(Number.class, 
 				opt(type,makeOverlapExpression(OverlapType.INNER, start_prop, end_prop, start, end),den),
 				new CasePropExpression.Case<Number>(
 						new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.LOWER,-1L), 
@@ -354,7 +354,7 @@ public class OverlapHandler<T> {
 		if( ! prod.compatible(selector) ){
 
 			// no matching property
-			return new HashMap<R,Number>();
+			return new HashMap<>();
 		}
 		Period period=new Period(start,end);
 		if( USE_QUERY_MAPPER_FEATURE.isEnabled(conn)){
@@ -437,7 +437,7 @@ public class OverlapHandler<T> {
 		}
 		
 		//fallback by iterating
-		Map<R,Number> result = new HashMap<R, Number>();
+		Map<R,Number> result = new HashMap<>();
 		AndRecordSelector it_sel = new AndRecordSelector(selector);
 		it_sel.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,cutoff));
 		addToOverlapReductionMapByIterating(tag, start_prop, end_prop, period,
@@ -516,16 +516,16 @@ public class OverlapHandler<T> {
 		Period period = new Period(start,end);
 		
 		
-		Set<PropExpression> index_set = new HashSet<PropExpression>();
+		Set<PropExpression> index_set = new HashSet<>();
 		AndRecordSelector selector=new AndRecordSelector();
 		selector.add(input_selector);
-		selector.add(new RelationClause<Date>(start_prop,MatchCondition.LT, end_prop));
+		selector.add(new RelationClause<>(start_prop,MatchCondition.LT, end_prop));
 		selector.add(new ReductionSelector(property));
 		if( ! prod.compatible(input_selector)){
 			if( log != null ){
 				log.debug("selector not compatible");
 			}
-			return new HashMap<ExpressionTuple, ReductionMapResult>();
+			return new HashMap<>();
 		}
 		for(ReductionTarget target : property ){
 			// This prevents a composite producer from querying only those
@@ -549,8 +549,8 @@ public class OverlapHandler<T> {
 					tim.startTimer("getOverlapMap");
 				}
 				Map<ExpressionTuple, ReductionMapResult> result;
-				Set<ReductionTarget> inner_properties = new LinkedHashSet<ReductionTarget>();
-				Map<ReductionTarget,ReductionTarget> mapping = new HashMap<ReductionTarget, ReductionTarget>();
+				Set<ReductionTarget> inner_properties = new LinkedHashSet<>();
+				Map<ReductionTarget,ReductionTarget> mapping = new HashMap<>();
 				try{
 					if( USE_CASE_OVERLAP.isEnabled(conn)){
 						for(ReductionTarget target : property ){
@@ -566,7 +566,7 @@ public class OverlapHandler<T> {
 						AndRecordSelector inner=new AndRecordSelector();
 						inner.add(selector);
 						inner.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.ANY,cutoff));
-						result = new HashMap<ExpressionTuple, ReductionMapResult>();
+						result = new HashMap<>();
 						Map<ExpressionTuple, ReductionMapResult>scratch = prod.getIndexedReductionMap(inner_properties, inner);
 						//copy over to correct keys
 						for(ExpressionTuple key : scratch.keySet()){
@@ -589,7 +589,7 @@ public class OverlapHandler<T> {
 								// time average weighting
 								NumberReductionTarget replace = NumberReductionTarget.getInstance(Reduction.SUM,
 										new BinaryPropExpression(target.getExpression(),Operator.MUL , 
-												new BinaryPropExpression(new DurationPropExpression(start_prop,end_prop), Operator.DIV, new ConstPropExpression<Double>(Double.class,(double)( end.getTime()-start.getTime())))
+												new BinaryPropExpression(new DurationPropExpression(start_prop,end_prop), Operator.DIV, new ConstPropExpression<>(Double.class,(double)( end.getTime()-start.getTime())))
 												)					
 										);
 								inner_properties.add(replace);
@@ -608,7 +608,7 @@ public class OverlapHandler<T> {
 						inner.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.INNER,cutoff));
 
 						if( has_avg){
-							result = new HashMap<ExpressionTuple, ReductionMapResult>();
+							result = new HashMap<>();
 							Map<ExpressionTuple, ReductionMapResult>scratch = prod.getIndexedReductionMap(inner_properties, inner);
 							//copy over to correct keys
 							for(ExpressionTuple key : scratch.keySet()){
@@ -659,7 +659,7 @@ public class OverlapHandler<T> {
 					}
 				}catch(InvalidPropertyException e){
 					// DO it all by iteration
-					result = new HashMap<ExpressionTuple, ReductionMapResult>();
+					result = new HashMap<>();
 					AndRecordSelector sel = new AndRecordSelector(selector);
 					sel.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.ANY,cutoff));
 					addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, period, index_set, result, sel);
@@ -678,7 +678,7 @@ public class OverlapHandler<T> {
 			log.debug("Fallback by iterating");
 		}
 		selector.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop));
-		Map<ExpressionTuple,ReductionMapResult>result = new HashMap<ExpressionTuple, ReductionMapResult>();
+		Map<ExpressionTuple,ReductionMapResult>result = new HashMap<>();
 		addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, period, index_set, result, selector);
 
 		return result;

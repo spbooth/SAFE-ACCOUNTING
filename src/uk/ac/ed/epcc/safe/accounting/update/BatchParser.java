@@ -43,48 +43,48 @@ public abstract class BatchParser extends BaseParser {
 
 	public static final PropertyRegistry batch= new PropertyRegistry("batch","The common set of accounting properties for all batch parsers");
 		
-	public static final PropertyTag<String> QUEUE_PROP = new PropertyTag<String>(batch,"Queue",String.class,"Name of queue or job class");
+	public static final PropertyTag<String> QUEUE_PROP = new PropertyTag<>(batch,"Queue",String.class,"Name of queue or job class");
     
-    public static final PropertyTag<Date> SUBMITTED_PROP = new PropertyTag<Date>(batch,SUBMITTED_TIMESTAMP,Date.class,"Time job was submitted");
+    public static final PropertyTag<Date> SUBMITTED_PROP = new PropertyTag<>(batch,SUBMITTED_TIMESTAMP,Date.class,"Time job was submitted");
     
    
-    public static final PropertyTag<String> JOB_ID_PROP = new PropertyTag<String>(batch,"JobID",String.class,"Job is string as seen by the batch job, fairly unique but may recycle over long periods");
+    public static final PropertyTag<String> JOB_ID_PROP = new PropertyTag<>(batch,"JobID",String.class,"Job is string as seen by the batch job, fairly unique but may recycle over long periods");
  
-    public static final PropertyTag<String> JOB_NAME_PROP = new PropertyTag<String>(batch,"JobName",String.class,"Job name as provided by the user");
+    public static final PropertyTag<String> JOB_NAME_PROP = new PropertyTag<>(batch,"JobName",String.class,"Job name as provided by the user");
    
-    public static final PropertyTag<Integer> REQUESTED_CPUS_PROP = new PropertyTag<Integer>(batch,"RequestedCpus",Integer.class,"Number of cpus requested by the job");
+    public static final PropertyTag<Integer> REQUESTED_CPUS_PROP = new PropertyTag<>(batch,"RequestedCpus",Integer.class,"Number of cpus requested by the job");
     
-	public static final PropertyTag<Integer> PROC_COUNT_PROP = new PropertyTag<Integer>(batch,"CPUs",Integer.class,"Number of cpus allocated to the job");
+	public static final PropertyTag<Integer> PROC_COUNT_PROP = new PropertyTag<>(batch,"CPUs",Integer.class,"Number of cpus allocated to the job");
    
-	public static final PropertyTag<Integer> NODE_COUNT_PROP = new PropertyTag<Integer>(batch,"Nodes",Integer.class,"Number of distributed memory nodes allocated to the job");
+	public static final PropertyTag<Integer> NODE_COUNT_PROP = new PropertyTag<>(batch,"Nodes",Integer.class,"Number of distributed memory nodes allocated to the job");
 
     
-    public static final PropertyTag<String> PARTITION_PROP = new PropertyTag<String>(batch,"Partition",String.class,"Named allocated partition of resource");
+    public static final PropertyTag<String> PARTITION_PROP = new PropertyTag<>(batch,"Partition",String.class,"Named allocated partition of resource");
   
-    public static final PropertyTag<String> ACCOUNT_PROP = new PropertyTag<String>(batch,"Account",String.class,"Account string as specified for Batch job");
+    public static final PropertyTag<String> ACCOUNT_PROP = new PropertyTag<>(batch,"Account",String.class,"Account string as specified for Batch job");
     
-    public static final PropertyTag<Number> WALLCLOCK_PROP = new PropertyTag<Number>(batch,"Wall",Number.class,"Wallclock in seconds as reported directly by batch system");
-    public static final PropertyTag<Duration> REQUESTED_WALLCLOCK_PROP = new PropertyTag<Duration>(batch,"RequestedWall",Duration.class,"Requested Wallclock time");
-    public static final PropertyTag<Date> EXPECTED_FINISH = new PropertyTag<Date>(batch,"ExpectedFinish",Date.class,"Expected finish time based on start time and requested wall-clock");
-    public static final PropertyTag<Number> RESIDENCY_PROP = new PropertyTag<Number>(batch,"Residency",Number.class,"Residency milliseconds proportional to associated CPUS");
+    public static final PropertyTag<Number> WALLCLOCK_PROP = new PropertyTag<>(batch,"Wall",Number.class,"Wallclock in seconds as reported directly by batch system");
+    public static final PropertyTag<Duration> REQUESTED_WALLCLOCK_PROP = new PropertyTag<>(batch,"RequestedWall",Duration.class,"Requested Wallclock time");
+    public static final PropertyTag<Date> EXPECTED_FINISH = new PropertyTag<>(batch,"ExpectedFinish",Date.class,"Expected finish time based on start time and requested wall-clock");
+    public static final PropertyTag<Number> RESIDENCY_PROP = new PropertyTag<>(batch,"Residency",Number.class,"Residency milliseconds proportional to associated CPUS");
     
-    public static final PropertyTag<Number> TIME_PROP = new PropertyTag<Number>(batch,"Time",Number.class,"Residency seconds proportional to associated CPUS");
-    public static final PropertyTag<Number> HOURS_PROP = new PropertyTag<Number>(batch,"CPUHours",Number.class,"Residency hours proportional to associated CPUS");
+    public static final PropertyTag<Number> TIME_PROP = new PropertyTag<>(batch,"Time",Number.class,"Residency seconds proportional to associated CPUS");
+    public static final PropertyTag<Number> HOURS_PROP = new PropertyTag<>(batch,"CPUHours",Number.class,"Residency hours proportional to associated CPUS");
         
-    public static final PropertyTag<Number> WAIT_PROP = new PropertyTag<Number>(batch,"Wait",Number.class,"Wait time in milliseconds");
+    public static final PropertyTag<Number> WAIT_PROP = new PropertyTag<>(batch,"Wait",Number.class,"Wait time in milliseconds");
    
-    public static final PropertyTag<Number> CPU_WAIT_PROP = new PropertyTag<Number>(batch,"CPUWait",Number.class,"Wait time in milliseconds proportional to CPUS");
+    public static final PropertyTag<Number> CPU_WAIT_PROP = new PropertyTag<>(batch,"CPUWait",Number.class,"Wait time in milliseconds proportional to CPUS");
     
-    public static final PropertyTag<Boolean> SUCCESS_PROP = new PropertyTag<Boolean>(batch,"Success",Boolean.class,"Did job succeed");
-    public static final PropertyTag<Boolean> SUBJOB_PROP = new PropertyTag<Boolean>(batch,"SubJob",Boolean.class,"Is this a sub-job and should be recorded not charged");
+    public static final PropertyTag<Boolean> SUCCESS_PROP = new PropertyTag<>(batch,"Success",Boolean.class,"Did job succeed");
+    public static final PropertyTag<Boolean> SUBJOB_PROP = new PropertyTag<>(batch,"SubJob",Boolean.class,"Is this a sub-job and should be recorded not charged");
     
-    public static final PropertyTag<Boolean> SERIAL_PROP = new PropertyTag<Boolean>(batch,"Serial",Boolean.class,"Is this a serial rather than a parallel job");
+    public static final PropertyTag<Boolean> SERIAL_PROP = new PropertyTag<>(batch,"Serial",Boolean.class,"Is this a serial rather than a parallel job");
     
-    public static final PropertyTag<Number> SLOWDOWN_PROP = new PropertyTag<Number>(batch,"Slowdown",Number.class);
-    public static final PropertyTag<Number> REQUEST_ACCURACY_PROP = new PropertyTag<Number>(batch,"RequestAccuracy",Number.class);
-    public static final PropertyTag<String> BATCH_SCRIPT_PROP = new PropertyTag<String>(batch,"Script",String.class,"The text of the batch script");
+    public static final PropertyTag<Number> SLOWDOWN_PROP = new PropertyTag<>(batch,"Slowdown",Number.class);
+    public static final PropertyTag<Number> REQUEST_ACCURACY_PROP = new PropertyTag<>(batch,"RequestAccuracy",Number.class);
+    public static final PropertyTag<String> BATCH_SCRIPT_PROP = new PropertyTag<>(batch,"Script",String.class,"The text of the batch script");
     @OptionalTable(target=Boolean.class)
-    public static final PropertyTag<Boolean> EXCLUSIVE = new PropertyTag<Boolean>(batch,"Exclusive",Boolean.class,"Did the job have exclusive use of the nodes");
+    public static final PropertyTag<Boolean> EXCLUSIVE = new PropertyTag<>(batch,"Exclusive",Boolean.class,"Did the job have exclusive use of the nodes");
     static{
     	batch.lock();
     }
@@ -97,9 +97,9 @@ public abstract class BatchParser extends BaseParser {
 		);
 		// derive from residency as an aggregate table may have persisted it directly 
 		res.put(TIME_PROP,
-				new BinaryPropExpression(RESIDENCY_PROP, Operator.DIV, new ConstPropExpression<Integer>(Integer.class,Integer.valueOf(1000))));
+				new BinaryPropExpression(RESIDENCY_PROP, Operator.DIV, new ConstPropExpression<>(Integer.class,Integer.valueOf(1000))));
 		res.put(HOURS_PROP,
-				new BinaryPropExpression(RESIDENCY_PROP, Operator.DIV, new ConstPropExpression<Integer>(Integer.class,Integer.valueOf(3600*1000))));
+				new BinaryPropExpression(RESIDENCY_PROP, Operator.DIV, new ConstPropExpression<>(Integer.class,Integer.valueOf(3600*1000))));
 
 		// use requested value if we don't have actual value and vice versa
 		res.put(PROC_COUNT_PROP, REQUESTED_CPUS_PROP);

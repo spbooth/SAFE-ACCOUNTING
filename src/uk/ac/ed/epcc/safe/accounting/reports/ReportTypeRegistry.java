@@ -22,7 +22,7 @@ public class ReportTypeRegistry extends AbstractContexed {
 		parseReportTypes();
 	}
 
-	private Map<String,ReportType> report_type_reg = new LinkedHashMap<String, ReportType>();
+	private Map<String,ReportType> report_type_reg = new LinkedHashMap<>();
 	// Standard ReportTypes These can be extended from the config
     public static final ReportType	HTML = new ReportType("HTML","html", "text/html","HTML web page"); 
     public static final ReportType	EHTML = new DeveloperReportType("EHTML","html","application/xhtml+xml","embedded XHTML web page");
@@ -51,7 +51,7 @@ public class ReportTypeRegistry extends AbstractContexed {
 		}
 
 		public Iterator<ReportType> getItems() {
-			Set<ReportType> items = new LinkedHashSet<ReportType>();
+			Set<ReportType> items = new LinkedHashSet<>();
 			SessionService user = getContext().getService(SessionService.class);
 			for(ReportType t : report_type_reg.values()){
 				if( t.allowSelect(user)){
@@ -118,7 +118,7 @@ public class ReportTypeRegistry extends AbstractContexed {
 	 * @return
 	 */
 	protected Set<ReportType> getSpecialReportTypes(){
-		LinkedHashSet<ReportType> special = new LinkedHashSet<ReportType>();
+		LinkedHashSet<ReportType> special = new LinkedHashSet<>();
 		special.add(HTML);
 		special.add(EHTML);
 		return special;

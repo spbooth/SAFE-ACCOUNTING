@@ -160,7 +160,7 @@ public class UsageRecordFormatter extends AbstractContexed {
 	/**
 	 * Holds the date/time when writing a record started
 	 */
-	public static final PropertyTag<Date> PROP_NOW = new PropertyTag<Date>(REGISTRY, "NOW",Date.class);
+	public static final PropertyTag<Date> PROP_NOW = new PropertyTag<>(REGISTRY, "NOW",Date.class);
 	/**
 	 * The base of properties that set configuration parameters for this object
 	 * start with

@@ -8,8 +8,8 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 
 public class DiracSLURMRecordTest extends AbstractRecordTestCase {
-	private static final Collection<RecordText> goodRecords = new ArrayList<RecordText>();
-	private static final Collection<BadRecordText> badTexts = new ArrayList<BadRecordText>();
+	private static final Collection<RecordText> goodRecords = new ArrayList<>();
+	private static final Collection<BadRecordText> badTexts = new ArrayList<>();
 
 	public DiracSLURMRecordTest() {
 		super("SLURMMachine", "SLURMRecord");

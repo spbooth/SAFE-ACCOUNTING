@@ -29,12 +29,10 @@ import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.AverageValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -79,9 +77,9 @@ public class PointUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 	public Map<Integer, Number> getOverlapMap(UsageProducer<?> o, Date start,
 			Date end) {
 		AndRecordSelector selector = new AndRecordSelector(sel);
-		selector.add(new SelectClause<Date>(point_prop,MatchCondition.GT,start));
-		selector.add(new SelectClause<Date>(point_prop,MatchCondition.LE,end));
-		Map<Integer,Number> res = new HashMap<Integer,Number>();
+		selector.add(new SelectClause<>(point_prop,MatchCondition.GT,start));
+		selector.add(new SelectClause<>(point_prop,MatchCondition.LE,end));
+		Map<Integer,Number> res = new HashMap<>();
 		try{
 			NumberReductionTarget sum_target = NumberReductionTarget.getInstance(red,plot_prop);
 			if( key_prop == null ){
@@ -90,7 +88,7 @@ public class PointUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 					res.put(set,n);
 				}
 			}else{
-				Set<ReductionTarget> req = new LinkedHashSet<ReductionTarget>();
+				Set<ReductionTarget> req = new LinkedHashSet<>();
 				req.add(new IndexReduction(key_prop));
 				req.add(sum_target);
 				Map<ExpressionTuple, ReductionMapResult> dat = o.getIndexedReductionMap(req, selector);

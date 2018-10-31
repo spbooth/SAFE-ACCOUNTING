@@ -45,32 +45,32 @@ public class GridFtpTransferParser extends BaseParser {
 	private static final DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss.SSS");
 	public static final PropertyRegistry gftp_reg = new PropertyRegistry("gridftp", "GridFtp properties");
 	@AutoTable
-	public static PropertyTag<Date> start = new PropertyTag<Date>(gftp_reg, "Start", Date.class);
+	public static PropertyTag<Date> start = new PropertyTag<>(gftp_reg, "Start", Date.class);
 	@AutoTable(unique=true)
-	public static PropertyTag<Date> end = new PropertyTag<Date>(gftp_reg, "End", Date.class);
+	public static PropertyTag<Date> end = new PropertyTag<>(gftp_reg, "End", Date.class);
 	@AutoTable(unique=true)
-	public static PropertyTag<String> user = new PropertyTag<String>(gftp_reg, "User", String.class);
+	public static PropertyTag<String> user = new PropertyTag<>(gftp_reg, "User", String.class);
 
-	public static PropertyTag<String> host = new PropertyTag<String>(gftp_reg, "Host", String.class);
-	public static PropertyTag<String> prog = new PropertyTag<String>(gftp_reg, "Prog", String.class);
+	public static PropertyTag<String> host = new PropertyTag<>(gftp_reg, "Host", String.class);
+	public static PropertyTag<String> prog = new PropertyTag<>(gftp_reg, "Prog", String.class);
 	@AutoTable(length=512)
-	public static PropertyTag<String> file = new PropertyTag<String>(gftp_reg, "File", String.class);
+	public static PropertyTag<String> file = new PropertyTag<>(gftp_reg, "File", String.class);
 	@OptionalTable
-	public static PropertyTag<Number> buffer = new PropertyTag<Number>(gftp_reg,"Buffer",Number.class);
+	public static PropertyTag<Number> buffer = new PropertyTag<>(gftp_reg,"Buffer",Number.class);
 	@OptionalTable
-	public static PropertyTag<Number> block = new PropertyTag<Number>(gftp_reg,"Block",Number.class);
+	public static PropertyTag<Number> block = new PropertyTag<>(gftp_reg,"Block",Number.class);
 	@AutoTable
-	public static PropertyTag<Number> bytes = new PropertyTag<Number>(gftp_reg,"Nbytes",Number.class);
+	public static PropertyTag<Number> bytes = new PropertyTag<>(gftp_reg,"Nbytes",Number.class);
 	@AutoTable(target=Integer.class)
-	public static PropertyTag<Number> streams = new PropertyTag<Number>(gftp_reg,"Streams",Number.class);
+	public static PropertyTag<Number> streams = new PropertyTag<>(gftp_reg,"Streams",Number.class);
 	@AutoTable(target=Integer.class)
-	public static PropertyTag<Number> stripes = new PropertyTag<Number>(gftp_reg,"Stripes",Number.class);
-	public static PropertyTag<Number> code = new PropertyTag<Number>(gftp_reg,"Code",Number.class);
+	public static PropertyTag<Number> stripes = new PropertyTag<>(gftp_reg,"Stripes",Number.class);
+	public static PropertyTag<Number> code = new PropertyTag<>(gftp_reg,"Code",Number.class);
 	@AutoTable(unique=true)
-	public static PropertyTag<String> remote = new PropertyTag<String>(gftp_reg, "RemoteHost", String.class);
-	public static PropertyTag<String> volume = new PropertyTag<String>(gftp_reg, "Volume", String.class);
+	public static PropertyTag<String> remote = new PropertyTag<>(gftp_reg, "RemoteHost", String.class);
+	public static PropertyTag<String> volume = new PropertyTag<>(gftp_reg, "Volume", String.class);
 	@AutoTable
-	public static PropertyTag<String> type = new PropertyTag<String>(gftp_reg, "Type", String.class);
+	public static PropertyTag<String> type = new PropertyTag<>(gftp_reg, "Type", String.class);
 
 	
 	static{

@@ -69,7 +69,7 @@ public abstract class BaseParser extends AbstractPropertyContainerParser {
 					new MilliSecondDatePropExpression(StandardProperties.ENDED_PROP),
 					Operator.SUB,
 					new MilliSecondDatePropExpression(StandardProperties.STARTED_PROP)));
-			res.put(StandardProperties.ELAPSED_PROP,new BinaryPropExpression(StandardProperties.RUNTIME_PROP, Operator.DIV, new ConstPropExpression<Long>(Long.class,1000L)));
+			res.put(StandardProperties.ELAPSED_PROP,new BinaryPropExpression(StandardProperties.RUNTIME_PROP, Operator.DIV, new ConstPropExpression<>(Long.class,1000L)));
 			res.put(StandardProperties.COMMAND,StandardProperties.EXECUTABLE);
 			res.put(StandardProperties.DURATION_PROP, new DurationPropExpression(StandardProperties.STARTED_PROP, StandardProperties.ENDED_PROP));
 		} catch (PropertyCastException e) {

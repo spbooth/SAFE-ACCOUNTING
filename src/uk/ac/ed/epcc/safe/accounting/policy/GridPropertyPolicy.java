@@ -95,7 +95,7 @@ public class GridPropertyPolicy extends BaseUsageRecordPolicy {
 			ADD_DERIVATON(map,OGFXMLRecordParser.OGFUR_LOCAL_USER_ID_PROP, StandardProperties.USERNAME_PROP);
 			ADD_DERIVATON(map, OGFXMLRecordParser.OGFUR_WALL_DURATION_PROP, StandardProperties.DURATION_PROP);
 			try {
-				map.put(OGFXMLRecordParser.OGFUR_CPU_DURATION_PROP, new DurationCastPropExpression<Number>(StandardProperties.CPU_TIME_PROP, 1000L));
+				map.put(OGFXMLRecordParser.OGFUR_CPU_DURATION_PROP, new DurationCastPropExpression<>(StandardProperties.CPU_TIME_PROP, 1000L));
 			} catch (PropertyCastException e) {
 				getLogger().error("Error making CPU_DURATION expression",e);
 			}

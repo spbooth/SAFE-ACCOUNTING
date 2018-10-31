@@ -34,8 +34,8 @@ import uk.ac.ed.epcc.webapp.model.history.HistoryFactory.HistoryRecord;
  */
 public class PropertyHistoryComposite<P extends DataObject,F extends DataObjectFactory<P>,H extends HistoryRecord<P>> extends Composite<H, PropertyHistoryComposite> implements AccessorContributer<H> {
 	public static final PropertyRegistry history= new PropertyRegistry("history","History table properties");
-	public static final PropertyTag<Date> HISTORY_START = new PropertyTag<Date>(history,HistoryFactory.START_TIME_FIELD,Date.class,"Start of history period");
-	public static final PropertyTag<Date> HISTORY_END = new PropertyTag<Date>(history,HistoryFactory.END_TIME_FIELD,Date.class,"End of history period");
+	public static final PropertyTag<Date> HISTORY_START = new PropertyTag<>(history,HistoryFactory.START_TIME_FIELD,Date.class,"Start of history period");
+	public static final PropertyTag<Date> HISTORY_END = new PropertyTag<>(history,HistoryFactory.END_TIME_FIELD,Date.class,"End of history period");
 	private PropertyRegistry peer;
 	private ReferenceTag<P, F> PEER;
 	public PropertyHistoryComposite(HistoryFactory<P,H> fac) {
@@ -69,7 +69,7 @@ public class PropertyHistoryComposite<P extends DataObject,F extends DataObjectF
 		F fac = (F) historyFactory.getPeerFactory();
 		Repository res = getRepository();
 		peer = new PropertyRegistry(historyFactory.getTag()+"history", "history properties for "+historyFactory.getTag());
-		PEER = new ReferenceTag<P, F>(peer, "peer", (Class<F>) fac.getClass(), fac.getTag());
+		PEER = new ReferenceTag<>(peer, "peer", (Class<F>) fac.getClass(), fac.getTag());
 		IndexedFieldValue referenceExpression = res.getReferenceExpression(historyFactory.getTarget(),historyFactory.getPeerName(),fac);
 		mapi2.put(PEER,  referenceExpression);
 		

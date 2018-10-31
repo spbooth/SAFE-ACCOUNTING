@@ -42,7 +42,7 @@ public class PropertyTargetEvaluatePropExpressionVisitor extends
 	@Override
 	protected boolean matches(RecordSelector sel) throws Exception {
 		if( target instanceof ExpressionTarget){
-			MatchSelectVisitor<ExpressionTarget> vis = new MatchSelectVisitor<ExpressionTarget>((ExpressionTarget)target);
+			MatchSelectVisitor<ExpressionTarget> vis = new MatchSelectVisitor<>((ExpressionTarget)target);
 			return sel.visit(vis).booleanValue();
 		}
 		throw new CannotFilterException("Cannot apply RecordSelector to PropertyTarget");

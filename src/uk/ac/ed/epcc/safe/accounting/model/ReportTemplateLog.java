@@ -37,7 +37,7 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
 
         public static final PropertyRegistry reportlog_reg = new PropertyRegistry("reportlog", "report log properties");
         public static final ReferenceTag<AppUser, AppUserFactory> person_tag = 
-        		new ReferenceTag<AppUser, AppUserFactory>(reportlog_reg, "Person",  AppUserFactory.class, "Person");
+        		new ReferenceTag<>(reportlog_reg, "Person",  AppUserFactory.class, "Person");
 
         public static final String DEFAULT_TABLE = "ReportTemplateLog";
 
@@ -70,7 +70,7 @@ public class ReportTemplateLog extends DataObjectPropertyContainer {
         public TableSpecification getDefaultTableSpecification(AppContext ctx,
                  String homeTable) {
             userFac = ctx.getService(SessionService.class).getLoginFactory();
-            templateFac = new ReportTemplateFactory<ReportTemplate>(ctx);
+            templateFac = new ReportTemplateFactory<>(ctx);
             TableSpecification spec = new TableSpecification();
             spec.setField(TIMESTAMP, new DateFieldType(true, null));
             spec.setOptionalField(PERSON_ID, new ReferenceFieldType(userFac.getTag()));

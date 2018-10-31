@@ -41,11 +41,11 @@ public class LASSiParser extends AbstractPropertyContainerParser implements Conf
 	public static final PropertyTag tags[] = new PropertyTag[names.length];
 	public static final PropertyTag peak_tags[] = new PropertyTag[names.length];
 	static {
-		tags[0] = new PropertyTag<Integer>(lassi_props,names[0],Integer.class);
-		peak_tags[0] = new PropertyTag<Integer>(lassi_peak_props,names[0],Integer.class);
+		tags[0] = new PropertyTag<>(lassi_props,names[0],Integer.class);
+		peak_tags[0] = new PropertyTag<>(lassi_peak_props,names[0],Integer.class);
 		for(int i = 1 ; i < names.length ; i++) {
-			tags[i] = new PropertyTag<Long>(lassi_props,names[i],Long.class);
-			peak_tags[i] = new PropertyTag<Long>(lassi_peak_props,names[i],Long.class);
+			tags[i] = new PropertyTag<>(lassi_props,names[i],Long.class);
+			peak_tags[i] = new PropertyTag<>(lassi_peak_props,names[i],Long.class);
 		}
 		lassi_props.lock();
 	}
@@ -121,7 +121,7 @@ public class LASSiParser extends AbstractPropertyContainerParser implements Conf
 
 	@Override
 	public Set<PropertyTag> getDefaultUniqueProperties() {
-		Set<PropertyTag> unique = new HashSet<PropertyTag>();
+		Set<PropertyTag> unique = new HashSet<>();
 		unique.add(use_peak ? peak_tags[0]: tags[0]); // just ap_id
 		return unique;
 	}

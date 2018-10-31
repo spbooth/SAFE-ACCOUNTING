@@ -17,7 +17,6 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.util.Date;
-import java.util.Properties;
 
 import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
@@ -45,29 +44,29 @@ public class NGSXMLRecordParser extends OGFXMLRecordParser {
 	public static final PropertyRegistry NGS_REGISTRY = new PropertyRegistry("ngs", "NGS additional properties");
 	@Path("//ur:Memory[@ur:type=\"memoryUsed\"]")
     @ParseClass(parser=IntervallicVolumeParser.class)
-    public static final PropertyTag<Number> NGS_MEMORY_USED_PROP = new PropertyTag<Number>(
+    public static final PropertyTag<Number> NGS_MEMORY_USED_PROP = new PropertyTag<>(
 			NGS_REGISTRY, "MemoryUsed", Number.class, "Memory used converted to bit-seconds");
-	public static final PropertyTag<Integer> NGS_KB_USED_PROP = new PropertyTag<Integer>(
+	public static final PropertyTag<Integer> NGS_KB_USED_PROP = new PropertyTag<>(
 			NGS_REGISTRY, "KBUsed", Integer.class, "Memory used converted to KB");
 
 	@Path("//ur:Memory[@ur:type=\"virtualMemoryUsed\"]")
     @ParseClass(parser=IntervallicVolumeParser.class)
-    public static final PropertyTag<Number> NGS_VIRTUAL_MEMORY_USED_PROP = new PropertyTag<Number>(
+    public static final PropertyTag<Number> NGS_VIRTUAL_MEMORY_USED_PROP = new PropertyTag<>(
 			NGS_REGISTRY, "VirtualMemoryUsed", Number.class, "Virtual Memory used converted to bit-seconds");
-	 public static final PropertyTag<Integer> NGS_VIRTUAL_KB_USED_PROP = new PropertyTag<Integer>(
+	 public static final PropertyTag<Integer> NGS_VIRTUAL_KB_USED_PROP = new PropertyTag<>(
 				NGS_REGISTRY, "VirtualKBUsed", Integer.class, "Virtual Memory used converted to KB");
 		
 	@Path("//ur:TimeInstant[@ur:type=\"timeGlobusSubmitted\"]")
-	public static final PropertyTag<Date> GLOBUS_SUBMITTED_PROP = new PropertyTag<Date>(
+	public static final PropertyTag<Date> GLOBUS_SUBMITTED_PROP = new PropertyTag<>(
 			NGS_REGISTRY, "GlobusSubmittedTime",Date.class);
 	@Path("//ur:TimeInstant[@ur:type=\"timeGlobusExecutable\"]")
-	public static final PropertyTag<Date> GLOBUS_EXECUTABLE_PROP = new PropertyTag<Date>(
+	public static final PropertyTag<Date> GLOBUS_EXECUTABLE_PROP = new PropertyTag<>(
 			NGS_REGISTRY, "GlobusExecutableTime",Date.class);
 	@Path("//ur:TimeInstant[@ur:type=\"timeGlobusFinished\"]")
-	public static final PropertyTag<Date> GLOBUS_FINISHED_PROP = new PropertyTag<Date>(
+	public static final PropertyTag<Date> GLOBUS_FINISHED_PROP = new PropertyTag<>(
 			NGS_REGISTRY, "GlobusFinishedTime",Date.class);
 	@Path("Resource[@ur:description=\"VOinfo\"]")
-	public static final PropertyTag<String> VO_PROP = new PropertyTag<String>(
+	public static final PropertyTag<String> VO_PROP = new PropertyTag<>(
 			NGS_REGISTRY, "Vo",String.class);
 
 	
@@ -93,8 +92,8 @@ public class NGSXMLRecordParser extends OGFXMLRecordParser {
 	public PropExpressionMap getDerivedProperties(PropExpressionMap previous) {
 		PropExpressionMap map= super.getDerivedProperties(previous);
 		try {
-			map.put(NGSXMLRecordParser.NGS_KB_USED_PROP,new IntPropExpression<Number>( new BinaryPropExpression(NGSXMLRecordParser.NGS_MEMORY_USED_PROP, Operator.DIV, new ConstPropExpression<Integer>(Integer.class,8192))));
-			map.put(NGSXMLRecordParser.NGS_VIRTUAL_KB_USED_PROP, new IntPropExpression<Number>(new BinaryPropExpression(NGSXMLRecordParser.NGS_VIRTUAL_MEMORY_USED_PROP, Operator.DIV, new ConstPropExpression<Integer>(Integer.class,8192))));
+			map.put(NGSXMLRecordParser.NGS_KB_USED_PROP,new IntPropExpression<>( new BinaryPropExpression(NGSXMLRecordParser.NGS_MEMORY_USED_PROP, Operator.DIV, new ConstPropExpression<>(Integer.class,8192))));
+			map.put(NGSXMLRecordParser.NGS_VIRTUAL_KB_USED_PROP, new IntPropExpression<>(new BinaryPropExpression(NGSXMLRecordParser.NGS_VIRTUAL_MEMORY_USED_PROP, Operator.DIV, new ConstPropExpression<>(Integer.class,8192))));
 			
 		} catch (PropertyCastException e) {
 			getLogger().error("Error making derived prop",e);

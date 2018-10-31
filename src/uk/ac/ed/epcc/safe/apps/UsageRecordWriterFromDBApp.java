@@ -250,8 +250,8 @@ public class UsageRecordWriterFromDBApp implements Command {
 		
 		// construct a data-based query from the default accounting table
 		AndRecordSelector sel = new AndRecordSelector();
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.GT,dateStart));
-		sel.add(new SelectClause<Date>(StandardProperties.ENDED_PROP,MatchCondition.LE,dateEnd));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.GT,dateStart));
+		sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.LE,dateEnd));
 		
 		
 		PropertyFinder finder = um.getFinder();

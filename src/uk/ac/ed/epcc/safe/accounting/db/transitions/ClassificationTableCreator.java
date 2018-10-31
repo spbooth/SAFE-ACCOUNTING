@@ -59,7 +59,7 @@ public class ClassificationTableCreator extends AbstractContexed implements Form
 	}
 	public void buildCreationForm(String type_name,Form f) throws Exception {
 		f.addInput(TABLE, "Name of table to create", new NewTableInput(conn));
-		f.addInput(TYPE,"Table type",new ClassInput<PropertyClassificationFactory>(conn, PropertyClassificationFactory.class));
+		f.addInput(TYPE,"Table type",new ClassInput<>(conn, PropertyClassificationFactory.class));
 		f.addAction("Create", new CreateAction());
 	}
 

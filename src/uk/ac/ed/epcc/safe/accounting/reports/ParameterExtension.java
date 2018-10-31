@@ -40,7 +40,6 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.charts.MapperEntryInput;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntryInput;
-import uk.ac.ed.epcc.safe.accounting.db.FilterSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
@@ -346,7 +345,7 @@ public class ParameterExtension extends ReportExtension {
 			return new BooleanInput();
 
 		} else if (type.equals("List")) {
-			SetInput<String> set_input = new SetInput<String>();
+			SetInput<String> set_input = new SetInput<>();
 			NodeList list = param.getChildNodes();
 			for (int j = 0; j < list.getLength(); j++) {
 				Node n = list.item(j);

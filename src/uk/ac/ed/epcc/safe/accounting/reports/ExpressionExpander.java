@@ -73,7 +73,7 @@ private  <T> ValueParser<T> getFormatter(Class<T> tag,String format){
 	  if( res == null ){
 		  res = policy.getValueParser(tag);
 		  if( res == null ){
-			  return new DefaultFormatter<T>(tag);
+			  return new DefaultFormatter<>(tag);
 		  }
 	  }
 	  assert(res==null || res.getType().isAssignableFrom(tag));

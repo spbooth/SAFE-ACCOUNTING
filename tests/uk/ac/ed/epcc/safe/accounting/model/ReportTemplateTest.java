@@ -85,7 +85,7 @@ public class ReportTemplateTest extends WebappTestBase{
 //			}
 //		}
 		
-	  	TableXMLFormatter<String,ReportTemplate> fmt = new TableXMLFormatter<String,ReportTemplate>(builder, null);
+	  	TableXMLFormatter<String,ReportTemplate> fmt = new TableXMLFormatter<>(builder, null);
 	  	fmt.add(t);
 	  	checkContent("/normalize.xsl", "report_index.xml", builder.toString());
 		

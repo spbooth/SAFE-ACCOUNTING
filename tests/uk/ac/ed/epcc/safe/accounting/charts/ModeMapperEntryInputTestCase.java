@@ -15,7 +15,7 @@ public class ModeMapperEntryInputTestCase extends WebappTestBase implements Test
 ListInputInterfaceTest<String, MapperEntry, MapperEntryInput, TestDataProvider<String,MapperEntryInput>>
 {
 
-	public ListInputInterfaceTest<String, MapperEntry, MapperEntryInput, TestDataProvider<String,MapperEntryInput>> list_test = new ListInputInterfaceTestImpl<String, MapperEntry, MapperEntryInput, TestDataProvider<String,MapperEntryInput>>(this);
+	public ListInputInterfaceTest<String, MapperEntry, MapperEntryInput, TestDataProvider<String,MapperEntryInput>> list_test = new ListInputInterfaceTestImpl<>(this);
 	public ModeMapperEntryInputTestCase() {
 		
 	}

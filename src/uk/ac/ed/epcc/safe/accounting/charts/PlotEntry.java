@@ -286,7 +286,7 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c) {
 public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,String tag) {
 	    
 	       FilteredProperties prop = new FilteredProperties(c.getService(ConfigService.class).getServiceProperties(), "PlotEntry",tag);
-		   Set<PlotEntry> set = new LinkedHashSet<PlotEntry>();
+		   Set<PlotEntry> set = new LinkedHashSet<>();
 		   Logger log = c.getService(LoggerService.class).getLogger(PlotEntry.class);
 		   String list = prop.getProperty("list");
 		   log.debug("list is"+list);
@@ -426,7 +426,7 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 public static Set<PlotEntry> getMappers(AppContext c,UsageProducer up){
 	   // force load of properties
 	   PropertyFinder finder = up.getFinder();
-	   Set<PlotEntry> res = new LinkedHashSet<PlotEntry>();
+	   Set<PlotEntry> res = new LinkedHashSet<>();
 	   for(PlotEntry e: getPlotSet(finder,c)){
 		   if( e.compatible(up)){
 			   res.add(e);

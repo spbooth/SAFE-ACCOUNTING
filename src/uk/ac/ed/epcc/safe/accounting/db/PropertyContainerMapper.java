@@ -43,7 +43,7 @@ public class PropertyContainerMapper extends SQLGroupMapper<PropertyContainer> {
 	public PropertyContainerMapper(AccessorMap<?> m){
 		super(m.getContext());
 		this.m=m;
-		fields=new LinkedList<PropertyTag>();
+		fields=new LinkedList<>();
 	}
 	public <N>void addKey(PropertyTag<N> t) throws InvalidSQLPropertyException {
 		fields.add(t);

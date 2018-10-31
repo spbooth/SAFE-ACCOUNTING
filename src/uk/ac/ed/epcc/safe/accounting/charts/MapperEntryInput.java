@@ -43,7 +43,7 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 		}else {
 			prefix="";
 		}
-		items = new LinkedHashMap<String, MapperEntry>();
+		items = new LinkedHashMap<>();
 		if( producer != null){
 			for( MapperEntry e : MapperEntry.getMappers(conn, producer, tag)){
 				items.put(prefix+e.getName(),e);

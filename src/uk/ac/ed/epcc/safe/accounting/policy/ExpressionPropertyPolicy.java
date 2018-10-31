@@ -126,13 +126,13 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext conn) throws TransitionException {
-			SetInput<ConfigPropertyRegistry> input=new SetInput<ConfigPropertyRegistry>();
+			SetInput<ConfigPropertyRegistry> input=new SetInput<>();
 			for(PropertyFinder pf : props.getNested()){
 				input.addChoice((ConfigPropertyRegistry)pf);
 			}
 			f.addInput("Finder", "Registy", input);
 			f.addInput("Name", "Name of new property", new PatternTextInput(PropertyTag.PROPERT_TAG_NAME_PATTERN));
-			SetInput<String> type = new SetInput<String>();
+			SetInput<String> type = new SetInput<>();
 			type.addChoice("Number");
 			type.addChoice("String");
 			type.addChoice("Date");
@@ -173,7 +173,7 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 		}
 	}
 	public Map<TableTransitionKey, Transition> getTableTransitions() {
-		Map<TableTransitionKey,Transition> result = new HashMap<TableTransitionKey, Transition>();
+		Map<TableTransitionKey,Transition> result = new HashMap<>();
 		// add transitions here
 		result.put(new AdminOperationKey( "AddDefinition","Add a new property definition"),new AddDerivedTransition());
 		result.put(new AdminOperationKey( "AddProperty","Define a new property"),new AddPropertyTransition());

@@ -49,7 +49,7 @@ public class DummyPropertyFactory extends DefaultDataObjectPropertyFactory<Dummy
 
 	public class ExpressionFinder<X> extends AbstractFinder<X>{
 		public ExpressionFinder(SQLValue<X> val){
-			setMapper(new ValueResultMapper<X>(val));
+			setMapper(new ValueResultMapper<>(val));
 		}
 	}
 	

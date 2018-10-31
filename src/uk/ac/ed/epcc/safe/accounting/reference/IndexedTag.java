@@ -76,18 +76,18 @@ public class IndexedTag<I extends Indexed, F extends IndexedProducer> extends Pr
 	   }
 	public IndexedReference<I> makeReference(I value) {
 		if( value == null ){
-			return new IndexedReference<I>(0,fac,table);
+			return new IndexedReference<>(0,fac,table);
 		}
-		return new IndexedReference<I>(value.getID(),fac,table);
+		return new IndexedReference<>(value.getID(),fac,table);
 	}
 	public IndexedReference<I> makeReference(int value) {
 		if( value < 0){
-			return new IndexedReference<I>(0,fac,table);
+			return new IndexedReference<>(0,fac,table);
 		}
-		return new IndexedReference<I>(value,fac,table);
+		return new IndexedReference<>(value,fac,table);
 	}
 	public SelectClause<IndexedReference> makeSelect(I value){
-		return new SelectClause<IndexedReference>(this,makeReference(value));
+		return new SelectClause<>(this,makeReference(value));
 	}
 	   public void setOptional(PropertyContainer cont, I value) {
 		   if( cont.supports(this)){

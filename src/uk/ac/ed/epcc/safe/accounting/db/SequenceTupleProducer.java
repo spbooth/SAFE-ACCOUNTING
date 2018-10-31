@@ -68,7 +68,7 @@ extends TupleUsageProducer<A,AF,UR> {
 	 * @return
 	 */
 	protected Collection<PropExpression> getCommonProperties(){
-		return new LinkedList<PropExpression>();
+		return new LinkedList<>();
 	}
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.db.PropertyTupleFactory#addMandatoryFilter(uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter)
@@ -87,7 +87,7 @@ extends TupleUsageProducer<A,AF,UR> {
 					
 					try {
 						m.addFilter(getRawFilter(
-						  new RelationClause<Date>(
+						  new RelationClause<>(
 							new DeRefExpression<>(tag_a, StandardProperties.STARTED_PROP),
 							MatchCondition.LT, 
 							new DeRefExpression<>(tag_b, StandardProperties.ENDED_PROP))));

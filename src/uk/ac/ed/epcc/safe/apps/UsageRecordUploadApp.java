@@ -140,7 +140,7 @@ public class UsageRecordUploadApp implements Command{
 			return; // This will never happen but java can't spot that.
 		}
 		
-		Map<String,Object> params= new HashMap<String,Object>();
+		Map<String,Object> params= new HashMap<>();
 		// default arguments
 		for(String param : data){
 			if( param.contains("=")){

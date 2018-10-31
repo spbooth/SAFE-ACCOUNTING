@@ -38,10 +38,10 @@ public class TimeRangeSelector extends AndRecordSelector {
 			add(sel);
 		}
 		if( start != null ){
-			add(new SelectClause<Date>(point_prop, MatchCondition.GT,start));
+			add(new SelectClause<>(point_prop, MatchCondition.GT,start));
 		}
 		if( end != null ){
-			add(new SelectClause<Date>(point_prop, MatchCondition.LE,end));
+			add(new SelectClause<>(point_prop, MatchCondition.LE,end));
 		}
 		lock();
 	}

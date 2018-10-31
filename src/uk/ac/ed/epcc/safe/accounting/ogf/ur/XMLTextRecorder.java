@@ -233,8 +233,8 @@ public class XMLTextRecorder {
 		this.text = new StringBuilder(textBufferSize);
 		this.attributes = new BlankAttributes();
 		this.elementCounter = 0;
-		this.externalNamespaces = new TreeMap<String, String>();
-		this.internalNamespaces = new TreeMap<String, String>();
+		this.externalNamespaces = new TreeMap<>();
+		this.internalNamespaces = new TreeMap<>();
 		this.recordEnclosingElement = recordEnclosingElement;
 	}
 
@@ -358,7 +358,7 @@ public class XMLTextRecorder {
 	 *         above)
 	 */
 	public Map<String, String> getAttributes() {
-		Map<String, String> attributesMap = new HashMap<String, String>();
+		Map<String, String> attributesMap = new HashMap<>();
 		int length = attributes.getLength();
 		for (int i = 0; i < length; i++) {
 			// Strip of any prefixes.

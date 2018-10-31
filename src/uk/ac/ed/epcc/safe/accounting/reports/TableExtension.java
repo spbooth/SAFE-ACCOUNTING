@@ -173,7 +173,7 @@ public class TableExtension extends ReportExtension {
 			this.extension = extension;
 			this.parent=parent;
 			// Not actually expecting anything to process in the Table node...
-			table = new Table<String,Object>();
+			table = new Table<>();
 			
 		}
 		
@@ -360,7 +360,7 @@ public class TableExtension extends ReportExtension {
 				
 			} catch (Exception e) {
 				extension.addError("Table Error", "Error making JobTable", e);
-				table = new Table<String,Object>();
+				table = new Table<>();
 			}		
 			
 			//store period to custom formatters can retreive
@@ -442,7 +442,7 @@ public class TableExtension extends ReportExtension {
 			// may override this and not be a subset of the default time bounds
 			RecordSelector selector = recordSet.getRecordSelector();
 			
-			Table<String,Object> table = new Table<String,Object>();
+			Table<String,Object> table = new Table<>();
 			if( ! producer.compatible(selector)){
 				extension.addError("Selector not compatible with producer", "Producer: "+producer.getTag()+" not compatible with "+ selector.toString());
 				return table;
@@ -453,9 +453,9 @@ public class TableExtension extends ReportExtension {
                 
 				if( dates.length == 1){
 					AndRecordSelector sel = new AndRecordSelector(selector);
-					sel.add(new SelectClause<Date>(dates[0], MatchCondition.GT,
+					sel.add(new SelectClause<>(dates[0], MatchCondition.GT,
 							period.getStart()));
-					sel.add(new SelectClause<Date>(dates[0], MatchCondition.LE,
+					sel.add(new SelectClause<>(dates[0], MatchCondition.LE,
 							period.getEnd()));
 					data = producer.getIndexedReductionMap(reductions, sel);
 				}else if( dates.length ==2){
@@ -584,11 +584,11 @@ public class TableExtension extends ReportExtension {
 			this.recordSet = recordSet;
 
 			
-			col_names = new LinkedList<String>();
+			col_names = new LinkedList<>();
 			
-			cols = new HashMap<String,ReductionTarget>();
+			cols = new HashMap<>();
 			
-			reductions = new LinkedHashSet<ReductionTarget>();
+			reductions = new LinkedHashSet<>();
 			
 			
 		}
@@ -715,7 +715,7 @@ public class TableExtension extends ReportExtension {
 			final AppContext conn = extension.getContext();
 			
 			RecordSelector selector = recordSet.getRecordSelector();
-			Table<String,Object> table = new Table<String,Object>();
+			Table<String,Object> table = new Table<>();
 			if( ! ef.compatible(selector)){
 				extension.addError("Selector not compatible with ExpressionTargetFactory", selector.toString());
 				return table;
@@ -1011,7 +1011,7 @@ public class TableExtension extends ReportExtension {
 	}
 	private Table<String,Object> processTable(Table<String,Object> table, Node instructions) {
 		if (table == null) {
-			table = new Table<String,Object>();
+			table = new Table<>();
 		}
 		NodeList list = instructions.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
