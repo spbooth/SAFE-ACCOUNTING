@@ -122,7 +122,7 @@ public abstract class ChartExtension extends ReportExtension {
 			result = serv.getPlotEntry( errors,finder, name,start_name,end_name);
 		}
 		if( result == null ){
-			addError("Invalid Plot Quantity","The specified quantity "+name+" does not correspond to a plottable quantity");
+			addError("Invalid Plot Quantity","The specified quantity "+name+" does not correspond to a plottable quantity or named PlotEntry");
 			return null;
 		}
 		if( start_name != null && start_name.trim().length() > 0 && result.getStartProperty() == null ){

@@ -74,7 +74,7 @@ public class ChartExtensionTest extends ExtensionTestCase {
 		
 		// Look for errors
 		Set<String> errors = ReportBuilderTest.expectErrors(2, reportBuilder.getErrors());
-		assertTrue(errors.contains("Bad PlotEntry"));
+		assertTrue(errors.contains("Invalid Plot Quantity"));
 		assertTrue(errors.contains("Error parsing plot expression"));
 		//System.out.println(out.toString());
 		
