@@ -85,7 +85,7 @@ public class ConfigUsageManager extends UsageManager {
 
 
 	public static ConfigUsageManager getInstance(AppContext conn,String tag) {
-		String prop = conn.getInitParameter(tag+CONFIG_SUFFIX);
+		String prop = conn.getExpandedProperty(tag+CONFIG_SUFFIX);
 		if( prop == null || prop.isEmpty()) {
 			return null;
 		}

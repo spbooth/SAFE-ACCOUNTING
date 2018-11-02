@@ -187,13 +187,7 @@ public class ParameterExtension extends ReportExtension {
 			String label = getAttribute("label",param);		
 			if (empty(label)) {
 				label = getContext().getInitParameter("form.label." + name, name);
-				if (label == null) {
-					label = name;
-
-				}
-
 			}
-
 			String title = getAttribute(TITLE_ATTR, param);
 			if( empty(title)) {
 				title=null;
