@@ -52,27 +52,29 @@ public class ConfigUsageManager extends UsageManager {
 		if( tables != null && ! tables.isEmpty()){
 			for(String tab : tables.split(",")){
 				tab=tab.trim();
-				log.debug("consider "+tab);
-				try{
-					// don't supply a default we don't want tables created when
-					// illegal producers requested.
-					UsageProducer producer = serv.getUsageProducer(tab);
-					if( producer != null ){
-						String desc=c.getInitParameter("description."+tab, tab);
-						if( producer instanceof DataObjectFactory){
-							if( !((DataObjectFactory)producer).isValid() ){
-								throw new ConfigurationException("Table "+tab+" Not valid table");
+				if( ! tab.isEmpty()) {
+					log.debug("consider "+tab);
+					try{
+						// don't supply a default we don't want tables created when
+						// illegal producers requested.
+						UsageProducer producer = serv.getUsageProducer(tab);
+						if( producer != null ){
+							String desc=c.getInitParameter("description."+tab, tab);
+							if( producer instanceof DataObjectFactory){
+								if( !((DataObjectFactory)producer).isValid() ){
+									throw new ConfigurationException("Table "+tab+" Not valid table");
+								}
 							}
+							addProducer(desc, producer);
+						}else{
+							if( c.getInitParameter(AppContext.CLASS_PREFIX+tab) == null) {
+								getLogger().error("Property "+AppContext.CLASS_PREFIX+tab+" not set");
+							}
+							getLogger().error("No valid producer for "+tab);
 						}
-						addProducer(desc, producer);
-					}else{
-						if( c.getInitParameter(AppContext.CLASS_PREFIX+tab) == null) {
-							getLogger().error("Property "+AppContext.CLASS_PREFIX+tab+" not set");
-						}
-						getLogger().error("No valid producer for "+tab);
+					}catch(Exception e){
+						getLogger().error("Error making UsageProducer "+tag,e);
 					}
-				}catch(Exception e){
-					getLogger().error("Error making UsageProducer "+tag,e);
 				}
 			}
 		

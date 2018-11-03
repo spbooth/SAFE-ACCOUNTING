@@ -15,7 +15,7 @@ public class PlotEntryInputTestCase extends WebappTestBase implements TestDataPr
 ListInputInterfaceTest<String, PlotEntry, PlotEntryInput, TestDataProvider<String,PlotEntryInput>>
 {
 
-	public ListInputInterfaceTest<String, PlotEntry, PlotEntryInput, TestDataProvider<String,PlotEntryInput>> list_test = new ListInputInterfaceTestImpl<String, PlotEntry, PlotEntryInput, TestDataProvider<String,PlotEntryInput>>(this);
+	public ListInputInterfaceTest<String, PlotEntry, PlotEntryInput, TestDataProvider<String,PlotEntryInput>> list_test = new ListInputInterfaceTestImpl<>(this);
 	public PlotEntryInputTestCase() {
 		
 	}
