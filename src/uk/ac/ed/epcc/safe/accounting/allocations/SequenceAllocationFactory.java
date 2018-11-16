@@ -38,17 +38,47 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.model.period.SequenceManager;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
-/** A {@link AllocationFactory} where the allocations form non-overlapping sequences
+/** A {@link AllocationFactory} where the allocations can form non-overlapping sequences.
+ * 
+ * A sequence is defined by the index properties. Optionally certain sequences may be allowed to contain 
+ * overlapping records by overriding {@link #allowOverlap(PropertyContainer)}
  * 
  * @author spb
  *
  * @param <T>
  */
 public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends AllocationFactory<T,R>  implements SequenceManager<T>{
-
+	private ReferenceTag<T,?> self_tag=null;
 	public SequenceAllocationFactory(AppContext c, String table) {
 		super(c, table);
 	}
+	private ReferenceTag<T,?> getSelfTag(){
+		if( self_tag == null) {
+			self_tag = (ReferenceTag<T, ?>) getFinder().find(IndexedReference.class, getTag());
+		}
+		return self_tag;
+	}
+	
+	/** Extension point to allow certain sequences to contain overlapping records
+	 * 
+	 * @param index {@link PropertyContainer} of index properties
+	 * @return true if overlap allowed
+	 */
+	public boolean allowOverlap(PropertyContainer index) {
+		return false;
+	}
+	
+	@Override
+	public final boolean noOverlapps(T current) {
+		return ! allowOverlap(current);
+	}
+	/** Do two records have matching index properties.
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 * @throws InvalidExpressionException
+	 */
 	@SuppressWarnings("unchecked")
 	public boolean sameSequence(T a, T b) throws InvalidExpressionException{
 		for(ReferenceTag tag : getIndexProperties()){
@@ -102,11 +132,39 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 	public T getNextInSequence(T current, boolean move_up) {
 		try{
 			AndRecordSelector sel = new AndRecordSelector();
+			sel.add(new SelectClause<>(getSelfTag(),MatchCondition.NE,current)); // never same as current
+			if( move_up ){ 
+				sel.add(new SelectClause<>(StandardProperties.STARTED_PROP,MatchCondition.GE,current.getStart()));
+				sel.add(new OrderClause<>(false, StandardProperties.STARTED_PROP));
+				sel.add(new OrderClause<>(true, StandardProperties.ENDED_PROP));
+			}else{
+				sel.add(new SelectClause<>(StandardProperties.STARTED_PROP,MatchCondition.LE,current.getStart()));
+				sel.add(new OrderClause<>(false, StandardProperties.STARTED_PROP));
+				sel.add(new OrderClause<>(true, StandardProperties.ENDED_PROP));
+			}
+			for(ReferenceTag t : getIndexProperties()){
+				sel.add(new SelectClause<IndexedReference>(t,current));
+			}
+			try(CloseableIterator<T> it = getIterator(sel, 0, 1)){
+				if( it.hasNext()){
+					return it.next();
+				}
+			}
+			return null;
+		}catch(Exception e){
+			getLogger().error("Error in move-up",e);
+			return null;
+		}
+	}
+	
+	public T getMergeCandidate(T current, boolean move_up) {
+		try{
+			AndRecordSelector sel = new AndRecordSelector();
 			if( move_up ){
-				sel.add(new SelectClause<>(StandardProperties.STARTED_PROP,MatchCondition.GT,current.getStart()));
+				sel.add(new SelectClause<>(StandardProperties.STARTED_PROP,current.getEnd()));
 				sel.add(new OrderClause<>(false, StandardProperties.STARTED_PROP));
 			}else{
-				sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,MatchCondition.LT,current.getEnd()));
+				sel.add(new SelectClause<>(StandardProperties.ENDED_PROP,current.getStart()));
 				sel.add(new OrderClause<>(true, StandardProperties.ENDED_PROP));
 			}
 			for(ReferenceTag t : getIndexProperties()){
@@ -157,6 +215,9 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 				} catch (InvalidPropertyException e) {
 					throw new ValidateException("Internal error - bad property", e);
 				}
+			}
+			if( allowOverlap(seq)) {
+				return;
 			}
 			boolean empty=false;
 			try {

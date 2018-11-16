@@ -1054,6 +1054,9 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	
 	
 	public boolean canMerge(T first, T last){
+		if( first.equals(last)) {
+			return false;
+		}
 		for(AllocationListener<T> l : listeners){
 			try {
 				l.canMerge(first, last);
