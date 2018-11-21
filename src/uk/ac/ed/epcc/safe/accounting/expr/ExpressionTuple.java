@@ -70,6 +70,13 @@ public final class ExpressionTuple {
 	public <X> X get(PropExpression<X> expr){
 		return (X) data.get(expr);
 	}
+	/** get a (modifiable) map of the tuple contents
+	 * 
+	 * @return
+	 */
+	public Map<PropExpression,Object> getMap(){
+		return new HashMap(data);
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if( obj == this ){

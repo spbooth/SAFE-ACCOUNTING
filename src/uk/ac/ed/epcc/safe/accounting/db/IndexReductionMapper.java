@@ -131,14 +131,16 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 							}else{
 								switch(target.getReduction()) {
 								case SELECT:addClause(val, value_name);break; 
-								case DISTINCT: addCount((SQLExpression)val, value_name); break; 
+								case DISTINCT: addCount(val, value_name); break; 
 								default: throw new IllegalReductionException("Unsupported data type for reduction");
 								}
 							}
 						}else{
 							if( target.getReduction() == Reduction.SELECT){
 								addClause(val, value_name);
-							}else{
+							}else if( target.getReduction() == Reduction.DISTINCT) {
+								addCount(val, value_name)
+;							}else{
 								throw new CannotUseSQLException("Not an SQL Expression");
 							}
 						}

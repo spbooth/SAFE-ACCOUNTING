@@ -43,8 +43,12 @@
 
 	<xsd:complexType name="ColumnType">
 		<xsd:sequence>
+			<xsd:choice>
 			<xsd:element name="Name" type="par:TextOrParameterType"
 				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="NameExpression" type="prop:PropExpressionType"
+				minOccurs="1" maxOccurs="1" />
+			</xsd:choice>
 			<xsd:element name="Property" type="prop:PropExpressionType"
 				minOccurs="1" maxOccurs="1" />
 		</xsd:sequence>

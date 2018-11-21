@@ -45,6 +45,9 @@ public class ObjectSet<F extends ExpressionTargetGenerator> {
 		}
 		return generator;
 	}
+	public boolean hasGenerator() {
+		return generator != null;
+	}
 	public void setGenerator(F generator) {
 		this.generator = generator;
 	}

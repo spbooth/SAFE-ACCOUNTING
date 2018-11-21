@@ -39,10 +39,23 @@ public class CountReduction extends ReductionTarget<Object> {
 	
 	@Override
 	public Object combine(Object a, Object b){
-		if( a != null ){
-			return  a;
-		}else{
-			return  b;
+		// we are actually combining numbers
+		if( a == null) {
+			return b;
 		}
+		if( b == null) {
+			return a;
+		}
+		return Integer.valueOf(
+				((Number)a).intValue() +
+				((Number)b).intValue()
+				);
+		
+	}
+
+
+	@Override
+	public Object getDefault() {
+		return Integer.valueOf(0);
 	}
 }

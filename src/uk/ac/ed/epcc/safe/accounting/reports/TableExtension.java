@@ -573,20 +573,34 @@ public class TableExtension extends ReportExtension {
 		ObjectSet recordSet;
 		List<String> col_names;
 		Map<String,ReductionTarget> cols;
+		Map<SelectReduction,ReductionTarget> expr_cols;
+		Set<String> dynamic_cols;
 		Set<ReductionTarget> reductions;
 		int indexes=0;
 		
 		public SummaryObjectTable(TableExtension extension, 
 				CompoundTable compoundTable,  
-				ObjectSet recordSet, Node tableNode) {
+				ObjectSet recordSet, Node tableNode) throws BadTableException {
 			this.compoundTable = compoundTable;
 			this.extension = extension;
 			this.recordSet = recordSet;
 
-			
+			if( recordSet == null) {
+				throw new BadTableException("No ObjectSet defined");
+			}
+			if( recordSet.hasError()) {
+				throw new BadTableException("ObjectSet has error");
+			}
+			if( ! recordSet.hasGenerator()) {
+				throw new BadTableException("No generator in ObjectSet");
+			}
 			col_names = new LinkedList<>();
 			
+			dynamic_cols = new LinkedHashSet<>();
+			
 			cols = new HashMap<>();
+			
+			expr_cols = new HashMap<>();
 			
 			reductions = new LinkedHashSet<>();
 			
@@ -610,103 +624,105 @@ public class TableExtension extends ReportExtension {
 		public final String addColumn(Node columnNode) {
 			try {
 				ExpressionTargetGenerator producer = recordSet.getGenerator();
-				
+
 				if( columnNode.getNamespaceURI().equals(TABLE_LOC)){
 					String columnType = columnNode.getLocalName();	
 					PropExpression property = extension.getPropertyExpression(columnNode, producer);
 					if (property == null) {
-						extension.addError("Bad property", "No 'Property' element found for "+columnType,columnNode);
-						return "";				
+						throw new BadTableException("Missing or illegal Property element");		
 					}
-	
+
 					String name;
 					if( property instanceof PropertyTag){
 						name=((PropertyTag)property).getName();
 					}else{
 						name=property.toString();
 					}
-				// use Plot property name as the default
-				String col_name = extension.getParamWithDefault("Name", name, (Element)columnNode);
-				boolean isColumn = columnType.equals("Column");
-				boolean isIndex = columnType.equals("Index");
-				if( isIndex){
-					indexes++;
-				}
-				if(isColumn || isIndex ){
-					// Optionally use a labeller
-					String labeller = extension.getAttribute("labeller", (Element)columnNode);
-					if( labeller != null && labeller.length() > 0){
-						Labeller lab = extension.getContext().makeObjectWithDefault(Labeller.class, null, labeller);
-						if( lab != null){
-							property = new LabelPropExpression(lab, property);
+					// use Plot property name as the default
+					String col_name = extension.getParamWithDefault("Name", name, (Element)columnNode);
+					// unless we have a NameExpression element
+					SelectReduction name_red = null;
+					if( extension.hasChild("NameExpression", (Element)columnNode)) {
+						PropExpression name_prop = extension.getPropertyExpression(columnNode,producer,"NameExpression");
+						if( name_prop == null ) {
+							throw new BadTableException("Illegal NameExpression element");
+						}
+						name_red = new SelectReduction(name_prop);
+						col_name = null; 
+					}
+					
+					
+					boolean isColumn = columnType.equals("Column");
+					boolean isIndex = columnType.equals("Index");
+					if( isIndex){
+						indexes++;
+					}
+					ReductionTarget red=null;
+					if(isColumn || isIndex ){
+						// Optionally use a labeller
+						String labeller = extension.getAttribute("labeller", (Element)columnNode);
+						if( labeller != null && labeller.length() > 0){
+							Labeller lab = extension.getContext().makeObjectWithDefault(Labeller.class, null, labeller);
+							if( lab != null){
+								property = new LabelPropExpression(lab, property);
+							}else{
+								extension.addError("bad labeller", "Labeller "+labeller+" did not resolve", columnNode);
+							}
+						}
+						// printing index
+						
+						if( isColumn){
+							red = new SelectReduction(property);
 						}else{
-							extension.addError("bad labeller", "Labeller "+labeller+" did not resolve", columnNode);
+							red = new IndexReduction(property);
+						}
+						
+					}else if(columnType.equals("SumColumn")){
+						red = new NumberSumReductionTarget(property);
+					}else if(columnType.equals("AverageColumn")){
+						red = new NumberAverageReductionTarget( property);
+					}else if(columnType.equals("MinColumn")){
+						if( Number.class.isAssignableFrom(property.getTarget()) ){
+							red = new NumberMinReductionTarget(property);
+						}else if( Date.class.isAssignableFrom(property.getTarget())){
+							red = new DateReductionTarget(Reduction.MIN, property);
+						}else{
+							throw new BadTableException("Illegal min property "+property.toString());
+						}
+					}else if(columnType.equals("MaxColumn")){
+						if( Number.class.isAssignableFrom(property.getTarget()) ){
+							red = new NumberMaxReductionTarget( property);
+						}else if( Date.class.isAssignableFrom(property.getTarget())){
+							red = new DateReductionTarget(Reduction.MAX, property);
+						}else{
+							throw new BadTableException("Illegal max property "+property.toString());
+						}
+					}else if(columnType.equals("CountDistinctColumn")) {
+						red = new CountReduction(property);
+					}else{
+						extension.addError("Bad column", "Unexpected Column type "+columnType);
+					}
+					if( red != null ) {
+						reductions.add(red);
+						if( col_name != null ) {
+							col_names.add(col_name);
+							cols.put(col_name,red);
+						}
+						if( name_red != null) {
+							reductions.add(name_red);
+							expr_cols.put(name_red, red);
 						}
 					}
-					// printing index
-					ReductionTarget red;
-					if( isColumn){
-						red = new SelectReduction(property);
-					}else{
-						red = new IndexReduction(property);
-					}
-					reductions.add(red);
-					col_names.add(col_name);
-					cols.put(col_name,red);
-				}else if(columnType.equals("SumColumn")){
-					NumberReductionTarget red = new NumberSumReductionTarget(property);
-					reductions.add(red);
-					col_names.add(col_name);
-					cols.put(col_name,red);
-				}else if(columnType.equals("AverageColumn")){
-					NumberReductionTarget red = new NumberAverageReductionTarget( property);
-					reductions.add(red);
-					col_names.add(col_name);
-					cols.put(col_name,red);
-				}else if(columnType.equals("MinColumn")){
-					ReductionTarget red;
-					if( Number.class.isAssignableFrom(property.getTarget()) ){
-						red = new NumberMinReductionTarget(property);
-					}else if( Date.class.isAssignableFrom(property.getTarget())){
-						red = new DateReductionTarget(Reduction.MIN, property);
-					}else{
-						throw new BadTableException("Illegal min property "+property.toString());
-					}
-					reductions.add(red);
-					col_names.add(col_name);
-					cols.put(col_name,red);
-					
-				}else if(columnType.equals("MaxColumn")){
-					ReductionTarget red;
-					if( Number.class.isAssignableFrom(property.getTarget()) ){
-						red = new NumberMaxReductionTarget( property);
-					}else if( Date.class.isAssignableFrom(property.getTarget())){
-						red = new DateReductionTarget(Reduction.MAX, property);
-					}else{
-						throw new BadTableException("Illegal max property "+property.toString());
-					}
-					reductions.add(red);
-					col_names.add(col_name);
-					cols.put(col_name,red);
-				}else if(columnType.equals("CountDistinctColumn")) {
-					ReductionTarget red = new CountReduction(property);
-					reductions.add(red);
-					col_names.add(col_name);
-					cols.put(col_name,red);
-				}else{
-					extension.addError("Bad column", "Unexpected Column type "+columnType);
-				}
-			
 				}else{
 					extension.addError("Bad Namespace", "Unexpected namespace "+columnNode.getNamespaceURI());
 				}
 			} catch (Exception tr) {
 				extension.addError("Error adding Data Column to table", 
 						tr.getClass().getCanonicalName(), tr);
-		
+
 			}
 			return "";
-			
+
 		}
 		
 		public Table postProcess(Node instructions) {	
@@ -733,7 +749,8 @@ public class TableExtension extends ReportExtension {
 				// copy data into table keyed by tuple.
 				if(data != null ){
 					for(ExpressionTuple tup : data.keySet()){
-						Object key =tup.getKey();
+						Object key=tup.getKey();
+						
 						Map<ReductionTarget,Object> row = data.get(tup);
 
 						for(String col : col_names){
@@ -742,7 +759,17 @@ public class TableExtension extends ReportExtension {
 							// Its OK for value to be null here and we want to pass this on to the table
 							// to ensure columns are created in the correct order
 							table.put(col, key, value);
-
+						}
+						// now expression name columns
+						// merge in case different index values have the same string rep
+						// also allows us to extend later to add a labeller
+						for(Map.Entry<SelectReduction,ReductionTarget> e : expr_cols.entrySet()) {
+							String col = row.get(e.getKey()).toString();
+							ReductionTarget target = e.getValue();
+							Object value = row.get(target);
+							Object merge = table.get(col, key);
+							dynamic_cols.add(col);
+							table.put(col, key, target.combine(value, merge));
 						}
 					}
 				}
@@ -793,6 +820,9 @@ public class TableExtension extends ReportExtension {
 						}
 						compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 					}
+				}
+				for( String col : dynamic_cols) {
+					compoundTable.table.getCol(col).combine(Operator.ADD, table.getCol(col));
 				}
 				//compoundTable.addTable(table);
 				table=null;
@@ -945,10 +975,10 @@ public class TableExtension extends ReportExtension {
 			Period period, RecordSet recordSet, Node node) throws ReportException {
 		return new SummaryTable(this, compountTable, period,recordSet,node);
 	}
-	public SummaryObjectTable newSummaryObjectTable(CompoundTable compoundTable, ObjectSet recordSet, Node tableNode){
+	public SummaryObjectTable newSummaryObjectTable(CompoundTable compoundTable, ObjectSet recordSet, Node tableNode) throws BadTableException{
 		return new SummaryObjectTable(this, compoundTable, recordSet, tableNode);
 	}
-	public SummaryObjectTable newSummaryObjectTable(ObjectSet recordSet, Node tableNode){
+	public SummaryObjectTable newSummaryObjectTable(ObjectSet recordSet, Node tableNode) throws BadTableException{
 		return new SummaryObjectTable(this, null, recordSet, tableNode);
 	}
 	public ObjectTable newObjectTable(ObjectSet recordSet, 
