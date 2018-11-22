@@ -49,7 +49,6 @@ import uk.ac.ed.epcc.safe.accounting.JobTableMaker;
 import uk.ac.ed.epcc.safe.accounting.NumberAverageReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.NumberMaxReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.NumberMinReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.NumberSumReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
@@ -597,10 +596,12 @@ public class TableExtension extends ReportExtension {
 					// unless we have a NameExpression element
 					SelectReduction name_red = null;
 					if( extension.hasChild("NameExpression", (Element)columnNode)) {
-						PropExpression name_prop = extension.getPropertyExpression(columnNode,producer,"NameExpression");
+						Element ne = extension.getParamElement("NameExpression", (Element) columnNode);
+						PropExpression name_prop = extension.getPropertyExpression(ne,producer);
 						if( name_prop == null ) {
 							throw new BadTableException("Illegal NameExpression element");
 						}
+						name_prop= addLabeller(ne, name_prop);
 						name_red = new SelectReduction(name_prop);
 						col_name = null; 
 					}
@@ -613,16 +614,7 @@ public class TableExtension extends ReportExtension {
 					}
 					ReductionTarget red=null;
 					if(isColumn || isIndex ){
-						// Optionally use a labeller
-						String labeller = extension.getAttribute("labeller", (Element)columnNode);
-						if( labeller != null && labeller.length() > 0){
-							Labeller lab = extension.getContext().makeObjectWithDefault(Labeller.class, null, labeller);
-							if( lab != null){
-								property = new LabelPropExpression(lab, property);
-							}else{
-								extension.addError("bad labeller", "Labeller "+labeller+" did not resolve", columnNode);
-							}
-						}
+						property = addLabeller((Element)columnNode, property);
 						// printing index
 						
 						if( isColumn){
@@ -677,6 +669,24 @@ public class TableExtension extends ReportExtension {
 			}
 			return "";
 
+		}
+		/**
+		 * @param columnNode
+		 * @param property
+		 * @return
+		 */
+		protected PropExpression addLabeller(Element columnNode, PropExpression property) {
+			// Optionally use a labeller
+			String labeller = extension.getAttribute("labeller", columnNode);
+			if( labeller != null && labeller.length() > 0){
+				Labeller lab = extension.getContext().makeObjectWithDefault(Labeller.class, null, labeller);
+				if( lab != null){
+					property = new LabelPropExpression(lab, property);
+				}else{
+					extension.addError("bad labeller", "Labeller "+labeller+" did not resolve", columnNode);
+				}
+			}
+			return property;
 		}
 		
 		public Table postProcess(Node instructions) {	

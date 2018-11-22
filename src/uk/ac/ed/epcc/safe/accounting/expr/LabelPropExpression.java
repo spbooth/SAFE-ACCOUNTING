@@ -15,6 +15,7 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.content.FormatProvider;
 import uk.ac.ed.epcc.webapp.content.Labeller;
 /** A PropExpression that maps a nested expression to a String
  * using a {@link Labeller}
@@ -35,11 +36,11 @@ public class LabelPropExpression<T,R> implements PropExpression<R> {
 		this.labeller = labeller;
 		this.expr = expr;
 	}
-
+	@Override
 	public Class<R> getTarget() {
 		return labeller.getTarget();
 	}
-
+	@Override
 	public <X> X accept(BasePropExpressionVisitor<X> vis) throws Exception {
 		if( vis instanceof PropExpressionVisitor){
 			return ((PropExpressionVisitor<X>)vis).visitLabelPropExpression(this);
@@ -47,11 +48,11 @@ public class LabelPropExpression<T,R> implements PropExpression<R> {
 		throw new UnsupportedExpressionException(this);
 		
 	}
-
+	@Override
 	public PropExpression<R> copy() {
 		return this;
 	}
-
+	
 	public Labeller<T,R> getLabeller() {
 		return labeller;
 	}

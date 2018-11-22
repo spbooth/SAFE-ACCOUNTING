@@ -751,7 +751,26 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		return data_tag;
 			
 	}
+	public PropExpression getPropertyExpression(Element element, PropertyTargetFactory producer) throws ExpressionException {
 	
+		String data_str=null;
+		try {
+			data_str = normalise(getText(element));
+		} catch (Exception e) {
+			throw new ExpressionException("Error reading property",e);
+		}
+		if (data_str == null || data_str.trim().length() == 0) {
+			addError("Bad property", "No property specified",element);
+			throw new ExpressionException("null expression");
+		}
+		PropExpression data_tag = getExpression(producer, data_str);
+		if (data_tag == null) {
+			addError("Bad property", "No property found for " + data_str,element);
+			throw new ExpressionException("No property found for "+data_str);
+		}
+		return data_tag;
+			
+	}
 	
 	public DocumentFragment addReference(XMLGenerator gen){
 		Document doc = getDocument();
