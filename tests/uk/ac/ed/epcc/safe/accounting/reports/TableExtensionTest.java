@@ -132,6 +132,13 @@ public class TableExtensionTest extends ExtensionTestCase {
 		
 	}
 	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testNameExpressionTable() throws Exception {	
+		testTables("csv", "testSlowdownReport.xml",new File(getOutputDir()+"SlowdownReport.csv"));
+		
+	}
+	
 	protected void testTables(String reportType, File outputFile) throws Exception {
 		testTables(reportType, "testTable",outputFile);
 		

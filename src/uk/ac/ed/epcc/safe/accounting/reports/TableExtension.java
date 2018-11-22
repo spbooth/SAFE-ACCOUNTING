@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.TreeMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -521,6 +522,7 @@ public class TableExtension extends ReportExtension {
 		Map<String,ReductionTarget> cols;
 		Map<SelectReduction,ReductionTarget> expr_cols;
 		Map<String,ReductionTarget> dynamic_cols;
+		TreeMap<Object,String> dynamic_sort_data;
 		Set<ReductionTarget> reductions;
 		int indexes=0;
 		
@@ -543,6 +545,8 @@ public class TableExtension extends ReportExtension {
 			col_names = new LinkedList<>();
 			
 			dynamic_cols = new LinkedHashMap<>();
+			
+			dynamic_sort_data = new TreeMap<>();
 			
 			cols = new HashMap<>();
 			
@@ -748,9 +752,9 @@ public class TableExtension extends ReportExtension {
 						compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 					}
 				}
-				for( Map.Entry<String,ReductionTarget> e : dynamic_cols.entrySet()) {
-					String col = e.getKey();
-					Reduction red = e.getValue().getReduction();
+				// Need to add in canonical order
+				for( String col : dynamic_sort_data.values()) {
+					Reduction red = dynamic_cols.get(col).getReduction();
 					if( use_overlap && red == Reduction.AVG){
 						// These have been mapped to time average 
 						red = Reduction.SUM;
@@ -795,13 +799,16 @@ public class TableExtension extends ReportExtension {
 							Labeller l = ((FormatProvider)exp).getLabeller();
 							raw = l.getLabel(conn, raw);
 						}
-						String col= raw.toString();
-						
-						ReductionTarget target = e.getValue();
-						Object value = row.get(target);
-						Object merge = table.get(col, key);
-						dynamic_cols.put(col,target);
-						table.put(col, key, target.combine(value, merge));
+						if( raw != null) {
+							String col= raw.toString();
+							dynamic_sort_data.put( raw,col); // This is so we can sort dynamic cols by raw object
+
+							ReductionTarget target = e.getValue();
+							Object value = row.get(target);
+							Object merge = table.get(col, key);
+							dynamic_cols.put(col,target);
+							table.put(col, key, target.combine(value, merge));
+						}
 					}
 				}
 			}
@@ -815,6 +822,11 @@ public class TableExtension extends ReportExtension {
 				ReductionTarget target = e.getValue();
 				setColFormat(conn, table, col, target);
 				
+			}
+			// Dynamic data always goes at the end sorted
+			// by the raw data
+			for(String col : dynamic_sort_data.values()) {
+				table.setColLast(col);
 			}
 		}
 		/**
@@ -1183,6 +1195,10 @@ public class TableExtension extends ReportExtension {
 			    String col = getParam("Column", inst);
 			    String val = getParam("Value", inst);
 			    target.put(col,row,val);
+			}else if ( instruction.equals("SortColumns")) {
+				target.sortCols(null);
+			}else if ( instruction.equals("SortRows")) {
+				target.sortRows();
 			}else if (instruction.equals("SortBy")) {
 			
 

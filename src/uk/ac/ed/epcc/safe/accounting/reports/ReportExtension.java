@@ -1067,6 +1067,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		if( timeString.equalsIgnoreCase("Forever")){
 			time.setTimeInMillis(Long.MAX_VALUE);
+			return;
 		}
 	    ValueParser<Date>vp = getValueParser(Date.class);
 	    timeString=timeString.trim();

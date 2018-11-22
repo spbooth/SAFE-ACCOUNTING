@@ -171,6 +171,8 @@
 	   		minOccurs="0" maxOccurs="1" />
 	   	<xsd:element name="Warning" type="par:TextOrParameterType"
 	   		minOccurs="0" maxOccurs="1" />
+	   	<xsd:element name="SortColumns" minOccurs="0" maxOccurs="1" />
+	   	<xsd:element name="SortRows" minOccurs="0" maxOccurs="1" />
 	   	<xsd:element name="SortBy" minOccurs="0" maxOccurs="1">
 	   		<xsd:complexType>
 	   			<xsd:sequence>
