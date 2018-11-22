@@ -177,7 +177,7 @@ public class TableExtensionTest extends ExtensionTestCase {
 		// Look for errors
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 		System.out.println(out.toString());
-		for(String s : expectedOutput.replace("><",">\n<").split("\n")){
+		for(String s : expectedOutput.replace("><",">\n<").split("\r?\n")){
 			assertTrue("Output did not contain \n"+s.trim()+"\n",
 					out.toString().contains(s.trim()));
 			assertTrue("Output has unexpected leading/trailing spaces \n"+s+"\n",
