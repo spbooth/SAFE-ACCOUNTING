@@ -268,7 +268,7 @@ public abstract class UsageManager<UR> implements
 
 
 	public <R> Map<R, Number> getReductionMap(
-			PropExpression<R> tag,ReductionTarget<Number> res, 
+			PropExpression<R> tag,ReductionTarget<Number,Number> res, 
 			 RecordSelector selector) 
 			throws Exception {
 		Map<R, Number> result = null;
@@ -365,7 +365,7 @@ public abstract class UsageManager<UR> implements
 	}
 
 	
-	public <R> R getReduction(ReductionTarget<R> type,  RecordSelector selector) throws Exception {
+	public <R> R getReduction(ReductionTarget<R,R> type,  RecordSelector selector) throws Exception {
 		R result = null;
 		for (UsageProducer<UR> prod:  factories.values()) {
 			if( prod.compatible(type.getExpression()) && prod.compatible(selector)){

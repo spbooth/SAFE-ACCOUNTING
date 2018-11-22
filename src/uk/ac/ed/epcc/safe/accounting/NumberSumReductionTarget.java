@@ -55,11 +55,6 @@ public class NumberSumReductionTarget extends NumberReductionTarget{
 		this.def=def;
 	}
 	
-
-	@Override
-	public Number combine(Number a, Number b) {
-		return NumberOp.add(a, b);
-	}
 	@Override
 	public Number getDefault(){
 		return def;

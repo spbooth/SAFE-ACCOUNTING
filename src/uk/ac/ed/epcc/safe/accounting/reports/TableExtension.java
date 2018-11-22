@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -477,42 +478,8 @@ public class TableExtension extends ReportExtension {
 				}else{
 					data = producer.getIndexedReductionMap(reductions, selector);
 				}
-				// copy data into table keyed by tuple.
-				if(data != null ){
-					for(ExpressionTuple tup : data.keySet()){
-						Object key =tup.getKey();
-						Map<ReductionTarget,Object> row = data.get(tup);
-
-						for(String col : col_names){
-							ReductionTarget o = cols.get(col);
-							Object value = row.get(o);
-							// Its OK for value to be null here and we want to pass this on to the table
-							// to ensure columns are created in the correct order
-							table.put(col, key, value);
-
-						}
-					}
-				}
-				// set col formats
-				for(String col : col_names){
-					ReductionTarget o = cols.get(col);
-					PropExpression t = o.getExpression();
-					if( t != null && table.hasCol(col) ){
-						if( Number.class.isAssignableFrom(t.getTarget())){
-							table.setColFormat(col, new Transform() {
-								
-								public Object convert(Object old) {
-									if( old == null ){
-										return Double.valueOf(0.0);
-									}
-									return old;
-								}
-							});
-						}else if( t instanceof FormatProvider ){
-							table.setColFormat(col, new LabellerTransform(conn,((FormatProvider)t).getLabeller()));
-						}
-					}
-				}
+				populateTable(conn, table, data);
+				
 			} catch (DataException e) {
 				//e.printStackTrace();
 				getLogger(conn).error("Error making table",e);
@@ -531,29 +498,9 @@ public class TableExtension extends ReportExtension {
 			
 			period=null; // for GC
 			dates=null;
+			table =addToCompound(table);
 			
-			if (compoundTable != null) {
-				// we must only merge columns using the appropriate Operator
-				compoundTable.mergeKeys(table);
-				compoundTable.table.addRows(table);
-				for( String col : col_names){
-					if( table.containsCol(col)) {
-						Reduction red = cols.get(col).getReduction();
-						if( use_overlap && red == Reduction.AVG){
-							// These have been mapped to time average 
-							red = Reduction.SUM;
-						}
-						compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
-					}
-				}
-				//compoundTable.addTable(table);
-				table=null;
-				compoundTable=null;
-				return null;
-			}	
-			Table result = table;
-			table=null;
-			return result;
+			return table;
 
 		}
 
@@ -574,7 +521,7 @@ public class TableExtension extends ReportExtension {
 		List<String> col_names;
 		Map<String,ReductionTarget> cols;
 		Map<SelectReduction,ReductionTarget> expr_cols;
-		Set<String> dynamic_cols;
+		Map<String,ReductionTarget> dynamic_cols;
 		Set<ReductionTarget> reductions;
 		int indexes=0;
 		
@@ -591,12 +538,12 @@ public class TableExtension extends ReportExtension {
 			if( recordSet.hasError()) {
 				throw new BadTableException("ObjectSet has error");
 			}
-			if( ! recordSet.hasGenerator()) {
-				throw new BadTableException("No generator in ObjectSet");
-			}
+//			if( ! recordSet.hasGenerator()) {
+//				throw new BadTableException("No generator in ObjectSet");
+//			}
 			col_names = new LinkedList<>();
 			
-			dynamic_cols = new LinkedHashSet<>();
+			dynamic_cols = new LinkedHashMap<>();
 			
 			cols = new HashMap<>();
 			
@@ -623,8 +570,15 @@ public class TableExtension extends ReportExtension {
 		@SuppressWarnings("unchecked")
 		public final String addColumn(Node columnNode) {
 			try {
+				if( recordSet == null) {
+					extension.addError("bad recordset", "record set is null", columnNode);
+					return "";
+				}
 				ExpressionTargetGenerator producer = recordSet.getGenerator();
-
+				if( producer == null) {
+					extension.addError("bad recordset", "producerS is null", columnNode);
+					return "";
+				}
 				if( columnNode.getNamespaceURI().equals(TABLE_LOC)){
 					String columnType = columnNode.getLocalName();	
 					PropExpression property = extension.getPropertyExpression(columnNode, producer);
@@ -746,53 +700,7 @@ public class TableExtension extends ReportExtension {
 				
 				data = red_hand.getIndexedReductionMap(reductions, selector);
 				
-				// copy data into table keyed by tuple.
-				if(data != null ){
-					for(ExpressionTuple tup : data.keySet()){
-						Object key=tup.getKey();
-						
-						Map<ReductionTarget,Object> row = data.get(tup);
-
-						for(String col : col_names){
-							ReductionTarget o = cols.get(col);
-							Object value = row.get(o);
-							// Its OK for value to be null here and we want to pass this on to the table
-							// to ensure columns are created in the correct order
-							table.put(col, key, value);
-						}
-						// now expression name columns
-						// merge in case different index values have the same string rep
-						// also allows us to extend later to add a labeller
-						for(Map.Entry<SelectReduction,ReductionTarget> e : expr_cols.entrySet()) {
-							String col = row.get(e.getKey()).toString();
-							ReductionTarget target = e.getValue();
-							Object value = row.get(target);
-							Object merge = table.get(col, key);
-							dynamic_cols.add(col);
-							table.put(col, key, target.combine(value, merge));
-						}
-					}
-				}
-				// set col formats
-				for(String col : col_names){
-					ReductionTarget o = cols.get(col);
-					PropExpression t = o.getExpression();
-					if( t != null && table.hasCol(col) ){
-						if( Number.class.isAssignableFrom(t.getTarget())){
-							table.setColFormat(col, new Transform() {
-								
-								public Object convert(Object old) {
-									if( old == null ){
-										return Double.valueOf(0.0);
-									}
-									return old;
-								}
-							});
-						}else if( t instanceof FormatProvider ){
-							table.setColFormat(col, new LabellerTransform(conn,((FormatProvider)t).getLabeller()));
-						}
-					}
-				}
+				populateTable(conn, table, data);
 			} catch (DataException e) {
 				//e.printStackTrace();
 				getLogger(conn).error("Error making table",e);
@@ -806,6 +714,15 @@ public class TableExtension extends ReportExtension {
 			}
 			table = extension.processTable(table, instructions);
 			conn.removeAttribute(CURRENT_PERIOD_ATTR);
+			table = addToCompound(table);	
+			return table;
+
+		}
+		/**
+		 * @param table
+		 * @return
+		 */
+		protected Table<String, Object> addToCompound(Table<String, Object> table) {
 			if (compoundTable != null) {
 				// we must only merge columns using the appropriate Operator
 				compoundTable.mergeKeys(table);
@@ -821,15 +738,98 @@ public class TableExtension extends ReportExtension {
 						compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 					}
 				}
-				for( String col : dynamic_cols) {
-					compoundTable.table.getCol(col).combine(Operator.ADD, table.getCol(col));
+				for( Map.Entry<String,ReductionTarget> e : dynamic_cols.entrySet()) {
+					String col = e.getKey();
+					Reduction red = e.getValue().getReduction();
+					if( use_overlap && red == Reduction.AVG){
+						// These have been mapped to time average 
+						red = Reduction.SUM;
+					}
+					compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
 				}
 				//compoundTable.addTable(table);
 				table=null;
-				return null;
-			}	
+				
+			}
 			return table;
+		}
+		/**
+		 * @param conn
+		 * @param table
+		 * @param data
+		 */
+		protected void populateTable(final AppContext conn, Table<String, Object> table,
+				Map<ExpressionTuple, ReductionMapResult> data) {
+			// copy data into table keyed by tuple.
+			if(data != null ){
+				for(ExpressionTuple tup : data.keySet()){
+					Object key=tup.getKey();
+					
+					Map<ReductionTarget,Object> row = data.get(tup);
 
+					for(String col : col_names){
+						ReductionTarget o = cols.get(col);
+						Object value = row.get(o);
+						// Its OK for value to be null here and we want to pass this on to the table
+						// to ensure columns are created in the correct order
+						table.put(col, key, value);
+					}
+					// now expression name columns
+					// merge in case different index values have the same string rep
+					// also allows us to extend later to add a labeller
+					for(Map.Entry<SelectReduction,ReductionTarget> e : expr_cols.entrySet()) {
+						SelectReduction sel = e.getKey();
+						PropExpression exp = sel.getExpression();
+						Object raw = row.get(sel);
+						if( exp instanceof FormatProvider) {
+							Labeller l = ((FormatProvider)exp).getLabeller();
+							raw = l.getLabel(conn, raw);
+						}
+						String col= raw.toString();
+						
+						ReductionTarget target = e.getValue();
+						Object value = row.get(target);
+						Object merge = table.get(col, key);
+						dynamic_cols.put(col,target);
+						table.put(col, key, target.combine(value, merge));
+					}
+				}
+			}
+			// set col formats
+			for(String col : col_names){
+				ReductionTarget o = cols.get(col);
+				setColFormat(conn, table, col, o);
+			}
+			for(Map.Entry<String,ReductionTarget> e : dynamic_cols.entrySet()) {
+				String col = e.getKey();
+				ReductionTarget target = e.getValue();
+				setColFormat(conn, table, col, target);
+				
+			}
+		}
+		/**
+		 * @param conn
+		 * @param table
+		 * @param col
+		 * @param t
+		 */
+		protected void setColFormat(final AppContext conn, Table<String, Object> table, String col, ReductionTarget target) {
+			if( target != null && table.hasCol(col) ){
+				PropExpression t = target.getExpression();
+				if( Number.class.isAssignableFrom(target.getTarget())){
+					table.setColFormat(col, new Transform() {
+						
+						public Object convert(Object old) {
+							if( old == null ){
+								return Double.valueOf(0.0);
+							}
+							return old;
+						}
+					});
+				}else if( t instanceof FormatProvider ){
+					table.setColFormat(col, new LabellerTransform(conn,((FormatProvider)t).getLabeller()));
+				}
+			}
 		}
 
 

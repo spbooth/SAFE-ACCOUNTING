@@ -24,19 +24,20 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
  * 
  * @author spb
  *
- * @param <T>
+ * @param <T> type produces
+ * @param <D> type of underlying data
  */
-public abstract class ReductionTarget<T> {
+public abstract class ReductionTarget<T,D> {
 	private final Reduction op;
-	private final PropExpression<? extends T> expr;
+	private final PropExpression<? extends D> expr;
 	
 	private final Class<T> target;
-	public ReductionTarget(Class<T> target, Reduction op, PropExpression<? extends T> tag) throws IllegalReductionException{
+	public ReductionTarget(Class<T> target, Class<D> inner,Reduction op, PropExpression<? extends D> tag) throws IllegalReductionException{
 		
 		this.op=op;
 		this.expr=tag;
 		this.target=target;
-		if( ! target.isAssignableFrom(tag.getTarget())){
+		if( ! inner.isAssignableFrom(tag.getTarget())){
 			throw new IllegalReductionException("Expression "+tag+" not compatible with "+target.getCanonicalName());
 		}
 	}
@@ -45,7 +46,7 @@ public abstract class ReductionTarget<T> {
 		return op;
 	}
 	
-	public PropExpression<? extends T> getExpression(){
+	public PropExpression<? extends D> getExpression(){
 		return expr;
 	}
 	public final Class<T> getTarget(){
@@ -58,7 +59,9 @@ public abstract class ReductionTarget<T> {
 	 * @param b
 	 * @return combined result
 	 */
-	public abstract T combine(T a, T b);
+	public final T combine(T a, T b) {
+		return (T) op.operator().operate(a, b);
+	}
 	/** value to return if no records combined,
 	 * 
 	 * @return default value

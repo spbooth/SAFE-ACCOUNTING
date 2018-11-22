@@ -90,7 +90,7 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
 
 
 	@Override
-	public <T> T getReduction(ReductionTarget<T> target, RecordSelector sel) throws Exception {
+	public <T> T getReduction(ReductionTarget<T,T> target, RecordSelector sel) throws Exception {
 		return getReductionHandler().getReduction(target, sel);
 	}
 
@@ -101,7 +101,7 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
 	}
 
 	@Override
-	public <I> Map<I, Number> getReductionMap(PropExpression<I> index, ReductionTarget<Number> property,
+	public <I> Map<I, Number> getReductionMap(PropExpression<I> index, ReductionTarget<Number,Number> property,
 			RecordSelector selector) throws Exception {
 		return getReductionHandler().getReductionMap(index, property, selector);
 	}

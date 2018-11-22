@@ -36,12 +36,7 @@ public class NumberAverageReductionTarget extends NumberReductionTarget{
 		super(Reduction.AVG, tag);
 	}
 	
-	
 
-	@Override
-	public Number combine(Number a, Number b) {
-		return NumberOp.average(a, b);
-	}
 	@Override
 	public Number getDefault(){
 		return new AverageValue(0.0, 0L);

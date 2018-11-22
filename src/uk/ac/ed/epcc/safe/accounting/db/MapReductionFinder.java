@@ -19,6 +19,7 @@ import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.AverageMapMapper;
+import uk.ac.ed.epcc.webapp.jdbc.expr.CountDistinctMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MaximumMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MinimumMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
@@ -30,7 +31,7 @@ import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 
 public class MapReductionFinder<T,K> extends AccessorMapFilterFinder<T, Map<K,Number>> {
 	public MapReductionFinder(AccessorMap<T> map, PropExpression<K> key,
-			ReductionTarget<Number> value) throws InvalidSQLPropertyException {
+			ReductionTarget<Number,Number> value) throws InvalidSQLPropertyException {
 		super(map); // can return null
 		assert(key != null);
 		assert(value != null);
@@ -52,6 +53,7 @@ public class MapReductionFinder<T,K> extends AccessorMapFilterFinder<T, Map<K,Nu
 		case MIN: setMapper(new MinimumMapMapper<>(map.getContext(),a,key_name,e,value_name)); break;
 		case MAX: setMapper(new MaximumMapMapper<>(map.getContext(),a,key_name,e,value_name)); break;
 		case AVG: setMapper(new AverageMapMapper<>(map.getContext(),a,key_name,e,value_name)); break;
+		case DISTINCT: setMapper(new CountDistinctMapMapper<>(map.getContext(), a, key_name, e, value_name)); break;
 		}
 		
 	}

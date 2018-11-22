@@ -27,22 +27,13 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 
 
-public class IndexReduction extends ReductionTarget<Object> {
+public class IndexReduction extends ReductionTarget<Object,Object> {
 
 
 	public IndexReduction(
 			PropExpression<?> tag) throws IllegalReductionException {
-		super(Object.class, Reduction.INDEX, tag);
+		super(Object.class, Object.class,Reduction.INDEX, tag);
 		
 	}
 
-	
-	@Override
-	public Object combine(Object a, Object b){
-		if( a != null ){
-			return  a;
-		}else{
-			return  b;
-		}
-	}
 }

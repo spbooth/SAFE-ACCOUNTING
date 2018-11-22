@@ -27,35 +27,20 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 
 
-public class CountReduction extends ReductionTarget<Object> {
+public class CountReduction extends ReductionTarget<Number,Object> {
 
 
 	public CountReduction(
 			PropExpression<?> tag) throws IllegalReductionException {
-		super(Object.class, Reduction.DISTINCT, tag);
+		super(Number.class, Object.class,Reduction.DISTINCT,tag);
 		
 	}
 
 	
-	@Override
-	public Object combine(Object a, Object b){
-		// we are actually combining numbers
-		if( a == null) {
-			return b;
-		}
-		if( b == null) {
-			return a;
-		}
-		return Integer.valueOf(
-				((Number)a).intValue() +
-				((Number)b).intValue()
-				);
-		
-	}
 
 
 	@Override
-	public Object getDefault() {
+	public Number getDefault() {
 		return Integer.valueOf(0);
 	}
 }

@@ -36,10 +36,4 @@ public class NumberMaxReductionTarget extends NumberReductionTarget{
 	}
 	
 
-	@Override
-	public Number combine(Number a, Number b) {
-		return NumberOp.max(a, b);
-		
-	}
-
 }

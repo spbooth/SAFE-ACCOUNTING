@@ -50,7 +50,7 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 	protected final F fac;
 	
 	
-	protected final <X> boolean compatible(ReductionTarget<X> t){
+	protected final <X> boolean compatible(ReductionTarget<?,X> t){
 		if(fac.compatible(t.getExpression())){
 			return true;
 		}
@@ -62,7 +62,7 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 		return true;
 	}
 	protected final boolean compatible(Set<ReductionTarget> list){
-		for(ReductionTarget<?> t: list){
+		for(ReductionTarget<?,?> t: list){
 			if( ! compatible(t)){
 				return false;
 			}
@@ -111,7 +111,7 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 	
 	
 	
-	public <R> R getReduction(ReductionTarget<R> type, RecordSelector sel)
+	public <R> R getReduction(ReductionTarget<R,R> type, RecordSelector sel)
 			throws Exception, InvalidPropertyException {
 		//TODO think about what to do if this is AVG
 		// combine operation may or may not be wrong depending on
@@ -132,7 +132,7 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 	
 	
 	public <I> Map<I, Number> getReductionMap(PropExpression<I> index,
-			ReductionTarget<Number> property, RecordSelector selector)
+			ReductionTarget<Number,Number> property, RecordSelector selector)
 			throws Exception, InvalidPropertyException {
 		Map<I,Number> result = new HashMap<>();
 		try(CloseableIterator<ExpressionTargetContainer> it = fac.getExpressionIterator(selector)){

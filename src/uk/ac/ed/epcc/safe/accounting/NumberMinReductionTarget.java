@@ -36,10 +36,4 @@ public class NumberMinReductionTarget extends NumberReductionTarget{
 	}
 	
 
-	@Override
-	public Number combine(Number a, Number b) {
-		return NumberOp.min(a, b);
-	}
-	
-
 }

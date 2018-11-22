@@ -86,7 +86,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	}
 
 	public final <I> Map<I, Number> getReductionMap(PropExpression<I> index,
-			ReductionTarget<Number> property,  RecordSelector selector)
+			ReductionTarget<Number,Number> property,  RecordSelector selector)
 			throws Exception 
 	{
 		return getReductionHandler().getReductionMap(index, property, selector);
@@ -99,7 +99,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	}
 	
 	
-	public final <R>  R getReduction(ReductionTarget<R> type, RecordSelector selector) throws Exception {
+	public final <R>  R getReduction(ReductionTarget<R,R> type, RecordSelector selector) throws Exception {
 		return getReductionHandler().getReduction(type, selector);
 	}
 	

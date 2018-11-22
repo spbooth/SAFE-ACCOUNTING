@@ -38,7 +38,7 @@ public interface ReductionProducer<UR> {
 	 * @return result of reduction
 	 * @throws Exception 
 	 */
-	public abstract <T> T getReduction(ReductionTarget<T> target,
+	public abstract <T> T getReduction(ReductionTarget<T,T> target,
 			RecordSelector sel) throws Exception;
 
 	//   /** Get a map between {@link PropertyTag} and the values they generate.
@@ -90,7 +90,7 @@ public interface ReductionProducer<UR> {
 	 */
 
 	public abstract <I> Map<I, Number> getReductionMap(PropExpression<I> index,
-			ReductionTarget<Number> property, RecordSelector selector)
+			ReductionTarget<Number,Number> property, RecordSelector selector)
 			throws Exception;
 
 }

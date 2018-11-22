@@ -29,28 +29,14 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 
 
-public class DateReductionTarget extends ReductionTarget<Date> {
+public class DateReductionTarget extends ReductionTarget<Date,Date> {
 
 	public DateReductionTarget(Reduction op,
 			PropExpression<? extends Date> tag) throws IllegalReductionException {
-		super(Date.class, op, tag);
+		super(Date.class,Date.class, op, tag);
 		if(  op == Reduction.SUM || op == Reduction.AVG){
 			throw new IllegalReductionException("Bad operation on date "+op);
 		}
 	}
-	@Override
-	public Date combine(Date a, Date b){
 	
-		if(a != null && b != null){
-			switch(getReduction()){
-			case MIN: if( a.before(b) ){ return  a; }else{ return  b; }
-			case MAX: if( a.after(b) ){ return  a; }else{ return b; }
-			}
-		}
-		if( a != null ){
-			return  a;
-		}else{
-			return  b;
-		}
-	}
 }

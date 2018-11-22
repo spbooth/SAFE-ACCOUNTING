@@ -89,7 +89,7 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 	
 	
 	
-	public <R> R getReduction(ReductionTarget<R> type, RecordSelector sel) throws Exception {
+	public <R> R getReduction(ReductionTarget<R,R> type, RecordSelector sel) throws Exception {
 		if( ! map.resolves(type.getExpression(),false)){
 			return type.getDefault();
 		}
@@ -111,7 +111,7 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 
 	
 	public <I> Map<I, Number> getReductionMap(PropExpression<I> index,
-			ReductionTarget<Number> property,  RecordSelector selector)
+			ReductionTarget<Number,Number> property,  RecordSelector selector)
 			throws Exception 
 	{
 		
