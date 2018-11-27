@@ -145,7 +145,7 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed,ConfigPa
 		map.setProperty(STATE_PROP, state=fields[pos++]);
 		
 		// Illegal states
-		if( state.startsWith("RUNNING") || state.startsWith("PENDING")){
+		if( state.startsWith("RUNNING") || state.startsWith("PENDING") || state.startsWith("REQUEUED")){
 			return false;
 		}
 		if( skip_cancelled && state.startsWith("CANCELLED")){
