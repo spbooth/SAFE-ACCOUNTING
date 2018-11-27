@@ -77,6 +77,7 @@ public final class ExpressionTuple {
 	public Map<PropExpression,Object> getMap(){
 		return new HashMap(data);
 	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if( obj == this ){

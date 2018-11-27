@@ -520,11 +520,11 @@ public class TableExtension extends ReportExtension {
 		ObjectSet recordSet;
 		List<String> col_names;
 		Map<String,ReductionTarget> cols;
-		Map<SelectReduction,ReductionTarget> expr_cols;
+		Map<IndexReduction,ReductionTarget> expr_cols;
 		Map<String,ReductionTarget> dynamic_cols;
 		TreeMap<Object,String> dynamic_sort_data;
 		Set<ReductionTarget> reductions;
-		int indexes=0;
+		Set<IndexReduction> indexes;
 		
 		public SummaryObjectTable(TableExtension extension, 
 				CompoundTable compoundTable,  
@@ -554,6 +554,7 @@ public class TableExtension extends ReportExtension {
 			
 			reductions = new LinkedHashSet<>();
 			
+			indexes = new LinkedHashSet<>();
 			
 		}
 		protected final Logger getLogger(AppContext conn){
@@ -598,7 +599,7 @@ public class TableExtension extends ReportExtension {
 					// use Plot property name as the default
 					String col_name = extension.getParamWithDefault("Name", name, (Element)columnNode);
 					// unless we have a NameExpression element
-					SelectReduction name_red = null;
+					IndexReduction name_red = null;
 					if( extension.hasChild("NameExpression", (Element)columnNode)) {
 						Element ne = extension.getParamElement("NameExpression", (Element) columnNode);
 						PropExpression name_prop = extension.getPropertyExpression(ne,producer);
@@ -606,16 +607,14 @@ public class TableExtension extends ReportExtension {
 							throw new BadTableException("Illegal NameExpression element");
 						}
 						name_prop= addLabeller(ne, name_prop);
-						name_red = new SelectReduction(name_prop);
+						name_red = new IndexReduction(name_prop);
 						col_name = null; 
 					}
 					
 					
 					boolean isColumn = columnType.equals("Column");
 					boolean isIndex = columnType.equals("Index");
-					if( isIndex){
-						indexes++;
-					}
+				
 					ReductionTarget red=null;
 					if(isColumn || isIndex ){
 						property = addLabeller((Element)columnNode, property);
@@ -625,6 +624,7 @@ public class TableExtension extends ReportExtension {
 							red = new SelectReduction(property);
 						}else{
 							red = new IndexReduction(property);
+							indexes.add((IndexReduction) red);
 						}
 						
 					}else if(columnType.equals("SumColumn")){
@@ -704,8 +704,8 @@ public class TableExtension extends ReportExtension {
 				extension.addError("Selector not compatible with ExpressionTargetFactory", selector.toString());
 				return table;
 			}
-		    if( indexes == 0 ){
-		    	extension.addError("No indexes in compound table", Integer.toString(indexes));
+		    if( indexes.size() == 0 ){
+		    	extension.addError("No indexes in compound table", Integer.toString(indexes.size()));
 				return table;
 		    }
 			try{
@@ -777,7 +777,22 @@ public class TableExtension extends ReportExtension {
 			// copy data into table keyed by tuple.
 			if(data != null ){
 				for(ExpressionTuple tup : data.keySet()){
-					Object key=tup.getKey();
+					Object key;
+					if( expr_cols.isEmpty()) {
+						key=tup.getKey();
+					}else {
+						// need to exclude name expressions from table key unless they are also
+						// explicitly indexes.
+						Map<PropExpression,Object> map = tup.getMap();
+						for(IndexReduction n : expr_cols.keySet()) {
+							if( ! indexes.contains(n)) {
+								map.remove(n.getExpression());
+							}
+						}
+						ExpressionTuple t = new ExpressionTuple(map);
+						key = t.getKey();
+					}
+					
 					
 					Map<ReductionTarget,Object> row = data.get(tup);
 
@@ -791,8 +806,8 @@ public class TableExtension extends ReportExtension {
 					// now expression name columns
 					// merge in case different index values have the same string rep
 					// also allows us to extend later to add a labeller
-					for(Map.Entry<SelectReduction,ReductionTarget> e : expr_cols.entrySet()) {
-						SelectReduction sel = e.getKey();
+					for(Map.Entry<IndexReduction,ReductionTarget> e : expr_cols.entrySet()) {
+						IndexReduction sel = e.getKey();
 						PropExpression exp = sel.getExpression();
 						Object raw = row.get(sel);
 						if( exp instanceof FormatProvider) {
