@@ -1347,9 +1347,9 @@ public class TableExtension extends ReportExtension {
 					pf.setMinimumFractionDigits(min_frac);
 				}
 				target.setColFormat(col, new NumberFormatTransform(pf));
-			}else if(instruction.equals("Highlight")){
+			}else if(instruction.equals("HighlightRow")){
 			
-				String row = getParam("Row", inst);
+				String row = normalise(getText(inst));
 				target.setHighlight(row, true);
 			}else if(instruction.equals("CombineColumn")){
 				String dest=getParam("Dest", inst);
