@@ -78,6 +78,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.BlankTransform;
 import uk.ac.ed.epcc.webapp.content.FormatDateTransform;
 import uk.ac.ed.epcc.webapp.content.FormatProvider;
+import uk.ac.ed.epcc.webapp.content.InvalidArgument;
 import uk.ac.ed.epcc.webapp.content.Labeller;
 import uk.ac.ed.epcc.webapp.content.LabellerTransform;
 import uk.ac.ed.epcc.webapp.content.NumberFormatTransform;
@@ -522,6 +523,7 @@ public class TableExtension extends ReportExtension {
 		List<String> col_names;
 		Map<String,ReductionTarget> cols;
 		Map<IndexReduction,ReductionTarget> expr_cols;
+		Map<IndexReduction,String> expr_groups;
 		Map<String,ReductionTarget> dynamic_cols;
 		TreeMap<Object,String> dynamic_sort_data;
 		Set<ReductionTarget> reductions;
@@ -562,6 +564,8 @@ public class TableExtension extends ReportExtension {
 			cols = new HashMap<>();
 			
 			expr_cols = new HashMap<>();
+			
+			expr_groups = new HashMap<>();
 			
 			reductions = new LinkedHashSet<>();
 			
@@ -619,6 +623,10 @@ public class TableExtension extends ReportExtension {
 						}
 						name_prop= addLabeller(ne, name_prop);
 						name_red = new IndexReduction(name_prop);
+						String group = extension.getAttribute("name", ne);
+						if( group != null) {
+							expr_groups.put(name_red, group);
+						}
 						col_name = null; 
 					}
 					
@@ -839,6 +847,14 @@ public class TableExtension extends ReportExtension {
 							Object merge = table.get(col, key);
 							dynamic_cols.put(col,target);
 							table.put(col, key, target.combine(value, merge));
+							String group = expr_groups.get(sel);
+							if( group != null) {
+								try {
+									table.addToGroup(group, col);
+								} catch (InvalidArgument e1) {
+									getLogger(conn).error("Error adding to column group", e1);
+								}
+							}
 						}
 					}
 				}

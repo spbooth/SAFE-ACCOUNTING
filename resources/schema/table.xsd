@@ -601,7 +601,12 @@
 	<xsd:complexType name="NameExpressionType">
 		<xsd:complexContent>
 			<xsd:extension base="prop:PropExpressionType">
-				<xsd:attribute name="labeller" type="xsd:string" use="optional"></xsd:attribute>
+				<xsd:attribute name="labeller" type="xsd:string"
+					use="optional">
+				</xsd:attribute>
+				<xsd:attribute name="name" type="xsd:string" use="optional">
+				<xsd:annotation><xsd:documentation>Name of column group to add dynamic columns to. This can be used in some of the formatting operations.</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
