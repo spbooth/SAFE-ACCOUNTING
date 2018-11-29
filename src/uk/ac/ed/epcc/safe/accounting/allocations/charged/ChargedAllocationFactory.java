@@ -13,6 +13,7 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.allocations.charged;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -160,7 +161,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	
 	public final Set<PropertyTag<? extends Number>> getAccumulations(){
 		if( accumulation_props == null){
-			accumulation_props=makeAccumulations();
+			accumulation_props=Collections.unmodifiableSet(makeAccumulations());
 		}
 		return accumulation_props;
 	}
@@ -213,8 +214,8 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		return listProperties;
 	}
 	@Override
-	protected Set<PropertyTag<? extends Number>> getSplitProperties() {
-		Set<PropertyTag<? extends Number>> result = super.getSplitProperties();
+	protected Set<PropertyTag<? extends Number>> makeSplitProperties() {
+		Set<PropertyTag<? extends Number>> result = super.makeSplitProperties();
 		result.addAll(getAccumulations());
 		return result;
 	}
@@ -279,29 +280,15 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		
 	}
 	
-	@Override
-	protected final LinkedHashMap<AllocationKey<T>, Transition<T>> makeTransitions() {
-		
-		LinkedHashMap<AllocationKey<T>, Transition<T>> result = new LinkedHashMap<>();
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class, "<<<"), new SequenceTransition<>(this, this, false));
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"<Merge"), new MergeTransition<>(this, this, false));
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"ChangeStart","Change the start date"), new MoveDateTransition<>(this,this,true));
-		result.putAll(super.makeTransitions());
-		addTransitions(result);
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class, "Regenerate","recalculate time used from accounting data"),new RegenerateTransition());
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"ChangeEnd","Change the end date"), new MoveDateTransition<>(this,this,false));
-
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class,"Merge>"), new MergeTransition<>(this, this, true));
-		result.put(new AllocationKey<T>(ChargedAllocationRecord.class, ">>>"), new SequenceTransition<>(this, this, true));
-
-		return result;
-	}
+	
 	@Override
 	protected boolean editEnds() {
 		return false;
 	}
+	@Override
 	protected void addTransitions(LinkedHashMap<AllocationKey<T>, Transition<T>> res){
-		
+		super.addTransitions(res);
+		res.put(new AllocationKey<T>(ChargedAllocationRecord.class, "Regenerate","recalculate time used from accounting data"),new RegenerateTransition());
 	}
 	/** recalculate charged values from scratch for a record
 	 * 

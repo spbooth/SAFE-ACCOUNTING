@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.allocations;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,6 +41,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
@@ -83,6 +85,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFormFactory;
@@ -107,9 +110,16 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  * This extends {@link ConfigUsageRecordFactory} to allow full use of policies and to allow allocations to be parsed 
  * from an external source.
  *The main difference is that allocations also provide mechanisms for the data to be edited manually.
- *
+ *<p>
  * The funding stream is identified by a set of Index properties (references)
- * numerical properties are taken as allocations
+ * by default numerical properties are taken as allocations unless <b>allocation_properties.<i>table-tag</i>.<i>prop-name</i></b> is
+ * set to false. The allocation properties also form the default set of properties to be divided when a record is split unless
+ * <b>split_properties.<i>table-tag</i>.<i>prop-name</i></b> is
+ * set to false.
+ * <p>
+ * Additional properties can be added to the record summary by setting
+ * <b><i>table-tag</i>.summary_properties</b> and to the index table by setting
+ * <b><i>table-tag</i>.list_properties</b>.
  * 
  * @author spb
  *
@@ -118,8 +128,11 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
 
 
 public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends ConfigUsageRecordFactory<T,R> implements
-		AllocationManager<AllocationKey<T>,T> {
+		AllocationManager<AllocationKey<T>,T>,ConfigParamProvider {
 
+	private static final String SUMMARY_PROPERTIES_SUFFIX = "summary_properties";
+	private static final String LIST_PROPERTIES_SUFFIX = "list_properties";
+	
 	private static final String END_DATE_COL = "End date";
 	private static final String START_DATE_COL = "Start date";
 	protected static final String VALUE_COL = "Value";
@@ -133,7 +146,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	@SuppressWarnings("unchecked")
 	private static final AllocationKey SPLIT = new AllocationKey(AllocationRecord.class, "Split", "Split a record at a given date");
 	
-	public static final Preference USE_DATE_PREF = new Preference("allocation.use_date_input", false, "use html5 date input for allocation forms");
+	public static final Preference USE_DATE_PREF = new Preference("allocation.use_date_input", true, "use html5 date input for allocation forms");
 
 	private static final String ALLOCATION = "Allocation";
 	public static class AllocationRecord extends UsageRecordFactory.Use implements Viewable, Allocation{
@@ -574,7 +587,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	@SuppressWarnings("unchecked")
 	public boolean allowTransition(AppContext c, T target, AllocationKey<T> key) {
 		SessionService service = c.getService(SessionService.class);
-		if( service.hasRole(ALLOCATION_ADMIN_ROLE)){
+		if( service.hasRoleFromList(ALLOCATION_ADMIN_ROLE,getTag()+ALLOCATION_ADMIN_ROLE)){
 			Transition<T> t = getTransition(target, key);
 			if( t != null){
 				if( t instanceof TargetLessTransition){
@@ -601,6 +614,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		LinkedHashSet<PropertyTag> result = new LinkedHashSet<>();
 		result.addAll(getIndexProperties());
 		result.addAll(getAllocationProperties());
+		result.addAll(getConfigPropertyList(SUMMARY_PROPERTIES_SUFFIX));
 		return result;
 	}
 	public <X extends ContentBuilder> X getSummaryContent(AppContext c,X hb, T target) {
@@ -722,7 +736,12 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		HashSet<ReferenceTag> result = new HashSet<>();
 		for( PropertyTag<?> t : ReferencePropertyRegistry.getInstance(getContext()).getProperties()){
 			if( hasProperty(t) && t instanceof ReferenceTag){
-				result.add((ReferenceTag) t);
+				
+				ReferenceTag r = (ReferenceTag) t;
+				if( ! r.getTable().equals(getTag())) {
+					// Self reference tags are never part of the index
+					result.add(r);
+				}
 			}
 		}
 		return result;
@@ -734,7 +753,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	 */
 	protected final  Set<PropertyTag<? extends Number>> getAllocationProperties() {
 		if( allocation_properties == null ){
-			allocation_properties=makeAllocationProperties();
+			allocation_properties=Collections.unmodifiableSet(makeAllocationProperties());
 		}
 		return allocation_properties;
 	}
@@ -743,7 +762,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		Set<PropertyTag<? extends Number>> result = getFinder().getProperties(Number.class);
 		Iterator<PropertyTag<? extends Number>> it = result.iterator();
 		while( it.hasNext()){
-			if( ! map.writable(it.next())){
+			PropertyTag<? extends Number> p = it.next();
+			if( ! map.writable(p) || ! getContext().getBooleanParameter("allocation_property."+getTag()+"."+p.getName(), true)){
 				it.remove();
 			}
 		}
@@ -765,6 +785,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 				result.add(t);
 			}
 		}
+		result.addAll(getConfigPropertyList(LIST_PROPERTIES_SUFFIX));
 		return result;
 	}
 	/** parse the filter form to generate a corresponding selector
@@ -955,14 +976,28 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		result.put(StandardProperties.COMPLETED_TIMESTAMP, "Allocation End");
 		return result;
 	}
+	private Set<PropertyTag<? extends Number>> split_properties = null;
 	/** get the set of properties that need to be divided on a record split
 	 * 
 	 * @return
 	 */
-	protected Set<PropertyTag<? extends Number>> getSplitProperties(){
-		return getAllocationProperties();
+	protected final Set<PropertyTag<? extends Number>> getSplitProperties(){
+		if( split_properties == null) {
+			split_properties=Collections.unmodifiableSet(makeSplitProperties());
+		}
+		return split_properties;
 	}
 
+	protected  Set<PropertyTag<? extends Number>> makeSplitProperties(){
+		Set<PropertyTag<? extends Number>> result = new LinkedHashSet<>();
+		AppContext conn = getContext();
+		for(PropertyTag<? extends Number> p : getAllocationProperties()) {
+			if( conn.getBooleanParameter("split_property."+getTag()+"."+p.getName(), true)) {
+				result.add(p);
+			}
+		}
+		return result;
+	}
 	/** perform per property rounding in a sub-class
 	 * 
 	 * @param tag
@@ -1095,7 +1130,34 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		
 		
 	}
-	
+	/** Get a set of supported {@link PropertyTag}s defined in the
+	 * configuration property <b><i>table-tag</i>.<i>suffix</i></b>
+	 * 
+	 * @param suffix Property name suffix
+	 * @return
+	 */
+	protected Set<PropertyTag> getConfigPropertyList(String suffix){
+		Set<PropertyTag> result = new LinkedHashSet<>();
+		String prop_name = getTag()+"."+suffix;
+		String list = getContext().getExpandedProperty(prop_name);
+		PropertyFinder finder = getFinder();
+		
+		if( list != null ) {
+			for(String name : list.split("\\s*,\\s*")) {
+				PropertyTag tag = finder.find(name);
+				if( tag != null && hasProperty(tag)) {
+					result.add(tag);
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void addConfigParameters(Set<String> params) {
+		params.add(getTag()+"."+SUMMARY_PROPERTIES_SUFFIX);
+		params.add(getTag()+"."+LIST_PROPERTIES_SUFFIX);
+	}
 
 	
 	

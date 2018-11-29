@@ -14,7 +14,9 @@
 package uk.ac.ed.epcc.safe.accounting.allocations;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 
+import uk.ac.ed.epcc.safe.accounting.allocations.charged.ChargedAllocationFactory.ChargedAllocationRecord;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -30,12 +32,21 @@ import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.NumberOp;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
+import uk.ac.ed.epcc.webapp.model.period.MergeTransition;
+import uk.ac.ed.epcc.webapp.model.period.MoveDateTransition;
 import uk.ac.ed.epcc.webapp.model.period.SequenceManager;
+import uk.ac.ed.epcc.webapp.model.period.SequenceTransition;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 /** A {@link AllocationFactory} where the allocations can form non-overlapping sequences.
@@ -47,7 +58,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  *
  * @param <T>
  */
-public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends AllocationFactory<T,R>  implements SequenceManager<T>{
+public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends AllocationFactory<T,R>  implements SequenceManager<T>, TableContentProvider{
 	private ReferenceTag<T,?> self_tag=null;
 	public SequenceAllocationFactory(AppContext c, String table) {
 		super(c, table);
@@ -249,5 +260,46 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 		map.setAll(current);
 		map.setProperty(StandardProperties.ENDED_PROP, d);
 		canModify(current, map);		
+	}
+	@Override
+	protected TableSpecification getDefaultTableSpecification(AppContext c, String table) {
+
+		TableSpecification spec = super.getDefaultTableSpecification(c, table);
+		// If a parser is installed it may set these as well but we want
+		// the table to work without a configured parser as it can also be
+		// directly manipulated by forms
+		spec.setField(StandardProperties.STARTED_TIMESTAMP, new DateFieldType(false, new Date(0L)));
+		spec.setField(StandardProperties.COMPLETED_TIMESTAMP, new DateFieldType(false, new Date(Long.MAX_VALUE)));
+		return spec;
+	}
+	@Override
+	public void addSummaryContent(ContentBuilder cb) {
+		cb.addHeading(3,"Allocation property sets");
+		Table t = new Table();
+		t.put("Value", "Index properties", getIndexProperties());
+		t.put("Value", "Allocation properties", getAllocationProperties());
+		t.put("Value", "Split properties", getSplitProperties());
+		t.setKeyName("Property");
+		cb.addColumn(getContext(), t, "Value");
+	}
+	@Override
+	protected final LinkedHashMap<AllocationKey<T>, Transition<T>> makeTransitions() {
+		
+		LinkedHashMap<AllocationKey<T>, Transition<T>> result = new LinkedHashMap<>();
+		result.put(new AllocationKey<T>(AllocationRecord.class, "<<<"), new SequenceTransition<>(this, this, false));
+		result.put(new AllocationKey<T>(AllocationRecord.class,"<Merge"), new MergeTransition<>(this, this, false));
+		result.put(new AllocationKey<T>(AllocationRecord.class,"ChangeStart","Change the start date"), new MoveDateTransition<>(this,this,true));
+		result.putAll(super.makeTransitions());
+		addTransitions(result);
+		
+		result.put(new AllocationKey<T>(AllocationRecord.class,"ChangeEnd","Change the end date"), new MoveDateTransition<>(this,this,false));
+
+		result.put(new AllocationKey<T>(AllocationRecord.class,"Merge>"), new MergeTransition<>(this, this, true));
+		result.put(new AllocationKey<T>(AllocationRecord.class, ">>>"), new SequenceTransition<>(this, this, true));
+
+		return result;
+	}
+	protected void addTransitions(LinkedHashMap<AllocationKey<T>, Transition<T>> res){
+		
 	}
 }
