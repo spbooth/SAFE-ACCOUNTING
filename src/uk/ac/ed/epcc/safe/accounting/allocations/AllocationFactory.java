@@ -32,7 +32,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
-import uk.ac.ed.epcc.safe.accounting.db.ConfigUsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.db.ConfigUploadParseTargetPlugin;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
@@ -107,7 +107,7 @@ import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 /** An Allocation represents a resource allocated rather than a resource consumed. 
- * This extends {@link ConfigUsageRecordFactory} to allow full use of policies and to allow allocations to be parsed 
+ * This extends {@link UsageRecordFactory} and include a {@link ConfigUploadParseTargetPlugin} to allow full use of policies and to allow allocations to be parsed 
  * from an external source.
  *The main difference is that allocations also provide mechanisms for the data to be edited manually.
  *<p>
@@ -127,9 +127,9 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  */
 
 
-public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends ConfigUsageRecordFactory<T,R> implements
+public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends UsageRecordFactory<T> implements
 		AllocationManager<AllocationKey<T>,T>,ConfigParamProvider {
-
+	public final ConfigUploadParseTargetPlugin<T, R> parse_plugin = new ConfigUploadParseTargetPlugin<>(this);
 	private static final String SUMMARY_PROPERTIES_SUFFIX = "summary_properties";
 	private static final String LIST_PROPERTIES_SUFFIX = "list_properties";
 	
@@ -262,7 +262,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	}
 	
 	public AllocationFactory(AppContext c, String table){
-		super(c,table);
+		super();
+		setContext(c,table);
 		transitions=makeTransitions();
 		listeners=makeListeners(c, table);
 	}

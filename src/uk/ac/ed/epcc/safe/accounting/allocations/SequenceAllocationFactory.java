@@ -16,7 +16,6 @@ package uk.ac.ed.epcc.safe.accounting.allocations;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
-import uk.ac.ed.epcc.safe.accounting.allocations.charged.ChargedAllocationFactory.ChargedAllocationRecord;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;

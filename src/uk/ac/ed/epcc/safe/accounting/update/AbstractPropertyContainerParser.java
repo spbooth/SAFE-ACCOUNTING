@@ -24,15 +24,11 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** template class for {@link PropertyContainerParser} using Strings as the intermediate representation.
  * 

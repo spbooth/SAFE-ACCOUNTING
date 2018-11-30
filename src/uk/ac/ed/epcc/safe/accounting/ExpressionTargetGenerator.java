@@ -64,4 +64,19 @@ public interface ExpressionTargetGenerator<T> extends PropertyTargetGenerator<T>
 	    * @throws Exception
 	    */
 	   public CloseableIterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception;
+	   
+	   /** find an {@link ExpressionTargetContainer} that matches the selector
+	    * 
+	    * @param sel
+	    * @return
+	    * @throws Exception
+	    */
+	   public default ExpressionTargetContainer findExpression(RecordSelector sel) throws Exception{
+		   try(CloseableIterator<ExpressionTargetContainer> it = getExpressionIterator(sel)){
+			   if( it.hasNext()) {
+				   return it.next();
+			   }
+			   return null;
+		   }
+	   }
 }

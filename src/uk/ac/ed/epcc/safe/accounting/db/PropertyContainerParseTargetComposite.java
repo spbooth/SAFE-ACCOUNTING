@@ -26,7 +26,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 /** A {@link Composite} implementation of {@link PropertyContainerParseTarget}
  * 
- * A table that supports parsing should have one of these composites installed.
+ * A table that supports parsing should have a sub-class composite installed.
  * This class acts as a bridge between the generic {@link Composite}s and the
  * parse specific {@link PlugInOwner} and has to forward any interfaces we might want to support
  * on the {@link PlugInOwner} but query as {@link Composite}s

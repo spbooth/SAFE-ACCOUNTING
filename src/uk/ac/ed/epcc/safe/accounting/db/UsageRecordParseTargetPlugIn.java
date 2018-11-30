@@ -13,9 +13,6 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,14 +22,12 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.NullSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
@@ -63,7 +58,6 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
-import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 
@@ -86,7 +80,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  *            Parser IR type
  */
 public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use, R>
-		extends PropertyContainerParseTargetComposite<T, R>
+		extends MatcherPropertyContainerParseTargetComposite<T, R>
 		implements UsageRecordParseTarget<R>, Contexed, TableTransitionContributor {
 
 	public UsageRecordParseTargetPlugIn(UsageRecordFactory<T> fac) {
@@ -130,76 +124,6 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 			return true;
 		} else {
 			return false;
-		}
-	}
-
-	public static final String UNIQUE_PROPERTIES_PREFIX = "unique-properties.";
-	Set<PropertyTag> unique_properties = null; // records where all properties match are considered duplicates
-
-	protected Set<PropertyTag> parsePropertyList(String list) throws InvalidPropertyException {
-		HashSet<PropertyTag> res = new HashSet<>();
-		ExpressionTargetFactory<T> etf = getExpressionTargetFactory();
-		PropertyFinder finder = getFinder();
-		if (finder != null) {
-			for (String name : list.trim().split(",")) {
-				PropertyTag<?> t = finder.make(name);
-				if (!etf.hasProperty(t)) {
-					throw new InvalidPropertyException(t);
-				}
-				res.add(t);
-			}
-		}
-		return res;
-	}
-
-	/**
-	 * Get the set of unique properties to use for detecting re-inserts.
-	 * 
-	 * @return
-	 */
-	protected Set<PropertyTag> getUniqueProperties() {
-		PlugInOwner<R> plugin_owner = getPlugInOwner();
-		if (unique_properties == null) {
-			// Must evaluate late as we need to parser/policies to define supported
-			// properties
-			String unique_prop_list = getContext()
-					.getInitParameter(UNIQUE_PROPERTIES_PREFIX + getFactory().getConfigTag());
-			if (unique_prop_list != null) {
-				try {
-					unique_properties = parsePropertyList(unique_prop_list);
-				} catch (InvalidPropertyException e) {
-					getLogger().error("Invalid property specified as unique", e);
-				}
-			} else {
-				unique_properties = plugin_owner.getParser().getDefaultUniqueProperties();
-			}
-			if (unique_properties == null) {
-				throw new ConsistencyError("No unique properties defined for " + getFactory().getConfigTag());
-			}
-		}
-		return unique_properties;
-	}
-
-	@SuppressWarnings("unchecked")
-	public ExpressionTargetContainer findDuplicate(PropertyContainer r) throws Exception {
-		ExpressionTargetFactory<T> etf = getExpressionTargetFactory();
-		// This is a default implementation. Many factories
-		// implement this method directly ignoring this implementation
-		try {
-			AndRecordSelector sel = new AndRecordSelector();
-			for (PropertyTag<?> t : getUniqueProperties()) {
-				if (etf.hasProperty(t)) {
-					sel.add(new SelectClause(t, r));
-				}
-			}
-			T record = getFactory().find(etf.getAccessorMap().getFilter(sel), true);
-			if (record == null) {
-				return null;
-			}
-			AccessorMap<T> map = etf.getAccessorMap();
-			return map.getProxy(record);
-		} catch (Exception e) {
-			throw new ConsistencyError("Required property not present", e);
 		}
 	}
 
@@ -320,26 +244,6 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		// throw new AccountingParseException("No end date");
 		// }
 		return proxy;
-	}
-
-	@Deprecated
-	public String getUniqueID(ExpressionTargetContainer r) throws Exception {
-		StringBuilder sb = new StringBuilder();
-		sb.append(getFactory().getTag());
-		for (PropertyTag t : getUniqueProperties()) {
-			Object o = r.getProperty(t, null);
-			if (o != null) {
-				sb.append("-");
-				if (o instanceof IndexedReference) {
-					sb.append(((IndexedReference) o).getID());
-				} else if (o instanceof Date) {
-					sb.append(((Date) o).getTime());
-				} else {
-					sb.append(o.toString());
-				}
-			}
-		}
-		return sb.toString();
 	}
 
 	protected static final String TEXT = "Text"; // raw text of line
@@ -586,12 +490,7 @@ public <X extends ContentBuilder> X getExtraHtml(X cb, SessionService<?> op, P t
 			return map;
 		}
 
-	@Override
-	public void addSummaryContent(ContentBuilder cb) {
-		super.addSummaryContent(cb);
-		cb.addHeading(3, "Unique properties");
-		cb.addList(getUniqueProperties());
-	}
+	
 
 	
 

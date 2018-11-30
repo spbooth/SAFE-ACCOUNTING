@@ -23,7 +23,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-/** An object that adds properties to a PropertyContainer.
+/** An object that adds properties to a {@link PropertyContainer}.
  * Note that the {@link #initFinder(AppContext, PropertyFinder, String)} method should always be called before any other methods from this interface.
  * While it would be cleaner to initialise the object within the constructor this process may need information about
  * the higher stages of the call chain.
