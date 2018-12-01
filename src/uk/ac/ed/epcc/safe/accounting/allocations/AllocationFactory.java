@@ -52,6 +52,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
+import uk.ac.ed.epcc.safe.accounting.update.ReadOnlyParser;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.NumberOp;
@@ -129,7 +130,9 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
 
 public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends UsageRecordFactory<T> implements
 		AllocationManager<AllocationKey<T>,T>,ConfigParamProvider {
-	public final ConfigUploadParseTargetPlugin<T, R> parse_plugin = new ConfigUploadParseTargetPlugin<>(this);
+	// parse using upload method but default to ReadOnlyParser
+	// so we have time fields created
+	public final ConfigUploadParseTargetPlugin<T, R> parse_plugin = new ConfigUploadParseTargetPlugin<>(this,ReadOnlyParser.class);
 	private static final String SUMMARY_PROPERTIES_SUFFIX = "summary_properties";
 	private static final String LIST_PROPERTIES_SUFFIX = "list_properties";
 	

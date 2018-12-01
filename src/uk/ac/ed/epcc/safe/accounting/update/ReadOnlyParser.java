@@ -27,7 +27,9 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 
-/** A Placeholder parser for read-only tables 
+/** A Placeholder parser for read-only tables with time bounds.
+ * 
+ * This is needed as the time bounds are usually set by the parser
  * 
  * @author spb
  *
