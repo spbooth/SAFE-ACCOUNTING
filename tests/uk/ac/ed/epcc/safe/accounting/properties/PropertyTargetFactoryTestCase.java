@@ -1,4 +1,4 @@
-package uk.ac.ed.epcc.accounting.properties;
+package uk.ac.ed.epcc.safe.accounting.properties;
 
 import org.junit.Test;
 

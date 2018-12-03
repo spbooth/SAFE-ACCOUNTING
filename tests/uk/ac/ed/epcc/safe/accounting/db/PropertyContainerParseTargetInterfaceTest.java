@@ -3,8 +3,8 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import org.junit.Test;
 
-import uk.ac.ed.epcc.accounting.update.PluginOwnerTestCase;
-import uk.ac.ed.epcc.accounting.update.UploadContext;
+import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCase;
+import uk.ac.ed.epcc.safe.accounting.update.UploadContext;
 
 /** Interface test for {@link PropertyContainerParseTarget}
  * 

@@ -1,4 +1,4 @@
-package uk.ac.ed.epcc.accounting.parsers;
+package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,11 +7,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import uk.ac.ed.epcc.accounting.update.UploadContext;
 import uk.ac.ed.epcc.safe.accounting.db.ParseAccountingClassificationFactoryTestCase;
-import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
 import uk.ac.ed.epcc.safe.accounting.parsers.GridMapParser;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
+import uk.ac.ed.epcc.safe.accounting.update.UploadContext;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 
 public class GridMapFileTestCase extends ParseAccountingClassificationFactoryTestCase {

@@ -1,4 +1,4 @@
-package uk.ac.ed.epcc.accounting.update;
+package uk.ac.ed.epcc.safe.accounting.update;
 
 import static org.junit.Assert.assertNotNull;
 

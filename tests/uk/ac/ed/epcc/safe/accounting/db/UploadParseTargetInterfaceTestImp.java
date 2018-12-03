@@ -2,9 +2,9 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import org.junit.Assert;
 
-import uk.ac.ed.epcc.accounting.update.UploadContext;
 import uk.ac.ed.epcc.junit.TargetProvider;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.update.UploadContext;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.WebappTestBase;

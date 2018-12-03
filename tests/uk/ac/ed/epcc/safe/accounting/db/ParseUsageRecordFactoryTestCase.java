@@ -20,8 +20,6 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-import uk.ac.ed.epcc.accounting.update.PluginOwnerTestCase;
-import uk.ac.ed.epcc.accounting.update.PluginOwnerTestCaseImpl;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap.ExpressionTargetProxy;
@@ -35,6 +33,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
+import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCase;
+import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCaseImpl;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;

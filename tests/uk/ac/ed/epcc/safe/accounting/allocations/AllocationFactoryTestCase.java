@@ -1,10 +1,10 @@
 package uk.ac.ed.epcc.safe.accounting.allocations;
 
-import uk.ac.ed.epcc.accounting.update.PluginOwnerTestCase;
-import uk.ac.ed.epcc.accounting.update.PluginOwnerTestCaseImpl;
 import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTargetComposite;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactoryTestCase;
 import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
+import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCase;
+import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCaseImpl;
 /** Abstract test case for {@link AllocationFactory}s
  * 
  * @author Stephen Booth

@@ -1,8 +1,8 @@
-package uk.ac.ed.epcc.accounting.update;
+package uk.ac.ed.epcc.safe.accounting.update;
 
 import org.junit.Test;
 
-import uk.ac.ed.epcc.accounting.properties.PropertyTargetFactoryTestCase;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactoryTestCase;
 import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 
 
