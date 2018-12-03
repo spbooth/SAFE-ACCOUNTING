@@ -19,7 +19,6 @@ import org.junit.Test;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.db.ConfigUsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.ParseUsageRecordFactoryTestCase;
-import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTargetComposite;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
@@ -78,16 +77,17 @@ public abstract class AbstractRecordTestCase<R> extends
 	}
 	@Test
 	public void testCreateTable(){
-		PlugInOwner<R> fac = getPluginOwner();
 		
-		PropertyContainerParser<R> parser = fac.getParser();
+		PlugInOwner<R> plugin = getPluginOwner();
+		
+		PropertyContainerParser<R> parser = plugin.getParser();
 		PropExpressionMap map = new PropExpressionMap();
 		map = parser.getDerivedProperties(map);
-		for(PropertyContainerPolicy pol : fac.getPolicies()){
+		for(PropertyContainerPolicy pol : plugin.getPolicies()){
 			map = pol.getDerivedProperties(map);
 		}
 		TableSpecification spec = parser.modifyDefaultTableSpecification(ctx,new TableSpecification(),map,tableName);
-		for(PropertyContainerPolicy pol : fac.getPolicies()){
+		for(PropertyContainerPolicy pol : plugin.getPolicies()){
 			pol.modifyDefaultTableSpecification(ctx,spec,map,tableName);
 		}
 		// We expect at least a unique key

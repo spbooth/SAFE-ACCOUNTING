@@ -14,8 +14,9 @@ public interface UploadContext {
 	/** data that is exptected to parse
 	 * 
 	 * @return
+	 * @throws Exception 
 	 */
-	public String getUpdateText();
+	public String getUpdateText() throws Exception;
 	
 	/** data where every record is expected to generate an exception
 	 * 

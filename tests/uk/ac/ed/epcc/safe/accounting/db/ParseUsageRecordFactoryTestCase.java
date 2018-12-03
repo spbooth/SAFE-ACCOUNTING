@@ -12,12 +12,12 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
@@ -33,19 +33,66 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
-import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCase;
-import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCaseImpl;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
+import uk.ac.ed.epcc.safe.accounting.update.UploadContext;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
-
+/** A superclass for UsageRecordFactory tests.
+ * 
+ * This implements interface tests with the {@link UploadContext} forwarded onto methods to support
+ * legacy sub-classes. 
+ * 
+ * The {@link #testParser()} and {@link #testBadParser()} methods duplicate the inner workings of the parse flow
+ * in order to access greater errors
+ * 
+ * @author Stephen Booth
+ *
+ * @param <F>
+ * @param <R>
+ * @param <I>
+ */
 public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFactory<R>,R extends UsageRecordFactory.Use,I>
-		extends UsageRecordFactoryTestCase<F,R>  implements PluginOwnerTestCase<I, PlugInOwner<I>>{
+		extends UsageRecordFactoryTestCase<F,R>  implements UsageRecordParseTargetInterfaceTest<I, UsageRecordParseTarget<I>>{
 	
-	private PluginOwnerTestCase<I, PlugInOwner<I>> plugin_owner_test = new PluginOwnerTestCaseImpl<>(()->getPluginOwner());
+	private UsageRecordParseTargetInterfaceTestImp<I, UsageRecordParseTarget<I>> plugin_owner_test = new UsageRecordParseTargetInterfaceTestImp<>(this,()->getPluginOwner() , ()->getUploadContext(), ()->ctx);
+			//new PluginOwnerTestCaseImpl<>(()->getPluginOwner());
 
+	private UploadContext upload_context = new UploadContext() {
+		
+		@Override
+		public String getUpdateText() throws Exception {
+			
+			return ParseUsageRecordFactoryTestCase.this.getUpdateText();
+		}
+		
+		@Override
+		public String getSkipText() {
+			
+			return ParseUsageRecordFactoryTestCase.this.getSkipUpdateText();
+		}
+		
+		@Override
+		public String getExpectedResource() {
+			return ParseUsageRecordFactoryTestCase.this.getReceiveAccountingExpected();
+		}
+		
+		@Override
+		public String getExceptionText() {
+			return ParseUsageRecordFactoryTestCase.this.getBadUpdateText();
+		}
+		
+		@Override
+		public PropertyMap getDefaults() {
+			return ParseUsageRecordFactoryTestCase.this.getDefaults();
+		}
+		
+		@Override
+		public Map<String, Object> getDefaultParams() {
+			return new HashMap<>();
+		}
+	};
 	public String getUpdateText() throws Exception{
 		return "";
 	}
@@ -53,13 +100,15 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 	public String getBadUpdateText() {
 		return "";
 	}
-
-	public final PlugInOwner<I> getPluginOwner() {
+	public String getSkipUpdateText() {
+		return "";
+	}
+	public final UsageRecordParseTarget<I> getPluginOwner() {
 		F factory = getFactory();
-		if( factory instanceof PlugInOwner) {
-			return (PlugInOwner<I>) factory;
+		if( factory instanceof UsageRecordParseTarget) {
+			return (UsageRecordParseTarget<I>) factory;
 		}
-		return factory.getComposite(PropertyContainerParseTargetComposite.class).getPlugInOwner();
+		return (UsageRecordParseTarget<I>) factory.getComposite(PropertyContainerParseTargetComposite.class);
 	}
 	
 	public final UsageRecordParseTarget<I> getParseTarget(){
@@ -364,38 +413,16 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 		this.processBadParseErrors(sucessfulRecords, failedRecords, errors);
 	}
 @Test
-	public void testReceiveAccounting() throws Exception {
-		String updateText = getUpdateText();
-		UsageRecordFactory<R> fac = getFactory();
-		assertNotNull(fac);
-		if (!fac.isValid()) {
-			return;
-		}
-		
-		takeBaseline();
-		receiveAccounting(updateText);
-		//save("tests",getClass().getSimpleName(),getFactory());
-		String expect = getReceiveAccountingExpected();
-		if( expect != null) {
-			//saveDiff("scratch.xml");
-			checkDiff("/cleanup.xsl", expect);
-		}
+	public final void testReceiveAccounting() throws Exception {
+		plugin_owner_test.testReceiveAccounting();
 	}
 
     public String getReceiveAccountingExpected() {
     	return null;
     }
 
-public void receiveAccounting(String updateText) {
-	UsageRecordFactory<R> fac = getFactory();
-	if (!fac.isValid()) {
-		return;
-	}
-	
-	//System.out.println(updateText);
-	String result = new AccountingUpdater<R,I>(ctx,getDefaults(),getParseTarget(),fac.getTag()).receiveAccountingData( updateText, false,false,false);
-	
-	Assert.assertFalse(result.contains("Error in accounting parse"));
+public final void receiveAccounting(String updateText) {
+	plugin_owner_test.receiveAccounting(updateText);
 }
 @Test
 	public void testGetPolicies() {
@@ -441,6 +468,28 @@ public void receiveAccounting(String updateText) {
 	@Override
 	public void testGetDerivedProperties() {
 		plugin_owner_test.testGetDerivedProperties();
+		
+	}
+
+	@Override
+	public UploadContext getUploadContext() {
+		return upload_context;
+	}
+
+	@Override
+	public void testSkipLines() throws Exception {
+		plugin_owner_test.testSkipLines();
+		
+	}
+
+	@Override
+	public void testExceptionLines() throws Exception {
+		plugin_owner_test.testExceptionLines();
+	}
+
+	@Override
+	public void testGoodLines() throws Exception {
+		plugin_owner_test.testGoodLines();
 		
 	}
    

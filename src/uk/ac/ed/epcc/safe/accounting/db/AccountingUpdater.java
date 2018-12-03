@@ -57,9 +57,8 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 	 * @param conn AppContext
 	 * @param initial_meta_data MetaData properties
 	 * @param t ParseTarget
-	 * @param tag Construction tag for owning class
 	 */
-	public AccountingUpdater(AppContext conn,PropertyMap initial_meta_data,UsageRecordParseTarget<R> t,String tag){
+	public AccountingUpdater(AppContext conn,PropertyMap initial_meta_data,UsageRecordParseTarget<R> t){
 		this.conn=conn;
 		this.initial_meta_data = initial_meta_data;
 		this.target=t;

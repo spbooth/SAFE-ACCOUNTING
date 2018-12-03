@@ -114,7 +114,7 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy implements SummaryP
 			    	meta_data.setProperty(parent_tag, rec.getProperty(parent_tag));
 			    }
 				
-				AccountingUpdater<Use, String> updater = new AccountingUpdater<>(conn, meta_data, parse_target,nested_table_name);
+				AccountingUpdater<Use, String> updater = new AccountingUpdater<>(conn, meta_data, parse_target);
 				updater.receiveAccountingData(update, true, false, false);
 				
 			}
