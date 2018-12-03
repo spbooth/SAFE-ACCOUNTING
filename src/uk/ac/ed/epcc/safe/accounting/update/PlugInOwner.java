@@ -20,13 +20,14 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
+import uk.ac.ed.epcc.webapp.model.data.Composable;
 /** A class that supports Data upload using plug-ins
  * @see PropertyContainerUpdater
  * 
  * @author spb
  *
  */
-public interface PlugInOwner<R> extends PropertyTargetFactory {
+public interface PlugInOwner<R> extends PropertyTargetFactory,Composable {
 
 	/** get the {@link PropertyContainerParser} used for the initial parse stage
 	 * 

@@ -1,16 +1,12 @@
 // Copyright - The University of Edinburgh 2015
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Set;
-
-import javax.annotation.processing.SupportedOptions;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,11 +23,9 @@ import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
-import uk.ac.ed.epcc.webapp.charts.InvalidTransformException;
 import uk.ac.ed.epcc.webapp.charts.PeriodSequencePlot;
-import uk.ac.ed.epcc.webapp.charts.strategy.SetRangeMapper;
 import uk.ac.ed.epcc.webapp.charts.TimeChart;
-import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
+import uk.ac.ed.epcc.webapp.charts.strategy.SetRangeMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
@@ -48,9 +42,7 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 		if(fac.hasProperty(StandardProperties.STARTED_PROP)){
 			AndRecordSelector selector = new AndRecordSelector();
 			selector.add(new SelectClause<>(StandardProperties.STARTED_PROP, MatchCondition.GT, new Date(0L)));
-			try(CloseableIterator<T> it = fac.getIterator(selector)){
-				// only check if we have records Note the earliest job may not be delivered first
-				if( it.hasNext() ){
+			if( fac.exists(fac.getFilter(selector))) {
 					// exclude failed jobs
 
 					Date d = fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.STARTED_PROP),selector);
@@ -59,7 +51,6 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 					assertTrue("after epoch", d.after(new Date(0L)));
 					assertTrue(" before now", d.before(new Date()));
 
-				}
 			}
 		}
 	}
@@ -74,14 +65,12 @@ public abstract class UsageRecordFactoryTestCase<F extends UsageRecordFactory<T>
 			Date d = null;
 
 			AndRecordSelector selector = new AndRecordSelector();
-			try(CloseableIterator<T> iter = fac.getIterator(selector)){
-				if( iter.hasNext()){
+			if( fac.exists(fac.getFilter(selector))) {
 					d = fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP),selector);
 					assertNotNull(d);
 					//System.out.println(d.toString());
 					assertTrue("after epoch", d.after(new Date(0L)));
 					assertTrue(" before now", d.before(new Date()));
-				}
 			}
 
 		}

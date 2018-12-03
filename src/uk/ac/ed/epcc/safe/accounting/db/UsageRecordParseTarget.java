@@ -23,7 +23,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
-/** Interface extending  {@link PropertyContainerParseTarget} for parting Usage records.
+/** Interface extending  {@link PropertyContainerParseTarget} for parsing Usage records.
  * Usage records are normally parsed once with duplicate values being ignored.
  * @author spb
  * @see AccountingUpdater
@@ -32,13 +32,7 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
  */
 public interface UsageRecordParseTarget<R> extends PropertyContainerParseTarget<R>{
 
-	/** find a record in the database that is a previous version of the current line.
-	 * 
-	 * @param r result of parse
-	 * @return Old AccountingRecord or null if not found
-	 * @throws Exception 
-	 */
-	public abstract ExpressionTargetContainer findDuplicate(PropertyContainer r) throws  Exception;
+	
 
 	
 

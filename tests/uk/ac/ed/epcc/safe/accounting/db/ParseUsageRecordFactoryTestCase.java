@@ -20,6 +20,8 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import uk.ac.ed.epcc.accounting.update.PluginOwnerTestCase;
+import uk.ac.ed.epcc.accounting.update.PluginOwnerTestCaseImpl;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap.ExpressionTargetProxy;
@@ -40,9 +42,9 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 
 public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFactory<R>,R extends UsageRecordFactory.Use,I>
-		extends UsageRecordFactoryTestCase<F,R> {
+		extends UsageRecordFactoryTestCase<F,R>  implements PluginOwnerTestCase<I, PlugInOwner<I>>{
 	
-	
+	private PluginOwnerTestCase<I, PlugInOwner<I>> plugin_owner_test = new PluginOwnerTestCaseImpl<>(()->getPluginOwner());
 
 	public String getUpdateText() throws Exception{
 		return "";
@@ -144,10 +146,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 	}
 	@Test
 	public void testGetParser() {
-		PropertyContainerParser<I> p = getPluginOwner().getParser();
-
-		assertNotNull(p);
-
+		plugin_owner_test.testGetParser();
 	}
 
 	public String info(Object o) {
@@ -400,14 +399,7 @@ public void receiveAccounting(String updateText) {
 }
 @Test
 	public void testGetPolicies() {
-		UsageRecordFactory<R> fac = getFactory();
-		if (!fac.isValid()) {
-			return;
-		}
-		Set<PropertyContainerPolicy> s = getPluginOwner().getPolicies();
-
-		assertNotNull(s);
-
+		plugin_owner_test.testGetPolicies();
 	}
 @Test
 	public void testGetMapper() {
@@ -439,6 +431,17 @@ public void receiveAccounting(String updateText) {
 			return ((Number) a).floatValue() == ((Number) b).floatValue();
 		}
 		return a.equals(b);
+	}
+
+	@Override
+	public void testGetFinder() {
+		plugin_owner_test.testGetFinder();
+	}
+
+	@Override
+	public void testGetDerivedProperties() {
+		plugin_owner_test.testGetDerivedProperties();
+		
 	}
    
 	

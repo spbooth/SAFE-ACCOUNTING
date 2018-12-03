@@ -125,6 +125,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  * @author spb
  *
  * @param <T>
+ * @param <R> intermediate record type for parse
  */
 
 

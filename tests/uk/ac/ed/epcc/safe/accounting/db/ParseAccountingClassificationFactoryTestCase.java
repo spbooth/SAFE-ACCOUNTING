@@ -9,25 +9,24 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
+import uk.ac.ed.epcc.accounting.update.UploadContext;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
-import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
-import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
+import uk.ac.ed.epcc.webapp.WebappTestBase;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactoryTestCase;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 
 public abstract class ParseAccountingClassificationFactoryTestCase<F extends ParseAccountingClassificationFactory<R,I>,R extends AccountingClassification,I>
-		extends DataObjectFactoryTestCase<F, R>  {
+		extends DataObjectFactoryTestCase<F, R>  implements UploadParseTargetInterfaceTest<I, UploadParseTarget<I>>{
 	
 	
-
+   // private PluginOwnerTestCase<R, PlugInOwner<R>> plugin_owner_test = new PluginOwnerTestCaseImpl<>(()->getPluginOwner());
+    private UploadParseTargetInterfaceTest<I, UploadParseTarget<I>> plugin_owner_test = new UploadParseTargetInterfaceTestImp<>((WebappTestBase)this, ()->getPluginOwner(),()->getUploadContext(), ()->ctx);
 	public String getUpdateText() throws IOException {
 		return "";
 	}
@@ -37,18 +36,12 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 		return new HashMap<>();
 	}
 	
+	public abstract UploadContext getUploadContext();
 
 	
 	@Test
 	public void testGetParser() {
-		F fac = getFactory();
-		if (!fac.isValid()) {
-			return;
-		}
-		PropertyContainerParser p = fac.getComposite(PropertyContainerParseTargetComposite.class).getParser();
-
-		assertNotNull(p);
-
+		plugin_owner_test.testGetParser();
 	}
 
 	public String info(Object o) {
@@ -80,14 +73,7 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 	}
 @Test
 	public void testGetPolicies() {
-		F fac = getFactory();
-		if (!fac.isValid()) {
-			return;
-		}
-		Set<PropertyContainerPolicy> s = fac.getComposite(PropertyContainerParseTargetComposite.class).getPlugInOwner().getPolicies();
-
-		assertNotNull(s);
-
+		plugin_owner_test.testGetPolicies();
 	}
 @Test
 	public void testGetMapper() {
@@ -119,6 +105,58 @@ public abstract class ParseAccountingClassificationFactoryTestCase<F extends Par
 			return ((Number) a).floatValue() == ((Number) b).floatValue();
 		}
 		return a.equals(b);
+	}
+
+
+	@Override
+	public UploadParseTarget<I> getPluginOwner() {
+		F fac = getFactory();
+		return fac.getComposite(PropertyContainerParseTargetComposite.class);
+	}
+
+
+	@Override
+	public void testGetDerivedProperties() {
+		plugin_owner_test.testGetDerivedProperties();
+		
+	}
+
+
+	@Override
+	public void testGetFinder() {
+		plugin_owner_test.testGetFinder();
+		
+	}
+
+
+	
+
+
+	@Override
+	public void testSkipLines() throws Exception {
+		plugin_owner_test.testSkipLines();
+		
+	}
+
+
+	@Override
+	public void testExceptionLines() throws Exception {
+		plugin_owner_test.testExceptionLines();
+		
+	}
+
+
+	@Override
+	public void testGoodLines() throws Exception {
+		plugin_owner_test.testGoodLines();
+		
+	}
+
+
+	@Override
+	public void testUpload() throws Exception {
+		plugin_owner_test.testUpload();
+		
 	}
    
 	

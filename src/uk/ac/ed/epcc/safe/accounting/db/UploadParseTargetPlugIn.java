@@ -34,7 +34,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
  * @param <T>
  * @param <R>
  */
-public abstract class UploadParseTargetPlugIn<T extends DataObject,R> extends MatcherPropertyContainerParseTargetComposite<T, R>
+public abstract class UploadParseTargetPlugIn<T extends DataObject,R> extends PropertyContainerParseTargetComposite<T, R>
 		implements UploadParseTarget<R> {
 	
 	private static final String GLOBAL_PROPERTIES_PARAMETERS_PREFIX = "global_properties_parameters.";

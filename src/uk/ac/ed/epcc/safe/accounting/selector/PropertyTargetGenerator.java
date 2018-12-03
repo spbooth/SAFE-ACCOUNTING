@@ -13,7 +13,6 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.selector;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -29,6 +28,17 @@ import uk.ac.ed.epcc.webapp.model.data.Composable;
  *
  */
 public interface PropertyTargetGenerator<UR> extends PropertyTargetFactory, Composable {
+	
+	/** Check if the specified property is defined.
+	 * All properties that return true MUST be in the set returned by the
+	 * getFinder call but this test can be more stringent and can omit a property if
+	 * none of the produced objects can generate the specified property.
+	 * 
+	 * @param <P>
+	 * @param tag
+	 * @return boolean
+	 */
+	public <P> boolean hasProperty(PropertyTag<P> tag);
 	/** Is the RecordSelector compatible with this class. 
 	 * This method will return false if it the selector is fundamentally incompatible
 	 * with the properties supported by the class and no records can match the selector.

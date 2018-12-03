@@ -36,9 +36,9 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
+import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -288,7 +288,8 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 		@SuppressWarnings("unchecked")
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext c) throws TransitionException {
-			PropertyTargetFactory fac = (PropertyTargetFactory) target;
+			try {
+			PropertyTargetGenerator fac = ExpressionCast.getPropertyTargetGenerator(target);
 			SetInput<PropertyTag<String>> name_input = new SetInput<>();
 			for(PropertyTag<String> t : available_names){
 				// allow all names as we can classify non saved properties parser can generate
@@ -304,7 +305,10 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 			}
 			f.addInput("Ref", "Reference to Set", ref_input);
 			f.addAction("Add", new AddClassifierAction(target));
-			
+			}catch(Exception e) {
+				getLogger(getContext()).error("Internal error", e);
+				throw new TransitionException("Internal error");
+			}
 		}
 
 		public FormResult getResult(TransitionVisitor<DataObjectFactory> vis) throws TransitionException {

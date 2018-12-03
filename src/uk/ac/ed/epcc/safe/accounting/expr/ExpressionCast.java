@@ -6,6 +6,9 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
+import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.data.Composable;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
@@ -22,8 +25,10 @@ public class ExpressionCast {
 	 * 
 	 * @param fac
 	 * @return {@link ExpressionTargetFactory} or null;
+	 * @throws InvalidArgument 
 	 */
-	public static <T extends Indexed> ExpressionTargetFactory<T> getExpressionTargetFactory(IndexedProducer<T> fac) {
+	public static <T extends Indexed> ExpressionTargetFactory<T> getExpressionTargetFactory(IndexedProducer<T> fac)  {
+	    // Don't use Composable static method as we want to return null
 		if( fac == null || fac instanceof ExpressionTargetFactory) {
 			// object implements interface directly or is null
 			return (ExpressionTargetFactory<T>) fac;
@@ -38,16 +43,11 @@ public class ExpressionCast {
 	 * 
 	 * @param fac
 	 * @return {@link PropertyTargetGenerator} or null;
+	 * @throws InvalidArgument 
 	 */
-	public static <T extends Indexed> PropertyTargetGenerator<T> getPropertyTargetGenerator(IndexedProducer<T> fac) {
-		if( fac == null || fac instanceof PropertyTargetGenerator) {
-			// object implements interface directly or is null
-			return (PropertyTargetGenerator<T>) fac;
-		}
-		if( fac instanceof DataObjectFactory) {
-			return (PropertyTargetGenerator<T>) ((DataObjectFactory)fac).getComposite(ExpressionTargetFactoryComposite.class);
-		}
-		return null;
+	public static <T extends Indexed> PropertyTargetGenerator<T> getPropertyTargetGenerator(IndexedProducer<T> fac) throws InvalidArgument {
+		return Composable.getComposable(PropertyTargetGenerator.class,ExpressionTargetFactoryComposite.class,fac);
+		
 	}
 	/** construct an {@link ExpressionTargetFactory} from a tag.
 	 * 
@@ -65,7 +65,12 @@ public class ExpressionCast {
 	 * @return
 	 */
 	public static <T extends Indexed> PropertyTargetGenerator<T> makePropertyTargetGenerator(AppContext conn,String tag) {
-		return getPropertyTargetGenerator(conn.makeObject(DataObjectFactory.class, tag));
+		try {
+			return getPropertyTargetGenerator(conn.makeObject(DataObjectFactory.class, tag));
+		} catch (InvalidArgument e) {
+			conn.getService(LoggerService.class).getLogger(ExpressionCast.class).error("Unexpected error", e);
+			return null;
+		}
 	}
 	public static ExpressionTarget getExpressionTarget(Object o) {
 		if( o == null || o instanceof ExpressionTarget) {

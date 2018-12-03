@@ -17,10 +17,11 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
+import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.webapp.model.data.Composable;
 
@@ -30,9 +31,11 @@ import uk.ac.ed.epcc.webapp.model.data.Composable;
  * 
  * @author spb
  * @see PropertyContainerParser
+ * @see UploadParseTarget
+ * @see UsageRecordParseTarget
  * @param <R> Type of intermediate record for parse
  */
-public interface PropertyContainerParseTarget<R> extends Composable{
+public interface PropertyContainerParseTarget<R> extends PlugInOwner<R>, Composable{
 	/** Parse a text line into a DerivedPropertyMap. This will add
 	 * derived definitions as well as terminal data values.
 	 * 
@@ -44,19 +47,7 @@ public interface PropertyContainerParseTarget<R> extends Composable{
 	public abstract boolean parse(DerivedPropertyMap map, R current_line)
 			throws AccountingParseException;
 
-	/** Get the underlying {@link PropertyContainerParser} 
-	 * 
-	 * This is needed to split the input records.
-	 * 
-	 * @return {@link PropertyContainerParser}
-	 */
-	public abstract PropertyContainerParser<R> getParser();
 	
-	/** get the final set of derived properties defined
-	 * 
-	 * @return
-	 */
-	public abstract PropExpressionMap getDerivedProperties();
 	/** Start a batch parse. This allocates any temporary state.
      * Some properties may be set globally for all records in the parse
 	 * rather than provided record by record. The startParse method is passed all known properties of this type 
@@ -75,9 +66,13 @@ public void startParse(PropertyMap defaults) throws Exception ;
  */
 public StringBuilder endParse();
 
-/** Get the PropertyFinder corresponding to this parse
+
+
+/** find a record in the database that is a previous version of the current line.
  * 
- * @return PropertyFinder
+ * @param r result of parse
+ * @return Old AccountingRecord or null if not found
+ * @throws Exception 
  */
-public abstract PropertyFinder getFinder();
+public abstract ExpressionTargetContainer findDuplicate(PropertyContainer r) throws  Exception;
 }

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -12,6 +13,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
+import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
@@ -61,8 +63,9 @@ public class InheritPolicy extends BasePolicy implements SummaryProvider,ConfigP
 					}
 					parents.add(parent);
 					IndexedProducer prod = parent.getFactory(ctx);
-					if( prod instanceof PropertyTargetFactory){
-						PropertyTargetFactory fac = (PropertyTargetFactory)prod;
+					PropertyTargetGenerator fac = ExpressionCast.getPropertyTargetGenerator(prod);
+					if( fac != null ){
+						
 						if( finder == null){
 							finder = new MultiFinder();
 						}

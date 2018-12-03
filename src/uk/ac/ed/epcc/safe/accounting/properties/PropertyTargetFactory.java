@@ -31,14 +31,5 @@ public interface PropertyTargetFactory {
 	 */
 	public PropertyFinder getFinder();
 	
-	/** Check if the specified property is defined.
-	 * All properties that return true MUST be in the set returned by the
-	 * getFinder call but this test can be more stringent and can omit a property if
-	 * none of the produced objects can generate the specified property.
-	 * 
-	 * @param <P>
-	 * @param tag
-	 * @return boolean
-	 */
-	public <P> boolean hasProperty(PropertyTag<P> tag);
+	
 }

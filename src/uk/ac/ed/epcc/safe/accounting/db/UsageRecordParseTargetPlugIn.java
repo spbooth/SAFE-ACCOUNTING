@@ -80,7 +80,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  *            Parser IR type
  */
 public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use, R>
-		extends MatcherPropertyContainerParseTargetComposite<T, R>
+		extends PropertyContainerParseTargetComposite<T, R>
 		implements UsageRecordParseTarget<R>, Contexed, TableTransitionContributor {
 
 	public UsageRecordParseTargetPlugIn(UsageRecordFactory<T> fac) {
