@@ -26,6 +26,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
+import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.webapp.AppContext;
 
 
@@ -38,7 +39,9 @@ import uk.ac.ed.epcc.webapp.AppContext;
 public class GridMapParser extends AbstractPropertyContainerParser {
 
 	public static final PropertyRegistry gridmap_reg = new PropertyRegistry("gridmap", "Properties from the gridmap file");
+	@AutoTable(length=64)
 	public static final PropertyTag<String> GRIDMAP_USER = new PropertyTag<>(gridmap_reg, "UserName",String.class);
+	@AutoTable(length=128)
 	public static final PropertyTag<String> GRIDMAP_DN = new PropertyTag<>(gridmap_reg, "Dn",String.class);
 	private static final Pattern parse_pattern = Pattern.compile("\"(.+)\"\\s+(\\w+)");
 	@Override

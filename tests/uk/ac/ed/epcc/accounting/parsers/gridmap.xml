@@ -1,0 +1,23 @@
+<Diff><TableSpecification name='Gridmapfile'>
+<Name type='String' nullable='false' max='32'/>
+<Description type='String' nullable='true' max='255'/>
+<UserName type='String' nullable='true' max='64'/>
+<Dn type='String' nullable='true' max='128'/>
+<name_key type='Index' unique='true'><Column name='Name'/></name_key>
+</TableSpecification>
+<Gridmapfile id='1'>
+<Name>spb</Name>
+<UserName>spb</UserName>
+<Dn>/c=UK/o=eScience/ou=Edinburgh/l=NeSC/cn=stephen booth</Dn>
+</Gridmapfile>
+<Gridmapfile id='2'>
+<Name>spb2</Name>
+<UserName>spb2</UserName>
+<Dn>/C=UK/O=eScience/OU=Edinburgh/L=NeSC/CN=stephen \,booth</Dn>
+</Gridmapfile>
+<Gridmapfile id='3'>
+<Name>pascoe</Name>
+<UserName>pascoe</UserName>
+<Dn>/DC=uk/DC=ac/DC=ceda/O=STFC RAL/CN=https://ceda.ac.uk/openid/Stephen.Pascoe</Dn>
+</Gridmapfile>
+</Diff>

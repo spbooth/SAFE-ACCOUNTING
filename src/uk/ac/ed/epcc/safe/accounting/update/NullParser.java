@@ -69,7 +69,7 @@ public class NullParser implements PropertyContainerParser<String> {
 
 	public Iterator<String> splitRecords(String update)
 			throws AccountingParseException {
-		return null;
+		throw new AccountingParseException("Attempting to split records with a NullParser");
 	}
 
 

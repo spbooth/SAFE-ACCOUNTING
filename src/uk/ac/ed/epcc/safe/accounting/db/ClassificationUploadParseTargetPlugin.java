@@ -5,6 +5,9 @@ import java.util.Set;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
+import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
+import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
+import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
@@ -44,7 +47,7 @@ public class ClassificationUploadParseTargetPlugin<T extends Classification,R> e
 		String name = value.getProperty(match, null);
 	
 		if( name == null ){
-			throw new AccountingParseException("No name parsed");
+			throw new AccountingParseException("No name parsed property="+match.getFullName());
 		}
 
 

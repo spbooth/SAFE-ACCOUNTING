@@ -4,7 +4,9 @@ import org.junit.Test;
 
 public interface UploadParseTargetInterfaceTest<R,X extends UploadParseTarget<R>> extends PropertyContainerParseTargetInterfaceTest<R, X> {
 
-	public X getUploadParseTarget();
+	public default X getUploadParseTarget() {
+		return getPropertyContinerParseTarget();
+	}
 	
 	@Test
 	public void testUpload() throws Exception;

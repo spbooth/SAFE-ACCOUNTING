@@ -30,8 +30,13 @@ public class PropertyContainerParseTargetInterfaceTestImp<R,X extends PropertyCo
 	@Override
 	public void testSkipLines() throws Exception {
 		X target = getPropertyContinerParseTarget();
-		target.startParse(getUploadContext().getDefaults());
-		for( Iterator<R> it = target.getParser().splitRecords(getUploadContext().getSkipText()); it.hasNext() ;) {
+		UploadContext uploadContext = getUploadContext();
+		target.startParse(uploadContext.getDefaults());
+		String skipText = uploadContext.getSkipText();
+		if( skipText==null ||skipText.isEmpty()) {
+			return;
+		}
+		for( Iterator<R> it = target.getParser().splitRecords(skipText); it.hasNext() ;) {
 			R current_line = it.next();
 			DerivedPropertyMap map = new DerivedPropertyMap(contexed.getContext());
 			assertFalse(target.parse(map, current_line));
@@ -42,8 +47,13 @@ public class PropertyContainerParseTargetInterfaceTestImp<R,X extends PropertyCo
 	@Override
 	public void testExceptionLines() throws Exception {
 		X target = getPropertyContinerParseTarget();
-		target.startParse(getUploadContext().getDefaults());
-		for( Iterator<R> it = target.getParser().splitRecords(getUploadContext().getExceptionText()); it.hasNext() ;) {
+		UploadContext uploadContext = getUploadContext();
+		target.startParse(uploadContext.getDefaults());
+		String exceptionText = uploadContext.getExceptionText();
+		if( exceptionText == null || exceptionText.isEmpty()) {
+			return;
+		}
+		for( Iterator<R> it = target.getParser().splitRecords(exceptionText); it.hasNext() ;) {
 			R current_line = it.next();
 			DerivedPropertyMap map = new DerivedPropertyMap(contexed.getContext());
 			try {
@@ -59,8 +69,13 @@ public class PropertyContainerParseTargetInterfaceTestImp<R,X extends PropertyCo
 	@Override
 	public void testGoodLines() throws Exception{
 		X target = getPropertyContinerParseTarget();
-		target.startParse(getUploadContext().getDefaults());
-		for( Iterator<R> it = target.getParser().splitRecords(getUploadContext().getUpdateText()); it.hasNext() ;) {
+		UploadContext uploadContext = getUploadContext();
+		target.startParse(uploadContext.getDefaults());
+		String updateText = uploadContext.getUpdateText();
+		if( updateText == null || updateText.isEmpty()) {
+			return;
+		}
+		for( Iterator<R> it = target.getParser().splitRecords(updateText); it.hasNext() ;) {
 			R current_line = it.next();
 			DerivedPropertyMap map = new DerivedPropertyMap(contexed.getContext());
 			assertTrue(target.parse(map, current_line));
