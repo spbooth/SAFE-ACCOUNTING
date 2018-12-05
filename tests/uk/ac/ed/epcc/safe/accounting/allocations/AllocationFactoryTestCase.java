@@ -1,10 +1,16 @@
 package uk.ac.ed.epcc.safe.accounting.allocations;
 
+import org.junit.Test;
+
 import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTargetComposite;
+import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
+import uk.ac.ed.epcc.safe.accounting.db.UploadParseTargetInterfaceTest;
+import uk.ac.ed.epcc.safe.accounting.db.UploadParseTargetInterfaceTestImp;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactoryTestCase;
 import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCase;
 import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCaseImpl;
+import uk.ac.ed.epcc.safe.accounting.update.UploadContext;
 /** Abstract test case for {@link AllocationFactory}s
  * 
  * @author Stephen Booth
@@ -14,10 +20,11 @@ import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCaseImpl;
  * @param <T>
  */
 public abstract class AllocationFactoryTestCase<R,F extends AllocationFactory<T, R>,T extends AllocationFactory.AllocationRecord> extends UsageRecordFactoryTestCase<F,T> 
-implements PluginOwnerTestCase<R, PlugInOwner<R>>{
+implements UploadParseTargetInterfaceTest<R, UploadParseTarget<R>>{
 
-	private PluginOwnerTestCase<R, PlugInOwner<R>> plugin_owner_test = new PluginOwnerTestCaseImpl<>(()->getPluginOwner());
+	//private PluginOwnerTestCase<R, PlugInOwner<R>> plugin_owner_test = new PluginOwnerTestCaseImpl<>(()->getPluginOwner());
 
+	private UploadParseTargetInterfaceTest<R, UploadParseTarget<R>> plugin_owner_test = new UploadParseTargetInterfaceTestImp<>(this, ()->getPluginOwner(), ()->getUploadContext(), ()->ctx);
 	@Override
 	public void testGetFinder() {
 		plugin_owner_test.testGetFinder();
@@ -42,12 +49,43 @@ implements PluginOwnerTestCase<R, PlugInOwner<R>>{
 	}
 
 	@Override
-	public final  PlugInOwner<R> getPluginOwner() {
+	public final  UploadParseTarget<R> getPluginOwner() {
 		F factory = getFactory();
 		if( factory instanceof PlugInOwner) {
-			return (PlugInOwner<R>) factory;
+			return (UploadParseTarget<R>) factory;
 		}
-		return factory.getComposite(PropertyContainerParseTargetComposite.class).getPlugInOwner();
+		return (UploadParseTarget<R>) factory.getComposite(PropertyContainerParseTargetComposite.class);
+	}
+
+	@Override
+	public abstract UploadContext getUploadContext();
+
+	@Override
+	@Test
+	public void testSkipLines() throws Exception {
+		plugin_owner_test.testSkipLines();
+		
+	}
+
+	@Override
+	@Test
+	public void testExceptionLines() throws Exception {
+		plugin_owner_test.testExceptionLines();
+		
+	}
+
+	@Override
+	@Test
+	public void testGoodLines() throws Exception {
+		plugin_owner_test.testGoodLines();
+		
+	}
+
+	@Override
+	@Test
+	public void testUpload() throws Exception {
+		plugin_owner_test.testUpload();
+		
 	}
 
 }

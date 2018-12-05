@@ -13,22 +13,9 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Map;
-import java.util.Set;
-
-import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
-import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
-import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 /** Default implementation of the DataObjectPropertyFactory logic.
  * 
  * To keep this lightweight when this functionality is not in use the 

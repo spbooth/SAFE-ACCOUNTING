@@ -160,7 +160,9 @@ public abstract class ChartExtension extends ReportExtension {
 			if( o != null && o instanceof MapperEntry) {
 				entry = (MapperEntry) o;
 			}else {
-				entry = serv.getMapperEntry(errors,finder,getParam("GroupBy", e));
+				String param = getParam("GroupBy", e);
+				log.debug("GroupBy="+param);
+				entry = serv.getMapperEntry(errors,finder,param);
 			}
 		} else {
 			entry = serv.getMapperEntry(errors, finder, "");

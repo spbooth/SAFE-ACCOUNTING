@@ -213,7 +213,7 @@ public abstract class PropertyContainerParseTargetComposite<T extends DataObject
 		if (finder != null) {
 			for (String name : list.trim().split(",")) {
 				PropertyTag<?> t = finder.make(name);
-				if (!etf.hasProperty(t)) {
+				if (t == null) {
 					throw new InvalidPropertyException(t);
 				}
 				res.add(t);

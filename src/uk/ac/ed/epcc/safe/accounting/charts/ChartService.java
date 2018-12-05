@@ -13,6 +13,9 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.charts;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
@@ -36,7 +39,9 @@ import uk.ac.ed.epcc.webapp.config.FilteredProperties;
  *
  */
 @PreRequisiteService(ConfigService.class)
-public class ChartService extends AbstractContexed implements AppContextService<ChartService>{	
+public class ChartService extends AbstractContexed implements AppContextService<ChartService>{
+	// This must not match valid prop-expressions (which can contain periods as floating point constants)
+	private Pattern mode_pattern = Pattern.compile("([A-Za-z_]+)\\.([A-Za-z_]+)");
 	public ChartService(AppContext c){
 		super(c);
 	}
@@ -44,20 +49,20 @@ public class ChartService extends AbstractContexed implements AppContextService<
 	public PlotEntry getPlotEntry(ErrorSet errors,PropertyFinder finder,String name,String start,String end) throws Exception{
 		String mode=null;
 		
-		int i = name.indexOf('.');
-		if( i > 0) {
-			mode = name.substring(0,i);
-			name = name.substring(i+1);
+		Matcher m = mode_pattern.matcher(name);
+		if( m.matches()) {
+			mode=m.group(1);
+			name=m.group(2);
 		}
 		return PlotEntry.getConfigPlotEntry(conn,errors, new FilteredProperties(conn.getService(ConfigService.class).getServiceProperties(),"PlotEntry",mode),finder, name, start, end);
 	}
 	public MapperEntry getMapperEntry(ErrorSet errors,PropertyFinder finder,String name) throws Exception{
 		String mode=null;
 		
-		int i = name.indexOf('.');
-		if( i > 0) {
-			mode = name.substring(0,i);
-			name = name.substring(i+1);
+		Matcher m = mode_pattern.matcher(name);
+		if( m.matches()) {
+			mode=m.group(1);
+			name=m.group(2);
 		}
 		return MapperEntry.getConfigMapperEntry(conn,errors,new FilteredProperties(conn.getService(ConfigService.class).getServiceProperties(),MapperEntry.GROUP_ENTRY_BASE,mode), finder, name);
 	}

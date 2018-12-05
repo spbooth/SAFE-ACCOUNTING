@@ -23,6 +23,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.ClassificationFactory;
 import uk.ac.ed.epcc.webapp.model.NameFinder;
+import uk.ac.ed.epcc.webapp.model.ParseFactory;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
@@ -83,9 +84,9 @@ public class ReferenceValueParser<I extends Indexed> implements ValueParser<Inde
 			
 		}
 		// Attempt a simple name lookup
-		if( producer instanceof NameFinder){
-			NameFinder cf = (NameFinder) producer;
-			Indexed c = cf.findFromString(valueString);
+		if( producer instanceof ParseFactory){
+			ParseFactory<I> cf = (ParseFactory) producer;
+			I c = cf.findFromString(valueString);
 			if( c != null ){
 			  return producer.makeReference((I) c);
 			}

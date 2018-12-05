@@ -826,6 +826,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 	public static MapperEntry getConfigMapperEntry(AppContext conn,ErrorSet errors,FilteredProperties prop,PropertyFinder finder,String name) {
    	   Logger log = conn.getService(LoggerService.class).getLogger(MapperEntry.class);
 	   name=name.trim();
+	   log.debug("Requesting MapperEntry name=["+name+"]");
 	   String tag =name.replaceAll("\\s", "_")+".";
 	   String desc=prop.getProperty(tag+"description",name);
 	   String group_tag=prop.getProperty(tag+"group",name);
