@@ -5,6 +5,11 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:strip-space elements="*" />
 <xsl:output method="xml" indent="yes" />
+<xsl:template match="*[@max>5000000]/@max">
+<xsl:attribute name="max">
+    <xsl:value-of select="'long'"/>
+  </xsl:attribute>
+</xsl:template>
     <xsl:template match="PasswordChangeRequest/Check">
     <xsl:element name="Check">FakeCheck</xsl:element>
     </xsl:template>

@@ -35,9 +35,15 @@
 		<dependency org="org.apache.xmlgraphics" name="fop" rev="2.3">
 		   <artifact name="fop" ext="jar"/>
 		</dependency>
+		<dependency org="org.mariadb.jdbc" name="mariadb-java-client" rev="2.3.0">
+           <artifact name="mariadb-java-client" ext="jar"/>
+        </dependency>
+		<!--
 		<dependency org="mysql" name="mysql-connector-java" rev="8.0.12">
     		<artifact name="mysql-connector-java" ext="jar"/>
-		</dependency>
+		</dependency> 
+		-->
+		
 		<dependency org="org.jfree" name="jfreechart" rev="1.5.0">
     		<artifact name="jfreechart" ext="jar"/>
 		</dependency>
