@@ -33,10 +33,10 @@
 		<tab:Name>Time</tab:Name>
 		<tab:Property>Wall</tab:Property>
 	</tab:SumColumn>	
-<!--  	<tab:SortBy>
+	<tab:SortBy>
 		<tab:Columns>Time</tab:Columns>
 		<tab:Reverse>true</tab:Reverse>
-	</tab:SortBy>		    -->
+	</tab:SortBy>		    
 </tab:SummaryTable>	
 <!--
 Need to use 4 queries to calculate this one. Also as an added check
