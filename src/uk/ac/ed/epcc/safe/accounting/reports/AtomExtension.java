@@ -169,6 +169,7 @@ public class AtomExtension extends ReportExtension {
 				addError("Bad Atom","Cannot parse Value", element);
 				throw new ParseException("Invalid Number Element");
 			}
+			log.debug("Parsed number atom value="+n);
 			return new AtomResult<>(null,n);
 		}else if (SUM_ELEMENT.equals(name)) {
 			return expandSimpleReduction(element, set, period, Reduction.SUM);
@@ -236,7 +237,11 @@ public class AtomExtension extends ReportExtension {
 		if( pos != 2 ){
 			throw new ReportException( "atom:Combine Expecting two child nodes");	
 		}
-		return new AtomResult<>(null,op.operate((Number)expandNumberGroup(period, set, arg[0]).value, (Number)expandNumberGroup(period, set, arg[1]).value));
+		Number a = (Number)expandNumberGroup(period, set, arg[0]).value;
+		Number b = (Number)expandNumberGroup(period, set, arg[1]).value;
+		Number res = op.operate(a, b);
+		log.debug("combine: "+a+op.text()+b+"->"+res);
+		return new AtomResult<>(null,res);
 	}
 	public String percent(Period period, RecordSet set, Node e) {
 		NumberFormat pf = NumberFormat.getPercentInstance();
