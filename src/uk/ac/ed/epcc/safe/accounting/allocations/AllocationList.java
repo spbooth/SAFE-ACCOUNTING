@@ -29,7 +29,7 @@ public class AllocationList extends AbstractContexed implements UIGenerator {
 		super(c);
 	}
 	public ContentBuilder addContent(ContentBuilder builder) {
-		if( getContext().getService(SessionService.class).hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE)){
+		if( getContext().getService(SessionService.class).hasRoleFromList(AllocationManager.ALLOCATION_ADMIN_ROLE,AllocationManager.ALLOCATION_VIEW_ROLE)){
 			ContentBuilder div = builder.getPanel("block");
 			div.addHeading(2, "View Allocations");
 			div.addText("This page lists all of the configured types of allocation.");
@@ -39,7 +39,9 @@ public class AllocationList extends AbstractContexed implements UIGenerator {
 			for(String table : tables){
 				try {	
 					AllocationPeriodTransitionProvider prov = new AllocationPeriodTransitionProvider(conn.makeObject(AllocationManager.class, table));
-					div.addButton(conn, table, new IndexTransitionResult(prov));
+					if( prov.allowTransition(getContext(), null, prov.getIndexTransition())) {
+						div.addButton(conn, table, new IndexTransitionResult(prov));
+					}
 				} catch (Exception e) {
 					getLogger().error("Error making AllocationTransitionProvider",e);
 				}

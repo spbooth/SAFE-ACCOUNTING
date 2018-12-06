@@ -53,6 +53,10 @@ public interface AllocationManager<K,T extends Allocation> extends  ViewTransiti
  */
 public static final String ALLOCATION_ADMIN_ROLE = "AllocationAdmin";
 
+/** Role needed to only view allocations index. Additional roles are needed to access specific allocation types
+ */
+public static final String ALLOCATION_VIEW_ROLE = "AllocationView";
+
 /** Relationship to edit an allocation.
  * If this is not defined on a table falls back to using the AllocationAdmin role
  * 

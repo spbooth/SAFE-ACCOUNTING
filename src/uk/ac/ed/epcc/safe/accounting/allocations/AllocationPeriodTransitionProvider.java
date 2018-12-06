@@ -62,6 +62,10 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * including changes of time period. The changes to the records themselves is handled by
  * the {@link AllocationManager}
  * 
+ * Access control is to anyone with the {@link AllocationManager#ALLOCATION_ADMIN_ROLE} role or with role
+ * <b><i>table-name</i>Admin</b>. However the ability to set certain index property targets can be restricted by
+ * definging the <b>AllocationAdmin</b> relationship on the index target type.
+ * 
  * @author spb
  * @param <T> type of {@link Allocation}
  * @param <K> transition key for {@link AllocationManager}
@@ -73,7 +77,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 
 	public static final String ALLOCATION_PERIOD_PREFIX = "AllocationPeriod";
 
-	/** Relationship with index property targets that (if defined) will restrict the selcted
+	/** Relationship with index property targets that (if defined) will restrict the selected
 	 * index properties and narrow the index view
 	 * 
 	 */
@@ -298,7 +302,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 	}
 
 	public boolean canView(AllocationPeriod target, SessionService<?> sess) {
-		return sess.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE);
+		return sess.hasRoleFromList(AllocationManager.ALLOCATION_ADMIN_ROLE,manager.getTag()+"Admin");
 	}
 	@SuppressWarnings("unchecked")
 	public RecordSelector getSelector(AllocationPeriod view){
