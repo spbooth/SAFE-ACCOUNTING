@@ -60,16 +60,7 @@ public class UploadParseTargetUploadParser extends AbstractContexed implements U
 		// Start by looking for an explict UploadParseTarget
 		UploadParseTarget target = conn.makeObject(UploadParseTarget.class, target_tag);
 		if( target == null ){
-			DataObjectFactory<?> fac = conn.makeObject(DataObjectFactory.class, target_tag);
-			if( fac != null) {
-				PropertyContainerParseTargetComposite comp = fac.getComposite(PropertyContainerParseTargetComposite.class);
-				if( comp != null && comp instanceof UploadParseTarget) {
-					target = (UploadParseTarget) comp;
-				}
-			}
-			if( target == null ) {
 				throw new UploadException("Invalid Target");
-			}
 		}
 		UploadParseTargetUpdater updater = new UploadParseTargetUpdater(conn, target);
 		return updater.receiveData(parameters, update);

@@ -519,7 +519,9 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	@SuppressWarnings("unchecked")
 	protected LinkedHashMap<AllocationKey<T>, Transition<T>> makeTransitions() {
 		LinkedHashMap<AllocationKey<T>,Transition<T>> result = new LinkedHashMap<>();
-		result.put(SPLIT, new SplitTransition<>(this, this));
+		if( canSplit()) {
+			result.put(SPLIT, new SplitTransition<>(this, this));
+		}
 		result.put(CREATE, new CreateAllocation());
 		result.put(DELETE, new ConfirmTransition<>("Are you sure you want to delete this allocation?", new AllocationDelete(), new AllocationView()));
 		result.put(INDEX, new ReturnIndexTransition());
@@ -1131,6 +1133,9 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		}
 	}
 
+	public boolean canSplit() {
+		return true;
+	}
 	public void canSplit(T orig, Date d) throws ValidateException {
 		
 		
