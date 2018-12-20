@@ -37,7 +37,7 @@ package uk.ac.ed.epcc.safe.accounting.expr.parse;
 
 /* "expr.java":39  */ /* lalr1.java:92  */
 /* "%code imports" blocks.  */
-/* "expr.y":5  */ /* lalr1.java:93  */
+/* "expr.y":4  */ /* lalr1.java:93  */
 
 import  uk.ac.ed.epcc.safe.accounting.*;
 import uk.ac.ed.epcc.safe.accounting.expr.*;
@@ -64,7 +64,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  *
  * @author LALR (1) parser skeleton written by Paolo Bonzini.
  */
-public class ExpressionParser
+class ExpressionParser
 {
     /** Version number for the Bison executable that generated this parser.  */
   public static final String bisonVersion = "3.0.4";
@@ -90,39 +90,41 @@ public class ExpressionParser
     /** Token number,to be returned by the scanner.  */
     static final int NUMBER = 258;
     /** Token number,to be returned by the scanner.  */
-    static final int MULT = 259;
+    static final int BOOLEAN = 259;
     /** Token number,to be returned by the scanner.  */
-    static final int DIV = 260;
+    static final int MULT = 260;
     /** Token number,to be returned by the scanner.  */
-    static final int PLUS = 261;
+    static final int DIV = 261;
     /** Token number,to be returned by the scanner.  */
-    static final int MINUS = 262;
+    static final int PLUS = 262;
     /** Token number,to be returned by the scanner.  */
-    static final int LPAREN = 263;
+    static final int MINUS = 263;
     /** Token number,to be returned by the scanner.  */
-    static final int RPAREN = 264;
+    static final int LPAREN = 264;
     /** Token number,to be returned by the scanner.  */
-    static final int LBRACE = 265;
+    static final int RPAREN = 265;
     /** Token number,to be returned by the scanner.  */
-    static final int RBRACE = 266;
+    static final int LBRACE = 266;
     /** Token number,to be returned by the scanner.  */
-    static final int LSQR = 267;
+    static final int RBRACE = 267;
     /** Token number,to be returned by the scanner.  */
-    static final int RSQR = 268;
+    static final int LSQR = 268;
     /** Token number,to be returned by the scanner.  */
-    static final int PROPTAG = 269;
+    static final int RSQR = 269;
     /** Token number,to be returned by the scanner.  */
-    static final int STRING = 270;
+    static final int PROPTAG = 270;
     /** Token number,to be returned by the scanner.  */
-    static final int COMMA = 271;
+    static final int STRING = 271;
     /** Token number,to be returned by the scanner.  */
-    static final int KEYWORD = 272;
+    static final int COMMA = 272;
     /** Token number,to be returned by the scanner.  */
-    static final int MATCH = 273;
+    static final int KEYWORD = 273;
     /** Token number,to be returned by the scanner.  */
-    static final int REFERENCE = 274;
+    static final int MATCH = 274;
     /** Token number,to be returned by the scanner.  */
-    static final int NEG = 275;
+    static final int REFERENCE = 275;
+    /** Token number,to be returned by the scanner.  */
+    static final int NEG = 276;
 
 
     
@@ -484,7 +486,7 @@ public class ExpressionParser
   if (yyn == 15)
     /* "expr.y":137  */ /* lalr1.java:489  */
     {
-  yyval=new ConstReferenceExpression(((IndexedReference)(yystack.valueAt (1-(1)))));    
+  yyval=new ConstPropExpression(Boolean.class,((Boolean)(yystack.valueAt (1-(1)))));    
 };
   break;
     
@@ -493,14 +495,23 @@ public class ExpressionParser
   if (yyn == 16)
     /* "expr.y":140  */ /* lalr1.java:489  */
     {
-  yyval= new ComparePropExpression(((PropExpression)(yystack.valueAt (3-(1)))),((MatchCondition)(yystack.valueAt (3-(2)))),((PropExpression)(yystack.valueAt (3-(3)))));
+  yyval=new ConstReferenceExpression(((IndexedReference)(yystack.valueAt (1-(1)))));    
 };
   break;
     
 
   case 17:
   if (yyn == 17)
-    /* "expr.y":145  */ /* lalr1.java:489  */
+    /* "expr.y":143  */ /* lalr1.java:489  */
+    {
+  yyval= new ComparePropExpression(((PropExpression)(yystack.valueAt (3-(1)))),((MatchCondition)(yystack.valueAt (3-(2)))),((PropExpression)(yystack.valueAt (3-(3)))));
+};
+  break;
+    
+
+  case 18:
+  if (yyn == 18)
+    /* "expr.y":148  */ /* lalr1.java:489  */
     {
   if( ((PropExpression)(yystack.valueAt (2-(1)))) instanceof ReferenceExpression ){
     ReferenceExpression tag = (ReferenceExpression)  ((PropExpression)(yystack.valueAt (2-(1))));
@@ -518,16 +529,16 @@ public class ExpressionParser
   break;
     
 
-  case 18:
-  if (yyn == 18)
-    /* "expr.y":162  */ /* lalr1.java:489  */
+  case 19:
+  if (yyn == 19)
+    /* "expr.y":165  */ /* lalr1.java:489  */
     { pop(); };
   break;
     
 
-  case 19:
-  if (yyn == 19)
-    /* "expr.y":165  */ /* lalr1.java:489  */
+  case 20:
+  if (yyn == 20)
+    /* "expr.y":168  */ /* lalr1.java:489  */
     {
   LinkedList list = new LinkedList();
   list.add(((PropExpression)(yystack.valueAt (1-(1)))));
@@ -536,9 +547,9 @@ public class ExpressionParser
   break;
     
 
-  case 20:
-  if (yyn == 20)
-    /* "expr.y":170  */ /* lalr1.java:489  */
+  case 21:
+  if (yyn == 21)
+    /* "expr.y":173  */ /* lalr1.java:489  */
     {
   LinkedList list = ((LinkedList)(yystack.valueAt (3-(1))));
   list.add(((PropExpression)(yystack.valueAt (3-(3)))));
@@ -548,7 +559,7 @@ public class ExpressionParser
     
 
 
-/* "expr.java":552  */ /* lalr1.java:489  */
+/* "expr.java":563  */ /* lalr1.java:489  */
         default: break;
       }
 
@@ -865,10 +876,10 @@ public class ExpressionParser
   {
     return new byte[]
     {
-      -2,    -9,    -2,    -2,    -2,    -9,    -9,    -1,    -9,     9,
-      43,    -2,     2,    24,    43,    46,    -2,    -9,    -2,    -2,
-      -2,    -2,    -9,    -2,    33,    -9,    -9,    -2,    16,    -8,
-      -8,    48,    48,     2,    -9,    -9,    43,    -9
+      -2,    -9,    -9,    -2,    -2,    -2,    -9,    -9,    -1,    -9,
+      10,    43,    -2,     2,    24,    43,    46,    -2,    -9,    -2,
+      -2,    -2,    -2,    -9,    -2,    33,    -9,    -9,    -2,    16,
+      -8,    -8,    48,    48,     2,    -9,    -9,    43,    -9
     };
   }
 
@@ -880,10 +891,10 @@ public class ExpressionParser
   {
     return new byte[]
     {
-       0,    14,     0,     0,     0,     4,     5,     0,    15,     0,
-       2,     0,    13,     0,    19,     0,     0,     1,     0,     0,
-       0,     0,    17,     0,     0,     8,     6,     0,     0,    11,
-      12,     9,    10,    16,    18,     3,    20,     7
+       0,    14,    15,     0,     0,     0,     4,     5,     0,    16,
+       0,     2,     0,    13,     0,    20,     0,     0,     1,     0,
+       0,     0,     0,    18,     0,     0,     8,     6,     0,     0,
+      11,    12,     9,    10,    17,    19,     3,    21,     7
     };
   }
 
@@ -903,7 +914,7 @@ public class ExpressionParser
   {
     return new byte[]
     {
-      -1,     9,    14,    11,    35,    15
+      -1,    10,    15,    12,    36,    16
     };
   }
 
@@ -915,13 +926,13 @@ public class ExpressionParser
   {
     return new byte[]
     {
-      10,     1,    12,    13,    22,     2,     3,    16,     4,    17,
-      23,    24,     5,     6,    22,     7,     0,     8,    29,    30,
-      31,    32,    28,    33,     0,    37,     0,    36,    18,    19,
-      20,    21,    27,    25,     0,     0,    22,    18,    19,    20,
-      21,     0,    23,     0,     0,    22,    34,    18,    19,    20,
-      21,    23,    18,    19,     0,    22,     0,    26,     0,     0,
-      22,    23,    27,     0,     0,     0,    23
+      11,     1,     2,    13,    14,    23,     3,     4,    17,     5,
+      18,    24,    25,     6,     7,    23,     8,     0,     9,    30,
+      31,    32,    33,    29,    34,     0,    38,     0,    37,    19,
+      20,    21,    22,    28,    26,     0,     0,    23,    19,    20,
+      21,    22,     0,    24,     0,     0,    23,    35,    19,    20,
+      21,    22,    24,    19,    20,     0,    23,     0,    27,     0,
+       0,    23,    24,    28,     0,     0,     0,    24
     };
   }
 
@@ -930,13 +941,13 @@ private static final byte yycheck_[] = yycheck_init();
   {
     return new byte[]
     {
-       0,     3,     2,     3,    12,     7,     8,     8,    10,     0,
-      18,    11,    14,    15,    12,    17,    -1,    19,    18,    19,
-      20,    21,    16,    23,    -1,     9,    -1,    27,     4,     5,
-       6,     7,    16,     9,    -1,    -1,    12,     4,     5,     6,
-       7,    -1,    18,    -1,    -1,    12,    13,     4,     5,     6,
-       7,    18,     4,     5,    -1,    12,    -1,    11,    -1,    -1,
-      12,    18,    16,    -1,    -1,    -1,    18
+       0,     3,     4,     3,     4,    13,     8,     9,     9,    11,
+       0,    19,    12,    15,    16,    13,    18,    -1,    20,    19,
+      20,    21,    22,    17,    24,    -1,    10,    -1,    28,     5,
+       6,     7,     8,    17,    10,    -1,    -1,    13,     5,     6,
+       7,     8,    -1,    19,    -1,    -1,    13,    14,     5,     6,
+       7,     8,    19,     5,     6,    -1,    13,    -1,    12,    -1,
+      -1,    13,    19,    17,    -1,    -1,    -1,    19
     };
   }
 
@@ -947,10 +958,10 @@ private static final byte yycheck_[] = yycheck_init();
   {
     return new byte[]
     {
-       0,     3,     7,     8,    10,    14,    15,    17,    19,    22,
-      23,    24,    23,    23,    23,    26,     8,     0,     4,     5,
-       6,     7,    12,    18,    23,     9,    11,    16,    26,    23,
-      23,    23,    23,    23,    13,    25,    23,     9
+       0,     3,     4,     8,     9,    11,    15,    16,    18,    20,
+      23,    24,    25,    24,    24,    24,    27,     9,     0,     5,
+       6,     7,     8,    13,    19,    24,    10,    12,    17,    27,
+      24,    24,    24,    24,    24,    14,    26,    24,    10
     };
   }
 
@@ -960,9 +971,9 @@ private static final byte yycheck_[] = yycheck_init();
   {
     return new byte[]
     {
-       0,    21,    22,    23,    23,    23,    23,    23,    23,    23,
-      23,    23,    23,    23,    23,    23,    23,    24,    25,    26,
-      26
+       0,    22,    23,    24,    24,    24,    24,    24,    24,    24,
+      24,    24,    24,    24,    24,    24,    24,    24,    25,    26,
+      27,    27
     };
   }
 
@@ -973,8 +984,8 @@ private static final byte yycheck_[] = yycheck_init();
     return new byte[]
     {
        0,     2,     1,     3,     1,     1,     3,     4,     3,     3,
-       3,     3,     3,     2,     1,     1,     3,     2,     1,     1,
-       3
+       3,     3,     3,     2,     1,     1,     1,     3,     2,     1,
+       1,     3
     };
   }
 
@@ -987,7 +998,7 @@ private static final byte yycheck_[] = yycheck_init();
     {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275
+     275,   276
     };
   }
 
@@ -998,10 +1009,10 @@ private static final byte yycheck_[] = yycheck_init();
   {
     return new String[]
     {
-  "$end", "error", "$undefined", "NUMBER", "MULT", "DIV", "PLUS", "MINUS",
-  "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LSQR", "RSQR", "PROPTAG",
-  "STRING", "COMMA", "KEYWORD", "MATCH", "REFERENCE", "NEG", "$accept",
-  "full_expr", "expr", "start_deref", "end_deref", "expr_list", null
+  "$end", "error", "$undefined", "NUMBER", "BOOLEAN", "MULT", "DIV",
+  "PLUS", "MINUS", "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LSQR", "RSQR",
+  "PROPTAG", "STRING", "COMMA", "KEYWORD", "MATCH", "REFERENCE", "NEG",
+  "$accept", "full_expr", "expr", "start_deref", "end_deref", "expr_list", null
     };
   }
 
@@ -1012,8 +1023,8 @@ private static final byte yycheck_[] = yycheck_init();
     return new short[]
     {
        0,    91,    91,    94,   104,   107,   110,   114,   118,   119,
-     122,   125,   128,   131,   134,   137,   140,   145,   162,   165,
-     170
+     122,   125,   128,   131,   134,   137,   140,   143,   148,   165,
+     168,   173
     };
   }
 
@@ -1070,7 +1081,7 @@ private static final byte yycheck_[] = yycheck_init();
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20
+      15,    16,    17,    18,    19,    20,    21
     };
   }
 
@@ -1082,15 +1093,15 @@ private static final byte yycheck_[] = yycheck_init();
       return yyundef_token_;
   }
 
-  private static final int yylast_ = 66;
+  private static final int yylast_ = 67;
   private static final int yynnts_ = 6;
   private static final int yyempty_ = -2;
-  private static final int yyfinal_ = 17;
+  private static final int yyfinal_ = 18;
   private static final int yyterror_ = 1;
   private static final int yyerrcode_ = 256;
-  private static final int yyntokens_ = 21;
+  private static final int yyntokens_ = 22;
 
-  private static final int yyuser_token_number_max_ = 275;
+  private static final int yyuser_token_number_max_ = 276;
   private static final int yyundef_token_ = 2;
 
 /* User implementation code.  */
@@ -1135,7 +1146,7 @@ private static final byte yycheck_[] = yycheck_init();
   }
 
 
-/* "expr.java":1139  */ /* lalr1.java:1066  */
+/* "expr.java":1150  */ /* lalr1.java:1066  */
 
 }
 
