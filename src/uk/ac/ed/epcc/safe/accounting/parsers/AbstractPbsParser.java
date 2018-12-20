@@ -797,7 +797,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 		}
 	
 		// mark jobs from a reservation as sub-jobs.
-		if( ! charge_reservation_sub_job && isReservation(pbsMap)){
+		if( ! charge_reservation_sub_job && isInReservation(pbsMap)){
 			pbsMap.setProperty(BatchParser.SUBJOB_PROP, Boolean.TRUE);
 		}
 		Number exit = pbsMap.getProperty(PBS_EXIT_PROP, null);
@@ -813,9 +813,12 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 		return true;
 	}
 
+	public boolean isAReservation(PropertyMap pbsMap) {
+		return "B".equals(pbsMap.getProperty(PBS_RECORD_TYPE_PROP));
+	}
 
 
-	public boolean isReservation(PropertyMap pbsMap) {
+	public boolean isInReservation(PropertyMap pbsMap) {
 		return pbsMap.getProperty(PBS_RESERVATION_ID_PROP) != null;
 	}
 

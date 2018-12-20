@@ -34,7 +34,6 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.model.NameFinder;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.model.data.forms.RoleSelector;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.timer.TimerService;
 
@@ -118,11 +117,6 @@ public class RestrictExtension extends ReportExtension {
 	}
 
 	private boolean hasRelationship(AppContext conn, SessionService user, String type, String val) {
-		RoleSelector<?> sel = conn.makeObject(RoleSelector.class,type);
-		if( sel != null){
-			getLogger().error("Report using deprecated RoleSelector "+type);
-			return sel.hasRole(val, user);
-		}
 		DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
 		if( fac != null){
 			try {
@@ -152,30 +146,7 @@ public class RestrictExtension extends ReportExtension {
 			throw new RestrictException("No role specified for relationship on "+type);
 		}
 		String name = getText(element);
-		RoleSelector rel = conn.makeObjectWithDefault(RoleSelector.class, null,type);
-		if( rel != null){
-
-			getLogger().error("Report using deprecated RoleSelector "+type);
-
-			if( empty(name) ){
-				return rel.hasRole(role, user);
-			}else{
-				// Want role on specific object
-				DataObjectFactory fac = rel.getTargetFactory();
-				if( fac == null) {
-					throw new RestrictException("No factory for "+type);
-				}
-				if( fac instanceof NameFinder){
-					DataObject target = (DataObject) ((NameFinder)fac).findFromString(name);
-					if( target == null) {
-						throw new RestrictException("No target for "+type+":"+name);
-					}
-					return rel.hasRole(user, target, role);
-				}else{
-					throw new RestrictException(type+" not_name_finder");
-				}
-			}
-		}else{
+		
 			type=conn.getInitParameter("typealias."+type, type);
 
 			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
@@ -206,7 +177,6 @@ public class RestrictExtension extends ReportExtension {
 			} catch (Exception e) {
 				throw new RestrictException( "Cannot check for relationship="+role+" on "+type, e);
 			}
-		}
 
 	}
 	public boolean canUse(Document doc) throws ReportException{

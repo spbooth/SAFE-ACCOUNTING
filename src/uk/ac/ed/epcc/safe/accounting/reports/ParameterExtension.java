@@ -91,7 +91,6 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.model.data.forms.RoleSelector;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -391,11 +390,6 @@ public class ParameterExtension extends ReportExtension {
 		
 		// first a role selector
 		if (! empty(role)) {
-			RoleSelector sel = conn.makeObjectWithDefault(RoleSelector.class,null,type);
-			if( sel != null ){
-				getLogger().error("Report using deprecated RoleSelector");
-				return sel.getInput(role, conn.getService(SessionService.class));
-			}
 			type=conn.getInitParameter("typealias."+type, type);
 			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
 			if( fac != null ){
