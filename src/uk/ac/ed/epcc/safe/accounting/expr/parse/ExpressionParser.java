@@ -64,7 +64,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  *
  * @author LALR (1) parser skeleton written by Paolo Bonzini.
  */
-class ExpressionParser
+public class ExpressionParser
 {
     /** Version number for the Bison executable that generated this parser.  */
   public static final String bisonVersion = "3.0.4";

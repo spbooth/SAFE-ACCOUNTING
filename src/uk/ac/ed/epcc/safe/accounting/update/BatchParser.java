@@ -121,7 +121,9 @@ public abstract class BatchParser extends BaseParser {
 		res.put(REQUEST_ACCURACY_PROP, new BinaryPropExpression(new DurationPropExpression(StandardProperties.STARTED_PROP, StandardProperties.ENDED_PROP), Operator.DIV, REQUESTED_WALLCLOCK_PROP));
 		res.put(EXPECTED_FINISH, new ConvertMillisecondToDatePropExpression(
 				new BinaryPropExpression(new MilliSecondDatePropExpression(StandardProperties.STARTED_PROP), Operator.ADD, REQUESTED_WALLCLOCK_PROP)));
-		
+		// If no definition assume false
+		res.put(SERIAL_PROP, new ConstPropExpression<Boolean>(Boolean.class, Boolean.FALSE));
+		res.put(SUBJOB_PROP, new ConstPropExpression<Boolean>(Boolean.class, Boolean.FALSE));
 		}catch(PropertyCastException e){
 			throw new ConsistencyError("cast check failed for built in propexpression ",e);
 		} 

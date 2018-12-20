@@ -1,4 +1,4 @@
-%language {Java}
+%define public
 %define parser_class_name {ExpressionParser}
 %define package {uk.ac.ed.epcc.safe.accounting.expr.parse}
 

@@ -13,7 +13,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
-import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
 import uk.ac.ed.epcc.webapp.WebappTestBase;
 import uk.ac.ed.epcc.webapp.junit4.ConfigFixtures;
@@ -54,7 +53,10 @@ public class ParserTest extends WebappTestBase{
 		"@INT(30/7)",
 		"@INT("+StandardProperties.ENDED_PROP.toString()+"-"+StandardProperties.STARTED_PROP.toString()+")",
 		
-		"99"
+		"99",
+		"0 == 1",
+		"true",
+		"False"
 		
 	  };
 	  for( String t : tests){

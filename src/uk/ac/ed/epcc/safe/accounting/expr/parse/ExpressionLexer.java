@@ -88,7 +88,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 
 		@Override
 		public Object make(AppContext conn,String pattern) throws LexException {
-			if( pattern == "=="){
+			if( pattern.equals("==")){
 				return null;
 			}
 			for( MatchCondition m : MatchCondition.values()){
@@ -223,6 +223,26 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			return ExpressionParser.Lexer.NUMBER;
 		}
 	}
+	
+	/** an {@link ExpressionLexTarget} for a literal numeric value
+	 * 
+	 * @author spb
+	 *
+	 */
+	private static final class BooleanLexTarget implements ExpressionLexTarget {
+		public String getRegexp(){
+			  return "(?i:true)|(?i:false)";
+		  }
+
+		public Object make(AppContext conn,String pattern){
+				  return Boolean.parseBoolean(pattern);
+		  }
+
+		public int getToken(String pattern) {
+			
+			return ExpressionParser.Lexer.BOOLEAN;
+		}
+	}
 	/** a generic {@link ExpressionLexTarget} 
 	 * 
 	 * @author spb
@@ -254,6 +274,8 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			
 		   // Number target
 			  targets.add(new NumberLexTarget());
+			  // Booleans
+			  targets.add(new BooleanLexTarget());
 			  // Property target
 			  targets.add(new PropertyTagLexTarget());
 			  // operator target
@@ -266,7 +288,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.Lexer.RSQR, "\\]"));
 			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.Lexer.LBRACE, "\\{"));
 			  targets.add(new LiteralExpressionLexTarget(ExpressionParser.Lexer.RBRACE, "\\}"));
-		
+			  
 			  // String literal target
 			  targets.add(new StringLiteralLexTarget());
 		      // keyword
