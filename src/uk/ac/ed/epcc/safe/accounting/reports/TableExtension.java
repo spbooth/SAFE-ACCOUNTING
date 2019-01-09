@@ -1286,6 +1286,12 @@ public class TableExtension extends ReportExtension {
 				if( row != null ){
 					target.removeRow(row);
 				}
+			}else if( instruction.equals("GlobalFormat")) {
+				String type = normalise(getText(inst));
+				Transform transform = makeTableTransform(inst, type);
+				if( transform != null ){
+					target.setFormat( transform);
+				}
 			}else if(instruction.equals("Format")){
 				String col = getParam("Column",inst);
 				String type = getParam("Type",inst);

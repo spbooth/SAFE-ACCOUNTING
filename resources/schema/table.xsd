@@ -264,6 +264,7 @@
 	   			</xsd:documentation>
 	   		</xsd:annotation>
 	   	</xsd:element>
+	   	<xsd:element name="GlobalFormat" type="par:TextOrParameterType"></xsd:element>
 	   	<xsd:element name="Format" type="FormatType"></xsd:element>
 	   	<xsd:element name="Transform" type="FormatType">
 	   	</xsd:element>

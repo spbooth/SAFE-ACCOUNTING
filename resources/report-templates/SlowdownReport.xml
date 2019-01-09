@@ -30,6 +30,7 @@
 <tab:Index labeller="IncludeZeroPower2RangeLabeller"><tab:Name>Runtime/h</tab:Name><tab:Property>Elapsed/3600</tab:Property></tab:Index>
 <tab:AverageColumn><tab:NameExpression labeller="Power2RangeLabeller">Nodes</tab:NameExpression><tab:Property>Slowdown</tab:Property></tab:AverageColumn>
 <tab:SortRows/>
+<tab:GlobalFormat>FractionalFormat</tab:GlobalFormat>
 </tab:SummaryTable>
 </rep:SubSection>
 
