@@ -180,6 +180,94 @@
 		</fo:table-cell>
 	</xsl:template>
 	
+	<xsl:template match="rep:td[@class='frac_0']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#ed1818">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="rep:td[@class='frac_1']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#ed4218">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="rep:td[@class='frac_2']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#ed6d18">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="rep:td[@class='frac_3']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#ed9818">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="rep:td[@class='frac_4']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#edc218">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="rep:td[@class='frac_5']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#eded18">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="rep:td[@class='frac_6']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#c2ed18">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="rep:td[@class='frac_7']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#98ed18">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="rep:td[@class='frac_8']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#6ded18">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="rep:td[@class='frac_9']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#42ed18">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="rep:td[@class='frac_10']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#18ed18">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
 	<xsl:template match="rep:td[@class='notice']|Td[@class='notice']|td[@class='notice']">
 		<fo:table-cell border-color="black" border-style="solid"
 			border-width="0.2mm" background-color="#ffcccc">
