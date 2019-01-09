@@ -18,12 +18,10 @@ package uk.ac.ed.epcc.safe.accounting.upload;
 
 import java.util.Map;
 
-import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTargetComposite;
 import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
 import uk.ac.ed.epcc.safe.accounting.db.UploadParseTargetUpdater;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 /** UploadParser to populate an {@link UploadParseTarget} 
  * 
  * The target factory can be hard-wired by setting the parameter

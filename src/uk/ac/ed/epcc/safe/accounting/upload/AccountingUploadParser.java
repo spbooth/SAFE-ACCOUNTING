@@ -32,7 +32,8 @@ import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-/** Class to upload an accounting table.
+/** Class to upload an accounting table that implements {@link UsageRecordParseTarget} either directly
+ * or by composite.
  * Upload parameters are passed as a map.
  * <ul>
  * <li> table - class tag to update</li>
