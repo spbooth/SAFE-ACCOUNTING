@@ -51,7 +51,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ParameterParseException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.FilterSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -85,6 +84,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
+import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
@@ -92,6 +92,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** The ParameterExtension expands objects in the parameter map into the output.
@@ -406,64 +407,14 @@ public class ParameterExtension extends ReportExtension {
 					fil2 = new GenericBinaryFilter(fac.getTarget(),false);
 				}
 				fil.addFilter(fil2);
-				if( fac instanceof ExpressionTargetFactory ){
-					// If factory implements the correct interface further narrow the selection using
-					// embedded filter clauses
-					ExpressionTargetFactory ptf = (ExpressionTargetFactory) fac;
-					PropertyFinder finder = ptf.getFinder();
-				
-					NodeList paramNodes = ((Element) param).getElementsByTagNameNS(
-							FilterExtension.FILTER_LOC,"Filter");
-					if( paramNodes.getLength() > 0 ){
-						AndRecordSelector selector = new AndRecordSelector();
-						for( int i=0; i < paramNodes.getLength() ; i++){
-							Element filter =  (Element) paramNodes.item(i);
-							 NodeList list =filter.getChildNodes();
-							  for(int j=0;j<list.getLength();j++){
-								  Node c = list.item(j);
-								  if( c.getNodeType() == Node.ELEMENT_NODE && c.getNamespaceURI() == filter.getNamespaceURI()){
-									  RecordSelector s = getRecordSelectElement(finder,  (Element)c);
-									  if( s != null ){
-										  selector.add(s);
-									  }
-								  }
-							  }	  
-						}
-						fil.addFilter((BaseFilter) ptf.getAccessorMap().getFilter(selector));
-					}
+				BaseFilter efil = getFilter(param, fac);
+				if( efil !=null) {
+					fil.addFilter(efil);
 				}
 				return fac.getInput(fil);
 			}
 		}
-		// Now a FilterSelector
-		FilterSelector sel = conn.makeObjectWithDefault(FilterSelector.class,null, type);
-		if( sel != null ){
-			PropertyFinder finder = sel.getFinder();
-			AndRecordSelector selector = new AndRecordSelector();
-			NodeList paramNodes = ((Element) param).getElementsByTagNameNS(
-					FilterExtension.FILTER_LOC,"Filter");
-			if( paramNodes.getLength() > 0 ){
-				for( int i=0; i < paramNodes.getLength() ; i++){
-					Element filter =  (Element) paramNodes.item(i);
-					 NodeList list =filter.getChildNodes();
-					  for(int j=0;j<list.getLength();j++){
-						  Node c = list.item(j);
-						  if( c.getNodeType() == Node.ELEMENT_NODE && c.getNamespaceURI() == filter.getNamespaceURI()){
-							  RecordSelector s = getRecordSelectElement(finder,  (Element)c);
-							  if( s != null ){
-								  selector.add(s);
-							  }
-						  }
-					  }	  
-				}
-			}else{
-				if( sel instanceof Selector ){
-					// return default selector for object if no explicit filter
-					return ((Selector)sel).getInput();
-				}
-			}
-			return sel.getInput(selector);
-		}
+		
 		// Try an Enum
 		try {					
 			Class<?> theClass = Class.forName(type);
@@ -480,6 +431,14 @@ public class ParameterExtension extends ReportExtension {
 		// See if it's a simple Selector e.g a DataObject
 		Selector factory = conn.makeObjectWithDefault(Selector.class,null,type);			
 		if (factory != null) {
+			if( factory instanceof DataObjectFactory) {
+				DataObjectFactory fac = (DataObjectFactory) factory;
+				// try to make explicit filter based on composites
+				BaseFilter efil = getFilter(param, fac);
+				if( efil != null) {
+					return fac.getInput(efil);
+				}
+			}
 			return factory.getInput();	
 
 		} 
@@ -487,7 +446,36 @@ public class ParameterExtension extends ReportExtension {
 
 		throw new ParameterParseException("Invalid parameter type "+type);
 	}
-	
+	private BaseFilter getFilter(Element e,IndexedProducer prod) throws Exception {
+		ExpressionTargetFactory ptf = ExpressionCast.getExpressionTargetFactory(prod);
+		if( ptf != null){
+			// If factory implements the correct interface further narrow the selection using
+			// embedded filter clauses
+			
+			PropertyFinder finder = ptf.getFinder();
+		
+			NodeList paramNodes = (e).getElementsByTagNameNS(
+					FilterExtension.FILTER_LOC,"Filter");
+			if( paramNodes.getLength() > 0 ){
+				AndRecordSelector selector = new AndRecordSelector();
+				for( int i=0; i < paramNodes.getLength() ; i++){
+					Element filter =  (Element) paramNodes.item(i);
+					 NodeList list =filter.getChildNodes();
+					  for(int j=0;j<list.getLength();j++){
+						  Node c = list.item(j);
+						  if( c.getNodeType() == Node.ELEMENT_NODE && c.getNamespaceURI() == filter.getNamespaceURI()){
+							  RecordSelector s = getRecordSelectElement(finder,  (Element)c);
+							  if( s != null ){
+								  selector.add(s);
+							  }
+						  }
+					  }	  
+				}
+				return (BaseFilter) ptf.getAccessorMap().getFilter(selector);
+			}
+		}
+		return null;
+	}
 	
 	public DocumentFragment value(Node node) throws DOMException, Exception{
 		Element element = (Element)node;

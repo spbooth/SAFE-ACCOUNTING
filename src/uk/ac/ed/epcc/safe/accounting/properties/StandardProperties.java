@@ -26,6 +26,7 @@ public class StandardProperties {
 	public static final PropertyTag<Date> ENDED_PROP = new PropertyTag<>(time,StandardProperties.COMPLETED_TIMESTAMP,Date.class,"The time resource usage ended");
 	public static final PropertyTag<Date> STARTED_PROP = new PropertyTag<>(time,StandardProperties.STARTED_TIMESTAMP,Date.class,"The time resource usage started");
 	public static final PropertyTag<Number> ELAPSED_PROP = new PropertyTag<>(time,"Elapsed",Number.class,"Wall-clock run-time in seconds derived from timestamps");
+	public static final PropertyTag<Number> HOURS_PROP = new PropertyTag<>(time,"Hours",Number.class,"Wall-clock run-time in hours derived from timestamps");
 	public static final String COMPLETED_TIMESTAMP = "CompletedTimestamp";
 	public static final String STARTED_TIMESTAMP = "StartedTimestamp";
 
@@ -42,7 +43,7 @@ public class StandardProperties {
 	public static final PropertyTag<Number> CPU_TIME_PROP = new PropertyTag<>(base,"CPUTime",Number.class,"Total CPU time (seconds) used by all processes");
 	public static final PropertyTag<Number> RUNTIME_PROP = new PropertyTag<>(base,"RuntimeMillis",Number.class,"Wall-clock run-time in milliseconds");
 	public static final PropertyTag<Duration> DURATION_PROP = new PropertyTag<>(base,"Duration",Duration.class,"Duration of usage");
-	public static final PropertyTag<Integer> LOCATE_PROP = new PropertyTag<>(base,"Locate",Integer.class,"Locate substring within another string");
+	
 	public static final PropertyTag<String> MACHINE_NAME_PROP = new PropertyTag<>(base,"MachineName",String.class);
 	public static final PropertyTag<Date> INSERTED_PROP = new PropertyTag<>(time,"Inserted",Date.class,"Time record was inserted in database");
 	public static final PropertyTag<String> TEXT_PROP = new PropertyTag<>(base,"Text",String.class,"Full text of accounting record as submitted");
