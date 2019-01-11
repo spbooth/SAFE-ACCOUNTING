@@ -36,8 +36,12 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.Link;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
+import uk.ac.ed.epcc.webapp.forms.FieldValidator;
+import uk.ac.ed.epcc.webapp.forms.Form;
+import uk.ac.ed.epcc.webapp.forms.FormValidator;
 import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
+import uk.ac.ed.epcc.webapp.forms.factory.FormCreator;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
@@ -49,12 +53,14 @@ import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.model.ParseFactory;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.FilterResult;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataNotFoundException;
 import uk.ac.ed.epcc.webapp.model.data.filter.SQLValueFilter;
+import uk.ac.ed.epcc.webapp.model.data.forms.Creator;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.timer.TimerService;
 
@@ -81,7 +87,11 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 		s.setField(ReportTemplate.REPORT_DESCRIPTION, new StringFieldType(false, null, c.getIntegerParameter("report.template.description.length", 255)));
 		s.setField(ReportTemplate.REPORT_GROUP, new StringFieldType(true, reportGroups.getDefaultGroup(), 32));
 		s.setOptionalField(ReportTemplateFactory.SORT_PRIORITY, new IntegerFieldType(false, 50));
-		
+		try {
+			s.new Index("name_index",true,ReportTemplate.TEMPLATE_NAME);
+		} catch (InvalidArgument e) {
+			c.getService(LoggerService.class).getLogger(getClass()).error("Error making index", e);
+		}
 		return s;
 	}
 	@Override
@@ -184,7 +194,32 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 		}
 		
 	}
-	
+	public class ReportTemplateCreator extends Creator<R>{
+
+		public ReportTemplateCreator() {
+			super(ReportTemplateFactory.this);
+		}
+
+		@Override
+		public void customiseCreationForm(Form f) throws Exception {
+			f.getField(ReportTemplate.TEMPLATE_NAME).addValidator(new FieldValidator<String>() {
+
+				@Override
+				public void validate(String data) throws FieldException {
+					try {
+						if( findByFileName(data) != null ) {
+							throw new ValidateException("Template "+data+" already in use");
+						}
+					} catch (DataException e) {
+						getLogger().error("error in validate", e);
+					}
+					
+				}
+			});
+			
+		}
+		
+	}
 	public static class ReportGroups {
 		
 		private static final String REPORT_GROUP_INDEX_CONFIG = "report_group_index";
@@ -341,5 +376,9 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 			}
 		}
 		
+	}
+	@Override
+	public FormCreator getFormCreator(AppContext c) {
+		return new ReportTemplateCreator();
 	}
 }
