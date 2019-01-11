@@ -23,7 +23,11 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 public class OrderClause<T> implements RecordSelector {
 	private final boolean descending;
 	private final PropExpression<T> expr;
-	
+	/**
+	 * 
+	 * @param descending  direction
+	 * @param e    {@link PropExpression} to order by
+	 */
 	public OrderClause(boolean descending,PropExpression<T> e) {
 		this.descending=descending;
 		this.expr=e;

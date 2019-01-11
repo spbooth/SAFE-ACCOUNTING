@@ -8,8 +8,6 @@ import uk.ac.ed.epcc.safe.accounting.db.UploadParseTargetInterfaceTest;
 import uk.ac.ed.epcc.safe.accounting.db.UploadParseTargetInterfaceTestImp;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactoryTestCase;
 import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
-import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCase;
-import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCaseImpl;
 import uk.ac.ed.epcc.safe.accounting.update.UploadContext;
 /** Abstract test case for {@link AllocationFactory}s
  * 
