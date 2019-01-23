@@ -82,6 +82,7 @@ import uk.ac.ed.epcc.webapp.forms.transition.TargetLessTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryVisitor;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
+import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -584,6 +585,30 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		return res;
 	}
 
+	/** Get a form input from a reference tag using the normal
+	 * access control restrictions
+	 * 
+	 * @param tag
+	 * @param narrow
+	 * @return
+	 */
+	public <X extends DataObject> DataObjectItemInput<X> getPropertyInput(ReferenceTag<X, ? extends DataObjectFactory<X>> tag, BaseFilter<X> narrow){
+		AccessorMap map = getAccessorMap();
+		SessionService sess = getContext().getService(SessionService.class);
+		String field = map.getField(tag);
+		if( field != null ){
+			IndexedProducer prod = tag.getFactory(getContext());
+			if( prod instanceof DataObjectFactory){
+				DataObjectFactory<X> dof = (DataObjectFactory) prod;
+				AndFilter<X> fil = new AndFilter<>(dof.getTarget(),dof.getFinalSelectFilter());
+				if( narrow != null) {
+					fil.addFilter(narrow);
+				}
+				return dof.getInput(sess.getRelationshipRoleFilter(dof, AllocationPeriodTransitionProvider.ALLOCATION_ADMIN_RELATIONSHIP, fil));				
+			}
+		}
+		return null;
+	}
 	public String getTargetName() {
 		return getTag();
 	}
