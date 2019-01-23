@@ -41,6 +41,7 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.result.ViewTransitionResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTargetlessTransition;
@@ -57,6 +58,8 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.model.data.transition.AbstractViewPathTransitionProvider;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.time.CalendarFieldSplitPeriod;
+import uk.ac.ed.epcc.webapp.time.Period;
 /** Provide a filtered view of allocations from a nested
  * {@link AllocationManager}. Transitions only implement changes to the filter
  * including changes of time period. The changes to the records themselves is handled by
@@ -84,13 +87,13 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 	public static final String ALLOCATION_ADMIN_RELATIONSHIP = "AllocationAdmin";
 
 
-	public static PeriodKey UP_KEY = new PeriodKey(">>>", "Go to next period");
+	public static PeriodKey UP_KEY = new ViewPeriodKey(">>>", "Go to next period");
 	public class UpTransition extends AbstractDirectTransition<AllocationPeriod>{
 
 		public FormResult doTransition(AllocationPeriod target, AppContext c)
 				throws TransitionException {
 			
-			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(target.getPeriod().up(), target.getIndex()));
+			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(((ViewPeriod)target.getPeriod()).up(), target.getIndex()));
 		}
 		
 	}
@@ -99,7 +102,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 		public FormResult doTransition(AllocationPeriod target, AppContext c)
 				throws TransitionException {
 			
-			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(target.getPeriod().down(), target.getIndex()));
+			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(((ViewPeriod)target.getPeriod()).down(), target.getIndex()));
 		}
 		
 	}
@@ -138,10 +141,18 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 		
 		public void buildForm(Form f, AllocationPeriod target, AppContext conn)
 				throws TransitionException {
-			CalendarFieldPeriodInput input = new CalendarFieldPeriodInput(Calendar.MONTH);
 			SessionService sess = conn.getService(SessionService.class);
-			input.setValue(target.getPeriod());
-			f.addInput("Period", "Period", input );
+			Period p = target.getPeriod();
+			if( p instanceof CalendarFieldSplitPeriod) {
+				CalendarFieldPeriodInput input = new CalendarFieldPeriodInput(Calendar.MONTH);
+				
+				input.setValue((CalendarFieldSplitPeriod)p);
+				f.addInput("Period", "Period", input );
+			}else {
+				SimplePeriodInput input = new SimplePeriodInput(1L, Calendar.MONTH);
+				input.setValue(p);
+				f.addInput("Period", "Period", input );
+			}
 			// If we have any references then allow filter on these.
 			PropertyMap map = target.getIndex(); 
 			for(ReferenceTag<?,?> tag : manager.getIndexProperties()){

@@ -17,15 +17,16 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.webapp.time.Period;
 
 public class AllocationPeriod implements PropertyTarget{
 
-	private final ViewPeriod period;
+	private final Period period;
 	private final PropertyMap index;
 	public AllocationPeriod(ViewPeriod period) {
 		this(period,new PropertyMap());
 	}
-	public AllocationPeriod(ViewPeriod period, PropertyMap map){
+	public AllocationPeriod(Period period, PropertyMap map){
 		this.period=period;
 		this.index = map;
 	}
@@ -33,7 +34,7 @@ public class AllocationPeriod implements PropertyTarget{
 	public PropertyMap getIndex(){
 		return index;
 	}
-	public ViewPeriod getPeriod(){
+	public Period getPeriod(){
 		return period;
 	}
 	@Override

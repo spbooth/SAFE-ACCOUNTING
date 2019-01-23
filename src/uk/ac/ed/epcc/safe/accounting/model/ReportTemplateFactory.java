@@ -33,6 +33,7 @@ import org.xml.sax.SAXException;
 
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Link;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
@@ -290,6 +291,12 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 			if( timer != null) {
 				timer.stopTimer("ReportTemplate.getIndexTable");
 			}
+		}
+	}
+	
+	public void addIndexContent(ContentBuilder hb) {
+		if( ! useGroups()) {
+			
 		}
 	}
 
