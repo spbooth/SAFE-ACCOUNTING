@@ -87,13 +87,13 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 	public static final String ALLOCATION_ADMIN_RELATIONSHIP = "AllocationAdmin";
 
 
-	public static PeriodKey UP_KEY = new ViewPeriodKey(">>>", "Go to next period");
+	public static PeriodKey UP_KEY = new PeriodKey(">>>", "Go to next period");
 	public class UpTransition extends AbstractDirectTransition<AllocationPeriod>{
 
 		public FormResult doTransition(AllocationPeriod target, AppContext c)
 				throws TransitionException {
 			
-			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(((ViewPeriod)target.getPeriod()).up(), target.getIndex()));
+			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(target.getPeriod().up(), target.getIndex()));
 		}
 		
 	}
@@ -102,7 +102,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 		public FormResult doTransition(AllocationPeriod target, AppContext c)
 				throws TransitionException {
 			
-			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(((ViewPeriod)target.getPeriod()).down(), target.getIndex()));
+			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(target.getPeriod().down(), target.getIndex()));
 		}
 		
 	}

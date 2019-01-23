@@ -122,5 +122,25 @@ public class PropertyMap  implements PropertyContainer{
 	public void release(){
 		data.clear();
 	}
+	@Override
+	public int hashCode() {
+		return data.hashCode();
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PropertyMap other = (PropertyMap) obj;
+		if (data == null) {
+			if (other.data != null)
+				return false;
+		} else if (!data.equals(other.data))
+			return false;
+		return true;
+	}
 	
 }

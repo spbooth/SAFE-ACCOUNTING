@@ -21,12 +21,12 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 public class AllocationPeriod implements PropertyTarget{
 
-	private final Period period;
+	private final ViewPeriod period;
 	private final PropertyMap index;
 	public AllocationPeriod(ViewPeriod period) {
 		this(period,new PropertyMap());
 	}
-	public AllocationPeriod(Period period, PropertyMap map){
+	public AllocationPeriod(ViewPeriod period, PropertyMap map){
 		this.period=period;
 		this.index = map;
 	}
@@ -34,7 +34,7 @@ public class AllocationPeriod implements PropertyTarget{
 	public PropertyMap getIndex(){
 		return index;
 	}
-	public Period getPeriod(){
+	public ViewPeriod getPeriod(){
 		return period;
 	}
 	@Override
@@ -45,6 +45,35 @@ public class AllocationPeriod implements PropertyTarget{
 			return (T) period.getEnd();
 		}
 		return index.getProperty(tag, def);
+	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((index == null) ? 0 : index.hashCode());
+		result = prime * result + ((period == null) ? 0 : period.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AllocationPeriod other = (AllocationPeriod) obj;
+		if (index == null) {
+			if (other.index != null)
+				return false;
+		} else if (!index.equals(other.index))
+			return false;
+		if (period == null) {
+			if (other.period != null)
+				return false;
+		} else if (!period.equals(other.period))
+			return false;
+		return true;
 	}
 	
 
