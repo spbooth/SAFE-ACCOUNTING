@@ -84,7 +84,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
+import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
@@ -123,7 +123,6 @@ public class ParameterExtension extends ReportExtension {
 	private static final String FOR_ELEMENT = "For";
 	private static final String CONTENT_ELEM = "Content";
 	private static final String SOURCE_ATTR = "source";
-	public static final String PROPERTY_PARAM_PREFIX = "property:";
 	private static final String REPEAT_ELEMENT = "Repeat";
 	private static final String SPLITTER_PREFIX = "Splitter";
 	private static final String SPLIT_ATTR = "split";
@@ -138,6 +137,7 @@ public class ParameterExtension extends ReportExtension {
 	private static final String VALUE_ATTR = "value";
 	private static final String NAME_ATTR = "name";
 	static final String PARAMETER_DEF_ELEMENT = "ParameterDef";
+	static final String PARAMETER_STAGE_ELEMENT = "Stage";
 	public static final String PARAMETER_LOC = "http://safe.epcc.ed.ac.uk/parameter";	
 	public ParameterExtension(AppContext ctx, NumberFormat nf)
 			throws ParserConfigurationException {
@@ -152,16 +152,15 @@ public class ParameterExtension extends ReportExtension {
 	 * @throws Exception
 	 */
 	
-	public void buildReportParametersForm(Form form, Document reportTemplateDocument) throws Exception {
-	
+	public boolean buildReportParametersForm(FormResult self,Form form, Document reportTemplateDocument) throws Exception {
 		// Find the parameters which have been defined
 		NodeList paramNodes = reportTemplateDocument.getElementsByTagNameNS(
-				PARAMETER_LOC,PARAMETER_DEF_ELEMENT);
+				PARAMETER_LOC,"*");
 
 		for( int i=0; i < paramNodes.getLength() ; i++){
 			Element param =  (Element) paramNodes.item(i);
-			
-
+			switch( param.getLocalName()) {
+			case PARAMETER_DEF_ELEMENT:
 			// Get the name
 			String name = getAttribute(NAME_ATTR,param);
 			
@@ -193,8 +192,19 @@ public class ParameterExtension extends ReportExtension {
 				title=null;
 			}
 			form.addInput(name, label, title,input);
+			break;
+			case PARAMETER_STAGE_ELEMENT:
+				if( form.poll(self)) {
+					ReportBuilder.extractReportParametersFromForm(form, params);
+				}else {
+					return false;
+				}
+			break;
+			default:
+			}
 
 		}
+		return true;
 	}
 	protected Input<?> configureInput( Element param,
 			Input<?> input) {
@@ -483,7 +493,7 @@ public class ParameterExtension extends ReportExtension {
 	}
 
 	public boolean isSet(String name){
-		Object dat= getParameter(name);
+		Object dat= getFormParameter(name);
 		if( dat == null ){
 			return false;
 		}
@@ -495,44 +505,7 @@ public class ParameterExtension extends ReportExtension {
 		}
 		return true;
 	}
-	/** get a parameter value.
-	 * We can evaluate an expression on a parameter by using name[expr]syntax.
-	 * We can also extract configuration parameters by prefixing the name with
-	 * <em>property:</em>
-	 * @param name
-	 * @return
-	 */
-	private Object getParameter(String name) {
-		if( name.startsWith(PROPERTY_PARAM_PREFIX)){
-			return getContext().getInitParameter(name.substring(PROPERTY_PARAM_PREFIX.length()));
-		}
-		Object value = null;
-		if( params != null ){
-			if( name.contains("[")){
-				String parm_name = name.substring(0,name.indexOf("["));
-				String expr_str = name.substring(name.indexOf("[")+1);
-				if( expr_str.endsWith("]")){
-					expr_str=expr_str.substring(0, expr_str.lastIndexOf("]"));
-					value = params.get(parm_name);
-					ExpressionTarget et = ExpressionCast.getExpressionTarget(value);
-					if( et != null){
-						Parser p = et.getParser();
-						try {
-							return et.evaluateExpression(p.parse(expr_str));
-						} catch (Exception e) {
-							addError("Bad expression parameter", name, e);
-						}
-					}else{
-						addError("Bad parameter", "Invalid parameter expression "+name);
-						return null;
-					}
-				}
-			}
-			value = params.get(name);
-		}
-		
-		return value;
-	}
+	
 	/** Expand a template using properties from a Parameter 
 	 * 
 	 * @param name
@@ -542,7 +515,7 @@ public class ParameterExtension extends ReportExtension {
 	public DocumentFragment formatParameter(String name, NodeList template){
 		Document doc=getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
-		Object o = getParameter(name);
+		Object o = getFormParameter(name);
 		if( o != null && ! (o instanceof ExpressionTarget)){
 			o = ExpressionCast.getExpressionTarget(o);
 		}
@@ -761,7 +734,7 @@ public class ParameterExtension extends ReportExtension {
 			return getDocument().createDocumentFragment();
 		}
 		String parameterName = this.getAttribute(NAME_ATTR, element);
-		Object param = getParameter(parameterName);
+		Object param = getFormParameter(parameterName);
 		String parameterFormat = getAttribute(FORMAT_ATTR, element);
 		if( parameterName == null ){
 			addError("Missing name", "No name specified for Parameter element");
@@ -794,7 +767,7 @@ public class ParameterExtension extends ReportExtension {
 			// No name
 			return result;
 		}
-		Object param = getParameter(parameterName);
+		Object param = getFormParameter(parameterName);
 		
 		String variable = this.getAttribute(VAR_ATTR, element);
 		if( variable == null || variable.trim().length() == 0){

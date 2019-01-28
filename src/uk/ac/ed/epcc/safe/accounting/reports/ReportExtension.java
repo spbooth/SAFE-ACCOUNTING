@@ -42,6 +42,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 //import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
@@ -117,6 +119,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	protected static final String START_TIME = "StartTime";
 	protected static final String END_TIME = "EndTime";
 	public static final String PERIOD_NS = "http://safe.epcc.ed.ac.uk/period";
+	public static final String PROPERTY_PARAM_PREFIX = "property:";
 	protected static SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	private static SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
@@ -226,19 +229,43 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		return text;
 	}
-	/** Get a form parameter by name
-	 * 
+	/** get a parameter value.
+	 * We can evaluate an expression on a parameter by using name[expr]syntax.
+	 * We can also extract configuration parameters by prefixing the name with
+	 * <em>property:</em>
 	 * @param name
-	 * @return parameter
+	 * @return
 	 */
-	public Object getFormParameter(String name){
-		if( parameter_names != null && ! parameter_names.contains(name)){
-			addError("Bad Parameter Name", "Parameter name "+name+" not recognised");
+	public Object getFormParameter(String name) {
+		if( name.startsWith(PROPERTY_PARAM_PREFIX)){
+			return getContext().getInitParameter(name.substring(PROPERTY_PARAM_PREFIX.length()));
 		}
+		Object value = null;
 		if( params != null ){
-			return params.get(name);
+			if( name.contains("[")){
+				String parm_name = name.substring(0,name.indexOf("["));
+				String expr_str = name.substring(name.indexOf("[")+1);
+				if( expr_str.endsWith("]")){
+					expr_str=expr_str.substring(0, expr_str.lastIndexOf("]"));
+					value = params.get(parm_name);
+					ExpressionTarget et = ExpressionCast.getExpressionTarget(value);
+					if( et != null){
+						Parser p = et.getParser();
+						try {
+							return et.evaluateExpression(p.parse(expr_str));
+						} catch (Exception e) {
+							addError("Bad expression parameter", name, e);
+						}
+					}else{
+						addError("Bad parameter", "Invalid parameter expression "+name);
+						return null;
+					}
+				}
+			}
+			value = params.get(name);
 		}
-		return null;
+		
+		return value;
 	}
 	
 	/** Get a Document object needed to create result Nodes
@@ -812,7 +839,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	    		return new DomValueFormatter(vf);
 	    	}
 	    	if( clazz != null ){
-	    		// finally look for a ValueFormatter
+	    		// finally look for a ValueParser
 	    		ValueParser parser = parse_vis.getValueParser(clazz, name);
 	    		if( parser != null ){
 	    			return new DomValueFormatter(parser);

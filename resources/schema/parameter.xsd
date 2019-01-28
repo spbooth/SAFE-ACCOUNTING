@@ -22,8 +22,15 @@
 
     
     
-
-	<xsd:element name="ParameterDef">
+    <xsd:element name="Stage">
+    <xsd:annotation>
+	<xsd:documentation>
+	Breaks the parameter form into stages
+	</xsd:documentation>
+	</xsd:annotation>
+    <xsd:complexType></xsd:complexType>
+    </xsd:element>
+    <xsd:element name="ParameterDef">
 	<xsd:annotation>
 	<xsd:documentation>
 	Defines an input to be included in the parameter form.
@@ -207,7 +214,9 @@
 			<xsd:documentation>
 				Identifies a parameter to be retrieved directly by an
 				extension. Only the name needs to be specified. This avoids having to format a parameter as XML and
-				re-parse the input elsewhere which would require two sets of format specifications.
+				re-parse the input elsewhere which would require two sets of format specifications. If the name starts with
+				property. the rest of the name is used as a configuration property to query. If the result object supports property expressions
+				these can be evaluated by adding the prop-expression after the property name in square brackets.
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>

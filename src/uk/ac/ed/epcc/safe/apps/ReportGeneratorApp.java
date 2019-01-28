@@ -219,7 +219,7 @@ public class ReportGeneratorApp implements Command {
 					if( result == null ){
 						CommandLauncher.die("Form parse failed");
 					}
-					reportBuilder.extractReportParametersFromForm(f, params);
+					ReportBuilder.extractReportParametersFromForm(f, params);
 					frame.dispose();
 				}else{
 					CommandLineForm f = new CommandLineForm(getContext());

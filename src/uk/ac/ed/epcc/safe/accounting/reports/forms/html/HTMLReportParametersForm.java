@@ -43,12 +43,13 @@ public class HTMLReportParametersForm {
 		this.params = params;
 		// initialise in constructor so we can trap exceptions in one place
 		htmlForm = new HTMLForm( reportBuilder.getContext());
-		reportBuilder.buildReportParametersForm(htmlForm, params);
-		if( type == null ){
-			// force a type parameter if we don't already have a type
-			ReportTypeInput input = reportBuilder.getReportTypeReg().new ReportTypeInput();
-			input.setOptional(false);
-//			htmlForm.addInput(ReportBuilder.REPORT_TYPE_PARAM, "Display Format",input );
+		if(reportBuilder.buildReportParametersForm(htmlForm, params)) {
+			if( type == null ){
+				// force a type parameter if we don't already have a type
+				ReportTypeInput input = reportBuilder.getReportTypeReg().new ReportTypeInput();
+				input.setOptional(false);
+				//			htmlForm.addInput(ReportBuilder.REPORT_TYPE_PARAM, "Display Format",input );
+			}
 		}
 	}
 
@@ -91,7 +92,7 @@ public class HTMLReportParametersForm {
 		}
 		
 		// next we ...
-		return reportBuilder.extractReportParametersFromForm(form, conn.getService(ServletService.class).getParams());
+		return ReportBuilder.extractReportParametersFromForm(form, conn.getService(ServletService.class).getParams());
 		
 	}
 

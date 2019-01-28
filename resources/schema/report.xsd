@@ -145,7 +145,7 @@
 				<xsd:element ref="SubSection" ></xsd:element>
 				<xsd:group ref="Content" />
 				<xsd:element ref="par:ParameterDef" />
-				
+				<xsd:element ref="par:Stage"/>
 				<xsd:element ref="par:Text" />
 				
 				<xsd:element ref="acc:RequireRole" />

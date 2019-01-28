@@ -79,6 +79,7 @@ import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.ItemInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
+import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.limits.LimitException;
 import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -698,22 +699,28 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 		return false;
 
 	}
-	public void buildReportParametersForm(Form form, Map<String, Object> params)
+	
+	public boolean buildReportParametersForm(Form form, Map<String, Object> params)
+			throws Exception {
+		return buildReportParametersForm(form, params, null);
+	}
+	public boolean buildReportParametersForm(Form form, Map<String, Object> params,FormResult self)
 			throws Exception {
 		ParameterExtension pe = (ParameterExtension) params
 				.get(PARAMETER_EXTENSION_TAG);
 		if (pe == null) {
 			pe = new ParameterExtension(getContext(), null);
 		}
-		pe.buildReportParametersForm(form, getParameterDocument());
+		boolean cont = pe.buildReportParametersForm(self,form, getParameterDocument());
 		ErrorSet es = pe.getErrors();
 		es.report(getContext());
 		if (es.size() > 0) {
 			throw new Exception("Error constructing parameter form");
 		}
+		return cont;
 	}
 
-	public boolean extractReportParametersFromForm(Form form,
+	public static boolean extractReportParametersFromForm(Form form,
 			Map<String, Object> params) {
 		if (form == null || ! form.validate()) {
 			return false;
@@ -730,7 +737,7 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 
 	}
 
-	private void setInputValue(Map<String, Object> params, Input input) {
+	static void setInputValue(Map<String, Object> params, Input input) {
 		Object data = null;
 		if (input instanceof ItemInput ) {
 			data = ((ItemInput) input).getItem();

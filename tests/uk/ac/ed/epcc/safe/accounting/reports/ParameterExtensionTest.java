@@ -104,7 +104,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		CalendarFieldSplitPeriod period = new CalendarFieldSplitPeriod(c, Calendar.MONTH, 3, 4);
 		((CalendarFieldPeriodInput)form.getInput("Period")).setValue(period);
 	
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 		
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -134,7 +134,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		
 		((LongInput)form.getInput("MyLong")).setValue(123456789l);
 	
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 		
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -166,7 +166,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		((IntegerInput)form.getInput("MyInteger")).setValue(1234);
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 	
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -201,7 +201,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		((RealInput)form.getInput("MyFloat")).setValue(12.34f);
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -235,7 +235,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		((DoubleInput)form.getInput("MyDouble")).setValue(1.234E103);
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -270,7 +270,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		((TextInput)form.getInput("MyString")).setValue("Mary had a little lamb");
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 		
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -305,7 +305,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		((ParseInput)form.getInput("MyDate")).parse("2008-09-27");
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 		
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -340,7 +340,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		((TimeStampInput)form.getInput("MyTimeStamp")).parse("2008-09-27 14:00:07");
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -375,7 +375,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		((BooleanInput)form.getInput("MyBoolean")).setValue(true);
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -411,7 +411,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		((ListInput)form.getInput("ListString")).setValue("bar");
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -448,7 +448,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		((DataObjectItemInput<? extends DataObject>)form.getInput("MyMachine")).setValue(1);
 		
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -487,7 +487,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		((DataObjectItemInput<? extends DataObject>)form.getInput("Derived")).setValue(target.getID());
 		
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -526,7 +526,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		((DataObjectItemInput<? extends DataObject>)form.getInput("DoubleDerived")).setValue(target.getID());
 		
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -620,7 +620,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		assertEquals("Wrong default value", form.getInput("Default").getValue(),"Bob");
 		
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);	
+		ReportBuilder.extractReportParametersFromForm(form, params);	
 
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -661,7 +661,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		input.setValue("Jane");
 		
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);	
+		ReportBuilder.extractReportParametersFromForm(form, params);	
 
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -709,7 +709,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 				"123456789 123456789 123456789 123456789 123456789 ");
 		
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);
+		ReportBuilder.extractReportParametersFromForm(form, params);
 
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -775,7 +775,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		reportBuilder.buildReportParametersForm(form, params);
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);	
+		ReportBuilder.extractReportParametersFromForm(form, params);	
 		
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -809,7 +809,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		reportBuilder.buildReportParametersForm(form, params);
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);	
+		ReportBuilder.extractReportParametersFromForm(form, params);	
 		
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -841,7 +841,7 @@ public void testParameterUserExpression() throws Exception {
 		reportBuilder.buildReportParametersForm(form, params);
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);	
+		ReportBuilder.extractReportParametersFromForm(form, params);	
 		
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -874,7 +874,7 @@ public void testParameterUserExpression() throws Exception {
 		reportBuilder.buildReportParametersForm(form, params);
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);	
+		ReportBuilder.extractReportParametersFromForm(form, params);	
 		params.put("ReportType", ReportTypeRegistry.HTML);
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -908,7 +908,7 @@ public void testParameterReportType2() throws Exception {
 		reportBuilder.buildReportParametersForm(form, params);
 
 		// Get the params values from the Form
-		reportBuilder.extractReportParametersFromForm(form, params);	
+		ReportBuilder.extractReportParametersFromForm(form, params);	
 		params.put("ReportType", reportBuilder.getReportTypeReg().getReportType("XML"));
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -944,7 +944,7 @@ public void testParameterReportType3() throws Exception {
 	reportBuilder.buildReportParametersForm(form, params);
 
 	// Get the params values from the Form
-	reportBuilder.extractReportParametersFromForm(form, params);	
+	ReportBuilder.extractReportParametersFromForm(form, params);	
 	params.put("ReportType", reportBuilder.getReportTypeReg().getReportType("CSV"));
 	// render the form
 	ByteArrayOutputStream out = new ByteArrayOutputStream();

@@ -240,16 +240,16 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				ReportBuilder builder = ReportBuilder.getInstance(conn);
 				ReportBuilder.setTemplate(conn, builder, target.getName());
 				Map<String, Object> parameters = target.getParameters();
-				builder.buildReportParametersForm(f, parameters);
-				setMap(parameters, target.getContextParameters(), f, false);
-				if( builder.hasReportParameters()){
-					f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,PREVIEW,false));
+				if( builder.buildReportParametersForm(f, parameters,new ChainedTransitionResult<>(ReportTemplateTransitionProvider.this, target, PREVIEW))) {
+					setMap(parameters, target.getContextParameters(), f, false);
+					if( builder.hasReportParameters()){
+						f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,PREVIEW,false));
+					}
+					boolean new_window=DOWNLOAD_FROM_NEW_TAB.isEnabled(conn);
+					f.addAction("HTML", new NextAction(new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, HTML,new_window));
+					f.addAction("PDF", new NextAction(new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target,PDF,new_window));
+					f.addAction("CSV", new NextAction(new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, CSV,new_window));
 				}
-				boolean new_window=DOWNLOAD_FROM_NEW_TAB.isEnabled(conn);
-				f.addAction("HTML", new NextAction(new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, HTML,new_window));
-				f.addAction("PDF", new NextAction(new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target,PDF,new_window));
-				f.addAction("CSV", new NextAction(new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, CSV,new_window));
-				
 			}
 			catch (Exception e) {
 				getLogger().error("Error creating report form", e);
@@ -455,7 +455,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			return null;
 		}
 		Map<String, Object> params = new HashMap<>(reportParameters);
-		boolean isValid = builder.extractReportParametersFromForm(form, params);
+		boolean isValid = ReportBuilder.extractReportParametersFromForm(form, params);
 		if (!isValid) {
 			return null;
 		}
