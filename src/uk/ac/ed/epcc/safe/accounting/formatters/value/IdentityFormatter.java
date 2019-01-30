@@ -20,7 +20,7 @@ import uk.ac.ed.epcc.webapp.Description;
 import uk.ac.ed.epcc.webapp.forms.Identified;
 
 
-@Description("Generate the id number of the target")
+@Description("Generate the Identity string of the target")
 public class IdentityFormatter implements DomFormatter<Identified> {
 
 	public Class<Identified> getTarget() {
