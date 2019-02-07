@@ -25,7 +25,8 @@
     <xsd:element name="Stage">
     <xsd:annotation>
 	<xsd:documentation>
-	Breaks the parameter form into stages
+	Breaks the parameter form into stages. This allows ParameterDef elements after the stage
+	to use the value of parameters set before the stage element.
 	</xsd:documentation>
 	</xsd:annotation>
     <xsd:complexType></xsd:complexType>
