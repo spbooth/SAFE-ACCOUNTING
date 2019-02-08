@@ -38,28 +38,32 @@
 	</xsd:documentation>
 	</xsd:annotation>
 	<xsd:complexType>
-		<xsd:choice>
-			<xsd:sequence>
-				<xsd:element name="Choice" type="xsd:string"
-					minOccurs="0" maxOccurs="unbounded">
+		<xsd:sequence>
+			<xsd:choice>
+				<xsd:sequence>
+					<xsd:element name="Choice" type="xsd:string"
+						minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation>
+							A possible choice for an input of type List
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			
+				<xsd:element ref="fil:Filter">
 					<xsd:annotation>
 						<xsd:documentation>
-							A possible choice for an input of type List
-						</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-			</xsd:sequence>
-			<xsd:element ref="fil:Filter">
-				<xsd:annotation>
-					<xsd:documentation>
 						A filter selecting possible values for a type
 						that resolves to a FilterInput class. These can
 						also be used to further narrow the selection of
 						a role based input if the target factory
 						implements ExpressionTargetFactory.
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element ref="FilterPolicy"/>
+			</xsd:choice>
 			<xsd:element name="Value" type="ValueType"
 				maxOccurs="unbounded" minOccurs="0">
 				<xsd:annotation>
@@ -70,7 +74,7 @@
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-		</xsd:choice>
+		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required">
 			<xsd:annotation>
 				<xsd:documentation>
@@ -223,6 +227,22 @@
 		<xsd:complexType>
 		<xsd:attribute name="name" type="xsd:string" use="required">
 		<xsd:annotation><xsd:documentation>Name of the parameter</xsd:documentation></xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="FilterPolicy">
+	<xsd:complexType>
+		<xsd:sequence>
+		    <xsd:annotation><xsd:documentation>Argument list</xsd:documentation></xsd:annotation>
+			<xsd:element ref="ParameterRef" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					Name of the policy
+				</xsd:documentation>
+			</xsd:annotation>
 		</xsd:attribute>
 	</xsd:complexType>
 	</xsd:element>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><transition_page>
+<Title>View Report</Title>
+<PageHeading>View Report</PageHeading>
+<SummaryContent/>
+<ExtraContent>
+<h4>Report Parameters</h4>
+<div class="para">Enter the parameters and click 'Preview' to view the report, or click on the report type to generate the report.</div>
+</ExtraContent>
+<Form>
+<table class="form">
+<tr class="even">
+<th>
+<label for="transition_MyMachine" class="required">MyMachine</label>
+</th>
+<td>
+<select id="transition_MyMachine" name="MyMachine" class="input" required="required">
+<option value="1" selected="selected">Junk</option>
+<option value="3">Stuff</option>
+<option value="2">Trash</option>
+</select>
+</td>
+</tr>
+</table>
+<fieldset class="action_buttons">
+<input class="input_button" type="submit" name="Next" value="Next"/>
+</fieldset>
+</Form>
+</transition_page>

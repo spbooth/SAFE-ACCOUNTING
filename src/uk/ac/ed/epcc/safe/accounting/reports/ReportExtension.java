@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -96,6 +97,8 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  */
 public abstract class ReportExtension extends SelectBuilder implements Contexed, TemplateValidator{
 	
+	private static final String NAME_ATTR = "name";
+	private static final String PARAMETER_REF_NAME = "ParameterRef";
 	private static final String MAXIMUM_INTEGER_DIGITS = "max_integer";
 	private static final String MINIMUM_INTEGER_DIGITS = "min_integer";
 	private static final String MAXIMUM_FRACTIONAL_DIGITS = "max_fraction";
@@ -332,12 +335,27 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * @return
 	 */
 	protected Object getParameterRef(Element e){
-		NodeList list = e.getElementsByTagNameNS(ReportBuilder.PARAMETER_LOC, "ParameterRef");
+		NodeList list = e.getElementsByTagNameNS(ReportBuilder.PARAMETER_LOC, PARAMETER_REF_NAME);
 		if( list.getLength()==1){
 			Element ref = (Element) list.item(0);
-			return getFormParameter(ref.getAttribute("name"));
+			return getFormParameter(ref.getAttribute(NAME_ATTR));
 		}
 		return null;
+	}
+	/** get an array from all the child ParameterRef elements
+	 * 
+	 * @param e
+	 * @return
+	 */
+	protected LinkedList getParameterRefList(Element e) {
+		LinkedList list = new LinkedList();
+		NodeList paramNodes = e.getElementsByTagNameNS(
+				ReportBuilder.PARAMETER_LOC,PARAMETER_REF_NAME);
+		for(int i=0 ; i < paramNodes.getLength() ; i++) {
+			Element ref = (Element) paramNodes.item(i);
+			list.add(getFormParameter(ref.getAttribute(NAME_ATTR)));
+		}
+		return list;
 	}
 	/** Test for existance of a ParameterRef
 	 * 
@@ -346,7 +364,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 */
 	protected boolean hasParameterRef(Element e){
 		//String s = makeString(e);
-		NodeList elems = e.getElementsByTagNameNS(ReportBuilder.PARAMETER_LOC, "ParameterRef");
+		NodeList elems = e.getElementsByTagNameNS(ReportBuilder.PARAMETER_LOC, PARAMETER_REF_NAME);
 		return elems.getLength()==1;
 	}
 	
