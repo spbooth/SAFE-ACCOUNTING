@@ -249,8 +249,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 					}
 				}
 				if( builder.buildReportParametersForm(f, parameters,new ChainedTransitionResult<>(ReportTemplateTransitionProvider.this, target, PREVIEW))) {
-					// regresssion
-					//setMap(parameters, target.getContextParameters(), f, false);
+					setMap(parameters, target.getContextParameters(), f, false);
 					if( builder.hasReportParameters()){
 						f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,PREVIEW,false));
 					}

@@ -204,10 +204,10 @@ public class ParameterExtension extends ReportExtension {
 			// this ensures multi-stage form will validate
 			// while being built if early stages are set from params
 			
-			//regression
-			//if( params.containsKey(name)) {
-			//	input.accept(setter);
-			//}
+			
+			if( params.containsKey(name)) {
+				input.accept(setter);
+			}
 			break;
 			case PARAMETER_STAGE_ELEMENT:
 				if( form.poll(self)) {

@@ -86,7 +86,6 @@ public class SetParamsVisitor implements InputVisitor<Object> {
     }
     @Override
 	public Object visitLockedInput(LockedInput l) throws Exception {
-		
 		return l.getNested().accept(this);
 	}
 	@Override
@@ -120,7 +119,12 @@ public class SetParamsVisitor implements InputVisitor<Object> {
             	}
             }else {
             	// This should cover item inputs
-            	input.setValue(input.convert(o));
+            	T x = input.convert(o);
+            	if( x != null ) {
+            		input.setValue(x);
+            	}else if (!(input instanceof OptionalInput)) {
+            		missing = true;
+            	}
             }
         }
         return null;
