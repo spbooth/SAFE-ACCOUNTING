@@ -82,14 +82,13 @@ public class SetParamsVisitor implements InputVisitor<Object> {
     }
     @Override
     public Object visitUnmodifyableInput(UnmodifiableInput input) throws Exception {
-        if (set_map) {
-            if (input instanceof LockedInput<?>) {
-                return visitBaseInput((LockedInput<?>)input);
-            }
-        }
         return null;
     }
     @Override
+	public Object visitLockedInput(LockedInput l) throws Exception {
+		return l.getNested().accept(this);
+	}
+	@Override
     public Object visitFileInput(FileInput input) throws Exception {
         return null;
     }
@@ -105,16 +104,27 @@ public class SetParamsVisitor implements InputVisitor<Object> {
                 params.put(input.getKey(),input.getString(value));
             }
         }else{
-            String s = (String) params.get(input.getKey());
-            if( s != null ){
-                if( input instanceof ParseInput){
-                    ((ParseInput<T>)input).parse(s);
-                }else{
-                    input.setValue(input.convert(s));
-                }
-            }
-            else if (!(input instanceof OptionalInput)) {
-                missing = true;
+            Object o = params.get(input.getKey());
+            if( o instanceof String) {
+            	String s = (String) o;
+            	if( s != null ){
+            		if( input instanceof ParseInput){
+            			((ParseInput<T>)input).parse(s);
+            		}else{
+            			input.setValue(input.convert(s));
+            		}
+            	}
+            	else if (!(input instanceof OptionalInput)) {
+            		missing = true;
+            	}
+            }else {
+            	// This should cover item inputs
+            	T x = input.convert(o);
+            	if( x != null ) {
+            		input.setValue(x);
+            	}else if (!(input instanceof OptionalInput)) {
+            		missing = true;
+            	}
             }
         }
         return null;

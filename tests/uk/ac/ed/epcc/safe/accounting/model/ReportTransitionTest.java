@@ -9,13 +9,19 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.TestTimeService;
+import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
+import uk.ac.ed.epcc.webapp.forms.html.BaseHTMLForm;
 import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
+import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
+import uk.ac.ed.epcc.webapp.model.Classification;
+import uk.ac.ed.epcc.webapp.model.ClassificationFactory;
 import uk.ac.ed.epcc.webapp.model.data.stream.MimeStreamData;
 import uk.ac.ed.epcc.webapp.model.serv.ServeDataProducer;
 import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
@@ -182,5 +188,42 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		System.out.println(result);
 		assertEquals(getResourceAsString("SimpleTestReport.csv").replaceAll("\r\n", "\n"), result.replaceAll("\r\n", "\n"));
 		
+	}
+	
+	
+	@Test
+	public void testMultiStage() throws Exception {
+		
+		ClassificationFactory m_fac = ctx.makeObject(ClassificationFactory.class, "Machine");
+		Classification junk = m_fac.makeFromString("Junk");
+		Classification trash = m_fac.makeFromString("Trash");
+		Classification stuff = m_fac.makeFromString("Stuff");
+		setupPerson("fred@example.com");
+		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(ctx);
+		Report report = new Report("testMultiStage.xml");
+		
+		setTransition(prov, ReportTemplateTransitionProvider.PREVIEW, report);
+		//runTransition();
+		//checkForward("/scripts/transition.jsp");
+		checkFormContent("/normalize.xsl", "initial_multi.xml");
+		addParam("MyMachine",1);
+		runTransition();
+		
+		//report = new Report("testMultiStage.xml",params);
+		checkForwardToTransition(prov, ReportTemplateTransitionProvider.PREVIEW, report);
+		checkFormContent("/normalize.xsl", "next_multi.xml");
+		addParam("MyMachine2",1);
+		setAction("Preview");
+		runTransition();
+		
+		Map<String,Object> params = new LinkedHashMap<>();
+		
+		params.put("MyMachine", 1);
+		params.put("MyMachine2", 1);
+		params.put(BaseHTMLForm.FORM_STAGE_INPUT, "1");
+		
+		report = new Report("testMultiStage.xml",params);
+		checkRedirectToTransition(prov, ReportTemplateTransitionProvider.PREVIEW, report);
+		checkFormContent("/normalize.xsl", "result_multi.xml");
 	}
 }

@@ -16,11 +16,14 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.reports;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -45,6 +48,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter;
+import uk.ac.ed.epcc.safe.accounting.model.SetParamsVisitor;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserService;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
@@ -85,8 +89,10 @@ import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
+import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.FilterPolicy;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
@@ -153,6 +159,8 @@ public class ParameterExtension extends ReportExtension {
 	 */
 	
 	public boolean buildReportParametersForm(FormResult self,Form form, Document reportTemplateDocument) throws Exception {
+		SetParamsVisitor setter = new SetParamsVisitor(false, params);
+		
 		// Find the parameters which have been defined
 		NodeList paramNodes = reportTemplateDocument.getElementsByTagNameNS(
 				PARAMETER_LOC,"*");
@@ -192,9 +200,18 @@ public class ParameterExtension extends ReportExtension {
 				title=null;
 			}
 			form.addInput(name, label, title,input);
+			// set any value from params
+			// this ensures multi-stage form will validate
+			// while being built if early stages are set from params
+			
+			
+			if( params.containsKey(name)) {
+				input.accept(setter);
+			}
 			break;
 			case PARAMETER_STAGE_ELEMENT:
 				if( form.poll(self)) {
+					assert(params != null);
 					ReportBuilder.extractReportParametersFromForm(form, params);
 				}else {
 					return false;
@@ -456,7 +473,34 @@ public class ParameterExtension extends ReportExtension {
 
 		throw new ParameterParseException("Invalid parameter type "+type);
 	}
-	private BaseFilter getFilter(Element e,IndexedProducer prod) throws Exception {
+	private BaseFilter getFilterFromPolicy(DataObjectFactory fac,Element e) {
+		String name = e.getAttribute("name");
+		if( name == null ) {
+			addError("bad FilterPolicy","No name attribute", e);
+			return null;
+		}
+		Class<? extends FilterPolicy> clazz = getContext().getPropertyClass(FilterPolicy.class, name);
+		if( clazz == null ) {
+			addError("bad FilterPolicy","No class definition for "+name, e);
+			return null;
+		}
+		LinkedList list = getParameterRefList(e);
+		list.addFirst(fac);
+		Object args[] = list.toArray();
+		Constructor<? extends FilterPolicy> cons = getContext().findConstructor(clazz, args);
+		if( cons == null ) {
+			addError("bad FilterPolicy","No matching constructor for "+clazz.getSimpleName(), e);
+			return null;
+		}
+		try {
+			return cons.newInstance(args).getFilter();
+		} catch (Exception e1) {
+			addError("bad FilterPolicy","Error constructing "+clazz.getSimpleName(), e1);
+			return null;
+		}
+	}
+	private BaseFilter getFilter(Element e,DataObjectFactory prod) throws Exception {
+		AndFilter result = new AndFilter(prod.getTarget());
 		ExpressionTargetFactory ptf = ExpressionCast.getExpressionTargetFactory(prod);
 		if( ptf != null){
 			// If factory implements the correct interface further narrow the selection using
@@ -481,10 +525,21 @@ public class ParameterExtension extends ReportExtension {
 						  }
 					  }	  
 				}
-				return (BaseFilter) ptf.getAccessorMap().getFilter(selector);
+				result.addFilter( (BaseFilter) ptf.getAccessorMap().getFilter(selector));
 			}
 		}
-		return null;
+		NodeList policyNodes = e.getElementsByTagNameNS(PARAMETER_LOC, "FilterPolicy");
+		AndFilter and = new AndFilter<>(prod.getTarget());
+		for( int i=0 ; i < policyNodes.getLength() ; i++) {
+			BaseFilter f = getFilterFromPolicy(prod,(Element) policyNodes.item(i));
+			if( f != null ) {
+				result.addFilter(f);
+			}
+		}
+		if( result.isEmpty()) {
+			return null;
+		}
+		return result;
 	}
 	
 	public DocumentFragment value(Node node) throws DOMException, Exception{

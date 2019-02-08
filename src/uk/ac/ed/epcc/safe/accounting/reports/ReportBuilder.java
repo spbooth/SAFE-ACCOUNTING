@@ -78,6 +78,7 @@ import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.ItemInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.LockedInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.limits.LimitException;
@@ -710,6 +711,7 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 				.get(PARAMETER_EXTENSION_TAG);
 		if (pe == null) {
 			pe = new ParameterExtension(getContext(), null);
+			pe.setParams(params.keySet(), params);
 		}
 		boolean cont = pe.buildReportParametersForm(self,form, getParameterDocument());
 		ErrorSet es = pe.getErrors();
@@ -738,6 +740,9 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 	}
 
 	static void setInputValue(Map<String, Object> params, Input input) {
+		if( input instanceof LockedInput) {
+			input = ((LockedInput)input).getNested();
+		}
 		Object data = null;
 		if (input instanceof ItemInput ) {
 			data = ((ItemInput) input).getItem();

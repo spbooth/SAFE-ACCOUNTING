@@ -46,6 +46,7 @@ import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
+import uk.ac.ed.epcc.webapp.forms.html.BaseHTMLForm;
 import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.result.MessageResult;
@@ -240,6 +241,13 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				ReportBuilder builder = ReportBuilder.getInstance(conn);
 				ReportBuilder.setTemplate(conn, builder, target.getName());
 				Map<String, Object> parameters = target.getParameters();
+				String param_stage = (String) parameters.get(BaseHTMLForm.FORM_STAGE_INPUT);
+				if( param_stage != null) {
+					int ps = Integer.parseInt(param_stage);
+					if( ps > f.getTargetStage()) {
+						f.setTargetStage(ps);
+					}
+				}
 				if( builder.buildReportParametersForm(f, parameters,new ChainedTransitionResult<>(ReportTemplateTransitionProvider.this, target, PREVIEW))) {
 					setMap(parameters, target.getContextParameters(), f, false);
 					if( builder.hasReportParameters()){
@@ -258,7 +266,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		
 
 		@Override
-		public <X extends ContentBuilder> X getExtraHtml(X cb, SessionService<?> op, Report target) {
+		public <X extends ContentBuilder> X getExtraHtml(X cb, SessionService<?> op, Report target,Form f) {
 			ReportTemplate template = getReportTemplate(target);
 			// name now shown in primary header
 			//cb.addHeading(3, template.getReportName());
@@ -266,13 +274,22 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				cb.addText(template.getReportDescription());
 			}
 			try {
-				addPreview(getContext(), cb, target);
+				if( f.isComplete()) {
+					addPreview(getContext(), cb, target);
+				}
 			} catch (Exception e) {
 				getLogger().error("Error creating preview", e);
 			}
 			cb.addHeading(4, "Report Parameters");
 			cb.addText("Enter the parameters and click 'Preview' to view the report, or click on the report type to generate the report.");
 			
+			return cb;
+		}
+
+
+		@Override
+		public <X extends ContentBuilder> X getExtraHtml(X cb, SessionService<?> op, Report target) {
+			cb.addText("Something looks wrong here!!!");
 			return cb;
 		}
 	}
@@ -425,11 +442,16 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		LinkedHashMap<String,Object> new_param = new LinkedHashMap<>();
 		Map<String, Object> param = orig.getParameters();
 		Collection<String> contextParameters = orig.getContextParameters();
-		setMap(new_param, orig.getContextParameters(), f, true);
+		setMap(new_param, contextParameters, f, true);
 		for (String c : contextParameters) {
 			new_param.put(c, param.get(c));
 		}
-		return new Report(orig.getName(), new_param, orig.getContextParameters());
+		int target = f.getTargetStage();
+		if( target> 0) {
+			// record form stage
+			new_param.put(BaseHTMLForm.FORM_STAGE_INPUT, Integer.toString(target));
+		}
+		return new Report(orig.getName(), new_param, contextParameters);
 	}
 	/** convert the target into the equivalent of the parse
 	 * 
@@ -510,6 +532,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			text.addContent(para);
 			para.appendParent();
 		} catch (Exception e) {
+			getLogger().debug("Error making paramter form", e);
 			hasErrors = true;
 			cb.addText("An error ocurred when generating the report.");
 		}			
