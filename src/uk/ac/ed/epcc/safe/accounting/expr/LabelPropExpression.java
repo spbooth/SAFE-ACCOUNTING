@@ -15,7 +15,6 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.webapp.content.FormatProvider;
 import uk.ac.ed.epcc.webapp.content.Labeller;
 /** A PropExpression that maps a nested expression to a String
  * using a {@link Labeller}

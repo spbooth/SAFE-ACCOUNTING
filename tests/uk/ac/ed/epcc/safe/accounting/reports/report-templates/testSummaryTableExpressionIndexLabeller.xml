@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!-- Copyright - The University of Edinburgh 2015 -->
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<per:Period>
+	<per:StartTime>26-09-2008</per:StartTime>
+</per:Period>
+<Section>
+<Heading>Service table</Heading>	
+<tab:SummaryTable>
+	<tab:Index labeller="Power2RangeLabeller">				
+		<tab:Name>Pairs</tab:Name>		
+		<tab:Property>@INT(CPUs/2)</tab:Property>
+	</tab:Index>	       
+	<tab:SumColumn>
+		<tab:Name>Time</tab:Name>
+		<tab:Property>Wall</tab:Property>
+	</tab:SumColumn>				
+	<tab:TotalColumn>				
+		<tab:Name>Total</tab:Name>			
+		<tab:Column>Time</tab:Column>				
+	</tab:TotalColumn>			
+	<tab:SortBy>
+		<tab:Columns>Pairs</tab:Columns>
+	</tab:SortBy>
+</tab:SummaryTable>	
+</Section>
+</Report>

@@ -82,7 +82,18 @@ public class TableExtensionTest extends ExtensionTestCase {
 		testTables("xml", "testSummaryTable.xml",new File(getOutputDir()+"SummaryTable.xml"));
 		
 	}
-
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testSummaryTableExpressionIndex() throws Exception {
+		testTables("csv", "testSummaryTableExpressionIndex.xml",new File(getOutputDir()+"SummaryTableExpressionIndex.csv"));
+		
+	}
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testSummaryTableExpressionIndexLabeller() throws Exception {
+		testTables("csv", "testSummaryTableExpressionIndexLabeller.xml",new File(getOutputDir()+"SummaryTableExpressionIndexLabeller.csv"));
+		
+	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testTableWithDerviedProperty() throws Exception {	

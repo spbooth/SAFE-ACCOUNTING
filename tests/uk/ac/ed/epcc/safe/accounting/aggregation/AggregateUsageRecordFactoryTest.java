@@ -60,22 +60,23 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 		assertNotNull(orig);
 		PropExpressionMap agg = fac.getDerivedProperties();
 		assertNotNull(agg);
-		
+		int i=0;
 		for(PropertyTag t : orig.keySet()){
+			i++;
 			PropExpression orig_expr = orig.get(t);
 			assertNotNull(orig_expr);
 			//System.out.println(orig_expr.toString());
 			if( orig_expr.getTarget() != Date.class){
-			PropExpression agg_expr = agg.get(t);
-			
-			if( agg_expr != null ){ 
-			
-			//System.out.println(agg_expr.toString());
-			
-				assertTrue(orig_expr.equals(agg_expr));
-			}else{
-				System.out.println("Not implmented in aggregate");
-			}
+				PropExpression agg_expr = agg.get(t);
+
+				if( agg_expr != null ){ 
+
+					//System.out.println(agg_expr.toString());
+
+					assertTrue(t.toString(),orig_expr.equals(agg_expr));
+				}else{
+					System.out.println(""+i+" "+t.toString()+"="+orig_expr+" Not implmented in aggregate");
+				}
 			}
 		}
 	}

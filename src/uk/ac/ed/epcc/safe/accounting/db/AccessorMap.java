@@ -116,6 +116,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
 public abstract class AccessorMap<X> extends AbstractContexed implements ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
 	public static final Feature EVALUATE_CACHE_FEATURE = new Feature("evaluate.cache",true,"cache expression evaluations in ExpressionTargets");
 	public static final Feature FORCE_SQLVALUE_FEATURE = new Feature("accounting.force_sqlvalue",false,"Use SQLValues in preference to SQLExpressions");
+	public static final Feature PREFER_NESTED_EXPR_FEATURE = new Feature("accouning.prefer_nested_sqlexpressions",true,"Prefer the use of SQLExpressions as inner parts of SQLValues");
 	protected final Class<X> target;
 	
 	protected final String config_tag;
@@ -378,8 +379,23 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		
 	}
 	public class SQLValueVisitor extends CreateSQLValuePropExpressionVisitor{
-		public SQLValueVisitor(AppContext c) {
+		@Override
+		protected <T> SQLValue<T> process(PropExpression<T> e) throws Exception {
+			if( exp != null) {
+				try {
+					return e.accept(exp);
+				}catch(InvalidSQLPropertyException e1) {
+					
+				}catch(Exception e1) {
+					getLogger().error("Error attempting SQLExpression", e1);
+				}
+			}
+			return super.process(e);
+		}
+		private final SQLExpressionVisitor exp;
+		public SQLValueVisitor(AppContext c,SQLExpressionVisitor exp) {
 			super(target,c);
+			this.exp=exp;
 		}
 		private Set<PropertyTag> missing = new HashSet<>();
 		public SQLValue visitPropertyTag(PropertyTag<?> tag)
@@ -564,6 +580,13 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	
 
 	private SQLExpressionVisitor sql_expression_visitor = null;
+	
+	private SQLExpressionVisitor getSQLExpressionVisitor() {
+		if( sql_expression_visitor == null ){
+			sql_expression_visitor= new SQLExpressionVisitor(getContext());
+		}
+		return sql_expression_visitor;
+	}
 	@SuppressWarnings("unchecked")
 	public final <T> SQLExpression<T> getSQLExpression(PropExpression<T> expr) throws InvalidSQLPropertyException {
 	
@@ -577,11 +600,9 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		if( FORCE_SQLVALUE_FEATURE.isEnabled(getContext())) {
 			throw new InvalidSQLPropertyException(expr);
 		}
-		if( sql_expression_visitor == null ){
-			sql_expression_visitor= new SQLExpressionVisitor(getContext());
-		}
+		
 		try {
-			return expr.accept(sql_expression_visitor);
+			return expr.accept(getSQLExpressionVisitor());
 		}catch(InvalidSQLPropertyException ee){
 			throw ee;
 		} catch (Exception e) {
@@ -611,7 +632,8 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		}
 		//log.debug("Get SQLValue for"+expr.toString());
 		if( sql_value_visitor == null ){
-			sql_value_visitor= new SQLValueVisitor(getContext());
+			boolean use_expr = PREFER_NESTED_EXPR_FEATURE.isEnabled(getContext()) && ! FORCE_SQLVALUE_FEATURE.isEnabled(getContext());
+			sql_value_visitor= new SQLValueVisitor(getContext(),use_expr? getSQLExpressionVisitor(): null);
 		}
 		try {
 			return expr.accept(sql_value_visitor);

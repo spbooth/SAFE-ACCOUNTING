@@ -4,7 +4,6 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 
