@@ -481,8 +481,10 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 	public void validate(String schema_name, Source src)
 	throws SAXException, IOException, DataFault {
 		Schema s = getSchema(schema_name);
-		Validator val = s.newValidator();
-		val.validate(src);
+		if( s != null ) {
+			Validator val = s.newValidator();
+			val.validate(src);
+		}
 	}
 	/**
 	 * Get the title used for the parameter page
@@ -898,25 +900,28 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 		return (Document) res.getNode();
 	}
 	public Schema getSchema(String name) throws DataFault, SAXException {
-		
+		try {
 
-		SchemaFactory factory = SchemaFactory
-				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		LSResourceResolver parent = factory.getResourceResolver();
-		if( ! (parent instanceof LSResolver)){
-			try {
-				factory.setResourceResolver(new LSResolver(docBuilder.getDOMImplementation(), schema_overlay, SCHEMA_GROUP, parent));
-			} catch (ParserConfigurationException e) {
-				getLogger().error("Error setting schema resolver",e);
+			SchemaFactory factory = SchemaFactory
+					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			LSResourceResolver parent = factory.getResourceResolver();
+			if( ! (parent instanceof LSResolver)){
+				try {
+					factory.setResourceResolver(new LSResolver(docBuilder.getDOMImplementation(), schema_overlay, SCHEMA_GROUP, parent));
+				} catch (ParserConfigurationException e) {
+					getLogger().error("Error setting schema resolver",e);
+				}
 			}
-		}
-		Source source = getSchemaSource(name);
-		if(source == null ){
+			Source source = getSchemaSource(name);
+			if(source == null ){
+				return null;
+			}
+			return factory.newSchema(source);
+		
+		}catch(Exception e) {
+			getLogger().error("Error getting schema",e);
 			return null;
 		}
-		return factory.newSchema(source);
-		
-
 	}
 
 	public Source getTemplateSource() {

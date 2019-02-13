@@ -42,6 +42,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
+import uk.ac.ed.epcc.safe.accounting.expr.ResolvesWithoutChecker;
 import uk.ac.ed.epcc.safe.accounting.policy.ListenerPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -99,10 +100,10 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.filter.FilterDelete;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 /** A UsageRecordFactory that generates aggregate records from a separate class.
- * The tables in the master {@link UsageProducer} will require a {@link ListenerPolicy} to populate the aggregate records if data 
- * is ever loaded into them. Any "rolled" tables of old data do not need the policy but have to be in the master UsageProducer for
+ * The tables in the parent {@link UsageProducer} will require a {@link ListenerPolicy} to populate the aggregate records if data 
+ * is ever loaded into them. Any "rolled" tables of old data do not need the policy but have to be in the parent UsageProducer for
  * so the historical data will be included if the aggregates are re-generated.
- * Property definitions follow those of the master table. By default Numerical properties
+ * Property definitions follow those of the parent table. By default Numerical properties
  * are summed where other properties identify different aggregation streams 
  * 
  * The start and end time properties are rounded up/down to regular time boundaries so that 
@@ -132,7 +133,7 @@ ConfigParamProvider{
 	private static final String COMPLETED_TIMESTAMP = "CompletedTimestamp";
 	private static final String STARTED_TIMESTAMP = "StartedTimestamp";
 	private static final Feature USE_FAST_REGENERATE = new Feature("aggregate.use_fast_regenerate",true,"Use reductions to speed up regenerate");
-	public static final AdminOperationKey REGENERATE = new AdminOperationKey("Regenerate","Repopulate all contents from master table");
+	public static final AdminOperationKey REGENERATE = new AdminOperationKey("Regenerate","Repopulate all contents from parent table");
 	public static final AdminOperationKey REGENERATE_RANGE = new AdminOperationKey("RegenerateRange","Repopulate contents for a specified time period");
 	public static final PropertyRegistry aggregate = new PropertyRegistry("aggregate","Time bounds for aggregate records");
 	public static final PropertyTag<Date> AGGREGATE_STARTED_PROP = new PropertyTag<>(aggregate,STARTED_TIMESTAMP,Date.class);
@@ -166,7 +167,8 @@ ConfigParamProvider{
 				if( etf.hasProperty(t) ){
 					Object a = proxy.getProperty(t,null);
 					if( a != null ){
-						if(! a.equals(rec.getProperty(t,null))){
+						Object property = rec.getProperty(t,null);
+						if(! a.equals(property)){
 							return false;
 						}
 					}else{
@@ -193,7 +195,7 @@ ConfigParamProvider{
 			return getProxy().getProperty(AGGREGATE_STARTED_PROP,null);
 		}
 	}
-	private UsageProducer<Use> master;
+	private UsageProducer<Use> parent;
 	
 	private  PropertyTag<Date> end_target_prop;
 	private  PropertyTag<Date> start_target_prop;
@@ -207,25 +209,25 @@ ConfigParamProvider{
     private int replace=0;
 	private AggregateRecord cache[] = new AggregateRecord[CACHE_SIZE];
     private ReferencePropertyRegistry ref_registry;
-    private String master_producer=null;
+    private String parent_producer=null;
   
     @Override
     protected TableSpecification getDefaultTableSpecification(AppContext ctx, String homeTable){
     	TableSpecification spec = super.getDefaultTableSpecification(ctx, homeTable);
 		spec.setField(STARTED_TIMESTAMP, new DateFieldType(true, null));
 		spec.setField(COMPLETED_TIMESTAMP, new DateFieldType(true, null));
-		UsageProducer prod = master;
+		UsageProducer prod = parent;
 		if( prod instanceof UsageManager) {
-			for(DataObjectFactory fac : ((UsageManager<?>)master).getProducers(DataObjectFactory.class)) {
+			for(DataObjectFactory fac : ((UsageManager<?>)parent).getProducers(DataObjectFactory.class)) {
 				prod=(UsageProducer) fac;
 				break;
 			}
 		}
 		if( prod != null  && prod instanceof DataObjectFactory) {
-			TableSpecification master_spec = ((DataObjectFactory)prod).getFinalTableSpecification(getContext(), master_producer);
-			if( master_spec != null) {
-				for( String name : master_spec.getFieldNames()) {
-					FieldType f = master_spec.getField(name);
+			TableSpecification parent_spec = ((DataObjectFactory)prod).getFinalTableSpecification(getContext(), parent_producer);
+			if( parent_spec != null) {
+				for( String name : parent_spec.getFieldNames()) {
+					FieldType f = parent_spec.getField(name);
 					if( f.geTarget() != Date.class && ! spec.hasField(name)) {
 						spec.setOptionalField(name, f);
 					}
@@ -241,10 +243,10 @@ ConfigParamProvider{
 		return spec;
     }
 	@SuppressWarnings("unchecked")
-	protected AggregateUsageRecordFactory(UsageRecordFactory master_factory) {	
-		this.master = master_factory;
-		if( master_factory != null) {
-			this.master_producer=master_factory.getTag();
+	protected AggregateUsageRecordFactory(UsageRecordFactory parent_factory) {	
+		this.parent = parent_factory;
+		if( parent_factory != null) {
+			this.parent_producer=parent_factory.getTag();
 		}
 	}
 
@@ -254,10 +256,10 @@ ConfigParamProvider{
 		super.postSetContext();
 		AppContext c = getContext();
 		String tag = getTag();
-		if( master == null ){
-			master_producer = c.getInitParameter(MASTER_PREFIX + tag);
-			if( master_producer != null){
-				master = c.getService(AccountingService.class).getUsageProducer(master_producer);
+		if( parent == null ){
+			parent_producer = c.getInitParameter(MASTER_PREFIX + tag);
+			if( parent_producer != null){
+				parent = c.getService(AccountingService.class).getUsageProducer(parent_producer);
 			}
 		}
 	}
@@ -294,12 +296,12 @@ ConfigParamProvider{
 		
 
 		finder.addFinder(StandardProperties.base); // need the date properties
-		if( master != null ){
-			finder.addFinder(master.getFinder());
+		if( parent != null ){
+			finder.addFinder(parent.getFinder());
 		}
 		assert(aggregate.hasProperty(AGGREGATE_STARTED_PROP));
 		finder.addFinder(aggregate); // match these in preference we don't want date properties
-		// from the master binding to the date fields
+		// from the parent binding to the date fields
 
 
 
@@ -316,37 +318,42 @@ ConfigParamProvider{
 		end_target_prop = StandardProperties.ENDED_PROP;
 
 		
-		// add derived properties from master but we don't want any that use the 
-		// date values as the definitions may not be correct. so we add the alises to
-		// base start/end  after clearing expressions that don't resolve
-		PropExpressionMap props=null;
-		props=master.getDerivedProperties();
+		// add derived properties from parent but we don't want any that use the 
+		// date values as the definitions may not be correct. 
+		PropExpressionMap props=parent.getDerivedProperties();
 		
-		//TODO fix this
 		if( props != null) {
-			log.debug(tag+" got derived props from master "+props.size());
-			map.addDerived(c, props);
-			map.clearUnresolvableDefinitions();
-			int propsize=map.getDerivedProperties().size();
-			log.debug(tag+" after clear number of definitions is "+propsize);
+			Set<PropertyTag> forbidden = new HashSet<>();
+			forbidden.add(StandardProperties.STARTED_PROP);
+			forbidden.add(StandardProperties.ENDED_PROP);
+			ResolvesWithoutChecker checker = new ResolvesWithoutChecker(getContext(), null, forbidden);
+			// maybe we should
+			for(PropertyTag t : props.keySet()) {
+				PropExpression exp = props.get(t);
+				try {
+					if( ((PropExpression<?>)exp).accept(checker)) {
+						derived.put(t, exp); 
+					}
+				} catch (Exception e) {
+					log.error("Error filtering derived props", e);
+				}
+			}
 		}else{
-			log.debug(tag+" master not a derived property factory");
+			log.debug(tag+" parent not a derived property factory");
 		}
 
 
-		PropExpressionMap tmp = new PropExpressionMap();
+		
 		try{
-			tmp.put(StandardProperties.STARTED_PROP, AGGREGATE_STARTED_PROP);
-			tmp.put(StandardProperties.ENDED_PROP,AGGREGATE_ENDED_PROP);
-			map.addDerived(c, tmp);
+			derived.put(StandardProperties.STARTED_PROP, AGGREGATE_STARTED_PROP);
+			derived.put(StandardProperties.ENDED_PROP,AGGREGATE_ENDED_PROP);
+			
 		}catch(PropertyCastException e){
 			getLogger().error("Failed to make time aliases",e);
 		}
 
 		// Add explicit expressions for this table
-		PropExpressionMap explicit = new PropExpressionMap();
-		explicit.addFromProperties(finder,c , tag);
-		map.addDerived(c, explicit);
+		derived.addFromProperties(finder,c , tag);
 
 	}
 	protected AccessorMap getAccessorMap() {
@@ -362,19 +369,20 @@ ConfigParamProvider{
 		AppContext c = getContext();
 		sum_set =new HashSet<>();
 		key_set =new HashSet<>();
-		if( master != null ){
+		Logger log = getLogger();
+		if( parent != null ){
 			for(PropertyTag t : map.getProperties()){
-				//log.debug("consider aggregation of "+t.getFullName());
+				log.debug("consider aggregation of "+t.getFullName());
 				if( map.writable(t)){
 
-					if( master.hasProperty(t) && t.getTarget() != Date.class){
+					if( parent.hasProperty(t) && t.getTarget() != Date.class){
 
 						if (Number.class.isAssignableFrom(t.getTarget()) && ! c.getBooleanParameter(getConfigName(t), false)) {
 							sum_set.add( t);
-
+							log.debug("sum property added "+t.getFullName());
 						}else{
 							key_set.add(t);
-
+							log.debug("key property added "+t.getFullName());
 						}
 					}
 				}
@@ -471,10 +479,10 @@ ConfigParamProvider{
 	}
 
 	public UsageProducer getMaster() {
-		if( master == null) {
+		if( parent == null) {
 			getFinder();
 		}
-		return master;
+		return parent;
 	}
 	/** Find an aggregate in the cache or create a new one
 	 * 
@@ -569,13 +577,13 @@ ConfigParamProvider{
 	public abstract Date mapStart(Date point);
 
 	public void regenerate() throws Exception {
-		if(master == null ){
+		if(parent == null ){
 			return;
 		}
 		DatabaseService db = getContext().getService(DatabaseService.class);
 		FilterDelete<AggregateRecord> del = new FilterDelete<>(res);
 		del.delete(null);
-		try(CloseableIterator<ExpressionTargetContainer> it = master.getExpressionIterator(new AndRecordSelector())){
+		try(CloseableIterator<ExpressionTargetContainer> it = parent.getExpressionIterator(new AndRecordSelector())){
 			int i=0;
 			while (it.hasNext()) {
 				ExpressionTargetContainer rec = it.next();
@@ -594,13 +602,13 @@ ConfigParamProvider{
 	}
 
 	public void fastRegenerate() throws Exception{
-		if( master == null){
+		if( parent == null){
 			return;
 		}
 		AndRecordSelector sel = new AndRecordSelector();
 		// end_target_prop is correct as regenerate arguments specify end dates.
-		Date start = master.getReduction(new DateReductionTarget(Reduction.MIN, end_target_prop), sel);
-		Date end = master.getReduction(new DateReductionTarget(Reduction.MAX,end_target_prop), sel);
+		Date start = parent.getReduction(new DateReductionTarget(Reduction.MIN, end_target_prop), sel);
+		Date end = parent.getReduction(new DateReductionTarget(Reduction.MAX,end_target_prop), sel);
 		if( start != null && end != null && end.after(start)){
 			regenerate(start, end);
 		}
@@ -614,7 +622,7 @@ ConfigParamProvider{
 	 */
 	@SuppressWarnings("unchecked")
 	public void regenerate(Date start, Date end) throws Exception{
-		if( master == null){
+		if( parent == null){
 			return;
 		}
 		if( ! end.after(start) ){
@@ -658,7 +666,7 @@ ConfigParamProvider{
 			AndRecordSelector inner_sel = new AndRecordSelector(sel);
 			inner_sel.add(new SelectClause(start_target_prop, MatchCondition.GT, p_start));
 			
-			Map<ExpressionTuple, ReductionMapResult> map = master.getIndexedReductionMap(targets, inner_sel);
+			Map<ExpressionTuple, ReductionMapResult> map = parent.getIndexedReductionMap(targets, inner_sel);
 			
 			for(ExpressionTuple et : map.keySet()){
 				PropertyMap tmap = new PropertyMap();
@@ -683,7 +691,7 @@ ConfigParamProvider{
 				AndRecordSelector overlap_sel = new AndRecordSelector(sel);
 				
 				overlap_sel.add(new SelectClause(start_target_prop, MatchCondition.LE, p_start));
-				try(CloseableIterator<ExpressionTargetContainer> ov_it = master.getExpressionIterator(overlap_sel)){
+				try(CloseableIterator<ExpressionTargetContainer> ov_it = parent.getExpressionIterator(overlap_sel)){
 					while(ov_it.hasNext()){
 						ExpressionTargetContainer rec = ov_it.next();
 						// This could be such a large and expensive operation that it is worth
@@ -797,7 +805,7 @@ ConfigParamProvider{
 		Map<TableTransitionKey, Transition> transitions = new LinkedHashMap<>();
 		
 		
-		if( master_producer != null){
+		if( parent_producer != null){
 			transitions.put(REGENERATE, new AbstractDirectTransition<AggregateUsageRecordFactory>() {
 
 			public FormResult doTransition(AggregateUsageRecordFactory target,

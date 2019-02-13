@@ -67,7 +67,7 @@ public class SgeParser extends BatchParser implements Contexed {
 	public static final PropertyTag<String> SGE_GROUPNAME_PROP = new PropertyTag<>(sge,"GroupName",String.class,"SGE group name");
 	@AutoTable
 	public static final PropertyTag<String> SGE_USERNAME_PROP = new PropertyTag<>(sge,"UserName",String.class,"SGE user name");
-	@AutoTable(length=128)
+	@AutoTable(length=256)
 	public static final PropertyTag<String> SGE_JOBNAME_PROP = new PropertyTag<>(sge,"JobName",String.class,"SGE job name");
 	@AutoTable
 	public static final PropertyTag<String> SGE_ACCOUNT_PROP = new PropertyTag<>(sge,"Account",String.class,"SGE Account");
