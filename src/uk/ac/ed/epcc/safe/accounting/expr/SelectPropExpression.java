@@ -27,7 +27,8 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  * list of expressions.
  * 
  * If the {@link #allowAny()} method returns true then all expressions are
- * equivalent and a later expression in the list can be used if necessary.
+ * equivalent and a later expression in the list can be used if necessary. This can be used to specify
+ * a list of possible implementations of a derived property.
  * Otherwise each expression must be evaluated in turn until one
  * returns a non-null value. In this case it is not acceptable to skip an expression
  * that might be evaluated
@@ -46,7 +47,7 @@ public class SelectPropExpression<T> implements PropExpression<T> , Iterable<Pro
 		this(false,target,alts);
 	}
 	@SuppressWarnings("unchecked")
-	public SelectPropExpression(boolean use_any,Class<T> target, PropExpression<T> alts[]){
+	public SelectPropExpression(boolean use_any,Class<T> target, PropExpression<T> ... alts){
 		this.use_any = use_any;
 		this.target=target;
 		this.alts=new PropExpression[alts.length];

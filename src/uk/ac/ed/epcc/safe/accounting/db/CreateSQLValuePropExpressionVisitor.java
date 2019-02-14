@@ -271,23 +271,40 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	@SuppressWarnings("unchecked")
 	public SQLValue visitSelectPropExpression(SelectPropExpression<?> sel)
 			throws Exception {
-		LinkedList<SQLValue> list = new LinkedList<>();
-
-		for(int i=0;i<sel.length();i++){
-			if( includeSelectClause(sel.get(i))){
-				// still need to generate an exception if valid clauses can't be
-				// made as SQLValue
-				SQLValue val = process(sel.get(i));
-				if( val != null ){
-					list.add(val);
+		if( sel.allowAny()) {
+			// Just want one that works
+			for(PropExpression<?> exp : sel) {
+				try {
+					SQLValue v = process(exp);
+					if( v != null) {
+						return v;
+					}
+				}catch(Exception e) {
+					
 				}
-
 			}
+			// can't make a value from any of them.
+			throw new InvalidSQLPropertyException("Cannot access SelectPropExpression via SQL");
+			
+		}else {
+			LinkedList<SQLValue> list = new LinkedList<>();
+
+			for(int i=0;i<sel.length();i++){
+				if( includeSelectClause(sel.get(i))){
+					// still need to generate an exception if valid clauses can't be
+					// made as SQLValue
+					SQLValue val = process(sel.get(i));
+					if( val != null ){
+						list.add(val);
+					}
+
+				}
+			}
+			if( list.size() == 0){
+				throw new InvalidSQLPropertyException("No clauses resolvable in select");
+			}
+			return new SQLSelectValue(sel.getTarget(),list.toArray(new SQLValue[list.size()]));
 		}
-		if( list.size() == 0){
-			throw new InvalidSQLPropertyException("No clauses resolvable in select");
-		}
-		return new SQLSelectValue(sel.getTarget(),list.toArray(new SQLValue[list.size()]));
 	}
 	@SuppressWarnings("unchecked")
 	public SQLValue visitDurationPropExpression(DurationPropExpression sel)

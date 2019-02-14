@@ -235,9 +235,8 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 			return sel.get(0).accept(this);
 		}
 		if( sel.allowAny() ){
-			Iterator<?> it = sel.iterator();
-			while(it.hasNext()){
-				PropExpression<?> e = (PropExpression<?>) it.next();
+			
+			for(PropExpression<?> e : sel){
 				try{
 					SQLExpression<?> expr = e.accept(this);
 					if(expr != null){
