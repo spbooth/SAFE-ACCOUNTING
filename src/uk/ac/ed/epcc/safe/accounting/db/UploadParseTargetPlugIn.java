@@ -103,17 +103,7 @@ public abstract class UploadParseTargetPlugIn<T extends DataObject,R> extends Pr
 
 	@Override
 	protected PlugInOwner<R> makePlugInOwner(AppContext c, PropertyFinder finder, String table) {
-		return new ConfigPlugInOwner<DataObjectFactory<T>,R>(c,finder ,table,default_parser){
-
-			@Override
-			protected Set<PropertyContainerPolicy> makePolicies() {
-				Set<PropertyContainerPolicy> pol = super.makePolicies();
-				// Always have a derivedPropertyPolicy
-				pol.add(new DerivedPropertyPolicy());
-				return pol;
-			}
-			
-		};
+		return new ConfigPlugInOwner<DataObjectFactory<T>,R>(c,finder ,table,default_parser);
 	}
 
 }

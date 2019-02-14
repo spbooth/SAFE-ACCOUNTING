@@ -20,25 +20,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.UsageManager;
-import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionInput;
+import uk.ac.ed.epcc.safe.accounting.db.ExpressionTargetFactoryComposite;
+import uk.ac.ed.epcc.safe.accounting.expr.AddDerivedTransition;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.forms.Form;
-import uk.ac.ed.epcc.webapp.forms.action.FormAction;
-import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
-import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
-import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
-import uk.ac.ed.epcc.webapp.forms.result.FormResult;
-import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
-import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 /** This policy generates new derived properties 
  * which are defined as expressions over other properties that
  * are already in scope.
@@ -52,9 +43,12 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
  * Note that the registry is bound to the table so these properties will not be
  * available in a {@link UsageManager} that includes the table. To define derived properties 
  * that are visible across a {@link UsageManager} a {@link ExpressionPropertyPolicy} is required.
- *  
+ * <p>
+ * This policy is now largely redundant due to the built in support for derived properties
+ * in {@link ExpressionTargetFactoryComposite}. 
  * 
  * @author spb
+ * @see ExpressionTargetFactoryComposite
  *
  */
 
@@ -81,36 +75,10 @@ public class DerivedPropertyPolicy extends BasePolicy implements TableTransition
 		previous.getAllFrom(defs);
 	    return previous;
 	}
-	public class AddDerivedTransition extends AbstractFormTransition<DataObjectFactory>{
-
-		public final class AddDerivedAction extends FormAction {
-			private final DataObjectFactory target;
-			public AddDerivedAction(DataObjectFactory target){
-				this.target=target;
-			}
-			@Override
-			public FormResult action(Form f)
-					throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
-				try {
-					defs.addConfigProperty(c, reg,finder, table, (String)f.get("Name"), (String)f.get("Expr"));
-				} catch (ParseException e) {
-					throw new ActionException("Operation failed",e);
-				}
-				return new ViewTableResult(target);
-			}
-		}
-
-		public void buildForm(Form f, DataObjectFactory target,
-				AppContext ctx) throws TransitionException {
-			f.addInput("Name", "Name of new property", new TextInput(false));
-			f.addInput("Expr", "Definition", new PropExpressionInput(c,finder));
-			f.addAction("Add", new AddDerivedAction(target));
-		}
-	}
 	public Map<TableTransitionKey, Transition> getTableTransitions() {
 		Map<TableTransitionKey,Transition> result = new HashMap<>();
 		// add transitions here
-		result.put(new AdminOperationKey("AddDerivedProperty"),new AddDerivedTransition());
+		result.put(new AdminOperationKey("AddDerivedProperty"),new AddDerivedTransition(defs,reg,finder,table));
 		return result;
 	}
 

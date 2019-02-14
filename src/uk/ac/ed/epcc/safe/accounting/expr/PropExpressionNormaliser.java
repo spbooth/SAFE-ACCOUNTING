@@ -67,8 +67,8 @@ public class PropExpressionNormaliser implements PropExpressionVisitor<PropExpre
 
 	
 	public PropExpression visitBinaryPropExpression(
-			BinaryPropExpression binaryPropExpression) throws Exception {
-		return binaryPropExpression;
+			BinaryPropExpression bin) throws Exception {
+		return bin;
 	}
 
 	

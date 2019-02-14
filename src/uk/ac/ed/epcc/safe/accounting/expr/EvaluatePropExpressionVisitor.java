@@ -69,6 +69,9 @@ public abstract class EvaluatePropExpressionVisitor extends AbstractContexed imp
 	@SuppressWarnings("unchecked")
 	public <T extends DataObject> Object visitDeRefExpression(
 			DeRefExpression<T, ?> deRefExpression) throws Exception {
+		if( deRefExpression == null) {
+			return null;
+		}
 		IndexedReference ref = (IndexedReference) deRefExpression
 				.getTargetObject().accept(this);
 		if (ref == null || ref.isNull()) {
@@ -112,9 +115,14 @@ public abstract class EvaluatePropExpressionVisitor extends AbstractContexed imp
 
 	public Duration visitDurationPropExpression(DurationPropExpression sel)
 			throws Exception {
-
-		return new Duration((Date) sel.start.accept(this),
-				(Date) sel.end.accept(this));
+		
+		Date start = (Date) sel.start.accept(this);
+		Date end = (Date) sel.end.accept(this);
+		if( start == null || end == null ) {
+			return null;
+		}
+		return new Duration(start,
+				end);
 	}
 
 	public Long visitMilliSecondDatePropExpression(
@@ -130,6 +138,7 @@ public abstract class EvaluatePropExpressionVisitor extends AbstractContexed imp
 			throws Exception {
 		IndexedReference ref = (IndexedReference) namePropExpression
 				.getTargetRef().accept(this);
+		// Can handle null values
 		return NamePropExpression.refToName(getContext(), ref);
 	}
 

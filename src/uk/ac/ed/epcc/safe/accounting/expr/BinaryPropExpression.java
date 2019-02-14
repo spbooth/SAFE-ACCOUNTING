@@ -20,7 +20,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 /** Binary numerical operation on PropExpressions
- * 
+ * <p>
+ * If the operation is commutative then this is reflected in the {@link #equals(Object)} method.
  * @author spb
  *
  */
@@ -66,13 +67,22 @@ public <R> R accept(BasePropExpressionVisitor<R> vis) throws Exception {
 public boolean equals(Object obj) {
 	if( obj != null && obj.getClass() == getClass()){
 		BinaryPropExpression peer = (BinaryPropExpression) obj;
-		return ( a.equals(peer.a) && b.equals(peer.b) && op.equals(peer.op));
+		if( op.commutes()) {
+			// for commuting ops allows a,b swap to count as equals
+			if( ! op.equals(peer.op)) {
+				return false;
+			}
+			return ( a.equals(peer.a) && b.equals(peer.b)) || ( a.equals(peer.b) && b.equals(peer.a));
+		}else {
+			return ( a.equals(peer.a) && b.equals(peer.b) && op.equals(peer.op));
+		}
 	}
 	return false;
 }
 
 @Override
 public int hashCode() {
+	// must be independent of a,b swap for communtative ops
 	return a.hashCode() + op.hashCode() + b.hashCode();
 }
 

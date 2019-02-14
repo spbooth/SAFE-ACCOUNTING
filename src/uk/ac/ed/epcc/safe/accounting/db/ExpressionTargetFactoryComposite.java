@@ -1,5 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -7,6 +8,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.PropertyInfoGenerator;
+import uk.ac.ed.epcc.safe.accounting.expr.AddDerivedTransition;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -19,13 +21,17 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
+import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableContentProvider;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
+import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.Composite;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -35,8 +41,15 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 
 /** A {@link Composite} that implements {@link ExpressionTargetFactory}
  * 
- * This is the normal mechanism to property enable a {@link DataObjectFactory}
+ * This is the normal mechanism to property enable a {@link DataObjectFactory}. It automatically supports
+ * configuration supplied properties.
+ * The new properties are created in a PropertyRegistry called <b><em>table-name</em>DerivedProperties</b>.
  * 
+ * This is under the control of java properties of the form
+ * <b>
+ * properties.<em>table-name</em>.name=<em>prop-expression</em>
+ * </b>
+ * <p>
  * The behaviour can be modified by having the parent factory or other {@link Composite}s
  * implement {@link AccessorContributer}.
  * 
@@ -44,7 +57,7 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
  * @see AccessorMap
  * @param <T>
  */
-public class ExpressionTargetFactoryComposite<T extends DataObject> extends Composite<T,ExpressionTargetFactoryComposite> implements ExpressionTargetFactory<T>, TableContentProvider {
+public class ExpressionTargetFactoryComposite<T extends DataObject> extends Composite<T,ExpressionTargetFactoryComposite> implements ExpressionTargetFactory<T>, TableContentProvider,TableTransitionContributor {
 
 	public ExpressionTargetFactoryComposite(DataObjectFactory fac) {
 		super(fac);
@@ -53,6 +66,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	private PropertyFinder reg=null;
 	private RepositoryAccessorMap<T> map=null;
 	private PropExpressionMap expression_map=null;
+	private PropertyRegistry derived=null;
 	private boolean in_init=false;
 	protected final void initAccessorMap() {
 		if( in_init == true ){
@@ -281,5 +295,12 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	@Override
 	public CloseableIterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
 		return new ProxyIterator<>(this, getIterator(sel));
+	}
+	@Override
+	public Map<TableTransitionKey, Transition> getTableTransitions() {
+		Map<TableTransitionKey,Transition> result = new HashMap<>();
+		// add transitions here
+		result.put(new AdminOperationKey("AddDerivedProperty"),new AddDerivedTransition(expression_map,derived,getFinder(),getRepository().getTag()));
+		return result;
 	}
 }
