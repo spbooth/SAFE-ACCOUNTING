@@ -65,6 +65,17 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 	}
 	
 	@Test
+	public void initialShowBoolean() throws Exception {
+		setupPerson("fred@example.com");
+		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(ctx);
+		Report report = new Report("testBooleanParameters.xml");
+		setTransition(prov, null, report);
+		runTransition();
+		checkForward("/scripts/transition.jsp");
+		checkFormContent("/normalize.xsl", "initial_boolean.xml");
+	}
+	
+	@Test
 	public void testWithPeriod() throws Exception {
 		TestTimeService serv = new TestTimeService();
 		Calendar test_time = Calendar.getInstance();
@@ -129,6 +140,7 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		checkForward("/scripts/transition.jsp");
 		checkFormContent("/normalize.xsl", "test_preview.xml");
 	}
+	
 	
 	@Test
 	public void testDeveloperPreview() throws Exception {

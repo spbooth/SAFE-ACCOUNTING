@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><transition_page>
+<Title>View Report</Title>
+<PageHeading>View Report</PageHeading>
+<SummaryContent/>
+<ExtraContent>
+<h4>Report Parameters</h4>
+<div class="para">Enter the parameters and click 'Preview' to view the report, or click on the report type to generate the report.</div>
+</ExtraContent>
+<Form>
+<table class="form">
+<tr class="even">
+<th>
+<label for="transition_MyBoolean" class="required">MyBoolean</label>
+</th>
+<td>
+<input id="transition_MyBoolean" type="checkbox" name="MyBoolean" value="true" checked="checked" class="input"/>
+</td>
+</tr>
+<tr class="odd">
+<th>
+<label for="transition_MyOtherBoolean" class="required">MyOtherBoolean</label>
+</th>
+<td>
+<input id="transition_MyOtherBoolean" type="checkbox" name="MyOtherBoolean" value="true" class="input"/>
+</td>
+</tr>
+</table>
+<fieldset class="action_buttons">
+<button class="input_button" type="submit" title="Generate Preview" name="Preview" value="Preview">
+<img class="icon" alt="Preview" src="test/accounting/preview-file-48x48.png"/>Preview</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate HTML" name="HTML" value="HTML">
+<img class="icon" alt="HTML" src="test/accounting/html-file-48x48.png"/>HTML</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate PDF" name="PDF" value="PDF">
+<img class="icon" alt="PDF" src="test/accounting/pdf-file-48x48.png"/>PDF</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate CSV" name="CSV" value="CSV">
+<img class="icon" alt="CSV" src="test/accounting/csv-file-48x48.png"/>CSV</button>
+</fieldset>
+</Form>
+</transition_page>

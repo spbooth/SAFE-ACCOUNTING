@@ -35,7 +35,15 @@ public class SetParamsVisitor implements InputVisitor<Object> {
     }
     @Override
     public Object visitBinaryInput(BinaryInput checkBoxInput) throws Exception {
-        return visitBaseInput(checkBoxInput);
+        if( set_map ) {
+        	params.put(checkBoxInput.getKey(), checkBoxInput.isChecked() ? "true" : "false");
+        }else {
+        	String val = (String) params.get(checkBoxInput.getKey());
+        	if( val != null && ! val.isEmpty()) {
+        		checkBoxInput.setChecked(Boolean.parseBoolean(val));
+        	}
+        }
+        return null;
     }
     @Override
     public <V, I extends Input> Object visitParseMultiInput(ParseMultiInput<V, I> multiInput) throws Exception {
@@ -129,7 +137,10 @@ public class SetParamsVisitor implements InputVisitor<Object> {
         }
         return null;
     }
-
+    /** Were any mandatory inputs missing when setting from the map;
+     * 
+     * @return
+     */
     public boolean getMissing() {
         return missing;
     }
