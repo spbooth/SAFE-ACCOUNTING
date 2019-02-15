@@ -54,7 +54,7 @@
 	
 	<xsl:template match="rep:th|rep:td|Th|Td|th|td">
 		<xsl:value-of select="translate(normalize-space(text()),',','')"/>
-		<xsl:if test="not(position()=last())"><xsl:text>, </xsl:text></xsl:if>
+		<xsl:if test="not(position()=last())"><xsl:text>,</xsl:text></xsl:if>
 	</xsl:template>
 	
 

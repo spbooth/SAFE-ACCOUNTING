@@ -5,7 +5,14 @@ import uk.ac.ed.epcc.webapp.WebappTestBase;
 
 public abstract class ExtensionTestCase extends WebappTestBase {
 
-	
+	/**
+	 * @param output
+	 * @return
+	 */
+	public final String normalise(String output) {
+		return output.replaceAll("\r?\n", "\n").replaceAll(", ", ",");
+	}
+
 	public String getOutputDir(){
 		return ctx.getInitParameter("test.output.dir","tests/uk/ac/ed/epcc/safe/accounting/reports/output/");
 	}

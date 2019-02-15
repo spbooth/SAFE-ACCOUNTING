@@ -131,9 +131,11 @@ public class FilterExtensionTest extends ExtensionTestCase {
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 		//System.out.println(out.toString());
 		// Check it was correctly formatted.
+		String outstring = normalise(out.toString());
+		expectedOutput=normalise(expectedOutput);
 		assertTrue("Report wasn't correctly formatted:\n"+
-				TestDataHelper.diff(expectedOutput, out.toString()),
-				TestDataHelper.compareUnordered(out.toString(), expectedOutput));
+				TestDataHelper.diff(expectedOutput, outstring),
+				TestDataHelper.compareUnordered(outstring, expectedOutput));
 
 	}
 

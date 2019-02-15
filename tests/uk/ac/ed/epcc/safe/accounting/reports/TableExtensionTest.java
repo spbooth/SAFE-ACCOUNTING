@@ -181,7 +181,8 @@ public class TableExtensionTest extends ExtensionTestCase {
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		reportBuilder.renderXML(params, out);
-	    
+	    String outstring=normalise(out.toString());
+	    expectedOutput=normalise(expectedOutput);
 //		PrintWriter tmp= new PrintWriter("/tmp/scratch");
 //	    tmp.println(out.toString());
 //	    tmp.close();
@@ -190,17 +191,20 @@ public class TableExtensionTest extends ExtensionTestCase {
 		System.out.println(out.toString());
 		for(String s : expectedOutput.replace("><",">\n<").split("\r?\n")){
 			assertTrue("Output did not contain \n"+s.trim()+"\n",
-					out.toString().contains(s.trim()));
+					outstring.contains(s.trim()));
 			assertTrue("Output has unexpected leading/trailing spaces \n"+s+"\n",
-					out.toString().contains(s));
+					outstring.contains(s));
 		}
 		// Check it was correctly formatted.
 		assertTrue("Summary table was permuted\n-------\n"+out.toString()+
 				"\nexpected\n-----\n"+expectedOutput+"\n---------\n"+
 				TestDataHelper.diff(expectedOutput, out.toString()+"\n---------\n"), 
-				out.toString().replaceAll("\r?\n", "\n").contains(expectedOutput.replaceAll("\r?\n", "\n")));
+				outstring.contains(expectedOutput));
 		
 	}
+
+
+	
 	
 	
 

@@ -81,7 +81,7 @@ public class StyleSheetExtensionTest extends ExtensionTestCase {
 		String output = result.replace(ctx.getInitParameter("java.io.tmpdir","/tmp"), "/tmp");
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, output),
-				output.replaceAll("\r?\n", "\n").contains(expectedOutput.replaceAll("\r?\n", "\n")));
+				normalise(output).contains(normalise(expectedOutput)));
 
 	}
 

@@ -199,8 +199,14 @@ public void testCSVReport() throws Exception {
 		// Check it was correctly formatted.
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, stdOutString),
-				stdOutString.replaceAll("\r?\n", "\n").contains(expectedOutput.replaceAll("\r?\n", "\n")));
+				normalise(stdOutString).contains(normalise(expectedOutput)));
 		
 	}
-	
+	/**
+	 * @param output
+	 * @return
+	 */
+	public final String normalise(String output) {
+		return output.replaceAll("\r?\n", "\n").replaceAll(", ", ",");
+	}
 }

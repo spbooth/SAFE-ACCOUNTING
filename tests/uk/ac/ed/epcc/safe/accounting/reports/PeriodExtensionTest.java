@@ -126,7 +126,7 @@ public class PeriodExtensionTest extends ExtensionTestCase {
 		// Check it was correctly formatted.		
 		assertTrue("Table wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, out.toString()),
-				out.toString().replaceAll("\r?\n", "\n").contains(expectedOutput.replaceAll("\r?\n", "\n")));
+				normalise(out.toString()).contains(normalise(expectedOutput)));
 		
 	}
 
