@@ -17,7 +17,6 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -45,7 +44,6 @@ import uk.ac.ed.epcc.safe.accounting.charts.MapperEntryInput;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntryInput;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter;
 import uk.ac.ed.epcc.safe.accounting.model.SetParamsVisitor;
@@ -89,7 +87,6 @@ import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
-import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterPolicy;
@@ -98,7 +95,6 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
-import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** The ParameterExtension expands objects in the parameter map into the output.
