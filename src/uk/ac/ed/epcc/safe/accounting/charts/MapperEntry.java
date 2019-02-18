@@ -803,6 +803,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		   
 		   String list = prop.getProperty("list");
 		   if( list != null ){
+			   list = c.expandText(list);
 			   for(String name : list.split(",")){
 				   ErrorSet e = new ErrorSet();
 				   MapperEntry entry = getConfigMapperEntry(c, e, prop, finder, name);
