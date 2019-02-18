@@ -291,6 +291,7 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 		   String list = prop.getProperty("list");
 		   log.debug("list is"+list);
 		   if( list != null && list.trim().length() != 0){
+			   list = c.expandText(list);
 			   for(String name : list.split(",")){
 				   log.debug("Consider "+name);
 				   ErrorSet errors = new ErrorSet();

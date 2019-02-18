@@ -199,48 +199,51 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 			// use cutoff configured into PlotEntry if any
 			long cutoff = e.getCutoff();
 			if( NARROW_CUTOFF_IN_TIMECHART.isEnabled(getContext()) ) {
-				TimerService timer = getContext().getService(TimerService.class);
-				if( timer != null) {
-					timer.startTimer("narrow_cutoff."+prod.getTag());
-				}
-				try {
-					PropExpression<Date> start = e.getStartProperty();
-					PropExpression<Date> end = e.getEndProperty();
-					if( start != null && end != null) {
-						
-						final DurationPropExpression duration = new DurationPropExpression(start, end);
-						// This may be a very long query but the hope is that
-						// we can save the time back by narrowing the cutoff based on the filter
-						AndRecordSelector fil = new AndRecordSelector(sel);
-						fil.add(new PeriodOverlapRecordSelector(period, start,end,OverlapType.ANY,cutoff));
-						fil.add(new SelectClause<>(duration,MatchCondition.GT,new Duration(0L,1L)));
-						fil.add(new SelectClause<>(start,MatchCondition.GT,new Date(0L)));
-						
-						Number calc_cutoff = null;
-						
-						if(CACHE_NARROWED_CUTOFFS.isEnabled(getContext())) {
-							String name="narrowed_cutoffs."+prod.getTag();
-							SessionService sess = getContext().getService(SessionService.class);
-							Map<RecordSelector,Number> values = (Map<RecordSelector, Number>) sess.getAttribute(name);
-							if( values == null) {
-								values=new HashMap<>();
-							}
-							calc_cutoff = values.get(fil);
-							if( calc_cutoff ==null) {
-								calc_cutoff = prod.getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), fil);
-								values.put(fil,calc_cutoff);
-								sess.setAttribute(name, values);
-							}
-						}else {
-							calc_cutoff = prod.getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), fil);
-						}
-						cutoff = calc_cutoff.longValue()+1L;
-					}
-				}catch(Exception ex) {
-					getLogger().error("Error narrowing cutoff",ex);
-				}finally {
+				boolean narrow = getContext().getBooleanParameter("narrow_cutoff."+prod.getTag(), true);
+				if( narrow) {
+					TimerService timer = getContext().getService(TimerService.class);
 					if( timer != null) {
-						timer.stopTimer("narrow_cutoff."+prod.getTag());
+						timer.startTimer("narrow_cutoff."+prod.getTag());
+					}
+					try {
+						PropExpression<Date> start = e.getStartProperty();
+						PropExpression<Date> end = e.getEndProperty();
+						if( start != null && end != null) {
+
+							final DurationPropExpression duration = new DurationPropExpression(start, end);
+							// This may be a very long query but the hope is that
+							// we can save the time back by narrowing the cutoff based on the filter
+							AndRecordSelector fil = new AndRecordSelector(sel);
+							fil.add(new PeriodOverlapRecordSelector(period, start,end,OverlapType.ANY,cutoff));
+							fil.add(new SelectClause<>(duration,MatchCondition.GT,new Duration(0L,1L)));
+							fil.add(new SelectClause<>(start,MatchCondition.GT,new Date(0L)));
+
+							Number calc_cutoff = null;
+
+							if(CACHE_NARROWED_CUTOFFS.isEnabled(getContext())) {
+								String name="narrowed_cutoffs."+prod.getTag();
+								SessionService sess = getContext().getService(SessionService.class);
+								Map<RecordSelector,Number> values = (Map<RecordSelector, Number>) sess.getAttribute(name);
+								if( values == null) {
+									values=new HashMap<>();
+								}
+								calc_cutoff = values.get(fil);
+								if( calc_cutoff ==null) {
+									calc_cutoff = prod.getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), fil);
+									values.put(fil,calc_cutoff);
+									sess.setAttribute(name, values);
+								}
+							}else {
+								calc_cutoff = prod.getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), fil);
+							}
+							cutoff = calc_cutoff.longValue()+1L;
+						}
+					}catch(Exception ex) {
+						getLogger().error("Error narrowing cutoff",ex);
+					}finally {
+						if( timer != null) {
+							timer.stopTimer("narrow_cutoff."+prod.getTag());
+						}
 					}
 				}
 			}
@@ -615,7 +618,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     				data_added = tc.addMapData(ds, fmapper, ap);
     			}else{
     				log.debug("using overlap");
-    				if( USE_OVERLAP_HANDLER_IN_TIMECHART.isEnabled(conn)){
+    				if( USE_OVERLAP_HANDLER_IN_TIMECHART.isEnabled(conn) && conn.getBooleanParameter("use_overlap_handler_in_timechart."+ap.getTag(), true)){
     					log.debug("using overlap handler");
     					// This might be faster if the OverlapHandler is using a CaseExpression 
     					// less SQL queries but more complex.
