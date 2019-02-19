@@ -72,6 +72,7 @@ import uk.ac.ed.epcc.webapp.servlet.ServletService;
 import uk.ac.ed.epcc.webapp.servlet.ViewTransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.timer.DefaultTimerService;
 import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 /**
@@ -81,6 +82,7 @@ public class ReportTemplateTransitionProvider
 extends AbstractPathTransitionProvider<Report, ReportTemplateKey> 
 implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransitionFactory<ReportTemplateKey, Report>
 {
+	private static final String REPORT_TIMER = "report_timer";
 	private static final String FORM_PARAMETER_PREFIX = "__";
 	private static final int FORM_PARAMETER_OFFSET=FORM_PARAMETER_PREFIX.length();
 	public static final Preference DOWNLOAD_FROM_NEW_TAB = new Preference("reports.download_from_new_tab",true,"Open a new tab when generating pdf/csv etc. reports");
@@ -496,6 +498,13 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			int max_length = context.getIntegerParameter("reporting.buffer_logger.max_length", 1024*1024*8);
 			logService.setMaxLength(max_length);
 			context.setService(logService);
+			
+			TimerService timer = context.getService(TimerService.class);
+			if( timer == null ) {
+				timer = new DefaultTimerService(context);
+				context.setService(timer);
+			}
+			timer.startTimer(REPORT_TIMER);
 			// set cached value of feature to ON
 			// This applies for rest of AppContext life-time (request)
 			context.setAttribute(DatabaseService.LOG_QUERY_FEATURE, Boolean.TRUE);
@@ -539,6 +548,11 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			
 		if (params != null && !target.getParameters().isEmpty() && isReportDev)
 		{
+			TimerService timer = context.getService(TimerService.class);
+			if( timer != null ) {
+				timer.stopTimer(REPORT_TIMER);
+				timer.timerStats();
+			}
 			DeveloperResults devResults = developerResults(context, logService, builder, hasErrors, params);
 			cb.addHeading(4, "Report Developer Information");
 			cb.addText("You have the ReportDeveloper role active. The links below give access to additional information to aid in debugging the reports.");

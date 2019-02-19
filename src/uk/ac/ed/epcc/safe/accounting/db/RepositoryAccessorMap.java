@@ -472,7 +472,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		
 	}
 	public Map<CutoffKey,Long> cutoffs=null;
-	public static final Feature AUTO_CUTOFF_FEATURE = new Feature("auto_cutoff",true,"automatically calculate cutoffs (maximum record time extent, used to optimise search) using additional queried");
+	public static final Feature AUTO_CUTOFF_FEATURE = new Feature("auto_cutoff",true,"automatically calculate cutoffs (maximum record time extent, used to optimise search) using additional queries");
 	
 	public BaseFilter<X> getPeriodFilter(Period period,
 			PropExpression<Date> start, PropExpression<Date> end, OverlapType type,long cutoff)
