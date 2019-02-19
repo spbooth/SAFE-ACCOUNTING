@@ -29,6 +29,7 @@ import uk.ac.ed.epcc.webapp.servlet.AbstractTransitionServletTest;
 import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.CalendarFieldSplitPeriod;
+import uk.ac.ed.epcc.webapp.timer.NullTimerService;
 
 public class ReportTransitionTest extends AbstractTransitionServletTest {
 
@@ -145,6 +146,7 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 	@Test
 	public void testDeveloperPreview() throws Exception {
 		SessionService user = setupPerson("fred@example.com");
+		ctx.setService(new NullTimerService(ctx)); // Disable timer in test
 		user.setTempRole(ReportBuilder.REPORT_DEVELOPER);
 		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(ctx);
 		HashMap<String, Object> params=new HashMap<>();
