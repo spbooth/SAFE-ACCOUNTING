@@ -841,6 +841,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 			   group = parser.parse(group_tag);
 		   }catch(Exception e){
 			   errors.add("Error parsing group tag/expression", group_tag, e);
+			   return null; 
 		   }
 	   }
 	   MapperEntry me=null;

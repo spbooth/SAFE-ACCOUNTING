@@ -151,7 +151,7 @@ public abstract class ChartExtension extends ReportExtension {
 	}
 	public MapperEntry getMapperEntry(RecordSet set, Node n) throws Exception{
 		Element e = (Element) n;
-		MapperEntry entry;
+		MapperEntry entry=null;
 		AppContext ctx = getContext();
 		PropertyFinder finder = set.getUsageProducer().getFinder();
 		if (hasParam("GroupBy", e)) {
@@ -164,7 +164,8 @@ public abstract class ChartExtension extends ReportExtension {
 				log.debug("GroupBy="+param);
 				entry = serv.getMapperEntry(errors,finder,param);
 			}
-		} else {
+		}
+		if( entry == null ) {
 			entry = serv.getMapperEntry(errors, finder, "");
 			if( entry == null) {
 				addError("Bad MapperEntry", "Mapper entry failed to parse", n);
