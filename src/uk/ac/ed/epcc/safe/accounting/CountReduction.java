@@ -19,7 +19,7 @@ package uk.ac.ed.epcc.safe.accounting;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
-/** A {@link ReductionTarget} that generates an index value similar to an SQL GROUP BY clause.
+/** A {@link ReductionTarget} that generates a count distinct reduction.
  * 
  * @author spb
  *

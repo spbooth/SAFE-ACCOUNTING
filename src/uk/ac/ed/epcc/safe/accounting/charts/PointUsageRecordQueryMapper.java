@@ -22,6 +22,9 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.sun.jna.platform.win32.WinGDI.DIBSECTION;
+
+import uk.ac.ed.epcc.safe.accounting.CountReduction;
 import uk.ac.ed.epcc.safe.accounting.IndexReduction;
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
@@ -45,7 +48,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  */
 
 
-public class PointUsageRecordQueryMapper<K,D extends Number> extends UsageRecordQueryMapper<K> {
+public class PointUsageRecordQueryMapper<K,D> extends UsageRecordQueryMapper<K> {
     private final AppContext conn;
 	private final PropExpression<K> key_prop;
     private final int set;
@@ -81,7 +84,12 @@ public class PointUsageRecordQueryMapper<K,D extends Number> extends UsageRecord
 		selector.add(new SelectClause<>(point_prop,MatchCondition.LE,end));
 		Map<Integer,Number> res = new HashMap<>();
 		try{
-			NumberReductionTarget sum_target = NumberReductionTarget.getInstance(red,plot_prop);
+			ReductionTarget<Number,?> sum_target;
+			if( red.equals(Reduction.DISTINCT)) {
+				sum_target = new CountReduction(plot_prop);
+			}else {
+				sum_target = NumberReductionTarget.getInstance(red,(PropExpression<? extends Number>) plot_prop);
+			}
 			if( key_prop == null ){
 				Number n = o.getReduction(sum_target, selector);
 				if( n != null ){  

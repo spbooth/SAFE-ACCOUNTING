@@ -85,8 +85,8 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 		return new ReductionHandler<>(etf);
 	}
 
-	public final <I> Map<I, Number> getReductionMap(PropExpression<I> index,
-			ReductionTarget<Number,Number> property,  RecordSelector selector)
+	public final <I,T,D> Map<I, T> getReductionMap(PropExpression<I> index,
+			ReductionTarget<T,D> property,  RecordSelector selector)
 			throws Exception 
 	{
 		return getReductionHandler().getReductionMap(index, property, selector);
@@ -99,7 +99,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	}
 	
 	
-	public final <R>  R getReduction(ReductionTarget<R,R> type, RecordSelector selector) throws Exception {
+	public final <R,D>  R getReduction(ReductionTarget<R,D> type, RecordSelector selector) throws Exception {
 		return getReductionHandler().getReduction(type, selector);
 	}
 	

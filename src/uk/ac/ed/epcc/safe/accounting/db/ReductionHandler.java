@@ -89,13 +89,13 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 	
 	
 	
-	public <R> R getReduction(ReductionTarget<R,R> type, RecordSelector sel) throws Exception {
+	public <R,D> R getReduction(ReductionTarget<R,D> type, RecordSelector sel) throws Exception {
 		if( ! map.resolves(type.getExpression(),false)){
 			return type.getDefault();
 		}
 		try{
 			SQLFilter<E> sql_fil = FilterConverter.convert(getFilter(sel));
-			FilterReduction<E,R> fs = new FilterReduction<E,R>(map,type);
+			FilterReduction<E,R,D> fs = new FilterReduction<E,R,D>(map,type);
 			if( isQualify()) {
 				fs.setQualify(true);
 			}
@@ -110,33 +110,31 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 	}
 
 	
-	public <I> Map<I, Number> getReductionMap(PropExpression<I> index,
-			ReductionTarget<Number,Number> property,  RecordSelector selector)
+	public <I,T,D> Map<I, T> getReductionMap(PropExpression<I> index,
+			ReductionTarget<T,D> property,  RecordSelector selector)
 			throws Exception 
 	{
-		
+
 		if( !(compatible(index) && compatible(property.getExpression())&& compatible(selector))){
 			// no matching property
 			return new HashMap<>();
-			
+
 		}
-		
-		
-		if (Number.class.isAssignableFrom(property.getTarget())) {
-			try{
-				// By default we'll sum the Number value.
-				MapReductionFinder<E,I> finder = new MapReductionFinder<E,I>(map,index, property);
-				if( isQualify()) {
-					finder.setQualify(true);
-				}
-				Map<I, Number> result = finder.find(FilterConverter.convert(getFilter(selector)));
-				return result;
-			}catch(CannotUseSQLException e){
-				return super.getReductionMap(index, property, selector);
+
+
+
+		try{
+			// By default we'll sum the Number value.
+			MapReductionFinder<E,I,T,D> finder = new MapReductionFinder<E,I,T,D>(map,index, property);
+			if( isQualify()) {
+				finder.setQualify(true);
 			}
-		} 
-		return null;
-		
+			Map<I, T> result = finder.find(FilterConverter.convert(getFilter(selector)));
+			return result;
+		}catch(CannotUseSQLException e){
+			return super.getReductionMap(index, property, selector);
+		}
+
 	}
 
 	/**

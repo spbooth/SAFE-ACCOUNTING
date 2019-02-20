@@ -62,6 +62,10 @@ public abstract class ReductionTarget<T,D> {
 	public final T combine(T a, T b) {
 		return (T) op.operator().operate(a, b);
 	}
+	
+	public T map(D o) {
+		return (T) o;
+	}
 	/** value to return if no records combined,
 	 * 
 	 * @return default value

@@ -29,9 +29,9 @@ import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 
 
 
-public class MapReductionFinder<T,K> extends AccessorMapFilterFinder<T, Map<K,Number>> {
+public class MapReductionFinder<T,K,R,N> extends AccessorMapFilterFinder<T, Map<K,R>> {
 	public MapReductionFinder(AccessorMap<T> map, PropExpression<K> key,
-			ReductionTarget<Number,Number> value) throws InvalidSQLPropertyException {
+			ReductionTarget<R,N> value) throws InvalidSQLPropertyException {
 		super(map); // can return null
 		assert(key != null);
 		assert(value != null);
@@ -42,18 +42,18 @@ public class MapReductionFinder<T,K> extends AccessorMapFilterFinder<T, Map<K,Nu
 			key_name = key.toString();
 		}
 		
-		SQLExpression<? extends Number> e  = map.getSQLExpression(value.getExpression());
+		SQLExpression<? extends N> e  = map.getSQLExpression(value.getExpression());
 		String value_name=null;
 		if( ! (e instanceof FieldValue)){
 			value_name=value.toString();
 		}
 		
 		switch(value.getReduction()){
-		case SUM: setMapper(new SumMapMapper<>(map.getContext(),a,key_name,e,value_name)); break;
-		case MIN: setMapper(new MinimumMapMapper<>(map.getContext(),a,key_name,e,value_name)); break;
-		case MAX: setMapper(new MaximumMapMapper<>(map.getContext(),a,key_name,e,value_name)); break;
-		case AVG: setMapper(new AverageMapMapper<>(map.getContext(),a,key_name,e,value_name)); break;
-		case DISTINCT: setMapper(new CountDistinctMapMapper<>(map.getContext(), a, key_name, e, value_name)); break;
+		case SUM: setMapper(new SumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+		case MIN: setMapper(new MinimumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+		case MAX: setMapper(new MaximumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+		case AVG: setMapper(new AverageMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+		case DISTINCT: setMapper(new CountDistinctMapMapper(map.getContext(), a, key_name, e, value_name)); break;
 		}
 		
 	}

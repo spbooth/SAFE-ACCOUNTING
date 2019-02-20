@@ -46,7 +46,7 @@ public class SetMapperEntry extends MapperEntry {
     }
 	@SuppressWarnings("unchecked")
 	protected UsageRecordQueryMapper getPointQueryMapper(RecordSelector sel,
-			Reduction red,PropExpression<? extends Number> prop_tag, PropExpression<Date> end_prop) {
+			Reduction red,PropExpression prop_tag, PropExpression<Date> end_prop) {
 		return new PointUsageRecordQueryMapper(getContext(), sel,set,red,prop_tag,end_prop,null);
 				
 	}

@@ -93,8 +93,8 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 		};
 	}
 
-	public <I> Map<I, Number> getReductionMap(PropExpression<I> index,
-			ReductionTarget<Number,Number> property,  RecordSelector selector)
+	public <I,T,D> Map<I, T> getReductionMap(PropExpression<I> index,
+			ReductionTarget<T,D> property,  RecordSelector selector)
 			throws Exception 
 	{
 		return getReductionHandler().getReductionMap(index, property, selector);
@@ -107,7 +107,7 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 	}
 	
 	
-	public  <R>  R getReduction(ReductionTarget<R,R> type, RecordSelector selector) throws Exception {
+	public  <R,D>  R getReduction(ReductionTarget<R,D> type, RecordSelector selector) throws Exception {
 		return getReductionHandler().getReduction(type, selector);
 	}
 

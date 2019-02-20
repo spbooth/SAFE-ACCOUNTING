@@ -158,7 +158,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
      * @return
      */
     protected abstract UsageRecordQueryMapper getPointQueryMapper(RecordSelector sel,
-			Reduction red,PropExpression<? extends Number> prop_tag, PropExpression<Date> end_prop) throws CannotUseSQLException;
+			Reduction red,PropExpression prop_tag, PropExpression<Date> end_prop) throws CannotUseSQLException;
     /** Get a Query mapper that combined records based on the overlap of records 
      * defined by a pair of properties as defined in {@link OverlapHandler}
      * @param s
@@ -371,20 +371,29 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		boolean data_added=false;
         // create dataset, don't add labels yet as labels
 		// vector may grow as data added
-		PropExpression<? extends Number> prop_tag = e.getPlotProperty();
+		PropExpression prop_tag = e.getPlotProperty();
 		PropExpression<Date> start_prop = e.getStartProperty();
 		PropExpression<Date> end_prop = e.getEndProperty();
 		Reduction red = e.getReduction();
+		if( red.equals(Reduction.DISTINCT)) {
+        	allow_overlap=false;
+        }
+		
 		// We can't necessarily afford an additional query here
 		// may be a single additional query so just use any cutoff from the config
 		long cutoff = e.getCutoff();
+		RecordSelector s =getRangeSelector(e, allow_overlap,cutoff, tc.getStartDate(), tc.getEndDate(), sel);
+		
+		
         boolean query_mapper_on = OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn);
        
         if( query_mapper_on ){
         	query_mapper_on = conn.getBooleanParameter(ap.getTag()+".use_query_mapper",true);
         }
-        
-        RecordSelector s =getRangeSelector(e, allow_overlap,cutoff, tc.getStartDate(), tc.getEndDate(), sel);
+        if( red.equals(Reduction.DISTINCT)) {
+        	query_mapper_on=true;
+        }
+       
 		if( query_mapper_on  ){ //use fmapper if it exists for piecharts
 			try{
 				UsageRecordQueryMapper fmapper;

@@ -48,7 +48,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 public class PlotEntry {
 	  private final String name;  // short name for plot entry 
 	  private final String description; // text to be presented to user
-	  private final PropExpression<? extends Number> prop_tag;  // property to plot
+	  private final PropExpression prop_tag;  // property to plot
 	  private final PlotEntry norm;
 	  private final PropExpression<Date> start_prop;
 	  private final PropExpression<Date> end_prop;
@@ -89,7 +89,7 @@ public class PlotEntry {
 	   * 
 	   * @return PropertyTag
 	   */
-	  public PropExpression<? extends Number> getPlotProperty(){
+	  public PropExpression getPlotProperty(){
 		  return prop_tag;
 	  }
 	  

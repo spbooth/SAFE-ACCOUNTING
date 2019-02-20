@@ -267,18 +267,18 @@ public abstract class UsageManager<UR> implements
 //	}
 
 
-	public <R> Map<R, Number> getReductionMap(
-			PropExpression<R> tag,ReductionTarget<Number,Number> res, 
+	public <R,T,D> Map<R, T> getReductionMap(
+			PropExpression<R> tag,ReductionTarget<T,D> res, 
 			 RecordSelector selector) 
 			throws Exception {
-		Map<R, Number> result = null;
+		Map<R, T> result = null;
 		
 			for (UsageProducer<UR> prod: factories.values()) {
 				if( prod.compatible(tag) && prod.compatible(selector)){
 					if (result == null) {
 						result = prod.getReductionMap(tag, res, selector);
 					} else {
-						Map<R, Number> merge = prod.getReductionMap(tag, res, selector);
+						Map<R, T> merge = prod.getReductionMap(tag, res, selector);
 						for (R key : merge.keySet()) {
 							result.put(key, res.combine(result.get(key),merge
 									.get(key)));
@@ -365,7 +365,7 @@ public abstract class UsageManager<UR> implements
 	}
 
 	
-	public <R> R getReduction(ReductionTarget<R,R> type,  RecordSelector selector) throws Exception {
+	public <R,D> R getReduction(ReductionTarget<R,D> type,  RecordSelector selector) throws Exception {
 		R result = null;
 		for (UsageProducer<UR> prod:  factories.values()) {
 			if( prod.compatible(type.getExpression()) && prod.compatible(selector)){

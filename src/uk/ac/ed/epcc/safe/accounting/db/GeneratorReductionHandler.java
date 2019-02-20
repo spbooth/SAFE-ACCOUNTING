@@ -111,7 +111,7 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 	
 	
 	
-	public <R> R getReduction(ReductionTarget<R,R> type, RecordSelector sel)
+	public <R,D> R getReduction(ReductionTarget<R,D> type, RecordSelector sel)
 			throws Exception, InvalidPropertyException {
 		//TODO think about what to do if this is AVG
 		// combine operation may or may not be wrong depending on
@@ -120,7 +120,7 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 		try(CloseableIterator<ExpressionTargetContainer> it = fac.getExpressionIterator(sel)){
 			while(it.hasNext()){
 				ExpressionTargetContainer et = it.next();
-				result = type.combine(result, et.evaluateExpression(type.getExpression()));
+				result = type.combine(result, type.map(et.evaluateExpression(type.getExpression())));
 				et.release();
 			}
 		}
@@ -131,19 +131,19 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 	
 	
 	
-	public <I> Map<I, Number> getReductionMap(PropExpression<I> index,
-			ReductionTarget<Number,Number> property, RecordSelector selector)
+	public <I,T,D> Map<I, T> getReductionMap(PropExpression<I> index,
+			ReductionTarget<T,D> property, RecordSelector selector)
 			throws Exception, InvalidPropertyException {
-		Map<I,Number> result = new HashMap<>();
+		Map<I,T> result = new HashMap<>();
 		try(CloseableIterator<ExpressionTargetContainer> it = fac.getExpressionIterator(selector)){
 			while(it.hasNext()){
 				ExpressionTargetContainer et = it.next();
 				I ind = et.evaluateExpression(index);
-				Number old = result.get(ind);
+				T old = result.get(ind);
 				if( old == null ){
 					old = property.getDefault();
 				}
-				result.put(ind, property.combine(old, et.evaluateExpression(property.getExpression())));
+				result.put(ind, property.combine(old, property.map(et.evaluateExpression(property.getExpression()))));
 				et.release();
 			}
 		}

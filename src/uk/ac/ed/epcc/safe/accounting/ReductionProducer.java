@@ -38,7 +38,7 @@ public interface ReductionProducer<UR> {
 	 * @return result of reduction
 	 * @throws Exception 
 	 */
-	public abstract <T> T getReduction(ReductionTarget<T,T> target,
+	public abstract <T,D> T getReduction(ReductionTarget<T,D> target,
 			RecordSelector sel) throws Exception;
 
 	//   /** Get a map between {@link PropertyTag} and the values they generate.
@@ -80,7 +80,9 @@ public interface ReductionProducer<UR> {
 
 	/** sum the specified numerical quantity over all records that match the selector
 	 * grouped by the other specified property
-	 * @param <I>
+	 * @param <I> index type
+	 * @param <T> result type of {@link ReductionTarget}
+	 * @param <D> innter type of {@link ReductionTarget}
 	
 	 * @param index
 	 * @param property
@@ -89,8 +91,8 @@ public interface ReductionProducer<UR> {
 	 * @throws Exception 
 	 */
 
-	public abstract <I> Map<I, Number> getReductionMap(PropExpression<I> index,
-			ReductionTarget<Number,Number> property, RecordSelector selector)
+	public abstract <I,T,D> Map<I, T> getReductionMap(PropExpression<I> index,
+			ReductionTarget<T,D> property, RecordSelector selector)
 			throws Exception;
 
 }
