@@ -50,7 +50,6 @@ public class SGERecordTest extends ParseUsageRecordFactoryTestCase{
 "all.q:eddie244.ecdf.ed.ac.uk:ecdf_isiti:ywan:rotating.sh:40:sge:0:1273571650:1273571650:1273571651:0:0:1:0.026995:0.047992:0.000000:0:0:0:0:5919:20:0:0.000000:0:0:0:0:311:61:NONE:defaultdepartment:openmpi:8:0:0.074987:0.00000:0.000179:-pe openmpi 8:0.000000:1.eddie244:426389504.000000:0:0\n"+
 "all.q:eddie243.ecdf.ed.ac.uk:ecdf_isiti:ywan:rotating.sh:40:sge:0:1273571643:1273571650:1273571651:0:0:1:0.047992:0.059990:0.000000:0:0:0:0:7894:19:0:0.000000:0:0:0:0:207:62:NONE:defaultdepartment:openmpi:8:0:0.107982:0.000000:0.001000:-pe openmpi 8:0.000000:NONE:518365184.000000:0:0\n"+
 "all.q:eddie243.ecdf.ed.ac.uk:ecdf_isiti:ywan:rotating.sh:39:sge:0:1273571527:1273571530:1273571531:0:0:1:0.102983:0.129979:0.000000:0:0:0:0:13820:42:0:0.000000:0:0:0:0:843:135:NONE:defaultdepartment:openmpi:8:0:0.232962:0.000000:0.001179:-pe openmpi 8:0.000000:NONE:944750592.000000:0:0\n"+
-
 "";		
 	
 	}

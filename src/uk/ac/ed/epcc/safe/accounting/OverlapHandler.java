@@ -16,7 +16,6 @@ package uk.ac.ed.epcc.safe.accounting;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -54,6 +53,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
+import uk.ac.ed.epcc.webapp.timer.TimeClosable;
 import uk.ac.ed.epcc.webapp.timer.TimerService;
 //import uk.ac.ed.epcc.safe.accounting.charts.MapperEntry;
 
@@ -131,6 +131,11 @@ public class OverlapHandler<T> {
     	//sel.add(new NullSelector(target.getExpression(), false)); //UsageManager may contain tables without type
     	if( USE_QUERY_MAPPER_FEATURE.isEnabled(conn) ){
     		try{
+    			if( target.getReduction().equals(Reduction.DISTINCT)) {
+    				AndRecordSelector selector = new AndRecordSelector(sel);
+    				selector.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,cutoff));
+    				return prod.getReduction(target, selector);
+    			}
     			Number result=null;
 
     			if( USE_CASE_OVERLAP.isEnabled(conn)){
@@ -358,79 +363,76 @@ public class OverlapHandler<T> {
 		}
 		Period period=new Period(start,end);
 		if( USE_QUERY_MAPPER_FEATURE.isEnabled(conn)){
-
-			try{
+			TimerService tim=conn.getService(TimerService.class);
+			try(TimeClosable map = new TimeClosable(tim, "GetOverlapMap")){
 				//Logger log = conn.getService(LoggerService.class).getLogger(getClass());
-				TimerService tim=conn.getService(TimerService.class);
-				Map<R, Number> result;
-				if( tim != null ){
-					tim.startTimer("getOverlapMap");
-				}
-				if( USE_CASE_OVERLAP.isEnabled(conn)){
-					// do reduction in a single pass using a case statement
+				
+				
+				if( main_target.getReduction().equals(Reduction.DISTINCT)) {
+					// Just take all overlapping records
 					AndRecordSelector qs = new AndRecordSelector(selector);
-
 					qs.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,cutoff));
-					result = prod.getReductionMap(tag,makeCaseOverlapReductionTarget(main_target.getReduction(), main_target.getExpression(), start_prop, end_prop, start, end), qs);
-				}else{
-					
+					return prod.getReductionMap(tag, main_target, qs);
+				}else {
 
+					Map<R, Number> result;
 
-					AndRecordSelector inner=new AndRecordSelector();
-					inner.add(selector);
-					inner.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.INNER,cutoff));
+					if( USE_CASE_OVERLAP.isEnabled(conn)){
+						// do reduction in a single pass using a case statement
+						AndRecordSelector qs = new AndRecordSelector(selector);
 
-
-					NumberReductionTarget target;
-					if( main_target.getReduction() == Reduction.AVG){
-						target = makeInnerAverageReductionTarget(main_target.getExpression(), start_prop, end_prop, start,
-								end);
+						qs.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,cutoff));
+						result = prod.getReductionMap(tag,makeCaseOverlapReductionTarget(main_target.getReduction(), main_target.getExpression(), start_prop, end_prop, start, end), qs);
 					}else{
-						target = main_target;
+
+
+
+						AndRecordSelector inner=new AndRecordSelector();
+						inner.add(selector);
+						inner.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.INNER,cutoff));
+
+
+						NumberReductionTarget target;
+						if( main_target.getReduction() == Reduction.AVG){
+							target = makeInnerAverageReductionTarget(main_target.getExpression(), start_prop, end_prop, start,
+									end);
+						}else{
+							target = main_target;
+						}
+						result = prod.getReductionMap(tag, target, inner);
+
+
+						//log.debug("getMap finder returns "+result.size());
+
+						try(TimeClosable loops = new TimeClosable(tim, "getOverlapMap-Loop1")){
+							//TODO add option  to perform overlaps in SQL if we can create a SQL expression for the weight
+							// Now overlapps from the beginning		
+							
+							AndRecordSelector sel2=new AndRecordSelector(selector);
+							sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.LOWER,cutoff));
+
+
+							addToOverlapReductionMapByIterating(tag, start_prop,
+									end_prop, period, target, result, sel2);
+							//log.debug("First loop "+records+" of which "+over+" overlap");
+							loops.change("getOverlapMap-Loop2");
+							// This should be the slowest loop as it cannot use an index on end_prop
+							// to locate the end of the select so needs to search to the end of the table.
+							// unless end is constrained by the outer selector.
+							sel2=new AndRecordSelector(selector);
+							sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.UPPER_OUTER,cutoff));
+							addToOverlapReductionMapByIterating(tag, start_prop,
+									end_prop, period, target, result, sel2);
+							//log.debug("Both loop "+records+" of which "+over+" overlap");
+						}catch(InvalidPropertyException e){
+							// should never happen
+							throw new ConsistencyError("Impossible error",e);
+						}
+
 					}
-					result = prod.getReductionMap(tag, target, inner);
 
-
-					//log.debug("getMap finder returns "+result.size());
-
-					try{
-						//TODO add option  to perform overlaps in SQL if we can create a SQL expression for the weight
-						// Now overlapps from the beginning		
-						if( tim != null ){
-							tim.startTimer("getOverlapMap-Loop1");
-						}
-						AndRecordSelector sel2=new AndRecordSelector(selector);
-						sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.LOWER,cutoff));
-
-
-						addToOverlapReductionMapByIterating(tag, start_prop,
-								end_prop, period, target, result, sel2);
-						//log.debug("First loop "+records+" of which "+over+" overlap");
-						if( tim != null ){
-							tim.stopTimer("getOverlapMap-Loop1");
-							tim.startTimer("getOverlapMap-Loop2");
-						}
-						// This should be the slowest loop as it cannot use an index on end_prop
-						// to locate the end of the select so needs to search to the end of the table.
-						// unless end is constrained by the outer selector.
-						sel2=new AndRecordSelector(selector);
-						sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.UPPER_OUTER,cutoff));
-						addToOverlapReductionMapByIterating(tag, start_prop,
-								end_prop, period, target, result, sel2);
-						//log.debug("Both loop "+records+" of which "+over+" overlap");
-						if( tim != null ){
-							tim.stopTimer("getOverlapMap-Loop2");
-						}
-					}catch(InvalidPropertyException e){
-						// should never happen
-						throw new ConsistencyError("Impossible error",e);
-					}
-					
+					return result;
 				}
-				if( tim != null ){
-					tim.stopTimer("getOverlapMap");
-				}
-				return result;
 			}catch(NoSQLFilterException e){
 				// fallback below
 			}
@@ -542,12 +544,10 @@ public class OverlapHandler<T> {
 			}
 		}
 		if( USE_QUERY_MAPPER_FEATURE.isEnabled(conn) ){
-
-			try{
-				TimerService tim=conn.getService(TimerService.class);
-				if( tim != null ){
-					tim.startTimer("getOverlapMap");
-				}
+			TimerService tim=conn.getService(TimerService.class);
+			try(TimeClosable all = new TimeClosable(tim, "getOverlapMap")){
+				
+				
 				Map<ExpressionTuple, ReductionMapResult> result;
 				Set<ReductionTarget> inner_properties = new LinkedHashSet<>();
 				Map<ReductionTarget,ReductionTarget> mapping = new HashMap<>();
@@ -626,11 +626,8 @@ public class OverlapHandler<T> {
 						}
 						//log.debug("getMap finder returns "+result.size());
 
-						try{
+						try(TimeClosable loops = new TimeClosable(tim, "getOverlapMap-Loop1")){
 							// Now overlapps from the beginning		
-							if( tim != null ){
-								tim.startTimer("getOverlapMap-Loop1");
-							}
 							AndRecordSelector sel2=new AndRecordSelector(selector);
 							sel2.add(new PeriodOverlapRecordSelector(period, start_prop, end_prop,OverlapType.LOWER,cutoff));
 
@@ -638,10 +635,7 @@ public class OverlapHandler<T> {
 									start_prop, end_prop, period, index_set, result,
 									sel2);
 							//log.debug("First loop "+records+" of which "+over+" overlap");
-							if( tim != null ){
-								tim.stopTimer("getOverlapMap-Loop1");
-								tim.startTimer("getOverlapMap-Loop2");
-							}
+							loops.change("getOverlapMap-Loop2");
 							// This should be the slowest loop as it cannot use an index on end_prop
 							// to locate the end of the select so needs to search to the end of the table.
 							sel2=new AndRecordSelector(selector);
@@ -649,9 +643,6 @@ public class OverlapHandler<T> {
 							records += addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, period, index_set, result, sel2);
 
 							//log.debug("Both loop "+records+" of which "+over+" overlap");
-							if( tim != null ){
-								tim.stopTimer("getOverlapMap-Loop2");
-							}
 						}catch(InvalidPropertyException e){
 							// should never happen
 							throw new ConsistencyError("Impossible error",e);
@@ -665,9 +656,6 @@ public class OverlapHandler<T> {
 					addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, period, index_set, result, sel);
 				}
 
-				if( tim != null ){
-					tim.stopTimer("getOverlapMap");
-				}
 				return result;
 			}catch(NoSQLFilterException e){
 				// go to fallback
@@ -752,12 +740,17 @@ public class OverlapHandler<T> {
 	 * @throws InvalidPropertyException 
      */
     public static Number getOverlap(ExpressionTarget rec,NumberReductionTarget target,PropExpression<Date> start_prop,PropExpression<Date> end_prop,TimePeriod p) throws InvalidExpressionException {
-    	Number tmp=rec.evaluateExpression(target.getExpression());
+    	Number tmp=target.map(rec.evaluateExpression(target.getExpression()));
     	
     	if( tmp == null ){
     		return target.getDefault();
     	}
-    	
+    	if( target.getReduction().equals(Reduction.DISTINCT)) {
+    		// Don't weight distinct, ideally this should be a custom
+    		// number class to allow iteration to work but weighting
+    		// is always wrong
+    		return tmp;
+    	}
     	double fac = getOverlappWeight(rec,start_prop,end_prop,p,target.getReduction());
     	assert(fac >= 0.0 && fac <=1.0);
     	if( fac == 0.0 ){

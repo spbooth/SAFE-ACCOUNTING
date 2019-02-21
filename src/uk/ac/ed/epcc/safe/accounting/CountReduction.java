@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.DistinctCount;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 /** A {@link ReductionTarget} that generates a count distinct reduction.
@@ -28,6 +29,14 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 
 public class CountReduction extends ReductionTarget<Number,Object> {
+
+
+	@Override
+	public Number map(Object o) {
+		return DistinctCount.make(o);
+	}
+
+
 
 
 	public CountReduction(

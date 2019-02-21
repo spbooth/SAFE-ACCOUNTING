@@ -375,9 +375,6 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		PropExpression<Date> start_prop = e.getStartProperty();
 		PropExpression<Date> end_prop = e.getEndProperty();
 		Reduction red = e.getReduction();
-		if( red.equals(Reduction.DISTINCT)) {
-        	allow_overlap=false;
-        }
 		
 		// We can't necessarily afford an additional query here
 		// may be a single additional query so just use any cutoff from the config
@@ -389,9 +386,6 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
        
         if( query_mapper_on ){
         	query_mapper_on = conn.getBooleanParameter(ap.getTag()+".use_query_mapper",true);
-        }
-        if( red.equals(Reduction.DISTINCT)) {
-        	query_mapper_on=true;
         }
        
 		if( query_mapper_on  ){ //use fmapper if it exists for piecharts

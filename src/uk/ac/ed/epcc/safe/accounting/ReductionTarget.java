@@ -62,7 +62,14 @@ public abstract class ReductionTarget<T,D> {
 	public final T combine(T a, T b) {
 		return (T) op.operator().operate(a, b);
 	}
-	
+	/** map the underlying object to the reduction result type.
+	 * This is only used when performing the reduction by iteration.
+	 * normally the underlying type will be the same but mapping
+	 * is needed for DISTINCT reductions by iteration.
+	 * 
+	 * @param o
+	 * @return
+	 */
 	public T map(D o) {
 		return (T) o;
 	}
