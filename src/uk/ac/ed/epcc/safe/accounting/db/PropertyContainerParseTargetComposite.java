@@ -19,6 +19,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
+import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerUpdater;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
@@ -31,6 +32,7 @@ import uk.ac.ed.epcc.webapp.model.data.Composite;
 import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
+import uk.ac.ed.epcc.webapp.model.data.TableStructureContributer;
 /** A {@link Composite} implementation of {@link PropertyContainerParseTarget}
  * 
  * A table that supports parsing should have a sub-class composite installed.
@@ -40,6 +42,9 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
  * <p>
  * Subclasses can implement different sub-interfaces of {@link PropertyContainerParseTarget}
  * and provide different ways of building the {@link PlugInOwner}.
+ * <p>
+ * If any of the {@link PropertyContainerUpdater}s (parser/policies) implement {@link TableStructureContributer}.
+ * This reflects the input customisation methods onto the parent factory.
  * @author spb
  *
  */
@@ -67,7 +72,7 @@ public abstract class PropertyContainerParseTargetComposite<T extends DataObject
 		}
 		spec = parser.modifyDefaultTableSpecification(getContext(),spec,map,table);
 		// If the parser explicitly returns no spec then no table is created.
-		// This will also happen if there are no AutoTable annotatiosn so no fields are added by the parser
+		// This will also happen if there are no AutoTable annotations so no fields are added by the parser
 		// You can avoid this in sub-classes by creating fields in makeInitialSpecification
 		if( spec != null ){
 			for(PropertyContainerPolicy pol : owner.getPolicies()){
@@ -279,6 +284,32 @@ public abstract class PropertyContainerParseTargetComposite<T extends DataObject
 	@Override
 	public String getTag() {
 		return getPlugInOwner().getTag();
+	}
+	@Override
+	public Map<String, String> addTranslations(Map<String, String> translations) {
+		PropertyContainerParser<R> parser = getParser();
+		if( parser instanceof TableStructureContributer) {
+			((TableStructureContributer)parser).addTranslations(translations);
+		}
+		for(PropertyContainerPolicy pol : getPolicies()) {
+			if( pol instanceof TableStructureContributer) {
+				((TableStructureContributer)pol).addTranslations(translations);
+			}
+		}
+		return super.addTranslations(translations);
+	}
+	@Override
+	public Map<String, Object> addSelectors(Map<String, Object> selectors) {
+		PropertyContainerParser<R> parser = getParser();
+		if( parser instanceof TableStructureContributer) {
+			((TableStructureContributer)parser).addSelectors(selectors);
+		}
+		for(PropertyContainerPolicy pol : getPolicies()) {
+			if( pol instanceof TableStructureContributer) {
+				((TableStructureContributer)pol).addSelectors(selectors);
+			}
+		}
+		return super.addSelectors(selectors);
 	}
 
 	
