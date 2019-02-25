@@ -239,6 +239,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 //				throw new AccountingParseException("reversed time bounds");
 //			}
 		} else {
+			log.debug("regexp does not match alps log:"+record);
 			throw new AccountingParseException("Unexpected line format");
 		}
 		
@@ -319,5 +320,8 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 		}
 		return ss;
 	}
-	
+	@Override
+	public String formatRecord(String record) {
+		return record.trim();
+	}
 }

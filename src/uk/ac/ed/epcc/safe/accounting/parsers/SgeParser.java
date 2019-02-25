@@ -188,7 +188,7 @@ public class SgeParser extends BatchParser implements Contexed {
 		r.setProperty(SGE_FAILED_PROP, failed);
 		r.setProperty(SGE_EXIT_PROP,readInteger(args[12]));
 		// wallclock, same as difference between start and end
-		Integer wall = readInteger(args[13]);
+		Double wall = readDouble(args[13]);
 		r.setProperty(SGE_WALLCLOCK_PROP, wall);
 
 		// getrusage fields
@@ -252,7 +252,8 @@ public class SgeParser extends BatchParser implements Contexed {
 		// total data transfered in io input/output
 		Double io = readDouble(args[38]);
 		r.setProperty(SGE_IODATA_PROP, io);
-		String category = args[39].trim();
+		
+		String category = args[39].trim().replace('\ufffd', ':');
 		r.setProperty(SGE_CATEGORY_PROP, category);
 		//io wait time seconds
 		Double iow = readDouble(args[40]);

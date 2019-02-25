@@ -39,15 +39,21 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
  *
  */
 public abstract class BaseParser extends AbstractPropertyContainerParser {
-	
-	/** parse a timestamp string (in seconds from unix epoch) and convert to Date.
+	public static final long SECOND_RANGE_CUTOFF = 500000000000L; // roughly 1985-11-05 in milliseconds
+	/** parse a timestamp string (in seconds or milliseconds from unix epoch) and convert to Date.
 	 * @param time Timestamp string.
 	 * @return Date
 	 */
 	public final Date readTime(String time) {
 	    double stamp = Double.parseDouble(time.trim());
-	    stamp = stamp * 1000L;
-	    return new Date((long)stamp);
+	    if( stamp < SECOND_RANGE_CUTOFF) {
+	    	// This must be a time in seconds, otherwise assume milliseconds
+	    	stamp = stamp * 1000.0;
+	    }
+	    long millis = (long)stamp;
+		Date date = new Date(millis);
+		assert(date.getTime() == millis);
+		return date;
 	}
 	public final Long readLong(String val) {
 	    

@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,6 +60,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 	private UsageRecordParseTargetInterfaceTestImp<I, UsageRecordParseTarget<I>> plugin_owner_test = new UsageRecordParseTargetInterfaceTestImp<>(this,()->getPluginOwner() , ()->getUploadContext(), ()->ctx);
 			//new PluginOwnerTestCaseImpl<>(()->getPluginOwner());
 
+	
 	private UploadContext upload_context = new UploadContext() {
 		
 		@Override
@@ -207,6 +209,11 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 
 	@Test
 	public void testParser() throws Exception {
+		Calendar c = Calendar.getInstance();
+		c.set(1990, Calendar.JANUARY, 01);
+		Date min = c.getTime();
+		c.set(2500, Calendar.JANUARY, 01);
+		Date max = c.getTime();
 		UsageRecordFactory<R> fac = getFactory();
 		if (!fac.isValid()) {
 			return;
@@ -263,8 +270,22 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 					Date begin = record.getStart();
 					Date end = record.getEnd();
 					
+					Date map_begin = map.getProperty(StandardProperties.STARTED_PROP);
+					Date map_end = map.getProperty(StandardProperties.ENDED_PROP);
+
+					
+					long res = record.getRecord().getRepository().getResolution();
 					if (begin != null && end != null) {
-						assertEquals("Runtime check", end.getTime() - begin.getTime(),
+
+						assertTrue(begin.after(min));
+						assertTrue(begin.before(max));
+						assertTrue(end.after(min));
+						assertTrue(end.before(max));
+						// record will only be accurate to resolution of repository
+						assertEquals("Starts" ,map_begin.getTime()/res ,begin.getTime()/res);
+						assertEquals("Ends" ,map_end.getTime()/res ,end.getTime()/res);
+						// assume map is the more accurate
+						assertEquals("Runtime check", map_end.getTime() - map_begin.getTime(),
 								runtime.longValue());
 					}
 					ExpressionTargetContainer old =  target.findDuplicate(proxy);

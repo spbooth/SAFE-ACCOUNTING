@@ -615,7 +615,7 @@ public class LSFParser extends BatchParser implements  Contexed {
 		if ( eventTime != null  && startTime != null)
 		{
 			wallDuration = new Duration(startTime, eventTime);
-			r.setProperty(LSF_WALLCLOCK_PROP, wallDuration.getSeconds());
+			r.setProperty(LSF_WALLCLOCK_PROP, new Double(wallDuration.getMilliseconds()/1000.0));
 		}
 		
 		
