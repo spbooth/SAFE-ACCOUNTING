@@ -39,8 +39,10 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
  *
  */
 public abstract class BaseParser extends AbstractPropertyContainerParser {
-	public static final long SECOND_RANGE_CUTOFF = 500000000000L; // roughly 1985-11-05 in milliseconds
+	public static final long SECOND_RANGE_CUTOFF = 500000000000L; // roughly 1985-11-05 in milliseconds 16000+ in seconds
 	/** parse a timestamp string (in seconds or milliseconds from unix epoch) and convert to Date.
+	 * This will handle either millisecond or second resolutions (SGE changed resolution in later versions).
+	 * It parses as a float so also handles fractional values.
 	 * @param time Timestamp string.
 	 * @return Date
 	 */
