@@ -80,10 +80,12 @@ public class RecordSet extends ObjectSet<UsageProducer>{
 				  // We could apply a time filter here but
 				  // safer if we don't in case time bounds change later
 				  // wrap the selector so
-				  narrowed = getGenerator().narrow(getRecordSelector().copy());
-//				  if( narrowed == null) {
+				  RecordSelector sel = getRecordSelector().copy();
+				narrowed = getGenerator().narrow(sel);
+				  if( narrowed == null) {
+					  getLogger().debug("UsageProducer "+getGenerator().getTag()+" narrowed to nothing by selector "+sel.toString());
 //					  narrowed=new NullUsageProducer<>(serv.getContext());
-//				  }
+				  }
 				  use_narrowed=true;
 				  return narrowed;
 			  } catch (Exception e) {

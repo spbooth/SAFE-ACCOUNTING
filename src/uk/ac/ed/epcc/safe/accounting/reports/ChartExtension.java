@@ -103,7 +103,7 @@ public abstract class ChartExtension extends ReportExtension {
 			// nested in AddChart if we want
 			return null;
 		}
-		PropertyFinder finder = set.getUsageProducer().getFinder();
+		PropertyFinder finder = set.getFinder();
 		Element plot_e = getParamElement("Plot", e);
 		PlotEntry result=null;
 		String start_name=null;
@@ -153,7 +153,7 @@ public abstract class ChartExtension extends ReportExtension {
 		Element e = (Element) n;
 		MapperEntry entry=null;
 		AppContext ctx = getContext();
-		PropertyFinder finder = set.getUsageProducer().getFinder();
+		PropertyFinder finder = set.getFinder();
 		if (hasParam("GroupBy", e)) {
 			Element group_e = getParamElement("GroupBy", e);
 			Object o = getParameterRef(group_e);
@@ -329,7 +329,9 @@ public abstract class ChartExtension extends ReportExtension {
 		Element e = (Element) node;
 		int nPlots = getNumberParam("NPlots", 10, e).intValue();
 		UsageProducer up = set.getUsageProducer();
-		
+		if( up == null) {
+			return orig;
+		}
 		if( ! entry.compatible(up)) {
 			// This could happen in an AddData clause where the
 			// MapperEntry is already set but the UsageProducer is
