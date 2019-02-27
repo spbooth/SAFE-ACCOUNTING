@@ -9,6 +9,7 @@ import uk.ac.ed.epcc.safe.accounting.db.RegexpTarget;
 import uk.ac.ed.epcc.safe.accounting.db.RegexpTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -213,7 +214,7 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 				return;
 			}
 			for(DataObject rec : fac.all()){
-				process((PropertyContainer) rec);
+				process(ExpressionCast.getPropertyContainer(rec));
 				rec.commit();
 				db.commitTransaction();
 			}
