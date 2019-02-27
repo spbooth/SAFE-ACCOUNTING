@@ -73,6 +73,10 @@ public class FormatExtension<T> extends ReportExtension {
 		try {
 		DocumentFragment result = doc.createDocumentFragment();
 		UsageProducer<T> prod = recordSet.getUsageProducer();
+		if( prod == null ) {
+			return result;
+		}
+		
 		ExpressionExpander expander = new ExpressionExpander(getContext(),parse_vis);
 		AndRecordSelector sel = recordSet.getPeriodSelector(period);
 		

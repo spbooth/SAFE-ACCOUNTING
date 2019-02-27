@@ -333,6 +333,9 @@ public class TableExtension extends ReportExtension {
 		public String addColumn(Node columnNode) {
 			Element data_element = (Element) columnNode;
 			UsageProducer producer = recordSet.getUsageProducer();
+			if( producer == null) {
+				return "";
+			}
 			String columnName=null;
 			try {
 				columnName = extension.getParam("Name", data_element);

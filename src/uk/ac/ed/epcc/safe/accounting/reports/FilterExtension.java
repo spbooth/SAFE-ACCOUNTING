@@ -215,6 +215,9 @@ public class FilterExtension extends ReportExtension{
 	  }
 	  try {
 		  UsageProducer<?> producer = set.getUsageProducer();
+		  if( producer == null ) {
+			  return false;
+		  }
 		  AndRecordSelector selector = set.getPeriodSelector(period);
 
 		  return producer.exists(selector);

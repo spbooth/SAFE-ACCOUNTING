@@ -180,6 +180,9 @@ public class AtomExtension extends ReportExtension {
 		} else if (MAXIMUM_ELEMENT.equals(name)) {
 			return expandSimpleReduction(element, set, period, Reduction.MAX);
 		} else if (COUNT_ELEMENT.equals(name)) {
+			  if( producer == null ) {
+				  return new AtomResult<>(StandardProperties.COUNT_PROP, 0L);
+			  }
 				return new AtomResult<>(StandardProperties.COUNT_PROP,producer.getRecordCount(selector));
 		} else if (ADD_ELEMENT.equals(name)){
 			return combine(Operator.ADD, period, set, element);
@@ -299,6 +302,9 @@ public class AtomExtension extends ReportExtension {
 			
 			Element element =(Element) node;
 			UsageProducer<?> producer = set.getUsageProducer();
+			if( producer == null) {
+				return "";
+			}
 			RecordSelector selector = set.getPeriodSelector(period);
 			
 			String name = element.getLocalName();

@@ -392,6 +392,9 @@ public abstract class ChartExtension extends ReportExtension {
 
 			int nPlots = getNumberParam("NPlots", 10, e).intValue();
 			UsageProducer up = set.getUsageProducer();
+			if( up == null) {
+				return result;
+			}
 			RecordSelector sel = set.getRecordSelector();
 			PeriodChart tc = chart.chart;
 			
