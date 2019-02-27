@@ -64,6 +64,7 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.BoundedInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.DateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.DayMultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.DoubleInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.EnumInput;
@@ -82,6 +83,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInputWrapper;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.RealInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.RegularPeriodInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.RelativeDateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
@@ -119,6 +121,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  *
  */
 public class ParameterExtension extends ReportExtension {
+	
     private static final String TITLE_ATTR = "title";
 	static final String PARAMETER_REF_ELEMENT = "ParameterRef";
 	private static final String FORMAT_PARAMETER_ELEMENT = "FormatParameter";
@@ -351,7 +354,8 @@ public class ParameterExtension extends ReportExtension {
 			return new TextInput();			
 
 		} else if (type.equals("Date")) {
-			return new DayMultiInput();	
+			return new RelativeDateInput();
+			//return new DayMultiInput();	
 		} else if (type.equals("Month")) {
 			return new MonthMultiInput();
 			//return new MonthInput();	
@@ -882,7 +886,7 @@ public class ParameterExtension extends ReportExtension {
 	 */
 	public DocumentFragment For(Node node) {
 		Element element = (Element)node;
-		
+		System.out.println(makeString(node));
 		Document doc=getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
 
@@ -932,9 +936,15 @@ public class ParameterExtension extends ReportExtension {
 				Object o = it.next();
 				try{
 					params.put(variable, o);
-					NodeList content_list = element.getElementsByTagNameNS(element.getNamespaceURI(), CONTENT_ELEM);
+					NodeList content_list = element.getChildNodes();
 					for(int j=0; j<content_list.getLength();j++){
-						result.appendChild(expand(doc,content_list.item(j).getChildNodes()));
+						// expand all child content elements (schema only expects one)
+						Node item = content_list.item(j);
+						if( item.getNodeType() == Node.ELEMENT_NODE && 
+								((Element)item).getNamespaceURI().equals(element.getNamespaceURI())  &&
+								((Element)item).getLocalName().equals(CONTENT_ELEM)) {
+							result.appendChild(expand(doc,item.getChildNodes()));
+						}
 					}
 				}catch(Exception e){
 					addError("For error", "Error expanding For content", e);
@@ -970,6 +980,7 @@ public class ParameterExtension extends ReportExtension {
 	}
 	private Node expandElement(Document doc, Element item) throws ReportException {
 		String s = makeString(item);
+		System.out.println(s);
 		if(item.getNamespaceURI().equals(PARAMETER_LOC)){
 			if( item.getLocalName().equals(PARAMETER_ELEM)){
 				return  parameter(item);
@@ -996,7 +1007,9 @@ public class ParameterExtension extends ReportExtension {
 				// or additional loops
 				Node child = doc.importNode(item, false);
 				Node frag = expand(doc,item.getChildNodes());
+				
 				child.appendChild(frag);
+				System.out.println(makeString(child));
 				return child;
 			}else{
 				addError("Illegal expansion", item.getLocalName()+ " not allowed in loop expansion");

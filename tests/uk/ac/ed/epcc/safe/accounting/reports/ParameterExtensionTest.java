@@ -10,11 +10,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccountingClassificationFactory;
@@ -23,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.WebappTestBase;
+import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
 import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
@@ -41,6 +49,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.UnmodifiableInput;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
 import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
 import uk.ac.ed.epcc.webapp.time.CalendarFieldSplitPeriod;
 
@@ -962,4 +971,111 @@ public void testParameterReportType3() throws Exception {
 			out.toString().contains("This is XML"));
 	
 }	
+	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testIfSet() throws TransformerFactoryConfigurationError, Exception {
+		String templateName = "testIfsetParameters";
+		
+		// Create a HTMLForm.
+		HTMLForm form = new HTMLForm(ctx);
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<>();
+		
+		ReportBuilderTest.setupParams(ctx,params);
+		
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
+		reportBuilder.setupExtensions(params);
+		reportBuilder.buildReportParametersForm(form, params);
+		((BooleanInput)form.getInput("MyBoolean")).setValue(true);
+		// Get the params values from the Form
+		ReportBuilder.extractReportParametersFromForm(form, params);	
+		params.put("ReportType", reportBuilder.getReportTypeReg().getReportType("CSV"));
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		reportBuilder.renderXML(params, out);
+		
+		// Look for errors
+		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
+		String res = out.toString();
+		System.out.println(res);
+		assertTrue(res.contains("YES"));
+		assertFalse(res.contains("NO"));
+		assertTrue(res.contains("KRONK"));
+		assertFalse(res.contains("BAD"));
+	}
+	@Test
+	public void testIfSet2() throws TransformerFactoryConfigurationError, Exception {
+		String templateName = "testIfsetParameters";
+		
+		// Create a HTMLForm.
+		HTMLForm form = new HTMLForm(ctx);
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<>();
+		
+		ReportBuilderTest.setupParams(ctx,params);
+		
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
+		reportBuilder.setupExtensions(params);
+		reportBuilder.buildReportParametersForm(form, params);
+		((BooleanInput)form.getInput("MyBoolean")).setValue(false);
+		// Get the params values from the Form
+		ReportBuilder.extractReportParametersFromForm(form, params);	
+		params.put("ReportType", reportBuilder.getReportTypeReg().getReportType("CSV"));
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		reportBuilder.renderXML(params, out);
+		
+		// Look for errors
+		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
+		String res = out.toString();
+		System.out.println(res);
+		assertFalse(res.contains("YES"));
+		assertTrue(res.contains("NO"));
+		assertTrue(res.contains("KRONK"));
+		assertFalse(res.contains("BAD"));
+	}
+	@Test
+	public void testForNestedIfSet() throws Exception{
+		AccountingClassificationFactory fac = ctx.makeObject(AccountingClassificationFactory.class, "TestClassifier");
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(fac);
+		assertNotNull(fac);
+		PropertyTag<Integer> count =  (PropertyTag<Integer>) etf.getFinder().find(Number.class,"count");
+		ExpressionTargetContainer a = etf.getExpressionTarget(fac.makeFromString("A"));
+		a.setProperty(count, Integer.valueOf(1));
+		a.commit();
+		ExpressionTargetContainer b = etf.getExpressionTarget(fac.makeFromString("B"));
+		b.setProperty(count, Integer.valueOf(2));
+		b.commit();
+		ExpressionTargetContainer c = etf.getExpressionTarget(fac.makeFromString("C"));
+		c.setProperty(count, Integer.valueOf(3));
+		c.commit();
+		String templateName = "testForNestedIfSet";
+		
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<>();
+		ReportBuilderTest.setupParams(ctx, params);
+		
+
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
+		reportBuilder.setupExtensions(params);
+		HTMLForm form = new HTMLForm(ctx);
+		reportBuilder.buildReportParametersForm(form, params);
+		((BooleanInput)form.getInput("MyBoolean")).setValue(true);
+		// Get the params values from the Form
+		ReportBuilder.extractReportParametersFromForm(form, params);	
+		
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		
+		ReportType	XML = new ReportType("XML","xml", "text/xml","XML"); 
+		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
+		String string = out.toString();
+		System.out.println(string);
+		checkContent(null, "expected_for_nested.xml", string);
+	}
+	
 }
