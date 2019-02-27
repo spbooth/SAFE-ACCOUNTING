@@ -68,6 +68,7 @@ import uk.ac.ed.epcc.webapp.preferences.Preference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 import uk.ac.ed.epcc.webapp.time.Period;
+import uk.ac.ed.epcc.webapp.timer.TimeClosable;
 import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 /** A {@link AccessorMap} for {@link DataObjectFactory}s
@@ -432,63 +433,18 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 	}
 
 
-	private static class CutoffKey{
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((end == null) ? 0 : end.hashCode());
-			result = prime * result + ((start == null) ? 0 : start.hashCode());
-			return result;
-		}
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			CutoffKey other = (CutoffKey) obj;
-			if (end == null) {
-				if (other.end != null)
-					return false;
-			} else if (!end.equals(other.end))
-				return false;
-			if (start == null) {
-				if (other.start != null)
-					return false;
-			} else if (!start.equals(other.start))
-				return false;
-			return true;
-		}
-		public CutoffKey(PropExpression<Date> start, PropExpression<Date> end) {
-			super();
-			this.start = start;
-			this.end = end;
-		}
-		public final PropExpression<Date> start;
-		public final PropExpression<Date> end;
-		
-	}
-	public Map<CutoffKey,Long> cutoffs=null;
+	
 	public static final Feature AUTO_CUTOFF_FEATURE = new Feature("auto_cutoff",true,"automatically calculate cutoffs (maximum record time extent, used to optimise search) using additional queries");
 	
 	public BaseFilter<X> getPeriodFilter(Period period,
 			PropExpression<Date> start, PropExpression<Date> end, OverlapType type,long cutoff)
-			throws CannotFilterException {
+					throws CannotFilterException {
 		if( start == null || end == null || start.equals(end)){
 			cutoff=0L;
 		}else if(AUTO_CUTOFF_FEATURE.isEnabled(getContext())){
 			if( cutoff <= 0L) {
-			if( cutoffs == null ){
-				cutoffs=new HashMap<>();
-			}
-			CutoffKey key = new CutoffKey(start, end);
-			Long calc_cutoff = cutoffs.get(key);
-			SessionService sess=null;
-			if(calc_cutoff ==null){
-				
+				Long calc_cutoff=null;
+				SessionService sess=null;		
 				TimerService timer = getContext().getService(TimerService.class);
 				String cutoff_name = "auto_cutoff."+getCutoffTag()+"_"+start.toString()+"_"+end.toString();
 				if(CACHE_CUTOFFS.isEnabled(getContext())) {
@@ -497,16 +453,15 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 						calc_cutoff=(Long) sess.getAttribute(cutoff_name);
 					}
 				}
+				if( calc_cutoff == null){
+					calc_cutoff = (Long) getContext().getAttribute(cutoff_name);
+				}
 				if(calc_cutoff==null) {
-					if( timer != null ) {
-						timer.startTimer(cutoff_name);
-					}
-					try {
+					try(TimeClosable tim = new TimeClosable(timer, cutoff_name)) {
 						// Check this uses SQL
 						if( getSQLValue(start) != null && getSQLValue(end) != null) {
 							calc_cutoff = getCutoff(null,start, end);
 							//if( log !=null) log.debug(getDBTag()+": calculated cutoff for "+start+","+end+" as "+cutoff);
-							cutoffs.put(key,calc_cutoff);
 						}else {
 							calc_cutoff=0L;
 						}
@@ -515,17 +470,15 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 					} catch (Exception e) {
 						getLogger().error("Error making cutoff",e);
 						calc_cutoff=0L;
-					}finally {
-						if( timer != null ) {
-							timer.stopTimer(cutoff_name);
-						}
 					}
 				}
 				if(sess !=null ) {
 					sess.setAttribute(cutoff_name, calc_cutoff);
+				}else {
+					getContext().setAttribute(cutoff_name, calc_cutoff);
 				}
-			}
-			cutoff=calc_cutoff;
+
+				cutoff=calc_cutoff;
 			}
 		}
 		return super.getPeriodFilter(period, start, end,type,cutoff);

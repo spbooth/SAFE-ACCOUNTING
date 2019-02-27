@@ -288,7 +288,11 @@ Tagged{
 		
 		return getCount(getFilter(selector));
 	}
-
+	@Override
+	public boolean exists(RecordSelector selector) throws Exception {
+		
+		return exists(getFilter(selector));
+	}
 	@Override
 	public final <PT> Set<PT> getValues(PropertyTag<PT> tag, RecordSelector selector) throws DataException, InvalidExpressionException, CannotFilterException {
 		if( ! hasProperty(tag)){

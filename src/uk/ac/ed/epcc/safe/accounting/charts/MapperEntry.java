@@ -70,6 +70,7 @@ import uk.ac.ed.epcc.webapp.preferences.Preference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
+import uk.ac.ed.epcc.webapp.timer.TimeClosable;
 import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 /** MapperEntry represents the mapping of UsageRecords to plot set in a chart
@@ -88,6 +89,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  */
 public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 	private static final Feature USE_OVERLAP_HANDLER_IN_TIMECHART = new Feature("use_overlap_handler_in_timechart", false, "Use the OverlapHandler for timecharts instead of iterating over overlaps");
+	
 	private static final Feature NARROW_CUTOFF_IN_TIMECHART = new Preference("reports.narrow_cutoff_in_timechart",false,"Run additional query to reduce cutoff in timechart");
 	private static final Feature CACHE_NARROWED_CUTOFFS = new Preference("reporting.cache_narrowed_cutoff",true,"Cache the narrowed cutoffs in session");
 
@@ -367,7 +369,10 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 	@SuppressWarnings("unchecked")
 	private boolean addData(PlotEntry e, PeriodChart tc, UsageProducer ap,
 			RecordSelector sel, PeriodPlot ds,boolean allow_overlap) throws Exception {
-		
+		if( ap == null) {
+			// assume narrowed composite producer
+			return false;
+		}
 		boolean data_added=false;
         // create dataset, don't add labels yet as labels
 		// vector may grow as data added
@@ -375,7 +380,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		PropExpression<Date> start_prop = e.getStartProperty();
 		PropExpression<Date> end_prop = e.getEndProperty();
 		Reduction red = e.getReduction();
-		
+		TimerService timer = conn.getService(TimerService.class);
 		// We can't necessarily afford an additional query here
 		// may be a single additional query so just use any cutoff from the config
 		long cutoff = e.getCutoff();
@@ -389,7 +394,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
         }
        
 		if( query_mapper_on  ){ //use fmapper if it exists for piecharts
-			try{
+			try(TimeClosable tim = new TimeClosable(timer, "MapperEntry.addData.query_mapper")){
 				UsageRecordQueryMapper fmapper;
 				if( start_prop != null && allow_overlap){
 					fmapper = getOverlapQueryMapper(s,red, prop_tag, start_prop,
@@ -404,7 +409,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 			}
         }
 		SetRangeMapper map = getMapper(e);
-		try(CloseableIterator iter = ap.getExpressionIterator(s)){
+		try(CloseableIterator iter = ap.getExpressionIterator(s);TimeClosable tim = new TimeClosable(timer, "MapperEntry.addData.iterator")){
 			if( iter.hasNext()){
 				tc.addDataIterator(ds, map, iter);
 				data_added=true;
@@ -493,8 +498,12 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
          }
         
     	P ds= (P) tc.makeDataset(0);
-       
+        if( ap == null ) {
+        	// assume narrowed composite producer
+        	return ds;
+        }
         boolean data_added = false;
+       
         if( ap instanceof UsageManager){
         	// as addTimeChartData involves multiple queries.
         	// do each nested producer in turn. This should make things easier for the
@@ -532,9 +541,9 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     				return null;
     			}
     		}
-        	return ds;
+        	
         }
-        return null;
+        return ds;
     }
     /** Add a dataset to a TimeChart using the category data from this mapper. 
      * 
@@ -608,6 +617,8 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		boolean data_added=false;
         Logger log = conn.getService(LoggerService.class).getLogger(getClass());
         log.debug(" params end="+tc.getEndDate()+" start="+tc.getStartDate());
+       
+		
      // create dataset, don't add labels yet as labels
 		// vector may grow as data added
     	boolean query_mapper_on = OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn);

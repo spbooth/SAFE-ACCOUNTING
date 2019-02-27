@@ -65,7 +65,10 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
 	public long getRecordCount(RecordSelector selector) throws Exception {
 		return etf.getRecordCount(selector);
 	}
-
+	@Override
+	public boolean exists(RecordSelector selector) throws Exception {
+		return etf.exists(selector);
+	}
 	@Override
 	public <PT> Set<PT> getValues(PropertyTag<PT> data_tag, RecordSelector selector) throws Exception {
 		return etf.getValues(data_tag, selector);

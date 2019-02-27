@@ -22,12 +22,18 @@ import java.util.Date;
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
+import uk.ac.ed.epcc.safe.accounting.db.NullUsageProducer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.RecordSelectException;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.webapp.Feature;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.preferences.Preference;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 /** RecordSet combines a combination of {@link UsageProducer} and {@link RecordSelector}
@@ -44,10 +50,13 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 
 public class RecordSet extends ObjectSet<UsageProducer>{
-  
-private final AccountingService serv;
+	private static final Feature NARROW_PRODUCER_IN_RECORDSET = new Preference("reports.narrow_producer_in_recordset",true,"Narrow composite producers in recordset");
+
+	private final AccountingService serv;
   private PropExpression<Date> bounds[];
   private boolean use_overlap=true;
+  private UsageProducer narrowed=null;
+  private boolean use_narrowed=false;
  
   public RecordSet(AccountingService serv){
 	  super();
@@ -63,8 +72,34 @@ private final AccountingService serv;
 	  }
   }
   public UsageProducer getUsageProducer(){
+	  if( NARROW_PRODUCER_IN_RECORDSET.isEnabled(serv.getContext())) {
+		  if( use_narrowed ) {
+			  return narrowed;
+		  }else {
+			  try {
+				  // We could apply a time filter here but
+				  // safer if we don't in case time bounds change later
+				  // wrap the selector so
+				  narrowed = getGenerator().narrow(getRecordSelector().copy());
+//				  if( narrowed == null) {
+//					  narrowed=new NullUsageProducer<>(serv.getContext());
+//				  }
+				  use_narrowed=true;
+				  return narrowed;
+			  } catch (Exception e) {
+				  getLogger().error("Error narrowing UsageProducer", e);
+			  }
+
+		  }
+	  }
 	  return getGenerator();
   }
+/**
+ * @return
+ */
+public Logger getLogger() {
+	return serv.getContext().getService(LoggerService.class).getLogger(getClass());
+}
   public void setBounds(PropExpression<Date> bounds[]){
 		this.bounds=bounds;
 	}
@@ -158,5 +193,13 @@ public boolean equals(Object obj) {
 		return false;
 	}
 	return true;
+}
+@Override
+protected void clearCaches() {
+	use_narrowed=false;
+	narrowed=null;
+}
+public PropertyFinder getFinder() {
+	return getGenerator().getFinder();
 }
 }

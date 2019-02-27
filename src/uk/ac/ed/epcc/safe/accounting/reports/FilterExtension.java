@@ -217,7 +217,7 @@ public class FilterExtension extends ReportExtension{
 		  UsageProducer<?> producer = set.getUsageProducer();
 		  AndRecordSelector selector = set.getPeriodSelector(period);
 
-		  return producer.getRecordCount(selector) > 0;
+		  return producer.exists(selector);
 	  } catch (Exception e) {
 		  addError("Filter Error", "Error checking for records", e);
 		  return false;

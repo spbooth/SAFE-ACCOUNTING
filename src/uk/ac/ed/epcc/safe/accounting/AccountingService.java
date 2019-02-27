@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.webapp.AppContextService;
+import uk.ac.ed.epcc.webapp.Contexed;
 
 /** Service used to configure the Accounting
  * @author spb
@@ -24,7 +25,7 @@ import uk.ac.ed.epcc.webapp.AppContextService;
  */
 
 
-public interface AccountingService extends AppContextService<AccountingService>{
+public interface AccountingService extends AppContextService<AccountingService>, Contexed{
 	/** Get the default {@link UsageManager}
 	 * 
 	 * 

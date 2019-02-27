@@ -254,8 +254,9 @@ public class TableExtension extends ReportExtension {
 			this.extension = extension;
 			this.period = period;
 			this.recordSet = recordSet;
+			UsageProducer up = recordSet.getUsageProducer();
 			tableMaker = new JobTableMaker(extension.getContext(),
-					recordSet.getUsageProducer());
+					up);
 
 			try{
 				Element tableElement = (Element)tableNode;
@@ -264,8 +265,9 @@ public class TableExtension extends ReportExtension {
 					AppContext conn = extension.getContext();
 					String config_name = "jobtable.properties";
 					String prop_list = conn.getExpandedProperty(config_name,"");
-					PropertyFinder finder =  recordSet.getUsageProducer().getFinder();
-					for(String tag : prop_list.split(",")){
+					if( up != null) {
+						PropertyFinder finder =  up.getFinder();
+						for(String tag : prop_list.split(",")){
 							tag = tag.trim();
 							if( ! tag.isEmpty()) {
 								String prop_name = conn.getExpandedProperty("jobtable.property."+tag, tag);
@@ -285,6 +287,7 @@ public class TableExtension extends ReportExtension {
 									extension.addError("bad default property", prop_name);
 								}
 							}
+						}
 					}
 				}
 			}catch(Exception e){
@@ -314,7 +317,7 @@ public class TableExtension extends ReportExtension {
 				// See if Warning
 				Element tableElement = (Element)tableNode;
 				if (extension.hasParam(WARNING_ELEMENT, tableElement)) {
-					tableMaker.setWarningExpression(extension.getExpression(recordSet.getUsageProducer(), extension.getParam(WARNING_ELEMENT, tableElement)));
+					tableMaker.setWarningExpression(extension.getExpression(up, extension.getParam(WARNING_ELEMENT, tableElement)));
 				}
 			}catch(Exception e){
 				extension.addError("Bad Table", "Error setting Warning", e);
@@ -359,8 +362,12 @@ public class TableExtension extends ReportExtension {
 			try {
 				AndRecordSelector selector = recordSet.getPeriodSelector(period);
 				UsageProducer<?> up = recordSet.getUsageProducer();
-				table = tableMaker.makeTable(selector);
-				
+				if( up == null ) {
+					// assume narrowed composite producer
+					table = new Table<>();
+				}else {
+					table = tableMaker.makeTable(selector);
+				}
 			} catch (Exception e) {
 				extension.addError("Table Error", "Error making JobTable", e);
 				table = new Table<>();
@@ -436,6 +443,11 @@ public class TableExtension extends ReportExtension {
 			
 		public Table postProcess(Node instructions) {	
 			UsageProducer<?> producer = (UsageProducer<?>) recordSet.getGenerator();
+			Table<String,Object> table = new Table<>();
+			if(producer == null) {
+				// Assume this is a narrowed compostie producer
+				return table;
+			}
 			final AppContext conn = extension.getContext();
 			@SuppressWarnings("unchecked")
 			OverlapHandler<?> handler = new OverlapHandler(conn, producer);
@@ -445,7 +457,7 @@ public class TableExtension extends ReportExtension {
 			// may override this and not be a subset of the default time bounds
 			RecordSelector selector = recordSet.getRecordSelector();
 			
-			Table<String,Object> table = new Table<>();
+			
 			if( ! producer.compatible(selector)){
 				extension.addError("Selector not compatible with producer", "Producer: "+producer.getTag()+" not compatible with "+ selector.toString());
 				return table;

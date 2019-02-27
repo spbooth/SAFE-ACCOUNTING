@@ -407,6 +407,9 @@ public class AtomExtension extends ReportExtension {
 			}else{
 				throw new IllegalReductionException("Unsupported reduction type "+exp);
 			}
+			if( producer == null) {
+				return new AtomResult(expression,red.getDefault());
+			}
 			AtomResult result=null;
 			CacheKey key = new CacheKey(set, period, red);
 			result = result_cache.get(key);

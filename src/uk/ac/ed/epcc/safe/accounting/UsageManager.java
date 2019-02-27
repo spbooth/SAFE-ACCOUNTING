@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -31,7 +32,9 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.ContextCached;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -50,8 +53,8 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.NestedIterator;
  * @param <UR>
  */
 
-public abstract class UsageManager<UR> implements
-		UsageProducer<UR> {
+public abstract class UsageManager<UR> extends AbstractContexed implements
+		UsageProducer<UR> , ContextCached{
 
 	
     public class MultiIterator extends AbstractMultiIterator<UR>{
@@ -89,7 +92,7 @@ public abstract class UsageManager<UR> implements
 				}
 				return null;
 			}catch(Exception e){
-				log.error("Error in MultiIterator",e);
+				getLogger().error("Error in MultiIterator",e);
 				return null;		
 			}
 		}
@@ -114,16 +117,15 @@ public abstract class UsageManager<UR> implements
 	
 
 	
-   
-    private AppContext ctx;
-	protected final Logger log;
+ 
 	/**
 	 * Stores the underlying implementation classes all should Implement
 	 * AccountingProducer
 	 */
-	private  LinkedHashMap<String, UsageProducer<UR>> factories;
+	private final LinkedHashMap<String, UsageProducer<UR>> factories = new LinkedHashMap<>();
+	private final LinkedHashMap<String,String> descriptions = new LinkedHashMap<>();
 	private final PropExpressionMap map; 
-	private  LinkedHashMap<String,String> descriptions;
+	
 	private final String tag;
 	public String getTag() {
 		return tag;
@@ -137,27 +139,17 @@ public abstract class UsageManager<UR> implements
 	 */
 	@SuppressWarnings("unchecked")
 	public UsageManager(AppContext c,String tag) {
-		super();
+		super(c);
 		this.tag=tag;
-		ctx = c;
-		log=c.getService(LoggerService.class).getLogger(getClass());
+		
 		// cache the factories list in the AppContext as there is a
 		// high probablity of reuse within a request and this hardly ever
 		// changes
-		String key = "AccountingManager.factories."+tag;
-		String desc_key = "AccountingManager.descriptions."+tag;
-		factories = (LinkedHashMap<String, UsageProducer<UR>>) ctx.getAttribute(key);
-		descriptions = (LinkedHashMap<String,String>) ctx.getAttribute(desc_key);
-		if (factories == null) {
-			// want defined iteration order
-			factories = new LinkedHashMap<>();
-			descriptions =new LinkedHashMap<>();
+		
+		
+		populate(tag);
 			
-			populate(tag);
-			
-			ctx.setAttribute(key, factories);
-			ctx.setAttribute(desc_key, descriptions);
-		}
+		
 		PropExpressionMap tmp = null;
 		for( UsageProducer<UR> prod : factories.values()){
 			if( tmp == null ){
@@ -181,16 +173,6 @@ public abstract class UsageManager<UR> implements
 		map=tmp;
 	}
 
-	
-
-	/**
-	 * get the AppContext
-	 * 
-	 * @return AppContext
-	 */
-	public AppContext getContext() {
-		return ctx;
-	}
 	
 	public <PT> Set<PT> getValues(PropertyTag<PT> propertyTag, RecordSelector selector)
 			throws Exception {
@@ -220,11 +202,25 @@ public abstract class UsageManager<UR> implements
 					result += prod.getRecordCount(sel);
 				}
 			} catch (Exception e) {
-				log.error("Error in getCount",e);
+				getLogger().error("Error in getCount",e);
 			}
 
 		}
 		return result;
+	}
+	public boolean exists(RecordSelector sel)
+			throws DataException {
+		for (UsageProducer<UR> prod: factories.values()) {
+			try {
+				if( prod.exists(sel)){
+					return true;
+				}
+			} catch (Exception e) {
+				getLogger().error("Error in exists",e);
+			}
+
+		}
+		return false;
 	}
 	public  CloseableIterator<UR> getIterator( RecordSelector sel) throws Exception {
 		/*
@@ -237,7 +233,7 @@ public abstract class UsageManager<UR> implements
 				//log.debug("Using "+prod.toString());
 				res.add(prod.getIterator(sel));
 			}else{
-				log.debug("getIterator: selector not compatible with "+prod.toString());
+				getLogger().debug("getIterator: selector not compatible with "+prod.toString());
 			}
 		}
 		return res;
@@ -481,9 +477,7 @@ public abstract class UsageManager<UR> implements
 		}
 		return false;
 	}
-	protected Logger getLogger(){
-		return log;
-	}
+	
 //	public boolean isMyRecord(UsageRecord r){
 //		for (UsageProducer<UR> prod : factories.values()) {
 //			if( prod.isMyRecord(r)){
@@ -544,10 +538,34 @@ public abstract class UsageManager<UR> implements
 				//log.debug("Using "+prod.toString());
 				res.add(prod.getExpressionIterator(sel));
 			}else{
-				log.debug("getIterator: selector not compatible with "+prod.toString());
+				getLogger().debug("getIterator: selector not compatible with "+prod.toString());
 			}
 		}
 		return res;
+	}
+	@Override
+	public UsageProducer<UR> narrow(RecordSelector sel) throws Exception {
+		if( factories.size() == 1) {
+			// No potential to narrow so just test with compatible
+			UsageProducer<UR> prod = factories.values().iterator().next();
+			if( prod.compatible(sel)) {
+				return prod;
+			}
+			return null;
+		}
+		Set<UsageProducer<UR>> set = new LinkedHashSet<>();
+		for(UsageProducer<UR> prod :factories.values()) {
+			if( prod.compatible(sel) &&  prod.exists(sel)) {
+				set.add(prod);
+			}
+		}
+		if( set.isEmpty()) {
+			return null;
+		}
+		if( set.size()==1) {
+			return set.iterator().next();
+		}
+		return new ListUsageManager<>(getContext(), getTag()+".narrowed", set);
 	}
 	
 }

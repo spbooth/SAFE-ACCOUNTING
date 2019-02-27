@@ -165,6 +165,10 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	}
 
 	@Override
+	public final boolean exists(RecordSelector selector) throws Exception {
+		return exists(getFilter(selector));
+	}
+	@Override
 	public final  <PT> Set<PT> getValues(PropertyTag<PT> tag, RecordSelector selector) throws Exception {
 		if( ! hasProperty(tag)){
 			return new HashSet<>();

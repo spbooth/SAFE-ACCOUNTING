@@ -303,4 +303,8 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 		result.put(new AdminOperationKey("AddDerivedProperty"),new AddDerivedTransition(expression_map,derived,getFinder(),getRepository().getTag()));
 		return result;
 	}
+	@Override
+	public final boolean exists(RecordSelector selector) throws Exception {
+		return getFactory().exists(map.getFilter(selector));
+	}
 }

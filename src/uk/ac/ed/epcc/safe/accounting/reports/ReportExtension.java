@@ -941,7 +941,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 						  rs.setBounds(db.bounds);
 						  rs.setUseOverlap(db.overlap);
 					  }else{
-						  RecordSelector sel = getRecordSelectElement(rs.getUsageProducer().getFinder(), e);
+						  RecordSelector sel = getRecordSelectElement(rs.getFinder(), e);
 						  if( sel != null ){
 							  rs.addRecordSelector(sel);
 						  }

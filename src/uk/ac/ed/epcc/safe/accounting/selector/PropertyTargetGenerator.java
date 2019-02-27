@@ -42,7 +42,8 @@ public interface PropertyTargetGenerator<UR> extends PropertyTargetFactory, Comp
 	/** Is the RecordSelector compatible with this class. 
 	 * This method will return false if it the selector is fundamentally incompatible
 	 * with the properties supported by the class and no records can match the selector.
-	 * It does NOT check if any matching records exist.
+	 * It does NOT check if any matching records exist. It is expected to be a significantly
+	 * more lightweight operation than calling {@link #exists(RecordSelector)}
 	 * @param sel
 	 * @return boolean
 	 */
@@ -73,6 +74,15 @@ public interface PropertyTargetGenerator<UR> extends PropertyTargetFactory, Comp
      * @throws Exception 
      */
     public long getRecordCount(RecordSelector selector) throws Exception;
+    
+    /** check if ANY records match the selector. This is more definative but more expensive than
+     * {@link #compatible(RecordSelector)}.
+     * 
+     * @param selector
+     * @return
+     * @throws Exception
+     */
+    public boolean exists(RecordSelector selector) throws Exception;
     
    	/**
    	 * Gets the distinct property values for the set of records identified by the RecordSelector

@@ -50,6 +50,13 @@ public class ObjectSet<F extends ExpressionTargetGenerator> {
 	}
 	public void setGenerator(F generator) {
 		this.generator = generator;
+		clearCaches();
+	}
+	/** Extension point to clear cached values in sub-classes
+	 * 
+	 */
+	protected void clearCaches() {
+		
 	}
 
 	public final  RecordSelector getRecordSelector(){
@@ -61,9 +68,11 @@ public class ObjectSet<F extends ExpressionTargetGenerator> {
 	protected void clearSelection(){
 		sel=new AndRecordSelector();
 		has_error=false;
+		clearCaches();
 	}
 	public final void addRecordSelector(RecordSelector sel){
 		this.sel.add(sel);
+		clearCaches();
 	}
 	@Override
 	public final String toString(){

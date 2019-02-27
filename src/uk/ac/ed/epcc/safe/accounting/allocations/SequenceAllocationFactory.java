@@ -215,7 +215,7 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 			sel.add(new SelectClause(tag, sequence));
 		}
 		sel.add(new PeriodOverlapRecordSelector(period,StandardProperties.STARTED_PROP,StandardProperties.ENDED_PROP));
-		return getRecordCount(sel) ==0;
+		return ! exists(sel);
 	}
 	public class SequenceCreationValidator extends AllocationValidator{
 
