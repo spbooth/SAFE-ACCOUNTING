@@ -71,6 +71,13 @@ public class RecordSet extends ObjectSet<UsageProducer>{
 		  this.bounds=orig.bounds.clone();
 	  }
   }
+  /** get the {@link UsageProducer}. This is allowed to return null
+   * in the case where no records match the current {@link RecordSelector}.
+   * Use {@link #getFinder()} on the {@link RecordSet} rather than retrieving the
+   * {@link UsageProducer} via this method.
+   * 
+   * @return
+   */
   public UsageProducer getUsageProducer(){
 	  if( NARROW_PRODUCER_IN_RECORDSET.isEnabled(serv.getContext())) {
 		  if( use_narrowed ) {

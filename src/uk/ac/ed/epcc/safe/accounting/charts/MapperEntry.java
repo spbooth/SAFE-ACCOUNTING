@@ -815,12 +815,14 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
    public static Set<MapperEntry> getMapperSet(PropertyFinder finder, AppContext c,String mode) {
 	   FilteredProperties prop = new FilteredProperties(c.getService(ConfigService.class).getServiceProperties(), GROUP_ENTRY_BASE,mode);
 		   
-		  
+	   Logger log = c.getService(LoggerService.class).getLogger(MapperEntry.class);
+		
 		   Set<MapperEntry> set = new LinkedHashSet<>();
 		   
 		   String list = prop.getProperty("list");
 		   if( list != null ){
 			   list = c.expandText(list);
+			   log.debug("list="+list);
 			   for(String name : list.split(",")){
 				   ErrorSet e = new ErrorSet();
 				   MapperEntry entry = getConfigMapperEntry(c, e, prop, finder, name);
