@@ -139,6 +139,9 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 	 */
 	@SuppressWarnings("unchecked")
 	public UsageManager(AppContext c,String tag) {
+		this(c,tag,null);
+	}
+	protected UsageManager(AppContext c,String tag, Set<UsageProducer<UR>> facs) {	
 		super(c);
 		this.tag=tag;
 		
@@ -148,6 +151,11 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 		
 		
 		populate(tag);
+		if( facs != null ) {
+			for(UsageProducer<UR> prod : facs) {
+				addProducer(prod.getTag(), prod);
+			}
+		}
 			
 		
 		PropExpressionMap tmp = null;

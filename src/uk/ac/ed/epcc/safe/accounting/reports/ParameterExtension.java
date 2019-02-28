@@ -886,7 +886,6 @@ public class ParameterExtension extends ReportExtension {
 	 */
 	public DocumentFragment For(Node node) {
 		Element element = (Element)node;
-		System.out.println(makeString(node));
 		Document doc=getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
 
@@ -980,7 +979,6 @@ public class ParameterExtension extends ReportExtension {
 	}
 	private Node expandElement(Document doc, Element item) throws ReportException {
 		String s = makeString(item);
-		System.out.println(s);
 		if(item.getNamespaceURI().equals(PARAMETER_LOC)){
 			if( item.getLocalName().equals(PARAMETER_ELEM)){
 				return  parameter(item);
@@ -1009,7 +1007,6 @@ public class ParameterExtension extends ReportExtension {
 				Node frag = expand(doc,item.getChildNodes());
 				
 				child.appendChild(frag);
-				System.out.println(makeString(child));
 				return child;
 			}else{
 				addError("Illegal expansion", item.getLocalName()+ " not allowed in loop expansion");
