@@ -573,6 +573,9 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 		if( set.size()==1) {
 			return set.iterator().next();
 		}
+		if( set.size() == factories.size()) {
+			return this;
+		}
 		return new ListUsageManager<>(getContext(), getTag()+".narrowed", set);
 	}
 	
