@@ -21,6 +21,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.DateParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
+import uk.ac.ed.epcc.safe.accounting.parsers.value.LongParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.SlurmDurationParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.SlurmMemoryParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
@@ -132,7 +133,7 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
 		SLURM_ATTRIBUTES.addParser(EXIT_CODE_PROP, StringParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(STATE_PROP, StringParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(CLUSTER_PROP, StringParser.PARSER);
-		SLURM_ATTRIBUTES.addParser(CPU_TIME_RAW_PROP, IntegerParser.PARSER);
+		SLURM_ATTRIBUTES.addParser(CPU_TIME_RAW_PROP, LongParser.PARSER);
 		// Nested attributes from AllocTRES
         MakerMap AllocTRES = new MakerMap();
         AllocTRES.addParser("cpu",ALOCTRES_CPU_PROP, IntegerParser.PARSER);
