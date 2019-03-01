@@ -273,4 +273,32 @@ public class AtomExtensionTest extends WebappTestBase {
 						"Expected\n"+percent_output,
 						out.toString().contains(percent_output));
 	}
+	
+	@Test
+	public void testDefine() throws TransformerFactoryConfigurationError, Exception{
+		String templateName = "testDefine";
+		
+		// Create a HTMLForm.
+				HTMLForm form = new HTMLForm(ctx);
+				
+				// Get the params values from the Form
+				Map<String,Object> params = new HashMap<>();
+				ReportBuilderTest.setupParams(ctx,params);
+				
+				ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
+				reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
+				reportBuilder.buildReportParametersForm(form, params);
+				
+				// render the form
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				reportBuilder.renderXML(params, out);
+			
+				// Look for errors
+				ReportBuilderTest.checkErrors(reportBuilder.getErrors());
+				String define_output="Value is 378.667";
+				// Check it was correctly formatted.		
+				assertTrue("Percent wasn't correctly formatted: Got\n"+out.toString()+
+						"Expected\n"+define_output,
+						out.toString().contains(define_output));
+	}
 }

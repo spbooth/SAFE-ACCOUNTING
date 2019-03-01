@@ -229,7 +229,9 @@
 			<xsd:documentation>
 				Adds the result of an atom calculation to the parameter
 				list. This allows a single atom calculation to be expanded in multiple locations as a parameter. Atoms are defined
-				after initial parameter expansion so these can only be used as parameter references.
+				after initial parameter expansion so these can only be used as parameter references. Note that the Number element from this
+				namespace can consume parameter references but the evaluation order of elements within the same pass
+				is not strictly guaranteed.
 			</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
