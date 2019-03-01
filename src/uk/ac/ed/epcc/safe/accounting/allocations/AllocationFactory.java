@@ -450,8 +450,9 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		}
 		@Override
 		public void customiseCreationForm(Form f) throws Exception {
-			f.addValidator(new ListenerCreateValidator(default_props));
+			// basic validator first
 			addCreationValidator(f);
+			f.addValidator(new ListenerCreateValidator(default_props));
 		}
 		public FormResult getResult(String type_name, T dat, Form f) {
 			return new ChainedTransitionResult<>(AllocationFactory.this, dat, null);
