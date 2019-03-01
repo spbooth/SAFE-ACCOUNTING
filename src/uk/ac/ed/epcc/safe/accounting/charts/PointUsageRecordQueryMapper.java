@@ -22,8 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.jna.platform.win32.WinGDI.DIBSECTION;
-
 import uk.ac.ed.epcc.safe.accounting.CountReduction;
 import uk.ac.ed.epcc.safe.accounting.IndexReduction;
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
