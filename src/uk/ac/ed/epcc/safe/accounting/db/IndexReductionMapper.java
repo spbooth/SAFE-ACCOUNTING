@@ -32,6 +32,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.GeneralMapMapper;
+import uk.ac.ed.epcc.webapp.jdbc.expr.GroupingSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.InvalidKeyException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
@@ -97,8 +99,16 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 					//	value_name=t.toString();
 					//}
 					if( target.getReduction() == Reduction.INDEX || (target.getReduction()==Reduction.SELECT && SELECTS_IN_KEY.isEnabled(getContext()))){
-						addKey(val, value_name);
-						indexes++;
+						if( val instanceof GroupingSQLValue) {
+							try {
+								addKey((GroupingSQLValue<?>) val, value_name);
+							} catch (InvalidKeyException e) {
+								throw new CannotUseSQLException("value "+val.toString()+" cannot be used in SQL GROUP BY");
+							}
+							indexes++;
+						}else {
+							throw new CannotUseSQLException("value "+val.toString()+" cannot be used in SQL GROUP BY");
+						}
 					}else{
 						if( val instanceof SQLExpression){
 							if( Number.class.isAssignableFrom(val.getTarget())){

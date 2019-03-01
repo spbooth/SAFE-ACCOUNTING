@@ -25,6 +25,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
+import uk.ac.ed.epcc.webapp.jdbc.expr.NestedSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FalseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
@@ -45,7 +46,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  */
 
 
-public class ClassificationSQLValue<H extends DataObject, T extends DataObject> implements SQLValue<String>, FilterProvider<H,String>{
+public class ClassificationSQLValue<H extends DataObject, T extends DataObject> implements NestedSQLValue<String,IndexedReference<T>>, FilterProvider<H,String>{
 	private final Class<H> target;
 	// has to be at least an SQLAccessor to support any filtering.
 	// 
@@ -107,11 +108,13 @@ public class ClassificationSQLValue<H extends DataObject, T extends DataObject> 
 		return NamePropExpression.refToName(ctx, a.makeObject(rs, pos));
 	}
 	
-	public SQLFilter getRequiredFilter() {
-		return a.getRequiredFilter();
-	}
+	
 	public Class<H> getFilterType() {
 		return target;
+	}
+	@Override
+	public SQLValue<IndexedReference<T>> getNested() {
+		return a;
 	}
 	
 	

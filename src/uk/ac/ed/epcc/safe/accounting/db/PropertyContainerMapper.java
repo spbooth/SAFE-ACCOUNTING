@@ -26,7 +26,10 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
+import uk.ac.ed.epcc.webapp.jdbc.expr.GroupingSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.InvalidKeyException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLGroupMapper;
+import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 
 /** Version of the SQLGroupMapper that uses PropertyTag and 
  * AccessorMap
@@ -45,9 +48,17 @@ public class PropertyContainerMapper extends SQLGroupMapper<PropertyContainer> {
 		this.m=m;
 		fields=new LinkedList<>();
 	}
-	public <N>void addKey(PropertyTag<N> t) throws InvalidSQLPropertyException {
+	public <N>void addKey(PropertyTag<N> t) throws InvalidSQLPropertyException{
 		fields.add(t);
-		addKey(m.getSQLValue(t),t.getName());
+		SQLValue<N> v = m.getSQLValue(t);
+		if( !(v instanceof GroupingSQLValue)) {
+			throw new InvalidSQLPropertyException(t);
+		}
+		try {
+			addKey((GroupingSQLValue<N>) v,t.getName());
+		} catch (InvalidKeyException e) {
+			throw new InvalidSQLPropertyException(t);
+		}
 	}
 	public final <N extends Number> void addSum(PropertyTag<N> t) throws InvalidSQLPropertyException {
 		fields.add(t);

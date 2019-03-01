@@ -20,6 +20,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.AverageMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CountDistinctMapMapper;
+import uk.ac.ed.epcc.webapp.jdbc.expr.GroupingSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.InvalidKeyException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MaximumMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MinimumMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
@@ -36,7 +38,12 @@ public class MapReductionFinder<T,K,R,N> extends AccessorMapFilterFinder<T, Map<
 		assert(key != null);
 		assert(value != null);
 		
-		SQLValue<K> a = map.getSQLValue(key);
+		SQLValue<K> v = map.getSQLValue(key);
+		if (! (v instanceof GroupingSQLValue)) {
+			// has to be a grouping value
+			throw new InvalidSQLPropertyException(key);
+		}
+		GroupingSQLValue<K> a = (GroupingSQLValue<K>) v;
 		String key_name=null;
 		if( ! (a instanceof FieldValue)){
 			key_name = key.toString();
@@ -47,14 +54,16 @@ public class MapReductionFinder<T,K,R,N> extends AccessorMapFilterFinder<T, Map<
 		if( ! (e instanceof FieldValue)){
 			value_name=value.toString();
 		}
-		
-		switch(value.getReduction()){
-		case SUM: setMapper(new SumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
-		case MIN: setMapper(new MinimumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
-		case MAX: setMapper(new MaximumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
-		case AVG: setMapper(new AverageMapMapper(map.getContext(),a,key_name,e,value_name)); break;
-		case DISTINCT: setMapper(new CountDistinctMapMapper(map.getContext(), a, key_name, e, value_name)); break;
+		try {
+			switch(value.getReduction()){
+			case SUM: setMapper(new SumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+			case MIN: setMapper(new MinimumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+			case MAX: setMapper(new MaximumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+			case AVG: setMapper(new AverageMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+			case DISTINCT: setMapper(new CountDistinctMapMapper(map.getContext(), a, key_name, e, value_name)); break;
+			}
+		}catch(InvalidKeyException e1) {
+			throw new InvalidSQLPropertyException(key);
 		}
-		
 	}
 }
