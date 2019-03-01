@@ -113,6 +113,9 @@ public class SelectPropExpression<T> implements PropExpression<T> , Iterable<Pro
 	public boolean equals(Object obj) {
 		if( obj != null && obj.getClass() == getClass()){
 			SelectPropExpression peer = (SelectPropExpression) obj;
+			if( target != peer.target) {
+				return false;
+			}
 			if( alts.length != peer.alts.length){
 				return false;
 			}

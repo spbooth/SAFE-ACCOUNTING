@@ -52,7 +52,7 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 		//
 		// This used to be the behaviour we may need to re-instate if old reports break.
 		//
-		private static final Feature SELECTS_IN_KEY = new Feature("reporting.index_reduction.add_selects_to_key",false,"Include select clauses in IndexedReduction inded");
+		private static final Feature SELECTS_IN_KEY = new Feature("reporting.index_reduction.add_selects_to_key",false,"Include select clauses in IndexedReduction index");
 		@SuppressWarnings("unchecked")
 		public IndexReductionMapper(AccessorMap map, Set<ReductionTarget> targets,ReductionMapResult defs) throws InvalidPropertyException, IllegalReductionException, CannotUseSQLException{
 			super(map.getContext());
