@@ -38,4 +38,6 @@ public interface RecordSelector{
 	 * @return RecordSelector
 	 */
 	public RecordSelector copy();
+	
+	public boolean equals(Object peer);
 }

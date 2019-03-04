@@ -37,7 +37,7 @@ public class ConfigUsageManager extends UsageManager {
 	private static final String CONFIG_SUFFIX = ".tables";
 
 
-	private ConfigUsageManager(AppContext c,String mytag) {
+	public ConfigUsageManager(AppContext c,String mytag) {
 		super(c,mytag);
 	}
 
@@ -91,7 +91,12 @@ public class ConfigUsageManager extends UsageManager {
 		if( prop == null || prop.isEmpty()) {
 			return null;
 		}
-		return new ConfigUsageManager(conn, tag);
+		try {
+			// want to cache in context if feature enabled
+			return conn.makeContexedObject(ConfigUsageManager.class, tag);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 

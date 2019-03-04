@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import uk.ac.ed.epcc.safe.accounting.db.NarrowTag;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -561,22 +562,28 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 			}
 			return null;
 		}
+		NarrowTag tag = new NarrowTag(getTag(), sel);
+		if( getContext().hasAttribute(tag)) {
+			return (UsageProducer<UR>) getContext().getAttribute(tag);
+		}
 		Set<UsageProducer<UR>> set = new LinkedHashSet<>();
 		for(UsageProducer<UR> prod :factories.values()) {
 			if( prod.compatible(sel) &&  prod.exists(sel)) {
 				set.add(prod);
 			}
 		}
+		UsageProducer<UR> res=null;
 		if( set.isEmpty()) {
-			return null;
+			res=null;
+		}else if( set.size()==1) {
+			res = set.iterator().next();
+		}else if( set.size() == factories.size()) {
+			res = this;
+		}else {
+			res = new ListUsageManager<>(getContext(), getTag()+".narrowed", set);
 		}
-		if( set.size()==1) {
-			return set.iterator().next();
-		}
-		if( set.size() == factories.size()) {
-			return this;
-		}
-		return new ListUsageManager<>(getContext(), getTag()+".narrowed", set);
+		getContext().setAttribute(tag, res);
+		return res;
 	}
 	
 }
