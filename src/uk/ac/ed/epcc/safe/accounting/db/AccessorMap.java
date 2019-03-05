@@ -78,6 +78,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.FieldValue;
+import uk.ac.ed.epcc.webapp.model.data.FieldValueFilter;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.time.Period;
@@ -959,7 +960,12 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			if( val instanceof FilterProvider){
 				return ((FilterProvider<X,I>) val).getFilter(match, data);
 			}
-		
+		    if( match == null  && val instanceof FieldValue) {
+		    	// FieldValues normally implement FilterProvider
+		    	// but for an exact match this should work
+		    	// probably needed for TypeProducerFieldValue
+		    	return new FieldValueFilter<I, X>(target, (FieldValue<I, X>) val, data);
+		    }
 		}catch(InvalidSQLPropertyException e){
 			//keep looking
 		}
