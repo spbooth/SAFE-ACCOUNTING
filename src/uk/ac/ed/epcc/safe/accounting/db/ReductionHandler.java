@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
@@ -40,9 +41,9 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
  * @param <E> type of record
  */
 public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends GeneratorReductionHandler<E, F> {
-
+    public static final Feature FILTER_REDUCTION = new Feature("reduction_handler.use_sql_reduction",true,"Use SQL reductions in reduction handler");
 	public ReductionHandler(F fac) {
-		super(fac);
+		super(fac.getAccessorMap().getContext(), fac);
 		this.map = fac.getAccessorMap();
 		
 	}
@@ -73,6 +74,9 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 			// can't do anything
 			return new HashMap<>();
 		}
+		if( ! FILTER_REDUCTION.isEnabled(getContext())) {
+			return super.getIndexedReductionMap(sum, selector);
+		}
 		try{
 			IndexReductionFinder<E> finder = new IndexReductionFinder<E>(map, sum,makeDef(sum));
 			if( isQualify()) {
@@ -92,6 +96,9 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 	public <R,D> R getReduction(ReductionTarget<R,D> type, RecordSelector sel) throws Exception {
 		if( ! map.resolves(type.getExpression(),false)){
 			return type.getDefault();
+		}
+		if( ! FILTER_REDUCTION.isEnabled(getContext())) {
+			return super.getReduction(type, sel);
 		}
 		try{
 			SQLFilter<E> sql_fil = FilterConverter.convert(getFilter(sel));
@@ -120,7 +127,9 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 			return new HashMap<>();
 
 		}
-
+		if( ! FILTER_REDUCTION.isEnabled(getContext())) {
+			return super.getReductionMap(index, property, selector);
+		}
 
 
 		try{

@@ -28,6 +28,9 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
+import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 
@@ -38,10 +41,11 @@ import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
  * @param <E> type of target
  * @param <F> type of {@link ExpressionTargetGenerator}
  */
-public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>> implements ReductionProducer<E> {
+public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>> extends AbstractContexed implements ReductionProducer<E> {
 
-	public GeneratorReductionHandler(F fac) {
-		super();
+	public static final Feature DISTINCT_BY_ITER = new Feature("reduction.distinct_by_iterating",true,"Allow DISTINCT reduction by iterating");
+	public GeneratorReductionHandler(AppContext conn,F fac) {
+		super(conn);
 		
 		this.fac = fac;
 	}
@@ -49,7 +53,7 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 	
 	protected final F fac;
 	
-	
+   
 	protected final <X> boolean compatible(ReductionTarget<?,X> t){
 		if(fac.compatible(t.getExpression())){
 			return true;
@@ -84,7 +88,7 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 				if(r.getReduction() == Reduction.INDEX){
 					keys.add(r.getExpression());
 				}
-				if( r.getReduction() == Reduction.DISTINCT) {
+				if( r.getReduction() == Reduction.DISTINCT && ! DISTINCT_BY_ITER.isEnabled(getContext())) {
 					throw new UnsupportedReductionException("Cannot perform DISTINCT reduction by iteration");
 				}
 			}
@@ -98,12 +102,12 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 					if( old == null ){
 						ReductionMapResult dat = new ReductionMapResult();
 						for(ReductionTarget r : sum){
-							dat.put(r,rec.evaluateExpression(r.getExpression(),r.getDefault()));
+							dat.put(r,r.map(rec.evaluateExpression(r.getExpression(),r.getDefault())));
 						}
 						result.put(tup, dat);
 					}else{
 						for(ReductionTarget r : sum ){
-							old.put(r, r.combine(old.get(r), rec.evaluateExpression(r.getExpression(),r.getDefault())));
+							old.put(r, r.combine(old.get(r), r.map(rec.evaluateExpression(r.getExpression(),r.getDefault()))));
 						}
 					}
 					rec.release();
@@ -117,7 +121,7 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 	public <R,D> R getReduction(ReductionTarget<R,D> type, RecordSelector sel)
 			throws Exception, InvalidPropertyException {
 		
-		if( type.getReduction() == Reduction.DISTINCT) {
+		if( type.getReduction() == Reduction.DISTINCT && ! DISTINCT_BY_ITER.isEnabled(getContext())) {
 			throw new UnsupportedReductionException("Cannot perform DISTINCT reduction by iteration");
 		}
 		//TODO think about what to do if this is AVG
@@ -141,6 +145,9 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 	public <I,T,D> Map<I, T> getReductionMap(PropExpression<I> index,
 			ReductionTarget<T,D> property, RecordSelector selector)
 			throws Exception, InvalidPropertyException {
+		if( property.getReduction() == Reduction.DISTINCT && ! DISTINCT_BY_ITER.isEnabled(getContext())) {
+			throw new UnsupportedReductionException("Cannot perform DISTINCT reduction by iteration");
+		}
 		Map<I,T> result = new HashMap<>();
 		try(CloseableIterator<ExpressionTargetContainer> it = fac.getExpressionIterator(selector)){
 			while(it.hasNext()){
