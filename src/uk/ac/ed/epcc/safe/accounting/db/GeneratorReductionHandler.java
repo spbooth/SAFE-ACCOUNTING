@@ -84,6 +84,9 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 				if(r.getReduction() == Reduction.INDEX){
 					keys.add(r.getExpression());
 				}
+				if( r.getReduction() == Reduction.DISTINCT) {
+					throw new UnsupportedReductionException("Cannot perform DISTINCT reduction by iteration");
+				}
 			}
 			// Build by iterating over records.
 			Map<ExpressionTuple, ReductionMapResult> result = new HashMap<>();
@@ -113,6 +116,10 @@ public class GeneratorReductionHandler<E,F extends ExpressionTargetGenerator<E>>
 	
 	public <R,D> R getReduction(ReductionTarget<R,D> type, RecordSelector sel)
 			throws Exception, InvalidPropertyException {
+		
+		if( type.getReduction() == Reduction.DISTINCT) {
+			throw new UnsupportedReductionException("Cannot perform DISTINCT reduction by iteration");
+		}
 		//TODO think about what to do if this is AVG
 		// combine operation may or may not be wrong depending on
 		// if time average.

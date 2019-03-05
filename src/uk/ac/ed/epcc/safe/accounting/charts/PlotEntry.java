@@ -289,6 +289,7 @@ public static Set<PlotEntry> getPlotSet(PropertyFinder finder, AppContext c,Stri
 		   Set<PlotEntry> set = new LinkedHashSet<>();
 		   Logger log = c.getService(LoggerService.class).getLogger(PlotEntry.class);
 		   String list = prop.getProperty("list");
+		   list=c.expandText(list);
 		   log.debug("list is"+list);
 		   if( list != null && list.trim().length() != 0){
 			   list = c.expandText(list);
