@@ -12,9 +12,12 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.content.InvalidArgument;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
+import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.FieldSQLExpression;
@@ -67,13 +70,13 @@ public class PropertyUpdater<T extends DataObject> {
 		try{
 			SQLFilter<T> sql_filter = FilterConverter.convert(filter);
 			FilterUpdate<T> update = map.getFilterUpdate();
-			SQLExpression<X> targ = m.getSQLExpression(tag);
+			SQLValue<X> targ = m.getSQLValue(tag);
 		
 			if( targ != null && targ instanceof FieldValue){
-			
-				return update.update((FieldSQLExpression<X,T>)targ, value, sql_filter);
+				return update.update((FieldValue<X,T>)targ, value, sql_filter);
 			}
 		}catch(Exception e){
+			getLogger().warn("Failed to update property in SQL", e);
 			//do things the hard way
 			int count=0;
 			for(T ur : fac.getResult(filter)){
@@ -89,6 +92,12 @@ public class PropertyUpdater<T extends DataObject> {
 		}
 		}
 		throw new InvalidPropertyException(fac.getConfigTag(),tag);
+	}
+	/**
+	 * @return
+	 */
+	public Logger getLogger() {
+		return fac.getContext().getService(LoggerService.class).getLogger(getClass());
 	}
 	/**  Perform an update in the database 
 	 * 
