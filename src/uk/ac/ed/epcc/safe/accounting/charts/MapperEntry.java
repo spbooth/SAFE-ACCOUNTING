@@ -695,15 +695,13 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     		}
     	}
 		//log.debug("using transform");
-		SetRangeMapper map = getMapper(e);
-		Iterator<ExpressionTargetContainer> iter;
-
-		iter = ap.getExpressionIterator(getRangeSelector(e,allow_overlap,cutoff,tc.getStartDate(), tc.getEndDate(),sel));
-		if( iter.hasNext()){
-			tc.addDataIterator(ds, map, iter);
-			data_added=true;
-		}
-		
+    	SetRangeMapper map = getMapper(e);
+    	try(CloseableIterator<ExpressionTargetContainer> iter= ap.getExpressionIterator(getRangeSelector(e,allow_overlap,cutoff,tc.getStartDate(), tc.getEndDate(),sel))){
+    		if( iter.hasNext()){
+    			tc.addDataIterator(ds, map, iter);
+    			data_added=true;
+    		}
+    	}
 
 
     	//log.debug("data added "+data_added);

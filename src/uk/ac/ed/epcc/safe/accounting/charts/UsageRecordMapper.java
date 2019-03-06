@@ -60,14 +60,13 @@ public class UsageRecordMapper<D extends Number> implements RangeMapper<Expressi
 	}
 	
 
-	public final float getOverlapp(ExpressionTargetContainer o, Date p_start, Date p_end) {
-		try {
-			return OverlapHandler.getOverlap(o,NumberReductionTarget.getInstance(op, plot_property), start_prop, end_prop, new Period(p_start, p_end)).floatValue();
-		} catch (InvalidExpressionException e) {
-			return 0.0F;
-		} catch (IllegalReductionException e) {
-			return 0.0F;
+	public final float getOverlapp(ExpressionTargetContainer o, Date p_start, Date p_end) throws IllegalReductionException, InvalidExpressionException {
+		
+		NumberReductionTarget r = NumberReductionTarget.getInstance(op, plot_property);
+		if( ! r.isNativeType()) {
+			throw new IllegalReductionException("Reduction "+op+" generates non-native type");
 		}
+		return OverlapHandler.getOverlap(o,r, start_prop, end_prop, new Period(p_start, p_end)).floatValue();
 	}
 
 	public final  boolean overlapps(ExpressionTargetContainer o, Date start, Date end) {

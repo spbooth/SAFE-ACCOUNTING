@@ -43,4 +43,11 @@ public class NumberAverageReductionTarget extends NumberReductionTarget{
 		
 	}
 
+
+	@Override
+	public boolean isNativeType() {
+		// We are generating a AverageValue
+		return false;
+	}
+
 }

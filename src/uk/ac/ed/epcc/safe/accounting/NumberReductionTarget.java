@@ -34,4 +34,12 @@ public abstract class NumberReductionTarget extends ReductionTarget<Number,Numbe
 		}
 	}
 
+	/** Does this class generate native java {@link Number} types that can safely be converted
+	 * to intrinsic types without losing functionality
+	 * 
+	 * @return boolean
+	 */
+	public boolean isNativeType() {
+		return true;
+	}
 }

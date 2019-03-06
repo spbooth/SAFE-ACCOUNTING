@@ -10,9 +10,9 @@ import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.webapp.junit4.ConfigFixtures;
 
 @ConfigFixtures("iteratedreduction.properties")
-public class IteratedReducitonChartExtenstionTest extends ChartExtensionTest {
+public class IteratedReductionChartExtenstionTest extends ChartExtensionTest {
 
-	public IteratedReducitonChartExtenstionTest() {
+	public IteratedReductionChartExtenstionTest() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -21,4 +21,6 @@ public class IteratedReducitonChartExtenstionTest extends ChartExtensionTest {
 		assertTrue(OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(ctx));
 		assertFalse(ReductionHandler.FILTER_REDUCTION.isEnabled(ctx));
 	}
+
+	
 }

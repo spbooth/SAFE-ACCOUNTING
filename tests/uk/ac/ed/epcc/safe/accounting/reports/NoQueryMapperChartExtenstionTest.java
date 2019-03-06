@@ -18,4 +18,10 @@ public class NoQueryMapperChartExtenstionTest extends ChartExtensionTest {
 	public void checkFeatures() {
 		assertFalse(OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(ctx));
 	}
+	
+	@Override
+	public boolean expectDistictSupported() {
+		// We cant do a DISTICT reduction without a query-mapper 
+		return false;
+	}
 }

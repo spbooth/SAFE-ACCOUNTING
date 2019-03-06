@@ -51,7 +51,16 @@ public class ChartExtensionTest extends ExtensionTestCase {
 		testChart("testTimeCharts.xml","csv", new File(getOutputDir()+"TimeChart.csv"));
 
 	}
-	
+	public boolean expectDistictSupported(){
+		return true;
+	}
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testDistinctUsersPlot() throws Exception {
+		if(expectDistictSupported()) {
+			testChart("testDistinctUsers.xml","csv", new File(getOutputDir()+"DistictUsers.csv"));
+		}
+	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testOverlapCSVTimeChartPlot() throws Exception {
@@ -282,6 +291,7 @@ public class ChartExtensionTest extends ExtensionTestCase {
 
 		// Check it was correctly formatted.
 		String output = out.toString().replace(ctx.getInitParameter("java.io.tmpdir","/tmp"), "/tmp");
+		System.out.println(output);
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, output),
 				normalise(output).contains(normalise(expectedOutput)));
