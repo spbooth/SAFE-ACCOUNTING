@@ -63,7 +63,7 @@ public class UsageRecordMapper<D extends Number> implements RangeMapper<Expressi
 	public final float getOverlapp(ExpressionTargetContainer o, Date p_start, Date p_end) throws IllegalReductionException, InvalidExpressionException {
 		
 		NumberReductionTarget r = NumberReductionTarget.getInstance(op, plot_property);
-		if( start_prop == null && ! r.equals(Reduction.AVG)) {
+		if( start_prop == null &&  op.equals(Reduction.AVG)) {
 			// This is not a time average as only one time bound
 			// won't give the right result if we cast a AverageValue to
 			// float
