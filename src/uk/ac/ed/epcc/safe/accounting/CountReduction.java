@@ -50,6 +50,6 @@ public class CountReduction extends ReductionTarget<Number,Object> {
 
 	@Override
 	public Number getDefault() {
-		return Integer.valueOf(0);
+		return DistinctCount.zero();
 	}
 }
