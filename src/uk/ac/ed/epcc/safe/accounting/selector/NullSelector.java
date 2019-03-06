@@ -57,5 +57,15 @@ public final class NullSelector<T> implements RecordSelector{
 			return false;
 		return true;
 	}
-
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("(");
+    	sb.append(expr.toString());
+    	if( is_null ) {
+    		sb.append("=NULL)");
+    	}else {
+    		sb.append("!=NULL)");
+    	}
+    	return sb.toString();
+    }
 }
