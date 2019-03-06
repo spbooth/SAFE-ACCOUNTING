@@ -745,11 +745,16 @@ public class OverlapHandler<T> {
     	if( tmp == null ){
     		return target.getDefault();
     	}
-    	if( target.getReduction().equals(Reduction.DISTINCT)) {
+    	if(start_prop == null ||  target.getReduction().equals(Reduction.DISTINCT)) {
     		// Don't weight distinct, ideally this should be a custom
     		// number class to allow iteration to work but weighting
     		// is always wrong
-    		return tmp;
+    		if( overlaps(rec, start_prop, end_prop, p.getStart(), p.getEnd())) {
+    			// Just to be same make sure we do overlap the period
+    			return tmp;
+    		}else {
+    			return target.getDefault();
+    		}
     	}
     	double fac = getOverlappWeight(rec,start_prop,end_prop,p,target.getReduction());
     	assert(fac >= 0.0 && fac <=1.0);
@@ -767,21 +772,26 @@ public class OverlapHandler<T> {
     
     }
     public static boolean overlaps(ExpressionTarget rec,PropExpression<Date> start_prop,PropExpression<Date> end_prop,Date start,Date end){
-    	assert(end!=null);
-    	assert(start!=null);
-    	assert(end.after(start));
     	
-    	if( start_prop==null || end_prop == null || start ==  null || end == null ){
-			return false;
+    	
+    	if( start ==  null || end == null ){
+			throw new ConsistencyError("Missing time bounds in overlap test");
 		}
-    	assert(start_prop != null && end_prop != null);
+    	assert(end.after(start));
+    	if( end_prop == null ) {
+    		throw new ConsistencyError("Missing end property");
+    	}
+    	
     	long start_time=start.getTime();
     	long end_time=end.getTime();
     	try{
     		
     		Date myend = rec.evaluateExpression(end_prop);
-    		Date mystart = rec.evaluateExpression(start_prop);
     		long myend_time = myend.getTime();
+    		if( start_prop == null ) {
+    			return start_time < myend_time && myend_time <= end_time;
+    		}
+    		Date mystart = rec.evaluateExpression(start_prop);
     		long mystart_time=mystart.getTime();
     			if( mystart_time == 0L){
     				// bad record
@@ -810,15 +820,19 @@ public class OverlapHandler<T> {
 	 * @return double fraction
 	 */
     public static double getOverlappWeight(ExpressionTarget rec,PropExpression<Date> start_prop, PropExpression<Date> end_prop,TimePeriod p,Reduction op)  {
-    	assert(start_prop != null);
-    	assert(end_prop != null);
-    	assert(p != null);
+    	if( start_prop == null ) {
+    		return 1.0; // No overlap.
+    	}
+    	if(  end_prop == null  ){
+			throw new ConsistencyError("No end property in overlap");
+		}
+    	if( p == null ) {
+    		throw new ConsistencyError("No time period");
+    	}
     	assert(p.getStart() != null);
     	assert(p.getEnd() != null );
     	assert(p.getEnd().after(p.getStart()));
-    	if( start_prop==null || end_prop == null || p ==  null ){
-			return 0.0;
-		}
+    	
     	
     	if( op == Reduction.MIN || op == Reduction.MAX){
     		// should not really do these operations with overlap but this is the
