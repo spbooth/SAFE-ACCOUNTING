@@ -46,8 +46,8 @@ public class SVGChartExtension extends ChartExtension {
 	}
 
 	@Override
-	public DocumentFragment addChart( Chart chart,String caption)
-			throws Exception {
+	public DocumentFragment addChart( Chart chart,String caption) {
+		try {
 		//Note the createSVG generates the figure element
 		// itself so it can annotate with graphic sizes.
 		// Get a DOMImplementation
@@ -73,7 +73,10 @@ public class SVGChartExtension extends ChartExtension {
 			figure.appendChild(c);
 		}
 		return frag;
-
+		}catch(Exception e) {
+			addError("Bad Plot","Error addingsvg graphic",e);
+			return getDocument().createDocumentFragment();
+		}
 	}
 
 	@Override

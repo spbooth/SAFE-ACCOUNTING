@@ -42,7 +42,7 @@ public class CommandLineImageExtension extends ChartExtension {
 	private int count=0;
 	
 	@Override
-	public DocumentFragment addChart(Chart chart,String caption) throws IOException  {
+	public DocumentFragment addChart(Chart chart,String caption) {
 		Document doc = getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
 		try{

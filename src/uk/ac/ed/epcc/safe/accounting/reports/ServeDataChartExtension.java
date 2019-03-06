@@ -46,10 +46,10 @@ public class ServeDataChartExtension extends ChartExtension {
 	}
 
 	@Override
-	public DocumentFragment  addChart(Chart t,String caption) throws Exception {
+	public DocumentFragment  addChart(Chart t,String caption) {
 		Document doc = getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
-	
+	    try {
 			AppContext conn =  getContext();
 			SettableServeDataProducer producer = conn.makeObjectWithDefault(SettableServeDataProducer.class, SessionDataProducer.class, ReportServlet.SERVE_DATA_DEFAULT_TAG);
 			ByteArrayOutputStream res = new ByteArrayOutputStream();
@@ -73,7 +73,9 @@ public class ServeDataChartExtension extends ChartExtension {
 				c.appendChild(doc.createTextNode(caption));
 				e.appendChild(c);
 			}
-		
+	    }catch(Exception e) {
+	    	addError("Bad Plot", "Error adding chart as ServeData link", e);
+	    }
 		return result;
 		
 	}

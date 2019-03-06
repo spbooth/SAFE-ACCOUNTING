@@ -38,8 +38,13 @@ public class TableChartExtension extends ChartExtension {
 
 	
 	@Override
-	public DocumentFragment addChart(Chart chart,String caption) throws Exception {
-		return addChartTable(chart, caption);
+	public DocumentFragment addChart(Chart chart,String caption) {
+		try {
+			return addChartTable(chart, caption);
+		} catch (Exception e) {
+			addError("Bad Plot", "Error adding table",e);
+			return getDocument().createDocumentFragment();
+		}
 	}
 
 

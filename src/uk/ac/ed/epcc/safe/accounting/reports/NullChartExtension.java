@@ -35,8 +35,7 @@ public class NullChartExtension extends ChartExtension {
 	}
 
 	@Override
-	public DocumentFragment addChart(Chart chart, String caption)
-			throws Exception {
+	public DocumentFragment addChart(Chart chart, String caption){
 		Document doc = getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
 		return result;

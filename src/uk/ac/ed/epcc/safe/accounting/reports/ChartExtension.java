@@ -492,7 +492,7 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 		return result;
 	}
 
-	public abstract DocumentFragment addChart(Chart chart,String caption) throws Exception;
+	public abstract DocumentFragment addChart(Chart chart,String caption);
 	
 	
 	public abstract boolean graphOutput();
