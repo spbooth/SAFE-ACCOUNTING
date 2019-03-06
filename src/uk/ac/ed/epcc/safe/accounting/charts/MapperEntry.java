@@ -516,7 +516,9 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
         		}
         	}
         }else{
-        	data_added = addTimeChartData(e,tc, ap, sel, ds,allow_overlap);
+        	if( compatible(ap) && ap.compatible(sel)) {
+        		data_added = addTimeChartData(e,tc, ap, sel, ds,allow_overlap);
+        	}
     	}
         if( data_added){
         	 //TODO: could combine scale factors with expression
@@ -678,10 +680,11 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     					selector.add(new PeriodOverlapRecordSelector(new Period(tc.getPeriod()), start_prop, end_prop, OverlapType.UPPER_OUTER, cutoff));
 
 
-    					Iterator<ExpressionTargetContainer> iter = ap.getExpressionIterator(selector);
-    					if( iter.hasNext()){
-    						tc.addDataIterator(ds, map, iter);
-    						data_added=true;
+    					try(CloseableIterator<ExpressionTargetContainer> iter = ap.getExpressionIterator(selector)){
+    						if( iter.hasNext()){
+    							tc.addDataIterator(ds, map, iter);
+    							data_added=true;
+    						}
     					}
     					
     				}
