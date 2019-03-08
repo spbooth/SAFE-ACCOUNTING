@@ -39,6 +39,7 @@ import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.BarTimeChart;
+import uk.ac.ed.epcc.webapp.charts.BarTimeChartData;
 import uk.ac.ed.epcc.webapp.charts.PeriodChart;
 import uk.ac.ed.epcc.webapp.charts.PeriodSetPlot;
 import uk.ac.ed.epcc.webapp.charts.PieTimeChart;
@@ -201,6 +202,13 @@ public abstract class ChartExtension extends ReportExtension {
 		if( hasParam("Title", e)){
 			chart.getChartData().setTitle(getParam("Title", e).trim());
 		}
+		}catch(Exception e1){
+			addError("Bad Plot", "Error setting title", e1);
+		}
+		try{
+			if( hasParam("Quantity", e)){
+				chart.getChartData().setQuantityName(getParam("Quantity", e).trim());
+			}
 		}catch(Exception e1){
 			addError("Bad Plot", "Error setting title", e1);
 		}
@@ -452,6 +460,11 @@ public abstract class ChartExtension extends ReportExtension {
 		try {
 			BarTimeChart chart = BarTimeChart.getInstance(ctx,  period);
 			chart.getChartData().setGraphical(graphOutput());
+			String stacked = getAttribute("stacked", (Element)node);
+			if( stacked != null && Boolean.valueOf(stacked)) {
+				((BarTimeChartData)chart.getChartData()).setStacked(true);
+			}
+			
 			return  setChartOptions(chart,(Element) node);
 		} catch (Exception e) {
 			addError("Bad Plot", "Error making BarChart", e);

@@ -70,9 +70,23 @@
 		<xsd:attribute name="nographic" type="xsd:boolean" default="false" use="optional"></xsd:attribute>
 		<xsd:attribute name="table" type="xsd:boolean" default="false" use="optional"></xsd:attribute>
 	</xsd:complexType>
+	
+	<xsd:complexType name="BarTimeChartType">
+		<xsd:sequence>
+			<xsd:element ref="per:Period" minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
+			<xsd:group ref="ChartGroup"></xsd:group>
+			<xsd:group ref="PlotGroup"></xsd:group>
+			<xsd:element name="AddSeries" minOccurs="0" maxOccurs="unbounded"  type="AddSeriesType"/>
+			<xsd:element ref="Caption" maxOccurs="1" minOccurs="0"></xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="nographic" type="xsd:boolean" default="false" use="optional"></xsd:attribute>
+		<xsd:attribute name="table" type="xsd:boolean" default="false" use="optional"></xsd:attribute>
+		<xsd:attribute name="stacked" type="xsd:boolean" default="false" use="optional"></xsd:attribute>
+	</xsd:complexType>
 
 	<xsd:element name="PieTimeChart" type="PieTimeChartType" />
-	<xsd:element name="BarTimeChart" type="PieTimeChartType" />
+	<xsd:element name="BarTimeChart" type="BarTimeChartType" />
 
     <xsd:complexType name="AddDataType">
     	<xsd:sequence>
@@ -80,7 +94,12 @@
 			<xsd:group ref="PlotEntryGroup"></xsd:group>
 		</xsd:sequence>
     </xsd:complexType>
-
+	<xsd:complexType name="AddSeriesType">
+    	<xsd:sequence>
+			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
+			<xsd:group ref="PlotGroup"></xsd:group>
+		</xsd:sequence>
+    </xsd:complexType>
 
 	<xsd:complexType name="ChartType">
 		<xsd:sequence>
@@ -97,6 +116,14 @@
 		<xsd:sequence>
 			<xsd:element name="Title" type="par:TextOrParameterType"
 				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Quantity" type="par:TextOrParameterType"
+				minOccurs="0" maxOccurs="1" >
+				<xsd:annotation><xsd:documentation>
+				Set the Name for the quantity axis. Normally this is set by the PlotLabel
+				but we can override this using this element. Also for a multi-series bar chart the
+				PlotLabel generates the series name so we can set the Quantity here. 
+				</xsd:documentation></xsd:annotation>	
+			</xsd:element>	
 		</xsd:sequence>
 	</xsd:group>
 

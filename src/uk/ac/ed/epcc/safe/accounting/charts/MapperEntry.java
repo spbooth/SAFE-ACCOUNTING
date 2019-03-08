@@ -331,13 +331,13 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		}
 	}
 	
-	public PeriodSetPlot makeBarTimeChartPlot(PlotEntry e, BarTimeChart tc, UsageProducer ap,RecordSelector sel, int nplots,boolean allow_overlap) throws Exception {
+	public PeriodSetPlot makeBarTimeChartPlot(String series,PlotEntry e, BarTimeChart tc, UsageProducer ap,RecordSelector sel, int nplots,boolean allow_overlap) throws Exception {
         if( ! (e.compatible(ap) && compatible(ap))){
         	return null;
         }
     	
     	
-        PeriodSetPlot ds= tc.addBarChart(0);
+		PeriodSetPlot ds= tc.getBarChartSeries(series, 0);
       
         boolean data_added = addData(e,tc, ap, sel, ds,allow_overlap);
         if( data_added){
@@ -459,7 +459,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 			return makePieTimeChartPlot(e, (PieTimeChart) tc, ap, sel, nplots, allow_overlap);
 		}
 		if( tc instanceof BarTimeChart){
-			return makeBarTimeChartPlot(e, (BarTimeChart) tc, ap, sel, nplots, allow_overlap);
+			return makeBarTimeChartPlot(e.getLabel(),e, (BarTimeChart) tc, ap, sel, nplots, allow_overlap);
 		}
 		return null;
 	}

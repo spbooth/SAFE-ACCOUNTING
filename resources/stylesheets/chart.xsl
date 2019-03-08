@@ -106,6 +106,17 @@
 		<xsl:variable name="ds2" select="plotter:makeDataSet($ChartExtension,$ds,$fil2,$plotentry2,$mapperentry,$chart,.)"/>
 	</xsl:for-each>
 	<xsl:copy-of select="plotter:addPlot($ChartExtension,$ds,$filter,$plotentry,$mapperentry,$chart,.)"/>
+	<xsl:for-each select="cha:AddSeries">
+	    <xsl:variable name="fil2" select="filter:makeFilter($FilterExtension,$filter,fil:Filter)"/>
+	    <xsl:variable name="plotentry2" select="plotter:getPlotEntry($ChartExtension,$fil2,.)"/>
+		<xsl:variable name="ds2" select="plotter:makeDataSet($ChartExtension,$fil2,$plotentry2,$mapperentry,$chart,.)"/>
+		<xsl:for-each select="cha:AddData">
+		  <xsl:variable name="fil3" select="filter:makeFilter($FilterExtension,$fil2,fil:Filter)"/>
+	      <xsl:variable name="plotentry3" select="plotter:getPlotEntry($ChartExtension,$fil3,.)"/>
+		  <xsl:variable name="ds3" select="plotter:makeDataSet($ChartExtension,$ds2,$fil3,$plotentry3,$mapperentry,$chart,.)"/>
+	    </xsl:for-each>
+		<xsl:copy-of select="plotter:addPlot($ChartExtension,$ds2,$fil2,$plotentry2,$mapperentry,$chart,.)"/>
+	</xsl:for-each>
 	<xsl:choose>
 	<xsl:when test="plotter:hasData($ChartExtension,$chart)">
 	<xsl:if test="not(@nographic)">
