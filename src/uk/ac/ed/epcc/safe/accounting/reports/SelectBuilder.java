@@ -435,7 +435,7 @@ public abstract class SelectBuilder {
 	 * 
 	 * @param name child element name
 	 * @param e  parent Element
-	 * @return
+	 * @return child Element or null
 	 */
 	protected final Element getParamElement(String name, Element e) {
 		return getParamElementNS(e.getNamespaceURI(), name, e);
@@ -444,9 +444,9 @@ public abstract class SelectBuilder {
 	/** get a child element specified by namespace and tag.
 	 * 
 	 * @param target_namespace
-	 * @param name
-	 * @param elem
-	 * @return
+	 * @param name  Name of child
+	 * @param elem  parent Element
+	 * @return Element or null
 	 */
 	protected final Element getParamElementNS(String target_namespace, String name,
 			Element elem) {

@@ -167,20 +167,24 @@
 			<xsd:element name="RateScale" type="xsd:boolean"
 				maxOccurs="1" minOccurs="0">
 				<xsd:annotation><xsd:documentation>
-				Flag to enable rate-scaling (divide by the number of milliseconds in each plot)
+				Flag to enable rate-scaling (divide by the number of milliseconds in each plot-point)
 				</xsd:documentation></xsd:annotation>
 			</xsd:element>
-			<xsd:element name="NPlots" type="par:NumberOrParameterType"
-				maxOccurs="1" minOccurs="0">
-				<xsd:annotation>
-				<xsd:documentation>
-				Set the maximum number of groups to show (remaining groups merged into "others")
-				Set to zero to disable (this also disables sorting of datasets).
-				</xsd:documentation>
-				</xsd:annotation>
+			<xsd:element name="Norm" maxOccurs="1" minOccurs="0">
+			<xsd:annotation><xsd:documentation>
+			Definition of a normalisation plot. Each dataset is evaluated independently and the
+			values in the output plot are divided by the values in the normalisation plot.
+			</xsd:documentation></xsd:annotation>
+				<xsd:complexType>
+				<xsd:sequence>
+				<xsd:group ref="PlotEntryGroup"/>
+				</xsd:sequence>
+				</xsd:complexType>
 			</xsd:element>
+			
 		</xsd:sequence>
 	</xsd:group>
+	
 	<!--  parameters for data to be added to the chart -->
 	<xsd:group name="PlotGroup">
 		<xsd:sequence>
@@ -190,6 +194,15 @@
 			Additional plot entry specifications to be merged with the original plot.
 			This allows data with different filters to be combined in a single plot.
 			</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="NPlots" type="par:NumberOrParameterType"
+				maxOccurs="1" minOccurs="0">
+				<xsd:annotation>
+				<xsd:documentation>
+				Set the maximum number of groups to show (remaining groups merged into "others")
+				Set to zero to disable (this also disables sorting of datasets).
+				</xsd:documentation>
+				</xsd:annotation>
 			</xsd:element>
 			<xsd:choice>
 				<xsd:element name="GroupBy"

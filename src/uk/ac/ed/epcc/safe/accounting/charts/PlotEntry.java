@@ -49,7 +49,7 @@ public class PlotEntry {
 	  private final String name;  // short name for plot entry 
 	  private final String description; // text to be presented to user
 	  private final PropExpression prop_tag;  // property to plot
-	  private final PlotEntry norm;
+	  private PlotEntry norm;
 	  private final PropExpression<Date> start_prop;
 	  private final PropExpression<Date> end_prop;
 	  private long cutoff=0L; // max job length to consider
@@ -212,7 +212,19 @@ public class PlotEntry {
 	}
 	
 
-    public boolean compatible(UsageProducer<?> ap){
+    /**
+	 * @return the norm
+	 */
+	public PlotEntry getNorm() {
+		return norm;
+	}
+	/**
+	 * @param norm the norm to set
+	 */
+	public void setNorm(PlotEntry norm) {
+		this.norm = norm;
+	}
+	public boolean compatible(UsageProducer<?> ap){
     	
     	boolean result=true;
     	result = result && (prop_tag == null || ap.compatible(prop_tag));

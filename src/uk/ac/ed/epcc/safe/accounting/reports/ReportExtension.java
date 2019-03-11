@@ -363,14 +363,23 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * @return
 	 */
 	protected boolean hasParameterRef(Element e){
-		//String s = makeString(e);
+		String s = makeString(e);
 		NodeList elems = e.getElementsByTagNameNS(ReportBuilder.PARAMETER_LOC, PARAMETER_REF_NAME);
 		return elems.getLength()==1;
 	}
 	
 	protected final int getIntParam(String name, int def, Element elem) throws Exception{
-		if( hasParameterRef(elem)){
-			Object ref_data = getParameterRef(elem);
+		Element v;
+		if( name == null ){
+			v = elem;
+		}else{
+			v = getParamElementNS(elem.getNamespaceURI(), name, elem);
+		}
+		if( v == null ){
+			return def;
+		}
+		if( hasParameterRef(v)){
+			Object ref_data = getParameterRef(v);
 			if( ref_data != null ){
 				Number val =  convert(null,Number.class,ref_data);
 				if( val != null ){
@@ -379,7 +388,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			}
 			return def;
 		}
-		String s = getParam(name,elem);
+		String s = getText(v);
 		if( s == null || s.trim().length() == 0){
 			return def;
 		}

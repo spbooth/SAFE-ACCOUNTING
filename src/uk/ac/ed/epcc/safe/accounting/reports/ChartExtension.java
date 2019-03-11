@@ -148,6 +148,11 @@ public abstract class ChartExtension extends ReportExtension {
 		if( label != null ){
 			result.setLabel(label);
 		}
+		Element norm_e = getParamElement("Norm", e);
+		if( norm_e != null ) {
+			PlotEntry norm = getPlotEntry(set, norm_e);
+			result.setNorm(norm);
+		}
 		return result;
 	}
 	public MapperEntry getMapperEntry(RecordSet set, Node n) throws Exception{
