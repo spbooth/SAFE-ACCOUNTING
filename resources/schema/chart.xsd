@@ -38,9 +38,9 @@
 			<xsd:element ref="per:Period" minOccurs="0" maxOccurs="1" />
 			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
 			<xsd:element ref="NumberOfTimeBlocks" minOccurs="0"
-				maxOccurs="1" />
+				maxOccurs="1"  />
 			<xsd:element name="WarningLevel"
-				type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" />
+				type="par:NumberOrParameterType" minOccurs="0" maxOccurs="1" />
 			<xsd:group ref="ChartGroup"></xsd:group>
 			<xsd:group ref="PlotGroup" maxOccurs="1" minOccurs="0"></xsd:group>
 			<xsd:element name="AddChart" type="ChartType"
@@ -51,7 +51,7 @@
 	</xsd:complexType>
 
 	<xsd:element name="NumberOfTimeBlocks"
-		type="par:TextOrParameterType" >
+		type="par:NumberOrParameterType" >
 	<xsd:annotation><xsd:documentation>Set the number of plot points within each major sub-division of the chart.</xsd:documentation></xsd:annotation>
 	</xsd:element>
 	<xsd:element name="Caption" type="par:TextOrParameterType" >
@@ -156,7 +156,7 @@
 			<xsd:element name="Overlap" type="xsd:boolean" maxOccurs="1"
 				minOccurs="0">
 				<xsd:annotation><xsd:documentation>
-				Flag to supress overlap calculation
+				Flag to suppress overlap calculation
 				</xsd:documentation></xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Scale" type="par:NumberOrParameterType" minOccurs="0" maxOccurs="1">

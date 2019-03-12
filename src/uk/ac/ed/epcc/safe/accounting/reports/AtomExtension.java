@@ -290,7 +290,7 @@ public class AtomExtension extends ReportExtension {
 					  params.put(name, num);
 					  return "";
 				  }catch(Exception t){
-					  addError("BadDefine", "Error calculating value",t);
+					  addError("BadDefine", "Error calculating value",def,t);
 				  }
 			  }
 		 }

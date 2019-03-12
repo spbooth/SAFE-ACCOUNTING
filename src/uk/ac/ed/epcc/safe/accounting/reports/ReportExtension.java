@@ -199,6 +199,9 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public final void addError(String type, String details, Node e){
 		addError(type, details+"\n"+makeString(e));
 	}
+	public final void addError(String type, String details, Node e, Exception t){
+		addError(type, details+"\n"+makeString(e),t);
+	}
 	/** A debugging method to generate a String version of a Node
 	 * 
 	 * @param e
@@ -317,7 +320,8 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 				}
 			}
 	/** Tests that the element has a parameter node of the specified name and that that
-	 * node has non-trivial content. Use {@link #hasChild(String, Element)} to test
+	 * node has non-trivial content (or contains a non-null parameter ref). 
+	 * Use {@link #hasChild(String, Element)} to test
 	 * for a child element without content.
 	 * 
 	 * @param name
@@ -326,7 +330,17 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * @throws ReportException
 	 */
 	protected final boolean hasParam(String name, Element elem) throws ReportException{
-		String param = getParam(name, elem);
+		if( elem == null) {
+			return false;
+		}
+		Element v = getParamElementNS(elem.getNamespaceURI(),name, elem);
+		if( v == null ) {
+			return false;
+		}
+		if( hasParameterRef(v)) {
+			return ( getParameterRef(v) != null);
+		}
+		String param = normalise(getText(v));
 		return param != null && param.trim().length() > 0; 
 	}
 	/** Get the parameter referenced by a nested ParameterRef element
