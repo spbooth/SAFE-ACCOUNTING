@@ -56,6 +56,7 @@ import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionVisitor;
+import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
@@ -420,6 +421,7 @@ public FormResult action(Form f)
 	@SuppressWarnings("unchecked")
 	private void regenerate(PropertyTag<String> name) throws Exception {
 		DataObjectFactory fac = getContext().makeObjectWithDefault(DataObjectFactory.class, null, table);
+		DatabaseService serv = getContext().getService(DatabaseService.class);
 		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(fac);
 		PropertyUpdater updater = new PropertyUpdater<>(fac);
 		if( fac != null ){
@@ -432,6 +434,7 @@ public FormResult action(Form f)
 					DataObject o = nameFinder.makeFromString(s);
 					if( o != null ){
 						updater.update(ref,ref.makeReference(o),new SelectClause<>(name, s));
+						serv.commitTransaction(); // Don't want the transactions to get too big
 					}
 				}
 			
