@@ -77,17 +77,17 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 		}
 	}
 	
-	public void parse(String v) throws ParseException {
+	public String parseValue(String v) throws ParseException {
 		if( v != null && items.containsKey(v)){
-			setValue(v);
+			return v;
 		}else if( v == null || v.trim().length() == 0){
-			setValue(null);
+			return null;
 		}else{
 			if( v != null){
 				// check for descriptions
 				for(PlotEntry e : items.values()){
 					if(v.equals(e.getDescription()) ){
-						setValue(e.getName());
+						return e.getName();
 					}
 				}
 			}

@@ -65,11 +65,11 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 		}
 	}
 	
-	public void parse(String v) throws ParseException {
+	public String parseValue(String v) throws ParseException {
 		if( v != null && items.containsKey(v)){
-			setValue(v);
+			return v;
 		}else if ( v == null || v.trim().length() == 0){
-			setValue(null);
+			return null;
 		}else{
 			throw new ParseException("Invalid MapperEntry ");
 		}

@@ -30,15 +30,15 @@ public class ValueParserInput<T> extends ParseAbstractInput<T>  {
 		this.parser=parser;
 	}
 	
-	public void parse(String v) throws ParseException {
+	public T parseValue(String v) throws ParseException {
 		if(v != null && v.length() > 0){
 			try {
-				setValue(parser.parse(v));
+				return parser.parse(v);
 			} catch (Exception e) {
 				throw new ParseException("Bad format", e);
 			}
 		}else{
-			setValue(null);
+			return null;
 		}
 	}
 
