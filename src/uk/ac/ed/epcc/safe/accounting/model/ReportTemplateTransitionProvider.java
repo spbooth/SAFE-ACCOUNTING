@@ -516,6 +516,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		boolean hasErrors = false;
 		try {
 			builder = ReportBuilder.getInstance(context);
+			builder.resetLogger(); // this may be a cached report builder
 			ReportBuilder.setTemplate(context, builder, target.getName());
 			boolean has_form = builder.hasMandatoryReportParameters();
 			params = getParameters(target, context, builder);
