@@ -67,6 +67,7 @@ import uk.ac.ed.epcc.safe.accounting.xml.ErrorSetErrorListener;
 import uk.ac.ed.epcc.safe.accounting.xml.LSResolver;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.ContextCached;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
@@ -100,7 +101,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  */
 
 
-public class ReportBuilder extends AbstractContexed implements TemplateValidator {
+public class ReportBuilder extends AbstractContexed implements ContextCached , TemplateValidator {
 
 	private static final String AUTHENTICATED_USER_PARAMETER_NAME = "AuthenticatedUser";
 	private static final String CURRENT_TIME_PARAMETER_NAME = "CurrentTime";
@@ -1026,16 +1027,13 @@ public class ReportBuilder extends AbstractContexed implements TemplateValidator
 		return null;
 	}
 
-	private static final String REPORT_BUILDER_ATTR="ReportBuilderAttr";
+	
 	public static ReportBuilder getInstance(AppContext conn) throws Exception{
 		
 		// allow ReportBuilder to be overridden using param 
-		ReportBuilder builder=(ReportBuilder) conn.getAttribute(REPORT_BUILDER_ATTR);
-		if( builder == null) {
-			builder = conn.makeContexedObject(ReportBuilder.class, "ReportBuilder");
-			conn.setAttribute(REPORT_BUILDER_ATTR, builder);
-		}
-		return builder;
+		// Note that as ReportBuilder implements ContextCached
+		// this will be cached in the AppContext
+		return  conn.makeObjectWithDefault(ReportBuilder.class,ReportBuilder.class, "ReportBuilder");
 	}
     public static void setTemplate(AppContext conn,ReportBuilder builder,String templateName) throws Exception{
     	SessionService person = conn.getService(SessionService.class);
