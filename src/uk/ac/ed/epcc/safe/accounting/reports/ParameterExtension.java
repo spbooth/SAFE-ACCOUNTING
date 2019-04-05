@@ -77,7 +77,6 @@ import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.LongInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MonthMultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInputWrapper;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseInput;
@@ -199,6 +198,7 @@ public class ParameterExtension extends ReportExtension {
 				title=null;
 			}
 			form.addInput(name, label, title,input);
+			form.getField(name).setOptional( ! empty(getAttribute(OPTIONAL_ATTR, param)));
 			// set any value from params
 			// this ensures multi-stage form will validate
 			// while being built if early stages are set from params
@@ -243,16 +243,7 @@ public class ParameterExtension extends ReportExtension {
 			}
 		}
 
-		// Set up the optionality
-		if (input instanceof OptionalInput) {
-			OptionalInput optionalInput = (OptionalInput) input;
-			boolean isOptional = false;
-			String optional=getAttribute(OPTIONAL_ATTR,param);						
-			if (! empty(optional)) {
-				isOptional = Boolean.parseBoolean(optional);		
-				optionalInput.setOptional(isOptional);
-			}
-		}
+		
 		// set min/max
 		if( input instanceof BoundedInput) {
 			BoundedInput boundedInput = (BoundedInput)input;

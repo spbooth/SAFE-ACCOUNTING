@@ -35,7 +35,6 @@ import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
-import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.logging.debug.DebugLoggerService;
@@ -111,7 +110,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		((Input<String>)input).setValue("Count");
 		
 		input = form.getInput("Group");		
-		assertTrue("Group is not of type OptionalInput", input instanceof OptionalInput);
+		assertFalse("Group field is not Optional", form.getField("Group").isOptional());
 		((Input<String>)input).setValue("User");
 	
 		input = form.getInput("Period");
@@ -169,7 +168,7 @@ public class ReportBuilderTest extends WebappTestBase {
 		((Input<String>)input).setValue("Wall");
 		
 		input = form.getInput("Group");		
-		assertTrue("Group is not of type OptionalInput", input instanceof OptionalInput);
+		assertTrue("Group is not Optional field", form.getField("Group").isOptional());
 		((Input<String>)input).setValue("User");
 	
 		input = form.getInput("Period");

@@ -12,7 +12,6 @@ import uk.ac.ed.epcc.webapp.forms.inputs.LengthInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.LockedInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseMultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.PasswordInput;
@@ -122,7 +121,7 @@ public class SetParamsVisitor implements InputVisitor<Object> {
             			input.setValue(input.convert(s));
             		}
             	}
-            	else if (!(input instanceof OptionalInput)) {
+            	else  {
             		missing = true;
             	}
             }else {
@@ -130,7 +129,7 @@ public class SetParamsVisitor implements InputVisitor<Object> {
             	T x = input.convert(o);
             	if( x != null ) {
             		input.setValue(x);
-            	}else if (!(input instanceof OptionalInput)) {
+            	}else  {
             		missing = true;
             	}
             }
@@ -143,6 +142,9 @@ public class SetParamsVisitor implements InputVisitor<Object> {
      */
     public boolean getMissing() {
         return missing;
+    }
+    public void setMissing(boolean v) {
+    	missing=v;
     }
 
 }

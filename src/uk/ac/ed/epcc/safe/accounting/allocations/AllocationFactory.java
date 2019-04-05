@@ -69,7 +69,6 @@ import uk.ac.ed.epcc.webapp.forms.html.ForwardResult;
 import uk.ac.ed.epcc.webapp.forms.inputs.BoundedDateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.DateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
-import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampMultiInput;
 import uk.ac.ed.epcc.webapp.forms.result.BackResult;
 import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
@@ -735,10 +734,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 				if( prod instanceof Selector){
 					Selector sel = (Selector)  prod;
 					Input i = sel.getInput();
-					if( i instanceof OptionalInput){
-						((OptionalInput)i).setOptional(true);
-					}
 					filter_form.addInput(ref.getTable(), ref.getTable(), i);
+					filter_form.getField(ref.getTable()).setOptional(true);
 				}
 			}
 		}

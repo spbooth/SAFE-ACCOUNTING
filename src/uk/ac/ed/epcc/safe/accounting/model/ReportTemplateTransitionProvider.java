@@ -420,18 +420,23 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	 */
 	public boolean setMap(Map<String,Object> p, Collection<String> locked, Form f, boolean set_map) throws ActionException
 	{
+		boolean missing=false;
 		SetParamsVisitor vis = new SetParamsVisitor(set_map, p);
 		for(Field<?> field : f){
 			try {
+				vis.setMissing(false);
 				field.getInput().accept(vis);
 				if (locked != null && locked.contains(field.getKey())) {
 					field.lock();
+				}
+				if( ! field.isOptional()) {
+					missing = missing || vis.getMissing();
 				}
 			} catch (Exception e) {
 				throw new ActionException("Error in setMap", e);
 			}
 		}
-		return vis.getMissing();
+		return missing;
 	}
 	/** make an updated report object based on form params
 	 * 

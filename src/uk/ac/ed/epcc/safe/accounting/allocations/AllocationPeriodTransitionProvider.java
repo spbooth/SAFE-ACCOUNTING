@@ -40,7 +40,6 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
-import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.result.ViewTransitionResult;
@@ -170,15 +169,14 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 						if( i == null){
 							i  = (Input<Integer>)sel.getInput();
 						}
-						if( i instanceof OptionalInput){
-							((OptionalInput)i).setOptional(true);
-						}
 						IndexedReference ref = map.getProperty(tag, null);
 						if( ref != null){
 							i.setValue(ref.getID());
 						}
 						// don't use same names as in target path
-						f.addInput(FILTER_FORM_PREFIX+tag.getFullName(), tag.getTable(), i);
+						String key = FILTER_FORM_PREFIX+tag.getFullName();
+						f.addInput(key, tag.getTable(), i);
+						f.getField(key).setOptional(true);
 					}
 				}
 			}

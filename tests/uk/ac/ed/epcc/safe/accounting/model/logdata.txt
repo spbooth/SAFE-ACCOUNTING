@@ -148,10 +148,10 @@ lookup attribute [value] in par:ParameterDef, found
 lookup attribute [type] in par:ParameterDef, found String
 lookup attribute [role] in par:ParameterDef, found 
 lookup attribute [length] in par:ParameterDef, found 
-lookup attribute [optional] in par:ParameterDef, found 
 lookup attribute [unselected] in par:ParameterDef, found 
 lookup attribute [label] in par:ParameterDef, found 
 lookup attribute [title] in par:ParameterDef, found 
+lookup attribute [optional] in par:ParameterDef, found 
 extension list ReportBuilder.EHTML.extension_list->FilterExtension,ServeDataChartExtension,AtomExtension,PeriodExtension,TableExtension,FormatExtension
 Adding extension uk.ac.ed.epcc.safe.accounting.reports.FilterExtension as FilterExtension
 Adding extension uk.ac.ed.epcc.safe.accounting.reports.ServeDataChartExtension as ChartExtension

@@ -40,7 +40,6 @@ import uk.ac.ed.epcc.webapp.forms.inputs.IntegerInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.LengthInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.LongInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.OptionalInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.RealInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
@@ -595,12 +594,9 @@ public class ParameterExtensionTest extends WebappTestBase {
 		reportBuilder.buildReportParametersForm(form, params);
 		
 		// Check is optional
-		Input input = form.getInput("Optional");		
-		assertTrue("Input is not of type OptionalInput", input instanceof OptionalInput);
+		boolean optional = form.getField("Optional").isOptional();		
+		assertTrue("Field is not Optional", optional);
 		
-		OptionalInput optionalInput = (OptionalInput)input;
-		assertTrue("Input is not optional", optionalInput.isOptional());
-
 		// Look for errors
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 		

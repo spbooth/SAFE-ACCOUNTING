@@ -47,7 +47,7 @@ public class HTMLReportParametersForm {
 			if( type == null ){
 				// force a type parameter if we don't already have a type
 				ReportTypeInput input = reportBuilder.getReportTypeReg().new ReportTypeInput();
-				input.setOptional(false);
+				
 				//			htmlForm.addInput(ReportBuilder.REPORT_TYPE_PARAM, "Display Format",input );
 			}
 		}
