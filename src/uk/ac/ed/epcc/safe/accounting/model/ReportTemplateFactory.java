@@ -155,43 +155,46 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 	
 	public class TemplateNameInput extends TextInput{
 
-		@Override
-		public void validate() throws FieldException {
-			super.validate();
-			AppContext conn = getContext();
-			Logger log = conn.getService(LoggerService.class).getLogger(getClass());
-			try {
-				new ReportBuilder(conn,getValue(),conn.getInitParameter(ReportBuilder.REPORT_SCHEMA_CONFIG, ReportBuilder.DEFAULT_REPORT_SCHEMA));
-			} catch (DataFault e) {
-				log.warn("Bad template in ReportTemplate",e);
-				throw new ValidateException("Not found",e);
-			} catch (URISyntaxException e) {
-				log.warn("Bad template in ReportTemplate",e);
-				throw new ValidateException("Bad URI in template",e);
-			} catch (SAXException e) {
-				log.warn("Bad template in ReportTemplate",e);
-				// Include parse error in message.
-				throw new ValidateException("Cannot parse/validate template "+e.toString(),e);
-			} catch (IOException e) {
-				getLogger().error("Bad template in ReportTemplate",e);
-				throw new ValidateException("Cannot read template",e);
-			} catch (ParserConfigurationException e) {
-				getLogger().error("Bad template in ReportTemplate",e);
-				throw new ValidateException("XML Parser fault",e);
-			} catch (InvalidArgument e) {
-				getLogger().error("Bad template in ReportTemplate",e);
-				throw new ValidateException("Not found",e);
-			} catch (TransformerFactoryConfigurationError e) {
-				getLogger().error("Bad template in ReportTemplate",e);
-				throw new ValidateException("Bad template",e);
-			} catch (TransformerException e) {
-				getLogger().error("Bad template in ReportTemplate",e);
-				throw new ValidateException("Bad template",e);
-			}
-		}
 
 		public TemplateNameInput() {
 			super(false);
+			addValidator(new FieldValidator<String>() {
+
+				@Override
+				public void validate(String data) throws FieldException {
+					AppContext conn = getContext();
+					Logger log = conn.getService(LoggerService.class).getLogger(getClass());
+					try {
+						new ReportBuilder(conn,data,conn.getInitParameter(ReportBuilder.REPORT_SCHEMA_CONFIG, ReportBuilder.DEFAULT_REPORT_SCHEMA));
+					} catch (DataFault e) {
+						log.warn("Bad template in ReportTemplate",e);
+						throw new ValidateException("Not found",e);
+					} catch (URISyntaxException e) {
+						log.warn("Bad template in ReportTemplate",e);
+						throw new ValidateException("Bad URI in template",e);
+					} catch (SAXException e) {
+						log.warn("Bad template in ReportTemplate",e);
+						// Include parse error in message.
+						throw new ValidateException("Cannot parse/validate template "+e.toString(),e);
+					} catch (IOException e) {
+						getLogger().error("Bad template in ReportTemplate",e);
+						throw new ValidateException("Cannot read template",e);
+					} catch (ParserConfigurationException e) {
+						getLogger().error("Bad template in ReportTemplate",e);
+						throw new ValidateException("XML Parser fault",e);
+					} catch (InvalidArgument e) {
+						getLogger().error("Bad template in ReportTemplate",e);
+						throw new ValidateException("Not found",e);
+					} catch (TransformerFactoryConfigurationError e) {
+						getLogger().error("Bad template in ReportTemplate",e);
+						throw new ValidateException("Bad template",e);
+					} catch (TransformerException e) {
+						getLogger().error("Bad template in ReportTemplate",e);
+						throw new ValidateException("Bad template",e);
+					}
+					
+				}
+			});
 		}
 		
 	}

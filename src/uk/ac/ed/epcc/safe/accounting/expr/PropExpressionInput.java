@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.forms.FieldValidator;
 import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
@@ -32,35 +33,43 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
 public class PropExpressionInput extends TextInput {
-  private final Parser parser;
-  public PropExpressionInput(AppContext c, PropertyFinder finder){
-	  parser = new Parser(c, finder);
-	  setMaxResultLength(256);
-	  setSingle(true);
-  }
-/* (non-Javadoc)
- * @see uk.ac.ed.epcc.webapp.model.data.forms.TextInput#validate(boolean)
- */
-@Override
-public void validate() throws FieldException {
-	super.validate();
-	String value = getValue();
-	if( value != null ){
-		try {
-			parser.parse(value);
-		} catch (ParseException e) {
-			getLogger().error("Error parsing prop expression",e);
-			throw new ValidateException(e.getMessage());
-		} catch (InvalidPropertyException e) {
-			getLogger().error("Error parsing prop expression",e);
-			throw new ValidateException(e.getMessage());
+	public final class PropExpressionFieldValidator implements FieldValidator<String> {
+		/**
+		 * @param parser
+		 */
+		public PropExpressionFieldValidator(Parser parser) {
+			super();
+			this.parser = parser;
+		}
+		private final Parser parser;
+		@Override
+		public void validate(String value) throws FieldException {
+			if( value != null ){
+				try {
+					parser.parse(value);
+				} catch (ParseException e) {
+					getLogger().error("Error parsing prop expression",e);
+					throw new ValidateException(e.getMessage());
+				} catch (InvalidPropertyException e) {
+					getLogger().error("Error parsing prop expression",e);
+					throw new ValidateException(e.getMessage());
+				}
+			}
+
+		}
+		/**
+		 * @return
+		 */
+		protected Logger getLogger() {
+			return parser.getContext().getService(LoggerService.class).getLogger(getClass());
 		}
 	}
-}
-/**
- * @return
- */
-protected Logger getLogger() {
-	return parser.getContext().getService(LoggerService.class).getLogger(getClass());
-}
+	
+	public PropExpressionInput(AppContext c, PropertyFinder finder){
+		setMaxResultLength(256);
+		setSingle(true);
+		addValidator(new PropExpressionFieldValidator(new Parser(c, finder)));
+	}
+
+	
 }
