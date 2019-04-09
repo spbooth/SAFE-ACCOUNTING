@@ -53,7 +53,7 @@ public class AddDerivedTransition extends AbstractFormTransition<DataObjectFacto
 
 	public void buildForm(Form f, DataObjectFactory target,
 			AppContext ctx) throws TransitionException {
-		f.addInput("Name", "Name of new property", new TextInput(false));
+		f.addInput("Name", "Name of new property", new TextInput());
 		f.addInput("Expr", "Definition", new PropExpressionInput(target.getContext(),finder));
 		f.addAction("Add", new AddDerivedAction(target));
 	}

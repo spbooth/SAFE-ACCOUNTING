@@ -157,7 +157,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 
 
 		public TemplateNameInput() {
-			super(false);
+			super();
 			addValidator(new FieldValidator<String>() {
 
 				@Override
