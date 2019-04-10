@@ -22,9 +22,11 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Iterator;
 import java.util.Map;
 
+import uk.ac.ed.epcc.webapp.forms.FieldValidator;
 import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.MissingFieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
+import uk.ac.ed.epcc.webapp.forms.inputs.AbstractInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
@@ -37,13 +39,21 @@ import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
 
 
 
-public class ClassListInput implements ListInput<String, Class>{
+public class ClassListInput extends AbstractInput<String> implements ListInput<String, Class>{
     private final Map<String,Class> map;
-    public ClassListInput(Map<String,Class> map){
-    	this.map=map;
+    public ClassListInput(Map<String,Class> m){
+    	this.map=m;
+    	addValidator(new FieldValidator<String>() {
+			
+			@Override
+			public void validate(String data) throws FieldException {
+				if( ! map.containsKey(data)) {
+					throw new ValidateException("Illegal value");
+				}
+				
+			}
+		});
     }
-    private String key;
-    private String val;
 	public Class getItembyValue(String value) {
 		return map.get(value);
 	}
@@ -82,9 +92,7 @@ public class ClassListInput implements ListInput<String, Class>{
 		return v.toString();
 	}
 
-	public String getKey() {
-		return key;
-	}
+	
 
 	public String getPrettyString(String value) {
 		return value;
@@ -94,39 +102,16 @@ public class ClassListInput implements ListInput<String, Class>{
 		return value;
 	}
 
-	public String getValue() {
-		return val;
-	}
+	
 
-	public void setKey(String key) {
-		this.key=key;
-		
-	}
-
-	public String setValue(String v) throws TypeError {
-		String old=val;
-		val=v;
-		return old;
-	}
-
-	public void validate() throws FieldException {
-		if( val == null ){
-			throw new MissingFieldException();
-		}
-		if( ! map.containsKey(val)){
-			throw new ValidateException("Illegal value");
-		}
-	}
-
+	
+	
 	public Class getItem() {
-		if(val==null){
-			return null;
-		}
-		return map.get(val);
+		return getItembyValue(getValue());
 	}
 
 	public void setItem(Class item) {
-		val = getTagByItem(item);
+		setValue(getTagByItem(item));
 	}
 
 	public <R> R accept(InputVisitor<R> vis) throws Exception {
