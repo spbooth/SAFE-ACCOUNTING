@@ -36,6 +36,12 @@ import uk.ac.ed.epcc.webapp.AppContext;
 
 public class PasswdParser extends AbstractPropertyContainerParser {
 
+	public PasswdParser(AppContext conn) {
+		super(conn);
+	}
+
+
+
 	private static final PropertyRegistry passwd = new PropertyRegistry("passwd", "Properties from a unix passwd file");
 	public static final PropertyTag<String> USERNAME = new PropertyTag<>(passwd,"Username",String.class,"login name of user");
 	public static final PropertyTag<String> PW = new PropertyTag<>(passwd,"Password",String.class,"encrypted password");
@@ -78,12 +84,11 @@ public class PasswdParser extends AbstractPropertyContainerParser {
 
 	
 
-
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
+	@Override
+	public PropertyFinder initFinder(PropertyFinder prev,
 			String table) {
 		return passwd;
 	}
-
 	
 
 	public Set<PropertyTag> getDefaultUniqueProperties() {

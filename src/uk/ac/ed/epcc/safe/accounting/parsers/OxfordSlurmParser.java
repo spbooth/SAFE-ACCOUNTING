@@ -40,9 +40,9 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 public class OxfordSlurmParser extends BatchParser implements  Contexed,ConfigParamProvider {
 	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
 
-	private AppContext conn;
+	
 	public OxfordSlurmParser(AppContext conn) {
-		this.conn=conn;
+		super(conn);
 	}
 	public static  final PropertyRegistry slurm = 
 			new PropertyRegistry("slurm","The SLURM batch properties");
@@ -175,10 +175,7 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed,ConfigPa
 			map.setProperty(tag, SlurmDurationParser.PARSER.parse(field));
 		}
 	}
-	@Override
-	public AppContext getContext() {
-		return conn;
-	}
+	
 	@Override
 	public PropExpressionMap getDerivedProperties(PropExpressionMap previous) {
 		PropExpressionMap derv = super.getDerivedProperties(previous);
@@ -197,7 +194,7 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed,ConfigPa
 			derv.peer(BatchParser.JOB_NAME_PROP, JobName);
 			derv.put(BatchParser.WALLCLOCK_PROP, new DurationSecondsPropExpression(ELAPSED_PROP));
 		} catch (PropertyCastException e) {
-			getLogger(getContext()).error("Error setting standard derived props",e);
+			getLogger().error("Error setting standard derived props",e);
 		}
 		return derv;
 	}
@@ -205,7 +202,7 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed,ConfigPa
 	 * @see uk.ac.ed.epcc.safe.accounting.update.BaseParser#initFinder(uk.ac.ed.epcc.webapp.AppContext, uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder, java.lang.String)
 	 */
 	@Override
-	public PropertyFinder initFinder(AppContext conn, PropertyFinder prev, String table) {
+	public PropertyFinder initFinder( PropertyFinder prev, String table) {
 		MultiFinder finder = new MultiFinder();
 		
 		finder.addFinder(slurm);

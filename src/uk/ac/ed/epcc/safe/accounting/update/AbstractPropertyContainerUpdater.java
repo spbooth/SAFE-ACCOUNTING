@@ -21,6 +21,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reference.IndexedTag;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.jdbc.table.BooleanFieldType;
@@ -33,8 +34,6 @@ import uk.ac.ed.epcc.webapp.jdbc.table.LongFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 /** Base class for implementing {@link PropertyContainerUpdater}
  * 
@@ -45,9 +44,12 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
  * @author spb
  *
  */
-public abstract class AbstractPropertyContainerUpdater implements PropertyContainerUpdater {
-public TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpecification spec,PropExpressionMap map,String table_name) {
-		
+public abstract class AbstractPropertyContainerUpdater extends AbstractContexed implements PropertyContainerUpdater {
+public AbstractPropertyContainerUpdater(AppContext conn) {
+		super(conn);
+	}
+public TableSpecification modifyDefaultTableSpecification(TableSpecification spec,PropExpressionMap map,String table_name) {
+		AppContext c = getContext();
 		Class myclass= getClass();
 		// process static fields with AutoTable annotations
         for( Field f : myclass.getFields()){
@@ -68,7 +70,7 @@ public TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpec
         					final int length = t.length();
         					FieldType type= makeFieldType(c, tag, target, length);
         					if( type == null){
-        						getLogger(c).error("Can't resolve field type for "+name);
+        						getLogger().error("Can't resolve field type for "+name);
         					}else{
         						// Note that AccessorMap will try to 
         						// locate this property from the name of the field so 
@@ -104,7 +106,7 @@ public TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpec
         					final int length = t.length();
         					FieldType type= makeFieldType(c, tag, target, length);
         					if( type == null){
-        						getLogger(c).error("Can't resolve field type for "+name);
+        						getLogger().error("Can't resolve field type for "+name);
         					}else{
         						if( c.getBooleanParameter("auto_tag."+table_name+"."+tag.getFullName(), false)){
         							spec.setField(name, type);
@@ -133,9 +135,7 @@ public TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpec
 
 		return spec;
 	}
-protected Logger getLogger(AppContext c) {
-	return c.getService(LoggerService.class).getLogger(getClass());
-}
+
 private FieldType makeFieldType(AppContext c, PropertyTag tag,
 		Class target, final int length) {
 	FieldType type;

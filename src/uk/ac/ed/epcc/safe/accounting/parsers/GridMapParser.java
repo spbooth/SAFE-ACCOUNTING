@@ -38,6 +38,10 @@ import uk.ac.ed.epcc.webapp.AppContext;
  */
 public class GridMapParser extends AbstractPropertyContainerParser {
 
+	public GridMapParser(AppContext conn) {
+		super(conn);
+	}
+
 	public static final PropertyRegistry gridmap_reg = new PropertyRegistry("gridmap", "Properties from the gridmap file");
 	@AutoTable(length=64)
 	public static final PropertyTag<String> GRIDMAP_USER = new PropertyTag<>(gridmap_reg, "UserName",String.class);
@@ -58,7 +62,8 @@ public class GridMapParser extends AbstractPropertyContainerParser {
 		return false;
 	}
 
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
+	@Override
+	public PropertyFinder initFinder( PropertyFinder prev,
 			String table) {
 		return gridmap_reg;
 	}

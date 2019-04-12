@@ -56,7 +56,6 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements SummaryProvider,TableTransitionContributor,ConfigParamProvider{
 	private static final String REGEX_LINK_PARSE_TABLE_PREFIX = "regex_link_parse.table.";
 	private static final String REGEX_LINK_PARSE_LINK_PREFIX = "regex_link_parse.link.";
-	private AppContext conn;
 	private String table;
 	private String target_table;
 	private PropertyTag<String> link_prop;
@@ -64,14 +63,15 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 	private Set<RegexpTarget> targets; 
 	private int links,records;
 	
-	public RegexLinkParsePolicy() {
+	public RegexLinkParsePolicy(AppContext conn) {
+		super(conn);
 	}
 	
 	@Override
-	public PropertyFinder initFinder(AppContext conn, PropertyFinder prev, String table) {
-		this.conn=conn;
+	public PropertyFinder initFinder(PropertyFinder prev, String table) {
+		AppContext conn =getContext();
 		this.table=table;
-		Logger log = getLogger(conn);
+		Logger log = getLogger();
 		ReferencePropertyRegistry finder = ReferencePropertyRegistry.getInstance(conn);
 		try {
 				
@@ -97,11 +97,11 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 			if( prop != null && prop instanceof ReferenceTag){
 				target_prop = (ReferenceTag) prop;
 			}else{
-				getLogger(conn).error("No target_prop found  for "+target_table);
+				getLogger().error("No target_prop found  for "+target_table);
 			}
 			
 		} catch (Exception e) {
-			getLogger(conn).error("Error initialising RegexLinkParsePolicy",e);
+			getLogger().error("Error initialising RegexLinkParsePolicy",e);
 		}
 		
 		return finder;
@@ -161,10 +161,10 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 	}
 
 	@Override
-	public TableSpecification modifyDefaultTableSpecification(AppContext c, TableSpecification spec,
+	public TableSpecification modifyDefaultTableSpecification(TableSpecification spec,
 			PropExpressionMap map, String table_name) {
-		TableSpecification ss = super.modifyDefaultTableSpecification(c, spec, map, table_name);
-		String target_table = c.getInitParameter(REGEX_LINK_PARSE_TABLE_PREFIX + table_name);
+		TableSpecification ss = super.modifyDefaultTableSpecification(spec, map, table_name);
+		String target_table = getContext().getInitParameter(REGEX_LINK_PARSE_TABLE_PREFIX + table_name);
 		if( target_table != null ){
 			ss.setField(target_table+"ID", new ReferenceFieldType(target_table));
 		}
@@ -229,7 +229,7 @@ public class RegexLinkParsePolicy extends BaseUsageRecordPolicy  implements Summ
 			try {
 				relink();
 			} catch (Exception e) {
-				getLogger(conn).error("Error in relink",e);
+				getLogger().error("Error in relink",e);
 				throw new TransitionException("internal_error");
 			}
 			return new ViewTableResult(target);

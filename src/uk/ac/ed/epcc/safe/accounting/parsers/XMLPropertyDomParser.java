@@ -125,10 +125,6 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 	 * ##########################################################################
 	 */
 
-	/**
-	 * The context within which this parser operates
-	 */
-	private final AppContext context;
 	boolean try_schema_info;
 	boolean use_schema_info=false;
 
@@ -173,7 +169,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 	 * @param default_schema_name
 	 */
 	public XMLPropertyDomParser(AppContext context,Class target,NamespaceContext ns,String default_schema_name ) {
-		this.context=context;
+		super(context);
 		this.target_class=target;
 		this.namespaces=ns;
 		this.default_schema_name=default_schema_name;
@@ -198,24 +194,17 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 		return sb.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see uk.ac.ed.epcc.webapp.Contexed#getContext()
-	 */
-	public AppContext getContext() {
-		return this.context;
-	}
+	
 
 
 
 	
 
-
-
-	public final PropertyFinder initFinder(AppContext context, PropertyFinder prev,
+@Override
+	public final PropertyFinder initFinder(PropertyFinder prev,
 			String mode) {
-		try_schema_info = getContext().getBooleanParameter(mode+".use_schema", false);
+		AppContext context = getContext();
+		try_schema_info = context.getBooleanParameter(mode+".use_schema", false);
 		
 		MultiFinder mf = new MultiFinder();
 		mf.addFinder(prev);
@@ -291,7 +280,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 		
 		documentFactory.setNamespaceAware(true);
 		// Set schema if defined
-		if( Feature.checkDynamicFeature(getContext(),USE_SCHEMA_FEATURE_PREFIX+mode, true)){
+		if( Feature.checkDynamicFeature(context,USE_SCHEMA_FEATURE_PREFIX+mode, true)){
 		TextFileOverlay schema_overlay = context.makeObject(TextFileOverlay.class, context.getInitParameter("schema.overlay", "schema"));
 		if( schema_overlay.isValid()){
 			String schema = getSchemaName(context, mode);

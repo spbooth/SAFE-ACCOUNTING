@@ -14,15 +14,16 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 public class StandardPropertyPolicy extends ExpressionPropertyPolicy {
 
-	public StandardPropertyPolicy() {
+	public StandardPropertyPolicy(AppContext conn) {
+		super(conn);
 	}
 
 	@Override
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
+	public PropertyFinder initFinder(PropertyFinder prev, String table) {
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(StandardProperties.base);
 		finder.addFinder(StandardProperties.time);
-		finder.addFinder(super.initFinder(ctx, prev, table));
+		finder.addFinder(super.initFinder(prev, table));
 		return finder;
 	}
 

@@ -36,6 +36,12 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  *
  */
 public abstract class AbstractPropertyContainerParser extends AbstractPropertyContainerUpdater implements PropertyContainerParser<String> {
+	public AbstractPropertyContainerParser(AppContext conn) {
+		super(conn);
+	}
+
+
+
 	public static final String DUPLICATE_KEY = "duplicate_key";
     private Set<String> unique=null;
 	@Override
@@ -45,10 +51,10 @@ public abstract class AbstractPropertyContainerParser extends AbstractPropertyCo
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.UsageRecordParser#getDefaultTableSpecification()
 	 */
-	public  TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpecification spec,PropExpressionMap map,String table_name) {
-		
+	public  TableSpecification modifyDefaultTableSpecification(TableSpecification spec,PropExpressionMap map,String table_name) {
+		AppContext c = getContext();
 		unique = new LinkedHashSet<>();
-		TableSpecification result = super.modifyDefaultTableSpecification(c, spec,map, table_name);
+		TableSpecification result = super.modifyDefaultTableSpecification(spec,map, table_name);
 		if( result == null ){
 			return result;
 		}

@@ -38,8 +38,11 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 
 public class ReadOnlyParser extends BaseParser {
 
+	public ReadOnlyParser(AppContext conn) {
+		super(conn);
+	}
 	@Override
-	public TableSpecification modifyDefaultTableSpecification(AppContext c,
+	public TableSpecification modifyDefaultTableSpecification(
 			TableSpecification spec, PropExpressionMap map, String table_name) {
 		spec.setField(StandardProperties.STARTED_TIMESTAMP, new DateFieldType(false, new Date(0L)));
 		spec.setField(StandardProperties.COMPLETED_TIMESTAMP, new DateFieldType(false, new Date(Long.MAX_VALUE)));
@@ -52,7 +55,7 @@ public class ReadOnlyParser extends BaseParser {
 	}
 
 	@Override
-	public PropertyFinder initFinder(AppContext conn, PropertyFinder prev,
+	public PropertyFinder initFinder(PropertyFinder prev,
 			String table) {
 		return StandardProperties.time;
 	}

@@ -48,7 +48,6 @@ import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** Parser for Globus JobManager records. 
  * As these are event logs we need to use an incremental parser.
@@ -69,6 +68,10 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 
 public class GlobusJobManagerParser extends AbstractPropertyContainerParser implements IncrementalPropertyContainerParser {
+
+	public GlobusJobManagerParser(AppContext conn) {
+		super(conn);
+	}
 
 	private static final PropertyRegistry globus_reg = new PropertyRegistry("globus","Properties from the globus jobmanager log");
 	@AutoTable(target=String.class)
@@ -116,12 +119,11 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 	
 	private Map<String,UsageRecordFactory<?>> manager_factories=null;
 	private String tag;
-	private AppContext conn;
-	Logger log;
+	
 	@Override
 	public boolean parse(DerivedPropertyMap map, String record)
 			throws AccountingParseException {
-	
+		Logger log = getLogger();
 		if(record.trim().length()==0){
 			return false;
 		}
@@ -208,10 +210,10 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 		}
 	}
 
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
+	@Override
+	public PropertyFinder initFinder(PropertyFinder prev,
 			String table) {
-		conn=ctx;
-		log = conn.getService(LoggerService.class).getLogger(getClass());
+	
 		tag=table;
 		MultiFinder mf = new MultiFinder();
 		mf.addFinder(StandardProperties.time);
@@ -222,7 +224,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 
 	public boolean isComplete(ExpressionTargetContainer record) {
 		// We need the set of properties common to ALL records
-		
+		Logger log = getLogger();
 		Date end_date = record.getProperty(GLOBUS_END_DATE,null);
 		if( end_date==null){
 			log.debug("No end date");
@@ -272,6 +274,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 		manager_factories = new HashMap<>();
 		String prefix = "GlobusJobmanagerParser."+tag+".";
 		Map<String,String> props = conn.getInitParameters(prefix);
+		Logger log = getLogger();
 		log.debug(prefix+" returns "+props.size()+" props");
 		for(String key : props.keySet()){
 			log.debug("key is "+key);
@@ -290,6 +293,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 
 	@SuppressWarnings("unchecked")
 	public void postComplete(ExpressionTargetContainer record) throws Exception{
+		Logger log = getLogger();
 		log.debug("In postComplete");
 		UsageRecordFactory fac = manager_factories.get(record.getProperty(GLOBUS_MANAGER));
 		if(fac != null ){

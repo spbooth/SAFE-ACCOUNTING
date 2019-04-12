@@ -40,6 +40,10 @@ import uk.ac.ed.epcc.webapp.AppContext;
 public class GridFtpTransferParser extends BaseParser {
 	
 
+	public GridFtpTransferParser(AppContext conn) {
+		super(conn);
+	}
+
 	private static final String patt="^DATE=(\\d{14}.\\d{6}) HOST=(.*) PROG=(.*) NL.EVNT=.* START=(\\d{14}.\\d{6}) USER=(.*) FILE=(.*) BUFFER=(\\d*) BLOCK=(\\d*) NBYTES=(\\d*) VOLUME=(.*) STREAMS=(\\d*) STRIPES=(\\d*) DEST=\\[(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\] TYPE=(.*) CODE=(\\d*)$";
 	private static final Pattern p = Pattern.compile(patt);
 	private static final DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss.SSS");
@@ -109,9 +113,9 @@ public class GridFtpTransferParser extends BaseParser {
 		return true;
 	}
 	@Override
-	public PropertyFinder initFinder(AppContext conn, PropertyFinder prev,
+	public PropertyFinder initFinder( PropertyFinder prev,
 			String table) {
-		MultiFinder mf = (MultiFinder) super.initFinder(conn, prev, table);
+		MultiFinder mf = (MultiFinder) super.initFinder( prev, table);
 		mf.addFinder(gftp_reg);
 		return mf;
 	}

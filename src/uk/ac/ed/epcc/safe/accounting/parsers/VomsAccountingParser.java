@@ -25,6 +25,10 @@ import uk.ac.ed.epcc.webapp.AppContext;
 
 
 public class VomsAccountingParser extends RegexpParser {
+	public VomsAccountingParser(AppContext conn) {
+		super(conn);
+	}
+
 	public static final PropertyRegistry voms_reg = new PropertyRegistry("voms", "Properties from the voms_account log");
 	@AutoTable(target=String.class,length=128)
 	@Regexp("dn:\"([^\"]*)\"")
@@ -47,15 +51,11 @@ public class VomsAccountingParser extends RegexpParser {
 	static{
 		voms_reg.lock();
 	}
-	private AppContext conn;
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
+	@Override
+	public PropertyFinder initFinder(PropertyFinder prev,
 			String table) {
-		this.conn=ctx;
 		return voms_reg;
 	}
-	@Override
-	public AppContext getContext() {
-		return conn;
-	}
+	
 
 }

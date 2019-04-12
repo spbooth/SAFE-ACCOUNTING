@@ -70,13 +70,13 @@ public abstract class PropertyContainerParseTargetComposite<T extends DataObject
 		for(PropertyContainerPolicy pol : owner.getPolicies()){
 			map = pol.getDerivedProperties(map);
 		}
-		spec = parser.modifyDefaultTableSpecification(getContext(),spec,map,table);
+		spec = parser.modifyDefaultTableSpecification(spec,map,table);
 		// If the parser explicitly returns no spec then no table is created.
 		// This will also happen if there are no AutoTable annotations so no fields are added by the parser
 		// You can avoid this in sub-classes by creating fields in makeInitialSpecification
 		if( spec != null ){
 			for(PropertyContainerPolicy pol : owner.getPolicies()){
-				spec = pol.modifyDefaultTableSpecification(getContext(),spec,map,table);
+				spec = pol.modifyDefaultTableSpecification(spec,map,table);
 			}
 		}
 		return spec;

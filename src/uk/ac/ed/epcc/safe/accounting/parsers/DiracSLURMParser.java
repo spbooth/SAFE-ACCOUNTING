@@ -153,9 +153,9 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
 	}
 
 	@Override
-	public PropertyFinder initFinder(AppContext conn, PropertyFinder prev,
+	public PropertyFinder initFinder(PropertyFinder prev,
 			String table) {
-		MultiFinder finder = (MultiFinder) super.initFinder(conn, prev, table);
+		MultiFinder finder = (MultiFinder) super.initFinder( prev, table);
 		finder.addFinder(BatchParser.batch);
 		finder.addFinder(slurm_reg);
 		skip_cancelled = conn.getBooleanParameter(table+SKIP_CANCELLED_SUFFIX, false);

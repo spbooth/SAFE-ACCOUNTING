@@ -112,12 +112,16 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements SummaryProvider,TableTransitionContributor,ConfigParamProvider {
 
+	public LinkPolicy(AppContext conn) {
+		super(conn);
+	}
+
 	private static final String LINK_POLICY_UNIQUE = "LinkPolicy.unique.";
 	private static final String LINK_POLICY_LINK = "LinkPolicy.link.";
 	private static final String LINK_POLICY_REQUIRE_LINK = "LinkPolicy.require_link.";
 	private static final String LINK_POLICY_GRACE = "LinkPolicy.grace.";
 	private static final String LINK_POLICY_TARGET = "LinkPolicy.target.";
-	private AppContext c;
+	
 	private ReferenceTag remote_tag=null;
 	private ReferenceTag back_ref=null;
 	private UsageRecordFactory<R> remote_fac=null;
@@ -130,12 +134,13 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	private Logger log;
 	private String my_table;
 	@SuppressWarnings("unchecked")
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
+	@Override
+	public PropertyFinder initFinder( PropertyFinder prev,
 			String table) {
-		c = ctx;
+		AppContext c = getContext();
 		my_table=table;
-		grace_millis = 1000L * ctx.getLongParameter(LINK_POLICY_GRACE+table, 4000L);
-		require_link = ctx.getBooleanParameter(LINK_POLICY_REQUIRE_LINK+table, true);
+		grace_millis = 1000L * c.getLongParameter(LINK_POLICY_GRACE+table, 4000L);
+		require_link = c.getBooleanParameter(LINK_POLICY_REQUIRE_LINK+table, true);
 		log = c.getService(LoggerService.class).getLogger(getClass());
 		//System.out.println("grace is "+grace_millis);
 		String target_name = c.getInitParameter(LINK_POLICY_TARGET+table);
@@ -158,7 +163,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 				   
 				   PropertyTag store_tag = prev.find(local_name);
 				   if( store_tag != null){
-					   String remote_name = ctx.getInitParameter(prefix+local_name, null);
+					   String remote_name = c.getInitParameter(prefix+local_name, null);
 					   if( remote_name != null ){
 						   if( remote_name.equals("inside") ){
 							   // This should be a date property that lives inside the standard time bounds
@@ -337,7 +342,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 		public FormResult action(Form f)
 				throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
 
-			ConfigService serv = c.getService(ConfigService.class);
+			ConfigService serv = getContext().getService(ConfigService.class);
 			serv.setProperty(LINK_POLICY_TARGET+target.getConfigTag(),(String) f.get("table"));
 			return new ViewTableResult(target);
 			
@@ -361,15 +366,14 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 		result.put(new AdminOperationKey("Set Master", "Set the master table for LinkPolicy"), new SetRemoteTransition());
 		return result;
 	}
-	protected final Logger getLogger(){
-		return c.getService(LoggerService.class).getLogger(getClass());
-	}
+	
 
 	@Override
-	public TableSpecification modifyDefaultTableSpecification(AppContext c, TableSpecification spec,
+	public TableSpecification modifyDefaultTableSpecification(TableSpecification spec,
 			PropExpressionMap map, String table_name) {
 	
-		TableSpecification result = super.modifyDefaultTableSpecification(c, spec, map, table_name);
+		TableSpecification result = super.modifyDefaultTableSpecification(spec, map, table_name);
+		AppContext c = getContext();
 		String remote_table = c.getInitParameter(LINK_POLICY_TARGET+table_name);
 		if( remote_table != null){
 			String name = remote_table+"ID";
@@ -379,7 +383,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 				// Add an index to optimise back-joins from the master table to this one.
 				spec.new Index(name+"_idx", c.getBooleanParameter(LINK_POLICY_UNIQUE+table_name, false), name);
 			} catch (InvalidArgument e) {
-				c.getService(LoggerService.class).getLogger(getClass()).error("Error making index",e);
+				getLogger().error("Error making index",e);
 			}
 		}
 		return result;

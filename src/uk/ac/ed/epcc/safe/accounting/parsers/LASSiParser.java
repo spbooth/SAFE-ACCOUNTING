@@ -34,6 +34,9 @@ import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 public class LASSiParser extends AbstractPropertyContainerParser implements ConfigParamProvider{
 
 	
+	public LASSiParser(AppContext conn) {
+		super(conn);
+	}
 	private static final String LASSI_USE_PEAK = "lassi.use_peak.";
 	public static final PropertyRegistry lassi_props = new PropertyRegistry("lassi", "IO stats from LASSi");
 	public static final PropertyRegistry lassi_peak_props = new PropertyRegistry("peaklassi", "Peak IO stats from LASSi");
@@ -88,7 +91,8 @@ public class LASSiParser extends AbstractPropertyContainerParser implements Conf
 	}
 		private String my_table;
 	@Override
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
+	public PropertyFinder initFinder(PropertyFinder prev, String table) {
+		AppContext ctx = getContext();
 		use_peak = ctx.getBooleanParameter(LASSI_USE_PEAK+table, false);
 		if( use_peak) {
 			return lassi_peak_props;
@@ -102,7 +106,7 @@ public class LASSiParser extends AbstractPropertyContainerParser implements Conf
 		
 	}
 	@Override
-	public TableSpecification modifyDefaultTableSpecification(AppContext c, TableSpecification spec,
+	public TableSpecification modifyDefaultTableSpecification(TableSpecification spec,
 			PropExpressionMap map, String table_name) {
 		for(PropertyTag tag : tags) {
 			if( tag.getTarget().equals(Long.class)) {
@@ -114,7 +118,7 @@ public class LASSiParser extends AbstractPropertyContainerParser implements Conf
 		try {
 			spec.new Index("aprun_index",true, names[0]);
 		} catch (InvalidArgument e) {
-			getLogger(c).error("Invalid index", e);
+			getLogger().error("Invalid index", e);
 		}
 		return spec;
 	}

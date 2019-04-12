@@ -28,8 +28,6 @@ import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.IncrementalPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 /** Parser for aprun commands
  * 
@@ -38,6 +36,13 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  */
 public class RurLogParser extends AbstractPropertyContainerParser implements IncrementalPropertyContainerParser {
 	
+	public RurLogParser(AppContext conn) {
+		super(conn);
+	}
+
+
+
+
 	private static final String ENERGY_PLUGIN_NAME = "energy";
 	private static final String TASKSTATS_PLUGIN_NAME = "taskstats";
 	private static final String MEMORY_PLUGIN_NAME = "memory";
@@ -405,7 +410,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	}
 	
 	
-	protected Logger log;
+	
 	private boolean parse_timezone=true;
 	
 	/**
@@ -448,7 +453,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 		if (record.length() == 0) {
 			return false;
 		}
-		log.debug("rur record is '" + record + "'.");
+		getLogger().debug("rur record is '" + record + "'.");
 		
 		// parse the record into the declared properties and set them in the property map
 		Matcher m = full_parse_pattern.matcher(record);
@@ -465,7 +470,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 					return false;
 				}
 			} catch (IllegalArgumentException x) {
-				log.debug("rur record does not contain record type.");
+				getLogger().debug("rur record does not contain record type.");
 			}
 			
 			String apid = m.group("APID");
@@ -480,7 +485,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 				
 				
 				if (plugin_tag == null ) {
-					log.debug("plugin " + name + " not supported.");
+					getLogger().debug("plugin " + name + " not supported.");
 					continue;
 				}
 				map.setProperty(plugin_tag, "Y");
@@ -542,7 +547,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 					}
 				}
 				}else {
-					log.error("Null attributes from plugin");
+					getLogger().error("Null attributes from plugin");
 				}
 			}
 			
@@ -585,13 +590,13 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	}
 
 	@Override
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
-		log = ctx.getService(LoggerService.class).getLogger(getClass());
+	public PropertyFinder initFinder(PropertyFinder prev, String table) {
+		
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(rur_reg);
 		finder.addFinder(plugin_reg);
 		finder.addFinder(StandardProperties.time);
-		parse_timezone=ctx.getBooleanParameter(table+".parse_timezone", true);
+		parse_timezone=getContext().getBooleanParameter(table+".parse_timezone", true);
 		return finder;
 	}
 

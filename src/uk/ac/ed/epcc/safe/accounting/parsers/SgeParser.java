@@ -46,7 +46,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
 public class SgeParser extends BatchParser implements Contexed {
-	private final AppContext c;
+	
 	private String table;
 	private static final boolean DEFAULT_SKIP_INNER=true;
 	private static final boolean DEFAULT_SKIP_FAILED=false;
@@ -55,7 +55,7 @@ public class SgeParser extends BatchParser implements Contexed {
 	private boolean skip_failed_job = DEFAULT_SKIP_FAILED;
 	private boolean skip_sub_task = DEFAULT_SKIP_SUBTASK;
 	public SgeParser(AppContext c){
-		this.c=c;
+		super(c);
 	}
 	public static  final PropertyRegistry sge = new PropertyRegistry("sge","The SGE batch parser accounting properties");
 
@@ -180,7 +180,7 @@ public class SgeParser extends BatchParser implements Contexed {
 		// indicates a failed job do not charge
 		Integer failed = readInteger(args[11]);
 		if( failed.intValue() != 0 && skip_failed_job){
-			c.getService(LoggerService.class).getLogger(getClass()).warn("failed sge job "+record);
+			getLogger().warn("failed sge job "+record);
 			throw new SkipRecord("Failed SGE job");
 		}
 		r.setProperty(BatchParser.SUCCESS_PROP, failed.intValue() == 0);
@@ -290,6 +290,7 @@ public class SgeParser extends BatchParser implements Contexed {
 	@Override
 	public void startParse(PropertyContainer defaults) throws DataException,
 	InvalidExpressionException {
+		AppContext c = getContext();
 		String machine_name = defaults.getProperty(StandardProperties.MACHINE_NAME_PROP);
 		if( machine_name != null ){
 			skip_inner_job = c.getBooleanParameter("skip_inner_job."+machine_name, DEFAULT_SKIP_INNER);
@@ -306,12 +307,9 @@ public class SgeParser extends BatchParser implements Contexed {
 		return "";
 	}
 
-	public AppContext getContext() {
-		return c;
-	}
-
+	
 	@Override
-	public PropertyFinder initFinder(AppContext conn, PropertyFinder prev, String table){
+	public PropertyFinder initFinder( PropertyFinder prev, String table){
 		MultiFinder finder=new MultiFinder();
 		finder.addFinder(StandardProperties.time);
 		finder.addFinder(StandardProperties.base);

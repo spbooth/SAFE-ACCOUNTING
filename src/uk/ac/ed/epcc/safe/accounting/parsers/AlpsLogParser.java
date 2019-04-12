@@ -42,6 +42,9 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 public class AlpsLogParser extends AbstractPropertyContainerParser implements IncrementalPropertyContainerParser {
 
+	public AlpsLogParser(AppContext conn) {
+		super(conn);
+	}
 	private static final PropertyRegistry alps_reg = new PropertyRegistry("alps", "Properties from the alps log");
 	@AutoTable(target=Integer.class, unique=true)
 	public static final PropertyTag<Integer> ALPS_ID = new PropertyTag<>(alps_reg, "apid", Integer.class, "Alps job id");
@@ -156,7 +159,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	// (we could just have stripped trailing commas after match as well).
 	private static final Pattern attribute_pattern = Pattern.compile("(?<ATTRNAME>\\w+)=(?<ATTRVALUE>(?:[^\"\\s]*[^,\"\\s])|(?:\"[^\"]*\"))");
 	                            
-	private Logger log;
+	
 	private boolean parse_timezone=true;
 	@Override
 	public boolean parse(DerivedPropertyMap map, String record) throws AccountingParseException {
@@ -165,7 +168,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 			return false;
 		}
 		
-		log.debug("alps line is " + record);
+		getLogger().debug("alps line is " + record);
 		
 		// parse the record into the declared properties and set them in the property map
 		Matcher m = parse_pattern.matcher(record);
@@ -239,7 +242,7 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 //				throw new AccountingParseException("reversed time bounds");
 //			}
 		} else {
-			log.debug("regexp does not match alps log:"+record);
+			getLogger().debug("regexp does not match alps log:"+record);
 			throw new AccountingParseException("Unexpected line format");
 		}
 		
@@ -263,8 +266,8 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	}
 
 	@Override
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
-		log = ctx.getService(LoggerService.class).getLogger(getClass());
+	public PropertyFinder initFinder(PropertyFinder prev, String table) {
+		AppContext ctx =getContext();
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(alps_reg);
 		finder.addFinder(StandardProperties.time);
@@ -308,15 +311,15 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	}
 
 	@Override
-	public TableSpecification modifyDefaultTableSpecification(AppContext c, TableSpecification spec,
+	public TableSpecification modifyDefaultTableSpecification(TableSpecification spec,
 			PropExpressionMap map, String table_name) {
-		TableSpecification ss = super.modifyDefaultTableSpecification(c, spec, map, table_name);
+		TableSpecification ss = super.modifyDefaultTableSpecification(spec, map, table_name);
 		try {
 			ss.new Index("time",false,APSYS_END_TIMESTAMP.getName());
 			ss.new Index("alps_time",false,APRUN_START_TIMESTAMP.getName(), APSYS_END_TIMESTAMP.getName());
 			
 		} catch (InvalidArgument e) {
-			c.getService(LoggerService.class).getLogger(getClass()).error("Error adding time index",e);
+			getLogger().error("Error adding time index",e);
 		}
 		return ss;
 	}

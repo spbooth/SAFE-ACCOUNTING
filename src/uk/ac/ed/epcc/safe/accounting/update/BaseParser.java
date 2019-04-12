@@ -39,6 +39,14 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
  *
  */
 public abstract class BaseParser extends AbstractPropertyContainerParser {
+	public BaseParser(AppContext conn) {
+		super(conn);
+	}
+
+
+
+
+
 	public static final long SECOND_RANGE_CUTOFF = 500000000000L; // roughly 1985-11-05 in milliseconds 16000+ in seconds
 	/** parse a timestamp string (in seconds or milliseconds from unix epoch) and convert to Date.
 	 * This will handle either millisecond or second resolutions (SGE changed resolution in later versions).
@@ -92,8 +100,8 @@ public abstract class BaseParser extends AbstractPropertyContainerParser {
 	 
 	
 	  
-	   
-	public PropertyFinder initFinder(AppContext conn, PropertyFinder prev, String table) {
+	@Override
+	public PropertyFinder initFinder(PropertyFinder prev, String table) {
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(StandardProperties.time);
 		finder.addFinder(StandardProperties.base);

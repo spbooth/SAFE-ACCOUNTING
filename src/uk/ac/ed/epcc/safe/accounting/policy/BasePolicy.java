@@ -20,10 +20,15 @@ import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerUpdater;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
+import uk.ac.ed.epcc.webapp.AppContext;
 
 public abstract class BasePolicy extends AbstractPropertyContainerUpdater implements PropertyContainerPolicy {
    
 	
+
+	public BasePolicy(AppContext conn) {
+		super(conn);
+	}
 
 	public void parse(DerivedPropertyMap rec) throws AccountingParseException {
 		

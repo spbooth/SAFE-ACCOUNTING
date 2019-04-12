@@ -28,6 +28,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
@@ -38,7 +39,10 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
  *
  */
 public abstract class BatchParser extends BaseParser {
-    public static final String SUBMITTED_TIMESTAMP = "SubmittedTimestamp";
+    public BatchParser(AppContext conn) {
+		super(conn);
+	}
+	public static final String SUBMITTED_TIMESTAMP = "SubmittedTimestamp";
 
 
 	public static final PropertyRegistry batch= new PropertyRegistry("batch","The common set of accounting properties for all batch parsers");

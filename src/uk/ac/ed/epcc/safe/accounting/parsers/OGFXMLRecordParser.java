@@ -278,9 +278,9 @@ public class OGFXMLRecordParser extends XMLRecordParser {
 		return res;
 	}
 	@Override
-	protected PropertyFinder initFinder(AppContext context, PropertyFinder prev) {
+	protected PropertyFinder initFinder(PropertyFinder prev) {
 		MultiFinder mf = new MultiFinder();
-		mf.addFinder(super.initFinder(context, prev));
+		mf.addFinder(super.initFinder(prev));
 		mf.addFinder(OGFUR_DEFAULT_REGISTRY);
 		return mf;
 	}
@@ -292,9 +292,9 @@ public class OGFXMLRecordParser extends XMLRecordParser {
 
 
 	@Override
-	public TableSpecification modifyDefaultTableSpecification(AppContext c,TableSpecification initial,PropExpressionMap map,String table_name) {
+	public TableSpecification modifyDefaultTableSpecification(TableSpecification initial,PropExpressionMap map,String table_name) {
 		
-		TableSpecification spec = super.modifyDefaultTableSpecification(c,initial,map,table_name);
+		TableSpecification spec = super.modifyDefaultTableSpecification(initial,map,table_name);
 		if( spec != null){
 		try {
 			// Want an index on the EndTime The one in BaseParser won't

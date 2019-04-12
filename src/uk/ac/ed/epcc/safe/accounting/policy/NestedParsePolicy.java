@@ -44,7 +44,7 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy implements SummaryP
 	private static final String NESTED_PARSE_TABLE_PREFIX = "nested_parse.table.";
 	private static final String NESTED_PARSE_PROP_PREFIX = "nested_parse.prop.";
 	private static final String NESTED_PARSE_LINK_PREFIX = "nested_parse.link.";
-	AppContext conn;
+
 	String table_name, nested_table_name;
 	String link_prop_name;
 	PropertyTag<Integer> link_prop;
@@ -53,14 +53,15 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy implements SummaryP
 	UsageRecordFactory parent_fac;
 	UsageRecordParseTarget<String> parse_target;
 	
-	public NestedParsePolicy() {
+	public NestedParsePolicy(AppContext conn) {
+		super(conn);
 	}
 
 	
 	@Override
-	public PropertyFinder initFinder(AppContext conn, PropertyFinder prev, String table_name) {
+	public PropertyFinder initFinder(PropertyFinder prev, String table_name) {
 		
-		this.conn = conn;
+	
 		this.table_name = table_name;
 		
 		link_prop_name = conn.getInitParameter(NESTED_PARSE_LINK_PREFIX + table_name);
@@ -82,7 +83,7 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy implements SummaryP
 	        		}
 	        	}
 	        	if( parse_target == null) {
-	        		getLogger(conn).warn("Table "+nested_table_name+" does not have an accounting table configured");
+	        		getLogger().warn("Table "+nested_table_name+" does not have an accounting table configured");
 	        	}
 	        }
 		}

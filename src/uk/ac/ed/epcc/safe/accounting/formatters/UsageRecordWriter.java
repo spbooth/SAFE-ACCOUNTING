@@ -271,7 +271,7 @@ public class UsageRecordWriter implements Contexed {
 		Set<UsageRecordPolicy> policies = this.getPolicies(mode);
 		UsageRecordFormatter urWriter = new UsageRecordFormatter(this.context);
 
-		PropertyFinder finder = parser.initFinder(this.context, null, mode);
+		PropertyFinder finder = parser.initFinder( null, mode);
 		urWriter.init(this.context, finder, mode);
 
 		Iterator<String> recordIterator = parser.splitRecords(usageRecords

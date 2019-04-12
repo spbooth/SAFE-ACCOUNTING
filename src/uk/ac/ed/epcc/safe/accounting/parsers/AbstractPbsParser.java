@@ -93,7 +93,6 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	private static final PBSIdStringEntryMaker pbs_id_maker = new PBSIdStringEntryMaker();
-	private AppContext context;
 	private String mode;
 
 	/**
@@ -538,10 +537,7 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	 *          The context in which this parser is operating
 	 */
 	public AbstractPbsParser(AppContext context) {
-		if (context == null)
-			throw new NullPointerException("AppContext cannot be null");
-
-		this.context = context;
+		super(context);
 	}
 
 	
@@ -549,23 +545,11 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see uk.ac.ed.epcc.webapp.Contexed#getContext()
-	 */
-	public AppContext getContext() {
-		return context;
-	}
-
-	protected Logger getLogger(){
-		return getContext().getService(LoggerService.class).getLogger(getClass());
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see uk.ac.ed.epcc.safe.accounting.BaseParser#endParse()
 	 */
 	@Override
 	public String endParse() {
-		LoggerService loggerService = this.context.getService(LoggerService.class);
+		LoggerService loggerService = getContext().getService(LoggerService.class);
 		Logger logger = loggerService.getLogger(AbstractPbsParser.class);
 
 		/*
@@ -628,10 +612,10 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	 * java.lang.String)
 	 */
 	@Override
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
+	public PropertyFinder initFinder(PropertyFinder prev,
 			String mode) {
-		this.context = ctx;
 		this.mode=mode;
+		AppContext ctx = getContext();
 		// Note the contents of the registry depend on the mode so the name should as well
 		
 		String recordTypeList = ctx.getInitParameter(PBS_RECORD_TYPE_PROPERTY_BASE + mode);

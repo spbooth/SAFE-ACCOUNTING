@@ -19,9 +19,14 @@ package uk.ac.ed.epcc.safe.accounting.policy;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.update.UsageRecordPolicy;
+import uk.ac.ed.epcc.webapp.AppContext;
 
 public abstract class BaseUsageRecordPolicy extends BasePolicy implements
 		UsageRecordPolicy {
+
+	public BaseUsageRecordPolicy(AppContext conn) {
+		super(conn);
+	}
 
 	public void postCreate(PropertyContainer props, ExpressionTargetContainer rec)
 			throws Exception {

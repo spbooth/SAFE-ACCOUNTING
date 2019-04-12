@@ -22,6 +22,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 
@@ -31,10 +32,15 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
  * @author spb
  *
  */
-public class NullParser implements PropertyContainerParser<String> {
+public class NullParser extends AbstractContexed implements PropertyContainerParser<String> {
 
 	
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
+	public NullParser(AppContext conn) {
+		super(conn);
+	}
+
+
+	public PropertyFinder initFinder( PropertyFinder prev,
 			String table) {
 		return prev;
 	}
@@ -54,7 +60,7 @@ public class NullParser implements PropertyContainerParser<String> {
 		return null;
 	}
 
-	public TableSpecification modifyDefaultTableSpecification(AppContext conn,
+	public TableSpecification modifyDefaultTableSpecification(
 			TableSpecification t, PropExpressionMap map,
 			String table_name) {
 		return t;

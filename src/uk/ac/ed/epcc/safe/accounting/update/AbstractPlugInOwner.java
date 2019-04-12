@@ -82,10 +82,10 @@ public abstract class AbstractPlugInOwner<T extends DataObjectFactory,R> extends
 		multi.addFinder(prev);
 		PropertyContainerParser par = getParser();
 		if( par != null ){
-			multi.addFinder(par.initFinder(getContext(), prev, tag));
+			multi.addFinder(par.initFinder( prev, tag));
 		}
 		for(PropertyContainerPolicy pol : getPolicies()){
-			multi.addFinder(pol.initFinder(getContext(), multi, tag));
+			multi.addFinder(pol.initFinder( multi, tag));
 		}
 		return multi;
 	}

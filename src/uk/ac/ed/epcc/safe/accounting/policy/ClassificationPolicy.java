@@ -65,7 +65,6 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.NameFinder;
 import uk.ac.ed.epcc.webapp.model.data.DataCache;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -95,7 +94,7 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 	private Map<PropertyTag<String>,ReferenceTag> tagmap = new HashMap<>();
     private PropExpressionMap derived = new PropExpressionMap();
     private PropExpressionMap fallback = new PropExpressionMap();
-	private final AppContext c;
+	
 	
 	private Map<PropertyTag<String>,DataCache<String,DataObject>> caches; 
 	
@@ -104,16 +103,14 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 	private Set<PropertyTag<String>> available_names = new HashSet<>();
 	private Set<ReferenceTag> available_refs = new HashSet<>();
 	private String table;
-	private Logger log;
+	
 	public ClassificationPolicy(AppContext c){
-		this.c=c;
-        log = c.getService(LoggerService.class).getLogger(getClass());
-		
+		super(c);
 	}
 	@SuppressWarnings("unchecked")
 	@Override
 	public void parse(DerivedPropertyMap rec) throws AccountingParseException {
-
+		Logger log = getLogger();
 		for(PropertyTag<String> tag : caches.keySet()){
 			log.debug("parse classification for "+tag+" from "+rec.getClass().getCanonicalName());
 			String value;
@@ -168,26 +165,27 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 	@Override
 	public void startParse(PropertyContainer defaults) throws DataException,
 			InvalidPropertyException {
+		Logger log = getLogger();
 		log.debug("ClassificationPolicy: start parse");
 		caches= new HashMap<>();
 		for(PropertyTag<String> tag : tagmap.keySet()){
 			ReferenceTag ctag = tagmap.get(tag);
-			NameFinder fac = c.makeObject(NameFinder.class,ctag.getTable());
+			NameFinder fac = getContext().makeObject(NameFinder.class,ctag.getTable());
 			DataCache dataCache = fac.getDataCache();
 			assert dataCache != null : "Null datacache";
 			caches.put(tag, dataCache);
 		}
 	}
-	public AppContext getContext() {
-			return c;
-	}
+	
 	@SuppressWarnings("unchecked")
-	public PropertyFinder initFinder(AppContext c, PropertyFinder finder, String table) {
+	@Override
+	public PropertyFinder initFinder(PropertyFinder finder, String table) {
 		// Look for any new classifications
 		// have to do this at least once for each instance in case we are a new accounting table
 		// which will see additional properties
 		this.table=table;
-		
+		Logger log = getLogger();
+		AppContext c = getContext();
 			prefix = CLASSIFICATION+table+".";
 		
 			Hashtable<String,String> params = c.getInitParameters(prefix);
@@ -259,7 +257,7 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 				previous.put(key, derived.get(key));
 
 			}catch(PropertyCastException e){
-				log.error("Error adding classification derived",e);
+				getLogger().error("Error adding classification derived",e);
 			}
 		}
 		return previous;
@@ -307,7 +305,7 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 			f.addInput("Ref", "Reference to Set", ref_input);
 			f.addAction("Add", new AddClassifierAction(target));
 			}catch(Exception e) {
-				getLogger(getContext()).error("Internal error", e);
+				getLogger().error("Internal error", e);
 				throw new TransitionException("Internal error");
 			}
 		}
@@ -369,7 +367,7 @@ public FormResult action(Form f)
 			try {
 				regenerate(name);
 			} catch (Exception e) {
-				log.error("Error in Classifier regenerate",e);
+				getLogger().error("Error in Classifier regenerate",e);
 				return new MessageResult("internal_error");
 			}
 			return new ViewTableResult(target);
@@ -415,7 +413,7 @@ public FormResult action(Form f)
 				hb.addTable(getContext(), t);
 			}
 		}catch(Exception e){
-			log.error("Error making ClassificationPolicy summary table",e);
+			getLogger().error("Error making ClassificationPolicy summary table",e);
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -427,7 +425,7 @@ public FormResult action(Form f)
 		if( fac != null ){
 			
 				ReferenceTag ref = tagmap.get(name);
-				NameFinder<? extends DataObject> nameFinder = c.makeObject(NameFinder.class,ref.getTable());
+				NameFinder<? extends DataObject> nameFinder = getContext().makeObject(NameFinder.class,ref.getTable());
 				Set<String> values = etf.getValues(name, null);
 				
 				for(String s : values ){
@@ -441,14 +439,14 @@ public FormResult action(Form f)
 		}
 	}
 	@Override
-	public TableSpecification modifyDefaultTableSpecification(AppContext conn,TableSpecification t,PropExpressionMap map,String tag_name) {
+	public TableSpecification modifyDefaultTableSpecification(TableSpecification t,PropExpressionMap map,String tag_name) {
 	    
 		if( t != null ){ 
 			// We have to go straight to properties as the initFinder has not been
 			// called at this point
 			String prefix = CLASSIFICATION+tag_name+".";
 			
-			Hashtable<String,String> params = c.getInitParameters(prefix);
+			Hashtable<String,String> params = getContext().getInitParameters(prefix);
 			
 			ReferencePropertyRegistry reg = ReferencePropertyRegistry.getInstance(getContext());
 			for(String paramName : params.values()){
@@ -460,7 +458,7 @@ public FormResult action(Form f)
 					if( t.goodFieldName(name)){
 						t.setField(name, new ReferenceFieldType(r.getTable()));
 					}else{
-						log.error("Bad field name "+name+" in ClassificationPolicy");
+						getLogger().error("Bad field name "+name+" in ClassificationPolicy");
 					}
 				}
 			}

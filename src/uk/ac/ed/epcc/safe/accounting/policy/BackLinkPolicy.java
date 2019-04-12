@@ -27,15 +27,18 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 public class BackLinkPolicy extends BaseUsageRecordPolicy implements SummaryProvider, ConfigParamProvider{
 
 	
-	private AppContext c;
+	public BackLinkPolicy(AppContext conn) {
+		super(conn);
+	}
+	
 	private ReferenceTag remote_tag=null;
 	private ReferenceTag back_ref=null;
 	private UsageRecordFactory<?> remote_fac=null;
 	private String table;
 	private static final String BACKLINK_POLICY_TARGET = "BackLinkPolicy.target.";
 	@Override
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
-		c = ctx;
+	public PropertyFinder initFinder(PropertyFinder prev, String table) {
+		AppContext c = getContext();
 		String target_name = c.getInitParameter(BACKLINK_POLICY_TARGET+table);
 		PropertyTag<? extends IndexedReference>tag = prev.find(IndexedReference.class,target_name );
 		if( tag instanceof ReferenceTag ){
@@ -60,7 +63,7 @@ public class BackLinkPolicy extends BaseUsageRecordPolicy implements SummaryProv
 		if( remote_tag == null || back_ref == null ){
 			return;
 		}
-		Indexed remote = remote_tag.get(c, props);
+		Indexed remote = remote_tag.get(getContext(), props);
 		if( remote != null &&  remote instanceof DataObject){
 			PropertyContainer container = ExpressionCast.getPropertyContainer(remote);
 			back_ref.set(container, rec);
@@ -75,7 +78,7 @@ public class BackLinkPolicy extends BaseUsageRecordPolicy implements SummaryProv
 		if( remote_tag == null || back_ref == null ){
 			return;
 		}
-		Indexed remote = remote_tag.get(c, rec);
+		Indexed remote = remote_tag.get(getContext(), rec);
 		if( remote != null && remote instanceof PropertyContainer && remote instanceof DataObject){
 			PropertyContainer container = (PropertyContainer)remote;
 			IndexedReference ref = (IndexedReference) container.getProperty(back_ref);

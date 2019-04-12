@@ -35,7 +35,6 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  *
  */
 public abstract class AbstractKeyPairParser extends BatchParser implements Contexed{
-	private final AppContext conn;
 	
 	/**
 	 * Errors reported in this <code>ErrorSet</code> will be reported as
@@ -60,7 +59,7 @@ public abstract class AbstractKeyPairParser extends BatchParser implements Conte
 	static final Pattern ATTR_PATTERN=Pattern.compile("(\\w+)=([^\"\\s]+|(?:\"[^\"]+\"))(\\s|$)");
 	
 	public AbstractKeyPairParser(AppContext conn) {
-		this.conn=conn;
+		super(conn);
 	}
 
 	
@@ -150,12 +149,7 @@ public abstract class AbstractKeyPairParser extends BatchParser implements Conte
 		return this.errors.toString();
 	}
 	
-	public AppContext getContext() {
-		return conn;
-	}
-	protected final Logger getLogger(){
-		return conn.getService(LoggerService.class).getLogger(getClass());
-	}
+	
 
 	/** get the {@link ContainerEntryMaker} for the attribute name.
 	 * 

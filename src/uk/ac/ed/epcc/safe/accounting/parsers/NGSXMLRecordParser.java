@@ -79,10 +79,10 @@ public class NGSXMLRecordParser extends OGFXMLRecordParser {
 	
 
 	@Override
-	protected PropertyFinder initFinder(AppContext context, 
+	protected PropertyFinder initFinder(
 			PropertyFinder prev) {
 		MultiFinder mf = new MultiFinder();
-		mf.addFinder(super.initFinder(context,  prev));
+		mf.addFinder(super.initFinder(prev));
 		mf.addFinder(NGS_REGISTRY);
 		return mf;
 	}

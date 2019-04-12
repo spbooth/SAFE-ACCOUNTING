@@ -82,7 +82,7 @@ public class AccountingTableCreator extends AbstractContexed implements FormCrea
 					// table specification e.g. by adding standard policies.
 					// safer to auto-create if enabled.
 					PropertyContainerParser parser = conn.makeObject(input.getItem());
-					TableSpecification spec = parser.modifyDefaultTableSpecification(conn,new TableSpecification(),null,table_name);
+					TableSpecification spec = parser.modifyDefaultTableSpecification(new TableSpecification(),null,table_name);
 					if( spec != null ){
 						DataBaseHandlerService dbh = conn.getService(DataBaseHandlerService.class);
 						if( dbh != null ){

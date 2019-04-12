@@ -37,8 +37,6 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** Policy to define standard properties used to 
  * generate OGF-Usage records
@@ -51,16 +49,22 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 public class GridPropertyPolicy extends BaseUsageRecordPolicy {
 
-	private AppContext conn;
+	
+	public GridPropertyPolicy(AppContext conn) {
+		super(conn);
+	}
+
+
 	private static final String GLOBUS_FIELD="GlobusID";
 	private ReferenceTag globus_tag=null;
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
+	@Override
+	public PropertyFinder initFinder(PropertyFinder prev,
 			String table) {
-		conn=ctx;
+		AppContext c = getContext();
 		MultiFinder mf = new MultiFinder();
 		mf.addFinder(OGFXMLRecordParser.OGFUR_DEFAULT_REGISTRY);
 		mf.addFinder(NGSXMLRecordParser.NGS_REGISTRY);
-		String globus_table = ctx.getInitParameter("GridPropertyPolicy."+table+".globus");
+		String globus_table = c.getInitParameter("GridPropertyPolicy."+table+".globus");
 		if( globus_table != null ){
 			globus_tag=(ReferenceTag) prev.find(IndexedReference.class, globus_table);
 		}
@@ -126,16 +130,14 @@ public class GridPropertyPolicy extends BaseUsageRecordPolicy {
 
 
 	@Override
-	public TableSpecification modifyDefaultTableSpecification(AppContext conn,TableSpecification t,PropExpressionMap map,String tagName) {
+	public TableSpecification modifyDefaultTableSpecification(TableSpecification t,PropExpressionMap map,String tagName) {
 		if( t != null ){
+			AppContext conn = getContext();
 			String globus_table = conn.getInitParameter("GridPropertyPolicy."+tagName+".globus");
 			if( globus_table != null){
 				t.setField(GLOBUS_FIELD, new ReferenceFieldType(globus_table));
 			}
 		}
 		return t;
-	}
-	protected final Logger getLogger(){
-		return conn.getService(LoggerService.class).getLogger(getClass());
 	}
 }

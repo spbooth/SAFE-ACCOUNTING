@@ -42,8 +42,6 @@ import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** This policy allows new properties to be defined as derived property expressions. 
@@ -71,26 +69,30 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 public class ExpressionPropertyPolicy extends BasePolicy implements TableTransitionContributor, SummaryProvider{
+	public ExpressionPropertyPolicy(AppContext conn) {
+		super(conn);
+	}
+
 	private PropExpressionMap defs=new PropExpressionMap();	
-	private AppContext c;
 	private String table;
 	private MultiFinder finder; // finder to use for expression parse
 	private MultiFinder props; // defined props
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
+	@Override
+	public PropertyFinder initFinder(PropertyFinder prev,
 			String table) {
-		this.c=ctx;
+		
 		this.table=table;
 		this.finder=new MultiFinder();
 		this.finder.addFinder(prev);
-		
 		props = new MultiFinder();
-		String list = ctx.getInitParameter("registry_list."+table, "expression");
+		AppContext c = getContext();
+		String list = c.getInitParameter("registry_list."+table, "expression");
 		for( String name : list.split("\\s*,\\s*")){
-			props.addFinder(new ConfigPropertyRegistry(ctx, name));
+			props.addFinder(new ConfigPropertyRegistry(c, name));
 		}
 		this.finder.addFinder(props);
 		
-		defs.addFromProperties(this.finder, ctx, table);
+		defs.addFromProperties(this.finder, c, table);
 		
 		return props;
 	}
@@ -119,7 +121,7 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 			public FormResult action(Form f)
 					throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
 				SetInput<ConfigPropertyRegistry> input=(SetInput<ConfigPropertyRegistry>) f.getInput("Finder");	
-				input.getItem().addDefinition(c, (String)f.get("Name"), (String)f.get("Type"));
+				input.getItem().addDefinition(getContext(), (String)f.get("Name"), (String)f.get("Type"));
 				return new ViewTableResult(target);
 			}
 		}
@@ -136,7 +138,7 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 			type.addChoice("Number");
 			type.addChoice("String");
 			type.addChoice("Date");
-			for(String tag : c.getClassMap(DataObjectFactory.class).keySet()){
+			for(String tag : getContext().getClassMap(DataObjectFactory.class).keySet()){
 				type.addChoice(tag);
 			}
 			f.addInput("Type","Type of property",type);
@@ -156,7 +158,7 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 					throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
 				try {
 					PropertyTagInput input = (PropertyTagInput) f.getInput("Prop");
-					defs.addConfigProperty(c, finder, table, input.getItem(), (String)f.get("Expr"));
+					defs.addConfigProperty(getContext(), finder, table, input.getItem(), (String)f.get("Expr"));
 				} catch (Exception e) {
 					getLogger().error( "Error setting derived prop",e);
 					throw new ActionException("Operation failed",e);
@@ -168,7 +170,7 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext ctx) throws TransitionException {
 			f.addInput("Prop", "Property to define", new PropertyTagInput(finder));
-			f.addInput("Expr", "Definition", new PropExpressionInput(c,finder));
+			f.addInput("Expr", "Definition", new PropExpressionInput(getContext(),finder));
 			f.addAction("Add", new AddDerivedAction(target));
 		}
 	}
@@ -179,9 +181,7 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 		result.put(new AdminOperationKey( "AddProperty","Define a new property"),new AddPropertyTransition());
 		return result;
 	}
-	protected final Logger getLogger(){
-		return c.getService(LoggerService.class).getLogger(getClass());
-	}
+	
 	@Override
 	public void getTableTransitionSummary(ContentBuilder hb, SessionService operator) {
 		hb.addText("This policy allows derived property expressions to be defined for properties in scope. You can also define entirely new properties");

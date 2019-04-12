@@ -54,19 +54,23 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 
 
 public class DerivedPropertyPolicy extends BasePolicy implements TableTransitionContributor{
+	public DerivedPropertyPolicy(AppContext conn) {
+		super(conn);
+	}
 	private PropertyRegistry reg=null;
 	private PropExpressionMap defs=new PropExpressionMap();	
-	private AppContext c;
+	
 	private String table;
 	private PropertyFinder finder;
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
+	@Override
+	public PropertyFinder initFinder(PropertyFinder prev,
 			String table) {
-		this.c=ctx;
+		
 		this.table=table;
 		this.finder=prev.copy();
 		if( reg == null ){
 			reg = new PropertyRegistry(table+"derived", "The derived accounting properties for "+table);
-			defs.addFromProperties(reg, prev, ctx, table);
+			defs.addFromProperties(reg, prev, getContext(), table);
 		}
 		return reg;
 	}

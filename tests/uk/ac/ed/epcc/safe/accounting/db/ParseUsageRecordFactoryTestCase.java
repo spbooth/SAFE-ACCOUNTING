@@ -225,9 +225,9 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 		for(PropertyContainerPolicy pol : owner.getPolicies()){
 			dmap = pol.getDerivedProperties(dmap);
 		}
-		TableSpecification spec = parser.modifyDefaultTableSpecification(ctx,new TableSpecification(),dmap,fac.getTag());
+		TableSpecification spec = parser.modifyDefaultTableSpecification(new TableSpecification(),dmap,fac.getTag());
 		for(PropertyContainerPolicy pol : owner.getPolicies()){
-			pol.modifyDefaultTableSpecification(ctx,spec,dmap,fac.getTag());
+			pol.modifyDefaultTableSpecification(spec,dmap,fac.getTag());
 		}
 		//assert(spec != null);
 		// Make sure update text is provided by the subclasses

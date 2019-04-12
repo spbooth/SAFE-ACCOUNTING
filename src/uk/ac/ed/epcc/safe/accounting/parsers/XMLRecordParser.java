@@ -42,8 +42,6 @@ import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
 import uk.ac.ed.epcc.safe.accounting.xml.XMLErrorHandler;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 /**
  * Parser for usage records in an XML format. 
@@ -86,17 +84,14 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 	 * ##########################################################################
 	 */
 
-	/**
-	 * The context within which this parser operates
-	 */
-	private final AppContext context;
+	
 	private final XMLPropertyDomParser property_parser;
 	
 	//public static final String UR_MANAGER_BASE = "ogf.ur";
 
 	
     private String splitter_targets[]=new String[]{"UsageRecord","JobUsageRecord","Usage"};
-    Logger log;
+   
     ParsernameSpaceContext namespaces;
 	
 	/**
@@ -113,8 +108,7 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 	 *          The current <code>AppContext</code>
 	 */
 	public XMLRecordParser(AppContext context) {
-		this.context=context;
-		log = context.getService(LoggerService.class).getLogger(getClass());
+		super(context);
 		namespaces=makeNameSpaceContext();
 		property_parser = new XMLPropertyDomParser(context, getClass(), namespaces,defaultSchemaName());
 	}
@@ -135,19 +129,7 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 		return sb.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see uk.ac.ed.epcc.webapp.Contexed#getContext()
-	 */
-	public AppContext getContext() {
-		return this.context;
-	}
-    protected final Logger getLogger(){
-    	return log;
-    }
-
-
+	
 	
 
 
@@ -160,14 +142,15 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 	 * java.lang.String)
 	 */
 	@Override
-	public final PropertyFinder initFinder(AppContext context, PropertyFinder prev,
+	public final PropertyFinder initFinder(PropertyFinder prev,
 			String mode) {
 		
+		AppContext context = getContext();
 		//Properties prop = new FilteredProperties(this.context.getService(ConfigService.class).getServiceProperties(),
 		//		UR_MANAGER_BASE, mode);
-		PropertyFinder orig = initFinder(context,prev);
+		PropertyFinder orig = initFinder(prev);
 		
-		PropertyFinder result = property_parser.initFinder(context, orig, mode);
+		PropertyFinder result = property_parser.initFinder( orig, mode);
 		
 		String splitter_list = context.getInitParameter(mode+".splitter_targets");
 		if( splitter_list != null){
@@ -190,7 +173,7 @@ public class XMLRecordParser extends BatchParser implements Contexed {
      * @param prev
      * @return
      */
-	protected PropertyFinder initFinder(AppContext context2, 
+	protected PropertyFinder initFinder( 
 			PropertyFinder prev) {
 		
 		
@@ -228,7 +211,7 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 			throws AccountingParseException {
 		try {
 		
-			log.debug("record is "+record);
+			getLogger().debug("record is "+record);
 			XMLErrorHandler handler = new XMLErrorHandler(getContext());
 			DocumentBuilder builder = property_parser.getBuilder();
 			builder.setErrorHandler(handler);
@@ -296,7 +279,7 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 	 * @return
 	 */
 	protected ParsernameSpaceContext makeNameSpaceContext() {
-		return new ParsernameSpaceContext(context);
+		return new ParsernameSpaceContext(getContext());
 	}
 	protected String[] getTargets(){
 		return splitter_targets;

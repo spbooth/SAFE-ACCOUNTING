@@ -47,7 +47,6 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionContributor;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.TableInput;
@@ -74,9 +73,11 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 
 
 public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProvider,TableTransitionContributor,ConfigParamProvider{
-    private static final String PREFIX = "UsageRecordListener.";
-	Logger log;
-    protected AppContext ctx;
+    public ListenerPolicy(AppContext conn) {
+		super(conn);
+	}
+	private static final String PREFIX = "UsageRecordListener.";
+
     private String list;
     private String table;
     private int updates;
@@ -91,7 +92,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 				}
 			}
 		}else{
-			log.warn("null listeners");
+			getLogger().warn("null listeners");
 		}
 		updates++;
 	}
@@ -104,18 +105,19 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 				}
 			}
 		}else{
-			log.warn("null listeners");
+			getLogger().warn("null listeners");
 		}
 
 	}
 	private UsageRecordListener listeners[];
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev,
+	
+	@Override
+	public PropertyFinder initFinder(PropertyFinder prev,
 			String table) {
-		log = ctx.getService(LoggerService.class).getLogger(getClass());
-		this.ctx=ctx;
+		
 		this.table=table;
-		list =ctx.getInitParameter(PREFIX+table, "");
-		log.debug("ListenerPolicy: table="+table+" list="+list);
+		list =getContext().getInitParameter(PREFIX+table, "");
+		getLogger().debug("ListenerPolicy: table="+table+" list="+list);
 		return null;
 	}
 	/* (non-Javadoc)
@@ -136,6 +138,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 	 * 
 	 */
 	protected LinkedList<UsageRecordListener> makeListeners() {
+		Logger log = getLogger();
 		LinkedList<UsageRecordListener> result= new LinkedList<>();
 		log.debug("ListenerPolicy list="+list);
 		if( list != null && list.trim().length() > 0){
@@ -146,7 +149,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 				if( aggregate_table.length() > 0 ){
 					log.debug("create "+aggregate_table);
 					try {	
-						UsageRecordListener tmp = ctx.makeObjectWithDefault(UsageRecordListener.class, null,aggregate_table);
+						UsageRecordListener tmp = getContext().makeObjectWithDefault(UsageRecordListener.class, null,aggregate_table);
 						tmp.startListenerParse();
 						result.add(tmp);
 					} catch (Exception e) {
@@ -186,7 +189,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 		}
 		listeners=null;
 		updates=0;
-		log.info(sb.toString());
+		getLogger().info(sb.toString());
 		return "";
 	}
 	public void getTableTransitionSummary(ContentBuilder hb,
@@ -232,7 +235,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 					sb.append(policy_input.getText(c));
 				}
 			}
-			ConfigService serv = ctx.getService(ConfigService.class);
+			ConfigService serv = getContext().getService(ConfigService.class);
 			serv.setProperty(PREFIX+table, sb.toString());
 			list=sb.toString();
 			return new ViewTableResult(target);
@@ -266,7 +269,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 			public FormResult action(Form f)
 					throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
 				TableInput<UsageRecordListener> input = (TableInput<UsageRecordListener>) f.getInput("Listener");
-				ConfigService serv = ctx.getService(ConfigService.class);
+				ConfigService serv = getContext().getService(ConfigService.class);
 				String list = serv.getServiceProperties().getProperty(PREFIX+table);
 				Set<String> set = new HashSet<>();
 				for(String s : list.split(",")){
@@ -290,7 +293,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 		public void buildForm(Form f, DataObjectFactory target,
 			AppContext c) throws TransitionException {
 			
-			TableInput<UsageRecordListener> input = new TableInput<>(ctx, UsageRecordListener.class);
+			TableInput<UsageRecordListener> input = new TableInput<>(getContext(), UsageRecordListener.class);
 			
 			f.addInput("Listener", "Listener to Add", input);
 			f.addAction("Add", new AddListenerAction(target));
@@ -305,9 +308,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 		}
 		return result;
 	}
-	protected final Logger getLogger(){
-		return ctx.getService(LoggerService.class).getLogger(getClass());
-	}
+	
 	@Override
 	public void addConfigParameters(Set<String> params) {
 		params.add(PREFIX+table);

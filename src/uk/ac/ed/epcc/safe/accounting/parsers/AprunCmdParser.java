@@ -26,6 +26,10 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	
+	public AprunCmdParser(AppContext conn) {
+		super(conn);
+	}
+
 	private static final PropertyRegistry aprun_reg = new PropertyRegistry("aprun", "Properties from an aprun command");
 	
 	@AutoTable(target=Integer.class, unique=true)
@@ -145,7 +149,6 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 		STANDARD_ATTRIBUTES.addParser(APP_ATTR_LIST, StringParser.PARSER);
 	}
 	
-	protected Logger log;
 	
 	private static final char CHAR_COLON = ':';
 	private static final char CHAR_SEMICOLON = ';';
@@ -333,7 +336,7 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 		if (this.cmd.length() == 0) {
 			return false;
 		}
-		log.debug("aprun command is '" + this.cmd + "'.");
+		getLogger().debug("aprun command is '" + this.cmd + "'.");
 		
 		// add in exception code
 		boolean parseComplete = false;
@@ -420,8 +423,8 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	}
 
 	@Override
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
-		log = ctx.getService(LoggerService.class).getLogger(getClass());
+	public PropertyFinder initFinder(PropertyFinder prev, String table) {
+		
 		return aprun_reg;
 	}
 	

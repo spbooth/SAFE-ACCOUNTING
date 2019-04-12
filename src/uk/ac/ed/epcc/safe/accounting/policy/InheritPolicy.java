@@ -36,16 +36,16 @@ public class InheritPolicy extends BasePolicy implements SummaryProvider,ConfigP
 
 	private static final String PARENT_SUFFIX = ".parent";
 	private static final String INHERIT_POLICY_PREFIX = "InheritPolicy.";
-	public InheritPolicy() {
-		
+	public InheritPolicy(AppContext conn) {
+		super(conn);
 	}
 
 	Set<ReferenceTag> parents=null;
 	PropExpressionMap map=null;
 	String table=null;
 	@Override
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder prev, String table) {
-		
+	public PropertyFinder initFinder(PropertyFinder prev, String table) {
+		AppContext ctx = getContext();
 		MultiFinder finder =null;
 		try{
 			this.table=table;
@@ -54,7 +54,7 @@ public class InheritPolicy extends BasePolicy implements SummaryProvider,ConfigP
 				if( parent_name != null && ! parent_name.trim().isEmpty()){
 					ReferenceTag parent = (ReferenceTag) prev.find(IndexedReference.class, parent_name);
 					if( parent == null ){
-						getLogger(ctx).error("No parent found for "+table+":"+parent_name);
+						getLogger().error("No parent found for "+table+":"+parent_name);
 						continue;
 					}
 					if( parents == null ){
@@ -86,7 +86,7 @@ public class InheritPolicy extends BasePolicy implements SummaryProvider,ConfigP
 									map.put(t, new DeRefExpression(parent, t));
 								}
 							} catch (PropertyCastException e) {
-								getLogger(ctx).error("error forwarding property", e);
+								getLogger().error("error forwarding property", e);
 							}
 						}
 					}
@@ -94,7 +94,7 @@ public class InheritPolicy extends BasePolicy implements SummaryProvider,ConfigP
 			}
 			return finder;
 		}catch(Exception t){
-			getLogger(ctx).error("Error setting  up InheritPolicy",t);
+			getLogger().error("Error setting  up InheritPolicy",t);
 			return null;
 		}
 	}

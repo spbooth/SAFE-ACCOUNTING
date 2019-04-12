@@ -86,9 +86,9 @@ public abstract class AbstractRecordTestCase<R> extends
 		for(PropertyContainerPolicy pol : plugin.getPolicies()){
 			map = pol.getDerivedProperties(map);
 		}
-		TableSpecification spec = parser.modifyDefaultTableSpecification(ctx,new TableSpecification(),map,tableName);
+		TableSpecification spec = parser.modifyDefaultTableSpecification(new TableSpecification(),map,tableName);
 		for(PropertyContainerPolicy pol : plugin.getPolicies()){
-			pol.modifyDefaultTableSpecification(ctx,spec,map,tableName);
+			pol.modifyDefaultTableSpecification(spec,map,tableName);
 		}
 		// We expect at least a unique key
 		assertTrue("No index for "+tableName,spec.getIndexes().hasNext());

@@ -31,8 +31,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** PropertyContainerParser based on regular expressions.
  * 
  * This class should be sub-classed to make a working parser. Any {@link PropertyTag}
@@ -44,14 +42,13 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  */
 public abstract class RegexpParser extends AbstractPropertyContainerParser {
    
+	public RegexpParser(AppContext conn) {
+		super(conn);
+	}
 	Map<PropertyTag,Pattern> targets;
     Map<PropertyTag,ValueParser> parsers;
     
-    public abstract AppContext getContext();
-    
-    protected final Logger getLogger(){
-    	return getContext().getService(LoggerService.class).getLogger(getClass());
-    }
+   
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean parse(DerivedPropertyMap map, String record)

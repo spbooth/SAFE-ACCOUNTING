@@ -85,14 +85,19 @@ public class AliasPropertyPolicy extends BasePolicy implements TableTransitionCo
 	 * derivation.
 	 */
 
+	public AliasPropertyPolicy(AppContext conn) {
+		super(conn);
+	}
 	private static final String ALIAS_PREFIX = "alias.";
 	private PropExpressionMap aliases = new PropExpressionMap();
     private PropertyFinder cached_finder;
 	private String table;
-	private AppContext c;
+	
 	@SuppressWarnings("unchecked")
-	public PropertyFinder initFinder(AppContext ctx, PropertyFinder origFinder,
+	@Override
+	public PropertyFinder initFinder(PropertyFinder origFinder,
 			String table) {
+		AppContext ctx = getContext();
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(origFinder);
 		finder.addFinder(StandardProperties.time);
@@ -112,7 +117,7 @@ public class AliasPropertyPolicy extends BasePolicy implements TableTransitionCo
 				 * TODO if this class is merged with DerivedPropertyPolicy, a new
 				 * property tag would be created here instead of reporting an error
 				 */
-				getLogger(ctx).error("Error while making an alias for '" + aliasName
+				getLogger().error("Error while making an alias for '" + aliasName
 						+ "':  Couldn't find property '" + aliasName + "'");
 				continue;
 			}
@@ -125,18 +130,17 @@ public class AliasPropertyPolicy extends BasePolicy implements TableTransitionCo
 					
 
 			} catch (ParseException e) {
-				getLogger(ctx).error( "Error making alias for property '" + aliasName
+				getLogger().error( "Error making alias for property '" + aliasName
 						+ "': Couldn't interpret expression '" + derived_properties.get(key) + "'",e);
 			} catch (PropertyCastException e) {
-				getLogger(ctx).error("Type mis-match aliasing properties",e);
+				getLogger().error("Type mis-match aliasing properties",e);
 				
 			} catch (InvalidPropertyException e) {
-				getLogger(ctx).error("Property not found ",e);
+				getLogger().error("Property not found ",e);
 			}
 		}
 		cached_finder=finder.copy();
 		this.table=table;
-		this.c=ctx;
 		return finder;
 	}
 
@@ -160,7 +164,7 @@ public class AliasPropertyPolicy extends BasePolicy implements TableTransitionCo
 					throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
 
 				PropertyTag tag = (PropertyTag) f.getItem(PROPERTY_INPUT);
-				ConfigService cfg = c.getService(ConfigService.class);
+				ConfigService cfg = getContext().getService(ConfigService.class);
 				cfg.setProperty(ALIAS_PREFIX+table+"."+tag.getFullName(),(String) f.get(EXPR_INPUT));
 
 
@@ -171,7 +175,7 @@ public class AliasPropertyPolicy extends BasePolicy implements TableTransitionCo
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext ctx) throws TransitionException {
 			f.addInput(PROPERTY_INPUT, "Property to define", new PropertyTagInput(cached_finder));
-			f.addInput(EXPR_INPUT, "Definition", new PropExpressionInput(c,cached_finder));
+			f.addInput(EXPR_INPUT, "Definition", new PropExpressionInput(getContext(),cached_finder));
 			f.addAction("Add", new AddDerivedAction(target));
 		}
 	}

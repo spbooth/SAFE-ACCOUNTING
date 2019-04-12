@@ -60,8 +60,6 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 
 
 public class LSFParser extends BatchParser implements  Contexed {
-	private AppContext c;
-	
 	
 	
 	// hardwired event types
@@ -73,7 +71,7 @@ public class LSFParser extends BatchParser implements  Contexed {
 	private static final int missingValueInteger = -1;
 	private static final long missingValueLong = -1L;
 	public LSFParser(AppContext c){
-		this.c=c;
+		super(c);
 	}
 	public static  final PropertyRegistry lsf = 
 		new PropertyRegistry("lsf","The LSF batch properties");
@@ -680,12 +678,10 @@ public class LSFParser extends BatchParser implements  Contexed {
 
 	
 
-	public AppContext getContext() {
-		return c;
-	}
+	
 
 	@Override
-	public PropertyFinder initFinder(AppContext conn, PropertyFinder prev, String table){
+	public PropertyFinder initFinder(PropertyFinder prev, String table){
 		MultiFinder finder=new MultiFinder();
 		finder.addFinder(StandardProperties.time);
 		finder.addFinder(StandardProperties.base);
