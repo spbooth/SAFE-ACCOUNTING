@@ -21,6 +21,7 @@ import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
@@ -140,5 +141,12 @@ public class ReportTemplate extends DataObject implements Retirable{
 	public void setGroup(String group){
 		record.setOptionalProperty(REPORT_GROUP, group);
 	}
-	
+	/** extension point to add additional columns to the index table.
+	 * Use the object itself as the row key
+	 * 
+	 * @param t
+	 */
+	public void addToIndex(Table t) {
+		
+	}
 }

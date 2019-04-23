@@ -343,6 +343,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 							new ChainedTransitionResult<>(
 									prov, report, ReportTemplateTransitionProvider.PREVIEW)));
 					t.put("Description", reportTemplate, reportDescription);
+					reportTemplate.addToIndex(t);
 					
 				}
 				if( timer != null) {
