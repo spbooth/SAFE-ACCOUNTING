@@ -435,7 +435,7 @@ ConfigParamProvider{
 	 * cached object changes
 	 * 
 	 * @param rec
-	 * @throws InvalidPropertyException
+	 * @throws InvalidExpressionException
 	 * @throws DataException
 	 * @throws CannotFilterException 
 	 * @throws NoSQLFilterException 

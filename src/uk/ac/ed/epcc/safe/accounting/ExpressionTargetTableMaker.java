@@ -24,9 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
+import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.content.FormatProvider;
@@ -35,7 +36,7 @@ import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.content.Transform;
 import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
+
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 /** Class to build a table of expressions values with one row per record.
@@ -47,8 +48,8 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
  */
 
 
-public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>>{
-	private AppContext c;
+public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>> extends AbstractContexed{
+	
 	private F up;
 	private Map<String,PropExpression> props;
 	private Map<String,Transform> transforms;
@@ -58,7 +59,7 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 	private PropExpression warning=null;
 	private final int check_every;
 	public ExpressionTargetTableMaker(AppContext c,F up){
-		this.c=c;
+		super(c);
 		this.up=up;
 		labels=new LinkedList<>();
 		this.props=new HashMap<>();
@@ -72,7 +73,7 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 		}
 	}
 	public final void addColumn(ColName col) {
-		Logger log = c.getService(LoggerService.class).getLogger(getClass());
+		Logger log = getLogger();
 		PropExpression<?> t = col.getTag();
 		if( up.compatible(t)){
 			labels.add(col.getName());
@@ -127,8 +128,10 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 					   if( val != null){
 						   res.put(lab, key,val );
 					   }
-				   }catch(InvalidPropertyException e){
-
+				   }catch(InvalidExpressionException e){
+					   getLogger().debug("Skipping invalid property "+lab+"->"+t.toString(), e);
+				   }catch( Exception e2) {
+					   getLogger().error("Error in expression evaluation "+lab+"->"+t.toString(), e2);
 				   }
 			   }
 			   if( warning != null ){
@@ -148,7 +151,7 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 					   }
 					   res.setWarning(key, set);
 				   }catch(Exception t){
-					   c.getService(LoggerService.class).getLogger(getClass()).error("Error evaluating warning",t);
+					  getLogger().error("Error evaluating warning",t);
 				   }
 			   }
 			   if( key != et) {
@@ -156,7 +159,7 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 			   }
 			   count++;
 			   if( check_every > 0 && count%check_every == 0) {
-				   LimitService limit = c.getService(LimitService.class);
+				   LimitService limit = getContext().getService(LimitService.class);
 				   if( limit != null) {
 					   limit.checkLimit();
 				   }
@@ -189,7 +192,7 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 			   });
 		   }
 		   if( t instanceof FormatProvider){
-			   res.setColFormat(lab,new LabellerTransform(c,((FormatProvider)t).getLabeller()));
+			   res.setColFormat(lab,new LabellerTransform(getContext(),((FormatProvider)t).getLabeller()));
 		   }
 		   Transform trans = transforms.get(lab);
 		   if( trans != null ){

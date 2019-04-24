@@ -184,8 +184,10 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			}catch(InvalidPropertyException ee){
 				throw ee;
 			} catch (Exception e) {
-				getLogger().error("Unexpected exception evaluating expression",e);
-				throw new InvalidExpressionException("Error evaluating expression "+expr.toString(), e);
+				String str_expr = expr.toString();
+				getLogger().error("Unexpected exception evaluating expression "+str_expr,e);
+				
+				throw new InvalidExpressionException("Error evaluating expression "+str_expr, e);
 			}
 			if(use_cache){
 				cache.put(expr, result);

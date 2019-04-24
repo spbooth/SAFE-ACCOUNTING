@@ -203,7 +203,7 @@ public class OverlapHandler<T> {
     private Number addToOverlapSumByIterating(NumberReductionTarget target,
     		PropExpression<Date> start_prop, PropExpression<Date> end_prop,
     		TimePeriod period, Number result, AndRecordSelector sel2)
-    				throws Exception, InvalidPropertyException {
+    				throws Exception, InvalidExpressionException {
     	try(CloseableIterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2)){
     		while(it.hasNext()){
 
@@ -424,7 +424,7 @@ public class OverlapHandler<T> {
 							addToOverlapReductionMapByIterating(tag, start_prop,
 									end_prop, period, target, result, sel2);
 							//log.debug("Both loop "+records+" of which "+over+" overlap");
-						}catch(InvalidPropertyException e){
+						}catch(InvalidExpressionException e){
 							// should never happen
 							throw new ConsistencyError("Impossible error",e);
 						}
@@ -457,13 +457,13 @@ public class OverlapHandler<T> {
 	 * @param result
 	 * @param sel2
 	 * @throws Exception
-	 * @throws InvalidPropertyException
+	 * @throws InvalidExpressionException
 	 */
 	private <R> void addToOverlapReductionMapByIterating(PropExpression<R> tag,
 			PropExpression<Date> start_prop, PropExpression<Date> end_prop,
 			TimePeriod period, NumberReductionTarget target,
 			Map<R, Number> result, AndRecordSelector sel2) throws Exception,
-			InvalidPropertyException {
+			InvalidExpressionException {
 		try(CloseableIterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2)){
 			while(it.hasNext()){
 				ExpressionTargetContainer rec = it.next();
@@ -643,12 +643,12 @@ public class OverlapHandler<T> {
 							records += addToOverlapIndexedReductionByIterating(property, start_prop, end_prop, period, index_set, result, sel2);
 
 							//log.debug("Both loop "+records+" of which "+over+" overlap");
-						}catch(InvalidPropertyException e){
+						}catch(InvalidExpressionException e){
 							// should never happen
 							throw new ConsistencyError("Impossible error",e);
 						}
 					}
-				}catch(InvalidPropertyException e){
+				}catch(InvalidExpressionException e){
 					// DO it all by iteration
 					result = new HashMap<>();
 					AndRecordSelector sel = new AndRecordSelector(selector);
@@ -713,7 +713,7 @@ public class OverlapHandler<T> {
 								seen=true;
 							}
 						}
-					}catch(InvalidPropertyException e){
+					}catch(InvalidExpressionException e){
 						// just skip this property.
 						//conn.getService(LoggerService.class).getLogger(getClass()).warn("Bad proeprty", e);
 					}
@@ -737,7 +737,7 @@ public class OverlapHandler<T> {
 	 * @param end_prop 
      * @param p {@link TimePeriod}
      * @return weighted value of property
-	 * @throws InvalidPropertyException 
+	 * @throws InvalidExpressionException 
      */
     public static Number getOverlap(ExpressionTarget rec,NumberReductionTarget target,PropExpression<Date> start_prop,PropExpression<Date> end_prop,TimePeriod p) throws InvalidExpressionException {
     	Number tmp=target.map(rec.evaluateExpression(target.getExpression()));
