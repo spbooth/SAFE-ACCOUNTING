@@ -22,7 +22,7 @@ import uk.ac.ed.epcc.webapp.model.Classification;
 public class ReportGeneratorAppTest extends WebappTestBase{
 
 	
-	String dir = "tests/uk/ac/ed/epcc/safe/apps/output/";
+	String dir = "src/test/java/uk/ac/ed/epcc/safe/apps/output/";
 	
 	@Before
 	public void loadData() throws Exception{
