@@ -9,7 +9,7 @@
 	<property name="tomcat.home" value="/opt/tomcat/default" />
 	<property name="umldoc.home" value="/home/sbooth/yworks-uml-doclet-3.0_02-jdk1.5" />
 	<property name="webapp.lib" value="${basedir}/lib"/>
-	<property name="webapp.testlib" value="${basedir}/lib"/>
+	<property name="webapp.testlib" value="${basedir}/testlib"/>
 	<property name="ext-lib.dir" value="${basedir}/ext-lib"/>
 
 	<property name="compile.debug" value="true" />
@@ -59,12 +59,11 @@
 	</path>
 	<path id="test.classpath">
 		<!-- to find the test.properties -->
-		<pathelement location="${basedir}/tests" />
+		<pathelement location="${test.resources}" />
 		<path refid="lib.classpath" />
 		<pathelement location="${webapp.testlib}/webapp-test.jar"/>
 		<pathelement location="${build.home}" />
 		<pathelement location="${test.home}" />
-
 	</path>
 
 	<!-- Resolves dependencies defined in the ivy.xml file. -->
