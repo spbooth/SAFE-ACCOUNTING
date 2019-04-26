@@ -35,9 +35,11 @@
 		<dependency org="org.apache.xmlgraphics" name="fop" rev="2.3">
 		   <artifact name="fop" ext="jar"/>
 		</dependency>
-		<dependency org="org.mariadb.jdbc" name="mariadb-java-client" rev="2.3.0">
+		
+		<dependency org="org.mariadb.jdbc" name="mariadb-java-client" rev="2.4.1">
            <artifact name="mariadb-java-client" ext="jar"/>
         </dependency>
+       
 		<!--
 		<dependency org="mysql" name="mysql-connector-java" rev="8.0.12">
     		<artifact name="mysql-connector-java" ext="jar"/>
@@ -56,6 +58,17 @@
 		<dependency org="junit" name="junit" rev="4.11">
     		<artifact name="junit" ext="jar"/>
 		</dependency>
+		<dependency org="commons-logging" name="commons-logging" rev="1.2">
+    		<artifact name="commons-logging" ext="jar"/>
+    		
+		</dependency>
+		
+		<dependency org="log4j" name="log4j" rev="1.2.17" transitive="false">
+    		<artifact name="log4j" ext="jar"/>
+		</dependency>
+	
+	
+		
 	</dependencies>
 	
 </ivy-module>
