@@ -466,6 +466,6 @@ public abstract class AbstractRecordTestCase<R> extends
 	public File getFixtureDir(){
 		return new File(
 				ctx.getInitParameter("test.fixture.dir",
-				"src/test/java/uk/ac/ed/epcc/safe/accounting/parsers/ogfur-records"));
+				"src/test/resources/uk/ac/ed/epcc/safe/accounting/parsers/ogfur-records"));
 	}
 }

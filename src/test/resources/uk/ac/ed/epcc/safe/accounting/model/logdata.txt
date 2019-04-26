@@ -1,6 +1,6 @@
 Query is SELECT * FROM `ReportTemplateOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:report-templates 2:Name:SimpleTestReport.xml
-dirs=src/test/java/uk/ac/ed/epcc/safe/accounting/reports/report-templates,report-templates
-input stream resource name is src/test/java/uk/ac/ed/epcc/safe/accounting/reports/report-templates/SimpleTestReport.xml
+dirs=src/test/resources/uk/ac/ed/epcc/safe/accounting/reports/report-templates,report-templates
+input stream resource name is src/test/resources/uk/ac/ed/epcc/safe/accounting/reports/report-templates/SimpleTestReport.xml
 Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:initial.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/initial.xsl
@@ -23,8 +23,8 @@ input stream resource name is stylesheets/restrict.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/restrict.xsl
 stream found
-dirs=src/test/java/uk/ac/ed/epcc/safe/accounting/reports/report-templates,report-templates
-input stream resource name is src/test/java/uk/ac/ed/epcc/safe/accounting/reports/report-templates/SimpleTestReport.xml
+dirs=src/test/resources/uk/ac/ed/epcc/safe/accounting/reports/report-templates,report-templates
+input stream resource name is src/test/resources/uk/ac/ed/epcc/safe/accounting/reports/report-templates/SimpleTestReport.xml
 stream found
 Initial  source XML is:<?xml version="1.0" encoding="UTF-8"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
 <rep:Title>Template report</rep:Title>
@@ -140,8 +140,8 @@ input stream resource name is schema/table.xsd
 dirs=schema
 input stream resource name is schema/table.xsd
 stream found
-dirs=src/test/java/uk/ac/ed/epcc/safe/accounting/reports/report-templates,report-templates
-input stream resource name is src/test/java/uk/ac/ed/epcc/safe/accounting/reports/report-templates/SimpleTestReport.xml
+dirs=src/test/resources/uk/ac/ed/epcc/safe/accounting/reports/report-templates,report-templates
+input stream resource name is src/test/resources/uk/ac/ed/epcc/safe/accounting/reports/report-templates/SimpleTestReport.xml
 stream found
 lookup attribute [name] in par:ParameterDef, found Message
 lookup attribute [value] in par:ParameterDef, found 
