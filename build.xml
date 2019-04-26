@@ -22,7 +22,10 @@
 	<property name="db_username" value="" />
 	<property name="db_password" value="" />
 	<property name="coverage.dir" value="${basedir}/coverage" />
-	<property name="src.dir" value="${basedir}/src/"/>
+	<property name="src.dir" value="${basedir}/src/main/java"/>
+	<property name="test.dir" value="${basedir}/src/test/java"/>
+	<property name="src.resources" value="${basedir}/src/main/resources"/>
+	<property name="test.resources" value="${basedir}/src/test/resources"/>
 	<property name="class.dir" value="${build.home}/"/>
 
 	<!-- ==== All Target ==== -->
@@ -73,30 +76,26 @@
 
 	<target name="compile" depends="ivy-resolve" description="Compile Java">
 		<mkdir dir="${build.home}" />
-		<javac srcdir="${basedir}/src" destdir="${build.home}" debug="${compile.debug}" source="${compile.source}" target="${compile.target}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
+		<javac srcdir="${src.dir}" destdir="${build.home}" debug="${compile.debug}" source="${compile.source}" target="${compile.target}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
 			<classpath refid="compile.classpath" />
 		</javac>
-		<copy todir="${build.home}" verbose="true" overwrite="true" >
-			<fileset dir="${basedir}/src">
-				<filename name="**/*.properties" />
-			</fileset>
-		</copy>
-		<copy todir="${build.home}" verbose="true" overwrite="true" >
-			<fileset dir="${basedir}/resources">
+		<copy todir="${build.home}" verbose="true" overwrite="true">
+			<fileset dir="${src.resources}/">
 				<filename name="**/*.*" />
 			</fileset>
 		</copy>
-		<copy todir="${build.home}/META-INF" verbose="true" overwrite="true">
-			<fileset dir="${basedir}/META-INF">
-				<filename name="**/*.*" />
-			</fileset>
-		</copy>
+		
 	</target>
 	<target name="compile-test" depends="compile" description="Compile Tests">
 		<mkdir dir="${test.home}" />
-		<javac srcdir="${basedir}/tests" destdir="${test.home}" debug="${compile.debug}" source="${compile.source}" target="${compile.target}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
+		<javac srcdir="${basedir}/src/test/java" destdir="${test.home}" debug="${compile.debug}" source="${compile.source}" target="${compile.target}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
 			<classpath refid="test.classpath" />
 		</javac>
+		<copy todir="${test.home}" verbose="true" overwrite="true">
+					<fileset dir="${test.resources}/">
+						<filename name="**/*.*" />
+					</fileset>
+				</copy>
 	</target>
 
 	<target name="build-jar" depends="compile" description="Create a JAR file from the current build.">
