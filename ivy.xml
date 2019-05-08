@@ -52,7 +52,7 @@
 		<dependency org="org.jfree" name="jcommon" rev="1.0.24">
     		<artifact name="jcommon" ext="jar"/>
 		</dependency>
-		<dependency org="org.incava" name="java-diff" rev="1.1">
+		<dependency org="org.incava" name="java-diff" rev="1.1.2">
     		<artifact name="java-diff" ext="jar"/>
 		</dependency>
 		<dependency org="junit" name="junit" rev="4.11">

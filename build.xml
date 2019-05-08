@@ -60,9 +60,8 @@
 	<path id="test.classpath">
 		<!-- to find the test.properties -->
 		<pathelement location="${test.resources}" />
-		<path refid="lib.classpath" />
+		<path refid="compile.classpath" />
 		<pathelement location="${webapp.testlib}/webapp-test.jar"/>
-		<pathelement location="${build.home}" />
 		<pathelement location="${test.home}" />
 	</path>
 
