@@ -1,3 +1,4 @@
+<fragment>
 <!-- Copyright - The University of Edinburgh 2015 -->
 <Heading>Time Chart Plot</Heading>
 <table class="auto" cols="5" rows="7">
@@ -10,3 +11,4 @@
 <tr count="6"><td class="key" count="0">atlas</td><td class="main" count="1" numeric="true">164</td><td class="main" count="2" numeric="true">0</td><td class="main" count="3" numeric="true">0</td><td class="main" count="4" numeric="true">0</td></tr>
 <tr count="7"><td class="key" count="0">ngsadmin</td><td class="main" count="1" numeric="true">1</td><td class="main" count="2" numeric="true">0</td><td class="main" count="3" numeric="true">0</td><td class="main" count="4" numeric="true">0</td></tr>
 </table>
+</fragment>

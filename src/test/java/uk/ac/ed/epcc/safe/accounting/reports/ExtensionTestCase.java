@@ -9,8 +9,8 @@ public abstract class ExtensionTestCase extends WebappTestBase {
 	 * @param output
 	 * @return
 	 */
-	public final String normalise(String output) {
-		return output.replaceAll("\r?\n", "\n").replaceAll(", ", ",");
+	public String normalise(String output) {
+		return output.replaceAll("\\s*\r?\n", "\n").replaceAll(", ", ",");
 	}
 
 	public String getOutputDir(){

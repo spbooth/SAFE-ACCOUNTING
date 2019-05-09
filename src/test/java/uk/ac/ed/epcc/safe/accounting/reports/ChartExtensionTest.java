@@ -33,6 +33,10 @@ public class ChartExtensionTest extends ExtensionTestCase {
 	
 
 	
+	@Override
+	public String normalise(String output) {
+		return super.normalise(output.replaceAll("</?fragment>", ""));
+	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testHTMLTimeChartPlot() throws Exception {
