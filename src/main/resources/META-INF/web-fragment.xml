@@ -14,4 +14,25 @@
 <!--| limitations under the License.                                           |-->
 <web-fragment id="WebFragment_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
  <name>ACCOUNTING_JAR</name> 
+ <servlet>
+  <description>Template reports</description>
+  <servlet-name>TemplateReportServlet</servlet-name>
+
+  <servlet-class>uk.ac.ed.epcc.safe.accounting.servlet.ReportServlet</servlet-class>
+   <init-param><param-name>basic_auth.realm</param-name><param-value>SAFE User</param-value></init-param>
+</servlet>
+ <servlet>
+<servlet-name>TemplateServlet</servlet-name>
+<servlet-class>uk.ac.ed.epcc.safe.accounting.servlet.TemplateServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>TemplateReportServlet</servlet-name>
+<url-pattern>/ReportServlet/*</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+ <servlet-name>TemplateServlet</servlet-name>
+ <url-pattern>/templates/*</url-pattern>
+ </servlet-mapping>
+
+ 
  </web-fragment>
