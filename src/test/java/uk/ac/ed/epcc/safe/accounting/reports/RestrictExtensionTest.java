@@ -32,7 +32,12 @@ import uk.ac.ed.epcc.webapp.session.WebNameFinder;
 public class RestrictExtensionTest extends ExtensionTestCase {
 
 	
-	
+	@Override
+	public String normalise(String output) {
+		String s1 = output.replaceAll("</?fragment>\\s*\r?\n?", "");
+		String s2 = s1.replaceAll("<!--.*-->\\s*\r?\n", "");
+		return super.normalise(s2);
+	}
 	
 	@Test
 	@DataBaseFixtures({"TestRestrict.xml"})
@@ -41,7 +46,7 @@ public class RestrictExtensionTest extends ExtensionTestCase {
 	}
 
 	protected void testRestrict(String reportType, File outputFile) throws Exception {
-		testRestrict(reportType, TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n", ""));
+		testRestrict(reportType, TestDataHelper.readFileAsString(outputFile));
 		
 	}
 	
@@ -72,11 +77,13 @@ public class RestrictExtensionTest extends ExtensionTestCase {
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 		
 		//System.out.println(out.toString());
+		expectedOutput = normalise(expectedOutput);
+		String outs = normalise(out.toString());
 		
 		// Check it was correctly formatted.
 		assertTrue("Report wasn't correctly formatted:\n"+
-				TestDataHelper.diff(expectedOutput, out.toString()),
-				out.toString().contains(expectedOutput));
+				TestDataHelper.diff(expectedOutput, outs),
+				outs.contains(expectedOutput));
 	
 	}
 	@SuppressWarnings("unchecked")
