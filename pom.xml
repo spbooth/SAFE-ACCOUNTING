@@ -55,6 +55,26 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>create-metadata</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					 <attach>true</attach>
+					 <addOutputDirectoryToResources>true</addOutputDirectoryToResources>
+					 <outputName>accounting_build.properties</outputName>
+					<doCheck>true</doCheck>
+					<doUpdate>true</doUpdate>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
