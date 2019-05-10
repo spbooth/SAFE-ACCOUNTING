@@ -6,7 +6,10 @@
 	<groupId>epcc.ed.ac.uk</groupId>
 	<artifactId>accounting</artifactId>
 	<version>1.0-SNAPSHOT</version>
-
+	<scm>
+	<connection>scm:git:https://git.ecdf.ed.ac.uk/sbooth/ACCOUNTING-JAR.git</connection>
+	<developerConnection>scm:git:ssh://git@git.ecdf.ed.ac.uk:sbooth/ACCOUNTING-JAR.git</developerConnection>
+	</scm>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
