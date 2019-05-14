@@ -41,7 +41,7 @@ public class UsageRecordParseTargetInterfaceTestImp<R,X extends UsageRecordParse
 		//save("tests",getClass().getSimpleName(),getFactory());
 		
 		if( expect != null) {
-			//saveDiff("scratch.xml");
+			//base.saveDiff("scratch.xml");
 			base.checkDiff("/cleanup.xsl", expect);
 		}
 	}

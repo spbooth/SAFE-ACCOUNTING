@@ -556,6 +556,11 @@ public class LSFParser extends BatchParser implements  Contexed {
 		Date submitTime = getDate(values,SUBMIT_TIME_INDEX);
 		Date startTime = getDate(values,START_TIME_INDEX);
 		
+		if( startTime != null && startTime.getTime() == 0L) {
+			// LSF can indicate abortedfailed job with zero start time
+			throw new SkipRecord("Zero start time, aborted of failed job");
+		}
+		
 		double ru_time = Double.valueOf(values.get(RU_UTIME_INDEX_OFFSET + dataOffset));
 		double rs_time = Double.valueOf(values.get(RU_STIME_INDEX_OFFSET + dataOffset));
 		
