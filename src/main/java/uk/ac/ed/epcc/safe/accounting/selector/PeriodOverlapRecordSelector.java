@@ -35,6 +35,9 @@ public class PeriodOverlapRecordSelector implements RecordSelector {
 	
 	/** create a {@link PeriodOverlapRecordSelector}
 	 * 
+	 * Note that if records with a start time of zero are to be returned then
+	 * use a cutoff value less than zero to supress any auto cutoff calculation
+	 * 
 	 * @param period	Period to overlap
 	 * @param start		Start property may be null
 	 * @param end		End property

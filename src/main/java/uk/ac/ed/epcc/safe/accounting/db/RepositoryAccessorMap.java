@@ -442,7 +442,10 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		if( start == null || end == null || start.equals(end)){
 			cutoff=0L;
 		}else if(AUTO_CUTOFF_FEATURE.isEnabled(getContext())){
-			if( cutoff <= 0L) {
+			// Only check for an explicit zero
+			// a negative cutoff will supress auto-generation and
+			// allow records with a zero start time.
+			if( cutoff == 0L) {
 				Long calc_cutoff=null;
 				SessionService sess=null;		
 				TimerService timer = getContext().getService(TimerService.class);

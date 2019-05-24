@@ -1113,6 +1113,9 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		
 	/** Generate an overlap filter
 	 * 
+	 * Normally this will exclude records with a zero start time. These can be included
+	 * by passing a cutoff of -1.
+	 * 
 	 * @param period   Period to overlap
 	 * @param start_prop start property may be null
 	 * @param end_prop   end property
@@ -1155,6 +1158,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
     			res.addFilter(getFilter(start_prop, MatchCondition.GE, start));
     		}else{
     			if( cutoff == 0L ){
+    				// cutoff of -1 to allow zero start date.
     				res.addFilter(getFilter(start_prop, MatchCondition.GT, new Date(0L)));
     			}else if(cutoff > 0L){
     				res.addFilter(getFilter(start_prop, MatchCondition.GE, new Date(start.getTime()-cutoff)));
