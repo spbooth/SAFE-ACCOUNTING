@@ -44,6 +44,7 @@ import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.AbstractMultiIterator;
 import uk.ac.ed.epcc.webapp.model.data.iterator.NestedIterator;
+import uk.ac.ed.epcc.webapp.timer.TimeClosable;
 /** A composite {@link UsageProducer} that combines results from several 
  * underlying {@link UsageProducer}s.
  * 
@@ -206,7 +207,7 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 	throws DataException {
 		long result = 0L;
 		for (UsageProducer<UR> prod: factories.values()) {
-			try {
+			try(TimeClosable time= new TimeClosable(conn, ()->getTag()+".getRecordCount."+prod.getTag())){
 				if( prod.compatible(sel)){
 					result += prod.getRecordCount(sel);
 				}
@@ -274,11 +275,12 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 
 	public <R,T,D> Map<R, T> getReductionMap(
 			PropExpression<R> tag,ReductionTarget<T,D> res, 
-			 RecordSelector selector) 
-			throws Exception {
+			RecordSelector selector) 
+					throws Exception {
 		Map<R, T> result = null;
-		
-			for (UsageProducer<UR> prod: factories.values()) {
+
+		for (UsageProducer<UR> prod: factories.values()) {
+			try(TimeClosable time= new TimeClosable(conn, ()->getTag()+".getReductionMap."+prod.getTag())){
 				if( prod.compatible(tag) && prod.compatible(selector)){
 					if (result == null) {
 						result = prod.getReductionMap(tag, res, selector);
@@ -291,7 +293,8 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 					}
 				}
 			}
-		
+		}
+
 		return result;
 	}
 	
@@ -307,32 +310,35 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 		Map<ExpressionTuple,ReductionMapResult> result = null;
 		//TODO change avg to sum and count
 		for(UsageProducer prod : factories.values()){
-			// We can substitute default values for non-index reductions
-			// that are not supported by a producer
-			boolean compatible=true;
-			for(ReductionTarget t : targets){
-				compatible = compatible &&  (t.getReduction() != Reduction.INDEX || prod.compatible(t.getExpression()));
-			}
-			compatible = compatible && prod.compatible(selector);
-			if( compatible ){
-				if( result == null ){
-					result = prod.getIndexedReductionMap( targets, selector);
-				}else{
-					Map<ExpressionTuple,ReductionMapResult> tmp = prod.getIndexedReductionMap( targets, selector);
-					for(ExpressionTuple key : tmp.keySet()){
-						ReductionMapResult old = result.get(key);
-						ReductionMapResult merge = tmp.get(key);
-						if( old == null ){
-							if( merge != null ){
-								result.put(key, merge);
-							}
-						}else{
-							for(ReductionTarget target : targets){
-								old.put(target, target.combine(old.get(target),merge.get(target)));
+			try(TimeClosable time= new TimeClosable(conn, ()->getTag()+".getIndexReductionMap."+prod.getTag())){
+				// We can substitute default values for non-index reductions
+				// that are not supported by a producer
+				boolean compatible=true;
+				for(ReductionTarget t : targets){
+					compatible = compatible &&  (t.getReduction() != Reduction.INDEX || prod.compatible(t.getExpression()));
+				}
+				compatible = compatible && prod.compatible(selector);
+				if( compatible ){
+					if( result == null ){
+						result = prod.getIndexedReductionMap( targets, selector);
+					}else{
+						Map<ExpressionTuple,ReductionMapResult> tmp = prod.getIndexedReductionMap( targets, selector);
+						for(ExpressionTuple key : tmp.keySet()){
+							ReductionMapResult old = result.get(key);
+							ReductionMapResult merge = tmp.get(key);
+							if( old == null ){
+								if( merge != null ){
+									result.put(key, merge);
+								}
+							}else{
+								for(ReductionTarget target : targets){
+									old.put(target, target.combine(old.get(target),merge.get(target)));
+								}
 							}
 						}
 					}
 				}
+
 			}
 		}
 		if( result == null){
@@ -373,12 +379,14 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 	public <R,D> R getReduction(ReductionTarget<R,D> type,  RecordSelector selector) throws Exception {
 		R result = null;
 		for (UsageProducer<UR> prod:  factories.values()) {
-			if( prod.compatible(type.getExpression()) && prod.compatible(selector)){
-				if (result == null) {
-					result = prod.getReduction(type,  selector);
-				} else {
-					result = type.combine(result, prod.getReduction(type, 
-							selector));
+			try(TimeClosable t= new TimeClosable(conn, ()->getTag()+"getReduction."+prod.getTag())){
+				if( prod.compatible(type.getExpression()) && prod.compatible(selector)){
+					if (result == null) {
+						result = prod.getReduction(type,  selector);
+					} else {
+						result = type.combine(result, prod.getReduction(type, 
+								selector));
+					}
 				}
 			}
 		}
@@ -554,36 +562,38 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 	}
 	@Override
 	public UsageProducer<UR> narrow(RecordSelector sel) throws Exception {
-		if( factories.size() == 1) {
-			// No potential to narrow so just test with compatible
-			UsageProducer<UR> prod = factories.values().iterator().next();
-			if( prod.compatible(sel)) {
-				return prod;
+		try(TimeClosable time = new TimeClosable(conn, () -> getTag()+".narrow")){
+			if( factories.size() == 1) {
+				// No potential to narrow so just test with compatible
+				UsageProducer<UR> prod = factories.values().iterator().next();
+				if( prod.compatible(sel)) {
+					return prod;
+				}
+				return null;
 			}
-			return null;
-		}
-		NarrowTag tag = new NarrowTag(getTag(), sel);
-		if( getContext().hasAttribute(tag)) {
-			return (UsageProducer<UR>) getContext().getAttribute(tag);
-		}
-		Set<UsageProducer<UR>> set = new LinkedHashSet<>();
-		for(UsageProducer<UR> prod :factories.values()) {
-			if( prod.compatible(sel) &&  prod.exists(sel)) {
-				set.add(prod);
+			NarrowTag tag = new NarrowTag(getTag(), sel);
+			if( getContext().hasAttribute(tag)) {
+				return (UsageProducer<UR>) getContext().getAttribute(tag);
 			}
+			Set<UsageProducer<UR>> set = new LinkedHashSet<>();
+			for(UsageProducer<UR> prod :factories.values()) {
+				if( prod.compatible(sel) &&  prod.exists(sel)) {
+					set.add(prod);
+				}
+			}
+			UsageProducer<UR> res=null;
+			if( set.isEmpty()) {
+				res=null;
+			}else if( set.size()==1) {
+				res = set.iterator().next();
+			}else if( set.size() == factories.size()) {
+				res = this;
+			}else {
+				res = new ListUsageManager<>(getContext(), getTag()+".narrowed", set);
+			}
+			getContext().setAttribute(tag, res);
+			return res;
 		}
-		UsageProducer<UR> res=null;
-		if( set.isEmpty()) {
-			res=null;
-		}else if( set.size()==1) {
-			res = set.iterator().next();
-		}else if( set.size() == factories.size()) {
-			res = this;
-		}else {
-			res = new ListUsageManager<>(getContext(), getTag()+".narrowed", set);
-		}
-		getContext().setAttribute(tag, res);
-		return res;
 	}
 	
 }
