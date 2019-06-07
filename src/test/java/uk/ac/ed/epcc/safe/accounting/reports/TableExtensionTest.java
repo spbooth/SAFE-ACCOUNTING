@@ -150,6 +150,12 @@ public class TableExtensionTest extends ExtensionTestCase {
 		
 	}
 	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testMedianExpressionTable() throws Exception {	
+		testTables("csv", "testMedianSlowdownReport.xml",new File(getOutputDir()+"MedianSlowdownReport.csv"));
+		
+	}
 	protected void testTables(String reportType, File outputFile) throws Exception {
 		testTables(reportType, "testTable",outputFile);
 		

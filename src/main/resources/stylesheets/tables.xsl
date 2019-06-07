@@ -103,7 +103,7 @@
 		</xsl:apply-templates>
 		<xsl:copy-of select="table:postProcess($TableExtension,$table,.)" />
 	</xsl:template>
-	<xsl:template match="tab:Index|tab:Column|tab:SumColumn|tab:AverageColumn|tab:MinColumn|tab:MaxColumn|tab:CountDistinctColumn" mode="SummaryTable">
+	<xsl:template match="tab:Index|tab:Column|tab:SumColumn|tab:AverageColumn|tab:MedianColumn|tab:MinColumn|tab:MaxColumn|tab:CountDistinctColumn" mode="SummaryTable">
 		<xsl:param name="table" />
 		<xsl:value-of select="table:addColumn($TableExtension,$table,.)" />
 	</xsl:template>

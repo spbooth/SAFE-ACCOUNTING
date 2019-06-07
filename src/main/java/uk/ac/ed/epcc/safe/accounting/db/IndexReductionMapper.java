@@ -123,6 +123,7 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 								case AVG: addAverage(e, value_name);break;
 								case SELECT:addClause(val, value_name);break; 
 								case DISTINCT: addCount(e, value_name); break; // might be counting distinct numbers
+								case MEDIAN: throw new CannotUseSQLException("Medians must calculate using SQL");
 								default: throw new IllegalReductionException("Bad number reduction");
 								}
 							}else if( Date.class.isAssignableFrom(val.getTarget()) ){

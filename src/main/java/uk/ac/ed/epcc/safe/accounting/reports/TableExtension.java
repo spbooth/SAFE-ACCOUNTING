@@ -50,6 +50,7 @@ import uk.ac.ed.epcc.safe.accounting.IndexReduction;
 import uk.ac.ed.epcc.safe.accounting.JobTableMaker;
 import uk.ac.ed.epcc.safe.accounting.NumberAverageReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.NumberMaxReductionTarget;
+import uk.ac.ed.epcc.safe.accounting.NumberMedianReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.NumberMinReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.NumberSumReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
@@ -665,6 +666,8 @@ public class TableExtension extends ReportExtension {
 						red = new NumberSumReductionTarget(property);
 					}else if(columnType.equals("AverageColumn")){
 						red = new NumberAverageReductionTarget( property);
+					}else if(columnType.equals("MedianColumn")){
+						red = new NumberMedianReductionTarget( property);
 					}else if(columnType.equals("MinColumn")){
 						if( Number.class.isAssignableFrom(property.getTarget()) ){
 							red = new NumberMinReductionTarget(property);

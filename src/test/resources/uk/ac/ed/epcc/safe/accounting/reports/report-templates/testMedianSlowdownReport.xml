@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:res="http://safe.epcc.ed.ac.uk/restrict"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<rep:Title>Scheduling coefficient report</rep:Title>
+
+<!--  Period -->
+	<per:Period><per:StartTime>Epoch</per:StartTime><per:EndTime>Forever</per:EndTime></per:Period>
+<rep:Section>
+
+<rep:Title>Slowdown</rep:Title>
+<tab:CompoundTable>
+<tab:SummaryTable>
+<tab:Index labeller="IncludeZeroPower2RangeLabeller"><tab:Name>Runtime/h</tab:Name><tab:Property>Elapsed/3600</tab:Property></tab:Index>
+<tab:MedianColumn><tab:NameExpression labeller="Power2RangeLabeller">CPUs</tab:NameExpression><tab:Property>Slowdown</tab:Property></tab:MedianColumn>
+<tab:SortRows/>
+</tab:SummaryTable>
+</tab:CompoundTable>
+
+</rep:Section>
+</rep:Report>

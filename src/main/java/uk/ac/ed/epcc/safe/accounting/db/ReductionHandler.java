@@ -74,8 +74,15 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 			// can't do anything
 			return new HashMap<>();
 		}
+		
 		if( ! FILTER_REDUCTION.isEnabled(getContext())) {
 			return super.getIndexedReductionMap(sum, selector);
+		}
+		for(ReductionTarget t : sum) {
+			// We can still use SQL if the non-sql reduction is going to be null anyway
+			if(compatible(t) && ! t.canUseSQL()) {
+				return super.getIndexedReductionMap(sum, selector);
+			}
 		}
 		try{
 			IndexReductionFinder<E> finder = new IndexReductionFinder<E>(map, sum,makeDef(sum));
@@ -97,7 +104,7 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 		if( ! map.resolves(type.getExpression(),false)){
 			return type.getDefault();
 		}
-		if( ! FILTER_REDUCTION.isEnabled(getContext())) {
+		if(! (type.canUseSQL() && FILTER_REDUCTION.isEnabled(getContext()))) {
 			return super.getReduction(type, sel);
 		}
 		try{
@@ -127,7 +134,7 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 			return new HashMap<>();
 
 		}
-		if( ! FILTER_REDUCTION.isEnabled(getContext())) {
+		if( ! ( property.canUseSQL() && FILTER_REDUCTION.isEnabled(getContext()))) {
 			return super.getReductionMap(index, property, selector);
 		}
 

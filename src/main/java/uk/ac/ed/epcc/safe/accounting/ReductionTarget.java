@@ -106,4 +106,12 @@ public abstract class ReductionTarget<T,D> {
 	public String toString() {
 		return op.toString()+"("+expr.toString()+")";
 	}
+	
+	/** Is is ever possible for this target to be generated in SQL
+	 * This is used to short cut to calcuate by iterating
+	 * @return boolean
+	 */
+	public boolean canUseSQL() {
+		return true;
+	}
 }

@@ -1,4 +1,4 @@
-//| Copyright - The University of Edinburgh 2015                            |
+//| Copyright - The University of Edinburgh 2011                            |
 //|                                                                         |
 //| Licensed under the Apache License, Version 2.0 (the "License");         |
 //| you may not use this file except in compliance with the License.        |
@@ -11,38 +11,46 @@
 //| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.|
 //| See the License for the specific language governing permissions and     |
 //| limitations under the License.                                          |
+/*******************************************************************************
+ * Copyright (c) - The University of Edinburgh 2010
+ *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.webapp.MedianValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
-public abstract class NumberReductionTarget extends ReductionTarget<Number,Number> {
+/** A {@link ReductionTarget} operating on numbers that generate an
+ * median.
+ * The result is always a {@link MedianValue} object.
+ * @author spb
+ *
+ */
 
-	public NumberReductionTarget(Reduction op,
-			PropExpression<? extends Number> tag)
-			throws IllegalReductionException {
-		super(Number.class, Number.class,op, tag);
+
+
+public class NumberMedianReductionTarget extends NumberReductionTarget{
+	public NumberMedianReductionTarget(
+			PropExpression<? extends Number> tag) throws IllegalReductionException {
+		super(Reduction.MEDIAN, tag);
+	}
+	
+
+	@Override
+	public Number getDefault(){
+		return new MedianValue();
+		
 	}
 
-	public static NumberReductionTarget getInstance(Reduction op, PropExpression<? extends Number> tag) throws IllegalReductionException{
-		switch(op){
-			case AVG: return new NumberAverageReductionTarget( tag);
-			case SUM: return new NumberSumReductionTarget(tag);
-			case MIN: return new NumberMinReductionTarget(tag);
-			case MAX: return new NumberMaxReductionTarget(tag);
-			case MEDIAN: return new NumberMedianReductionTarget(tag);
-			default: throw new IllegalReductionException("Unsupported Number reduction "+op);
-		}
-	}
 
-	/** Does this class generate native java {@link Number} types that can safely be converted
-	 * to intrinsic types without losing functionality
-	 * 
-	 * @return boolean
-	 */
+	@Override
 	public boolean isNativeType() {
-		return true;
+		// We are generating a AverageValue
+		return false;
 	}
-	
-	
+
+	@Override
+	public boolean canUseSQL() {
+		return false;
+	}
 }

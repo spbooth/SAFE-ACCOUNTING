@@ -91,6 +91,9 @@
 			<xsd:element name="AverageColumn" type="SummaryColumnType" >
 			<xsd:annotation><xsd:documentation>A AVERAGE reduction of a numerical expression. When time bound overlap is in force this becomes the time-average.</xsd:documentation></xsd:annotation>
 			</xsd:element>
+			<xsd:element name="MedianColumn" type="SummaryColumnType" >
+			<xsd:annotation><xsd:documentation>A Median average reduction of a numerical expression. This forces evaluation by iterating so may be slow and has to keep the entire dataset in memory so may consume large amounts of memory </xsd:documentation></xsd:annotation>
+			</xsd:element>
 			<xsd:element name="MinColumn" type="SummaryColumnType" >
 			<xsd:annotation><xsd:documentation>A Minimum reduction of a numerical or date expression</xsd:documentation></xsd:annotation>
 			</xsd:element>

@@ -70,6 +70,7 @@ public class AtomExtension extends ReportExtension {
 	private static final String MAXIMUM_ELEMENT = "Maximum";
 	private static final String MINIMUM_ELEMENT = "Minimum";
 	private static final String AVERAGE_ELEMENT = "Average";
+	private static final String MEDIAN_ELEMENT = "Median";
 	private static final String SUM_ELEMENT = "Sum";
 	public static final Feature CACHE_ATOM_RESULTS = new Feature("cache.atom_results",true,"Cache atom results to optimise repeated queries in the same report");
 
@@ -175,6 +176,8 @@ public class AtomExtension extends ReportExtension {
 			return expandSimpleReduction(element, set, period, Reduction.SUM);
 		} else if (AVERAGE_ELEMENT.equals(name)) {
 			return expandSimpleReduction(element, set, period, Reduction.AVG);
+		} else if (MEDIAN_ELEMENT.equals(name)) {
+			return expandSimpleReduction(element, set, period, Reduction.MEDIAN);	
 		} else if (MINIMUM_ELEMENT.equals(name)) {
 			return expandSimpleReduction(element, set, period, Reduction.MIN);
 		} else if (MAXIMUM_ELEMENT.equals(name)) {

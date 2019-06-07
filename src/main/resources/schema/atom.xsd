@@ -64,7 +64,13 @@
 			</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
-	
+	<xsd:element name="Median" type="prop:PropExpressionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Median average a prop-expression over the current selection.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
 	<xsd:element name="Minimum" type="prop:PropExpressionType">
 		<xsd:annotation>
 			<xsd:documentation>
@@ -119,6 +125,7 @@
 			<xsd:element ref="Count" />
 			<xsd:element ref="Sum" />
 			<xsd:element ref="Average" />
+			<xsd:element ref="Median" />
 			<xsd:element ref="Minimum" />
 			<xsd:element ref="Maximum" />
 			<xsd:element ref="Add" />
