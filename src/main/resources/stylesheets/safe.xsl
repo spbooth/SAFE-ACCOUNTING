@@ -10,6 +10,7 @@
 	xmlns:plotter="xalan://uk.ac.ed.epcc.webacct.model.reports.ChartExtension"
 	xmlns:period="xalan://uk.ac.ed.epcc.webacct.model.reports.PeriodExtension"
 	xmlns:filter="xalan://uk.ac.ed.epcc.webacct.model.reports.FilterExtension"
+	xmlns:table="xalan://uk.ac.ed.epcc.webacct.model.reports.TableExtension"
 	xmlns:safe="xalan://uk.ac.hpcx.report.SafeExtension"
 	extension-element-prefixes="plotter period filter safe" >
 	<!-- Import the identity transformation. -->
@@ -20,7 +21,7 @@
 	<xsl:param name="PeriodExtension"/>
 	<xsl:param name="FilterExtension"/>
 	<xsl:param name="SafeExtension"/>
-	
+	<xsl:param name="TableExtension"/>
 	
 	
 	<!-- This supports xsl extensions use to generate the report -->
@@ -65,7 +66,12 @@
 	<xsl:value-of select="safe:maxRate($SafeExtension,$pool,$period)"></xsl:value-of>
 	</xsl:template>
 	
-	
+	<xsl:template match="saf:ProjectDiskTable">
+	<xsl:variable name="filter" select="filter:makeObjectSet($FilterExtension,fil:ObjectSet)"/>
+	<xsl:variable name="fs" select="saf:FileSystem/text()"/>
+	<xsl:variable name="table" select="safe:getProjectQuotaTable($SafeExtension,$fs,$filter)"/>
+	<xsl:copy-of select="table:postProcess($TableExtension,$table,.)" />
+	</xsl:template>
 	
 	<xsl:template match="saf:DefaultUnitChargedProp">
 	<xsl:value-of select="safe:getChargedProp($SafeExtension)"/>

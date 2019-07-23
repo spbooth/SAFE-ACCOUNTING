@@ -42,6 +42,15 @@
 	
 	<xsd:element name="MaxRate" />
 	
+	<xsd:element name="ProjectDiskTable">
+	<xsd:complexType>
+	<xsd:all>
+	<xsd:element ref="fil:ObjectSet"/>
+	<xsd:element name="FileSystem"/>
+	</xsd:all>
+	</xsd:complexType>
+	</xsd:element>
+	
 	<xsd:complexType name="TextType">
 	<xsd:complexContent><xsd:extension base="sub:TextExtensionBase">
 	</xsd:extension>
