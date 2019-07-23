@@ -230,6 +230,16 @@
 	   			</xsd:sequence>
 	   		</xsd:complexType>
 	   	</xsd:element>
+	   		<xsd:element name="SetColumnName">
+	   		<xsd:complexType>
+	   			<xsd:all>
+	   				<xsd:element name="Column"
+	   					type="par:TextOrParameterType" />
+	   				<xsd:element name="Name"
+	   					type="par:TextOrParameterType" />
+	   			</xsd:all>
+	   		</xsd:complexType>
+	   	</xsd:element>
 	   	<xsd:element name="SetRowAt">
 	   		<xsd:complexType>
 	   			<xsd:all>

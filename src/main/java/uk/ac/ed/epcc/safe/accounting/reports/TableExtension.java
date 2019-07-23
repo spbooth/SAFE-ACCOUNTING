@@ -1240,7 +1240,10 @@ public class TableExtension extends ReportExtension {
 			} else if (instruction.equals("SetColumnLast")) {
 				String col = getParam("Column", inst);
 				target.setColLast(col);
-
+			} else if (instruction.equals("SetColumnName")) {
+				String col = getParam("Column", inst);
+				String name = getParam("Name", inst);
+				target.setColName(col, name);
 			} else if (instruction.equals("SetRowAt")) {
 				String row = getParam("Row", inst);
 				int pos = Integer.parseInt(getParam("At", inst));
