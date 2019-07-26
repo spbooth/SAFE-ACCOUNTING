@@ -99,7 +99,13 @@
 		<xsd:element name="Or" type="OperationsType" />
 		<xsd:element name="Null" type="NullType" />
 		<xsd:element name="NotNull" type="NullType" />
-		<xsd:element name="Relationship" type="xsd:anyType"></xsd:element>
+		<xsd:element name="Relationship" type="xsd:anyType">
+		<xsd:annotation><xsd:documentation>
+		Selects any target where the current user has the specified relationship with the target. Note that because
+		the relationship syntax can access NamedFilter (and plugin NamedFilterProviders via qualified names) this is 
+		a very powerful route to accessing domain specific filters.
+		</xsd:documentation></xsd:annotation>
+		</xsd:element>
 	</xsd:choice>
 	</xsd:group>
 

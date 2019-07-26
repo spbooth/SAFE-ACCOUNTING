@@ -66,6 +66,7 @@ import uk.ac.ed.epcc.webapp.forms.FormValidator;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
 import uk.ac.ed.epcc.webapp.forms.html.ForwardResult;
+import uk.ac.ed.epcc.webapp.forms.html.RedirectResult;
 import uk.ac.ed.epcc.webapp.forms.inputs.BoundedDateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.DateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
@@ -102,6 +103,7 @@ import uk.ac.ed.epcc.webapp.model.log.Viewable;
 import uk.ac.ed.epcc.webapp.model.period.GatedTransition;
 import uk.ac.ed.epcc.webapp.model.period.SplitTransition;
 import uk.ac.ed.epcc.webapp.preferences.Preference;
+import uk.ac.ed.epcc.webapp.servlet.LoginServlet;
 import uk.ac.ed.epcc.webapp.servlet.TransitionServlet;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
@@ -481,7 +483,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 				notifyDeleted(target);
 				if( target.delete()){
 					
-					return new BackResult(getTransitionProvider(), new ForwardResult("/main.jsp"));
+					return new BackResult(getTransitionProvider(), new RedirectResult(LoginServlet.getMainPage(getContext())));
 				}
 			} catch (DataFault e) {
 				getLogger().error("Error deleting Allocation",e);
@@ -509,7 +511,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		public FormResult doTransition(T target, AppContext c)
 				throws TransitionException {
 		
-			return new BackResult(getTransitionProvider(), new ForwardResult("/main.jsp"));
+			return new BackResult(getTransitionProvider(), new RedirectResult(LoginServlet.getMainPage(getContext())));
 		}
 		
 	}
