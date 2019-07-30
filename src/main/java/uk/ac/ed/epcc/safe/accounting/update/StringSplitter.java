@@ -32,7 +32,7 @@ public class StringSplitter implements Iterator<String>{
 	int pos=0;
 	public StringSplitter(String u){
 		//this(u,"(?:\\s*\\n)+");  // strip trailing whitespace and merge empty lines
-		this(u,"\\n+");
+		this(u,"(?:\\r?\\n)+");  // Any number or CR-LF or LF
 	}
 	public StringSplitter(String u, String split_pattern){
 		if( u != null ){
