@@ -96,6 +96,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
+import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DurationInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 /** The ParameterExtension expands objects in the parameter map into the output.
@@ -355,7 +356,8 @@ public class ParameterExtension extends ReportExtension {
 
 		} else if (type.equals("Boolean")) {
 			return new BooleanInput();
-
+		}else if( type.equals("Duration")) {
+			return new DurationInput();
 		} else if (type.equals("List")) {
 			SetInput<String> set_input = new SetInput<>();
 			NodeList list = param.getChildNodes();
