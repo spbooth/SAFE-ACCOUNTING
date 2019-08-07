@@ -72,7 +72,7 @@
 	
 
 	
-	<xsd:element name="UserChart" type="SafeChartType"/>
+	<xsd:element name="UserChart" type="SafeObjectChartType"/>
 	<xsd:element name="QualityTokenChart" type="SafeChartType"/>
      <xsd:element name="Expected" type="ExpectedType" substitutionGroup="ato:Numeric"/>
      
@@ -112,6 +112,15 @@
     <xsd:sequence>
     	<xsd:element ref="per:Period" minOccurs="0" maxOccurs="1" />
     	<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
+    	<xsd:element ref="cha:NumberOfTimeBlocks" minOccurs="0" maxOccurs="1"/>
+    	<xsd:element ref="cha:Caption" maxOccurs="1" minOccurs="0" />
+    </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="SafeObjectChartType">
+    <xsd:sequence>
+    	<xsd:element ref="per:Period" minOccurs="0" maxOccurs="1" />
+    	<xsd:element ref="fil:ObjectSet" minOccurs="0" maxOccurs="1" />
     	<xsd:element ref="cha:NumberOfTimeBlocks" minOccurs="0" maxOccurs="1"/>
     	<xsd:element ref="cha:Caption" maxOccurs="1" minOccurs="0" />
     </xsd:sequence>

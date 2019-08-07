@@ -26,11 +26,12 @@
 	
 	<!-- This supports xsl extensions use to generate the report -->
 	<xsl:template match="saf:UserChart">
-	<xsl:variable name="filter" select="filter:makeFilter($FilterExtension,ancestor::*/fil:Filter|fil:Filter)"/>
+	<xsl:variable name="filter" select="filter:makeObjectSet($FilterExtension,fil:ObjectSet)"/>
+	
 	<xsl:variable name="PeriodNode" select="(ancestor::*/per:Period|per:Period)[last()]"/>
 	<xsl:variable name="period" select="period:makePeriod($PeriodExtension,$PeriodNode)"/>
 	<xsl:variable name="caption" select="cha:Caption/text()"/>
-	<xsl:variable name="chart" select="safe:addUserData($SafeExtension,plotter:makeTimeChart($ChartExtension,$period,.))"/>
+	<xsl:variable name="chart" select="safe:addUserData($SafeExtension,plotter:makeTimeChart($ChartExtension,$period,.),$filter)"/>
 	<xsl:choose>
 	<xsl:when test="plotter:hasData($ChartExtension,$chart)">
 	<xsl:copy-of select="plotter:addChart($ChartExtension,$chart,$caption)"/>
