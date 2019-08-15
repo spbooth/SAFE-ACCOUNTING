@@ -102,17 +102,7 @@ public class ReportTemplate extends DataObject implements Retirable{
 		return getContext().expandText(record.getStringProperty(REPORT_DESCRIPTION));
 		
 	}
-	public ContentBuilder addParameterText(ContentBuilder cb) {
-		try {
-			ReportBuilder builder = getBuilder();
-			if( builder != null) {
-				cb = builder.addParameterText(cb);
-			}
-		}catch(Exception e) {
-			getLogger().error("Error adding parameter text", e);
-		}
-		return cb;
-	}
+	
 	
  	public String getReportGroup() {
 		return record.getStringProperty(REPORT_GROUP, null);

@@ -274,8 +274,16 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			//cb.addHeading(3, template.getReportName());
 			if( template != null){
 				cb.addText(template.getReportDescription());
-				template.addParameterText(cb);
 			}
+			
+			try {
+				ReportBuilder builder = ReportBuilder.getInstance(conn);
+				ReportBuilder.setTemplate(conn, builder, target.getName());
+				builder.addParameterText(cb);
+			} catch (Exception e1) {
+				getLogger().error("Error adding parameter text");
+			}
+			
 			try {
 				if( f.isComplete()) {
 					addPreview(getContext(), cb, target);
