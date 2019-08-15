@@ -103,6 +103,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 public class ReportBuilder extends AbstractContexed implements ContextCached , TemplateValidator {
 
+	private static final String PARAMETER_TEXT_ELEMENT = "Text";
 	private static final String AUTHENTICATED_USER_PARAMETER_NAME = "AuthenticatedUser";
 	private static final String CURRENT_TIME_PARAMETER_NAME = "CurrentTime";
 	private static final String RESTRICT_EXTENSION_TAG = "RestrictExtension";
@@ -503,15 +504,12 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 		return conn.getInitParameter("service.name", "") + " Report parameters";
 	}
 
-	public ContentBuilder addParameterText(HtmlBuilder hb) {
+	public ContentBuilder addParameterText(ContentBuilder hb) {
 		NodeList paramNodes = getParameterDocument().getElementsByTagNameNS(
-				PARAMETER_LOC, "Text");
+				PARAMETER_LOC, PARAMETER_TEXT_ELEMENT);
 		for (int i = 0; i < paramNodes.getLength(); i++) {
 			Node text = paramNodes.item(i);
-			hb.open("p");
-			hb.clean(text.getTextContent());
-			hb.close();
-			hb.clean("\n");
+			hb.addText(text.getTextContent());
 		}
 		return hb;
 	}

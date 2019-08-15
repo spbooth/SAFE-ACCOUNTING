@@ -21,6 +21,7 @@ import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -101,8 +102,19 @@ public class ReportTemplate extends DataObject implements Retirable{
 		return getContext().expandText(record.getStringProperty(REPORT_DESCRIPTION));
 		
 	}
+	public ContentBuilder addParameterText(ContentBuilder cb) {
+		try {
+			ReportBuilder builder = getBuilder();
+			if( builder != null) {
+				cb = builder.addParameterText(cb);
+			}
+		}catch(Exception e) {
+			getLogger().error("Error adding parameter text", e);
+		}
+		return cb;
+	}
 	
-	public String getReportGroup() {
+ 	public String getReportGroup() {
 		return record.getStringProperty(REPORT_GROUP, null);
 	}
 	

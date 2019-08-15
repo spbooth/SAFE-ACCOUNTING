@@ -274,6 +274,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			//cb.addHeading(3, template.getReportName());
 			if( template != null){
 				cb.addText(template.getReportDescription());
+				template.addParameterText(cb);
 			}
 			try {
 				if( f.isComplete()) {
