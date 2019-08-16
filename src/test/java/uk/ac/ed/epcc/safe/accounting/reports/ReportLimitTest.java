@@ -68,7 +68,7 @@ public class ReportLimitTest extends AbstractTransitionServletTest {
 		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(ctx);
 		
 		
-		CalendarFieldPeriodInput input = new CalendarFieldPeriodInput();
+		CalendarFieldPeriodInput input = CalendarFieldPeriodInput.getInstance(ctx);
 		input.setKey("Period");
 		input.setValue(p);
 		LinkedHashMap params = new LinkedHashMap<>();
@@ -105,7 +105,7 @@ public class ReportLimitTest extends AbstractTransitionServletTest {
 		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(ctx);
 		
 		
-		CalendarFieldPeriodInput input = new CalendarFieldPeriodInput();
+		CalendarFieldPeriodInput input = CalendarFieldPeriodInput.getInstance(ctx);
 		input.setKey("Period");
 		input.setValue(p);
 		LinkedHashMap params = new LinkedHashMap<>();

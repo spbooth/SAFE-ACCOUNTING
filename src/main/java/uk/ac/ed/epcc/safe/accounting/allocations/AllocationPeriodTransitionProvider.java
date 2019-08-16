@@ -143,7 +143,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 			SessionService sess = conn.getService(SessionService.class);
 			Period p = target.getPeriod();
 			if( p instanceof CalendarFieldSplitPeriod) {
-				CalendarFieldPeriodInput input = new CalendarFieldPeriodInput(Calendar.MONTH);
+				CalendarFieldPeriodInput input = CalendarFieldPeriodInput.getInstance(conn,Calendar.MONTH);
 				
 				input.setValue((CalendarFieldSplitPeriod)p);
 				f.addInput("Period", "Period", input );

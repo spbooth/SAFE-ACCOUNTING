@@ -63,6 +63,7 @@ import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.BoundedDateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.BoundedInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.DateInput;
@@ -361,10 +362,10 @@ public class ParameterExtension extends ReportExtension {
 			return new RelativeDateInput();
 			//return new DayMultiInput();	
 		} else if (type.equals("Month")) {
-			return new MonthMultiInput();
+			return BoundedDateInput.getInstance(getContext(), Calendar.MONTH);
 			//return new MonthInput();	
 		} else if (type.equals("TimeStamp")) {
-			return new TimeStampInput();
+			return BoundedDateInput.getInstance(getContext(), Calendar.SECOND);
 
 		} else if (type.equals("Boolean")) {
 			return new BooleanInput();
@@ -413,11 +414,11 @@ public class ParameterExtension extends ReportExtension {
 		}else if (type.equals("RegularSplitPeriod")){
 			return new RegularPeriodInput(now);
 		}else if (type.equals("CalendarPeriod")){
-			return new CalendarFieldPeriodInput(now);
+			return CalendarFieldPeriodInput.getInstance(conn,now);
 		}else if (type.equals("DayCalendarPeriod")){
-			return new CalendarFieldPeriodInput(now,Calendar.DATE);
+			return CalendarFieldPeriodInput.getInstance(conn,now,Calendar.DATE);
 		}else if (type.equals("MonthCalendarPeriod")){
-			return new CalendarFieldPeriodInput(now,Calendar.MONTH);
+			return CalendarFieldPeriodInput.getInstance(conn,now,Calendar.MONTH);
 		}
 		// Not a built in type try various methods in turn
 		

@@ -174,7 +174,7 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		cal.add(Calendar.MONTH, -2); // non default period
 		CalendarFieldSplitPeriod period = new CalendarFieldSplitPeriod(cal, Calendar.MONTH, 1, 1);
-		CalendarFieldPeriodInput tmp = new CalendarFieldPeriodInput();
+		CalendarFieldPeriodInput tmp = CalendarFieldPeriodInput.getInstance(ctx);
 		tmp.setValue(period);
 		tmp.setKey("Period");
 		SetParamsVisitor vis = new SetParamsVisitor(true, params);
