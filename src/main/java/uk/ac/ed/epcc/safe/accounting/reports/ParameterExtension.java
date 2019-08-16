@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -157,9 +158,8 @@ public class ParameterExtension extends ReportExtension {
 	 * @throws Exception
 	 */
 	
-	public boolean buildReportParametersForm(FormResult self,Form form, Document reportTemplateDocument) throws Exception {
+	public boolean buildReportParametersForm(FormResult self,Map defaults,Form form, Document reportTemplateDocument) throws Exception {
 		SetParamsVisitor setter = new SetParamsVisitor(false, params);
-		
 		// Find the parameters which have been defined
 		NodeList paramNodes = reportTemplateDocument.getElementsByTagNameNS(
 				PARAMETER_LOC,"*");
@@ -200,6 +200,18 @@ public class ParameterExtension extends ReportExtension {
 			}
 			form.addInput(name, label, title,input);
 			form.getField(name).setOptional( ! empty(getAttribute(OPTIONAL_ATTR, param)));
+			
+			
+			// Record default values set from the template
+			// These are default form values not sub-inputs
+			// these are needed to handle the case where inputs are optional with default
+			// because the url needs to encode explicitly selected null values.
+			if( defaults != null ) {
+				Object v = form.get(name);
+				if( v != null ) {
+					defaults.put(name,v);
+				}
+			}
 			// set any value from params
 			// this ensures multi-stage form will validate
 			// while being built if early stages are set from params

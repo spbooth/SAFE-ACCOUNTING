@@ -196,10 +196,12 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			private Report target;
 			private Object text;
 			private ReportTemplateKey next_transition;
-			public NextAction(Object text,Report target,ReportTemplateKey next_transition,boolean new_window) {
+			private Map<String,Object> defaults;
+			public NextAction(Object text,Report target,Map<String,Object> defaults,ReportTemplateKey next_transition,boolean new_window) {
 				super();
 				this.text=text;
 				this.target = target;
+				this.defaults=defaults;
 				this.next_transition=next_transition;
 				setNewWindow(new_window);
 			}
@@ -208,7 +210,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			public FormResult action(Form f) throws ActionException {
 				return new ChainedTransitionResult<Report, ReportTemplateKey>(
 						ReportTemplateTransitionProvider.this, 
-						getTargetReport(f,target), 
+						getTargetReport(defaults,f,target), 
 						next_transition) {
 					@Override
 					public boolean useURL() {
@@ -250,15 +252,16 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 						f.setTargetStage(ps);
 					}
 				}
-				if( builder.buildReportParametersForm(f, parameters,new ChainedTransitionResult<>(ReportTemplateTransitionProvider.this, target, PREVIEW))) {
-					setMap(parameters, target.getContextParameters(), f, false);
+				Map<String,Object> defaults = new HashMap<String, Object>();
+				if( builder.buildReportParametersForm(f, parameters,defaults,new ChainedTransitionResult<>(ReportTemplateTransitionProvider.this, target, PREVIEW))) {
+					setMap(parameters, target.getContextParameters(),defaults, f, false);
 					if( builder.hasReportParameters()){
-						f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,PREVIEW,false));
+						f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,defaults,PREVIEW,false));
 					}
 					boolean new_window=DOWNLOAD_FROM_NEW_TAB.isEnabled(conn);
-					f.addAction("HTML", new NextAction(new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target, HTML,new_window));
-					f.addAction("PDF", new NextAction(new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target,PDF,new_window));
-					f.addAction("CSV", new NextAction(new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target, CSV,new_window));
+					f.addAction("HTML", new NextAction(new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target,defaults, HTML,new_window));
+					f.addAction("PDF", new NextAction(new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target,defaults,PDF,new_window));
+					f.addAction("CSV", new NextAction(new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target,defaults, CSV,new_window));
 				}
 			}
 			catch (Exception e) {
@@ -415,23 +418,37 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	 * @throws ActionException 
 	 */
 	public void setMap(Map<String,Object> parameters, Form f, boolean set_map) throws ActionException{
-		setMap(parameters, null, f, set_map);
+		setMap(parameters, null,null, f, set_map);
 	}
 
 	/**
 	 * Add/set form contents to a map
 	 * @param p parameters
 	 * @param locked keys of input forms that are locked
+	 * @param optional map of form defaults
 	 * @param f form
 	 * @param set_map <code>true</code> to add the form contents to the map, or <code>false</code> to populate the form from the map values
-	 * @return 
+	 * @return true if any mandatory inputs were missing
 	 * @throws ActionException
 	 */
-	public boolean setMap(Map<String,Object> p, Collection<String> locked, Form f, boolean set_map) throws ActionException
+	public boolean setMap(Map<String,Object> p, Collection<String> locked, Map<String,Object> defaults,Form f, boolean set_map) throws ActionException
 	{
 		boolean missing=false;
 		SetParamsVisitor vis = new SetParamsVisitor(set_map, p);
 		for(Field<?> field : f){
+			if( set_map && defaults != null ) {
+				Object value = field.getValue();
+				if( value != null && value.equals(defaults.get(field.getKey()))) {
+					// this is the current default so suppress the params to make url cleaner
+					continue;
+				}
+				if( value == null && field.isOptional() && defaults.containsKey(field.getKey())) {
+					// We have selected null where a default exists
+					// use empty string to indicate this
+					p.put(field.getKey(),""); 
+					continue;
+				}
+			}
 			try {
 				vis.setMissing(false);
 				field.getInput().accept(vis);
@@ -439,7 +456,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 					field.lock();
 				}
 				if( ! field.isOptional()) {
-					missing = missing || vis.getMissing();
+					if( defaults == null || !  defaults.containsKey(field.getKey())) {
+						missing = missing || vis.getMissing();
+					}
 				}
 			} catch (Exception e) {
 				throw new ActionException("Error in setMap", e);
@@ -454,11 +473,12 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	 * @return
 	 * @throws ActionException
 	 */
-	public Report getTargetReport(Form f,Report orig) throws ActionException{
+	public Report getTargetReport(Map<String,Object> defaults,Form f,Report orig) throws ActionException{
 		LinkedHashMap<String,Object> new_param = new LinkedHashMap<>();
 		Map<String, Object> param = orig.getParameters();
 		Collection<String> contextParameters = orig.getContextParameters();
-		setMap(new_param, contextParameters, f, true);
+		setMap(new_param, contextParameters, defaults,f, true);
+		// Overide with original values if locked.
 		for (String c : contextParameters) {
 			new_param.put(c, param.get(c));
 		}
@@ -481,10 +501,12 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	{
 		Map<String, Object> reportParameters = target.getParameters();
 		Form form = new BaseForm(c);
-		builder.buildReportParametersForm(form, reportParameters);
+		Map<String,Object> defaults = new HashMap<String, Object>();
+		builder.buildReportParametersForm(form, reportParameters,defaults,null);
+		
 		// don't set any context parameters locking inputs in this form
 		// because parseReportParameters below won't retrieve the values for locked input forms
-		if (setMap(reportParameters, null, form, false)) {
+		if (setMap(reportParameters, null,defaults, form, false)) {
 			return null;
 		}
 		if( ! form.validate()){

@@ -704,9 +704,9 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 	
 	public boolean buildReportParametersForm(Form form, Map<String, Object> params)
 			throws Exception {
-		return buildReportParametersForm(form, params, null);
+		return buildReportParametersForm(form, params, null,null);
 	}
-	public boolean buildReportParametersForm(Form form, Map<String, Object> params,FormResult self)
+	public boolean buildReportParametersForm(Form form, Map<String, Object> params,Map<String,Object> defaults,FormResult self)
 			throws Exception {
 		ParameterExtension pe = (ParameterExtension) params
 				.get(PARAMETER_EXTENSION_TAG);
@@ -714,7 +714,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 			pe = new ParameterExtension(getContext(), null);
 			pe.setParams(params.keySet(), params);
 		}
-		boolean cont = pe.buildReportParametersForm(self,form, getParameterDocument());
+		boolean cont = pe.buildReportParametersForm(self,defaults,form, getParameterDocument());
 		ErrorSet es = pe.getErrors();
 		es.report(getContext());
 		if (es.size() > 0) {

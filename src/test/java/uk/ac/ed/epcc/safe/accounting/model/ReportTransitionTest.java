@@ -108,6 +108,63 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		
 		
 		// default period is the previous month
+		// don't need to encode default values
+		
+//		Calendar cal = Calendar.getInstance();
+//		cal.setTime(test_time.getTime()); // start form test time
+//		cal.set(Calendar.MILLISECOND,0);
+//		cal.set(Calendar.SECOND, 0);
+//		cal.set(Calendar.MINUTE,0);
+//		cal.set(Calendar.HOUR_OF_DAY, 0);
+//		cal.set(Calendar.DAY_OF_MONTH, 1);
+//		cal.add(Calendar.MONTH, -1);
+//		CalendarFieldSplitPeriod period = new CalendarFieldSplitPeriod(cal, Calendar.MONTH, 1, 1);
+//		CalendarFieldPeriodInput tmp = new CalendarFieldPeriodInput();
+//		tmp.setValue(period);
+//		tmp.setKey("Period");
+//		SetParamsVisitor vis = new SetParamsVisitor(true, params);
+//		tmp.accept(vis);
+		
+		params.put("Message", "hello world");
+		Report report2 = new Report("SimpleTestReportWithPeriod.xml",params);
+		checkRedirectToTransition(prov, ReportTemplateTransitionProvider.PREVIEW, report2);
+		
+		checkFormContent("/normalize.xsl", "test_preview_with_period.xml");
+	}
+	
+	@Test
+	public void testWithPeriod2() throws Exception {
+		TestTimeService serv = new TestTimeService();
+		Calendar test_time = Calendar.getInstance();
+		test_time.clear();
+		test_time.set(2018, Calendar.APRIL, 23);
+		serv.setResult(test_time.getTime());
+		ctx.setService(serv);
+		
+		setupPerson("fred@example.com");
+		ReportTemplateTransitionProvider prov = new ReportTemplateTransitionProvider(ctx);
+		Report report = new Report("SimpleTestReportWithPeriod.xml");
+		setTransition(prov, null, report);
+		runTransition();
+		checkForward("/scripts/transition.jsp");
+		checkFormContent("/normalize.xsl", "initial_show_with_period.xml");
+		setTransition(prov, ReportTemplateTransitionProvider.PREVIEW, report);
+		addParam("Message", "hello world");
+		addParam("Period.start","2018-02-01 00:00:00");
+		setAction("Preview");
+		runTransition();
+		
+		// This should redirect to PREVIEW of the report with the 
+		// report parameters encoded in the context
+		// reports are given RESTFUL urls with their parameters
+		// so you can link to them this means we need to encode the
+		// current parameters in the transition target
+		
+		// Need deined order as URL will depend on this
+		LinkedHashMap<String, Object> params=new LinkedHashMap<>();
+		
+		
+		// default period is the previous month
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(test_time.getTime()); // start form test time
 		cal.set(Calendar.MILLISECOND,0);
@@ -115,7 +172,7 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		cal.set(Calendar.MINUTE,0);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.DAY_OF_MONTH, 1);
-		cal.add(Calendar.MONTH, -1);
+		cal.add(Calendar.MONTH, -2); // non default period
 		CalendarFieldSplitPeriod period = new CalendarFieldSplitPeriod(cal, Calendar.MONTH, 1, 1);
 		CalendarFieldPeriodInput tmp = new CalendarFieldPeriodInput();
 		tmp.setValue(period);
@@ -127,7 +184,7 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		Report report2 = new Report("SimpleTestReportWithPeriod.xml",params);
 		checkRedirectToTransition(prov, ReportTemplateTransitionProvider.PREVIEW, report2);
 		
-		checkFormContent("/normalize.xsl", "test_preview_with_period.xml");
+		checkFormContent("/normalize.xsl", "test_preview_with_period2.xml");
 	}
 	@Test
 	public void testPreview() throws Exception {
@@ -232,7 +289,8 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		
 		Map<String,Object> params = new LinkedHashMap<>();
 		
-		params.put("MyMachine", 1);
+		// default value in template so param suppressed
+		//params.put("MyMachine", 1);
 		params.put("MyMachine2", 1);
 		params.put(BaseHTMLForm.FORM_STAGE_INPUT, "1");
 		
