@@ -84,6 +84,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 {
 	private static final String REPORT_TIMER = "report_timer";
 	private static final String FORM_PARAMETER_PREFIX = "__";
+	public static final String PREVIEW_TAG="Preview";
 	private static final int FORM_PARAMETER_OFFSET=FORM_PARAMETER_PREFIX.length();
 	public static final Preference DOWNLOAD_FROM_NEW_TAB = new Preference("reports.download_from_new_tab",true,"Open a new tab when generating pdf/csv etc. reports");
 	//private static final String SERVE_DATA_DEFAULT_TAG = "ServeData";
@@ -208,9 +209,11 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 
 			@Override
 			public FormResult action(Form f) throws ActionException {
+				Report next = getTargetReport(defaults,f,target);
+				next.setPreview(next_transition.equals(PREVIEW));
 				return new ChainedTransitionResult<Report, ReportTemplateKey>(
 						ReportTemplateTransitionProvider.this, 
-						getTargetReport(defaults,f,target), 
+						next, 
 						next_transition) {
 					@Override
 					public boolean useURL() {
@@ -343,7 +346,12 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			
 			Map<String, Object> parameters = new HashMap<>();
 			Set<String> contextParameters = new HashSet<>();
+			boolean preview=false;
 			for (String p : id) {
+				if( p.equals(PREVIEW_TAG)) {
+					preview=true;
+					continue;
+				}
 				boolean isContextParam = false; 
 				if (p.startsWith(FORM_PARAMETER_PREFIX)) {
 					p = p.substring(FORM_PARAMETER_OFFSET);
@@ -360,6 +368,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				}
 			}
 			Report report = new Report(templateFileName, parameters);
+			report.setPreview(preview);
 			report.setExtension(extension);
 			report.setContextParameters(contextParameters);
 			return report;
@@ -372,6 +381,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		LinkedList<String> result = new LinkedList<>();
 		Map<String, Object> parameters = target.getParameters();
 		Collection<String> contextParameters = target.getContextParameters();
+		if( target.isPreview()) {
+			result.add(PREVIEW_TAG);
+		}
 		if (parameters != null) {
 			for (Entry<String, Object> entry : parameters.entrySet()) {
 				String value = encodeParameter(entry);
@@ -489,12 +501,15 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		}
 		return new Report(orig.getName(), new_param, contextParameters);
 	}
-	/** convert the target into the equivalent of the parse
+	/** convert the target into the equivalent of the parse. 
+	 * 
+	 * This returns a map of parameters including any form defaults and overridden by any parameters 
+	 * set explicitly in the URL.
 	 * 
 	 * @param target
 	 * @param c
 	 * @param builder
-	 * @return
+	 * @return parameters or null if form will not validate
 	 * @throws Exception
 	 */
 	private Map<String, Object> getParameters(Report target, AppContext c, ReportBuilder builder) throws Exception 
@@ -556,7 +571,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			ReportBuilder.setTemplate(context, builder, target.getName());
 			boolean has_form = builder.hasMandatoryReportParameters();
 			params = getParameters(target, context, builder);
-			if (! has_form || (params != null && !target.getParameters().isEmpty())) 
+			if (! has_form || (params != null && target.isPreview())) 
 			{
 				logReport(target);
 				cb.addHeading(4, "Report Preview");

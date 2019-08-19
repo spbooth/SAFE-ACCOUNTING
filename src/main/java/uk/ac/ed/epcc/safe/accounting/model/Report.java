@@ -51,6 +51,7 @@ public class Report {
 	private Collection<String> contextParameters;
 	private String extension;
 	private String name;
+	private boolean preview=false;
 	
 	public Report(String template) {
 		this(template, null);
@@ -116,5 +117,13 @@ public class Report {
 			return null;
 		}
 		return new HashSet<>(contextParameters);
+	}
+
+	public boolean isPreview() {
+		return preview;
+	}
+
+	public void setPreview(boolean preview) {
+		this.preview = preview;
 	}
 }
