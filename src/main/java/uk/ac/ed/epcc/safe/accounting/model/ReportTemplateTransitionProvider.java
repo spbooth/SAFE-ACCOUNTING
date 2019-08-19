@@ -210,7 +210,10 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			@Override
 			public FormResult action(Form f) throws ActionException {
 				Report next = getTargetReport(defaults,f,target);
-				next.setPreview(next_transition.equals(PREVIEW));
+				if( next.getParameters().isEmpty()) {
+					// Force preview even if no parameters
+					next.setPreview(next_transition.equals(PREVIEW));
+				}
 				return new ChainedTransitionResult<Report, ReportTemplateKey>(
 						ReportTemplateTransitionProvider.this, 
 						next, 
@@ -571,7 +574,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			ReportBuilder.setTemplate(context, builder, target.getName());
 			boolean has_form = builder.hasMandatoryReportParameters();
 			params = getParameters(target, context, builder);
-			if (! has_form || (params != null && target.isPreview())) 
+			// null params means invalid form
+			// non-empty params always shows preview can also force a preview for the default param set
+			if (! has_form || (params != null && (! target.getParameters().isEmpty() || target.isPreview()))) 
 			{
 				logReport(target);
 				cb.addHeading(4, "Report Preview");
@@ -597,8 +602,8 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			hasErrors = true;
 			cb.addText("An error ocurred when generating the report.");
 		}			
-			
-		if (params != null && !target.getParameters().isEmpty() && isReportDev)
+		// null params meand invalid 
+		if (params != null && (!target.getParameters().isEmpty() || target.isPreview()) && isReportDev)
 		{
 			TimerService timer = context.getService(TimerService.class);
 			if( timer != null ) {

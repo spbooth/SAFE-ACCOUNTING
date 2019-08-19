@@ -119,6 +119,12 @@ public class Report {
 		return new HashSet<>(contextParameters);
 	}
 
+	/** Should a preview be forced
+	 * 
+	 * preview will also be shown for non-empty parameters
+	 * 
+	 * @return
+	 */
 	public boolean isPreview() {
 		return preview;
 	}

@@ -84,6 +84,7 @@ public class ReportLimitTest extends AbstractTransitionServletTest {
 		addParam(input);
 		
 		Report target = new Report("TimeChart.xml",params);
+		//target.setPreview(true);
 		setAction("Preview");
 		runTransition();
 		checkRedirectToTransition(prov, ReportTemplateTransitionProvider.PREVIEW, target);
