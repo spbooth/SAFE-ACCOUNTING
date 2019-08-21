@@ -277,7 +277,13 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     	
     }
    
-
+    /** Is the {@link UsageProducer} compatible with this {@link MapperEntry}
+     * 
+     * Applied by {@link KeyMapperEntry} to ensure the group property is supported.
+     * 
+     * @param ap
+     * @return
+     */
     public boolean compatible(UsageProducer<?> ap){
     	return true;
     }

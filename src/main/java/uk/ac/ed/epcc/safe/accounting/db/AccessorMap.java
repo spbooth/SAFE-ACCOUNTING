@@ -41,6 +41,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ResolveCheckVisitor;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
+import uk.ac.ed.epcc.safe.accounting.properties.MethodPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -334,6 +335,10 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		public X getRecord() {
 			return record;
 		}
+		@Override
+		public Object visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
+			return method.evaluate(this);
+		}
 	}
 	public class SQLExpressionVisitor extends CreateSQLExpressionPropExpressionVisitor{
 		public SQLExpressionVisitor(AppContext c) {
@@ -378,6 +383,10 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		public <T> SQLValue<T> getSQLValue(PropExpression<T> expr) throws InvalidSQLPropertyException {
 			
 			return AccessorMap.this.getSQLValue(expr);
+		}
+		@Override
+		public SQLExpression visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
+			throw new InvalidSQLPropertyException(config_tag, method);
 		}
 		
 	}
@@ -441,6 +450,10 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 				throws Exception {
 			return getCaseExpression(expr);
 		}
+		@Override
+		public SQLValue visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
+			throw new InvalidSQLPropertyException(method);
+		}
 		
 	}
 	public class ResolveChecker extends ResolveCheckVisitor{
@@ -488,6 +501,15 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		}
 		public void reset(){
 			missing.clear();
+		}
+		@Override
+		public Boolean visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
+			for(PropertyTag t : method.required()) {
+				if( ! ((Boolean)t.accept(this))) {
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 	public class ImplementationVisitor extends ImplementationPropExpressionVisitor{

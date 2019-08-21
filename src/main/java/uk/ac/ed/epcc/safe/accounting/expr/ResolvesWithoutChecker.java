@@ -3,6 +3,7 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap.ResolveChecker;
+import uk.ac.ed.epcc.safe.accounting.properties.MethodPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -29,6 +30,16 @@ public class ResolvesWithoutChecker extends ResolveCheckVisitor {
 	@Override
 	public Boolean visitPropertyTag(PropertyTag<?> tag) throws Exception {
 		return ! forbidden.contains(tag);
+	}
+
+	@Override
+	public Boolean visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
+		for( PropertyTag t : method.required()) {
+			if( forbidden.contains(t)) {
+				return Boolean.FALSE;
+			}
+		}
+		return Boolean.TRUE;
 	}
 
 	

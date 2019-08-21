@@ -1,6 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
+import uk.ac.ed.epcc.safe.accounting.properties.MethodPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -24,6 +25,11 @@ public class ConstEvaluatePropExpressionVisitor extends EvaluatePropExpressionVi
 	@Override
 	protected boolean matches(RecordSelector sel) throws Exception {
 		return false;
+	}
+
+	@Override
+	public Object visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
+		throw new InvalidPropertyException(method);
 	}
 
 }

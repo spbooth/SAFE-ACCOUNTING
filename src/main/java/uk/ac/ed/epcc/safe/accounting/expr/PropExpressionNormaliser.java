@@ -15,6 +15,7 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 
 import java.util.Date;
 
+import uk.ac.ed.epcc.safe.accounting.properties.MethodPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
@@ -219,6 +220,12 @@ public class PropExpressionNormaliser implements PropExpressionVisitor<PropExpre
 	public <T extends Comparable> PropExpression visitArrayFuncPropExpression(ArrayFuncPropExpression<T> expr)
 			throws Exception {
 		return expr;
+	}
+
+
+	@Override
+	public PropExpression visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
+		return method;
 	}
 
 }

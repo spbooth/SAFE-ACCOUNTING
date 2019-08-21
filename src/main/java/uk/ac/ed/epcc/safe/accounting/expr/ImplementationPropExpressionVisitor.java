@@ -13,6 +13,7 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.expr;
 
+import uk.ac.ed.epcc.safe.accounting.properties.MethodPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -167,5 +168,10 @@ public abstract class ImplementationPropExpressionVisitor implements
 		}
 		sb.append(")");
 		return sb.toString();
+	}
+
+	@Override
+	public String visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
+		return method.toString();
 	}
 }

@@ -21,6 +21,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.MatchSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
+import uk.ac.ed.epcc.safe.accounting.properties.MethodPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -123,6 +124,11 @@ public <T> T evaluate(Class<T> target,PropExpression texpr) throws Exception{
 		protected boolean matches(RecordSelector sel) throws Exception {
 			MatchSelectVisitor<DerivedPropertyMap> vis = new MatchSelectVisitor<>(DerivedPropertyMap.this);
 			return sel.visit(vis).booleanValue();
+		}
+
+		@Override
+		public Object visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
+			return method.evaluate(DerivedPropertyMap.this);
 		}
 	};
 	Object result = texpr.accept(vis);

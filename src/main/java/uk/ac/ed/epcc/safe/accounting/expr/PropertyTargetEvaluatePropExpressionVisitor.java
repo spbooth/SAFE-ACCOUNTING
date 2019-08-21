@@ -14,6 +14,9 @@
 package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.db.MatchSelectVisitor;
+import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
+import uk.ac.ed.epcc.safe.accounting.properties.MethodPropExpression;
+import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
@@ -46,6 +49,11 @@ public class PropertyTargetEvaluatePropExpressionVisitor extends
 			return sel.visit(vis).booleanValue();
 		}
 		throw new CannotFilterException("Cannot apply RecordSelector to PropertyTarget");
+	}
+
+	@Override
+	public Object visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
+		return method.evaluate(target);
 	}
 
 

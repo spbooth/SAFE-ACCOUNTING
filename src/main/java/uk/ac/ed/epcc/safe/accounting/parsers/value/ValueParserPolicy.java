@@ -43,6 +43,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.expr.SelectPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.StringPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.TypeConverterPropExpression;
+import uk.ac.ed.epcc.safe.accounting.properties.MethodPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -272,6 +273,10 @@ public class ValueParserPolicy implements
 	public ValueParser visitArrayFuncPropExpression(ArrayFuncPropExpression expr) throws Exception {
 		
 		return getValueParser(expr.getTarget());
+	}
+	@Override
+	public ValueParser visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
+		return getValueParser(method.getTarget());
 	}
 
 }
