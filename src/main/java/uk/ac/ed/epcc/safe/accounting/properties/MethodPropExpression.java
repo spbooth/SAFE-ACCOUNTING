@@ -19,13 +19,22 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Accessor;
  */
 public interface MethodPropExpression<T> extends PropExpression<T> {
 
-	
+	/** evaluate the method on a {@link PropertyTarget}
+	 * this should return null if any of the required properties are missing.
+	 * 
+	 * 
+	 * @param target {@link PropertyTarget}
+	 * @return value or null
+	 * @throws Exception
+	 */
 	public T evaluate(PropertyTarget target) throws Exception;
 	
 	
 	/** get a set of PropertyTags that will be required to evaluate this expression
+	 * If a property in this set is not defined the expression will not evaluate.
+	 * optional properties should not be included
 	 * 
-	 * @return
+	 * @return Set of properties
 	 */
 	public Set<PropertyTag> required();
 	
