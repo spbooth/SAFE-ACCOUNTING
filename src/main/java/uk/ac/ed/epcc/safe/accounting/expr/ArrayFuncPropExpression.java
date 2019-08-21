@@ -28,11 +28,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFunc;
 /** An expression that selects a result from a
  * list of expressions.
  * 
- * If the {@link #allowAny()} method returns true then all expressions are
- * equivalent and a later expression in the list can be used if necessary.
- * Otherwise each expression must be evaluated in turn until one
- * returns a non-null value. In this case it is not acceptable to skip an expression
- * that might be evaluated
+
  * @author spb
  *
  * @param <T>
