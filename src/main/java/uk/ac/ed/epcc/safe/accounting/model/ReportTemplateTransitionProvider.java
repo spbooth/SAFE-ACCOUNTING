@@ -289,8 +289,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			ReportBuilder builder = null;
 			try {
 				builder = ReportBuilder.getInstance(conn);
-				 // this may be a cached report builder
-				builder.resetLogger();
+				
 				ReportBuilder.setTemplate(conn, builder, target.getName());
 				builder.addParameterText(cb);
 				if( f.isComplete()) {
@@ -304,7 +303,8 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 						int max_length = context.getIntegerParameter("reporting.buffer_logger.max_length", 1024*1024*8);
 						logService.setMaxLength(max_length);
 						context.setService(logService);
-						
+						// this may be a cached report builder
+						builder.resetLogger();
 						TimerService timer = context.getService(TimerService.class);
 						if( timer == null ) {
 							timer = new DefaultTimerService(context);
