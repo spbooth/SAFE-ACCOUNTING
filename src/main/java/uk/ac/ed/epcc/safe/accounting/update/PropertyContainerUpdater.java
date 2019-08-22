@@ -29,6 +29,10 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
  * While it would be cleaner to initialise the object within the constructor this process may need information about
  * the higher stages of the call chain.
  * 
+ * Normally several {@link PropertyContainerUpdater} classes are applied in turn
+ * 
+ * @see PropertyContainerParser
+ * @see PropertyContainerPolicy
  * @author spb
  *
  */
@@ -68,6 +72,13 @@ public interface PropertyContainerUpdater extends Contexed {
 	  * persisted in the database layer.
 	  * This allows one parser/policy to specify a default implementation as a derived property definition which
 	  * is then overridden by having the same property generated in a parse method of a different policy/parser
+	  * 
+	  * The normal convention for multiple redefinition is that each {@link PropertyContainerUpdater} sees the last definition set
+	  * by previous members of the chain by preference.  However the full chain is evaluated twice with the first pass being used to initialise 
+	  * the definitions passed to the head of the chain. This means that stand-alone definitions are available to all stages.  
+	  * 
+	  * 
+	  * 
 	  * @param previous Previous definitions
 	  * @return Map modified map
 	  */

@@ -285,24 +285,111 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				cb.addText(template.getReportDescription());
 			}
 			
+			
+			ReportBuilder builder = null;
 			try {
-				ReportBuilder builder = ReportBuilder.getInstance(conn);
+				builder = ReportBuilder.getInstance(conn);
+				 // this may be a cached report builder
+				builder.resetLogger();
 				ReportBuilder.setTemplate(conn, builder, target.getName());
 				builder.addParameterText(cb);
-			} catch (Exception e1) {
-				getLogger().error("Error adding parameter text");
-			}
-			
-			try {
 				if( f.isComplete()) {
-					addPreview(getContext(), cb, target);
+					AppContext context = getContext();
+					boolean isReportDev = isReportDeveloper(context.getService(SessionService.class));
+					BufferLoggerService logService = null;
+					if (isReportDev) 
+					{
+						logService = new BufferLoggerService(context);
+						// maximum log length to keep
+						int max_length = context.getIntegerParameter("reporting.buffer_logger.max_length", 1024*1024*8);
+						logService.setMaxLength(max_length);
+						context.setService(logService);
+						
+						TimerService timer = context.getService(TimerService.class);
+						if( timer == null ) {
+							timer = new DefaultTimerService(context);
+							context.setService(timer);
+						}
+						timer.startTimer(REPORT_TIMER);
+						// set cached value of feature to ON
+						// This applies for rest of AppContext life-time (request)
+						context.setAttribute(DatabaseService.LOG_QUERY_FEATURE, Boolean.TRUE);
+						
+					}
+				
+					Map<String,Object> params = null;
+					boolean hasErrors = false;
+					try {
+						
+						
+						boolean has_form = builder.hasMandatoryReportParameters();
+						params = getParameters(target, context, builder);
+						// null params means invalid form
+						// non-empty params always shows preview can also force a preview for the default param set
+						if (! has_form || (params != null && (! target.getParameters().isEmpty() || target.isPreview()))) 
+						{
+							logReport(target);
+							cb.addHeading(4, "Report Preview");
+							ContentBuilder report = cb.getPanel("report_container");
+							builder.renderContent(params, (SimpleXMLBuilder)report);
+							report.addParent();
+						}
+					}catch(LimitException l) {
+						DatabaseService db = context.getService(DatabaseService.class);
+						db.closeRetainedClosables();
+						// Show message in-line#
+						ResourceBundle mess = context.getService(MessageBundleService.class).getBundle();
+						PreDefinedContent title = new PreDefinedContent(context,mess, "limits_exceeded.title");
+						ContentBuilder heading = cb.getHeading(4);
+						heading.addObject(title);
+						heading.addParent();
+						PreDefinedContent text = new PreDefinedContent(context,mess, "limits_exceeded.text",l.getMessage());
+						ExtendedXMLBuilder para = cb.getText();
+						text.addContent(para);
+						para.appendParent();
+					} catch (Exception e) {
+						getLogger().debug("Error making paramter form", e);
+						hasErrors = true;
+						cb.addText("An error ocurred when generating the report.");
+					}			
+					// null params meand invalid 
+					if (params != null && (!target.getParameters().isEmpty() || target.isPreview()) && isReportDev)
+					{
+						TimerService timer = context.getService(TimerService.class);
+						if( timer != null ) {
+							timer.stopTimer(REPORT_TIMER);
+							timer.timerStats();
+						}
+						DeveloperResults devResults = developerResults(context, logService, builder, hasErrors, params);
+						cb.addHeading(4, "Report Developer Information");
+						cb.addText("You have the ReportDeveloper role active. The links below give access to additional information to aid in debugging the reports.");
+						if( devResults.hasErrors() )
+						{
+							cb.addText("This report resulted in an error.");
+							if( devResults.getResult() != null){
+								cb.addLink(context, "Processed template", devResults.getResult());
+							}
+							if( devResults.getErrors() != null){
+								for(ErrorSet error : devResults.getErrors()){
+									error.addContent(cb, -1);
+								}
+							}
+						}
+						else {
+							cb.addText("This report completed without error.");
+						}
+						if( devResults.getLogs() != null ){
+							cb.addLink(context, "Logs from report generation", devResults.getLogs());
+						}
+					}
 				}
 			} catch (Exception e) {
 				getLogger().error("Error creating preview", e);
 			}
-			cb.addHeading(4, "Report Parameters");
-			cb.addText("Enter the parameters and click 'Preview' to view the report, or click on the report type to generate the report.");
-			
+			if( builder != null &&  builder.hasReportParameters()) {
+				cb.addHeading(4, "Report Parameters");
+				cb.addText("Enter the parameters and click 'Preview' to view the report, or click on the report type to generate the report.");
+			}
 			return cb;
 		}
 
@@ -540,99 +627,6 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		return params;
 	}
 
-	
-	private <X extends ContentBuilder> void addPreview(AppContext context, X cb, Report target) 
-	{
-		boolean isReportDev = isReportDeveloper(context.getService(SessionService.class));
-		BufferLoggerService logService = null;
-		if (isReportDev) 
-		{
-			logService = new BufferLoggerService(context);
-			// maximum log length to keep
-			int max_length = context.getIntegerParameter("reporting.buffer_logger.max_length", 1024*1024*8);
-			logService.setMaxLength(max_length);
-			context.setService(logService);
-			
-			TimerService timer = context.getService(TimerService.class);
-			if( timer == null ) {
-				timer = new DefaultTimerService(context);
-				context.setService(timer);
-			}
-			timer.startTimer(REPORT_TIMER);
-			// set cached value of feature to ON
-			// This applies for rest of AppContext life-time (request)
-			context.setAttribute(DatabaseService.LOG_QUERY_FEATURE, Boolean.TRUE);
-			
-		}
-
-		ReportBuilder builder = null;
-		Map<String,Object> params = null;
-		boolean hasErrors = false;
-		try {
-			builder = ReportBuilder.getInstance(context);
-			builder.resetLogger(); // this may be a cached report builder
-			ReportBuilder.setTemplate(context, builder, target.getName());
-			boolean has_form = builder.hasMandatoryReportParameters();
-			params = getParameters(target, context, builder);
-			// null params means invalid form
-			// non-empty params always shows preview can also force a preview for the default param set
-			if (! has_form || (params != null && (! target.getParameters().isEmpty() || target.isPreview()))) 
-			{
-				logReport(target);
-				cb.addHeading(4, "Report Preview");
-				ContentBuilder report = cb.getPanel("report_container");
-				builder.renderContent(params, (SimpleXMLBuilder)report);
-				report.addParent();
-			}
-		}catch(LimitException l) {
-			DatabaseService db = context.getService(DatabaseService.class);
-			db.closeRetainedClosables();
-			// Show message in-line#
-			ResourceBundle mess = context.getService(MessageBundleService.class).getBundle();
-			PreDefinedContent title = new PreDefinedContent(context,mess, "limits_exceeded.title");
-			ContentBuilder heading = cb.getHeading(4);
-			heading.addObject(title);
-			heading.addParent();
-			PreDefinedContent text = new PreDefinedContent(context,mess, "limits_exceeded.text",l.getMessage());
-			ExtendedXMLBuilder para = cb.getText();
-			text.addContent(para);
-			para.appendParent();
-		} catch (Exception e) {
-			getLogger().debug("Error making paramter form", e);
-			hasErrors = true;
-			cb.addText("An error ocurred when generating the report.");
-		}			
-		// null params meand invalid 
-		if (params != null && (!target.getParameters().isEmpty() || target.isPreview()) && isReportDev)
-		{
-			TimerService timer = context.getService(TimerService.class);
-			if( timer != null ) {
-				timer.stopTimer(REPORT_TIMER);
-				timer.timerStats();
-			}
-			DeveloperResults devResults = developerResults(context, logService, builder, hasErrors, params);
-			cb.addHeading(4, "Report Developer Information");
-			cb.addText("You have the ReportDeveloper role active. The links below give access to additional information to aid in debugging the reports.");
-			if( devResults.hasErrors() )
-			{
-				cb.addText("This report resulted in an error.");
-				if( devResults.getResult() != null){
-					cb.addLink(context, "Processed template", devResults.getResult());
-				}
-				if( devResults.getErrors() != null){
-					for(ErrorSet error : devResults.getErrors()){
-						error.addContent(cb, -1);
-					}
-				}
-			}
-			else {
-				cb.addText("This report completed without error.");
-			}
-			if( devResults.getLogs() != null ){
-				cb.addLink(context, "Logs from report generation", devResults.getLogs());
-			}
-		}
-	}
 	
 	private void logReport(Report target) {
 		if (logFac != null) {

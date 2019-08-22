@@ -79,8 +79,11 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * 
  * A derived properties is added for the original string property removing the need to also store the original
  * field in the database.
- * note that this will overwrite any derivations previously in force so derived expressions cannot be used 
- * to generate the input string property.
+ * note that this will overwrite any derivations previously in force 
+ * 
+ * Normally this will be the first or a very early policy as the classification policies will usually be
+ * generated from the parser but later policies might want to evaluate expressions on the classification policy 
+ * as this is a common location to put local policy configuration parameters
  * 
  * The target Factory needs to implement {@link NameFinder}.
  * @author spb
