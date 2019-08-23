@@ -45,12 +45,15 @@ import uk.ac.ed.epcc.safe.accounting.charts.MapperEntryInput;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntryInput;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
+import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter;
 import uk.ac.ed.epcc.safe.accounting.model.SetParamsVisitor;
+import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserService;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ParameterParseException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
@@ -384,7 +387,27 @@ public class ParameterExtension extends ReportExtension {
 				}
 			}
 			return set_input;
-
+		}else if( type.equals("Distinct")) {
+			// generate a SetInput for all distinct values for a TAG over a UsageProducer
+			String expr_str = getAttribute("property",param);
+			String format_str = getAttribute("format",param);
+			RecordSet set = new RecordSet(conn.getService(AccountingService.class));
+			NodeList paramNodes = (param).getElementsByTagNameNS(
+					FilterExtension.FILTER_LOC,"Filter");
+			for(int i=0; i< paramNodes.getLength();i++) {
+				addFilterElement(set, (Element) paramNodes.item(i));
+			}
+			PropertyFinder finder = set.getFinder();
+			
+			PropertyTag expr = finder.find(expr_str);
+			UsageProducer prod = set.getUsageProducer();
+			ValueParser vp = getValueParser(format_str, expr);
+			SetInput input = new SetInput();
+			for(Object o : prod.getValues(expr, set.getRecordSelector())) {
+				input.addChoice(vp.format(o), o);
+			}
+			return input;
+			
 		} else if (type.equals("Plot")) {
 			AccountingService service = conn.getService(AccountingService.class);
 			String prod=getAttribute("producer",param);

@@ -18,6 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 import uk.ac.ed.epcc.safe.accounting.properties.BasePropExpressionVisitor;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -50,10 +51,13 @@ public class SelectPropExpression<T> implements PropExpression<T> , Iterable<Pro
 	public SelectPropExpression(boolean use_any,Class<T> target, PropExpression<T> ... alts){
 		this.use_any = use_any;
 		this.target=target;
-		this.alts=new PropExpression[alts.length];
+		LinkedHashSet<PropExpression<T>>tmp=new LinkedHashSet<PropExpression<T>>();
 		for(int i=0;i<alts.length;i++){
-			this.alts[i] = alts[i].copy();
+			if( alts[i] != null) {
+				tmp.add(alts[i].copy());
+			}
 		}
+		this.alts=tmp.toArray(new PropExpression[tmp.size()]);
 	}
 	public boolean allowAny(){
 		return use_any;

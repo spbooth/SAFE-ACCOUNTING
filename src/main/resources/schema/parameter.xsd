@@ -178,6 +178,17 @@
 		<xsd:attribute name="title" type="xsd:string" use="optional"></xsd:attribute>
 		<xsd:attribute name="min" type="xsd:string"></xsd:attribute>
             <xsd:attribute name="max" type="xsd:string"></xsd:attribute>
+            <xsd:attribute name="property" type="xsd:string" >
+		<xsd:annotation><xsd:documentation>
+		property to enumerate if this is a "Distict" type parameter. This generates a choice input of all proeprty values that match the
+		RecordSet defiend by nested filter elements. The input text is generated based on the format attribute.
+		</xsd:documentation></xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="format" type="xsd:string" >
+		<xsd:annotation><xsd:documentation>
+		format to use for input text
+		</xsd:documentation></xsd:annotation>
+		</xsd:attribute>
         </xsd:complexType>
 	</xsd:element>
     <xsd:complexType name="ValueType">

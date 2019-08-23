@@ -146,16 +146,18 @@ public abstract class EvaluatePropExpressionVisitor extends AbstractContexed imp
 			throws Exception {
 		for (PropExpression<?> e : sel) {
 			try{
-			Object o = e.accept(this);
-			if (o != null) {
-				if( o instanceof IndexedReference){
-					if( ! ((IndexedReference)o).isNull()){
-						return o;
+				if( e != null ) {
+					Object o = e.accept(this);
+					if (o != null) {
+						if( o instanceof IndexedReference){
+							if( ! ((IndexedReference)o).isNull()){
+								return o;
+							}
+						}else{
+							return o;
+						}
 					}
-				}else{
-					return o;
 				}
-			}
 			}catch(InvalidPropertyException ee){
 				
 			}

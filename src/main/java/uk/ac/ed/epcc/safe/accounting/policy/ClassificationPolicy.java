@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
+import uk.ac.ed.epcc.safe.accounting.expr.SelectPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -256,8 +257,15 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 				if( old != null ){
 					fallback.put(key, old);
 				}
-
-				previous.put(key, derived.get(key));
+				
+				PropExpression d = derived.get(key);
+				if(old != null &&  !  d.equals(old)) {
+					// Allow evaluation to falback to previous defn
+					previous.put(key, new SelectPropExpression<String>(true ,String.class, derived.get(key),old));
+				}else {
+					previous.put(key, derived.get(key));
+				}
+				
 
 			}catch(PropertyCastException e){
 				getLogger().error("Error adding classification derived",e);

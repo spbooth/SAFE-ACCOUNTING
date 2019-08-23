@@ -275,9 +275,11 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 			// Just want one that works
 			for(PropExpression<?> exp : sel) {
 				try {
-					SQLValue v = process(exp);
-					if( v != null) {
-						return v;
+					if( exp != null) {
+						SQLValue v = process(exp);
+						if( v != null) {
+							return v;
+						}
 					}
 				}catch(Exception e) {
 					

@@ -238,11 +238,12 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 			
 			for(PropExpression<?> e : sel){
 				try{
-					SQLExpression<?> expr = e.accept(this);
-					if(expr != null){
-						return expr;
+					if( e != null ) {
+						SQLExpression<?> expr = e.accept(this);
+						if(expr != null){
+							return expr;
+						}
 					}
-					
 				}catch(Exception e1){
 					
 				}
