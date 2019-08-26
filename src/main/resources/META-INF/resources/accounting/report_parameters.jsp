@@ -17,6 +17,7 @@
 
 <%@ include file="/session.jsf"%>
 <%@page import="uk.ac.ed.epcc.safe.accounting.servlet.ReportServlet"%>
+<%@page import="uk.ac.ed.epcc.webapp.servlet.*"%>
 <%
 	Map<String, Object> params = conn.getService(ServletService.class).getParams();
 	String templateName = (String) params.get("TemplateName");
