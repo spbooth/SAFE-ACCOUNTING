@@ -34,6 +34,7 @@ import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
@@ -150,6 +151,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		public FormResult doTransition(Report target, AppContext c)
 				throws TransitionException 
 		{
+			ReportTemplateLog report_log=null;
 			try {
 				target.setExtension(type.getExtension());
 				ReportBuilder builder = ReportBuilder.getInstance(c);
@@ -157,7 +159,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		
 				Map<String, Object> params = getParameters(target, c, builder);
 				ServletService ss = getContext().getService(ServletService.class);
-				logReport(target);
+				report_log=logReport(target);
 				String css_path = getContext().getInitParameter("css.path","css/webapp.css");
 				if( ss != null){
 					css_path = ss.encodeURL("/"+css_path);
@@ -184,6 +186,10 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			} catch (Exception e) {
 				getLogger().error("Error making report", e);
 				return new MessageResult("internal_error");
+			}finally {
+				if( report_log != null ) {
+					report_log.recordFinish();
+				}
 			}
 			return new ChainedTransitionResult<>(ReportTemplateTransitionProvider.this, target, PREVIEW);
 		}
@@ -319,6 +325,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				
 					Map<String,Object> params = null;
 					boolean hasErrors = false;
+					ReportTemplateLog report_log=null;
 					try {
 						
 						
@@ -328,7 +335,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 						// non-empty params always shows preview can also force a preview for the default param set
 						if (! has_form || (params != null && (! target.getParameters().isEmpty() || target.isPreview()))) 
 						{
-							logReport(target);
+							report_log=logReport(target);
 							cb.addHeading(4, "Report Preview");
 							ContentBuilder report = cb.getPanel("report_container");
 							builder.renderContent(params, (SimpleXMLBuilder)report);
@@ -351,6 +358,10 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 						getLogger().debug("Error making paramter form", e);
 						hasErrors = true;
 						cb.addText("An error ocurred when generating the report.");
+					}finally {
+						if( report_log != null ) {
+							report_log.recordFinish();
+						}
 					}			
 					// null params meand invalid 
 					if (params != null && (!target.getParameters().isEmpty() || target.isPreview()) && isReportDev)
@@ -627,11 +638,16 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		return params;
 	}
 
-	
-	private void logReport(Report target) {
+	/** Optionally log the report
+	 * On error or if logging disabled this returns null.
+	 * 
+	 * @param target
+	 * @return {@link ReportTemplateLog} or null
+	 */
+	private ReportTemplateLog logReport(Report target) {
 		if (logFac != null) {
 			try {
-				logFac.logReport(
+				return logFac.logReport(
 						getContext().getService(SessionService.class).getCurrentPerson(), 
 						getReportTemplate(target),
 						getID(target));
@@ -639,6 +655,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				getLogger().error("Error logging report use", e);
 			}
 		}
+		return null;
 	}
 
 	private DeveloperResults developerResults(
