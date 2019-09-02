@@ -1076,7 +1076,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	}
 
 	public Date getEditMarker() {
-		return new Date();
+		CurrentTimeService time = getContext().getService(CurrentTimeService.class);
+		return time.getCurrentTime();
 	}
 
 	protected boolean editEnds(){

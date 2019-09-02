@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -88,7 +89,8 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     	Iterator<R> lines;
     
     	boolean check_exists=conn.getBooleanParameter("accounting.checkduplicate", true);
-    	Date start=new Date();
+    	CurrentTimeService time = conn.getService(CurrentTimeService.class);
+    	Date start=time.getCurrentTime();
     	
     	ErrorSet errors = new ErrorSet();
     	int max_skip_details = conn.getIntegerParameter("upload.n_skip_to_print", 0);

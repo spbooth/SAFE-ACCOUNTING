@@ -21,6 +21,7 @@ import java.util.Date;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -73,7 +74,8 @@ public abstract class UsageRecordFactory<T extends UsageRecordFactory.Use> exten
 		 * @return fraction
 		 */
 		public double getElapsedFraction(){
-			Date point = new Date();
+			CurrentTimeService time = getContext().getService(CurrentTimeService.class);
+			Date point = time.getCurrentTime();
 			Date start = getStart();
 			Date end = getEnd();
 			
