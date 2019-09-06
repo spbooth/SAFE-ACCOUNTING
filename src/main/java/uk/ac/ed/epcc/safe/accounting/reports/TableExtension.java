@@ -263,15 +263,21 @@ public class TableExtension extends ReportExtension {
 				Element tableElement = (Element)tableNode;
 				// use hasChild as element is empty
 				if( extension.hasChild(DEFAULT_LIST, tableElement)){
+					String prefix="jobtable";
+					Element list =  extension.getParamElementNS(tableElement.getNamespaceURI(),DEFAULT_LIST,tableElement);
+					String type = extension.getParam("Type", list);
+					if( type != null && ! type.isEmpty()) {
+						prefix=prefix+"."+type;
+					}
 					AppContext conn = extension.getContext();
-					String config_name = "jobtable.properties";
+					String config_name = prefix+".properties";
 					String prop_list = conn.getExpandedProperty(config_name,"");
 					if( up != null) {
 						PropertyFinder finder =  up.getFinder();
 						for(String tag : prop_list.split(",")){
 							tag = tag.trim();
 							if( ! tag.isEmpty()) {
-								String prop_name = conn.getExpandedProperty("jobtable.property."+tag, tag);
+								String prop_name = conn.getExpandedProperty(prefix+".property."+tag, tag);
 								PropertyTag t = finder.find(prop_name);
 								if( t != null ){
 									// can use name or tag for label
