@@ -19,8 +19,10 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 
 /** convenience class to put the conventions for selecting
- * a record in a date range into a single place.
+ * a record in a date range into a single place. This uses a single date property to determine the position of
+ * a record. 
  * 
+ * @see PeriodOverlapRecordSelector
  * @author spb
  *
  */

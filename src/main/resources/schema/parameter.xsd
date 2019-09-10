@@ -104,7 +104,8 @@
 					defined in the application configuration. Additional
 					unmodifiable information can be inserted in the form
 					in place of an input by specifying a type of
-					ReadOnly.
+					ReadOnly. If the type is Distinct it evaluates a set of distinct property values from the records matching a nested filter. These are used to generate possible
+					values for the input.
 				</xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>

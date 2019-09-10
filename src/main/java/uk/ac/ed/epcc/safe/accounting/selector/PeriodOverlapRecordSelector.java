@@ -28,6 +28,8 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  * The {@link PeriodOverlapRecordSelector} includes an advisory cutoff value
  * (length of the longest known record) but optionally a {@link UsageProducer} can ignore this
  * and optimise using its own table specific value.
+ * 
+ * @see TimeRangeSelector
  * @author spb
  *
  */
