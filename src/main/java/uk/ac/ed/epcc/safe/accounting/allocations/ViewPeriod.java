@@ -16,7 +16,10 @@ package uk.ac.ed.epcc.safe.accounting.allocations;
 import java.util.Calendar;
 
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.time.CalendarFieldSplitPeriod;
+import uk.ac.ed.epcc.webapp.time.Period;
+import uk.ac.ed.epcc.webapp.time.SplitPeriod;
 
 
 /** This class represents the current time period that 
@@ -38,9 +41,15 @@ public class ViewPeriod extends CalendarFieldSplitPeriod{
 
 	
 	  
-	
+	/** Get a default {@link ViewPeriod} based on the current time.
+	 * 
+	 * @param conn
+	 * @return
+	 */
 	public static ViewPeriod getViewPeriod(AppContext conn){
 		Calendar start = Calendar.getInstance();
+		CurrentTimeService time = conn.getService(CurrentTimeService.class);
+		start.setTime(time.getCurrentTime());
 		start.set(Calendar.MILLISECOND,0);
 		start.set(Calendar.SECOND,0);
 		start.set(Calendar.MINUTE,0);
@@ -48,6 +57,27 @@ public class ViewPeriod extends CalendarFieldSplitPeriod{
 		start.set(Calendar.DAY_OF_YEAR,1);
 		start.add(Calendar.YEAR, conn.getIntegerParameter("default_period.back",-1));
 		return new ViewPeriod(start,Calendar.YEAR,1,conn.getIntegerParameter("default_period.length", 3));
+	}
+	/** Generate a ViewPeriod matching a specified {@link Period}
+	 * 
+	 * If this is not possible the default period is returned
+	 * 
+	 * @param conn
+	 * @param p
+	 * @return
+	 */
+	public static ViewPeriod getViewPeriod(AppContext conn,Period p) {
+		if( p instanceof ViewPeriod) {
+			return (ViewPeriod) p;
+		}
+		if( p instanceof CalendarFieldSplitPeriod) {
+			return new ViewPeriod((CalendarFieldSplitPeriod)p);
+		}
+		SplitPeriod split = SplitPeriod.getInstance(p.getStart(), p.getEnd());
+		if( split instanceof CalendarFieldSplitPeriod) {
+			return new ViewPeriod((CalendarFieldSplitPeriod) split);
+		}
+		return getViewPeriod(conn);
 	}
 	
 	public ViewPeriod up(){
