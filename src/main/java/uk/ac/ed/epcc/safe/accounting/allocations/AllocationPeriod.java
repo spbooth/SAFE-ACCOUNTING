@@ -75,6 +75,10 @@ public class AllocationPeriod implements PropertyTarget{
 			return false;
 		return true;
 	}
+	@Override
+	public String toString() {
+		return "AllocationPeriod [period=" + period + ", index=" + index + "]";
+	}
 	
 
 }
