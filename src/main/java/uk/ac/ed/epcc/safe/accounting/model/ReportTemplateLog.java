@@ -24,7 +24,6 @@ import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
@@ -93,7 +92,7 @@ public class ReportTemplateLog extends DataObjectPropertyContainer implements Au
         }
 
         @Override
-        protected DataObject makeBDO(Record res) throws DataFault {
+        protected ReportTemplateLog makeBDO(Record res) throws DataFault {
             return new ReportTemplateLog(this, res);
         }
 

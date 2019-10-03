@@ -17,7 +17,6 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 /** Factory class for {@link AccountingClassification} objects.
@@ -34,8 +33,8 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 		extends PropertyClassificationFactory<T> {
 	
 	@Override
-	protected DataObject makeBDO(Record res) throws DataFault {
-		return new AccountingClassification(this, res);
+	protected T makeBDO(Record res) throws DataFault {
+		return (T) new AccountingClassification(this, res);
 	}
 
 	@Override

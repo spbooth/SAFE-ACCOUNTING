@@ -15,27 +15,11 @@ package uk.ac.ed.epcc.safe.accounting.history;
 
 import java.util.Date;
 
-import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.db.AccessorContributer;
-import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.ExpressionTargetFactoryComposite;
-import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
-import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
-import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.history.HistoryFactory;
@@ -117,9 +101,9 @@ extends HistoryFactory<T,H> {
 		return (Class) HistoryUse.class;
 	}
 	@Override
-	protected DataObject makeBDO(Record res) throws DataFault {
+	protected H makeBDO(Record res) throws DataFault {
 		
-		return new HistoryUse<>(this, res);
+		return (H) new HistoryUse<T>(this, res);
 	}
 
 	

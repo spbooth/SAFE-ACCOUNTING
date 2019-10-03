@@ -70,13 +70,9 @@ import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
-import uk.ac.ed.epcc.webapp.model.period.MergeTransition;
-import uk.ac.ed.epcc.webapp.model.period.MoveDateTransition;
-import uk.ac.ed.epcc.webapp.model.period.SequenceTransition;
 /** A ChargedAllocationFactory is 
  * a normal {@link AllocationFactory} but also implements {@link UsageRecordListener} to accumulate usage effectively acting as
  * an aggregation usage record with user defined time bounds. These aggregated properties can be paired with a manager edited value to
@@ -233,8 +229,8 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		return result;
 	}
 @Override
-	protected DataObject makeBDO(Record res) throws DataFault {
-		return new ChargedAllocationRecord(this,res);
+	protected T makeBDO(Record res) throws DataFault {
+		return (T) new ChargedAllocationRecord(this,res);
 	}
 
 	@Override

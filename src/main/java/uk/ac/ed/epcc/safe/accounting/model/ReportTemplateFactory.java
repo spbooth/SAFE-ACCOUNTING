@@ -39,7 +39,6 @@ import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.forms.FieldValidator;
 import uk.ac.ed.epcc.webapp.forms.Form;
-import uk.ac.ed.epcc.webapp.forms.FormValidator;
 import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
 import uk.ac.ed.epcc.webapp.forms.factory.FormCreator;
@@ -54,7 +53,6 @@ import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.model.ParseFactory;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.FilterResult;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
@@ -96,8 +94,8 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 		return s;
 	}
 	@Override
-	protected ReportTemplate makeBDO(Record res) throws DataFault {
-		return new ReportTemplate(res);
+	protected R makeBDO(Record res) throws DataFault {
+		return (R) new ReportTemplate(res);
 	}
 	public Class<R> getTarget(){
 		return (Class) ReportTemplate.class;

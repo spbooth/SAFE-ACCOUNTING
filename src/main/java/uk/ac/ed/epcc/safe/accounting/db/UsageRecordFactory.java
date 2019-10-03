@@ -24,7 +24,6 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
@@ -128,8 +127,8 @@ public abstract class UsageRecordFactory<T extends UsageRecordFactory.Use> exten
 
 	
 	@Override
-	protected DataObject makeBDO(Record res) throws DataFault {
-		return new Use(this,res);
+	protected T makeBDO(Record res) throws DataFault {
+		return (T) new Use(this,res);
 	}
 	@Override
 	public Class<T> getTarget(){

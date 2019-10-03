@@ -93,7 +93,6 @@ import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
@@ -732,7 +731,7 @@ ConfigParamProvider{
 	}
 
 	@Override
-	protected DataObject makeBDO(Record res) throws DataFault {
+	protected AggregateRecord makeBDO(Record res) throws DataFault {
 		return new AggregateRecord(this,res);
 	}
 

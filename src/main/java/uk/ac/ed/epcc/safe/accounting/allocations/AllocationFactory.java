@@ -65,7 +65,6 @@ import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.FormValidator;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
-import uk.ac.ed.epcc.webapp.forms.html.ForwardResult;
 import uk.ac.ed.epcc.webapp.forms.html.RedirectResult;
 import uk.ac.ed.epcc.webapp.forms.inputs.BoundedDateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.DateInput;
@@ -257,8 +256,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	}
 
 	@Override
-	protected DataObject makeBDO(Record res) throws DataFault {
-		return new AllocationRecord(this, res);
+	protected T makeBDO(Record res) throws DataFault {
+		return (T) new AllocationRecord(this, res);
 	}
 	public final ExpressionTargetFactory<T> getExpressionTargetFactory(){
 		return ExpressionCast.getExpressionTargetFactory(this);

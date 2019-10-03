@@ -6,7 +6,6 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.forms.inputs.RegexpInput;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
@@ -53,8 +52,8 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClass
 	}
 
 	@Override
-	protected DataObject makeBDO(Record res) throws DataFault {
-		return new RegexpTarget(this, res);
+	protected T makeBDO(Record res) throws DataFault {
+		return (T) new RegexpTarget(this, res);
 	}
 
 }

@@ -42,7 +42,6 @@ import uk.ac.ed.epcc.webapp.jdbc.table.IntegerFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.forms.registry.SummaryContentProvider;
@@ -230,8 +229,8 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 	}
 
 	@Override
-	protected DataObject makeBDO(Record res) throws DataFault {
-		return new ReportFile(res, getBaseURL());
+	protected X makeBDO(Record res) throws DataFault {
+		return (X) new ReportFile(res, getBaseURL());
 	}
 
 	@Override

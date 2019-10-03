@@ -17,7 +17,6 @@
 package uk.ac.ed.epcc.safe.accounting.model;
 
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.session.WebNameFinder;
@@ -60,7 +59,7 @@ public class CertificatePersonFactory<P extends CertificatePerson> extends Prope
 	
 
 	@Override
-	protected DataObject makeBDO(Record res) throws DataFault {
-		return new CertificatePerson(CertificatePersonFactory.this, res);
+	protected P makeBDO(Record res) throws DataFault {
+		return (P) new CertificatePerson(CertificatePersonFactory.this, res);
 	}
 }

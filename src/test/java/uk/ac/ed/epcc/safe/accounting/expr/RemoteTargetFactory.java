@@ -13,7 +13,6 @@ import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.DoubleFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.IntegerFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
@@ -40,8 +39,8 @@ public class RemoteTargetFactory<T extends DataObjectPropertyContainer> extends 
 	}
 
 	@Override
-	protected DataObject makeBDO(Record res) throws DataFault {
-		return new DataObjectPropertyContainer(this, res);
+	protected T makeBDO(Record res) throws DataFault {
+		return (T) new DataObjectPropertyContainer(this, res);
 	}
 
 	/* (non-Javadoc)
