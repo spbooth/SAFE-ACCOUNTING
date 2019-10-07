@@ -13,8 +13,10 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.Date;
 import java.util.Map;
 
+import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -22,7 +24,9 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.AverageMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CountDistinctMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.GroupingSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.InvalidKeyException;
+import uk.ac.ed.epcc.webapp.jdbc.expr.MaximumDateMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MaximumMapMapper;
+import uk.ac.ed.epcc.webapp.jdbc.expr.MinimumDateMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MinimumMapMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
@@ -33,7 +37,7 @@ import uk.ac.ed.epcc.webapp.model.data.FieldValue;
 
 public class MapReductionFinder<T,K,R,N> extends AccessorMapFilterFinder<T, Map<K,R>> {
 	public MapReductionFinder(AccessorMap<T> map, PropExpression<K> key,
-			ReductionTarget<R,N> value) throws InvalidSQLPropertyException {
+			ReductionTarget<R,N> value) throws InvalidSQLPropertyException, IllegalReductionException {
 		super(map); // can return null
 		assert(key != null);
 		assert(value != null);
@@ -49,18 +53,36 @@ public class MapReductionFinder<T,K,R,N> extends AccessorMapFilterFinder<T, Map<
 			key_name = key.toString();
 		}
 		
-		SQLExpression<? extends N> e  = map.getSQLExpression(value.getExpression());
+		SQLExpression<? extends N> val  = map.getSQLExpression(value.getExpression());
 		String value_name=null;
-		if( ! (e instanceof FieldValue)){
+		if( ! (val instanceof FieldValue)){
 			value_name=value.toString();
 		}
 		try {
-			switch(value.getReduction()){
-			case SUM: setMapper(new SumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
-			case MIN: setMapper(new MinimumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
-			case MAX: setMapper(new MaximumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
-			case AVG: setMapper(new AverageMapMapper(map.getContext(),a,key_name,e,value_name)); break;
-			case DISTINCT: setMapper(new CountDistinctMapMapper(map.getContext(), a, key_name, e, value_name)); break;
+			if( Number.class.isAssignableFrom(val.getTarget())){
+				SQLExpression<? extends Number> e = (SQLExpression<? extends Number>) val;
+
+				switch(value.getReduction()){
+				case SUM: setMapper(new SumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+				case MIN: setMapper(new MinimumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+				case MAX: setMapper(new MaximumMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+				case AVG: setMapper(new AverageMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+				case DISTINCT: setMapper(new CountDistinctMapMapper(map.getContext(), a, key_name, e, value_name)); break;
+				}
+			}else if( Date.class.isAssignableFrom(val.getTarget()) ){
+				SQLExpression<? extends Date> e = (SQLExpression<? extends Date>) val;
+				switch(value.getReduction()){
+				
+				case MIN: setMapper(new MinimumDateMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+				case MAX: setMapper(new MaximumDateMapMapper(map.getContext(),a,key_name,e,value_name)); break;
+				case DISTINCT: setMapper(new CountDistinctMapMapper(map.getContext(), a, key_name, e, value_name)); break;
+				default: throw new IllegalReductionException("Bad date reduction");
+				}
+			}else {
+				switch(value.getReduction()){
+				case DISTINCT: setMapper(new CountDistinctMapMapper(map.getContext(), a, key_name, val, value_name)); break;
+				default: throw new IllegalReductionException("Unsupported data type for reduction");
+				}
 			}
 		}catch(InvalidKeyException e1) {
 			throw new InvalidSQLPropertyException(key);

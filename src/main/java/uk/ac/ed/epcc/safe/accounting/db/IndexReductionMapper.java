@@ -118,8 +118,8 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 								//log.debug("reduction on number property "+t+" maps to "+e);
 								switch(target.getReduction()){
 								case SUM: addSum(e,value_name);break;
-								case MIN: addMin(e, value_name);break;
-								case MAX: addMax(e, value_name);break;
+								case MIN: addMinNumber(e, value_name);break;
+								case MAX: addMaxNumber(e, value_name);break;
 								case AVG: addAverage(e, value_name);break;
 								case SELECT:addClause(val, value_name);break; 
 								case DISTINCT: addCount(e, value_name); break; // might be counting distinct numbers
