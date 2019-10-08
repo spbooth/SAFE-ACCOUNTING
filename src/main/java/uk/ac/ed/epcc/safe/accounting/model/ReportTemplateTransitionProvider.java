@@ -326,10 +326,11 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 					Map<String,Object> params = null;
 					boolean hasErrors = false;
 					ReportTemplateLog report_log=null;
+					boolean has_form=false;
 					try {
 						
 						
-						boolean has_form = builder.hasMandatoryReportParameters();
+						has_form = builder.hasMandatoryReportParameters();
 						params = getParameters(target, context, builder);
 						// null params means invalid form
 						// non-empty params always shows preview can also force a preview for the default param set
@@ -364,7 +365,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 						}
 					}			
 					// null params meand invalid 
-					if (params != null && (!target.getParameters().isEmpty() || target.isPreview()) && isReportDev)
+					if ((! has_form || (params != null && (!target.getParameters().isEmpty() || target.isPreview()))) && isReportDev)
 					{
 						TimerService timer = context.getService(TimerService.class);
 						if( timer != null ) {

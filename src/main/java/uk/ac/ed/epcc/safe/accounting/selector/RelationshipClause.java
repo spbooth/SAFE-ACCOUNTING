@@ -57,5 +57,7 @@ public class RelationshipClause implements RecordSelector{
 		return relationship;
 	}
 	
-
+    public String toString() {
+    	return "Relationship("+relationship+")";
+    }
 }

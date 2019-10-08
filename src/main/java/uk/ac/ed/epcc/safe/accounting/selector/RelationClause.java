@@ -77,4 +77,11 @@ public final class RelationClause<T> implements RecordSelector {
 		return true;
 	}
 
+	@Override
+	public String toString(){
+		if( match == null ){
+			return "("+left+"="+right+")";
+		}
+		return "("+left+" "+match+" "+right+")";
+	}
 }
