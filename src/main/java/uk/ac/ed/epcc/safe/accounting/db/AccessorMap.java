@@ -69,6 +69,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpressionMatchFilter;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpressionNullFilter;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpressionOrderFilter;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.WrappedSQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
@@ -579,6 +580,10 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		}
 		if( obj instanceof SQLExpression){
 			expression_map.put(tag, (SQLExpression) obj);
+			if( obj instanceof WrappedSQLExpression) {
+				// wrapped SQL value is preferred in contexts where value is ok
+				value_map.put(tag, ((WrappedSQLExpression<T>)obj).getSQLValue());
+			}
 			added=true;
 		}
 		if( ! added ){
