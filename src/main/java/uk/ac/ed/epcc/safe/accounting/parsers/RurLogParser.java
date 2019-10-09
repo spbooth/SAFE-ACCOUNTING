@@ -35,7 +35,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  *
  */
 public class RurLogParser extends AbstractPropertyContainerParser implements IncrementalPropertyContainerParser {
-	
+
 	public RurLogParser(AppContext conn) {
 		super(conn);
 	}
@@ -48,10 +48,10 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	private static final String MEMORY_PLUGIN_NAME = "memory";
 	private static final String TIMESTAMP_PLUGIN_NAME = "timestamp";
 	//private static final String[] plugin_name_list = {ENERGY_PLUGIN_NAME, TASKSTATS_PLUGIN_NAME, MEMORY_PLUGIN_NAME, TIMESTAMP_PLUGIN_NAME};
-	
+
 	private static final PropertyRegistry rur_reg = new PropertyRegistry("rur", "Properties from rur log");
 	private static final PropertyRegistry plugin_reg = new PropertyRegistry("rur_plugins", "Plugins seen in rur");
-	
+
 	@AutoTable(target=String.class, length=1)
 	public static final PropertyTag<String> ENERGY_PLUGIN = new PropertyTag<>(plugin_reg, ENERGY_PLUGIN_NAME, String.class);
 	@AutoTable(target=String.class, length=1)
@@ -61,22 +61,22 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@OptionalTable(target=String.class, length=1)
 	public static final PropertyTag<String> TIMESTAMP_PLUGIN = new PropertyTag<>(plugin_reg, TIMESTAMP_PLUGIN_NAME, String.class);
 
-	
+
 	@AutoTable(target=Integer.class, unique=true)
 	public static final AttributePropertyTag<Integer> ALPS_ID = new AttributePropertyTag<>(rur_reg, "apid", null, Integer.class,
 			"ALPS log id", -1);
-	
+
 	// This covers us for re-use of alpds ids
 	@AutoTable(target=String.class,length=32,unique=true)
 	public static final PropertyTag<String> PBS_ID = new PropertyTag<>(rur_reg, "pbs_id",String.class,"PBS Job ID");
-	
-	
+
+
 	@OptionalTable(target=Date.class)
 	public static final AttributePropertyTag<Date> START_TIMESTAMP = new AttributePropertyTag<>(rur_reg, "start_date_time", null, Date.class, "date time job started", new Date());
-	
+
 	@OptionalTable(target=Date.class)
 	public static final AttributePropertyTag<Date> STOP_TIMESTAMP = new AttributePropertyTag<>(rur_reg, "stop_date_time", null, Date.class, "date time job stopped", new Date());
-	
+
 	@AutoTable(target=Long.class)
 	public static final AttributePropertyTag<Long> ENERGY_USED = new AttributePropertyTag<>(rur_reg, "energy_used", null, Long.class,
 			"Total energy (in joules) used across all nodes, including accelerators", -1L);
@@ -122,8 +122,8 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> MIN_ACCEL_POWER_CAP_COUNT = new AttributePropertyTag<>(rur_reg, "min_accel_power_cap_count", null, Integer.class,
 			"Number of accelerators with the minimum nonzero power cap", -1);
-	
-	
+
+
 	@AutoTable(target=Long.class)
 	public static final AttributePropertyTag<Long> START_TIME = new AttributePropertyTag<>(rur_reg, "btime", null, Long.class,
 			"UNIX time when process started", -1L);
@@ -178,7 +178,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@AutoTable(target=String.class, length=1024)
 	public static final AttributePropertyTag<String> EXIT_CODE_LIST = new AttributePropertyTag<>(rur_reg, "exitcode_signal", new String[]{"exitcode:signal"}, String.class,
 			"Exit code list", "");
-	
+
 	@AutoTable(target=String.class, length=1024)
 	public static final AttributePropertyTag<String> ABORT_INFO = new AttributePropertyTag<>(rur_reg, "abortinfo", null, String.class,
 			"If abnormal termination occurs, a list of abort_info fields is reported", "");
@@ -224,9 +224,9 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> PROCESS_NAME = new AttributePropertyTag<>(rur_reg, "comm", null, String.class,
 			"String containing process name", "");
-	
-	
-	
+
+
+
 	@OptionalTable(target=String.class, length=1024)
 	public static final AttributePropertyTag<String> BOOT_MEM_PERCENTAGE = new AttributePropertyTag<>(rur_reg, "boot_mem_percent", new String[]{"%_of_boot_mem"}, String.class,
 			"The percentage of boot memory for each order chunk in /proc/buddyinfo summed across all memory zones", "");
@@ -236,8 +236,8 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> CURRENT_FREE_MEM_CONTENTS = new AttributePropertyTag<>(rur_reg, "current_freemem", null, Long.class,
 			"Contents of /proc/current_freemem", -1L);
-	
-	
+
+
 	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> ACTIVE_MEM_TOTAL = new AttributePropertyTag<>(rur_reg, "meminfo_active_anon", new String[]{"Active(anon)"}, Long.class,
 			"Total amount of memory in active use by the application", -1L);
@@ -253,11 +253,11 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@OptionalTable(target=Long.class)
 	public static final AttributePropertyTag<Long> KERNEL_MEM_TOTAL = new AttributePropertyTag<>(rur_reg, "meminfo_slab", new String[]{"Slab"}, Long.class,
 			"Total amount of memory used by the kernel", -1L);
-	
+
 	public static final AttributePropertyTag<String> MEM_INFO = new AttributePropertyTag<>(rur_reg, "meminfo", null, String.class,
 			"Memory information", "");
-	
-		
+
+
 	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> HUGEPAGES_NAME = new AttributePropertyTag<>(rur_reg, "hugepagesname", null, String.class,
 			"Hugepages name", "");
@@ -279,12 +279,12 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@OptionalTable(target=Integer.class)
 	public static final AttributePropertyTag<Integer> RESERVED_HUGEPAGES_COUNT = new AttributePropertyTag<>(rur_reg, "hugepages_resv", new String[]{"resv"}, Integer.class,
 			"Number of hugepages committed for allocation, but no allocation has occurred", -1);
-	
+
 	public static final DynamicAttributePropertyTag<String> HUGEPAGES = new DynamicAttributePropertyTag<>(rur_reg, "hugepages",
 			"hugepages-(?<"+HUGEPAGES_SIZE.getName()+">\\d+)(?<"+HUGEPAGES_SIZE_UNIT.getName()+">[kMG]B)", null, String.class,
 			"The hugepages size for the select entries from /sys/kernel/mm/hugepages/hugepages-*B/*", "", true, false);
-	
-	
+
+
 	@OptionalTable(target=String.class, length=1024)
 	public static final AttributePropertyTag<String> NODEZONES_NAME = new AttributePropertyTag<>(rur_reg, "nodezonesname", null, String.class,
 			"Nodezones name", "");
@@ -297,12 +297,12 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@OptionalTable(target=String.class, length=2048)
 	public static final AttributePropertyTag<String> NODEZONES_DATA = new AttributePropertyTag<>(rur_reg, "nodezones_data", null, String.class,
 			"Nodezones data", "");
-	
+
 	public static final DynamicAttributePropertyTag<String> NODEZONES = new DynamicAttributePropertyTag<>(rur_reg, "nodezones",
 			"Node_(?<"+NODEZONES_NUMBER.getName()+">\\d+)_zone_(?<"+NODEZONES_TYPE.getName()+">\\S+)", null, String.class,
 			"Node zone information", "", false, true);
-	
-	
+
+
 	/**
 	 * If a Python exception occurs during the post or staging scripts, the following data is reported for the energy and memory plugins.
 	 */
@@ -321,11 +321,11 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	@OptionalTable(target=String.class)
 	public static final AttributePropertyTag<String> ERROR_CNAME = new AttributePropertyTag<>(rur_reg, "error_cname", new String[]{"cname"}, String.class,
 			"Node on which exception occurred", "");
-	
+
 	public static final AttributePropertyTag<String> ERROR_INFO = new AttributePropertyTag<>(rur_reg, "error", null, String.class,
 			"Error information", "");
-	
-	
+
+
 	private static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
 	static {
 		STANDARD_ATTRIBUTES.addParser(ENERGY_USED, LongParser.PARSER);
@@ -343,7 +343,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 		STANDARD_ATTRIBUTES.addParser(MAX_ACCEL_POWER_CAP_COUNT, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(MIN_ACCEL_POWER_CAP, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(MIN_ACCEL_POWER_CAP_COUNT, IntegerParser.PARSER);
-		
+
 		STANDARD_ATTRIBUTES.addParser(START_TIME, LongParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(ELAPSED_TIME, LongParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(SYSTEM_TIME, LongParser.PARSER);
@@ -377,17 +377,17 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 		STANDARD_ATTRIBUTES.addParser(JOB_PROJECT_ID, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(PARENT_PROCESS_ID, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(PROCESS_NAME, StringParser.PARSER);
-		
+
 		STANDARD_ATTRIBUTES.addParser(BOOT_MEM_PERCENTAGE, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(BOOT_FREE_MEM_CONTENTS, LongParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(CURRENT_FREE_MEM_CONTENTS, LongParser.PARSER);
-		
+
 		STANDARD_ATTRIBUTES.addParser(ACTIVE_MEM_TOTAL, LongParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(ACTIVE_FILE_MEM_TOTAL, LongParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(INACTIVE_MEM_TOTAL, LongParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(INACTIVE_FILE_MEM_TOTAL, LongParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(KERNEL_MEM_TOTAL, LongParser.PARSER);
-		
+
 		STANDARD_ATTRIBUTES.addParser(HUGEPAGES_NAME, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(HUGEPAGES_SIZE, LongParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(HUGEPAGES_SIZE_UNIT, StringParser.PARSER);
@@ -395,12 +395,12 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 		STANDARD_ATTRIBUTES.addParser(SURPLUS_HUGEPAGES_COUNT, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(UNALLOCATED_HUGEPAGES_COUNT, IntegerParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(RESERVED_HUGEPAGES_COUNT, IntegerParser.PARSER);
-		
+
 		STANDARD_ATTRIBUTES.addParser(NODEZONES_NAME, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODEZONES_NUMBER, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODEZONES_TYPE, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(NODEZONES_DATA, StringParser.PARSER);
-		
+
 		STANDARD_ATTRIBUTES.addParser(ERROR_TRACEBACK, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(ERROR_TYPE, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(ERROR_VALUE, StringParser.PARSER);
@@ -408,35 +408,35 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 		STANDARD_ATTRIBUTES.addParser(ERROR_CNAME, StringParser.PARSER);
 		STANDARD_ATTRIBUTES.addParser(ERROR_INFO, StringParser.PARSER);
 	}
-	
-	
-	
+
+
+
 	private boolean parse_timezone=true;
-	
+
 	/**
 	 * The full parse pattern is based on the format specification given in Chapter 9 of the Cray document entitled
 	 * Manage System Software for Cray Linux Environment, S-2393-5202axx. 
 	 */
 	private static final Pattern full_parse_pattern = Pattern.compile("\\S+ (?<TIMESTAMP>\\S+) (?<HOSTNAME>\\S+) (?<RECORDTYPE>\\S+) (?<TAG>\\S+) (?<SUBMISSION>\\S+)"
-		+ " \\S+ " + "uid: (?<USERID>\\S+), apid: (?<APID>\\S+), jobid: (?<PBSID>\\S+), cmdname: (?<APRUNCMD>\\S+), (?<PLUGINS>.*)");
-	
+			+ " \\S+ " + "uid: (?<USERID>\\S+), apid: (?<APID>\\S+), jobid: (?<PBSID>\\S+), cmdname: (?<APRUNCMD>\\S+), (?<PLUGINS>.*)");
+
 	/**
 	 * This parse pattern is based on the format specification followed by the ARCHER TDS data file located at /work/rurtest. 
 	 */
 	private static final Pattern parse_pattern = Pattern.compile("uid: (?<USERID>\\S+), apid: (?<APID>\\S+), jobid: (?<PBSID>\\S+), "
-		+ "cmdname: (?<APRUNCMD>\\S*), (?<PLUGINS>.*)");
-	
-    private static final Pattern plugin_pattern = Pattern.compile("plugin: (?<PLUGINNAME>\\S+) (([{\\[](?<ATTRS>.*)[\\]}])|(?<TIMESTAMP>.*))(,\\s)?");
-    
-    private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
-    private static final SimpleDateFormat df_no_tz = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    private static final Pattern timestamp_pattern = Pattern.compile("APP_START (?<START>\\S+) APP_STOP (?<STOP>\\S+)");
-    
-    private static final Pattern attribute_pattern = Pattern.compile("['\"](?<ATTRNAME>\\S+)['\"][,:] ([{](?<SUBATTRS>[^}]+)|[\\[](?<ATTRLIST>[^\\]]+)|['\"](?<ATTRSTRING>[^\"]+)|(?<ATTRVALUE>[^,]+))");
-    
-    private static final Pattern sub_attribute_pattern = Pattern.compile("['\"](?<SUBATTRNAME>\\S+)['\"][,:] (['\"]{1}(?<SUBATTRSTRING>[^\"]+)|(?<SUBATTRVALUE>[^,]+))");
-    		
-    private Set<String> unrecognised_attr;
+			+ "cmdname: (?<APRUNCMD>\\S*), (?<PLUGINS>.*)");
+
+	private static final Pattern plugin_pattern = Pattern.compile("plugin: (?<PLUGINNAME>\\S+) (([{\\[](?<ATTRS>.*)[\\]}])|(?<TIMESTAMP>.*))(,\\s)?");
+
+	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
+	private static final SimpleDateFormat df_no_tz = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	private static final Pattern timestamp_pattern = Pattern.compile("APP_START (?<START>\\S+) APP_STOP (?<STOP>\\S+)");
+
+	private static final Pattern attribute_pattern = Pattern.compile("['\"](?<ATTRNAME>\\S+)['\"][,:] ([{](?<SUBATTRS>[^}]+)|[\\[](?<ATTRLIST>[^\\]]+)|['\"](?<ATTRSTRING>[^\"]+)|(?<ATTRVALUE>[^,]+))");
+
+	private static final Pattern sub_attribute_pattern = Pattern.compile("['\"](?<SUBATTRNAME>\\S+)['\"][,:] (['\"]{1}(?<SUBATTRSTRING>[^\"]+)|(?<SUBATTRVALUE>[^,]+))");
+
+	private Set<String> unrecognised_attr;
 	@Override
 	/**
 	 * Parse a single entry from the RUR log.
@@ -447,22 +447,22 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	 * @throws AccountingParseException
 	 */
 	public boolean parse(DerivedPropertyMap map, String record) throws AccountingParseException {
-		
+
 		record = record.trim();
-		
+
 		if (record.length() == 0) {
 			return false;
 		}
 		getLogger().debug("rur record is '" + record + "'.");
-		
+
 		// parse the record into the declared properties and set them in the property map
 		Matcher m = full_parse_pattern.matcher(record);
 		if (!m.matches()) {
 			m = parse_pattern.matcher(record);
 		}
-		
+
 		if (m.matches()) {
-			
+
 			// check record type if it exists
 			try {
 				String rec_type = m.group("RECORDTYPE");
@@ -472,18 +472,18 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 			} catch (IllegalArgumentException x) {
 				getLogger().debug("rur record does not contain record type.");
 			}
-			
+
 			String apid = m.group("APID");
 			map.setProperty(ALPS_ID, Integer.valueOf(apid));		
 			map.setProperty(PBS_ID, m.group("PBSID"));			
 			Matcher plugin_matcher = plugin_pattern.matcher(m.group("PLUGINS"));
 			while (plugin_matcher.find()) {
-				
-			
+
+
 				String name = plugin_matcher.group("PLUGINNAME");
 				PropertyTag<String> plugin_tag = (PropertyTag<String>) plugin_reg.find(name);
-				
-				
+
+
 				if (plugin_tag == null ) {
 					getLogger().debug("plugin " + name + " not supported.");
 					continue;
@@ -511,87 +511,87 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 					}
 					continue;
 				}
-				
+
 				String attrs = plugin_matcher.group("ATTRS");
 				if( attrs !=null) {
-				Matcher attr_matcher = attribute_pattern.matcher(attrs);
-				while (attr_matcher.find()) {
-				
-					String alias = attr_matcher.group("ATTRNAME");
-					AttributePropertyTag<?> tag = AttributePropertyTag.findAttribute(rur_reg, alias, true);
-					if (null != tag) {
-						name = tag.getName();
-						
-						String value = attr_matcher.group("ATTRVALUE");
-						if (null == value) {
-							value = attr_matcher.group("ATTRSTRING");
+					Matcher attr_matcher = attribute_pattern.matcher(attrs);
+					while (attr_matcher.find()) {
+
+						String alias = attr_matcher.group("ATTRNAME");
+						AttributePropertyTag<?> tag = AttributePropertyTag.findAttribute(rur_reg, alias, true);
+						if (null != tag) {
+							name = tag.getName();
+
+							String value = attr_matcher.group("ATTRVALUE");
 							if (null == value) {
-								value = attr_matcher.group("ATTRLIST");
+								value = attr_matcher.group("ATTRSTRING");
 								if (null == value) {
-									value = attr_matcher.group("SUBATTRS");
-									if (null != value) {
-										parseSubattrs(map, tag, value);
+									value = attr_matcher.group("ATTRLIST");
+									if (null == value) {
+										value = attr_matcher.group("SUBATTRS");
+										if (null != value) {
+											parseSubattrs(map, tag, value);
+										}
 									}
 								}
 							}
+
+							if (null == value) {
+								throw new AccountingParseException("Cannot find value for attribute '" + name + "'.");
+							}
+
+							tag.setValue(STANDARD_ATTRIBUTES, map, name, value);
 						}
-						
-						if (null == value) {
-							throw new AccountingParseException("Cannot find value for attribute '" + name + "'.");
+						else {
+							unrecognised_attr.add(alias);
 						}
-					
-						tag.setValue(STANDARD_ATTRIBUTES, map, name, value);
 					}
-					else {
-						unrecognised_attr.add(alias);
-					}
-				}
 				}else {
-					getLogger().error("Null attributes from plugin");
+					throw new AccountingParseException("Null attributes from plugin");
 				}
 			}
-			
+
 		} else {
 			throw new AccountingParseException("Unexpected line format");
 		}
-		
+
 		return true;
 	}
 
-	
-	
-	
+
+
+
 	public void parseSubattrs(PropertyMap map, AttributePropertyTag<?> attrParentTag, String attrs) throws AccountingParseException {
-		
+
 		// parse the record into the declared properties and set them in the property map
 		Matcher m = sub_attribute_pattern.matcher(attrs);
 		while (m.find()) {
-					
-		    String alias = m.group("SUBATTRNAME");
+
+			String alias = m.group("SUBATTRNAME");
 			AttributePropertyTag<?> tag = AttributePropertyTag.findAttribute(rur_reg, alias, true);
 			if (null != tag) {
 				String name = tag.getName();
-						
+
 				String value = m.group("SUBATTRVALUE");
 				if (null == value) {
 					value = m.group("SUBATTRSTRING");
 				}
-							
+
 				if (null == value) {
 					throw new AccountingParseException("Cannot find value for subattribute '" + name
-						+ "' of attribute '" + attrParentTag.getName() + "'.");
+							+ "' of attribute '" + attrParentTag.getName() + "'.");
 				}
-					
+
 				tag.setValue(STANDARD_ATTRIBUTES, map, name, value);
 			}
-			
+
 		}
-			
+
 	}
 
 	@Override
 	public PropertyFinder initFinder(PropertyFinder prev, String table) {
-		
+
 		MultiFinder finder = new MultiFinder();
 		finder.addFinder(rur_reg);
 		finder.addFinder(plugin_reg);
@@ -647,7 +647,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 	public void startParse(PropertyContainer staticProps) throws Exception {
 		unrecognised_attr = new HashSet<>();
 	}
-	
-	
-	
+
+
+
 }
