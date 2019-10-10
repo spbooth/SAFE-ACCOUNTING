@@ -318,6 +318,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			flush();
 			cache=null;
 			match_visitor=null;
+			eject(this);
 		}
 		@Override
 		public boolean commit() throws DataFault {
@@ -329,7 +330,9 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		@Override
 		public boolean delete() throws DataFault {
 			if( record instanceof DataObject) {
-				return ((DataObject)record).delete();
+				DataObject dataObject = (DataObject)record;
+				release();
+				return dataObject.delete();
 			}
 			throw new ConsistencyError("Can only delete DataObjects");
 		}
@@ -706,11 +709,26 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		
 		return defined;
 	}
+
+	private X last_record=null;
+	private ExpressionTargetProxy last_proxy=null;
 	public final ExpressionTargetContainer getProxy(X record){
 		if( record == null ) {
 			return null;
 		}
-		return new ExpressionTargetProxy(getContext(),record);
+		if( last_record == record) {
+			return last_proxy;
+		}
+		last_record=record;
+		last_proxy =  new ExpressionTargetProxy(getContext(),record);
+		return last_proxy;
+	}
+	
+	public void eject(ExpressionTargetProxy proxy) {
+		if(proxy == last_proxy) {
+			last_proxy=null;
+			last_record=null;
+		}
 	}
 	
 	/** Get the set of defines properties whose resutls may be assigned to the
