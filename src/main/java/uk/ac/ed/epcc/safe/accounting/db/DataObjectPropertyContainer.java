@@ -26,7 +26,8 @@ import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 
 /** Basic extension of DataObject to implement {@link ProxyOwner}.
  * If desired this can be extended to implement {@link ExpressionTargetContainer} directly
- * using the nested proxy.
+ * using the nested proxy. Easiest way to do this is to implement {@link ProxyOwnerContainer}
+ * which has default methods to perform the forwarding.
  * The factory still need to be able to generate an {@link ExpressionTargetFactory}
  * either by implementing it directly or via a composite
  * 
@@ -58,6 +59,16 @@ public class DataObjectPropertyContainer extends DataObject implements  Owned, P
 
 	public ExpressionTargetFactory getExpressionTargetFactory() {
 		return ExpressionCast.getExpressionTargetFactory(getFactory());
+	}
+
+	@Override
+	public final void release() {
+		ExpressionTargetContainer tmp = proxy;
+		proxy=null;
+		if( tmp != null ) {
+			tmp.release();
+		}
+		super.release();
 	}
 
 

@@ -4,6 +4,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 /** Interface for domain objects that cache an {@link ExpressionTargetContainer}
  * proxy.
  * 
+ * @see ProxyOwnerContainer
  * @author Stephen Booth
  *
  */
