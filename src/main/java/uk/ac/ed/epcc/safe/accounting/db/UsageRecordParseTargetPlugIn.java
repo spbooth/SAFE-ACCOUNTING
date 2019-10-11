@@ -234,7 +234,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 	public ExpressionTargetContainer prepareRecord(DerivedPropertyMap map)
 			throws DataFault, InvalidPropertyException, AccountingParseException {
 		T record = getFactory().makeBDO();
-		ExpressionTargetContainer proxy = getExpressionTargetFactory().getAccessorMap().getProxy(record);
+		ExpressionTargetContainer proxy = getExpressionTargetFactory().getAccessorMap().getContainer(record);
 		int count = map.setContainer(proxy);
 
 		if (count == 0) {
@@ -282,7 +282,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 				while(it.hasNext()) {
 
 					T o = it.next();
-					ExpressionTargetContainer rec = amap.getProxy(o);
+					ExpressionTargetContainer rec = amap.getContainer(o);
 					count++;
 					try {
 						// make all previous props available to start parse
@@ -336,7 +336,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 				while(it.hasNext()) {
 
 					T o = it.next();
-					ExpressionTargetContainer rec = amap.getProxy(o);
+					ExpressionTargetContainer rec = amap.getContainer(o);
 					count++;
 					try {
 						// make all previous props available to start parse

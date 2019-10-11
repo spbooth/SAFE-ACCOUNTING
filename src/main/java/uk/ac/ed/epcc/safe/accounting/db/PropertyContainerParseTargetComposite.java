@@ -272,7 +272,7 @@ public abstract class PropertyContainerParseTargetComposite<T extends DataObject
 				return null;
 			}
 			AccessorMap<T> map = etf.getAccessorMap();
-			return map.getProxy(record);
+			return map.getContainer(record);
 		} catch (Exception e) {
 			throw new ConsistencyError("Required property not present", e);
 		}

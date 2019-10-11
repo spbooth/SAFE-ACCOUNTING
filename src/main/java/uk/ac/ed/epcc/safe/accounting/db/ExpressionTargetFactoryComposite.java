@@ -244,7 +244,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 			DataObjectFactory<T> fac = getFactory();
 			AccessorMap m = getAccessorMap();
 			for(T o : fac.getResult(filter)){
-				result.add(map.getProxy(o).getProperty(tag));
+				result.add(map.getContainer(o).getProperty(tag));
 			}
 			return result;
 		}
@@ -282,7 +282,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	 */
 	@Override
 	public ExpressionTargetContainer getExpressionTarget(T record) {
-		return getAccessorMap().getProxy(record);
+		return getAccessorMap().getContainer(record);
 	}
 	@Override
 	public boolean isMyTarget(T record) {

@@ -24,7 +24,9 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Owned;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 
-/** Basic extension of DataObject to support properties directly.
+/** Basic extension of DataObject to implement {@link ProxyOwner}.
+ * If desired this can be extended to implement {@link ExpressionTargetContainer} directly
+ * using the nested proxy.
  * The factory still need to be able to generate an {@link ExpressionTargetFactory}
  * either by implementing it directly or via a composite
  * 
@@ -34,7 +36,7 @@ import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
  */
 
 
-public class DataObjectPropertyContainer extends DataObject implements  Owned{
+public class DataObjectPropertyContainer extends DataObject implements  Owned, ProxyOwner{
     private final DataObjectFactory<?> fac;
     private ExpressionTargetContainer proxy=null; 
 	@SuppressWarnings("unchecked")

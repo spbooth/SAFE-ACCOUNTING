@@ -36,7 +36,7 @@ public class ExpressionAcceptMatchFilter<T,I> extends AbstractAcceptFilter<T>{
 	@SuppressWarnings("unchecked")
 	public boolean accept(T t) {
 		try {
-			ExpressionTarget o = map.getProxy(t);
+			ExpressionTarget o = map.getContainer(t);
 			if( o == null) {
 				return false;
 			}

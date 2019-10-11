@@ -181,7 +181,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 		}catch(CannotUseSQLException e){
 			Set<PT> result = new HashSet<>();
 			for(T o : new FilterSet(filter)){
-				ExpressionTargetContainer proxy = map.getProxy(o);
+				ExpressionTargetContainer proxy = map.getContainer(o);
 				result.add(proxy.getProperty(tag));
 				proxy.release();
 				o.release();

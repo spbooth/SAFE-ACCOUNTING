@@ -80,7 +80,7 @@ public class PropertyUpdater<T extends DataObject> {
 			//do things the hard way
 			int count=0;
 			for(T ur : fac.getResult(filter)){
-				ExpressionTargetContainer proxy = map.getProxy(ur);
+				ExpressionTargetContainer proxy = map.getContainer(ur);
 				proxy.setProperty(tag, value);
 				if( ur.commit()){
 					count++;
@@ -129,7 +129,7 @@ public class PropertyUpdater<T extends DataObject> {
 			//do things the hard way
 			int count=0;
 			for(T dat : fac.getResult(filter)){
-				ExpressionTargetContainer ur = map.getProxy(dat);
+				ExpressionTargetContainer ur = map.getContainer(dat);
 				ur.setProperty(tag, ur.evaluateExpression(value));
 				if( dat.commit()){
 					count++;

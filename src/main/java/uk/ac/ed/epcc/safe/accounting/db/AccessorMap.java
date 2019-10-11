@@ -712,10 +712,22 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 
 	private X last_record=null;
 	private ExpressionTargetProxy last_proxy=null;
-	public final ExpressionTargetContainer getProxy(X record){
+	/**  create/find an {@link ExpressionTargetProxy} for a record.
+	 * 
+	 * This method must be used when creating a proxy cached within the record itself
+	 * so the record can implement {@link ExpressionTargetContainer} otherwise you should probably be using
+	 * {@link #getContainer(Object)}
+	 * 
+	 * @see ProxyOwner
+	 * @param record
+	 * @return
+	 */
+	final ExpressionTargetProxy getProxy(X record){
 		if( record == null ) {
 			return null;
 		}
+		// We implement very basic proxy caching for records that don't implement ProxyOwner
+		// this ensures the 
 		if( last_record == record) {
 			return last_proxy;
 		}
@@ -723,9 +735,40 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		last_proxy =  new ExpressionTargetProxy(getContext(),record);
 		return last_proxy;
 	}
+	/** Map a record to an {@link ExpressionTargetContainer}
+	 * 
+	 * if the record itself implements {@link ExpressionTargetContainer} then return the record.
+	 * if it implements {@link ProxyOwner} return the cached {@link ExpressionTargetContainer}
+	 * Otherwise return a new {@link ExpressionTargetProxy}.
+	 * 
+	 * This method must not be used as part of the implementation of the interface on the record itself
+	 * use {@link #getProxy(Object)}
+	 * @param record
+	 * @return
+	 */
+	public final ExpressionTargetContainer getContainer(X record) {
+		if( record instanceof ExpressionTargetContainer) {
+			return (ExpressionTargetContainer) record;
+		}else if( record instanceof ProxyOwner) {
+			ExpressionTargetContainer proxy = ((ProxyOwner)record).getProxy();
+			if( proxy != null) {
+				// A ProxyOwner SHOULD use getProxy to populate its cached value
+				// but it CAN use getContainer provided it returns null if
+				// called recursively.
+				return proxy;
+			}
+		}
+		return getProxy(record);
+	}
 	
+	
+	/** Eject a cached proxy from the cache.
+	 * passing null ejects all cached proxies
+	 * 
+	 * @param proxy 
+	 */
 	public void eject(ExpressionTargetProxy proxy) {
-		if(proxy == last_proxy) {
+		if(proxy == last_proxy || proxy == null) {
 			last_proxy=null;
 			last_record=null;
 		}
@@ -1293,5 +1336,6 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			expression_map.clear();
 			expression_map=null;
 		}
+		eject(null);
 	}
 }
