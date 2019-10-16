@@ -65,6 +65,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.StringConvertSQLExpression;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
+import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLExpression;
 /** get an {@link SQLExpression} from a {@link PropExpression}
  * 
@@ -186,7 +187,10 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	public SQLExpression visitMilliSecondDatePropExpression(
 			MilliSecondDatePropExpression milliSecondDate) throws Exception {
 		SQLExpression<Date> de = milliSecondDate.getDateExpression().accept(this);
-		return convertDateExpression(de);
+		if( de instanceof DateSQLExpression){
+			return ((DateSQLExpression)de).getMillis();
+		}
+		return sql.convertToMilliseconds(de);
 		
 	}
 
@@ -196,6 +200,11 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	}
 	
 	public SQLExpression visitDurationSecondPropExpression(DurationSecondsPropExpression expr) throws Exception{
+		PropExpression<Duration> duration = expr.getDuration();
+		if( duration instanceof DurationPropExpression) {
+			DurationPropExpression d = (DurationPropExpression) duration;
+			return sql.dateDifference(1000L, d.start.accept(this), d.end.accept(this));
+		}
 		throw new InvalidSQLPropertyException("DurationSecondsPropExpression not representable as SQLExpression");
 	}
 	public <T extends DataObject> SQLExpression visitDoubleDeRefExpression(
@@ -259,13 +268,7 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	@SuppressWarnings("unchecked")
 	public SQLExpression visitDurationPropExpression(DurationPropExpression sel)
 	throws Exception {
-		return new DurationSQLExpression(convertDateExpression(sel.start.accept(this)), convertDateExpression(sel.end.accept(this)));
-	}
-	public SQLExpression<? extends Number> convertDateExpression(SQLExpression<Date> d){
-		if( d instanceof DateSQLExpression){
-			return ((DateSQLExpression)d).getMillis();
-		}
-		return sql.convertToMilliseconds(d);
+		return sql.dateDifference(1L, sel.start.accept(this), sel.end.accept(this));
 	}
 	public SQLExpression<Date> convertMilliExpression(SQLExpression<? extends Number> d){
 		return sql.convertToDate(d,1L);

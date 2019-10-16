@@ -41,6 +41,7 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
@@ -487,7 +488,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		return super.getPeriodFilter(period, start, end,type,cutoff);
 	}
 
-	/**
+	/** calculate the maximum difference between the two date expressions for the entire table
 	 * @param start
 	 * @param end
 	 * @return
@@ -504,6 +505,10 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		AndRecordSelector sel = new AndRecordSelector(narrow);
 		sel.add(new SelectClause<>(duration,MatchCondition.GT,new Duration(0L,1L)));
 		sel.add(new SelectClause<>(start,MatchCondition.GT,new Date(0L)));
+		// Want to avoid reversed time bounds. Won't affect result as 
+		// we are generating a max but 
+		// Might occur legitimately if we are using a constant date as one time-bound
+		sel.add(new RelationClause<>(start,MatchCondition.LT,end));
 		long l = getReductionHandler().getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), sel).longValue()+1L;
 		calc_cutoff = new Long(l);
 		return calc_cutoff;
