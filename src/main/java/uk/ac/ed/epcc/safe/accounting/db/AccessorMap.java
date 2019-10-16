@@ -560,7 +560,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		
 		// might be better to do this as an expression
 		// the following only works because we are adding a SQLAccessor
-		put(StandardProperties.TABLE_PROP, new ConstExpression<String,X>(String.class, config_tag));
+		put(StandardProperties.TABLE_PROP, new ConstExpression<String,X>(target,String.class, config_tag));
 		
 		try {
 			// This is only a fall-back expression. Aggregate records may store the

@@ -76,7 +76,7 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	
 	private final AppContext conn;
 	private final SQLContext sql;
-	 private final Class target;
+	 private final Class target; // target class for filters
 	public CreateSQLExpressionPropExpressionVisitor(Class target,AppContext c){
 		this.target=target;
 		this.conn=c;
@@ -160,7 +160,7 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 
 	@SuppressWarnings("unchecked")
 	public final SQLExpression visitConstPropExpression(ConstPropExpression<?> constExpression) throws Exception {
-		return  new ConstExpression(constExpression.getTarget(),constExpression.val);
+		return  new ConstExpression(target,constExpression.getTarget(),constExpression.val);
 	}
 	
 	

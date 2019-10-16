@@ -140,7 +140,7 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	}
 	@SuppressWarnings("unchecked")
 	public final SQLValue visitConstPropExpression(ConstPropExpression<?> constExpression) throws Exception {
-		return  new ConstExpression(constExpression.getTarget(),constExpression.val);
+		return  new ConstExpression(target,constExpression.getTarget(),constExpression.val);
 	}
 	
 	
