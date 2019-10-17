@@ -50,7 +50,9 @@ import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
+import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
+import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -463,8 +465,16 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 				if(calc_cutoff==null) {
 					try(TimeClosable tim = new TimeClosable(timer, cutoff_name)) {
 						// Check this uses SQL
-						if( getSQLValue(start) != null && getSQLValue(end) != null) {
-							calc_cutoff = getCutoff(null,start, end);
+						SQLValue<Date> start_value = getSQLValue(start);
+						SQLValue<Date> end_value = getSQLValue(end);
+						if( start_value != null && end_value != null) {
+							if( start_value instanceof ConstExpression || end_value instanceof ConstExpression) {
+								// Constant date bounds are not good candidates for using cutoff
+								// just suppress use of cutoff in this case.
+								calc_cutoff=0L;
+							}else {
+								calc_cutoff = getCutoff(null,start, end);
+							}
 							//if( log !=null) log.debug(getDBTag()+": calculated cutoff for "+start+","+end+" as "+cutoff);
 						}else {
 							calc_cutoff=0L;
