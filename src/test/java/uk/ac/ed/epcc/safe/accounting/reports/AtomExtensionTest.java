@@ -12,14 +12,19 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import uk.ac.ed.epcc.webapp.WebappTestBase;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
+import uk.ac.ed.epcc.webapp.session.AbstractSessionService;
 public class AtomExtensionTest extends WebappTestBase {
  
-	
+	@Before
+	public void setRoleTable() {
+		AbstractSessionService.setupRoleTable(ctx);
+	}
 
 	String countSummaryOutput = 
 		"The user 's0565741' ran 25 jobs between 01-10-2008 and 02-10-2008.";
