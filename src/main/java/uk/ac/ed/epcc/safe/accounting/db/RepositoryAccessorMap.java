@@ -470,6 +470,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 						if( start_value != null && end_value != null) {
 							if( start_value instanceof ConstExpression || end_value instanceof ConstExpression) {
 								// Constant date bounds are not good candidates for using cutoff
+								// probably relate to the current time anyway
 								// just suppress use of cutoff in this case.
 								calc_cutoff=0L;
 							}else {

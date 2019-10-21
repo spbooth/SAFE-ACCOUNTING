@@ -67,6 +67,9 @@
 	<xsl:template match="ModifyDate">
 	<xsl:element name="ModifyDate">1234567890</xsl:element>
 	</xsl:template>
+	<xsl:template match="FinishDate">
+	<xsl:element name="FinishDate">1234567890</xsl:element>
+	</xsl:template>
 	<xsl:template match="EndTime">
 	<xsl:element name="EndTime">1234567890</xsl:element>
 	</xsl:template>

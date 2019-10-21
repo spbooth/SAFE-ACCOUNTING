@@ -90,8 +90,8 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
 public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 	private static final Feature USE_OVERLAP_HANDLER_IN_TIMECHART = new Feature("use_overlap_handler_in_timechart", false, "Use the OverlapHandler for timecharts instead of iterating over overlaps");
 	
-	private static final Feature NARROW_CUTOFF_IN_TIMECHART = new Preference("reports.narrow_cutoff_in_timechart",false,"Run additional query to reduce cutoff in timechart");
-	private static final Feature CACHE_NARROWED_CUTOFFS = new Preference("reporting.cache_narrowed_cutoff",true,"Cache the narrowed cutoffs in session");
+	private static final Feature NARROW_CUTOFF_IN_TIMECHART = new Preference("reports.narrow_cutoff_in_timechart",false,"Run additional query to reduce cutoff in timechart by default (overidden by setting per producer)");
+	private static final Feature CACHE_NARROWED_CUTOFFS = new Preference("reporting.cache_narrowed_cutoff",false,"Cache the narrowed cutoffs in session");
 
 	public static final String GROUP_ENTRY_BASE = "GroupEntry";
 	private final String name;
@@ -200,8 +200,8 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		
 			// use cutoff configured into PlotEntry if any
 			long cutoff = e.getCutoff();
-			if( NARROW_CUTOFF_IN_TIMECHART.isEnabled(getContext()) ) {
-				boolean narrow = getContext().getBooleanParameter("narrow_cutoff."+prod.getTag(), true);
+			
+				boolean narrow = getContext().getBooleanParameter("narrow_cutoff."+prod.getTag(), NARROW_CUTOFF_IN_TIMECHART.isEnabled(getContext()));
 				if( narrow) {
 					TimerService timer = getContext().getService(TimerService.class);
 					if( timer != null) {
@@ -248,7 +248,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 						}
 					}
 				}
-			}
+			
 			return cutoff;
 	
 	}
@@ -629,7 +629,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		
      // create dataset, don't add labels yet as labels
 		// vector may grow as data added
-    	boolean query_mapper_on = OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn);
+    	boolean query_mapper_on = conn.getBooleanParameter("use_query_mapper."+ap.getTag(), OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn));
     	if( query_mapper_on  ){
     		try{
     			log.debug("using fmapper");
@@ -640,7 +640,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     				data_added = tc.addMapData(ds, fmapper, ap);
     			}else{
     				log.debug("using overlap");
-    				if( USE_OVERLAP_HANDLER_IN_TIMECHART.isEnabled(conn) && conn.getBooleanParameter("use_overlap_handler_in_timechart."+ap.getTag(), true)){
+    				if(  conn.getBooleanParameter("use_overlap_handler_in_timechart."+ap.getTag(), USE_OVERLAP_HANDLER_IN_TIMECHART.isEnabled(conn))){
     					log.debug("using overlap handler");
     					// This might be faster if the OverlapHandler is using a CaseExpression 
     					// less SQL queries but more complex.
