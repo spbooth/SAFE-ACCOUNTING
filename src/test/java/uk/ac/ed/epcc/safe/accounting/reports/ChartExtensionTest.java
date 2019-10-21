@@ -30,7 +30,6 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
 public class ChartExtensionTest extends ExtensionTestCase {
 
-	
 
 	
 	@Override
