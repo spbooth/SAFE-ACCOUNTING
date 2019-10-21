@@ -35,6 +35,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
+import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.NullSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
@@ -88,10 +89,10 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  *
  */
 public abstract class MapperEntry extends AbstractContexed implements Cloneable{
-	private static final Feature USE_OVERLAP_HANDLER_IN_TIMECHART = new Feature("use_overlap_handler_in_timechart", false, "Use the OverlapHandler for timecharts instead of iterating over overlaps");
+	private static final Feature USE_OVERLAP_HANDLER_IN_TIMECHART = new Preference("use_overlap_handler_in_timechart", false, "Use the OverlapHandler for timecharts instead of iterating over overlaps",ReportBuilder.REPORT_DEVELOPER);
 	
-	private static final Feature NARROW_CUTOFF_IN_TIMECHART = new Preference("reports.narrow_cutoff_in_timechart",false,"Run additional query to reduce cutoff in timechart by default (overidden by setting per producer)");
-	private static final Feature CACHE_NARROWED_CUTOFFS = new Preference("reporting.cache_narrowed_cutoff",false,"Cache the narrowed cutoffs in session");
+	private static final Feature NARROW_CUTOFF_IN_TIMECHART = new Preference("reports.narrow_cutoff_in_timechart",false,"Run additional query to reduce cutoff in timechart by default (overidden by setting per producer)",ReportBuilder.REPORT_DEVELOPER);
+	private static final Feature CACHE_NARROWED_CUTOFFS = new Preference("reporting.cache_narrowed_cutoff",false,"Cache the narrowed cutoffs in session",ReportBuilder.REPORT_DEVELOPER);
 
 	public static final String GROUP_ENTRY_BASE = "GroupEntry";
 	private final String name;
@@ -629,7 +630,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		
      // create dataset, don't add labels yet as labels
 		// vector may grow as data added
-    	boolean query_mapper_on = conn.getBooleanParameter("use_query_mapper."+ap.getTag(), OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn));
+    	boolean query_mapper_on = conn.getBooleanParameter("mapper_entry.use_query_mapper."+ap.getTag(), OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn));
     	if( query_mapper_on  ){
     		try{
     			log.debug("using fmapper");

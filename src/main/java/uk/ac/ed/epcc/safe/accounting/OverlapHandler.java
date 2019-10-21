@@ -32,6 +32,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.NullSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
@@ -51,6 +52,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
+import uk.ac.ed.epcc.webapp.preferences.Preference;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 import uk.ac.ed.epcc.webapp.timer.TimeClosable;
@@ -86,8 +88,8 @@ public class OverlapHandler<T> {
     private final UsageProducer<T> prod;
     private Logger log=null;
 	//TODO move this somewhere neutral also used in OverlapHander
-	public static final Feature USE_QUERY_MAPPER_FEATURE = new Feature("use_query_mapper",true,"Use grouping queries rather than iteration in reductions");
-	public static final Feature USE_CASE_OVERLAP = new Feature("use_case_overlap",false,"Use case expressions to implement overlap");
+	public static final Feature USE_QUERY_MAPPER_FEATURE = new Preference("use_query_mapper",true,"Use grouping queries rather than iteration in reductions",ReportBuilder.REPORT_DEVELOPER);
+	public static final Feature USE_CASE_OVERLAP = new Preference("use_case_overlap",false,"Use case expressions to implement overlap",ReportBuilder.REPORT_DEVELOPER);
 	  
 	public OverlapHandler(AppContext conn,UsageProducer<T> prod){
     	this.conn=conn;

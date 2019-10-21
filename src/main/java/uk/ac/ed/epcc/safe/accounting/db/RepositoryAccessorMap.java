@@ -38,6 +38,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.TagFilter;
 import uk.ac.ed.epcc.safe.accounting.reference.IndexedTag;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
+import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
@@ -84,7 +85,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 
 public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
-	private static final Feature CACHE_CUTOFFS = new Preference("reporting.cache_cutoff",false,"Cache the cutoffs in session");
+	private static final Feature CACHE_CUTOFFS = new Preference("reporting.cache_cutoff",false,"Cache the cutoffs in session",ReportBuilder.REPORT_DEVELOPER);
 
 	private final DataObjectFactory<X> fac;
 	private final Repository res;
@@ -437,7 +438,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 
 
 	
-	public static final Feature AUTO_CUTOFF_FEATURE = new Feature("auto_cutoff",true,"automatically calculate cutoffs (maximum record time extent, used to optimise search) using additional queries");
+	public static final Feature AUTO_CUTOFF_FEATURE = new Preference("auto_cutoff",true,"automatically calculate cutoffs (maximum record time extent, used to optimise search) using additional queries",ReportBuilder.REPORT_DEVELOPER);
 	
 	public BaseFilter<X> getPeriodFilter(Period period,
 			PropExpression<Date> start, PropExpression<Date> end, OverlapType type,long cutoff)
