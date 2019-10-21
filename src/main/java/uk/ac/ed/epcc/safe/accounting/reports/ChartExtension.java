@@ -41,6 +41,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.BarTimeChart;
 import uk.ac.ed.epcc.webapp.charts.BarTimeChartData;
 import uk.ac.ed.epcc.webapp.charts.PeriodChart;
+import uk.ac.ed.epcc.webapp.charts.PeriodSequencePlot;
 import uk.ac.ed.epcc.webapp.charts.PeriodSetPlot;
 import uk.ac.ed.epcc.webapp.charts.PieTimeChart;
 import uk.ac.ed.epcc.webapp.charts.Plot;
@@ -357,9 +358,15 @@ public abstract class ChartExtension extends ReportExtension {
 		RecordSelector sel = set.getRecordSelector();
 		PeriodChart tc = chart.chart;
 		Plot ds =  entry.makePlot(graphOutput(), plot, tc, up, sel, nPlots, overlap);
+
 		if( orig == null) {
 			return ds;
 		}else {
+			if( hasParam("Cumulative", e) && getBooleanParam("Cumulative", false, e) && ! entry.isCumulative() && ds instanceof PeriodSequencePlot) {
+				// cumulative only in sub-plot so scale before add
+				PeriodSequencePlot psp = (PeriodSequencePlot)ds;
+				psp.scaleCumulative(1.0, new double[psp.getNumSets()]);
+			}
 			orig.addData(ds);
 			if( chart.chart instanceof SetPeriodChart) {
 				// set period charts only plot one dataset

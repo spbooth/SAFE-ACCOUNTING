@@ -92,6 +92,13 @@
     	<xsd:sequence>
 			<xsd:element ref="fil:Filter" minOccurs="0" maxOccurs="1" />
 			<xsd:group ref="PlotEntryGroup"></xsd:group>
+			<xsd:element name="Cumulative"
+				type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" >
+				<xsd:annotation><xsd:documentation>
+				Boolean flag. converts this data block to cummulative before being added.
+				Ignored if the main plot is also cummulative
+				</xsd:documentation></xsd:annotation>
+				</xsd:element>
 		</xsd:sequence>
     </xsd:complexType>
 	<xsd:complexType name="AddSeriesType">
