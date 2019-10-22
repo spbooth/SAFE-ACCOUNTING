@@ -43,13 +43,15 @@ public class PropertyKeyLabeller<K> extends KeyLabeller<ExpressionTargetContaine
 	@Override
 	public Object getLabel(K key) {
 		
-		if( labeller == null){
+		if( labeller == null || ! labeller.accepts(key)){
 			if( key == null ){
 				return "Unknown";
 			}
 			return key;
 		}
+		
 		return labeller.getLabel(getContext(),key);
+		
 	}
 
 	@Override
