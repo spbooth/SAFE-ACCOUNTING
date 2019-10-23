@@ -66,6 +66,7 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.LabellerSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.LongConvertSQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.MillisecondSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.SQLAccessor;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLSelectValue;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
@@ -74,9 +75,12 @@ import uk.ac.ed.epcc.webapp.model.data.ConstIndexedSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
+import uk.ac.ed.epcc.webapp.model.data.convert.TypeConverter;
+import uk.ac.ed.epcc.webapp.model.data.convert.TypeProducer;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationConvertSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.expr.TypeConverterSQLValue;
+import uk.ac.ed.epcc.webapp.model.data.expr.TypeFilterProducerSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** get an SQLValue from a PropExpression
@@ -319,7 +323,12 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		 	assert(sel != null);
 			PropExpression<D> innerExpression = sel.getInnerExpression();
 			assert(innerExpression!=null);
-			return new TypeConverterSQLValue(target,sel.getConverter(), process(innerExpression));
+			SQLValue<D> inner = process(innerExpression);
+			TypeConverter<T, D> converter = sel.getConverter();
+			if( inner instanceof SQLAccessor && converter instanceof TypeProducer) {
+				return new TypeFilterProducerSQLValue(target, (TypeProducer)converter,(SQLAccessor) inner);
+			}
+			return new TypeConverterSQLValue(target,converter, inner);
 		}
 
 

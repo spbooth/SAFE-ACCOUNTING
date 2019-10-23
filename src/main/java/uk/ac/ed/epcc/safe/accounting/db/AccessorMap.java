@@ -198,7 +198,11 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		}
 		public <R> R evaluateExpression(PropExpression<R> expr, R def){
 			try {
-				return evaluateExpression(expr);
+				R val = evaluateExpression(expr);
+				if( val == null ) {
+					return def;
+				}
+				return val;
 			} catch (InvalidExpressionException e) {
 				return def;
 			}
@@ -260,11 +264,9 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			if( ! tag.allow(def)){
 				throw new ClassCastException("Invalid object as default");
 			}
-			try{
-				return evaluateExpression(tag);
-			}catch(InvalidExpressionException e){
-				return def;
-			}
+			
+			return evaluateExpression(tag,def);
+			
 			
 		}
 	
