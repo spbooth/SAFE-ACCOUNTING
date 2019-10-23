@@ -85,6 +85,9 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 
 public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
+	//Dangerous to set this default because of manually edited tabled like allocation
+	// can change the max record length significantly in a session
+	// set it per table for big accounting tables.
 	private static final Feature CACHE_CUTOFFS = new Preference("reporting.cache_cutoff",false,"Cache the cutoffs in session",ReportBuilder.REPORT_DEVELOPER);
 
 	private final DataObjectFactory<X> fac;
@@ -454,7 +457,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 				SessionService sess=null;		
 				TimerService timer = getContext().getService(TimerService.class);
 				String cutoff_name = "auto_cutoff."+getCutoffTag()+"_"+start.toString()+"_"+end.toString();
-				if(CACHE_CUTOFFS.isEnabled(getContext())) {
+				if(getContext().getBooleanParameter("reporting.cache_cutoff."+fac.getConfigTag(), CACHE_CUTOFFS.isEnabled(getContext()))) {
 					sess = getContext().getService(SessionService.class);
 					if(sess !=null) {
 						calc_cutoff=(Long) sess.getAttribute(cutoff_name);
