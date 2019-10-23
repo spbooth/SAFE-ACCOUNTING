@@ -448,7 +448,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 					throws CannotFilterException {
 		if( start == null || end == null || start.equals(end)){
 			cutoff=0L;
-		}else if(AUTO_CUTOFF_FEATURE.isEnabled(getContext())){
+		}else if(getContext().getBooleanParameter("reporting.auto_cutoff."+fac.getConfigTag(), AUTO_CUTOFF_FEATURE.isEnabled(getContext()))){
 			// Only check for an explicit zero
 			// a negative cutoff will supress auto-generation and
 			// allow records with a zero start time.

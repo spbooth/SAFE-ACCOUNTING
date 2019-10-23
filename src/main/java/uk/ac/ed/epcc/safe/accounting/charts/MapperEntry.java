@@ -395,11 +395,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		RecordSelector s =getRangeSelector(e, allow_overlap,cutoff, tc.getStartDate(), tc.getEndDate(), sel);
 		
 		
-        boolean query_mapper_on = OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn);
-       
-        if( query_mapper_on ){
-        	query_mapper_on = conn.getBooleanParameter(ap.getTag()+".use_query_mapper",true);
-        }
+        boolean query_mapper_on = useQueryMapper(ap);
        
 		if( query_mapper_on  ){ //use fmapper if it exists for piecharts
 			try(TimeClosable tim = new TimeClosable(timer, "MapperEntry.addData.query_mapper")){
@@ -631,7 +627,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		
      // create dataset, don't add labels yet as labels
 		// vector may grow as data added
-    	boolean query_mapper_on = conn.getBooleanParameter("mapper_entry.use_query_mapper."+ap.getTag(), OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn));
+    	boolean query_mapper_on = useQueryMapper(ap);
     	if( query_mapper_on  ){
     		try{
     			log.debug("using fmapper");
@@ -725,6 +721,9 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 
     	//log.debug("data added "+data_added);
 		return data_added;
+	}
+	private boolean useQueryMapper(UsageProducer ap) {
+		return conn.getBooleanParameter("mapper_entry.use_query_mapper."+ap.getTag(), OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn));
 	}
 	
 //    @SuppressWarnings("unchecked")
