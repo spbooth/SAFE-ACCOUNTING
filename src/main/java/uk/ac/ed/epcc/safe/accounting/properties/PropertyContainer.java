@@ -18,6 +18,8 @@ package uk.ac.ed.epcc.safe.accounting.properties;
 
 import java.util.Set;
 
+import uk.ac.ed.epcc.webapp.model.data.Releasable;
+
 
 /** PropertyContainer is a container of property values keyed by PropertyTags.
  * Some PropertyContainers only support a fixed subset of the possible properties in which case get/set
@@ -29,7 +31,7 @@ import java.util.Set;
  * @author spb
  *
  */
-public interface PropertyContainer extends PropertyTarget {
+public interface PropertyContainer extends PropertyTarget, Releasable {
 
 	/** Is the specified property supported by the container.
 	 * If the container is unconstrained this always returns true
