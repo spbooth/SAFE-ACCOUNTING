@@ -20,12 +20,13 @@ import java.util.Date;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.charts.strategy.FixedSetRangeMapper;
 import uk.ac.ed.epcc.webapp.charts.strategy.SetRangeMapper;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 
 
-public class UsageRecordSetTransform<D extends Number> extends UsageRecordMapper<D> implements SetRangeMapper<ExpressionTargetContainer>{
+public class UsageRecordSetTransform<D extends Number> extends UsageRecordMapper<D> implements FixedSetRangeMapper<ExpressionTargetContainer>{
 	public UsageRecordSetTransform(AppContext conn,int set,Reduction op,
 			PropExpression<D> plot_property, PropExpression<Date> start, PropExpression<Date> end) {
 		super(conn, op,plot_property, start, end);
@@ -34,6 +35,10 @@ public class UsageRecordSetTransform<D extends Number> extends UsageRecordMapper
 	}
 	private final int set;
 	public int getSet(ExpressionTargetContainer o) {
+		return set;
+	}
+	@Override
+	public int getFixedSet() {
 		return set;
 	}
 

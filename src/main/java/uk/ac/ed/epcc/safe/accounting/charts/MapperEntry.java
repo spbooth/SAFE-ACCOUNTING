@@ -55,6 +55,7 @@ import uk.ac.ed.epcc.webapp.charts.PieTimeChart;
 import uk.ac.ed.epcc.webapp.charts.Plot;
 import uk.ac.ed.epcc.webapp.charts.SingleValueSetPlot;
 import uk.ac.ed.epcc.webapp.charts.TimeChart;
+import uk.ac.ed.epcc.webapp.charts.strategy.FixedSetRangeMapper;
 import uk.ac.ed.epcc.webapp.charts.strategy.SetRangeMapper;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
 import uk.ac.ed.epcc.webapp.config.FilteredProperties;
@@ -710,6 +711,14 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     		if( iter.hasNext()){
     			tc.addDataIterator(ds, map, iter);
     			data_added=true;
+    		}
+    		if( ! data_added && map instanceof FixedSetRangeMapper) {
+    			// add the set anyway for consistency with the QueryMapper version
+    			int set = ((FixedSetRangeMapper)map).getFixedSet();
+    			if( set >= ds.getNumSets()) {
+    				ds.setNumSets(set+1);
+    				data_added=true;
+    			}
     		}
     	}
 
