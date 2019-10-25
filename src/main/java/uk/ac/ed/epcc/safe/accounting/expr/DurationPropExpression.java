@@ -23,7 +23,9 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 
 
-/** A {@link PropExpression} that calculates a duration from two date expressions.
+/** A {@link PropExpression} that calculates a {@link Duration} from two date expressions.
+ * 
+ * The numerical value is always in milliseconds
  * 
  * @author spb
  *
