@@ -615,6 +615,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 	@SuppressWarnings("unchecked")
 	private boolean addTimeChartData(PlotEntry e, TimeChart tc, UsageProducer ap, RecordSelector sel,
 			PeriodSequencePlot ds,boolean allow_overlap) throws Exception {
+		try(TimeClosable time = new TimeClosable(getContext(), ap.getTag()+".addTimeChartDate")){
 		PropExpression<? extends Number> prop_tag = e.getPlotProperty();
 		PropExpression<Date> start_prop = e.getStartProperty();
 		PropExpression<Date> end_prop = e.getEndProperty();
@@ -623,11 +624,22 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		boolean data_added=false;
         Logger log = conn.getService(LoggerService.class).getLogger(getClass());
         log.debug(" params end="+tc.getEndDate()+" start="+tc.getStartDate());
-       
-		
+        TimePeriod period = tc.getPeriod();
+        // average length of plot period
+        long len = (period.getEnd().getTime() - period.getStart().getTime())/tc.getChartData().getItems();
+        log.debug("prod is "+ap.getTag());
+        log.debug("cutoff value = "+cutoff);
+		double cutoff_ratio = ((double)cutoff)/((double)len);
+		log.debug("cutoff ratio = "+cutoff_ratio);
+        
      // create dataset, don't add labels yet as labels
 		// vector may grow as data added
     	boolean query_mapper_on = useQueryMapper(ap);
+    	if( cutoff_ratio > conn.getDoubleParam("timechart.max_cutoff_ratio", 10.0)) {
+    		// This only looks at the narrowed cutoff value.
+    		// assumption is that if the cutoff 
+    		query_mapper_on=false;
+    	}
     	if( query_mapper_on  ){
     		try{
     			log.debug("using fmapper");
@@ -721,6 +733,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 
     	//log.debug("data added "+data_added);
 		return data_added;
+		}
 	}
 	private boolean useQueryMapper(UsageProducer ap) {
 		return conn.getBooleanParameter("mapper_entry.use_query_mapper."+ap.getTag(), OverlapHandler.USE_QUERY_MAPPER_FEATURE.isEnabled(conn));
