@@ -45,7 +45,6 @@ import uk.ac.ed.epcc.safe.accounting.charts.MapperEntryInput;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntryInput;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter;
 import uk.ac.ed.epcc.safe.accounting.model.SetParamsVisitor;
@@ -69,8 +68,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.BoundedDateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.BoundedInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.DateInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.DayMultiInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.CanSubmitVisistor;
 import uk.ac.ed.epcc.webapp.forms.inputs.DoubleInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.EnumInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ErrorInput;
@@ -80,7 +78,6 @@ import uk.ac.ed.epcc.webapp.forms.inputs.IntegerInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.LengthInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.LongInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.MonthMultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInputWrapper;
@@ -91,7 +88,6 @@ import uk.ac.ed.epcc.webapp.forms.inputs.RelativeDateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
@@ -178,13 +174,18 @@ public class ParameterExtension extends ReportExtension {
 			//TODO consider value attributes for multi-input value[.name]* maybe
 			// Get the default value if there is one.
 			String value = getAttribute(VALUE_ATTR,param);
-			
-			
+			boolean optional = ! empty(getAttribute(OPTIONAL_ATTR, param));
+			CanSubmitVisistor can_submit_vis = new CanSubmitVisistor();
 			Input<?> input = getInput(name, value,param);
 			if( input == null ){
 				addError("no input","No input for "+name);
 				input = new ErrorInput("An error occured");
 			}else{
+				boolean can_submit = input.accept(can_submit_vis);
+				if( optional && ! can_submit ) {
+					// supress the input. its optional but has no valid setting
+					input = null;
+				}
 				try{
 					setValue(name,value, input,param);
 				}catch(Exception t){
@@ -193,19 +194,21 @@ public class ParameterExtension extends ReportExtension {
 
 				input = configureInput( param, input);
 			}
-			// Set up the label
-			String label = getAttribute("label",param);		
-			if (empty(label)) {
-				label = getContext().getInitParameter("form.label." + name, name);
+			if( input != null ) {
+				// Set up the label
+				String label = getAttribute("label",param);		
+				if (empty(label)) {
+					label = getContext().getInitParameter("form.label." + name, name);
+				}
+				String title = getAttribute(TITLE_ATTR, param);
+				if( empty(title)) {
+					title=null;
+				}
+				form.addInput(name, label, title,input);
+
+				form.getField(name).setOptional( optional);
 			}
-			String title = getAttribute(TITLE_ATTR, param);
-			if( empty(title)) {
-				title=null;
-			}
-			form.addInput(name, label, title,input);
-			form.getField(name).setOptional( ! empty(getAttribute(OPTIONAL_ATTR, param)));
-			
-			
+
 			// Record default values set from the template
 			// These are default form values not sub-inputs
 			// these are needed to handle the case where inputs are optional with default

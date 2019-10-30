@@ -68,8 +68,11 @@ public class DataObjectPropertyContainer extends DataObject implements  Owned, P
 		if( tmp != null ) {
 			tmp.release();
 		}
+		preRelease();
 		super.release();
 	}
-
+    public void preRelease() {
+    	
+    }
 
 }
