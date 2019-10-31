@@ -43,6 +43,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 //import uk.ac.ed.epcc.safe.accounting.UsageProducer;
@@ -59,8 +60,17 @@ import uk.ac.ed.epcc.safe.accounting.properties.UnresolvedNameException;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ExpressionException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
+import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.NullSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.OrRecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.OrderClause;
+import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.ReductionSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
+import uk.ac.ed.epcc.safe.accounting.selector.RelationshipClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
+import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
@@ -107,7 +117,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	protected static final String EXPRESSION_PREFIX = "expression:";
 	protected static final String PRODUCER_ELEMENT = FILTER_PRODUCER_ELEMENT;
 	protected static final String FILTER_ELEMENT = "Filter";
-	public static final String FILTER_LOC = "http://safe.epcc.ed.ac.uk/filter";
+	
 	protected static final String PERIOD_ELEMENT = "Period";
 	protected static final String NUMBER_OF_SPLIT_UNITS = "NumberOfSplitUnits";
 	protected static final String SPLIT_UNIT = "SplitUnit";
@@ -122,6 +132,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	protected static final String START_TIME = "StartTime";
 	protected static final String END_TIME = "EndTime";
 	public static final String PERIOD_NS = "http://safe.epcc.ed.ac.uk/period";
+	
 	public static final String PROPERTY_PARAM_PREFIX = "property:";
 	protected static SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -1234,5 +1245,54 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		if( limit != null) {
 			limit.checkLimit();
 		}
+	}
+	
+	public DocumentFragment formatRecordSet(RecordSet set) {
+		Document doc = getDocument();
+		DocumentFragment result = doc.createDocumentFragment();
+		if( set != null) {
+			Element fil = doc.createElementNS(FILTER_LOC, FILTER_ELEMENT);
+			result.appendChild(fil);
+			UsageProducer prod = set.getGenerator();
+			if( prod != null) {
+				Element producer = doc.createElementNS(FILTER_LOC,PRODUCER_ELEMENT);
+				fil.appendChild(producer);
+				producer.appendChild(doc.createTextNode(prod.getTag()));
+			}
+			PropExpression<Date> bounds[] = set.getBounds();
+			if( bounds != null) {
+				Element time = doc.createElementNS(FILTER_LOC, TIME_BOUNDS_ELEMENT);
+				fil.appendChild(time);
+				if( bounds.length == 0) {
+					time.appendChild(doc.createElementNS(FILTER_LOC, ALL_TIMES_ELEMENT));
+				}else if(bounds.length == 1) {
+					Element prop = doc.createElementNS(FILTER_LOC, PROPERTY_ELEMENT);
+					time.appendChild(prop);
+					prop.appendChild(doc.createTextNode(bounds[0].toString()));
+				}else if(bounds.length == 2) {
+					Element prop = doc.createElementNS(FILTER_LOC, START_PROPERTY_ELEMENT);
+					time.appendChild(prop);
+					prop.appendChild(doc.createTextNode(bounds[0].toString()));
+					Element end = doc.createElementNS(FILTER_LOC, END_PROPERTY_ELEMENT);
+					time.appendChild(end);
+					end.appendChild(doc.createTextNode(bounds[1].toString()));
+					if( ! set.useOverlap()) {
+						time.appendChild(doc.createElementNS(FILTER_LOC, NO_OVERLAP_ELEMENT));
+					}
+				}
+			}
+			RecordSelector sel = set.getRecordSelector();
+			if( sel != null) {
+				try {
+					Element e = sel.visit(new RecordSelectorFormatter(this, doc));
+					fil.appendChild(e);
+				} catch (Exception e) {
+					getLogger().error("error formatting RecordSet", e);
+				}
+			}
+		}
+		
+		return result;
+		
 	}
 }

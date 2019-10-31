@@ -7,10 +7,10 @@
 	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
 	xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
 	xmlns:saf="http://safe.epcc.ed.ac.uk/safe"
-	xmlns:plotter="xalan://uk.ac.ed.epcc.webacct.model.reports.ChartExtension"
-	xmlns:period="xalan://uk.ac.ed.epcc.webacct.model.reports.PeriodExtension"
-	xmlns:filter="xalan://uk.ac.ed.epcc.webacct.model.reports.FilterExtension"
-	xmlns:table="xalan://uk.ac.ed.epcc.webacct.model.reports.TableExtension"
+	xmlns:plotter="xalan://uk.ac.ed.epcc.safe.accounting.reports.ChartExtension"
+	xmlns:period="xalan://uk.ac.ed.epcc.safe.accounting.reports.PeriodExtension"
+	xmlns:filter="xalan://uk.ac.ed.epcc.safe.accounting.reports.FilterExtension"
+	xmlns:table="xalan://uk.ac.ed.epcc.safe.accounting.reports.TableExtension"
 	xmlns:safe="xalan://uk.ac.hpcx.report.SafeExtension"
 	extension-element-prefixes="plotter period filter safe" >
 	<!-- Import the identity transformation. -->

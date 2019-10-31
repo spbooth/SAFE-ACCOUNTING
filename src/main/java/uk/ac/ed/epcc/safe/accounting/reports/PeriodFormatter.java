@@ -18,7 +18,6 @@ import org.w3c.dom.Node;
 
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
 import uk.ac.ed.epcc.webapp.Description;
-import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 
 /** DomFormatter that formats a Period as the corresponding XML fragment

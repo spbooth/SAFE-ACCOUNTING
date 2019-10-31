@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xalan="http://xml.apache.org/xalan"
-	xmlns:restrict="xalan://uk.ac.ed.epcc.webacct.model.reports.RestrictExtension"
+	xmlns:restrict="xalan://uk.ac.ed.epcc.safe.accounting.reports.RestrictExtension"
 	xmlns:acc="http://safe.epcc.ed.ac.uk/restrict"
 	extension-element-prefixes="restrict">
 	

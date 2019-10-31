@@ -2,7 +2,7 @@
 <xsl:stylesheet 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
 	xmlns:xalan="http://xml.apache.org/xalan"
-	xmlns:period="xalan://uk.ac.ed.epcc.webacct.model.reports.PeriodExtension"
+	xmlns:period="xalan://uk.ac.ed.epcc.safe.accounting.reports.PeriodExtension"
 	xmlns:rep="http://safe.epcc.ed.ac.uk/report"
 	xmlns:per="http://safe.epcc.ed.ac.uk/period"
 	extension-element-prefixes="period">

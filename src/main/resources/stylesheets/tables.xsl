@@ -5,9 +5,9 @@
 	xmlns:per="http://safe.epcc.ed.ac.uk/period"
 	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
 	xmlns:tab="http://safe.epcc.ed.ac.uk/table"
-	xmlns:table="xalan://uk.ac.ed.epcc.webacct.model.reports.TableExtension"
-	xmlns:period="xalan://uk.ac.ed.epcc.webacct.model.reports.PeriodExtension"
-	xmlns:filter="xalan://uk.ac.ed.epcc.webacct.model.reports.FilterExtension"
+	xmlns:table="xalan://uk.ac.ed.epcc.safe.accounting.reports.TableExtension"
+	xmlns:period="xalan://uk.ac.ed.epcc.safe.accounting.reports.PeriodExtension"
+	xmlns:filter="xalan://uk.ac.ed.epcc.safe.accounting.reports.FilterExtension"
 	extension-element-prefixes="table">
 
 	<!-- register external parameters with param statements -->

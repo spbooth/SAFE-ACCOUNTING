@@ -3,7 +3,7 @@
 	xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
 	xmlns:acc="http://safe.epcc.ed.ac.uk/restrict"
 	xmlns:xalan="http://xml.apache.org/xalan"
-	xmlns:param="xalan://uk.ac.ed.epcc.webacct.model.reports.ParameterExtension"
+	xmlns:param="xalan://uk.ac.ed.epcc.safe.accounting.reports.ParameterExtension"
 	extension-element-prefixes="param">
 <!-- This style-sheet is used for an initial pass that expands the form parameters 
  -->

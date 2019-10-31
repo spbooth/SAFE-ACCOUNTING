@@ -15,6 +15,7 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.util.Date;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -37,10 +38,13 @@ import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.NullSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OrRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.OrderClause;
+import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
+import uk.ac.ed.epcc.safe.accounting.selector.ReductionSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationshipClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
+import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 
@@ -51,6 +55,10 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
  */
 public abstract class SelectBuilder {
 
+	public static final String NO_OVERLAP_ELEMENT = "NoOverlap";
+	public static final String END_PROPERTY_ELEMENT = "EndProperty";
+	public static final String START_PROPERTY_ELEMENT = "StartProperty";
+	public static final String FILTER_LOC = "http://safe.epcc.ed.ac.uk/filter";
 	public static final String FILTER_CONTAINER_ELEMENT = "Filter";
 	public static final String FORMAT_ATTR = "format";
 	public static final String DESCENDING_ATTR = "descending";
@@ -303,15 +311,15 @@ public abstract class SelectBuilder {
 					// check for overlap properties.
 					PropExpression<Date> startProperty = null;
 					PropExpression<Date> endProperty = null;
-					String start = getParam("StartProperty", (Element) datePropertyNode);
-					String end = getParam("EndProperty", (Element) datePropertyNode);
+					String start = getParam(START_PROPERTY_ELEMENT, (Element) datePropertyNode);
+					String end = getParam(END_PROPERTY_ELEMENT, (Element) datePropertyNode);
 					if( start != null ) {
 						startProperty = getExpression(Date.class,producer.getFinder(), start);
 					}
 					if( end != null ) {
 						endProperty = getExpression(Date.class,producer.getFinder(), end);
 					}
-					boolean overlap = ! hasChild("NoOverlap", (Element) datePropertyNode);
+					boolean overlap = ! hasChild(NO_OVERLAP_ELEMENT, (Element) datePropertyNode);
 					if (startProperty != null && endProperty != null ) {
 
 						return new DateBounds(new PropExpression[]{
@@ -478,5 +486,109 @@ public abstract class SelectBuilder {
 				}
 				return s;
 			}
+	public static class RecordSelectorFormatter implements SelectorVisitor<Element>{
+		/**
+		 * @param doc
+		 */
+		public RecordSelectorFormatter(ReportExtension re,Document doc) {
+			super();
+			this.re=re;
+			this.doc = doc;
+		}
 
+		private final Document doc;
+		private final ReportExtension re;
+
+		@Override
+		public Element visitAndRecordSelector(AndRecordSelector a) throws Exception {
+			Element and = doc.createElementNS(FILTER_LOC, FILTER_AND_ELEMENT);
+			for(RecordSelector s : a) {
+				and.appendChild(s.visit(this));
+			}
+			return and;
+		}
+
+		@Override
+		public Element visitOrRecordSelector(OrRecordSelector o) throws Exception {
+			Element or = doc.createElementNS(FILTER_LOC, FILTER_OR_ELEMENT);
+			for(RecordSelector s : o) {
+				or.appendChild(s.visit(this));
+			}
+			return or;
+		}
+
+		@Override
+		public <I> Element visitClause(SelectClause<I> c) throws Exception {
+			String name;
+			if( c.match == null) {
+				name=FILTER_EQ_ELEMENT;
+			}else {
+				name=c.match.name();
+			}
+			Element e = doc.createElementNS(FILTER_LOC, name);
+			Element prop = doc.createElementNS(FILTER_LOC, PROPERTY_ELEMENT);
+			e.appendChild(prop);
+			prop.appendChild(doc.createTextNode(c.tag.toString()));
+			Element val =  doc.createElementNS(FILTER_LOC, VALUE_ELEMENT);
+			e.appendChild(val);
+			val.appendChild(doc.createTextNode(re.format(c.tag, c.data)));
+			return e;
+		}
+
+		@Override
+		public <I> Element visitNullSelector(NullSelector<I> n) throws Exception {
+			Element e = doc.createElementNS(FILTER_LOC, n.is_null ? FILTER_NULL_ELEMENT : FILTER_NOT_NULL_ELEMENT);
+			Element prop = doc.createElementNS(FILTER_LOC, PROPERTY_ELEMENT);
+			e.appendChild(prop);
+			prop.appendChild(doc.createTextNode(n.expr.toString()));
+			return e;
+		}
+
+		@Override
+		public <I> Element visitRelationClause(RelationClause<I> c) throws Exception {
+			String name;
+			if( c.match == null) {
+				name=FILTER_EQ_ELEMENT;
+			}else {
+				name=c.match.name();
+			}
+			Element e = doc.createElementNS(FILTER_LOC, name);
+			Element prop = doc.createElementNS(FILTER_LOC, PROPERTY_ELEMENT);
+			e.appendChild(prop);
+			prop.appendChild(doc.createTextNode(c.left.toString()));
+			Element val =  doc.createElementNS(FILTER_LOC, SECOND_PROPERTY_ELEMENT);
+			e.appendChild(val);
+			val.appendChild(doc.createTextNode(c.right.toString()));
+			return e;
+		}
+
+		@Override
+		public Element visitPeriodOverlapRecordSelector(PeriodOverlapRecordSelector o) throws Exception {
+			
+			return null;
+		}
+
+		@Override
+		public <I> Element visitOrderClause(OrderClause<I> o) throws Exception {
+			Element e = doc.createElementNS(FILTER_LOC, FILTER_ORDER_BY_ELEMENT);
+			e.appendChild(doc.createTextNode(o.getExpr().toString()));
+			if( o.getDescending()) {
+				e.setAttribute(DESCENDING_ATTR, "true");
+			}
+			return e;
+		}
+
+		@Override
+		public Element visitReductionSelector(ReductionSelector r) throws Exception {
+			
+			return null;
+		}
+
+		@Override
+		public Element visitRelationshipClause(RelationshipClause r) throws Exception {
+			Element e = doc.createElementNS(FILTER_LOC, RELATIONSHIP_ELEMENT);
+			e.appendChild(doc.createTextNode(r.getRelationship()));
+			return e;
+		}
+	}
 }
