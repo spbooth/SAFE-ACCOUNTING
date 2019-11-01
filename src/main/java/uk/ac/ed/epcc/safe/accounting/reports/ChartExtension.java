@@ -522,4 +522,27 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 	
 	public abstract boolean graphOutput();
 
+	/** should chart generation be deferred till the image is requested
+	 * 
+	 * Defaults to false as this only makes sense in a browser context
+	 * 
+	 * @return boolean
+	 */
+	public boolean deferrCharts() {
+		return false;
+	}
+	/** actually add the deferred chart
+	 * 
+	 * @param set
+	 * @param period
+	 * @param n
+	 * @param caption
+	 * @return
+	 */
+	public DocumentFragment addDeferredChart(RecordSet set,Period period,Node n,String caption) {
+		// Default null implementation
+		Document doc = getDocument();
+		DocumentFragment result = doc.createDocumentFragment();
+		return result;
+	}
 }

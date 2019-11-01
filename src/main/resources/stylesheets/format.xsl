@@ -8,9 +8,9 @@
 	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
 	xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
 	xmlns:fmt="http://safe.epcc.ed.ac.uk/format"
-	xmlns:format="xalan://uk.ac.ed.epcc.webacct.model.reports.FormatExtension"
-	xmlns:period="xalan://uk.ac.ed.epcc.webacct.model.reports.PeriodExtension"
-	xmlns:filter="xalan://uk.ac.ed.epcc.webacct.model.reports.FilterExtension"
+	xmlns:format="xalan://uk.ac.ed.epcc.safe.accounting.reports.FormatExtension"
+	xmlns:period="xalan://uk.ac.ed.epcc.safe.accounting.reports.PeriodExtension"
+	xmlns:filter="xalan://uk.ac.ed.epcc.safe.accounting.reports.FilterExtension"
 	extension-element-prefixes="format">
 	
 	<!--  get the Extension object -->

@@ -7,9 +7,9 @@
 	xmlns:per="http://safe.epcc.ed.ac.uk/period"
 	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
 	xmlns:ato="http://safe.epcc.ed.ac.uk/atom"
-	xmlns:period="xalan://uk.ac.ed.epcc.webacct.model.reports.PeriodExtension"
-	xmlns:filter="xalan://uk.ac.ed.epcc.webacct.model.reports.FilterExtension"
-	xmlns:atom="xalan://uk.ac.ed.epcc.webacct.model.reports.AtomExtension"
+	xmlns:period="xalan://uk.ac.ed.epcc.safe.accounting.reports.PeriodExtension"
+	xmlns:filter="xalan://uk.ac.ed.epcc.safe.accounting.reports.FilterExtension"
+	xmlns:atom="xalan://uk.ac.ed.epcc.safe.accounting.reports.AtomExtension"
 	extension-element-prefixes="atom period filter">
     
     <xsl:import href="identity.xsl" />

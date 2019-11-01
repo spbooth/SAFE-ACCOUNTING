@@ -87,6 +87,7 @@ import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay.TextFile;
+import uk.ac.ed.epcc.webapp.model.TextProvider;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.session.AppUser;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -186,7 +187,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 
 	private TextFileOverlay default_overlay, report_overlay,
 			stylesheet_overlay, schema_overlay;
-	private TextFile template;
+	private TextProvider template;
 	private String template_name;
 	
 	// private String schema_name = null;
@@ -407,6 +408,19 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 				timer.stopTimer("ReportBuilder.setTemplate");
 			}
 		}
+	}
+	
+	/** set the report template explicitly 
+	 * 
+	 * This is for use by sub-classes
+	 * @param text_provider
+	 */
+	protected void setTemplate(TextProvider text_provider) {
+			if( template != null){
+				resetErrors();
+				param_document=null;
+			}
+			template = text_provider;
 	}
 	/**
 	 * @throws ParserConfigurationException

@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0" 
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:emb="http://safe.epcc.ed.ac.uk/embedded"
-	xmlns:embedded="xalan://uk.ac.ed.epcc.webacct.model.reports.EmbeddedExtension"
+	xmlns:embedded="xalan://uk.ac.ed.epcc.safe.accounting.reports.EmbeddedExtension"
 >
 
 <!-- Add Embedded fragments to the EmbeddedExtension.

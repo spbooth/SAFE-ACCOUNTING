@@ -5,7 +5,7 @@
 	xmlns:rep="http://safe.epcc.ed.ac.uk/report"
 	xmlns:per="http://safe.epcc.ed.ac.uk/period"
 	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
-	xmlns:filter="xalan://uk.ac.ed.epcc.webacct.model.reports.FilterExtension"
+	xmlns:filter="xalan://uk.ac.ed.epcc.safe.accounting.reports.FilterExtension"
 	extension-element-prefixes="filter">
 	
 	<!--  get the Extension object -->

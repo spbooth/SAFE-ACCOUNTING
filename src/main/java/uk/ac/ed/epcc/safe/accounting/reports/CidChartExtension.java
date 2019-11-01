@@ -19,6 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 import java.io.ByteArrayOutputStream;
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -43,7 +44,7 @@ import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
 
 
 public class CidChartExtension extends ChartExtension {
-    private final Map<String,MimeStreamData>  data = new HashMap<>();
+    private final Map<String,MimeStreamData>  data = new LinkedHashMap<>();
     private int count=0;
     private Random rng;
 	public CidChartExtension(AppContext c,NumberFormat nf) throws ParserConfigurationException {
