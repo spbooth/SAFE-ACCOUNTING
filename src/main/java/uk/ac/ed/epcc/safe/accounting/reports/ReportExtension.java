@@ -60,17 +60,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.UnresolvedNameException;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ExpressionException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
-import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.NullSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.OrRecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.OrderClause;
-import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.ReductionSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
-import uk.ac.ed.epcc.safe.accounting.selector.RelationshipClause;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
-import uk.ac.ed.epcc.safe.accounting.selector.SelectorVisitor;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
@@ -134,13 +125,13 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public static final String PERIOD_NS = "http://safe.epcc.ed.ac.uk/period";
 	
 	public static final String PROPERTY_PARAM_PREFIX = "property:";
-	protected static SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	private static SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
-	private static SimpleDateFormat altTimestampFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-	private static SimpleDateFormat altDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-	private static SimpleDateFormat altMonthFormat = new SimpleDateFormat("MM-yyyy");
-	private static SimpleDateFormat fmts[] = {altTimestampFormat,timestampFormat,altDateFormat,dateFormat,altMonthFormat,monthFormat};
+	protected static final SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static final SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
+	private static final SimpleDateFormat altTimestampFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+	private static final SimpleDateFormat altDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	private static final SimpleDateFormat altMonthFormat = new SimpleDateFormat("MM-yyyy");
+	private static final SimpleDateFormat fmts[] = {timestampFormat,altTimestampFormat,altDateFormat,dateFormat,altMonthFormat,monthFormat};
 	private final Document doc;
 	protected final ErrorSet errors;
 	final Logger log;
@@ -561,7 +552,14 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			throw new ExpressionException("BadExpression", e);
 		}
 	}
-	
+	/** format a {@link PropExpression} in a fomat that can be parsed
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public String formatPropExpression(PropExpression e) {
+		return e.toString();
+	}
 	
 	public <T> T getValue(PropExpression<T> tag, Element element) throws  Exception{
 		return parse(tag,getAttribute(FORMAT_ATTR, element),getText(element));
@@ -1152,18 +1150,22 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	    timeString=timeString.trim();
 	    boolean search=true;
 	    for( int i=0; search && i< fmts.length; i++){
+	    	SimpleDateFormat df = fmts[i];
+    		String pattern = df.toPattern();
 	    	try{
-	    		SimpleDateFormat df = fmts[i];
-	    		String pattern = df.toPattern();
-	
 	    		// We need to supress the 2 diget year matching
 	    		// as this can incorrectly match days or months.
-	    		if( pattern.length() == timeString.length() && pattern.indexOf('-') == timeString.indexOf('-')){
+	    		// only accept if length and both hyphens match
+	    		// if there is only 1 hyphen we get -1 for both
+	    		int pattern_first = pattern.indexOf('-');
+				int string_first = timeString.indexOf('-');
+				if( pattern.length() == timeString.length() && pattern_first == string_first && pattern.indexOf('-', pattern_first) == timeString.indexOf('-', string_first)){
 	    			time.setTime(fmts[i].parse(timeString));
 	    			search = false;
+	    			break;
 	    		}
 	    	}catch(Exception e){
-	    		
+	    		throw new uk.ac.ed.epcc.safe.accounting.reports.exceptions.ParseException("Cannot parse "+timeString+" as date/time using "+pattern);
 	    	}
 	    }
 	    if( search ){
@@ -1268,14 +1270,14 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 				}else if(bounds.length == 1) {
 					Element prop = doc.createElementNS(FILTER_LOC, PROPERTY_ELEMENT);
 					time.appendChild(prop);
-					prop.appendChild(doc.createTextNode(bounds[0].toString()));
+					prop.appendChild(doc.createTextNode(formatPropExpression(bounds[0])));
 				}else if(bounds.length == 2) {
 					Element prop = doc.createElementNS(FILTER_LOC, START_PROPERTY_ELEMENT);
 					time.appendChild(prop);
-					prop.appendChild(doc.createTextNode(bounds[0].toString()));
+					prop.appendChild(doc.createTextNode(formatPropExpression(bounds[0])));
 					Element end = doc.createElementNS(FILTER_LOC, END_PROPERTY_ELEMENT);
 					time.appendChild(end);
-					end.appendChild(doc.createTextNode(bounds[1].toString()));
+					end.appendChild(doc.createTextNode(formatPropExpression(bounds[1])));
 					if( ! set.useOverlap()) {
 						time.appendChild(doc.createElementNS(FILTER_LOC, NO_OVERLAP_ELEMENT));
 					}

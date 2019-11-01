@@ -102,14 +102,6 @@
 </xsl:element>
 </xsl:template>
 
-<xsl:template match="rep:xFigure|xFigure">
-<xsl:element name="div">
-<xsl:attribute name="class">graph</xsl:attribute>
-<a href="{@src}" >deferred graph</a>
-<xsl:apply-templates select="rep:Caption|Caption|caption" />
-</xsl:element>
-</xsl:template>
-
 
 <xsl:template match="rep:Caption|Caption|caption" >
 <p><xsl:apply-templates/></p>

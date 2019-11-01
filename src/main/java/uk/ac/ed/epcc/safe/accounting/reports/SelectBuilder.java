@@ -528,7 +528,7 @@ public abstract class SelectBuilder {
 			Element e = doc.createElementNS(FILTER_LOC, name);
 			Element prop = doc.createElementNS(FILTER_LOC, PROPERTY_ELEMENT);
 			e.appendChild(prop);
-			prop.appendChild(doc.createTextNode(c.tag.toString()));
+			prop.appendChild(doc.createTextNode(re.formatPropExpression(c.tag)));
 			Element val =  doc.createElementNS(FILTER_LOC, VALUE_ELEMENT);
 			e.appendChild(val);
 			val.appendChild(doc.createTextNode(re.format(c.tag, c.data)));
@@ -540,7 +540,7 @@ public abstract class SelectBuilder {
 			Element e = doc.createElementNS(FILTER_LOC, n.is_null ? FILTER_NULL_ELEMENT : FILTER_NOT_NULL_ELEMENT);
 			Element prop = doc.createElementNS(FILTER_LOC, PROPERTY_ELEMENT);
 			e.appendChild(prop);
-			prop.appendChild(doc.createTextNode(n.expr.toString()));
+			prop.appendChild(doc.createTextNode(re.formatPropExpression(n.expr)));
 			return e;
 		}
 
@@ -555,10 +555,10 @@ public abstract class SelectBuilder {
 			Element e = doc.createElementNS(FILTER_LOC, name);
 			Element prop = doc.createElementNS(FILTER_LOC, PROPERTY_ELEMENT);
 			e.appendChild(prop);
-			prop.appendChild(doc.createTextNode(c.left.toString()));
+			prop.appendChild(doc.createTextNode(re.formatPropExpression(c.left)));
 			Element val =  doc.createElementNS(FILTER_LOC, SECOND_PROPERTY_ELEMENT);
 			e.appendChild(val);
-			val.appendChild(doc.createTextNode(c.right.toString()));
+			val.appendChild(doc.createTextNode(re.formatPropExpression(c.right)));
 			return e;
 		}
 
@@ -571,7 +571,7 @@ public abstract class SelectBuilder {
 		@Override
 		public <I> Element visitOrderClause(OrderClause<I> o) throws Exception {
 			Element e = doc.createElementNS(FILTER_LOC, FILTER_ORDER_BY_ELEMENT);
-			e.appendChild(doc.createTextNode(o.getExpr().toString()));
+			e.appendChild(doc.createTextNode(re.formatPropExpression(o.getExpr())));
 			if( o.getDescending()) {
 				e.setAttribute(DESCENDING_ATTR, "true");
 			}

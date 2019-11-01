@@ -138,12 +138,15 @@ public class ServeDataChartExtension extends ChartExtension {
 			}else{
 				e.setAttribute("src", ServeDataServlet.getURL(conn,producer, producer.setData(msd)));
 			}
-			e.setAttribute("alt", "figure");
+			String alt = "dynamically generated graph";
+			
 			if( caption != null && caption.trim().length() > 0 ){
 				Element c = doc.createElement("Caption");
 				c.appendChild(doc.createTextNode(caption));
 				e.appendChild(c);
+				alt = alt+" ["+caption+"]";
 			}
+			e.setAttribute("alt", alt);
 		}catch(Exception e) {
 			addError("Bad Plot", "Error adding deferred chart as ServeData link", e);
 		}
