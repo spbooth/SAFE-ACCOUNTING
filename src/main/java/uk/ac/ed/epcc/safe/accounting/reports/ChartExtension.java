@@ -189,82 +189,7 @@ public abstract class ChartExtension extends ReportExtension {
 	
 		return result;
 	}
-	/** serialise a PlotEntry to XML in a way that {@link #getPlotEntry(RecordSet, Node)}
-	 * can re-create it.
-	 * 
-	 * @param e
-	 * @return new PlotEntry that should match the one formatted
-	 * @throws Exception 
-	 * @throws DOMException 
-	 */
-	public PlotEntry formatPlotEntry(RecordSet set,PlotEntry e,Node entry) throws DOMException, Exception {
-		Document doc = getDocument();
-		if( e == null) {
-			return null;
-		}
-		PropertyFinder finder = set.getFinder();
-		Element plot = doc.createElementNS(CHART_LOC, PLOT_ELEMENT);
-		entry.appendChild(plot);
-		plot.appendChild(doc.createTextNode(e.getQualifiedName()));
-
-		PlotEntry cand = serv.getPlotEntry(errors, finder, e.getQualifiedName(), formatPropExpression(e.getStartProperty()), formatPropExpression(e.getEndProperty()));
-		if( cand == null) {
-			throw new FormatException("Cannot recreate PlotEntry "+e.getQualifiedName());
-		}
-		
-		
-		String label = e.getLabel();
-		if( label != null  && ! label.equals(cand.getLabel())) {
-			Element p_label = doc.createElementNS(CHART_LOC, PLOT_LABEL_ELEMENT);
-			entry.appendChild(p_label);
-			p_label.appendChild(doc.createTextNode(label));
-			cand.setLabel(label);
-		}
-		Reduction r = e.getReduction();
-		if( r != null && ! r.equals(cand.getReduction())) {
-			Element red = doc.createElementNS(CHART_LOC, REDUCTION_ELEMENT);
-			entry.appendChild(red);
-			red.appendChild(doc.createTextNode(r.name()));
-			cand.setReduction(r);
-		}
-		// always set time props as we used themto make the candidate
-		PropExpression start = e.getStartProperty();
-		if( start != null ) {
-			Element start_e = doc.createElementNS(CHART_LOC, START_PROP_ELEMENT);
-			entry.appendChild(start_e);
-			start_e.appendChild(doc.createTextNode(formatPropExpression(start)));
-		}
-		PropExpression end = e.getEndProperty();
-		if( end != null ) {
-			Element end_e = doc.createElementNS(CHART_LOC, END_PROP_ELEMENT);
-			entry.appendChild(end_e);
-			end_e.appendChild(doc.createTextNode(formatPropExpression(end)));
-		}
-		
-		double scale = e.getScale();
-		if( scale != cand.getScale()) {
-			Element scale_e = doc.createElementNS(CHART_LOC, SCALE_ELEMENT);
-			entry.appendChild(scale_e);
-			scale_e.appendChild(doc.createTextNode(Double.toString(scale)));
-			cand.setScale(scale);
-		}
-		boolean ratescale = e.isRateScale();
-		if( ratescale != cand.isRateScale()) {
-			Element rate = doc.createElementNS(CHART_LOC, RATE_SCALE_ELEMENT);
-			entry.appendChild(rate);
-			rate.appendChild(doc.createTextNode(Boolean.toString(ratescale)));
-			cand.setRateScale(ratescale);
-		}
-		PlotEntry norm = e.getNorm();
-		if( norm != null && ! norm.equals(cand.getNorm())) {
-			Element norm_e = doc.createElementNS(CHART_LOC, NORM_ELEMENT);
-			entry.appendChild(norm_e);
-			cand.setNorm(formatPlotEntry(set,norm,norm_e));
-			
-		}
-		
-		return cand;
-	}
+	
 	public MapperEntry getMapperEntry(RecordSet set, Node n) throws Exception{
 		Element e = (Element) n;
 		MapperEntry entry=null;
@@ -315,59 +240,7 @@ public abstract class ChartExtension extends ReportExtension {
 		
 		return entry;
 	}
-	public MapperEntry formatMapperEntry(RecordSet set,MapperEntry m , Node result) throws DOMException, Exception {
-		if( m == null) {
-			return null;
-		}
-		Document doc = getDocument();
-		PropertyFinder finder = set.getFinder();
-		String name = m.getQualifiedName();
-		MapperEntry cand = serv.getMapperEntry(errors, finder, name);
-		if( cand == null ) {
-			throw new FormatException("Cannot create candidate MapperEntry from "+name);
-		}
-		if( name != null && ! name.isEmpty()) {
-			Element group_by = doc.createElementNS(CHART_LOC, GROUP_BY_ELEMENT);
-			result.appendChild(group_by);
-			group_by.appendChild(doc.createTextNode(name));
-		}
-		
-			
-		if( m instanceof SetMapperEntry) {
-			if( ! (cand instanceof SetMapperEntry)) {
-				throw new FormatException("Candidate does not match class of original");
-			}
-			SetMapperEntry s = (SetMapperEntry) m;
-			String label = s.getLabel();
-			if(label != null && ! label.equals(((SetMapperEntry)cand).getLabel())) {
-				result.appendChild(doc.createElementNS(CHART_LOC, LABEL_ELEMENT)).appendChild(doc.createTextNode(label));
-				((SetMapperEntry)cand).setLabel(label);
-			}
-		}
-		if( cand.getUseLine() != m.getUseLine()) {
-			result.appendChild(doc.createElementNS(CHART_LOC, LINE_ELEMENT)).appendChild(doc.createTextNode(Boolean.toString(m.getUseLine())));
-			cand.setUseLine(m.getUseLine());
-		}
-		if( cand.isCumulative() != m.isCumulative()) {
-			result.appendChild(doc.createElementNS(CHART_LOC, CUMULATIVE_ELEMENT)).appendChild(doc.createTextNode(Boolean.toString(m.isCumulative())));
-			cand.setCumulative(m.isCumulative());
-		}
-		if( cand.isStacked() != m.isStacked()) {
-			result.appendChild(doc.createElementNS(CHART_LOC, STACKED_ELEMENT)).appendChild(doc.createTextNode(Boolean.toString(m.isStacked())));
-			cand.setStacked(m.isStacked());
-		}
-
-	    Color cols[] = m.getColours();
-	    if( cols != null && cols.length > 0 && ! cols.equals(cand.getColours())) {
-	    	String text[] = new String[cols.length];
-	    	for(int i=0 ; i < cols.length; i++) {
-	    		text[i] = Integer.toHexString(cols[i].getRGB());
-	    	}
-	    	result.appendChild(doc.createElementNS(CHART_LOC, COLOURS_ELEMENT)).appendChild(doc.createTextNode(String.join(" ", text)));
-	    	cand.setColours(cols);
-	    }
-		return cand;
-	}
+	
 	private <P extends PeriodChart> Chart<P> setChartOptions(P chart, Element e){
 		try{
 		if( hasParam(TITLE_ELEMENT, e)){
@@ -385,18 +258,7 @@ public abstract class ChartExtension extends ReportExtension {
 		}
 		return new Chart<>(chart,getReportPrefix(e));
 	}
-	public void copyChartOptions(Element dest, Element src) throws DOMException, ReportException {
-		
-		copyParams(dest, src, NUMBER_OF_TIME_BLOCKS_ELEMENT, WARNING_LEVEL_ELEMENT,TITLE_ELEMENT, QUANTITY_ELEMENT,N_PLOTS_ELEMENT);
-	}
-	public void copyParams(Element dest, Element src, String ... elements) throws ReportException {
-		Document doc = getDocument();
-		for(String name : elements) {
-			if( hasParam(name, src)) {
-				dest.appendChild(doc.createElementNS(CHART_LOC, name)).appendChild(doc.createTextNode(getParam(name, src)));
-			}
-		}
-	}
+	
 	public Chart<TimeChart> makeTimeChart(Period period, Node node) {
 		startTimer("makeTimeChart");
 		try{
@@ -752,20 +614,6 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 	 */
 	public boolean deferrCharts() {
 		return false;
-	}
-	/** Creates a stand-alone XML fragment specifying the chart
-	 * 
-	 * @param set
-	 * @param period
-	 * @param n
-	 * @param caption
-	 * @return
-	 */
-	public Node addDeferredChart(RecordSet set,Period period,PlotEntry plot,MapperEntry mapper,Node n) {
-		// Default null implementation
-		Document doc = getDocument();
-		DocumentFragment result = doc.createDocumentFragment();
-		return result;
 	}
 	/** records the chart fragment for later generation
 	 * emits a XML fragment to be included in the report.

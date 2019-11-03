@@ -106,47 +106,7 @@ public class ServeDataChartExtension extends ChartExtension {
 		return DEFERRED_CHARTS.isEnabled(getContext());
 	}
 
-	@Override
-	public Node addDeferredChart(RecordSet set, Period period, PlotEntry plot,MapperEntry mapper,Node n) {
-		Document doc = getDocument();
-		DocumentFragment spec = doc.createDocumentFragment();
-		try {
-			logFragment("Original chart", n);
-			Node r = doc.importNode(n, false);
-			spec.appendChild(r);
-			if( period != null) {
-				r.appendChild(PeriodExtension.format(doc, period));
-			}
-			if( set != null ) {
-				r.appendChild(formatRecordSet(set));
-			}
-			copyChartOptions((Element)r,(Element) n);
-		    if( plot != null ) {
-		    	PlotEntry cand = formatPlotEntry(set,plot, r);
-		    	if( ! cand.equals(plot)) {
-					// better to throw an error in the main report
-					// than serialise an incorrect spec where debugging is harder
-					throw new FormatException("Candidate PlotEntry does not match original");
-				}
-		    }
-		 
-		    if( mapper != null ) {
-		    	MapperEntry cand = formatMapperEntry(set,mapper, r);
-		    	if( ! cand.equals(mapper)) {
-		    		// better to throw an error in the main report
-					// than serialise an incorrect spec where debugging is harder
-					throw new FormatException("Candidate MapperEntry does not match original");
-		    	}
-		    }
-			logFragment("Generated spec", spec);
-			
-		}catch(Exception e) {
-			addError("Bad Plot", "Error adding deferred chart as ServeData link",n, e);
-			return null;
-		}
-		
-		return spec;
-	}
+	
 	@Override
 	public Node emitDeferredChart(Node spec, String caption) {
 		Document doc = getDocument();

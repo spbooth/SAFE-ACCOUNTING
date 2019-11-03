@@ -7,15 +7,28 @@
 	xmlns:per="http://safe.epcc.ed.ac.uk/period"
 	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
 	xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+	xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
 	xmlns:plotter="xalan://uk.ac.ed.epcc.safe.accounting.reports.ChartExtension"
 	xmlns:period="xalan://uk.ac.ed.epcc.safe.accounting.reports.PeriodExtension"
 	xmlns:filter="xalan://uk.ac.ed.epcc.safe.accounting.reports.FilterExtension"
-	extension-element-prefixes="plotter">
+	xmlns:param="xalan://uk.ac.ed.epcc.safe.accounting.reports.ParameterExtension"
+	extension-element-prefixes="plotter filter param">
 	
 	<!--  get the Extension object -->
 	<xsl:param name="ChartExtension"/>
 	<xsl:param name="PeriodExtension"/>
 	<xsl:param name="FilterExtension"/>
+	<xsl:param name="ParameterExtension"/>
+	
+	<!--  inline templates for deferred charts -->
+	<xsl:template mode="inline" match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates mode="inline" select="@*|node()"/>
+    </xsl:copy>
+ 	</xsl:template>
+ 	<xsl:template mode="inline" match="par:PrameterRef">
+ 	<xsl:copy-of select="param:parameter($ParameterExtension,self::*)" />
+ 	</xsl:template>
 	
 	<!-- This supports xsl extensions use to generate the report -->
 	<xsl:template match="cha:TimeChart">
@@ -29,24 +42,13 @@
 	<xsl:choose>
 	<xsl:when test="plotter:deferrCharts($ChartExtension) and not(@table)">
 	<!-- deferred chart -->
-	<xsl:variable name="spec" select="plotter:addDeferredChart($ChartExtension,$filter,$period,$plotentry,$mapperentry,.)"/>
-	<xsl:for-each select="cha:AddData">
-		<xsl:variable name="fil2" select="filter:makeFilter($FilterExtension,$filter,fil:Filter)"/>
-	    <xsl:variable name="plotentry2" select="plotter:getPlotEntry($ChartExtension,$fil2,.)"/>
-		<xsl:variable name="spec2" select="plotter:merge($ChartExtension,$spec,plotter:addDeferredChart($ChartExtension,$fil2,$period,$plotentry2,$mapperentry,.))"/>
-	</xsl:for-each>
-	<xsl:for-each select="cha:AddChart">
-	    <xsl:variable name="fil2" select="filter:makeFilter($FilterExtension,$filter,fil:Filter)"/>
-	    <xsl:variable name="plotentry2" select="plotter:getPlotEntry($ChartExtension,$fil2,.)"/>
-		<xsl:variable name="mapperentry2" select="plotter:getMapperEntry($ChartExtension,$fil2,.)"/>
-		<xsl:variable name="spec2" select="plotter:addDeferredChart($ChartExtension,$fil2,$period,$plotentry2,$mapperentry2,.)"/>
-		<xsl:for-each select="cha:AddData">
-		  <xsl:variable name="fil3" select="filter:makeFilter($FilterExtension,$fil2,fil:Filter)"/>
-	      <xsl:variable name="plotentry3" select="plotter:getPlotEntry($ChartExtension,$fil3,.)"/>
-		  <xsl:variable name="spec3" select="plotter:merge($ChartExtension,$spec2,plotter:addDeferredChart($ChartExtension,$fil3,$period,$plotentry3,$mapperentry2,.))"/>
-	    </xsl:for-each>
-		<xsl:variable name="spec4" select="plotter:merge($ChartExtension,$spec,$spec2)"/>
-	</xsl:for-each>
+	<xsl:variable name="spec">
+	<xsl:copy>
+		<xsl:copy-of select="$PeriodNode"/>
+		<xsl:copy-of select="plotter:formatRecordSet($ChartExtension,$filter)" />
+		<xsl:apply-templates mode="inline" select="cha:*"/>
+	</xsl:copy>
+	</xsl:variable>
 	<xsl:copy-of select="plotter:emitDeferredChart($ChartExtension,$spec,$caption)"/>
 	</xsl:when>
 	<xsl:otherwise>
@@ -95,12 +97,13 @@
 	<xsl:choose>
 	<xsl:when test="plotter:deferrCharts($ChartExtension) and not(@table)">
 	<!-- deferred chart -->
-	<xsl:variable name="spec" select="plotter:addDeferredChart($ChartExtension,$filter,$period,$plotentry,$mapperentry,.)"/>
-	<xsl:for-each select="cha:AddData">
-		<xsl:variable name="fil2" select="filter:makeFilter($FilterExtension,$filter,fil:Filter)"/>
-	    <xsl:variable name="plotentry2" select="plotter:getPlotEntry($ChartExtension,$fil2,.)"/>
-		<xsl:variable name="spec2" select="plotter:merge($ChartExtension,$spec,plotter:addDeferredChart($ChartExtension,$fil2,$period,$plotentry2,$mapperentry,.))"/>
-	</xsl:for-each>
+	<xsl:variable name="spec">
+	<xsl:copy>
+		<xsl:copy-of select="$PeriodNode"/>
+		<xsl:copy-of select="plotter:formatRecordSet($ChartExtension,$filter)" />
+		<xsl:apply-templates mode="inline" select="cha:*"/>
+	</xsl:copy>
+	</xsl:variable>
 	<xsl:copy-of select="plotter:emitDeferredChart($ChartExtension,$spec,$caption)"/>
 	</xsl:when>
 	<xsl:otherwise>
@@ -144,12 +147,13 @@
 	<xsl:choose>
 	<xsl:when test="plotter:deferrCharts($ChartExtension) and not(@table)">
 	<!-- deferred chart -->
-	<xsl:variable name="spec" select="plotter:addDeferredChart($ChartExtension,$filter,$period,$plotentry,$mapperentry,.)"/>
-	<xsl:for-each select="cha:AddData">
-		<xsl:variable name="fil2" select="filter:makeFilter($FilterExtension,$filter,fil:Filter)"/>
-	    <xsl:variable name="plotentry2" select="plotter:getPlotEntry($ChartExtension,$fil2,.)"/>
-		<xsl:variable name="spec2" select="plotter:merge($ChartExtension,$spec,plotter:addDeferredChart($ChartExtension,$fil2,$period,$plotentry2,$mapperentry,.))"/>
-	</xsl:for-each>
+	<xsl:variable name="spec">
+	<xsl:copy>
+		<xsl:copy-of select="$PeriodNode"/>
+		<xsl:copy-of select="plotter:formatRecordSet($ChartExtension,$filter)" />
+		<xsl:apply-templates mode="inline" select="cha:*"/>
+	</xsl:copy>
+    </xsl:variable>
 	<xsl:copy-of select="plotter:emitDeferredChart($ChartExtension,$spec,$caption)"/>
 	</xsl:when>
 	<xsl:otherwise>
