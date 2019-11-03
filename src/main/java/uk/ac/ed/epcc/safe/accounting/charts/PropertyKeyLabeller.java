@@ -63,4 +63,35 @@ public class PropertyKeyLabeller<K> extends KeyLabeller<ExpressionTargetContaine
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((key_property == null) ? 0 : key_property.hashCode());
+		result = prime * result + ((labeller == null) ? 0 : labeller.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PropertyKeyLabeller other = (PropertyKeyLabeller) obj;
+		if (key_property == null) {
+			if (other.key_property != null)
+				return false;
+		} else if (!key_property.equals(other.key_property))
+			return false;
+		if (labeller == null) {
+			if (other.labeller != null)
+				return false;
+		} else if (!labeller.equals(other.labeller))
+			return false;
+		return true;
+	}
+
 }

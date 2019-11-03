@@ -113,6 +113,9 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     public void setColours(Color custom[]){
     	custom_colour=custom;
     }
+    public Color[] getColours() {
+    	return custom_colour;
+    }
     public void setUseLine(boolean use){
     	use_line=use;
     }
@@ -137,6 +140,12 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 	 */
     public String getMode() {
     	return mode;
+    }
+    public String getQualifiedName() {
+    	if( mode != null && ! mode.isEmpty()) {
+    		return mode+"."+getName();
+    	}
+    	return getName();
     }
 	/** Should the data be converted to a stacked plot
 	 * 

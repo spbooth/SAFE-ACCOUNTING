@@ -38,6 +38,9 @@ public class SetMapperEntry extends MapperEntry {
 	public void setLabel(String lab){
 		label=lab;
 	}
+	public String getLabel() {
+		return label;
+	}
 	@SuppressWarnings("unchecked")
 	public SetRangeMapper getMapper(PlotEntry e) {
     	
@@ -71,5 +74,28 @@ public class SetMapperEntry extends MapperEntry {
 		Vector<String> result = new Vector<>();
 		result.add(label);
 		return result;
+	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((label == null) ? 0 : label.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SetMapperEntry other = (SetMapperEntry) obj;
+		if (label == null) {
+			if (other.label != null)
+				return false;
+		} else if (!label.equals(other.label))
+			return false;
+		return true;
 	}
 }

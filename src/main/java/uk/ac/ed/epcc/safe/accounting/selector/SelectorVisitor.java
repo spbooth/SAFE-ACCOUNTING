@@ -51,4 +51,14 @@ public interface SelectorVisitor<R> {
 	public <I> R visitOrderClause(OrderClause<I> o ) throws Exception;
 	public R visitReductionSelector(ReductionSelector r) throws Exception;
 	public R visitRelationshipClause(RelationshipClause r) throws Exception;
+	
+	/** Normally mutable seelctors lock themselves when calling a visitor so ensure
+	 * hash is consistent therafter and in case any references are taken.
+	 * Safevisitors can override this to false to supress this behaviour.
+	 * 
+	 * @return
+	 */
+	default public boolean lockOnVisit() {
+		return true;
+	}
 }

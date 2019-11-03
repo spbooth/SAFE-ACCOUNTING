@@ -82,6 +82,12 @@ public class PlotEntry {
 	  public String getName(){
 		  return name;
 	  }
+	  public String getQualifiedName() {
+		  if( mode != null && ! mode.isEmpty()) {
+			  return mode+"."+getName();
+		  }
+		  return getName();
+	  }
 	  public String getDescription(){
 		  return description;
 	  }
@@ -459,6 +465,92 @@ public String toString() {
 		return name;
 	}
 	return super.toString();
+}
+@Override
+public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((description == null) ? 0 : description.hashCode());
+	result = prime * result + ((end_prop == null) ? 0 : end_prop.hashCode());
+	result = prime * result + ((label == null) ? 0 : label.hashCode());
+	result = prime * result + ((mode == null) ? 0 : mode.hashCode());
+	result = prime * result + ((name == null) ? 0 : name.hashCode());
+	result = prime * result + ((norm == null) ? 0 : norm.hashCode());
+	result = prime * result + ((prop_tag == null) ? 0 : prop_tag.hashCode());
+	result = prime * result + (rate_scale ? 1231 : 1237);
+	result = prime * result + ((red == null) ? 0 : red.hashCode());
+	long temp;
+	temp = Double.doubleToLongBits(scale);
+	result = prime * result + (int) (temp ^ (temp >>> 32));
+	result = prime * result + ((start_prop == null) ? 0 : start_prop.hashCode());
+	temp = Double.doubleToLongBits(time_scale);
+	result = prime * result + (int) (temp ^ (temp >>> 32));
+	result = prime * result + ((time_unit == null) ? 0 : time_unit.hashCode());
+	return result;
+}
+@Override
+public boolean equals(Object obj) {
+	if (this == obj)
+		return true;
+	if (obj == null)
+		return false;
+	if (getClass() != obj.getClass())
+		return false;
+	PlotEntry other = (PlotEntry) obj;
+	if (description == null) {
+		if (other.description != null)
+			return false;
+	} else if (!description.equals(other.description))
+		return false;
+	if (end_prop == null) {
+		if (other.end_prop != null)
+			return false;
+	} else if (!end_prop.equals(other.end_prop))
+		return false;
+	if (label == null) {
+		if (other.label != null)
+			return false;
+	} else if (!label.equals(other.label))
+		return false;
+	if (mode == null) {
+		if (other.mode != null)
+			return false;
+	} else if (!mode.equals(other.mode))
+		return false;
+	if (name == null) {
+		if (other.name != null)
+			return false;
+	} else if (!name.equals(other.name))
+		return false;
+	if (norm == null) {
+		if (other.norm != null)
+			return false;
+	} else if (!norm.equals(other.norm))
+		return false;
+	if (prop_tag == null) {
+		if (other.prop_tag != null)
+			return false;
+	} else if (!prop_tag.equals(other.prop_tag))
+		return false;
+	if (rate_scale != other.rate_scale)
+		return false;
+	if (red != other.red)
+		return false;
+	if (Double.doubleToLongBits(scale) != Double.doubleToLongBits(other.scale))
+		return false;
+	if (start_prop == null) {
+		if (other.start_prop != null)
+			return false;
+	} else if (!start_prop.equals(other.start_prop))
+		return false;
+	if (Double.doubleToLongBits(time_scale) != Double.doubleToLongBits(other.time_scale))
+		return false;
+	if (time_unit == null) {
+		if (other.time_unit != null)
+			return false;
+	} else if (!time_unit.equals(other.time_unit))
+		return false;
+	return true;
 }
 
 }

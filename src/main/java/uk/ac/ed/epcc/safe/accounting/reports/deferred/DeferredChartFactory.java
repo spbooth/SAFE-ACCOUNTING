@@ -54,6 +54,9 @@ public class DeferredChartFactory extends DataObjectDataProducer<DeferredChartFa
 					current.write(text);
 					DeferredImageReportBuilder builder = new DeferredImageReportBuilder(getContext(), text);
 					MimeStreamData image = builder.makeImage();
+					if( image == null) {
+						return null;
+					}
 					setData(image);
 					commit();
 					return image;

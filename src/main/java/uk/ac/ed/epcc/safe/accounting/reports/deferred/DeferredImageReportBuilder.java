@@ -49,7 +49,7 @@ public class DeferredImageReportBuilder extends ReportBuilder{
 	public DeferredImageReportBuilder(AppContext conn,TextProvider template) throws URISyntaxException, ParserConfigurationException {
 		super(new DeferredImageTypeRegistry(conn));
 		setTemplate(template);
-		
+		log_source=true;
 	}
 
 	

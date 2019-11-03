@@ -36,6 +36,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -48,6 +49,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 //import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
+import uk.ac.ed.epcc.safe.accounting.expr.parse.FormatVisitor;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomValueFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter;
@@ -473,7 +475,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 					return val;
 				}
 			}
-			return null;
+			return def;
 		}else{
 			final String text = getText(v);
 		return parseNumberWithDef( def, text);
@@ -556,9 +558,13 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * 
 	 * @param e
 	 * @return
+	 * @throws Exception 
 	 */
-	public String formatPropExpression(PropExpression e) {
-		return e.toString();
+	public String formatPropExpression(PropExpression<?> e) throws Exception {
+		if( e == null) {
+			return null;
+		}
+		return e.accept(new FormatVisitor());
 	}
 	
 	public <T> T getValue(PropExpression<T> tag, Element element) throws  Exception{
@@ -1249,7 +1255,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 	}
 	
-	public DocumentFragment formatRecordSet(RecordSet set) {
+	public DocumentFragment formatRecordSet(RecordSet set) throws DOMException, Exception {
 		Document doc = getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
 		if( set != null) {

@@ -196,7 +196,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 	private Set<ErrorSet> error_sets;
 	ErrorSet general_error;
 	private Set<TemplateValidator> validators;
-	private boolean log_source=false;
+	protected boolean log_source=false;
 	public static final String REPORT_DEVELOPER = "ReportDeveloper";
     private final ReportTypeRegistry report_type_reg;
     private final LimitService limits;

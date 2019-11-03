@@ -16,19 +16,28 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.expr.parse;
 
+import java.util.Date;
 import java.util.LinkedList;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.ConvertMillisecondToDatePropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.DoubleCastPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
+import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.expr.StringPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFunc;
+import uk.ac.ed.epcc.webapp.model.data.Duration;
 
 
 /** Conversion functions on propexpressions.
@@ -92,6 +101,79 @@ public enum Keywords {
 				throws ParseException {
 			checkSingleArg(inner);
 			return new DurationCastPropExpression(cast(Number.class,inner.getFirst()),1L);
+		}
+	
+	},
+	DURATION {
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			int argcount = inner.size();
+			if( argcount != 2) {
+				throw new ParseException("Wrong number of arguments got:"+argcount+" expected 2");
+			}
+			return new DurationPropExpression(cast(Date.class,inner.get(0)), cast(Date.class,inner.get(1)));
+		}
+	},
+	LONG_CAST {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			checkSingleArg(inner);
+			return new LongCastPropExpression(inner.getFirst());
+		}
+	
+	},
+	DOUBLE_CAST {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			checkSingleArg(inner);
+			return new DoubleCastPropExpression(inner.getFirst());
+		}
+	
+	},
+	DURATION_SECONDS {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			checkSingleArg(inner);
+			return new DurationSecondsPropExpression(cast(Duration.class,inner.getFirst()));
+		}
+	
+	},
+	MILLIS {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			checkSingleArg(inner);
+			try {
+				return new MilliSecondDatePropExpression(cast(Date.class,inner.getFirst()));
+			} catch (PropertyCastException e) {
+				throw new ParseException(e);
+			}
+		}
+	
+	},
+	DATE {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			checkSingleArg(inner);
+			
+			return new ConvertMillisecondToDatePropExpression(cast(Number.class,inner.getFirst()));
+			
 		}
 	
 	},

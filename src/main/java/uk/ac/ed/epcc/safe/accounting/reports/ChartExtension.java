@@ -18,12 +18,19 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 
 
 import java.awt.Color;
+import java.io.ByteArrayOutputStream;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -31,10 +38,13 @@ import org.w3c.dom.Node;
 
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.charts.ChartService;
+import uk.ac.ed.epcc.safe.accounting.charts.KeyMapperEntry;
 import uk.ac.ed.epcc.safe.accounting.charts.MapperEntry;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntry;
 import uk.ac.ed.epcc.safe.accounting.charts.SetMapperEntry;
+import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
+import uk.ac.ed.epcc.safe.accounting.reports.exceptions.FormatException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -50,6 +60,7 @@ import uk.ac.ed.epcc.webapp.charts.TimeChart;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
+import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.SplitPeriod;
 
@@ -68,7 +79,27 @@ import uk.ac.ed.epcc.webapp.time.SplitPeriod;
  * 
  */
 public abstract class ChartExtension extends ReportExtension {
-	
+	private static final String WARNING_LEVEL_ELEMENT = "WarningLevel";
+	private static final String NUMBER_OF_TIME_BLOCKS_ELEMENT = "NumberOfTimeBlocks";
+	private static final String QUANTITY_ELEMENT = "Quantity";
+	private static final String TITLE_ELEMENT = "Title";
+	private static final String STACKED_ELEMENT = "Stacked";
+	private static final String LINE_ELEMENT = "Line";
+	private static final String COLOURS_ELEMENT = "Colours";
+	private static final String LABEL_ELEMENT = "Label";
+	private static final String GROUP_BY_ELEMENT = "GroupBy";
+	private static final String CUMULATIVE_ELEMENT = "Cumulative";
+	private static final String N_PLOTS_ELEMENT = "NPlots";
+	private static final String OVERLAP_ELEMENT = "Overlap";
+	private static final String PLOT_LABEL_ELEMENT = "PlotLabel";
+	private static final String NORM_ELEMENT = "Norm";
+	private static final String REDUCTION_ELEMENT = "Reduction";
+	private static final String SCALE_ELEMENT = "Scale";
+	private static final String RATE_SCALE_ELEMENT = "RateScale";
+	private static final String END_PROP_ELEMENT = "EndProp";
+	private static final String START_PROP_ELEMENT = "StartProp";
+	private static final String PLOT_ELEMENT = "Plot";
+	public static final String CHART_LOC = "http://safe.epcc.ed.ac.uk/chart";
 	
 	/** composite object holding the {@link PeriodChart}
 	 * and a record if any data has been added
@@ -100,13 +131,13 @@ public abstract class ChartExtension extends ReportExtension {
 	}
 	public PlotEntry getPlotEntry(RecordSet set, Node n) throws Exception{
 		Element e = (Element) n;
-		if( ! hasChild("Plot", e) ) {
+		if( ! hasChild(PLOT_ELEMENT, e) ) {
 			// Null plot is allowed so we can put everything
 			// nested in AddChart if we want
 			return null;
 		}
 		PropertyFinder finder = set.getFinder();
-		Element plot_e = getParamElement("Plot", e);
+		Element plot_e = getParamElement(PLOT_ELEMENT, e);
 		PlotEntry result=null;
 		String start_name=null;
 		String end_name=null;
@@ -115,12 +146,12 @@ public abstract class ChartExtension extends ReportExtension {
 		if( o != null && o instanceof PlotEntry) {
 			result = (PlotEntry) o;
 		}else {
-			name = getExpandedParam("Plot",e);
+			name = getExpandedParam(PLOT_ELEMENT,e);
 			if( name == null  || name.isEmpty()){
 				throw new ReportException("No Plot quantity was specified");
 			}
-			start_name = getParam("StartProp", e);
-			end_name = getParam("EndProp",e);
+			start_name = getParam(START_PROP_ELEMENT, e);
+			end_name = getParam(END_PROP_ELEMENT,e);
 			result = serv.getPlotEntry( errors,finder, name,start_name,end_name);
 		}
 		if( result == null ){
@@ -135,9 +166,9 @@ public abstract class ChartExtension extends ReportExtension {
 		}
 		
 		//TODO make this an element with additional params for label and scale.
-		result.setRateScale( getBooleanParam("RateScale",result.isRateScale(), e));
-		result.setScale(getNumberParam("Scale", result.getScale(), e).doubleValue());
-		String red = getParam("Reduction", e);
+		result.setRateScale( getBooleanParam(RATE_SCALE_ELEMENT,result.isRateScale(), e));
+		result.setScale(getNumberParam(SCALE_ELEMENT, result.getScale(), e).doubleValue());
+		String red = getParam(REDUCTION_ELEMENT, e);
 		if( red != null){
 			try{
 				result.setReduction(Reduction.valueOf(red));
@@ -145,29 +176,107 @@ public abstract class ChartExtension extends ReportExtension {
 				addError("Bad Reduction", red, t);
 			}
 		}
-		String label = getExpandedParam("PlotLabel", e);
+		String label = getExpandedParam(PLOT_LABEL_ELEMENT, e);
 		if( label != null ){
 			result.setLabel(label);
 		}
-		Element norm_e = getParamElement("Norm", e);
+		Element norm_e = getParamElement(NORM_ELEMENT, e);
 		if( norm_e != null ) {
 			PlotEntry norm = getPlotEntry(set, norm_e);
 			result.setNorm(norm);
 		}
+		
+	
 		return result;
+	}
+	/** serialise a PlotEntry to XML in a way that {@link #getPlotEntry(RecordSet, Node)}
+	 * can re-create it.
+	 * 
+	 * @param e
+	 * @return new PlotEntry that should match the one formatted
+	 * @throws Exception 
+	 * @throws DOMException 
+	 */
+	public PlotEntry formatPlotEntry(RecordSet set,PlotEntry e,Node entry) throws DOMException, Exception {
+		Document doc = getDocument();
+		if( e == null) {
+			return null;
+		}
+		PropertyFinder finder = set.getFinder();
+		Element plot = doc.createElementNS(CHART_LOC, PLOT_ELEMENT);
+		entry.appendChild(plot);
+		plot.appendChild(doc.createTextNode(e.getQualifiedName()));
+
+		PlotEntry cand = serv.getPlotEntry(errors, finder, e.getQualifiedName(), formatPropExpression(e.getStartProperty()), formatPropExpression(e.getEndProperty()));
+		if( cand == null) {
+			throw new FormatException("Cannot recreate PlotEntry "+e.getQualifiedName());
+		}
+		
+		
+		String label = e.getLabel();
+		if( label != null  && ! label.equals(cand.getLabel())) {
+			Element p_label = doc.createElementNS(CHART_LOC, PLOT_LABEL_ELEMENT);
+			entry.appendChild(p_label);
+			p_label.appendChild(doc.createTextNode(label));
+			cand.setLabel(label);
+		}
+		Reduction r = e.getReduction();
+		if( r != null && ! r.equals(cand.getReduction())) {
+			Element red = doc.createElementNS(CHART_LOC, REDUCTION_ELEMENT);
+			entry.appendChild(red);
+			red.appendChild(doc.createTextNode(r.name()));
+			cand.setReduction(r);
+		}
+		// always set time props as we used themto make the candidate
+		PropExpression start = e.getStartProperty();
+		if( start != null ) {
+			Element start_e = doc.createElementNS(CHART_LOC, START_PROP_ELEMENT);
+			entry.appendChild(start_e);
+			start_e.appendChild(doc.createTextNode(formatPropExpression(start)));
+		}
+		PropExpression end = e.getEndProperty();
+		if( end != null ) {
+			Element end_e = doc.createElementNS(CHART_LOC, END_PROP_ELEMENT);
+			entry.appendChild(end_e);
+			end_e.appendChild(doc.createTextNode(formatPropExpression(end)));
+		}
+		
+		double scale = e.getScale();
+		if( scale != cand.getScale()) {
+			Element scale_e = doc.createElementNS(CHART_LOC, SCALE_ELEMENT);
+			entry.appendChild(scale_e);
+			scale_e.appendChild(doc.createTextNode(Double.toString(scale)));
+			cand.setScale(scale);
+		}
+		boolean ratescale = e.isRateScale();
+		if( ratescale != cand.isRateScale()) {
+			Element rate = doc.createElementNS(CHART_LOC, RATE_SCALE_ELEMENT);
+			entry.appendChild(rate);
+			rate.appendChild(doc.createTextNode(Boolean.toString(ratescale)));
+			cand.setRateScale(ratescale);
+		}
+		PlotEntry norm = e.getNorm();
+		if( norm != null && ! norm.equals(cand.getNorm())) {
+			Element norm_e = doc.createElementNS(CHART_LOC, NORM_ELEMENT);
+			entry.appendChild(norm_e);
+			cand.setNorm(formatPlotEntry(set,norm,norm_e));
+			
+		}
+		
+		return cand;
 	}
 	public MapperEntry getMapperEntry(RecordSet set, Node n) throws Exception{
 		Element e = (Element) n;
 		MapperEntry entry=null;
 		AppContext ctx = getContext();
 		PropertyFinder finder = set.getFinder();
-		if (hasParam("GroupBy", e)) {
-			Element group_e = getParamElement("GroupBy", e);
+		if (hasParam(GROUP_BY_ELEMENT, e)) {
+			Element group_e = getParamElement(GROUP_BY_ELEMENT, e);
 			Object o = getParameterRef(group_e);
 			if( o != null && o instanceof MapperEntry) {
 				entry = (MapperEntry) o;
 			}else {
-				String param = getParam("GroupBy", e);
+				String param = getParam(GROUP_BY_ELEMENT, e);
 				log.debug("GroupBy="+param);
 				entry = serv.getMapperEntry(errors,finder,param);
 			}
@@ -178,19 +287,22 @@ public abstract class ChartExtension extends ReportExtension {
 				addError("Bad MapperEntry", "Mapper entry failed to parse", n);
 				return null;
 			}
-			if( hasParam("Label", e)){
-				((SetMapperEntry)entry).setLabel(getExpandedParam("Label", e));
+			if( hasParam(LABEL_ELEMENT, e)){
+				((SetMapperEntry)entry).setLabel(getExpandedParam(LABEL_ELEMENT, e));
 			}
 		}
-		if( hasParam("Line", e)){
-			entry.setUseLine(getBooleanParam("Line", false, e));
+		if( hasParam(LINE_ELEMENT, e)){
+			entry.setUseLine(getBooleanParam(LINE_ELEMENT, false, e));
 		}
-		if( hasParam("Cumulative", e)){
-			entry.setCumulative(getBooleanParam("Cumulative", false, e));
+		if( hasParam(CUMULATIVE_ELEMENT, e)){
+			entry.setCumulative(getBooleanParam(CUMULATIVE_ELEMENT, false, e));
 		}
-		if(hasParam("Colours", e)){
+		if( hasParam(STACKED_ELEMENT, e)){
+			entry.setCumulative(getBooleanParam(STACKED_ELEMENT, false, e));
+		}
+		if(hasParam(COLOURS_ELEMENT, e)){
 			List<Color> list = new LinkedList<>();
-			for(String s : getParam("Colours", e).split("\\s+")){
+			for(String s : getParam(COLOURS_ELEMENT, e).split("\\s+")){
 				Color color = Color.decode(ctx.getInitParameter("colour."+s, s));
 				if( color != null ){
 					list.add(color);
@@ -203,22 +315,87 @@ public abstract class ChartExtension extends ReportExtension {
 		
 		return entry;
 	}
+	public MapperEntry formatMapperEntry(RecordSet set,MapperEntry m , Node result) throws DOMException, Exception {
+		if( m == null) {
+			return null;
+		}
+		Document doc = getDocument();
+		PropertyFinder finder = set.getFinder();
+		String name = m.getQualifiedName();
+		MapperEntry cand = serv.getMapperEntry(errors, finder, name);
+		if( cand == null ) {
+			throw new FormatException("Cannot create candidate MapperEntry from "+name);
+		}
+		if( name != null && ! name.isEmpty()) {
+			Element group_by = doc.createElementNS(CHART_LOC, GROUP_BY_ELEMENT);
+			result.appendChild(group_by);
+			group_by.appendChild(doc.createTextNode(name));
+		}
+		
+			
+		if( m instanceof SetMapperEntry) {
+			if( ! (cand instanceof SetMapperEntry)) {
+				throw new FormatException("Candidate does not match class of original");
+			}
+			SetMapperEntry s = (SetMapperEntry) m;
+			String label = s.getLabel();
+			if(label != null && ! label.equals(((SetMapperEntry)cand).getLabel())) {
+				result.appendChild(doc.createElementNS(CHART_LOC, LABEL_ELEMENT)).appendChild(doc.createTextNode(label));
+				((SetMapperEntry)cand).setLabel(label);
+			}
+		}
+		if( cand.getUseLine() != m.getUseLine()) {
+			result.appendChild(doc.createElementNS(CHART_LOC, LINE_ELEMENT)).appendChild(doc.createTextNode(Boolean.toString(m.getUseLine())));
+			cand.setUseLine(m.getUseLine());
+		}
+		if( cand.isCumulative() != m.isCumulative()) {
+			result.appendChild(doc.createElementNS(CHART_LOC, CUMULATIVE_ELEMENT)).appendChild(doc.createTextNode(Boolean.toString(m.isCumulative())));
+			cand.setCumulative(m.isCumulative());
+		}
+		if( cand.isStacked() != m.isStacked()) {
+			result.appendChild(doc.createElementNS(CHART_LOC, STACKED_ELEMENT)).appendChild(doc.createTextNode(Boolean.toString(m.isStacked())));
+			cand.setStacked(m.isStacked());
+		}
+
+	    Color cols[] = m.getColours();
+	    if( cols != null && cols.length > 0 && ! cols.equals(cand.getColours())) {
+	    	String text[] = new String[cols.length];
+	    	for(int i=0 ; i < cols.length; i++) {
+	    		text[i] = Integer.toHexString(cols[i].getRGB());
+	    	}
+	    	result.appendChild(doc.createElementNS(CHART_LOC, COLOURS_ELEMENT)).appendChild(doc.createTextNode(String.join(" ", text)));
+	    	cand.setColours(cols);
+	    }
+		return cand;
+	}
 	private <P extends PeriodChart> Chart<P> setChartOptions(P chart, Element e){
 		try{
-		if( hasParam("Title", e)){
-			chart.getChartData().setTitle(getParam("Title", e).trim());
+		if( hasParam(TITLE_ELEMENT, e)){
+			chart.getChartData().setTitle(getParam(TITLE_ELEMENT, e).trim());
 		}
 		}catch(Exception e1){
 			addError("Bad Plot", "Error setting title", e1);
 		}
 		try{
-			if( hasParam("Quantity", e)){
-				chart.getChartData().setQuantityName(getParam("Quantity", e).trim());
+			if( hasParam(QUANTITY_ELEMENT, e)){
+				chart.getChartData().setQuantityName(getParam(QUANTITY_ELEMENT, e).trim());
 			}
 		}catch(Exception e1){
 			addError("Bad Plot", "Error setting title", e1);
 		}
 		return new Chart<>(chart,getReportPrefix(e));
+	}
+	public void copyChartOptions(Element dest, Element src) throws DOMException, ReportException {
+		
+		copyParams(dest, src, NUMBER_OF_TIME_BLOCKS_ELEMENT, WARNING_LEVEL_ELEMENT,TITLE_ELEMENT, QUANTITY_ELEMENT,N_PLOTS_ELEMENT);
+	}
+	public void copyParams(Element dest, Element src, String ... elements) throws ReportException {
+		Document doc = getDocument();
+		for(String name : elements) {
+			if( hasParam(name, src)) {
+				dest.appendChild(doc.createElementNS(CHART_LOC, name)).appendChild(doc.createTextNode(getParam(name, src)));
+			}
+		}
 	}
 	public Chart<TimeChart> makeTimeChart(Period period, Node node) {
 		startTimer("makeTimeChart");
@@ -240,7 +417,7 @@ public abstract class ChartExtension extends ReportExtension {
 				// which will be incorrect for time averages
 				timeBlocks = getContext().getIntegerParameter("timechart.default.NumberOfTimeBlocks", 10);
 				try {
-					timeBlocks = getIntParam("NumberOfTimeBlocks",timeBlocks , e);
+					timeBlocks = getIntParam(NUMBER_OF_TIME_BLOCKS_ELEMENT,timeBlocks , e);
 				} catch (Exception e1) {
 					addError("Bad Plot", "Error setting NumberOfTimeBlocks", e1);
 				}	
@@ -341,7 +518,7 @@ public abstract class ChartExtension extends ReportExtension {
 			return orig;
 		}
 		Element e = (Element) node;
-		int nPlots = getNumberParam("NPlots", 10, e).intValue();
+		int nPlots = getNumberParam(N_PLOTS_ELEMENT, 10, e).intValue();
 		UsageProducer up = set.getUsageProducer();
 		if( up == null) {
 			return orig;
@@ -354,7 +531,7 @@ public abstract class ChartExtension extends ReportExtension {
 			return orig;
 		}
 		
-		boolean overlap = getBooleanParam("Overlap", true, e);
+		boolean overlap = getBooleanParam(OVERLAP_ELEMENT, true, e);
 		RecordSelector sel = set.getRecordSelector();
 		PeriodChart tc = chart.chart;
 		Plot ds =  entry.makePlot(graphOutput(), plot, tc, up, sel, nPlots, overlap);
@@ -362,7 +539,7 @@ public abstract class ChartExtension extends ReportExtension {
 		if( orig == null) {
 			return ds;
 		}else {
-			if( hasParam("Cumulative", e) && getBooleanParam("Cumulative", false, e) && ! entry.isCumulative() && ds instanceof PeriodSequencePlot) {
+			if( hasParam(CUMULATIVE_ELEMENT, e) && getBooleanParam(CUMULATIVE_ELEMENT, false, e) && ! entry.isCumulative() && ds instanceof PeriodSequencePlot) {
 				// cumulative only in sub-plot so scale before add
 				PeriodSequencePlot psp = (PeriodSequencePlot)ds;
 				psp.scaleCumulative(1.0, new double[psp.getNumSets()]);
@@ -410,7 +587,7 @@ public abstract class ChartExtension extends ReportExtension {
 			
 			
 
-			int nPlots = getNumberParam("NPlots", 10, e).intValue();
+			int nPlots = getNumberParam(N_PLOTS_ELEMENT, 10, e).intValue();
 			UsageProducer up = set.getUsageProducer();
 			if( up == null) {
 				return result;
@@ -421,8 +598,8 @@ public abstract class ChartExtension extends ReportExtension {
 			boolean added = entry.plotDataSet(ds, graphOutput(), plot, tc, up, sel, nPlots);
 			chart.has_data =  added || chart.has_data;
 			try{
-				if( chart.chart instanceof TimeChart &&  hasParam("WarningLevel", (Element) node)){
-					((TimeChart)chart.chart).addWarningLevel(getNumberParam("WarningLevel", 0.0,(Element) node).doubleValue());
+				if( chart.chart instanceof TimeChart &&  hasParam(WARNING_LEVEL_ELEMENT, (Element) node)){
+					((TimeChart)chart.chart).addWarningLevel(getNumberParam(WARNING_LEVEL_ELEMENT, 0.0,(Element) node).doubleValue());
 				}
 			}catch(Exception e3){
 				addError("Bad Timechart specification", "Error setting WarningLevel",e3);
@@ -456,7 +633,52 @@ public abstract class ChartExtension extends ReportExtension {
 		}
 
 	}
+	/** utility method to allow editing of the deferred chart description
+	 * 
+	 * @param parent
+	 * @param child
+	 * @return
+	 */
+	public Node merge(Node parent, Node child) {
+		Node parent_e = parent;
+		if( parent.getNodeType() != Node.ELEMENT_NODE) {
+			parent_e = parent_e.getFirstChild();
+		}
+		if( child.getNodeType() != Node.ELEMENT_NODE) {
+			child = child.getFirstChild();
+		}
+		parent_e.appendChild(child);
+		logFragment("Merged fragments", parent);
+		return parent;
+	}
+	protected void logFragment(String message, Node n) {
+		Logger log = getLogger();
+		
+		// write the content into xml file
+
+		
+			log.debug(new Supplier<String>() {
+				
+				@Override
+				public String get() {
+					try {
+						ByteArrayOutputStream res = new ByteArrayOutputStream();
+						TransformerFactory transformerFactory = TransformerFactory.newInstance();
+						Transformer transformer = transformerFactory.newTransformer();
+						DOMSource source = new DOMSource(n);
+						StreamResult out = new StreamResult(res);
+						transformer.transform(source, out);
+						return message+": "+res.toString();
+					}catch(Exception e) {
+						return "Failed to format debug fragemnt "+e.getMessage();
+					}
+						
+				}
+			});
+			
+			
 	
+	}
 	public Chart<BarTimeChart> makeBarTimeChart(Period period, Node node) {
 	
 
@@ -531,7 +753,7 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 	public boolean deferrCharts() {
 		return false;
 	}
-	/** actually add the deferred chart
+	/** Creates a stand-alone XML fragment specifying the chart
 	 * 
 	 * @param set
 	 * @param period
@@ -539,7 +761,20 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 	 * @param caption
 	 * @return
 	 */
-	public DocumentFragment addDeferredChart(RecordSet set,Period period,Node n,String caption) {
+	public Node addDeferredChart(RecordSet set,Period period,PlotEntry plot,MapperEntry mapper,Node n) {
+		// Default null implementation
+		Document doc = getDocument();
+		DocumentFragment result = doc.createDocumentFragment();
+		return result;
+	}
+	/** records the chart fragment for later generation
+	 * emits a XML fragment to be included in the report.
+	 * 
+	 * @param spec
+	 * @param caption
+	 * @return
+	 */
+	public Node emitDeferredChart(Node spec,String caption) {
 		// Default null implementation
 		Document doc = getDocument();
 		DocumentFragment result = doc.createDocumentFragment();

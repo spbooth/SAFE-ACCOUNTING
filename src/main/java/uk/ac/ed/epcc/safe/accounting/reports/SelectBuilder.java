@@ -590,5 +590,10 @@ public abstract class SelectBuilder {
 			e.appendChild(doc.createTextNode(r.getRelationship()));
 			return e;
 		}
+
+		@Override
+		public boolean lockOnVisit() {
+			return false;
+		}
 	}
 }

@@ -44,7 +44,9 @@ public class OrRecordSelector extends CombiningRecordSelector {
 	}
 
 	public <R> R visit(SelectorVisitor<R> visitor) throws Exception {
-		lock();
+		if( visitor.lockOnVisit()) {
+			lock();
+		}
 		return visitor.visitOrRecordSelector(this);
 	}
 

@@ -233,6 +233,12 @@
 				Boolean flag. converts plot to cummulative.
 				</xsd:documentation></xsd:annotation>
 				</xsd:element>
+			<xsd:element name="Stacked"
+				type="par:TextOrParameterType" minOccurs="0" maxOccurs="1" >
+				<xsd:annotation><xsd:documentation>
+				Boolean flag. converts plot to stacked or not.
+				</xsd:documentation></xsd:annotation>
+				</xsd:element>
 			<xsd:element name="Colours" type="xsd:string" maxOccurs="1"
 				minOccurs="0">
 				<xsd:annotation><xsd:documentation>

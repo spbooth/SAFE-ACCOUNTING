@@ -136,6 +136,11 @@ public class DiracSLURMRecordTest extends AbstractRecordTestCase {
 						"JobID=\"58106_58\" User=\"wmfw23\" Group=\"dp004\" Account=\"dp004\" JobName=\"EglSrvy_chunk\" Partition=\"cosma6\" Submit=\"2017-04-10T12:22:20\" Reserved=\"00:04:47\" Start=\"2017-04-10T12:27:07\" End=\"2017-04-10T14:07:06\" Elapsed=\"01:39:59\" NNodes=\"1\" NCPUS=\"16\" Timelimit=\"1-00:00:00\" ReqMem=\"110Gn\" ExitCode=\"0:0\" State=\"COMPLETED\" resources_used_mem=787212K",
 						"JobID=\"58106_59\" User=\"wmfw23\" Group=\"dp004\" Account=\"dp004\" JobName=\"EglSrvy_chunk\" Partition=\"cosma6\" Submit=\"2017-04-10T12:22:20\" Reserved=\"00:04:47\" Start=\"2017-04-10T12:27:07\" End=\"2017-04-10T13:29:39\" Elapsed=\"01:02:32\" NNodes=\"1\" NCPUS=\"16\" Timelimit=\"1-00:00:00\" ReqMem=\"110Gn\" ExitCode=\"0:0\" State=\"COMPLETED\" resources_used_mem=610300K",
 
+						"Cluster=\"csd3\" JobID=\"15843457\" User=\"dc-gras1\" Group=\"dr008\" " + 
+						"Account=\"dirac-dr008-gpu\" JobName=\"test6NAME\" Partition=\"pascal\" " + 
+						"Submit=\"2019-10-02T09:40:07\" Reserved=\"00:00:00\" Start=\"2019-10-02T09:40:07\" End=\"2019-10-02T09:40:07\" Elapsed=\"00:00:00\" NNodes=\"8\" " + 
+						"NCPUS=\"96\" Timelimit=\"00:15:00\" ReqMem=\"8000Mc\" AllocTRES=\"\" " + 
+						"CPUTimeRAW=\"0\" ExitCode=\"1:0\" State=\"FAILED\" resources_used_mem=0K",
 		};
 		for (String record : validRecords)
 			goodRecords.add(new RecordText(record));
@@ -181,6 +186,8 @@ public class DiracSLURMRecordTest extends AbstractRecordTestCase {
 	public Collection<BadRecordText> getBadRecords() {
 		return badTexts;
 	}
+
+	
 
 	/*
 	 * (non-Javadoc)

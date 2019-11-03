@@ -40,6 +40,7 @@ public class KeyMapperEntry<K> extends MapperEntry {
 
     private final PropExpression<K> key_tag;
    
+    // Do not include in equals
     private final PropertyKeyLabeller pkl; // need to use the same labeller for all data adds
 
     @SuppressWarnings("unchecked")
@@ -99,6 +100,9 @@ public class KeyMapperEntry<K> extends MapperEntry {
     	return  ap.compatible(key_tag);
     }
 
+    public PropExpression<K> getKey(){
+    	return key_tag;
+    }
 	@Override
 	public void plotBarTimeChart(PlotEntry e, BarTimeChart tc, int nplots,
 			SingleValueSetPlot ds) {
@@ -112,4 +116,31 @@ public class KeyMapperEntry<K> extends MapperEntry {
 			
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((key_tag == null) ? 0 : key_tag.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KeyMapperEntry other = (KeyMapperEntry) obj;
+		if (key_tag == null) {
+			if (other.key_tag != null)
+				return false;
+		} else if (!key_tag.equals(other.key_tag))
+			return false;
+		return true;
+	}
+
+	
 }

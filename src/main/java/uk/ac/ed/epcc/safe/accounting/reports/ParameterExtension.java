@@ -810,6 +810,13 @@ public class ParameterExtension extends ReportExtension {
 	private String editString(ExpressionExpander expander,String orig){
 		return expander.expand(orig);
 	}
+
+	/** Expand a Parameter (or a ParemterRef) element into inline XML
+	 * 
+	 * @param node
+	 * @return
+	 * @throws ReportException
+	 */
 	@SuppressWarnings("unchecked")
 	public DocumentFragment parameter(Node node) throws ReportException {
 		Element element = (Element)node;
@@ -1010,7 +1017,7 @@ public class ParameterExtension extends ReportExtension {
 		return doc.importNode(item, true);
 	}
 	private Node expandElement(Document doc, Element item) throws ReportException {
-		String s = makeString(item);
+		//String s = makeString(item);
 		if(item.getNamespaceURI().equals(PARAMETER_LOC)){
 			if( item.getLocalName().equals(PARAMETER_ELEM)){
 				return  parameter(item);

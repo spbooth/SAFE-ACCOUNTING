@@ -18,6 +18,7 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.io.ByteArrayOutputStream;
 import java.text.NumberFormat;
+import java.util.function.Supplier;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -30,16 +31,21 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import uk.ac.ed.epcc.safe.accounting.charts.MapperEntry;
+import uk.ac.ed.epcc.safe.accounting.charts.PlotEntry;
 import uk.ac.ed.epcc.safe.accounting.reports.deferred.DeferredChartFactory;
+import uk.ac.ed.epcc.safe.accounting.reports.exceptions.FormatException;
 import uk.ac.ed.epcc.safe.accounting.servlet.ReportServlet;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
+import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
 import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
 import uk.ac.ed.epcc.webapp.preferences.Preference;
 import uk.ac.ed.epcc.webapp.servlet.ServeDataServlet;
 import uk.ac.ed.epcc.webapp.servlet.ServletService;
 import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
 /** ChartExtension that uses the ServeDataServlet
  * 
@@ -101,12 +107,12 @@ public class ServeDataChartExtension extends ChartExtension {
 	}
 
 	@Override
-	public DocumentFragment addDeferredChart(RecordSet set, Period period, Node n, String caption) {
+	public Node addDeferredChart(RecordSet set, Period period, PlotEntry plot,MapperEntry mapper,Node n) {
 		Document doc = getDocument();
-		DocumentFragment result = doc.createDocumentFragment();
+		DocumentFragment spec = doc.createDocumentFragment();
 		try {
-			DocumentFragment spec  = doc.createDocumentFragment();
-			Element r = doc.createElement("Report");
+			logFragment("Original chart", n);
+			Node r = doc.importNode(n, false);
 			spec.appendChild(r);
 			if( period != null) {
 				r.appendChild(PeriodExtension.format(doc, period));
@@ -114,8 +120,42 @@ public class ServeDataChartExtension extends ChartExtension {
 			if( set != null ) {
 				r.appendChild(formatRecordSet(set));
 			}
-			// temp for debugging
-			r.appendChild(doc.importNode(n, true));
+			copyChartOptions((Element)r,(Element) n);
+		    if( plot != null ) {
+		    	PlotEntry cand = formatPlotEntry(set,plot, r);
+		    	if( ! cand.equals(plot)) {
+					// better to throw an error in the main report
+					// than serialise an incorrect spec where debugging is harder
+					throw new FormatException("Candidate PlotEntry does not match original");
+				}
+		    }
+		 
+		    if( mapper != null ) {
+		    	MapperEntry cand = formatMapperEntry(set,mapper, r);
+		    	if( ! cand.equals(mapper)) {
+		    		// better to throw an error in the main report
+					// than serialise an incorrect spec where debugging is harder
+					throw new FormatException("Candidate MapperEntry does not match original");
+		    	}
+		    }
+			logFragment("Generated spec", spec);
+			
+		}catch(Exception e) {
+			addError("Bad Plot", "Error adding deferred chart as ServeData link",n, e);
+			return null;
+		}
+		
+		return spec;
+	}
+	@Override
+	public Node emitDeferredChart(Node spec, String caption) {
+		Document doc = getDocument();
+		DocumentFragment result = doc.createDocumentFragment();
+		if( spec == null || ! spec.hasChildNodes() ) {
+			addError("Bad Plot", "No chart specification");
+			return result;
+		}
+		try {
 			
 			DeferredChartFactory producer = new DeferredChartFactory(getContext());
 			ByteArrayOutputStream res = new ByteArrayOutputStream();
@@ -127,6 +167,7 @@ public class ServeDataChartExtension extends ChartExtension {
 			DOMSource source = new DOMSource(spec);
 			StreamResult out = new StreamResult(res);
 			transformer.transform(source, out);
+			getLogger().debug(res.toString());
 			ByteArrayMimeStreamData msd = new ByteArrayMimeStreamData(res.toByteArray());
 			msd.setName("image.png");
 			msd.setMimeType(DeferredChartFactory.REPORT_MIME);
@@ -153,5 +194,5 @@ public class ServeDataChartExtension extends ChartExtension {
 		
 		return result;
 	}
-
+	
 }

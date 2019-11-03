@@ -26,12 +26,7 @@ public class PlotEntryFormatter extends AbstractContexed implements ValueFormatt
 
 	@Override
 	public String format(PlotEntry value) {
-		String mode = value.getMode();
-		if( mode == null || mode.isEmpty()) {
-			return value.getName();
-		}else {
-			return mode+"."+value.getName();
-		}
+		return value.getQualifiedName();
 	}
 
 	
