@@ -22,13 +22,22 @@
 	
 	<!--  inline templates for deferred charts -->
 	<xsl:template mode="inline" match="@*|node()">
+	<xsl:param name="filcontext"/>
     <xsl:copy>
-      <xsl:apply-templates mode="inline" select="@*|node()"/>
+      <xsl:apply-templates mode="inline" select="@*|node()">
+        <xsl:with-param name="filcontext" select="$filcontext"/>
+      </xsl:apply-templates>
     </xsl:copy>
  	</xsl:template>
  	<xsl:template mode="inline" match="par:PrameterRef">
  	<xsl:copy-of select="param:parameter($ParameterExtension,self::*)" />
  	</xsl:template>
+	<xsl:template mode="inline" match="fil:Filter">
+	<xsl:param name="filcontext"/>
+	<xsl:variable name="filter" select="filter:makeFilterFragment($FilterExtension,$filcontext,.)"/>
+	<xsl:copy-of select="plotter:formatRecordSet($ChartExtension,$filter)" />
+	</xsl:template>
+	
 	
 	<!-- This supports xsl extensions use to generate the report -->
 	<xsl:template match="cha:TimeChart">
@@ -36,8 +45,6 @@
 	<xsl:variable name="PeriodNode" select="(ancestor::*/per:Period|per:Period)[last()]"/>
 	<xsl:variable name="period" select="period:makePeriod($PeriodExtension,$PeriodNode)"/>
 	<xsl:variable name="caption" select="cha:Caption/text()"/>
-	<xsl:variable name="plotentry" select="plotter:getPlotEntry($ChartExtension,$filter,.)"/>
-	<xsl:variable name="mapperentry" select="plotter:getMapperEntry($ChartExtension,$filter,.)"/>
 	
 	<xsl:choose>
 	<xsl:when test="plotter:deferrCharts($ChartExtension) and not(@table)">
@@ -46,13 +53,17 @@
 	<xsl:copy>
 		<xsl:copy-of select="$PeriodNode"/>
 		<xsl:copy-of select="plotter:formatRecordSet($ChartExtension,$filter)" />
-		<xsl:apply-templates mode="inline" select="cha:*"/>
+		<xsl:apply-templates mode="inline" select="cha:*">
+		<xsl:with-param name="filcontext" select="$filter"/>
+		</xsl:apply-templates>
 	</xsl:copy>
 	</xsl:variable>
 	<xsl:copy-of select="plotter:emitDeferredChart($ChartExtension,$spec,$caption)"/>
 	</xsl:when>
 	<xsl:otherwise>
 	<!-- inline chart -->
+	<xsl:variable name="plotentry" select="plotter:getPlotEntry($ChartExtension,$filter,.)"/>
+	<xsl:variable name="mapperentry" select="plotter:getMapperEntry($ChartExtension,$filter,.)"/>
 	<xsl:variable name="chart" select="plotter:makeTimeChart($ChartExtension,$period,.)"/>
 	<xsl:variable name="ds" select="plotter:makeDataSet($ChartExtension,$filter,$plotentry,$mapperentry,$chart,.)"/>
 	<xsl:for-each select="cha:AddData">
@@ -92,8 +103,6 @@
 	<xsl:variable name="PeriodNode" select="(ancestor::*/per:Period|per:Period)[last()]"/>
 	<xsl:variable name="period" select="period:makePeriod($PeriodExtension,$PeriodNode)"/>
 	<xsl:variable name="caption" select="cha:Caption/text()"/>
-	<xsl:variable name="plotentry" select="plotter:getPlotEntry($ChartExtension,$filter,.)"/>
-	<xsl:variable name="mapperentry" select="plotter:getMapperEntry($ChartExtension,$filter,.)"/>
 	<xsl:choose>
 	<xsl:when test="plotter:deferrCharts($ChartExtension) and not(@table)">
 	<!-- deferred chart -->
@@ -108,6 +117,8 @@
 	</xsl:when>
 	<xsl:otherwise>
 	<!-- inline chart -->
+	<xsl:variable name="plotentry" select="plotter:getPlotEntry($ChartExtension,$filter,.)"/>
+	<xsl:variable name="mapperentry" select="plotter:getMapperEntry($ChartExtension,$filter,.)"/>
 	<xsl:variable name="chart" select="plotter:makePieTimeChart($ChartExtension,$period,.)"/>
 	<xsl:variable name="ds" select="plotter:makeDataSet($ChartExtension,$filter,$plotentry,$mapperentry,$chart,.)"/>
 	<xsl:for-each select="cha:AddData">
@@ -142,8 +153,6 @@
 	<xsl:variable name="PeriodNode" select="(ancestor::*/per:Period|per:Period)[last()]"/>
 	<xsl:variable name="period" select="period:makePeriod($PeriodExtension,$PeriodNode)"/>
 	<xsl:variable name="caption" select="cha:Caption/text()"/>
-	<xsl:variable name="plotentry" select="plotter:getPlotEntry($ChartExtension,$filter,.)"/>
-	<xsl:variable name="mapperentry" select="plotter:getMapperEntry($ChartExtension,$filter,.)"/>
 	<xsl:choose>
 	<xsl:when test="plotter:deferrCharts($ChartExtension) and not(@table)">
 	<!-- deferred chart -->
@@ -158,6 +167,8 @@
 	</xsl:when>
 	<xsl:otherwise>
 	<!-- inline chart -->
+	<xsl:variable name="plotentry" select="plotter:getPlotEntry($ChartExtension,$filter,.)"/>
+	<xsl:variable name="mapperentry" select="plotter:getMapperEntry($ChartExtension,$filter,.)"/>
 	<xsl:variable name="chart" select="plotter:makeBarTimeChart($ChartExtension,$period,.)"/>
 	<xsl:variable name="ds" select="plotter:makeDataSet($ChartExtension,$filter,$plotentry,$mapperentry,$chart,.)"/>
 		<xsl:for-each select="cha:AddData">

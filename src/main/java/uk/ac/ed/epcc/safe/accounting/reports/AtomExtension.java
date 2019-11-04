@@ -36,6 +36,7 @@ import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ParseException;
@@ -313,7 +314,7 @@ public class AtomExtension extends ReportExtension {
 			String name = element.getLocalName();
 			
 			
-				PropertyTag data_tag = getTag(producer,element);
+				PropertyTag data_tag = getTag(producer.getFinder(),element);
 				if( data_tag == null ){
 					addError("Bad property", "No property found",element);
 					return "";
@@ -399,12 +400,12 @@ public class AtomExtension extends ReportExtension {
 	private AtomResult expandSimpleReduction(Element element, 
 			RecordSet set, Period period,Reduction reduction)
 			throws ReportException, Exception, IllegalReductionException {
-		UsageProducer<?> producer = set.getUsageProducer();
-		AndRecordSelector selector = set.getPeriodSelector(period);
 		
+		AndRecordSelector selector = set.getPeriodSelector(period);
+		PropertyFinder finder = set.getFinder();
 		String exp = getText(element);
 		if(exp != null && exp.trim().length() > 0){
-			PropExpression expression = getExpression(producer,exp);
+			PropExpression expression = getExpression(finder,exp);
 			if( expression == null ){
 				throw new ParseException("No property found for "+exp);
 			}
@@ -416,6 +417,7 @@ public class AtomExtension extends ReportExtension {
 			}else{
 				throw new IllegalReductionException("Unsupported reduction type "+exp);
 			}
+			UsageProducer<?> producer = set.getUsageProducer();
 			if( producer == null) {
 				return new AtomResult(expression,red.getDefault());
 			}

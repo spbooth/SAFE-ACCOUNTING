@@ -256,6 +256,7 @@ public class TableExtension extends ReportExtension {
 			this.period = period;
 			this.recordSet = recordSet;
 			UsageProducer up = recordSet.getUsageProducer();
+			PropertyFinder finder = recordSet.getFinder();
 			tableMaker = new JobTableMaker(extension.getContext(),
 					up);
 
@@ -273,7 +274,6 @@ public class TableExtension extends ReportExtension {
 					String config_name = prefix+".properties";
 					String prop_list = conn.getExpandedProperty(config_name,"");
 					if( up != null) {
-						PropertyFinder finder =  up.getFinder();
 						for(String tag : prop_list.split(",")){
 							tag = tag.trim();
 							if( ! tag.isEmpty()) {
@@ -324,7 +324,7 @@ public class TableExtension extends ReportExtension {
 				// See if Warning
 				Element tableElement = (Element)tableNode;
 				if (extension.hasParam(WARNING_ELEMENT, tableElement)) {
-					tableMaker.setWarningExpression(extension.getExpression(up, extension.getParam(WARNING_ELEMENT, tableElement)));
+					tableMaker.setWarningExpression(extension.getExpression(finder, extension.getParam(WARNING_ELEMENT, tableElement)));
 				}
 			}catch(Exception e){
 				extension.addError("Bad Table", "Error setting Warning", e);
@@ -354,7 +354,7 @@ public class TableExtension extends ReportExtension {
 			
 			PropExpression data_tag;
 			try {
-				data_tag = extension.getPropertyExpression(columnNode, producer);
+				data_tag = extension.getPropertyExpression(columnNode, producer.getFinder());
 				tableMaker.addColumn(new ColName(data_tag, columnName));
 			} catch (ExpressionException e) {
 				extension.addError("Bad expression", "No property found",e);
@@ -622,7 +622,7 @@ public class TableExtension extends ReportExtension {
 				}
 				if( columnNode.getNamespaceURI().equals(TABLE_LOC)){
 					String columnType = columnNode.getLocalName();	
-					PropExpression property = extension.getPropertyExpression(columnNode, producer);
+					PropExpression property = extension.getPropertyExpression(columnNode, producer.getFinder());
 					if (property == null) {
 						throw new BadTableException("Missing or illegal Property element");		
 					}
@@ -639,7 +639,7 @@ public class TableExtension extends ReportExtension {
 					IndexReduction name_red = null;
 					if( extension.hasChild("NameExpression", (Element)columnNode)) {
 						Element ne = extension.getParamElement("NameExpression", (Element) columnNode);
-						PropExpression name_prop = extension.getPropertyExpression(ne,producer);
+						PropExpression name_prop = extension.getPropertyExpression(ne,producer.getFinder());
 						if( name_prop == null ) {
 							throw new BadTableException("Illegal NameExpression element");
 						}
@@ -993,7 +993,7 @@ public class TableExtension extends ReportExtension {
 			
 			PropExpression data_tag;
 			try {
-				data_tag = extension.getPropertyExpression(columnNode, set.getGenerator());
+				data_tag = extension.getPropertyExpression(columnNode, set.getGenerator().getFinder());
 				tableMaker.addColumn(new ColName(data_tag, columnName));
 			} catch (ExpressionException e) {
 				extension.addError("Bad expression", "No property found",e);
@@ -1129,8 +1129,8 @@ public class TableExtension extends ReportExtension {
 		
 	}
 	
-	private PropExpression getPropertyExpression(Node node, PropertyTargetFactory producer) throws ExpressionException {
-		return getPropertyExpression(node, producer, PROPERTY_ELEMENT);
+	private PropExpression getPropertyExpression(Node node, PropertyFinder finder) throws ExpressionException {
+		return getPropertyExpression(node, finder, PROPERTY_ELEMENT);
 	}
 	private Table<String,Object> processTable(Table<String,Object> table, Node instructions) {
 		if (table == null) {

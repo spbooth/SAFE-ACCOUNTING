@@ -83,9 +83,16 @@ public class FilterExtension extends ReportExtension{
   public RecordSet makeFilter(Object filters){
 	  return makeFilter(null, filters);
   }  
+  /** Extend an existing {@link RecordSet} 
+   * 
+   * @param prev     current {@link RecordSet}
+   * @param filters   filter nodes to add
+   * @return  updated {@link RecordSet}
+   */
   public RecordSet makeFilter(RecordSet prev,Object filters){
 	  if( prev == null ){
 		  prev = makeSelector();
+		  //prev.setProducerTagFromCurrent();
 	  }
 	  try{
 		  
@@ -124,6 +131,63 @@ public class FilterExtension extends ReportExtension{
 			  prev.setError(true);
 		  }
 		  return prev;
+	  }catch(Exception t){
+		  getLogger().error("Error parsing filter clause",t);
+		  addError("Filter parse error", t.getMessage());
+		  return null;
+	  }
+  }
+  
+  /** Generate a {@link RecordSet} representing 
+   * just the specified additions
+   * @param prev     {@link RecordSet} for 
+   * @param filters   filter nodes to parse
+   * @return  fragment {@link RecordSet}
+   */
+  public RecordSet makeFilterFragment(RecordSet parent,Object filters){
+	  
+	   RecordSet  result = makeSelector();
+	    if( parent != null ) {
+	    	result.setUsageProducer(parent.getGenerator());
+	    }
+	   
+	  try{
+		  
+		  if( filters == null ){
+			  return result;
+		  }
+    
+		  if( filters instanceof String){
+			  String fil = (String) filters;
+			  if( fil.trim().length()==0){
+				  return result;
+			  }
+			  addError("Bad Filter Specification", "Non empty string "+fil);
+			  // Don't match anything on error.
+			  result.addRecordSelector(new SelectClause());
+			  result.setError(true);
+			  return result;
+		  }
+		  try{
+			  if( filters instanceof Node){
+				  Node n = (Node) filters;
+				  result = addNode(result,n);
+			  }else if(filters instanceof NodeIterator){
+				  NodeIterator list = (NodeIterator) filters;
+				  for(Node n=list.nextNode(); n != null; n=list.nextNode()){
+					  result=addNode(result, n);
+				  }
+			  }else{
+				  addError("Bad Filter Specification","unexpected type "+filters.getClass().getCanonicalName());
+			  }
+
+		  }catch(Exception t){
+			  getLogger().error("Error parsing filter clause",t);
+			  addError("Filter parse error", t.getMessage());
+			  result.addRecordSelector(new SelectClause());
+			  result.setError(true);
+		  }
+		  return result;
 	  }catch(Exception t){
 		  getLogger().error("Error parsing filter clause",t);
 		  addError("Filter parse error", t.getMessage());

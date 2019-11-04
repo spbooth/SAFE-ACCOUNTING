@@ -527,33 +527,18 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	
 	
 	
-	public PropertyTag getTag(PropertyTargetFactory up, Element element) throws Exception{
+	public PropertyTag getTag(PropertyFinder finder, Element element) throws Exception{
 		String data_str = getText(element);
 		if( data_str == null || data_str.trim().length() == 0){
 			addError("Bad property", "No property specified",element);
 			return null;
 		}
-		return getTag(up,data_str);
+		return getTag(finder,data_str);
 	}
-	public PropertyTag getTag(PropertyTargetFactory up, String name){
-		return up.getFinder().find(name.trim());
+	public PropertyTag getTag(PropertyFinder finder, String name){
+		return finder.find(name.trim());
 	}
-	protected PropExpression getExpression(PropertyTargetFactory up, String expr) throws ExpressionException{
-		if( up == null) {
-			throw new ExpressionException("No usage producer");
-		}
-		if( expr == null) {
-			throw new ExpressionException("Null value passed");
-		}
-		Parser p = new Parser(conn, up.getFinder());
-		try {
-			return p.parse(expr.trim());
-		} catch (UnresolvedNameException e) {
-			throw new ExpressionException("Bad property",e);
-		} catch (uk.ac.ed.epcc.safe.accounting.expr.ParseException e) {
-			throw new ExpressionException("BadExpression", e);
-		}
-	}
+
 	/** format a {@link PropExpression} in a fomat that can be parsed
 	 * 
 	 * @param e
@@ -814,7 +799,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public boolean empty(String value){
 		return value == null || value.trim().length() == 0;
 	}
-	public PropExpression getPropertyExpression(Node node, PropertyTargetFactory producer, String name) throws ExpressionException {
+	public PropExpression getPropertyExpression(Node node, PropertyFinder finder, String name) throws ExpressionException {
 		Element element = (Element) node;		
 		String data_str=null;
 		try {
@@ -826,15 +811,20 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			addError("Bad property", "No property specified",node);
 			throw new ExpressionException("null expression");
 		}
-		PropExpression data_tag = getExpression(producer, data_str);
-		if (data_tag == null) {
-			addError("Bad property", "No property found for " + data_str,node);
-			throw new ExpressionException("No property found for "+data_str);
+		try {
+			PropExpression data_tag = getExpression(finder, data_str);
+			if (data_tag == null) {
+				addError("Bad property", "No property found for " + data_str,node);
+				throw new ExpressionException("No property found for "+data_str);
+			}
+			return data_tag;
+		} catch (UnresolvedNameException e) {
+			throw new ExpressionException("unresolved property", e);
+		} catch (uk.ac.ed.epcc.safe.accounting.expr.ParseException e) {
+			throw new ExpressionException("Parse failed", e);
 		}
-		return data_tag;
-			
 	}
-	public PropExpression getPropertyExpression(Element element, PropertyTargetFactory producer) throws ExpressionException {
+	public PropExpression getPropertyExpression(Element element, PropertyFinder finder) throws ExpressionException {
 	
 		String data_str=null;
 		try {
@@ -846,13 +836,18 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			addError("Bad property", "No property specified",element);
 			throw new ExpressionException("null expression");
 		}
-		PropExpression data_tag = getExpression(producer, data_str);
-		if (data_tag == null) {
-			addError("Bad property", "No property found for " + data_str,element);
-			throw new ExpressionException("No property found for "+data_str);
-		}
-		return data_tag;
-			
+		try {
+			PropExpression data_tag = getExpression(finder, data_str);
+			if (data_tag == null) {
+				addError("Bad property", "No property found for " + data_str,element);
+				throw new ExpressionException("No property found for "+data_str);
+			}
+			return data_tag;
+		} catch (UnresolvedNameException e) {
+			throw new ExpressionException("unresolved property", e);
+		} catch (uk.ac.ed.epcc.safe.accounting.expr.ParseException e) {
+			throw new ExpressionException("Parse failed", e);
+		}	
 	}
 	
 	public DocumentFragment addReference(XMLGenerator gen){
@@ -973,6 +968,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 					  if( e.getLocalName().equals(PRODUCER_ELEMENT)){
 						  // This should strictly be first in a Filter element
 						  // as reseting the producer clears the selector
+						  // This also sets the ProducerTag 
 						  rs.setUsageProducer(getText(e));
 					  }else if( e.getLocalName().equals(TIME_BOUNDS_ELEMENT)){
 						  DateBounds db = getDateProperties(rs, e);
@@ -1261,11 +1257,11 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		if( set != null) {
 			Element fil = doc.createElementNS(FILTER_LOC, FILTER_ELEMENT);
 			result.appendChild(fil);
-			UsageProducer prod = set.getGenerator();
-			if( prod != null) {
+			String name = set.getProducerTag();
+			if( name != null) {
 				Element producer = doc.createElementNS(FILTER_LOC,PRODUCER_ELEMENT);
 				fil.appendChild(producer);
-				producer.appendChild(doc.createTextNode(prod.getTag()));
+				producer.appendChild(doc.createTextNode(name));
 			}
 			PropExpression<Date> bounds[] = set.getBounds();
 			if( bounds != null) {

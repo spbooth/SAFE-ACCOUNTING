@@ -144,6 +144,9 @@ public abstract class SelectBuilder {
 		if(name == null || name.trim().length()==0){
 			throw new ParseException("Empty expression");
 		}
+		if( finder == null) {
+			throw new ParseException("null PropertyFinder");
+		}
 		Parser p = new Parser(getContext(),finder);
 		return p.parse(name);
 	}

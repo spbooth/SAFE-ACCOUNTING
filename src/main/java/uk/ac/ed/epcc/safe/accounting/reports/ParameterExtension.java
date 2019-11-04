@@ -403,11 +403,14 @@ public class ParameterExtension extends ReportExtension {
 			PropertyFinder finder = set.getFinder();
 			
 			PropertyTag expr = finder.find(expr_str);
-			UsageProducer prod = set.getUsageProducer();
+			
 			ValueParser vp = getValueParser(format_str, expr);
 			SetInput input = new SetInput();
-			for(Object o : prod.getValues(expr, set.getRecordSelector())) {
-				input.addChoice(vp.format(o), o);
+			UsageProducer prod = set.getUsageProducer();
+			if( prod != null) {
+				for(Object o : prod.getValues(expr, set.getRecordSelector())) {
+					input.addChoice(vp.format(o), o);
+				}
 			}
 			return input;
 			

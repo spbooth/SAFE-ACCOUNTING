@@ -4,6 +4,8 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.reports;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -11,7 +13,22 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.junit.Test;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.NodeList;
 
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
@@ -104,6 +121,34 @@ public class FilterExtensionTest extends ExtensionTestCase {
 		testFlter(reportType, templateName,TestDataHelper.readFileAsString(outputFile));
 	
 	}
+	
+	/** tests filters can be parsed/serialised then re-parsed to the same filer 
+	 * @throws Exception 
+	 * @throws DOMException 
+	 * 
+	 */
+	protected void testRoundTrip(ReportBuilder builder) throws DOMException, Exception {
+		FilterExtension fil= new FilterExtension(getContext());
+		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
+				.newInstance();
+				docBuilderFactory.setNamespaceAware(true);
+		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+		Document doc = docBuilder.newDocument();
+		TransformerFactory fac = TransformerFactory.newInstance();
+		Transformer t = fac.newTransformer();
+		t.transform(builder.getTemplateSource(), new DOMResult(doc));
+		NodeList list = doc.getElementsByTagNameNS(FilterExtension.FILTER_LOC, FilterExtension.FILTER_ELEMENT);
+		for( int i=0 ; i<list.getLength();i++) {
+			RecordSet parsed = fil.makeFilter(list.item(i));
+
+			DocumentFragment serial = fil.formatRecordSet(parsed);
+			t.transform(new DOMSource(serial), new StreamResult(System.out));
+			RecordSet second = fil.makeFilter(serial);
+
+			assertEquals("REcordSet not regenerated",parsed,second);
+			assertFalse(fil.getErrors().hasError());
+		}
+	}
 	protected void testFlter(String type, String templateName,String expectedOutput)
 		throws Exception 
 	{
@@ -136,7 +181,7 @@ public class FilterExtensionTest extends ExtensionTestCase {
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, outstring),
 				TestDataHelper.compareUnordered(outstring, expectedOutput));
-
+		testRoundTrip(reportBuilder);
 	}
 
 }

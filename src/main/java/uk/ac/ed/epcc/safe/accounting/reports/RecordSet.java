@@ -22,7 +22,6 @@ import java.util.Date;
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetGenerator;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.db.NullUsageProducer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
@@ -54,15 +53,17 @@ public class RecordSet extends ObjectSet<UsageProducer>{
 
 	private final AccountingService serv;
   private PropExpression<Date> bounds[];
-  private boolean use_overlap=true;
+  private boolean use_overlap=false;
   private UsageProducer narrowed=null;
   private boolean use_narrowed=false;
+  private String producer_tag=null;
  
   public RecordSet(AccountingService serv){
 	  super();
 	  this.serv=serv;
 	  bounds = new PropExpression[1];
 	  bounds[0]=StandardProperties.ENDED_PROP;
+	  use_overlap=false;
   }
   public RecordSet(RecordSet orig){
 	  super(orig);
@@ -156,15 +157,35 @@ public Logger getLogger() {
 		//return use_overlap && bounds.length == 2 && up.compatible(bounds[0]) && up.compatible(bounds[1]);
 		return use_overlap && hasOverlapBounds() ;
 	}
+
+/** set the ucrrent {@link UsageProducer} by name.
+ * This will clear all selectors and set the tag returned by {@link #getProducerTag()}
+ * 
+ * @param name
+ * @throws RecordSelectException
+ */
   public void setUsageProducer(String name) throws RecordSelectException{
 	  UsageProducer usageProducer = serv.getUsageProducer(name);
 	  if( usageProducer == null) {
 		  throw new RecordSelectException("Bad producer: "+name);
 	  }
+	producer_tag=name;
 	setUsageProducer(usageProducer);
   }
+  /** Get the last name passed to {@link #setUsageProducer(String)}
+   * 
+   * 
+   * @return
+   */
+  public String getProducerTag() {
+	  return producer_tag;
+  }
+  
+  public void setProducerTagFromCurrent() {
+	  producer_tag=getGenerator().getTag();
+  }
   public void setUsageProducer(UsageProducer up){
-	  // Note that setting a usage producer clear all existing selectors.
+	  // Note that setting a usage producer will clear all existing selectors.
 	  setGenerator(up);
 	  clearSelection();
 	  
