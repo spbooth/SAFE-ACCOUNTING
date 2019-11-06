@@ -1,0 +1,90 @@
+<Diff><TableSpecification name='DeferredCharts'>
+<MimeType type='String' nullable='true' max='127'/>
+<Name type='String' nullable='true' max='255'/>
+<Data type='Blob' nullable='true'/>
+<Expires type='Long' nullable='true'/>
+<PersonId reference='Person'/>
+</TableSpecification>
+<Person id='589'>
+<WebName>fred@example.com</WebName>
+</Person>
+<DeferredCharts id='1'>
+<MimeType>application/safe+xml</MimeType>
+<Name>image.png</Name>
+<Data>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48Y2hhOlRpbWVDaGFydCB4bWxuczpjaGE9Imh0dHA6Ly9zYWZlLmVwY2MuZWQuYWMudWsvY2hhcnQiPjxwZXI6UGVyaW9kIHhtbG5zOnBlcj0iaHR0cDovL3NhZmUuZXBjYy5lZC5hYy51ay9wZXJpb2QiPg0KCTxwZXI6U3RhcnRUaW1lPjI5LTA5LTIwMDg8L3BlcjpTdGFydFRpbWU+DQoJPHBlcjpFbmRUaW1lPjI5LTEwLTIwMDg8L3BlcjpFbmRUaW1lPg0KPC9wZXI6UGVyaW9kPjxGaWx0ZXIgeG1sbnM9Imh0dHA6Ly9zYWZlLmVwY2MuZWQuYWMudWsvZmlsdGVyIj48VGltZUJvdW5kcz48UHJvcGVydHk+dGltZTpDb21wbGV0ZWRUaW1lc3RhbXA8L1Byb3BlcnR5PjwvVGltZUJvdW5kcz48QW5kLz48L0ZpbHRlcj48Y2hhOk51bWJlck9mVGltZUJsb2Nrcz41PC9jaGE6TnVtYmVyT2ZUaW1lQmxvY2tzPjxjaGE6UGxvdD5XYWxsPC9jaGE6UGxvdD48Y2hhOkFkZERhdGE+DQoJPEZpbHRlciB4bWxucz0iaHR0cDovL3NhZmUuZXBjYy5lZC5hYy51ay9maWx0ZXIiPjxUaW1lQm91bmRzPjxQcm9wZXJ0eT50aW1lOkNvbXBsZXRlZFRpbWVzdGFtcDwvUHJvcGVydHk+PC9UaW1lQm91bmRzPjxBbmQ+PEVRPjxQcm9wZXJ0eT5zZ2U6UHJvamVjdDwvUHJvcGVydHk+PFZhbHVlPmVjZGZfYmFzZWxpbmU8L1ZhbHVlPjwvRVE+PC9BbmQ+PC9GaWx0ZXI+DQoJPGNoYTpQbG90PldhbGw8L2NoYTpQbG90Pg0KCTwvY2hhOkFkZERhdGE+PGNoYTpHcm91cEJ5PlByb2plY3Q8L2NoYTpHcm91cEJ5PjwvY2hhOlRpbWVDaGFydD4=</Data>
+<Expires>1572602400</Expires>
+<PersonId>589</PersonId>
+</DeferredCharts>
+<Properties id='2'>
+<Name>reference.DeferredCharts.PersonId</Name>
+<Value>Person</Value>
+</Properties>
+<TableSpecification name='ReportTemplateOverlay'>
+<Group type='String' nullable='false' max='64'/>
+<Name type='String' nullable='false' max='255'/>
+<Text type='String' nullable='true' max='16777215'/>
+<find_key type='Index' unique='true'><Column name='Group'/><Column name='Name'/></find_key>
+</TableSpecification>
+<ReportTemplateOverlay id='1'>
+<Group>report-templates</Group>
+<Name>testChartsAddData.xml</Name>
+</ReportTemplateOverlay>
+<TableSpecification name='TextFileOverlay'>
+<Group type='String' nullable='false' max='64'/>
+<Name type='String' nullable='false' max='255'/>
+<Text type='String' nullable='true' max='16777215'/>
+<find_key type='Index' unique='true'><Column name='Group'/><Column name='Name'/></find_key>
+</TableSpecification>
+<TextFileOverlay id='1'>
+<Group>stylesheets</Group>
+<Name>initial.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='2'>
+<Group>stylesheets</Group>
+<Name>identity.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='3'>
+<Group>stylesheets</Group>
+<Name>restrict.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='4'>
+<Group>stylesheets</Group>
+<Name>parameters.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='5'>
+<Group>stylesheets</Group>
+<Name>macro.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='6'>
+<Group>stylesheets</Group>
+<Name>atom.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='7'>
+<Group>stylesheets</Group>
+<Name>report.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='8'>
+<Group>stylesheets</Group>
+<Name>filter.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='9'>
+<Group>stylesheets</Group>
+<Name>period.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='10'>
+<Group>stylesheets</Group>
+<Name>tables.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='11'>
+<Group>stylesheets</Group>
+<Name>chart.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='12'>
+<Group>stylesheets</Group>
+<Name>format.xsl</Name>
+</TextFileOverlay>
+<TextFileOverlay id='13'>
+<Group>stylesheets</Group>
+<Name>template-to-ehtml.xsl</Name>
+</TextFileOverlay>
+</Diff>

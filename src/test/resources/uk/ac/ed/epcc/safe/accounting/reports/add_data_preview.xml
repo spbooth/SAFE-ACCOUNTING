@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><transition_page>
+<Title>View Report</Title>
+<PageHeading>View Report</PageHeading>
+<SummaryContent/>
+<ExtraContent>
+<h4>Report Preview</h4>
+<div class="report_container">
+<div class="report">
+<h1>Test Plots</h1>
+<h2>Time Chart Plot</h2>
+<div class="graph">
+<img alt="figure" src="test/Data/ServeData/1/image.png"/>
+</div>
+</div>
+</div>
+</ExtraContent>
+<Form>
+<fieldset class="action_buttons">
+<button class="input_button" type="submit" formtarget="_blank" title="Generate HTML" name="HTML" value="HTML">
+<img class="icon" alt="HTML" src="test/accounting/html-file-48x48.png"/>HTML</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate PDF" name="PDF" value="PDF">
+<img class="icon" alt="PDF" src="test/accounting/pdf-file-48x48.png"/>PDF</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate CSV" name="CSV" value="CSV">
+<img class="icon" alt="CSV" src="test/accounting/csv-file-48x48.png"/>CSV</button>
+</fieldset>
+</Form>
+</transition_page>
