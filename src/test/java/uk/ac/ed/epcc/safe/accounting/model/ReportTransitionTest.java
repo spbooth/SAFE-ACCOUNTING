@@ -20,6 +20,7 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.html.BaseHTMLForm;
 import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
+import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
 import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.ClassificationFactory;
 import uk.ac.ed.epcc.webapp.model.data.stream.MimeStreamData;
@@ -198,6 +199,8 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		checkForward("/scripts/transition.jsp");
 		checkFormContent("/normalize.xsl", "test_preview.xml");
 	}
+	
+	
 	
 	
 	@Test
