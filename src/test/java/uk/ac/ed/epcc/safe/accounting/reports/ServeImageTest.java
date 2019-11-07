@@ -78,7 +78,7 @@ public class ServeImageTest extends ServletTest {
 		assertTrue(res.stream.isClosed());
 		byte data[] = res.stream.getData();
 		checkPNG(data);
-		writeFile("deferred_image.png",data);
+		//writeFile("deferred_image.png",data);
 		
 		// We can't use the pre-calculated expected
 		// Use a deferred image builder but with the original template
