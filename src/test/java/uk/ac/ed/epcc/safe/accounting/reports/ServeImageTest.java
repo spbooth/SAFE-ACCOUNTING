@@ -44,15 +44,28 @@ public class ServeImageTest extends ServletTest {
 		assertEquals("image/png",res.getContentType());
 		assertTrue(res.stream.isClosed());
 		byte data[] = res.stream.getData();
+		checkPNG(data);
 		assertEquals(29767, data.length);
 		
 		byte exp[] = Base64.decodeBase64(expected);
+		checkPNG(exp);
 		assertEquals(exp.length, data.length);
 		for(int i=0;i<exp.length;i++) {
 			assertEquals("byte["+Integer.toString(i)+"]",exp[i],data[i]);
 		}
 		//writeFile("image.png",data);
-		
+	}
+	
+	public void checkPNG(byte data[]) {
+		assertTrue(data.length > 8);
+		assertEquals("PNG header[0]",(byte)0x89, data[0]);
+		assertEquals("PNG header[1]",(byte)0x50, data[1]);
+		assertEquals("PNG header[2]",(byte)0x4e, data[2]);
+		assertEquals("PNG header[3]",(byte)0x47, data[3]);
+		assertEquals("PNG header[4]",(byte)0x0d, data[4]);
+		assertEquals("PNG header[5]",(byte)0x0a, data[5]);
+		assertEquals("PNG header[6]",(byte)0x1a, data[6]);
+		assertEquals("PNG header[7]",(byte)0x0a, data[7]);
 	}
 	
 	@Test
@@ -69,8 +82,10 @@ public class ServeImageTest extends ServletTest {
 		assertEquals("image/png",res.getContentType());
 		assertTrue(res.stream.isClosed());
 		byte data[] = res.stream.getData();
+		checkPNG(data);
 		assertEquals(29767, data.length);
 		byte exp[] = Base64.decodeBase64(expected);
+		checkPNG(exp);
 		assertEquals(exp.length, data.length);
 		for(int i=0;i<exp.length;i++) {
 			assertEquals("byte["+Integer.toString(i)+"]",exp[i],data[i]);
