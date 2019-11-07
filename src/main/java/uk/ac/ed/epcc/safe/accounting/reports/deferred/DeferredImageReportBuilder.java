@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.reports.ChartExtension;
@@ -31,8 +33,10 @@ import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.TextProvider;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayStreamData;
 import uk.ac.ed.epcc.webapp.model.data.stream.MimeStreamData;
 
@@ -51,9 +55,12 @@ public class DeferredImageReportBuilder extends ReportBuilder{
 		setTemplate(template);
 		log_source=true;
 	}
-
+    public DeferredImageReportBuilder(AppContext conn,String template) throws URISyntaxException, ParserConfigurationException, DataFault, InvalidArgument, TransformerFactoryConfigurationError, TransformerException {
+    	super(new DeferredImageTypeRegistry(conn));
+    	setTemplate(template);
+    }
 	
-	public MimeStreamData makeImage() throws Exception {
+ 	public MimeStreamData makeImage() throws Exception {
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		ReportType type = DeferredImageTypeRegistry.DPNG;
 		Logger log = getLogger();

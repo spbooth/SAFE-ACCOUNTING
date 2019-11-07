@@ -79,6 +79,9 @@
 	<xsl:template match="Message">
 	<xsl:element name="Message">removed-message</xsl:element>
 	</xsl:template>
+	<xsl:template match="Data">
+	<xsl:element name="Data"></xsl:element>
+	</xsl:template>
 	 <xsl:template match="@*|node()">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
