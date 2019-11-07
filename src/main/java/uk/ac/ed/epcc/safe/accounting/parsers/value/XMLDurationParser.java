@@ -138,12 +138,12 @@ public class XMLDurationParser implements ValueParser<Duration> {
 	 * to have 23 or 25 hours in it when measuring duration as the difference
 	 * between start and end datetimes).
 	 * </p>
+	 * @throws ValueParseException 
 	 * 
 	 * 
 	 * @see uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser#parse(java.lang.String)
 	 */
-	public Duration parse(String valueString) throws IllegalArgumentException,
-			NullPointerException {
+	public Duration parse(String valueString) throws  ValueParseException {
 		/*
 		 * NOTE: this could have been implemented using a dummy date and parsing the
 		 * duration using duration.getTimeInMillis(new Date()). However, the
@@ -165,7 +165,7 @@ public class XMLDurationParser implements ValueParser<Duration> {
 		 * sure they aren't first
 		 */
 		if (xmlDuration.getYears() != 0 || xmlDuration.getMonths() != 0)
-			throw new IllegalArgumentException("Cannot parse duration " + xmlDuration
+			throw new ValueParseException("Cannot parse duration " + xmlDuration
 					+ " into seconds.  Start time not specified");
 
 		double days = xmlDuration.getDays();
@@ -192,15 +192,18 @@ public class XMLDurationParser implements ValueParser<Duration> {
 	 * @throws IllegalArgumentException
 	 *           If <code>valueString</code> cannot be parsed into a
 	 *           <code>Duration</code> object
+	 * @throws ValueParseException 
 	 */
 	public javax.xml.datatype.Duration parseToDuration(String valueString)
-			throws IllegalArgumentException {
+			throws IllegalArgumentException, ValueParseException {
 		try {
 			return DatatypeFactory.newInstance().newDuration(
 					valueString.trim());
 		} catch (DatatypeConfigurationException e) {
 			throw new ConsistencyError("Error getting DataTypeFactory",e);
 
+		}catch(IllegalArgumentException e2){
+			throw new ValueParseException(e2);
 		}
 	}
 // This works in XML terms but the OGF specification is tighter.
