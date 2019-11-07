@@ -56,7 +56,7 @@ public class ServeImageTest extends ServletTest {
 		for(int i=0;i<exp.length;i++) {
 			assertEquals("byte["+Integer.toString(i)+"]",exp[i],data[i]);
 		}
-		writeFile("image.png",data);
+		//writeFile("image.png",data);
 	}
 	
 	public void checkPNG(byte data[]) {
@@ -87,7 +87,7 @@ public class ServeImageTest extends ServletTest {
 		assertTrue(res.stream.isClosed());
 		byte data[] = res.stream.getData();
 		checkPNG(data);
-		
+		writeFile("deferred_image.png",data);
 		byte exp[] = Base64.decodeBase64(expected);
 		checkPNG(exp);
 		assertEquals(exp.length, data.length);
@@ -95,7 +95,7 @@ public class ServeImageTest extends ServletTest {
 			assertEquals("byte["+Integer.toString(i)+"]",exp[i],data[i]);
 		}
 		//assertEquals(238157928, data.hashCode());
-		writeFile("deferred_image.png",data);
+		
 		checkDiff("/cleanup.xsl","post_serv.xml");
 	}
 }
