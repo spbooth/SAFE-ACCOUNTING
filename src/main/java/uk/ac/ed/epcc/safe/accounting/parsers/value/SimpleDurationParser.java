@@ -70,13 +70,13 @@ public class SimpleDurationParser implements ValueParser<Duration> {
 	 * uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser#parse(java.lang
 	 * .String)
 	 */
-	public Duration parse(String valueString) throws IllegalArgumentException,
-			NullPointerException {
-
+	public Duration parse(String valueString) throws ValueParseException {
+		 if(valueString == null)
+		      throw new NullPointerException("valueString cannot be null");
 		String timeElems[] = valueString.trim().split(":");
 		if (timeElems.length != 3) {
 			if (valueString.length() != 6)
-				throw new IllegalArgumentException("Bad duration format: '"
+				throw new ValueParseException("Bad duration format: '"
 						+ valueString + "'");
 
 			timeElems = new String[3];
@@ -87,17 +87,36 @@ public class SimpleDurationParser implements ValueParser<Duration> {
 
 		long hours = Long.parseLong(timeElems[0]);
 		long minutes = Long.parseLong(timeElems[1]);
+		
+		if( timeElems[2].contains(".")) {
+			// handle fractional second
+			double d = Double.parseDouble(timeElems[2]);
+			d = d * 1000.0;
+			long millis = (hours *3600000L) + (minutes * 60000L) + ((long)d);
+			return new Duration(millis,1L);
+		}
+		
 		long seconds = Long.parseLong(timeElems[2]);
-
 		return new Duration((hours * 3600) + (minutes * 60) + (seconds));
 	}
 
 	public String format(Duration value) {
-		long time = value.getSeconds();
-		long seconds = time % 60;
-		time = time / 60;
-		long minutes = time % 60;
-		long hours = time / 60;
-		return ""+hours+":"+minutes+":"+seconds;
+		long millis = value.getMilliseconds();
+		
+		if( millis % 1000L == 0L) {
+			long time = value.getSeconds();
+			long seconds = time % 60;
+			time = time / 60;
+			long minutes = time % 60;
+			long hours = time / 60;
+			return ""+hours+":"+minutes+":"+seconds;
+		}
+		long frac = millis % 1000L;
+		millis = millis / 1000L;
+		long seconds = millis % 60L;
+		millis = millis / 60L;
+		long minutes = millis % 60L;
+		long hours = millis / 60L;
+		return ""+hours+":"+minutes+":"+seconds+"."+String.format("%03d", frac);
 	}
 }
