@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!-- Copyright - The University of Edinburgh 2015 -->
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+  
+<Title>Test For</Title>
+<par:For source="TestClassifier" var="cl">
+<fil:GT><fil:Property>count</fil:Property><fil:Value>1</fil:Value></fil:GT>
+<par:Content>
+<par:FormatParameter name="cl">
+Count one name ${Name} count ${count}
+<par:IfDef required="Name">Name is defined</par:IfDef>
+<par:IfNDef required="Name">Should not see this</par:IfNDef>
+<par:IfDef required="table:person">Should not see this</par:IfDef>
+<par:IfNDef required="table:person">table:person not defined</par:IfNDef>
+<par:If expr="count" match="LT" value="2">${Name} count LT 2</par:If>
+<par:If expr="count" match="LE" value="2">${Name} count LE 2</par:If>
+<par:If expr="count"  value="2">${Name} count EQ 2</par:If>
+<par:If expr="count" match="GE" value="2">${Name} count GE 2</par:If>
+<par:If expr="count" match="GT" value="2">${Name} count GT 2</par:If>
+<par:If expr="Name"  value="C">Name is C</par:If>
+---------------------------------------------------------------
+</par:FormatParameter>
+</par:Content>
+</par:For>
+
+</Report>

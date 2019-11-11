@@ -1066,5 +1066,41 @@ public void testParameterReportType3() throws Exception {
 		System.out.println(string);
 		checkContent(null, "expected_for_nested.xml", string);
 	}
-	
+	@Test
+	public void testForNestedExpansion() throws Exception{
+		AccountingClassificationFactory fac = ctx.makeObject(AccountingClassificationFactory.class, "TestClassifier");
+		ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(fac);
+		assertNotNull(fac);
+		PropertyTag<Integer> count =  (PropertyTag<Integer>) etf.getFinder().find(Number.class,"count");
+		ExpressionTargetContainer a = etf.getExpressionTarget(fac.makeFromString("A"));
+		a.setProperty(count, Integer.valueOf(1));
+		a.commit();
+		ExpressionTargetContainer b = etf.getExpressionTarget(fac.makeFromString("B"));
+		b.setProperty(count, Integer.valueOf(2));
+		b.commit();
+		ExpressionTargetContainer c = etf.getExpressionTarget(fac.makeFromString("C"));
+		c.setProperty(count, Integer.valueOf(3));
+		c.commit();
+		String templateName = "testForNestedExpansion";
+		
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<>();
+		ReportBuilderTest.setupParams(ctx, params);
+		
+
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
+		reportBuilder.setupExtensions(params);
+		HTMLForm form = new HTMLForm(ctx);
+		
+		
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		
+		ReportType	XML = new ReportType("XML","xml", "text/xml","XML"); 
+		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
+		String string = out.toString();
+		System.out.println(string);
+		checkContent(null, "expected_for_nested_expansion.xml", string);
+	}
 }

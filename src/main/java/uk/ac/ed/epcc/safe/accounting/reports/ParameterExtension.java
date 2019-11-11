@@ -123,7 +123,10 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  */
 public class ParameterExtension extends ReportExtension {
 	
-    private static final String TITLE_ATTR = "title";
+    private static final String IF_DEF_ELEMENT = "IfDef";
+	private static final String IF_ELEMENT = "If";
+	private static final String IF_NDEF_ELEMENT = "IfNDef";
+	private static final String TITLE_ATTR = "title";
 	static final String PARAMETER_REF_ELEMENT = "ParameterRef";
 	private static final String FORMAT_PARAMETER_ELEMENT = "FormatParameter";
 	private static final String FOR_ELEMENT = "For";
@@ -664,7 +667,7 @@ public class ParameterExtension extends ReportExtension {
 		
 		//TODO consider flag to control isTrivial check
 		if( PARAMETER_LOC.equals(namespaceURI)){
-			if( "IfDef".equals(nodeName)){
+			if( IF_DEF_ELEMENT.equals(nodeName)){
 				String prop = e.getAttribute("required");
 				// only process contents if required property not null
 				if( prop != null ){
@@ -684,7 +687,7 @@ public class ParameterExtension extends ReportExtension {
 				}else{
 					addError("missing attribute","No required attribute in IfDef");
 				}
-			}else if( "IfNDef".equals(nodeName)){
+			}else if( IF_NDEF_ELEMENT.equals(nodeName)){
 				String prop = e.getAttribute("required");
 				// only process contents if required property is null
 				if( prop != null ){
@@ -703,7 +706,7 @@ public class ParameterExtension extends ReportExtension {
 				}else{
 					addError("missing attribute","No required attribute in IfDef");
 				}
-			}else if ( "If".equals(nodeName)){
+			}else if ( IF_ELEMENT.equals(nodeName)){
 				String prop = e.getAttribute("expr");
 				
 				if( prop != null ){
@@ -728,8 +731,11 @@ public class ParameterExtension extends ReportExtension {
 								addError("bad match code", "match code "+match+" illegal", e);
 							}
 						}
-						if ( ! Comparable.class.isAssignableFrom(expr.getTarget())){
-							m = null;
+						if ( ! Comparable.class.isAssignableFrom(value.getClass())){
+							if( m != null ) {
+								addError("bad match code","target value does not implement comparable",e);
+								return doc.createDocumentFragment();
+							}
 						}
 						if( record_value != null && target_value != null ){
 							if( (m == null && record_value.equals(target_value)) || 

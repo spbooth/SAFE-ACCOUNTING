@@ -284,6 +284,48 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 	</xsd:element>
+	
+	
+	<xsd:element name="IfDef" type="IfDefComplexType">
+	<xsd:annotation>
+	<xsd:documentation>
+	Conditional expansion within a FormatParameter.
+	Contents are expanded if required expression is defiend
+	</xsd:documentation>
+	</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="IfNDef" type="IfDefComplexType">
+	<xsd:annotation>
+	<xsd:documentation>
+	Conditional expansion within a FormatParameter.
+	Contents are expanded if required expression is NOT defiend
+	</xsd:documentation>
+	</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="If">
+	<xsd:annotation>
+	<xsd:documentation>
+	Conditional expansion within a FormatParameter.
+	Contents are expanded if expression matches value
+	</xsd:documentation>
+	</xsd:annotation>
+	<xsd:complexType>
+		<xsd:complexContent mixed="true">
+			<xsd:restriction base="xsd:anyType">
+				<xsd:sequence>
+					<xsd:any processContents="lax" minOccurs="0"
+						maxOccurs="unbounded" />
+				</xsd:sequence>
+				<xsd:attribute name="expr" type="xsd:string" use="required"></xsd:attribute>
+				<xsd:attribute name="match" type="xsd:string" use="optional"></xsd:attribute>
+				<xsd:attribute name="value" type="xsd:string" use="required"></xsd:attribute>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	</xsd:element>
+	
 	<xsd:element name="PageTitle" type="xsd:string">
 	<xsd:annotation><xsd:documentation>Title of parameter form</xsd:documentation></xsd:annotation>
 	</xsd:element>
@@ -452,5 +494,15 @@
 			</xsd:element>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="IfDefComplexType" mixed="true">
+		<xsd:sequence>
+			<xsd:any minOccurs="0" maxOccurs="unbounded"
+				processContents="lax">
+			</xsd:any>
+		</xsd:sequence>
+		<xsd:attribute use="required" name="required"
+			type="xsd:string">
+		</xsd:attribute>
 	</xsd:complexType>
 </xsd:schema>
