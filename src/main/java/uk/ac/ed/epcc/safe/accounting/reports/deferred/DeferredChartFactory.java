@@ -68,11 +68,11 @@ public class DeferredChartFactory extends DataObjectDataProducer<DeferredChartFa
 						int height = 400;
 						BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 						Graphics2D ig2 = bi.createGraphics();
-						ig2.setPaint(new GradientPaint(0.0f, 0.0F, new Color(0.75F, 0.75F, 1.0F), 0.0F, 100.0F, Color.white, false));
-						ig2.fillRect(0, 0, width, height);
+						//ig2.setPaint(new GradientPaint(0.0f, 0.0F, new Color(0.75F, 0.75F, 1.0F), 0.0F, 100.0F, Color.white, false));
+						//ig2.fillRect(0, 0, width, height);
 					    Font font = new Font("Arial", Font.BOLD, 14);
 					    ig2.setFont(font);
-					    String message = "Plot contains no data";
+					    String message = "This plot contained no data";
 					    FontMetrics fontMetrics = ig2.getFontMetrics();
 					    int stringWidth = fontMetrics.stringWidth(message);
 					    int stringHeight = fontMetrics.getAscent();
