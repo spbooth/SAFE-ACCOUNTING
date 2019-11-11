@@ -13,6 +13,12 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.reports.deferred;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
@@ -20,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -37,6 +44,7 @@ import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.TextProvider;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
+import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayStreamData;
 import uk.ac.ed.epcc.webapp.model.data.stream.MimeStreamData;
 
@@ -92,7 +100,26 @@ public class DeferredImageReportBuilder extends ReportBuilder{
 				getLogger().debug("No images stored in extension");
 			}
 		}
-		return null;
+		int width = 800;
+		int height = 400;
+		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D ig2 = bi.createGraphics();
+		//ig2.setPaint(new GradientPaint(0.0f, 0.0F, new Color(0.75F, 0.75F, 1.0F), 0.0F, 100.0F, Color.white, false));
+		//ig2.fillRect(0, 0, width, height);
+	    Font font = new Font("Arial", Font.BOLD, 14);
+	    ig2.setFont(font);
+	    String message = "This plot contained no data";
+	    FontMetrics fontMetrics = ig2.getFontMetrics();
+	    int stringWidth = fontMetrics.stringWidth(message);
+	    int stringHeight = fontMetrics.getAscent();
+	    ig2.setPaint(Color.black);
+	    ig2.drawString(message, (width - stringWidth) / 2, height / 2 + stringHeight / 4);
+	    ByteArrayOutputStream out = new ByteArrayOutputStream();
+	    ImageIO.write(bi, "PNG", out);
+	    ByteArrayMimeStreamData i = new ByteArrayMimeStreamData(out.toByteArray());
+	    i.setName("image.png");
+	    i.setMimeType("image/png");
+		return i;
 	}
 	
 	

@@ -64,26 +64,8 @@ public class DeferredChartFactory extends DataObjectDataProducer<DeferredChartFa
 					DeferredImageReportBuilder builder = new DeferredImageReportBuilder(getContext(), text);
 					MimeStreamData image = builder.makeImage();
 					if( image == null) {
-						int width = 800;
-						int height = 400;
-						BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-						Graphics2D ig2 = bi.createGraphics();
-						//ig2.setPaint(new GradientPaint(0.0f, 0.0F, new Color(0.75F, 0.75F, 1.0F), 0.0F, 100.0F, Color.white, false));
-						//ig2.fillRect(0, 0, width, height);
-					    Font font = new Font("Arial", Font.BOLD, 14);
-					    ig2.setFont(font);
-					    String message = "This plot contained no data";
-					    FontMetrics fontMetrics = ig2.getFontMetrics();
-					    int stringWidth = fontMetrics.stringWidth(message);
-					    int stringHeight = fontMetrics.getAscent();
-					    ig2.setPaint(Color.black);
-					    ig2.drawString(message, (width - stringWidth) / 2, height / 2 + stringHeight / 4);
-					    ByteArrayOutputStream out = new ByteArrayOutputStream();
-					    ImageIO.write(bi, "PNG", out);
-					    ByteArrayMimeStreamData i = new ByteArrayMimeStreamData(out.toByteArray());
-					    i.setName("image.png");
-					    i.setMimeType("image/png");
-					    image=i;
+						getLogger().error("No image generated");
+						return null;
 					}
 					setData(image);
 					commit();
