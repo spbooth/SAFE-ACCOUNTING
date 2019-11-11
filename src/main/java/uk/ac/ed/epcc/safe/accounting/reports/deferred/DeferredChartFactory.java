@@ -3,6 +3,7 @@ package uk.ac.ed.epcc.safe.accounting.reports.deferred;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -67,7 +68,9 @@ public class DeferredChartFactory extends DataObjectDataProducer<DeferredChartFa
 						int height = 400;
 						BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 						Graphics2D ig2 = bi.createGraphics();
-					    Font font = new Font("Arial", Font.BOLD, 20);
+						ig2.setPaint(new GradientPaint(0.0f, 0.0F, new Color(0.75F, 0.75F, 1.0F), 0.0F, 100.0F, Color.white, false));
+						ig2.fillRect(0, 0, width, height);
+					    Font font = new Font("Arial", Font.BOLD, 14);
 					    ig2.setFont(font);
 					    String message = "Plot contains no data";
 					    FontMetrics fontMetrics = ig2.getFontMetrics();
