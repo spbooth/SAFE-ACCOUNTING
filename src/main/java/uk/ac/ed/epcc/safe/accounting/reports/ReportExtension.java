@@ -552,9 +552,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		return e.accept(new FormatVisitor());
 	}
 	
-	public <T> T getValue(PropExpression<T> tag, Element element) throws  Exception{
-		return parse(tag,getAttribute(FORMAT_ATTR, element),getText(element));
-	}
+
 	/** get a template param with config-parameter expansion
 	 * 
 	 * @param name
@@ -570,12 +568,8 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		return param;
 	}
-	public <T> PropertyTag<? extends T> getTag(PropertyTargetFactory up,Class<? extends T> target, String name) {
-		return getTag(up.getFinder(),target,name);
-	}
-	public <T> PropertyTag<? extends T> getTag(PropertyFinder finder,Class<? extends T> target, String name) {
-		return finder.find(target,name);
-	}
+	
+	
 	
 	
 	/** Perform known conversions to a desired target type.

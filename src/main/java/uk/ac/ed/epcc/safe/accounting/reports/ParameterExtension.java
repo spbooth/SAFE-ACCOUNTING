@@ -758,7 +758,7 @@ public class ParameterExtension extends ReportExtension {
 						addError("missing property", "Property "+prop+" not found");
 					}
 				}else{
-					addError("missing attribute","No property attribute in If");
+					addError("missing attribute","No expr attribute in If");
 				}
 			}
 			return null;
@@ -783,22 +783,7 @@ public class ParameterExtension extends ReportExtension {
 			return new_e;
 		}
 	}
-	public boolean isTrivial(Object o){
-		if( o == null ){
-			return true;
-		}
-		if( o instanceof IndexedReference){
-			return ((IndexedReference)o).isNull();
-		}
-		
-		if( o instanceof String ){
-			return ((String)o).trim().length() == 0;
-		}
-		if( o instanceof Date ){
-			return ((Date)o).getTime() == 0L;
-		}
-		return false;
-	}
+	
 	/** duplicate a leaf  Node editing its value
 	 * 
 	 * @param doc
