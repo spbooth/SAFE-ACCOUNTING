@@ -180,7 +180,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			timer.stopTimer(name);
 		}
 	}
-	public void setParams(Set<String> names,Map<String,Object> p){
+	public void setParams(ReportType type,Set<String> names,Map<String,Object> p){
 		this.parameter_names=names;
 		this.params=p;
 	}

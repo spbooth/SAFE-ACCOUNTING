@@ -22,6 +22,8 @@ import java.io.ByteArrayOutputStream;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -122,12 +124,16 @@ public abstract class ChartExtension extends ReportExtension {
 		if( c== null ){
 			return false;
 		}
-		return c.has_data;
+		return c.has_data ;
 	}
 	private final ChartService serv;
 	public ChartExtension(AppContext c,NumberFormat nf) throws ParserConfigurationException {
 		super(c,nf);
 		serv=c.getService(ChartService.class);
+	}
+	@Override
+	public void setParams(ReportType type, Set<String> names, Map<String, Object> p) {
+		super.setParams(type, names, p);
 	}
 	public PlotEntry getPlotEntry(RecordSet set, Node n) throws Exception{
 		Element e = (Element) n;
@@ -628,4 +634,7 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 		DocumentFragment result = doc.createDocumentFragment();
 		return result;
 	}
+
+	
+	
 }

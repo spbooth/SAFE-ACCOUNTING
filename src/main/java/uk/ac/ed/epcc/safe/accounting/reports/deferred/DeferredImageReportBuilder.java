@@ -54,6 +54,7 @@ public class DeferredImageReportBuilder extends ReportBuilder{
 		super(new DeferredImageTypeRegistry(conn));
 		setTemplate(template);
 		log_source=true;
+		
 	}
     public DeferredImageReportBuilder(AppContext conn,String template) throws URISyntaxException, ParserConfigurationException, DataFault, InvalidArgument, TransformerFactoryConfigurationError, TransformerException {
     	super(new DeferredImageTypeRegistry(conn));
@@ -87,6 +88,8 @@ public class DeferredImageReportBuilder extends ReportBuilder{
 			Map<String,MimeStreamData> images = ((CidChartExtension)ext).getData();
 			if( ! images.isEmpty()){
 				return images.values().iterator().next();
+			}else {
+				getLogger().debug("No images stored in extension");
 			}
 		}
 		return null;

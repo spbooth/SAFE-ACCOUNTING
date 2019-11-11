@@ -628,12 +628,12 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 		//always need parameter and restrict extension
 		ReportExtension parme = new ParameterExtension(conn, nf);
 		parme.setPolicy(pol);
-		parme.setParams(parameter_names,params);
+		parme.setParams(reportType,parameter_names,params);
 		register(parme);
 		params.put(PARAMETER_EXTENSION_TAG, parme);
 		RestrictExtension rest = new RestrictExtension(conn, nf);
 		rest.setPolicy(pol);
-		rest.setParams(parameter_names,params);
+		rest.setParams(reportType,parameter_names,params);
 		register(rest);
 		params.put(RESTRICT_EXTENSION_TAG,rest);
 		
@@ -654,7 +654,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 						String param_name = conn.getInitParameter("ReportBuilder."+extension_name+".name",extension_name);
 						getLogger().debug("Adding extension "+ext.getClass().getCanonicalName()+" as "+param_name);
 						ext.setPolicy(pol);
-						ext.setParams(parameter_names,params);
+						ext.setParams(reportType,parameter_names,params);
 						register(ext);
 						params.put(param_name, ext);
 					} catch (Exception e) {
@@ -726,7 +726,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 				.get(PARAMETER_EXTENSION_TAG);
 		if (pe == null) {
 			pe = new ParameterExtension(getContext(), null);
-			pe.setParams(params.keySet(), params);
+			pe.setParams(null,params.keySet(), params);
 		}
 		boolean cont = pe.buildReportParametersForm(self,defaults,form, getParameterDocument());
 		ErrorSet es = pe.getErrors();
