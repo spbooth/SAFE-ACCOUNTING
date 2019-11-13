@@ -32,7 +32,7 @@
 		<xsl:value-of select="atom:percent($AtomExtension,$period,$filter,.)" />
 	</xsl:template>
     
-	<xsl:template match="ato:Sum|ato:Average|ato:Minimum|ato:Maximum|ato:Count|ato:Number|ato:Value|ato:Add|ato:Sub|ato:Mul|ato:Div|ato:Atom">
+	<xsl:template match="ato:Sum|ato:Average|ato:Median|ato:Minimum|ato:Maximum|ato:Count|ato:Number|ato:Value|ato:Add|ato:Sub|ato:Mul|ato:Div|ato:Atom">
 		<xsl:variable name="period" select="period:makePeriod($PeriodExtension,(ancestor::*/per:Period|per:Period)[last()])" />
 		<xsl:variable name="filter" select="filter:makeFilter($FilterExtension,ancestor::*/fil:Filter|fil:Filter)" />
 		<xsl:value-of select="atom:formatAtom($AtomExtension,$period,$filter,.)" />

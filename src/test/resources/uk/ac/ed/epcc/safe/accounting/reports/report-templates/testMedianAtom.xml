@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!-- Copyright - The University of Edinburgh 2015 -->
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+	<Title>Test Atoms</Title>	
+	<per:Period>
+		<per:StartTime>01-10-2008</per:StartTime>
+		<per:EndTime>02-10-2008</per:EndTime>
+	</per:Period>
+	
+	<fil:Filter>
+		<fil:EQ>
+			<fil:Property>UserName</fil:Property>
+			<fil:Value>s0565741</fil:Value>
+		</fil:EQ>
+	</fil:Filter>
+	
+
+	
+	<Text>This report show some of the feature of report tables.</Text>
+	
+	<Section> <Title>"Atom Examples"</Title>	
+		
+		<Text>The user 's0565741' ran <ato:Count/> jobs between 01-10-2008 and 02-10-2008. </Text>	
+		
+		<Text>The user 's0565741' used a median of <ato:Median>Wall</ato:Median> seconds between 01-10-2008 and 02-10-2008. </Text>	
+		
+		<Text>The user 's0565741' ran jobs against the following project: <ato:Property>Project</ato:Property> between 01-10-2008 and 02-10-2008. </Text>	
+		
+	</Section>
+
+	<Section> <Title>"Job Details"</Title>	
+		<fil:Filter>
+			<fil:EQ>
+				<fil:Property>JobID</fil:Property>
+				<fil:Value>1153856</fil:Value>
+			</fil:EQ>
+		</fil:Filter>
+		<Text>The Job '<ato:Property>JobName</ato:Property>': </Text>	
+		
+		<Text>User: <ato:Property>UserName</ato:Property></Text>
+		<Text>Project: <ato:Property>Project</ato:Property></Text>
+		<Text>Queue: <ato:Property>Queue</ato:Property></Text>
+		<Text>Submitted: <ato:Property>SubmittedTimestamp</ato:Property></Text>
+		<Text>Started: <ato:Property>StartedTimestamp</ato:Property></Text>
+		<Text>Completed: <ato:Property>CompletedTimestamp</ato:Property></Text>
+		
+	</Section>
+
+</Report>
