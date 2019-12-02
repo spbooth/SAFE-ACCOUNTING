@@ -394,8 +394,12 @@ public abstract class ChartExtension extends ReportExtension {
 		if( ! entry.compatible(up)) {
 			// This could happen in an AddData clause where the
 			// MapperEntry is already set but the UsageProducer is
-			// changed.
-			addError("Bad Plot","Usage producer not compatible with current MapperEntry");
+			// changed. However it might just be becasue the producer has been narrowed
+			// so check the un-narrowed generator jsut in case.
+			UsageProducer generator = set.getGenerator();
+			if( up == generator || ! entry.compatible(generator)) {
+				addError("Bad Plot","Usage producer not compatible with current MapperEntry");
+			}
 			return orig;
 		}
 		

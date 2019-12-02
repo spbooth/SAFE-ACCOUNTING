@@ -45,8 +45,8 @@ import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.TextProvider;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
-import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayStreamData;
 import uk.ac.ed.epcc.webapp.model.data.stream.MimeStreamData;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 
 /** A varient of {@link ReportBuilder} 
  * This if for deferred image generations so the report is assumed to need no
@@ -88,7 +88,10 @@ public class DeferredImageReportBuilder extends ReportBuilder{
 					s.report(log);
 				}
 			}
-			throw new ReportException("Error making report");
+			SessionService sess = getContext().getService(SessionService.class);
+			if( sess != null && sess.hasRole(REPORT_DEVELOPER)) {
+				throw new ReportException("Error making report");
+			}
 		}
 		// actually igore the report output we are only interested in the image
 		ChartExtension ext = (ChartExtension) params.get("ChartExtension");
