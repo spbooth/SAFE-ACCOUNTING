@@ -56,7 +56,13 @@
 			</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
-
+	<xsd:element name="Distinct" type="prop:PropExpressionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Count distinct values of prop-expression over the current selection.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
 	<xsd:element name="Average" type="prop:PropExpressionType">
 		<xsd:annotation>
 			<xsd:documentation>
@@ -124,6 +130,7 @@
 		<xsd:choice>
 			<xsd:element ref="Count" />
 			<xsd:element ref="Sum" />
+			<xsd:element ref="Distinct" />
 			<xsd:element ref="Average" />
 			<xsd:element ref="Median" />
 			<xsd:element ref="Minimum" />

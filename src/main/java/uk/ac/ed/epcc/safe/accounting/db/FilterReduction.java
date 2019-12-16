@@ -19,9 +19,9 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.ReductionMapper;
 
 
 
-public class FilterReduction<T,R,D> extends AccessorMapFilterFinder<T, R> {
-	public FilterReduction(AccessorMap<T> map,ReductionTarget<R,D> tag) throws InvalidSQLPropertyException {
+public class FilterReduction<T,R> extends AccessorMapFilterFinder<T, R> {
+	public FilterReduction(AccessorMap<T> map,ReductionTarget<R,R> tag) throws InvalidSQLPropertyException {
 		super(map);
-		setMapper(new ReductionMapper<>(map.getContext(),tag.getTarget(),tag.getReduction(),tag.getDefault(),map.getSQLExpression(tag.getExpression())));
+		setMapper(new ReductionMapper<>(map.getContext(),tag.getTarget(),tag.getReduction(),tag.getDefault(), map.getSQLExpression(tag.getExpression())));
 	}
 }

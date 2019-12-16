@@ -26,9 +26,11 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.FilterFinder;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 
 /** A wrapper round an {@link ExpressionTargetFactory} that implements {@link ReductionProducer}
@@ -109,7 +111,12 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 		}
 		try{
 			SQLFilter<E> sql_fil = FilterConverter.convert(getFilter(sel));
-			FilterReduction<E,R,D> fs = new FilterReduction<E,R,D>(map,type);
+			FilterFinder<E,R> fs;
+			if( type.getReduction() == Reduction.DISTINCT) {
+				fs = (FilterFinder<E, R>) new DistinctFilterFinder<E>(map, type);
+			}else {
+				fs = new FilterReduction<E,R>(map,(ReductionTarget<R, R>) type);
+			}
 			if( isQualify()) {
 				fs.setQualify(true);
 			}

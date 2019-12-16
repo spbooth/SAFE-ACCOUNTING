@@ -29,6 +29,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import uk.ac.ed.epcc.safe.accounting.CountReduction;
 import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.IllegalReductionException;
 import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
@@ -73,6 +74,7 @@ public class AtomExtension extends ReportExtension {
 	private static final String AVERAGE_ELEMENT = "Average";
 	private static final String MEDIAN_ELEMENT = "Median";
 	private static final String SUM_ELEMENT = "Sum";
+	private static final String DISTINCT_ELEMENT = "Distinct";
 	public static final Feature CACHE_ATOM_RESULTS = new Feature("cache.atom_results",true,"Cache atom results to optimise repeated queries in the same report");
 
 	private Map<CacheKey,AtomResult> result_cache=new HashMap<>();
@@ -175,6 +177,8 @@ public class AtomExtension extends ReportExtension {
 			return new AtomResult<>(null,n);
 		}else if (SUM_ELEMENT.equals(name)) {
 			return expandSimpleReduction(element, set, period, Reduction.SUM);
+		}else if (DISTINCT_ELEMENT.equals(name)) {
+			return expandSimpleReduction(element, set, period, Reduction.DISTINCT);	
 		} else if (AVERAGE_ELEMENT.equals(name)) {
 			return expandSimpleReduction(element, set, period, Reduction.AVG);
 		} else if (MEDIAN_ELEMENT.equals(name)) {
@@ -414,6 +418,8 @@ public class AtomExtension extends ReportExtension {
 				red = NumberReductionTarget.getInstance(reduction,expression);
 			}else if( Date.class.isAssignableFrom(expression.getTarget())){
 				red=new DateReductionTarget(reduction, expression);
+			}else if( reduction == Reduction.DISTINCT) {
+				red = new CountReduction(expression);
 			}else{
 				throw new IllegalReductionException("Unsupported reduction type "+exp);
 			}

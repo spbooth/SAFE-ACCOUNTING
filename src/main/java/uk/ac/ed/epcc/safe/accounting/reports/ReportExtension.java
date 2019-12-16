@@ -740,7 +740,8 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			}
 			if( tag instanceof FormatProvider){
 				Labeller labeller = ((FormatProvider)tag).getLabeller();
-				if( labeller != null ){
+				// check accepts in case we are doing count disctint on an expression with a labeller
+				if( labeller != null && labeller.accepts(value) ){
 					return labeller.getLabel(conn, value).toString();
 				}
 			}

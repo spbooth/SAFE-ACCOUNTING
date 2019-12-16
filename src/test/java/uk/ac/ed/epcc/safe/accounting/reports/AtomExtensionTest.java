@@ -38,7 +38,9 @@ public class AtomExtensionTest extends WebappTestBase {
 	String medianSummaryAtomOutput = 
 			"The user 's0565741' used a median of 533 seconds between 01-10-2008 and 02-10-2008.";
 		
-	
+	String distictSummaryAtomOutput = 
+			"A total of 10 users ran jobs between 01-10-2008 and 02-10-2008.";
+		
 	String listAtomOutput = 
 		"The user 's0565741' ran jobs against the following project: ecdf_baseline between 01-10-2008 and 02-10-2008.";
 	
@@ -169,6 +171,37 @@ public class AtomExtensionTest extends WebappTestBase {
 		assertTrue("SumAtom wasn't correctly formatted: Got\n"+out.toString()+
 				"Expected\n"+medianSummaryAtomOutput, 
 				out.toString().contains(medianSummaryAtomOutput));
+		
+	}
+	
+	@Test
+	@DataBaseFixtures({"AtomExtensionData.xml"})
+	public void testDistictSummaryAtom() throws Exception {		
+		
+		String templateName = "testDistictAtom";
+		
+		// Create a HTMLForm.
+		HTMLForm form = new HTMLForm(ctx);
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<>();
+		ReportBuilderTest.setupParams(ctx,params);
+		
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
+		reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
+		reportBuilder.buildReportParametersForm(form, params);
+		
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		reportBuilder.renderXML(params, out);
+	
+		// Look for errors
+		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
+		
+		// Check it was correctly formatted.		
+		assertTrue("SumAtom wasn't correctly formatted: Got\n"+out.toString()+
+				"Expected\n"+distictSummaryAtomOutput, 
+				out.toString().contains(distictSummaryAtomOutput));
 		
 	}
 	
