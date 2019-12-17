@@ -15,6 +15,8 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.ac.ed.epcc.safe.accounting.db.DefaultAccountingService;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.WebappTestBase;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
@@ -115,8 +117,17 @@ public class AtomExtensionTest extends WebappTestBase {
 	
 	@Test
 	@DataBaseFixtures({"AtomExtensionData.xml"})
-	public void testAverageSummaryAtom() throws Exception {		
-		
+	public void testAverageSummaryAtom() throws Exception {
+		Feature.setTempFeature(ctx, DefaultAccountingService.DEFAULT_COMPOSITE_FEATURE, true);
+		innerAverageSummaryAtom();
+	}
+	@Test
+	@DataBaseFixtures({"AtomExtensionData.xml"})
+	public void testCompositeAverageSummaryAtom() throws Exception {
+		Feature.setTempFeature(ctx, DefaultAccountingService.DEFAULT_COMPOSITE_FEATURE, false);
+		innerAverageSummaryAtom();
+	}
+	public void innerAverageSummaryAtom() throws Exception {	
 		String templateName = "testAverageAtom";
 		
 		// Create a HTMLForm.
@@ -138,7 +149,7 @@ public class AtomExtensionTest extends WebappTestBase {
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 		
 		// Check it was correctly formatted.		
-		assertTrue("SumAtom wasn't correctly formatted: Got\n"+out.toString()+
+		assertTrue("AverageAtom wasn't correctly formatted: Got\n"+out.toString()+
 				"Expected\n"+averageSummaryAtomOutput, 
 				out.toString().contains(averageSummaryAtomOutput));
 		
@@ -168,7 +179,7 @@ public class AtomExtensionTest extends WebappTestBase {
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 		
 		// Check it was correctly formatted.		
-		assertTrue("SumAtom wasn't correctly formatted: Got\n"+out.toString()+
+		assertTrue("MedianAtom wasn't correctly formatted: Got\n"+out.toString()+
 				"Expected\n"+medianSummaryAtomOutput, 
 				out.toString().contains(medianSummaryAtomOutput));
 		
@@ -176,8 +187,17 @@ public class AtomExtensionTest extends WebappTestBase {
 	
 	@Test
 	@DataBaseFixtures({"AtomExtensionData.xml"})
-	public void testDistictSummaryAtom() throws Exception {		
-		
+	public void testDistictSummaryAtom() throws Exception {	
+		Feature.setTempFeature(ctx, DefaultAccountingService.DEFAULT_COMPOSITE_FEATURE, true);
+		innerDistictSummaryAtom();
+	}
+	@Test
+	@DataBaseFixtures({"AtomExtensionData.xml"})
+	public void testComositeDistictSummaryAtom() throws Exception {	
+		Feature.setTempFeature(ctx, DefaultAccountingService.DEFAULT_COMPOSITE_FEATURE, false);
+		innerDistictSummaryAtom();
+	}
+	public void innerDistictSummaryAtom() throws Exception {	
 		String templateName = "testDistictAtom";
 		
 		// Create a HTMLForm.
@@ -199,7 +219,7 @@ public class AtomExtensionTest extends WebappTestBase {
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 		
 		// Check it was correctly formatted.		
-		assertTrue("SumAtom wasn't correctly formatted: Got\n"+out.toString()+
+		assertTrue("DistinctAtom wasn't correctly formatted: Got\n"+out.toString()+
 				"Expected\n"+distictSummaryAtomOutput, 
 				out.toString().contains(distictSummaryAtomOutput));
 		

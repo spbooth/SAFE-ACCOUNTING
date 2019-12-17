@@ -24,6 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.UsageProducerWrapper;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Feature;
 
 /** Service used to configure the Accounting
  * @author spb
@@ -32,7 +33,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 
 
 public class DefaultAccountingService extends AbstractContexed implements AccountingService{
-	
+	public static final Feature DEFAULT_COMPOSITE_FEATURE = new Feature("accounting.producer.default_composite",false,"UsageProducers default to composite mode");
 	public static final String DEFAULT_PRODUCER_NAME = "accounting";
 	public DefaultAccountingService(AppContext c){
 		super(c);
@@ -52,9 +53,11 @@ public class DefaultAccountingService extends AbstractContexed implements Accoun
 			UsageManager m = getUsageManager(name.substring(0, name.indexOf(':')));
 			return m.parseProducer(name.substring(name.indexOf(':')+1));
 		}else{
+			boolean composite = DEFAULT_COMPOSITE_FEATURE.isEnabled(getContext());
 			// try a direct implementation first
 			UsageProducer up = getContext().makeObjectWithDefault(UsageProducer.class, null, name);
 			if( up != null ){
+				up.setCompositeHint(composite);
 				return up;
 			}
 			ExpressionTargetFactory etf = ExpressionCast.makeExpressionTargetFactory(getContext(), name);
@@ -62,7 +65,9 @@ public class DefaultAccountingService extends AbstractContexed implements Accoun
 				if( etf instanceof UsageProducer) {
 					return (UsageProducer) etf;
 				}else {
-					return new UsageProducerWrapper(getContext(),name,etf);
+					up = new UsageProducerWrapper(getContext(),name,etf);
+					up.setCompositeHint(composite);
+					return up;
 				}
 			}
 			UsageManager man = getUsageManager(name);

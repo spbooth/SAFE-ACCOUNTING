@@ -30,6 +30,7 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
     private final AppContext conn;
     private final String tag;
 	private final ExpressionTargetFactory<UR> etf;
+	private boolean composite=false;
 	
 	@Override
 	public <I> boolean compatible(PropExpression<I> expr) {
@@ -88,7 +89,7 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
 	
 
 	private ReductionHandler<UR, ExpressionTargetFactory<UR>> getReductionHandler(){
-		return new ReductionHandler<>(etf);
+		return new ReductionHandler<>(etf,composite);
 	}
 
 
@@ -127,6 +128,13 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
 	@Override
 	public CloseableIterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception {
 		return etf.getExpressionIterator(sel);
+	}
+
+	@Override
+	public boolean setCompositeHint(boolean composite) {
+		boolean old = this.composite;
+		this.composite=composite;
+		return old;
 	}
 
 }

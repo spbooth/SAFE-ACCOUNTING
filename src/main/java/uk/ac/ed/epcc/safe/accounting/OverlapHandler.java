@@ -133,7 +133,8 @@ public class OverlapHandler<T> {
     	//sel.add(new NullSelector(target.getExpression(), false)); //UsageManager may contain tables without type
     	if( USE_QUERY_MAPPER_FEATURE.isEnabled(conn) ){
     		try{
-    			if( target.getReduction().equals(Reduction.DISTINCT)) {
+    			boolean distinct = target.getReduction().equals(Reduction.DISTINCT);
+				if( distinct) {
     				AndRecordSelector selector = new AndRecordSelector(sel);
     				selector.add(new PeriodOverlapRecordSelector(period,start_prop,end_prop,OverlapType.ANY,cutoff));
     				return prod.getReduction(target, selector);
@@ -266,6 +267,10 @@ public class OverlapHandler<T> {
 			PropExpression<? extends Number> type, PropertyTag<Date> start_prop,
 			PropertyTag<Date> end_prop, Date start, Date end)
 			throws IllegalReductionException, PropertyCastException {
+		if( red == Reduction.MIN || red == Reduction.MAX || red == Reduction.MEDIAN) {
+			// no scaling in these cases
+			return NumberReductionTarget.getInstance(red, type);
+		}
 		DurationPropExpression over = makeOverlapExpression(overlap_type, start_prop, end_prop, start, end);
 		DurationPropExpression den;
 		if( red == Reduction.AVG){

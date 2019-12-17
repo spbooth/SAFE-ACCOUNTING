@@ -738,7 +738,7 @@ public class TableExtension extends ReportExtension {
 		
 		public Table postProcess(Node instructions) {	
 			ExpressionTargetFactory<?> ef = (ExpressionTargetFactory<?>) recordSet.getGenerator();
-			ReductionHandler<?,?> red_hand = new ReductionHandler(ef);
+			ReductionHandler<?,?> red_hand = new ReductionHandler(ef,false);
 			final AppContext conn = extension.getContext();
 			
 			RecordSelector selector = recordSet.getRecordSelector();

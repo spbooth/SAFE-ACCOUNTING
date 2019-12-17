@@ -529,7 +529,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		return calc_cutoff;
 	}
 	private ReductionHandler<X, ExpressionTargetFactory<X>> getReductionHandler(){
-		return new ReductionHandler<>(ExpressionCast.getExpressionTargetFactory(fac));
+		return new ReductionHandler<>(ExpressionCast.getExpressionTargetFactory(fac),false);
 	}
 	public FilterUpdate<X> getFilterUpdate(){
 		return new FilterUpdate<>(res);

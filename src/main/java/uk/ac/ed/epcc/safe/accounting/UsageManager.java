@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import uk.ac.ed.epcc.safe.accounting.db.DefaultAccountingService;
+import uk.ac.ed.epcc.safe.accounting.db.DefaultUsageProducer;
 import uk.ac.ed.epcc.safe.accounting.db.NarrowTag;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
@@ -38,8 +40,6 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.ContextCached;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.AbstractMultiIterator;
@@ -278,8 +278,9 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 			RecordSelector selector) 
 					throws Exception {
 		Map<R, T> result = null;
-
+		boolean use_composite = DefaultAccountingService.DEFAULT_COMPOSITE_FEATURE.isEnabled(getContext()) || factories.size() > 1;
 		for (UsageProducer<UR> prod: factories.values()) {
+			boolean old = prod.setCompositeHint(use_composite);
 			try(TimeClosable time= new TimeClosable(conn, ()->getTag()+".getReductionMap."+prod.getTag())){
 				if( prod.compatible(tag) && prod.compatible(selector)){
 					if (result == null) {
@@ -292,6 +293,8 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 						}
 					}
 				}
+			}finally {
+				prod.setCompositeHint(old);
 			}
 		}
 
@@ -308,8 +311,10 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 			Set<ReductionTarget> targets,
 			RecordSelector selector) throws Exception {
 		Map<ExpressionTuple,ReductionMapResult> result = null;
+		boolean is_composite = DefaultAccountingService.DEFAULT_COMPOSITE_FEATURE.isEnabled(getContext()) || factories.size() > 1;
 		//TODO change avg to sum and count
 		for(UsageProducer prod : factories.values()){
+			boolean old_comp = prod.setCompositeHint(is_composite);
 			try(TimeClosable time= new TimeClosable(conn, ()->getTag()+".getIndexReductionMap."+prod.getTag())){
 				// We can substitute default values for non-index reductions
 				// that are not supported by a producer
@@ -339,6 +344,8 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 					}
 				}
 
+			}finally {
+				prod.setCompositeHint(old_comp);
 			}
 		}
 		if( result == null){
@@ -378,7 +385,9 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 	
 	public <R,D> R getReduction(ReductionTarget<R,D> type,  RecordSelector selector) throws Exception {
 		R result = null;
+		boolean use_composite = DefaultAccountingService.DEFAULT_COMPOSITE_FEATURE.isEnabled(getContext()) || factories.size() > 1;
 		for (UsageProducer<UR> prod:  factories.values()) {
+			boolean old = prod.setCompositeHint(use_composite);
 			try(TimeClosable t= new TimeClosable(conn, ()->getTag()+"getReduction."+prod.getTag())){
 				if( prod.compatible(type.getExpression()) && prod.compatible(selector)){
 					if (result == null) {
@@ -388,6 +397,8 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 								selector));
 					}
 				}
+			}finally {
+				prod.setCompositeHint(old);
 			}
 		}
 		return result;
@@ -617,6 +628,11 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 		} else if (!tag.equals(other.tag))
 			return false;
 		return true;
+	}
+	@Override
+	public boolean setCompositeHint(boolean composite) {
+		// not relevant to UsageManager
+		return false;
 	}
 	
 }

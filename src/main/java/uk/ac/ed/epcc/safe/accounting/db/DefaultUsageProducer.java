@@ -82,7 +82,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 
 	
 	private ReductionHandler<T, ExpressionTargetFactoryComposite<T>> getReductionHandler(){
-		return new ReductionHandler<>(etf);
+		return new ReductionHandler<>(etf,composite);
 	}
 
 	public final <I,T,D> Map<I, T> getReductionMap(PropExpression<I> index,
@@ -203,6 +203,15 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 		FilterDelete<T> del = new FilterDelete<>(res);
 		del.delete(FilterConverter.convert(getFilter(new SelectClause<>(StandardProperties.ENDED_PROP, MatchCondition.LT, epoch))));
 		
+	}
+	
+	private boolean composite = false;
+
+	@Override
+	public boolean setCompositeHint(boolean composite) {
+		boolean old = this.composite;
+		this.composite=composite;
+		return old;
 	}
 
 

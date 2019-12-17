@@ -56,12 +56,34 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 		//
 		private static final Feature SELECTS_IN_KEY = new Feature("reporting.index_reduction.add_selects_to_key",false,"Include select clauses in IndexedReduction index");
 		@SuppressWarnings("unchecked")
-		public IndexReductionMapper(AccessorMap map, Set<ReductionTarget> targets,ReductionMapResult defs) throws InvalidPropertyException, IllegalReductionException, CannotUseSQLException{
+		public IndexReductionMapper(AccessorMap map, Set<ReductionTarget> targets,ReductionMapResult defs,boolean composite) throws InvalidPropertyException, IllegalReductionException, CannotUseSQLException{
 			super(map.getContext());
 			int indexes=0;
 			int reductions=0;
 			int skips=0;
 			default_map=defs;
+			if( ! composite) {
+				// check all indexes are isomorphic otherwise we might be combining results
+				for(ReductionTarget target : targets){
+					if( target.getReduction() == Reduction.INDEX) {
+						try {
+							SQLValue val = map.getSQLValue(target.getExpression());
+							if( val instanceof GroupingSQLValue) {
+								if( ! ((GroupingSQLValue)val).groupingIsomorphic()) {
+									composite=true;
+									break;
+								}
+							}else {
+								composite=true;
+								break;
+							}
+						}catch(InvalidSQLPropertyException ee) {
+							composite = true;
+							break;
+						}
+					}
+				}
+			}
 			// Make sure iteration order is consistent
 			this.sum=new LinkedHashSet<>(targets);
 			//Logger log = getContext().getService(LoggerService.class).getLogger(getClass());
@@ -120,9 +142,25 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 								case SUM: addSum(e,value_name);break;
 								case MIN: addMinNumber(e, value_name);break;
 								case MAX: addMaxNumber(e, value_name);break;
-								case AVG: addAverage(e, value_name);break;
+								case AVG: 
+									if( composite ) {
+										addAverage(e, value_name);
+									}else {
+										addSQLAverage(e, value_name);
+									}
+									break;
 								case SELECT:addClause(val, value_name);break; 
-								case DISTINCT: addCount(e, value_name); break; // might be counting distinct numbers
+								case DISTINCT: 
+									if( composite ) {
+										try {
+											addCount(e, value_name);
+										} catch (InvalidKeyException e1) {
+											throw new CannotUseSQLException(e1);
+										}
+									}else {
+										addSQLCount(e, value_name); 
+									}
+									break; // might be counting distinct numbers
 								case MEDIAN: throw new CannotUseSQLException("Medians cannot be calculated using SQL");
 								default: throw new IllegalReductionException("Bad number reduction");
 								}
@@ -135,21 +173,44 @@ public class IndexReductionMapper<T> extends GeneralMapMapper<ExpressionTuple, R
 								case MIN: addMinDate(e, value_name);break;
 								case MAX: addMaxDate(e, value_name);break;
 								case SELECT:addClause(val, value_name);break; 
-								case DISTINCT: addCount(e, value_name); break; // might be counting distinct times
+								case DISTINCT: 
+									if( composite ) {
+										try {
+											addCount(e, value_name);
+										} catch (InvalidKeyException e1) {
+											throw new CannotUseSQLException(e1);
+										}
+									}else {
+										addSQLCount(e, value_name); 
+									}
+									break; // might be counting distinct times
 								default: throw new IllegalReductionException("Bad date reduction");
 								}
 
 							}else{
 								switch(target.getReduction()) {
 								case SELECT:addClause(val, value_name);break; 
-								case DISTINCT: addCount(val, value_name); break; 
+								case DISTINCT: addSQLCount(val, value_name); break; 
 								default: throw new IllegalReductionException("Unsupported data type for reduction");
 								}
 							}
 						}else{
 							switch(target.getReduction()) {
 							case SELECT:addClause(val, value_name); break;
-							case DISTINCT: addCount(val, value_name); break;
+							case DISTINCT: 
+								if( composite ) {
+									try {
+										if( ! (val instanceof GroupingSQLValue)) {
+											throw new CannotUseSQLException("Not a GroupingSQLValue");
+										}
+										addCount((GroupingSQLValue<T>) val, value_name);
+									} catch (InvalidKeyException e1) {
+										throw new CannotUseSQLException(e1);
+									}
+								}else {
+									addSQLCount(val, value_name); 
+								}
+								break;
 							default: throw new CannotUseSQLException("Not an SQL Expression");
 							}
 						}

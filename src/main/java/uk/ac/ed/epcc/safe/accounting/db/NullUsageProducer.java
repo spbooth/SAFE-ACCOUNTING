@@ -116,4 +116,9 @@ public class NullUsageProducer<UR> extends AbstractContexed implements UsageProd
 		return new PropExpressionMap();
 	}
 
+	@Override
+	public boolean setCompositeHint(boolean composite) {
+		return false;
+	}
+
 }

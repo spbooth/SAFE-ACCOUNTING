@@ -1,5 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import uk.ac.ed.epcc.safe.accounting.CountReduction;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.webapp.DistinctCount;
@@ -9,6 +10,9 @@ import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterFinder;
 /** A {@link FilterFinder} that generates a {@link DistinctCount} value
  * from the distinct values of the reduction
+ * 
+ * this will work with any {@link ReductionTarget} using DISTICT reduction
+ * but normally this will be a {@link CountReduction} 
  * 
  * @author Stephen Booth
  *

@@ -80,7 +80,7 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 	}
 
 	private ReductionHandler<UR, TupleUsageProducer<A, AF, UR>> getReductionHandler(){
-		return new ReductionHandler<UR, TupleUsageProducer<A, AF, UR>>(this){
+		return new ReductionHandler<UR, TupleUsageProducer<A, AF, UR>>(this,composite){
 
 			/* (non-Javadoc)
 			 * @see uk.ac.ed.epcc.safe.accounting.db.ReductionHandler#isQualify()
@@ -115,5 +115,14 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 	@Override
 	public String getImplemenationInfo(PropertyTag<?> tag) {
 		return map.getImplemenationInfo(tag);
+	}
+
+	private boolean composite = false;
+
+	@Override
+	public boolean setCompositeHint(boolean composite) {
+		boolean old = this.composite;
+		this.composite=composite;
+		return old;
 	}
 }

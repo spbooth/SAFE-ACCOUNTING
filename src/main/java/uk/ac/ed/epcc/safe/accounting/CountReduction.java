@@ -16,12 +16,17 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting;
 
+import uk.ac.ed.epcc.safe.accounting.db.DistinctFilterFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.DistinctCount;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 
 /** A {@link ReductionTarget} that generates a count distinct reduction.
  * 
+ * This {@link ReductionTarget} adds support for generating {@link DistinctCount} values
+ * when reduction is by iteration.
+ * 
+ * @see DistinctFilterFinder
  * @author spb
  *
  */

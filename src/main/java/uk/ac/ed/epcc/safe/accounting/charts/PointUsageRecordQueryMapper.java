@@ -34,6 +34,8 @@ import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.NumberOp;
+import uk.ac.ed.epcc.webapp.content.Operator;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -94,26 +96,31 @@ public class PointUsageRecordQueryMapper<K,D> extends UsageRecordQueryMapper<K> 
 					res.put(set,n);
 				}
 			}else{
-				Set<ReductionTarget> req = new LinkedHashSet<>();
-				req.add(new IndexReduction(key_prop));
-				req.add(sum_target);
-				Map<ExpressionTuple, ReductionMapResult> dat = o.getIndexedReductionMap(req, selector);
+				boolean old = o.setCompositeHint(true); // labeller may combine
+				try {
+					Set<ReductionTarget> req = new LinkedHashSet<>();
+					req.add(new IndexReduction(key_prop));
+					req.add(sum_target);
+					Map<ExpressionTuple, ReductionMapResult> dat = o.getIndexedReductionMap(req, selector);
 
-				if( dat != null ){
-					for(ExpressionTuple t : dat.keySet()){
-						K key = t.get(key_prop);
-						
-						int set = labeller.getSetByKey( key);
-						Number prev = res.get(set);
-						Number val = (Number) dat.get(t).get(sum_target);
-						if( prev == null ){
-							res.put(set,val);
-						}else{
-							res.put(set, prev.doubleValue()+val.doubleValue());
+					if( dat != null ){
+						for(ExpressionTuple t : dat.keySet()){
+							K key = t.get(key_prop);
+
+							int set = labeller.getSetByKey( key);
+							Number prev = res.get(set);
+							Number val = (Number) dat.get(t).get(sum_target);
+							if( prev == null ){
+								res.put(set,val);
+							}else{
+								res.put(set, sum_target.combine(prev, val));
+							}
 						}
 					}
+				}finally {
+					o.setCompositeHint(old);
 				}
-				
+
 			}
 		} catch (Exception e) {
 			conn.getService(LoggerService.class).getLogger(getClass()).error("error in PropertyQueryMapper",e);

@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.NumberReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionProducer;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
@@ -25,7 +26,9 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.Feature;
+import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
+import uk.ac.ed.epcc.webapp.jdbc.expr.CountDistinctExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
@@ -44,13 +47,15 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
  */
 public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends GeneratorReductionHandler<E, F> {
     public static final Feature FILTER_REDUCTION = new Feature("reduction_handler.use_sql_reduction",true,"Use SQL reductions in reduction handler");
-	public ReductionHandler(F fac) {
+	public ReductionHandler(F fac, boolean composite) {
 		super(fac.getAccessorMap().getContext(), fac);
 		this.map = fac.getAccessorMap();
+		this.composite=composite;
 		
 	}
 
 	private boolean qualify=false;
+	private final boolean composite;
 	private final AccessorMap map;
 	
 	
@@ -87,7 +92,7 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 			}
 		}
 		try{
-			IndexReductionFinder<E> finder = new IndexReductionFinder<E>(map, sum,makeDef(sum));
+			IndexReductionFinder<E> finder = new IndexReductionFinder<E>(map, sum,makeDef(sum),composite);
 			if( isQualify()) {
 				finder.setQualify(true);
 			}
@@ -111,11 +116,25 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 		}
 		try{
 			SQLFilter<E> sql_fil = FilterConverter.convert(getFilter(sel));
-			FilterFinder<E,R> fs;
-			if( type.getReduction() == Reduction.DISTINCT) {
-				fs = (FilterFinder<E, R>) new DistinctFilterFinder<E>(map, type);
-			}else {
-				fs = new FilterReduction<E,R>(map,(ReductionTarget<R, R>) type);
+			FilterFinder<E,R> fs=null;
+			switch( type.getReduction()) {
+			case DISTINCT:
+				if( composite ) {
+					// generate CountDistict values that can be combined
+					fs = (FilterFinder<E, R>) new DistinctFilterFinder<E>(map, type);
+				}else {
+					// evaluate count distinct just for this table.
+					fs = new FilterReduction(map, Number.class,Reduction.DISTINCT, Integer.valueOf(0),new CountDistinctExpression(map.getSQLValue(type.getExpression())));
+				}
+				break;
+			case AVG:
+				if( composite ) {
+					fs = (FilterFinder<E, R>) new AverageFilterFinder<E>(map, type);
+					break;
+				}
+				// fall through
+			default:
+				fs = new FilterReduction<E,R>(map,type.getTarget(),type.getReduction(),type.getDefault(),map.getSQLExpression(type.getExpression()));
 			}
 			if( isQualify()) {
 				fs.setQualify(true);
@@ -148,7 +167,7 @@ public class ReductionHandler<E,F extends ExpressionTargetFactory<E>> extends Ge
 
 		try{
 			// By default we'll sum the Number value.
-			MapReductionFinder<E,I,T,D> finder = new MapReductionFinder<E,I,T,D>(map,index, property);
+			MapReductionFinder<E,I,T,D> finder = new MapReductionFinder<E,I,T,D>(map,index, property,composite);
 			if( isQualify()) {
 				finder.setQualify(true);
 			}

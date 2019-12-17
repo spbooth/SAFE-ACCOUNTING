@@ -14,6 +14,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import uk.ac.ed.epcc.safe.accounting.db.DefaultAccountingService;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
@@ -146,10 +148,18 @@ public class TableExtensionTest extends ExtensionTestCase {
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testNameExpressionTable() throws Exception {	
+		Feature.setTempFeature(ctx, DefaultAccountingService.DEFAULT_COMPOSITE_FEATURE, false);
 		testTables("csv", "testSlowdownReport.xml",new File(getOutputDir()+"SlowdownReport.csv"));
 		
 	}
 	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testNameExpressionTableComposite() throws Exception {
+		Feature.setTempFeature(ctx, DefaultAccountingService.DEFAULT_COMPOSITE_FEATURE, true);
+		testTables("csv", "testSlowdownReport.xml",new File(getOutputDir()+"SlowdownReport.csv"));
+		
+	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testMedianExpressionTable() throws Exception {	

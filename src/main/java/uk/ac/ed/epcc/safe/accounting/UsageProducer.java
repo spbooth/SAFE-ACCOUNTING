@@ -63,4 +63,15 @@ DerivedPropertyFactory{
 		}
 		return null;
 	}
+	
+	/** set a hint to specify if this {@link UsageProducer} is part
+	 * of a composite {@link UsageProducer}.
+	 * 
+	 * If this hint is true then more operations (e.q. AVG or DISTICT reductions) can be performed in SQL
+	 * 
+	 * @param composite
+	 * @return previous value
+	 */
+    public boolean setCompositeHint(boolean composite);	
+	
 }

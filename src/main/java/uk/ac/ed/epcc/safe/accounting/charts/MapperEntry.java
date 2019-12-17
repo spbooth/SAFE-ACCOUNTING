@@ -397,6 +397,17 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		PropExpression<Date> start_prop = e.getStartProperty();
 		PropExpression<Date> end_prop = e.getEndProperty();
 		Reduction red = e.getReduction();
+		boolean force_query_mapper = false;
+		if( red != Reduction.SUM && red != Reduction.AVG) {
+			// These are the only two cases where overlap makes sense
+			// AVG maps to time average in a charts so won't use a custom number here
+			allow_overlap=false;
+		}else {
+			// for other reductions we must use query mapper if there is 
+			// a risk of a custom number to ensure all data is combined before being added to
+			// a chart.
+			force_query_mapper = red.customNumber();
+		}
 		TimerService timer = conn.getService(TimerService.class);
 		// We can't necessarily afford an additional query here
 		// may be a single additional query so just use any cutoff from the config
@@ -404,7 +415,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 		RecordSelector s =getRangeSelector(e, allow_overlap,cutoff, tc.getStartDate(), tc.getEndDate(), sel);
 		
 		
-        boolean query_mapper_on = useQueryMapper(ap);
+        boolean query_mapper_on = force_query_mapper || useQueryMapper(ap) ;
        
 		if( query_mapper_on  ){ //use fmapper if it exists for piecharts
 			try(TimeClosable tim = new TimeClosable(timer, "MapperEntry.addData.query_mapper")){

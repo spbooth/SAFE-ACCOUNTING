@@ -13,15 +13,16 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
+import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ReductionMapper;
+import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
 
 
 
 public class FilterReduction<T,R> extends AccessorMapFilterFinder<T, R> {
-	public FilterReduction(AccessorMap<T> map,ReductionTarget<R,R> tag) throws InvalidSQLPropertyException {
+	public FilterReduction(AccessorMap<T> map,Class<R> target, Reduction red, R def, SQLExpression expr) throws InvalidSQLPropertyException {
 		super(map);
-		setMapper(new ReductionMapper<>(map.getContext(),tag.getTarget(),tag.getReduction(),tag.getDefault(), map.getSQLExpression(tag.getExpression())));
+		setMapper(new ReductionMapper<>(map.getContext(),target,red,def, expr));
 	}
 }
