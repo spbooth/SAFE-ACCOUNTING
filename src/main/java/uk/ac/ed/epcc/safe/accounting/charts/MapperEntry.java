@@ -402,7 +402,10 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 			// These are the only two cases where overlap makes sense
 			// AVG maps to time average in a charts so won't use a custom number here
 			allow_overlap=false;
-		}else {
+		}
+		if( ! ( allow_overlap &&  start_prop != null && red == Reduction.AVG)) {
+			// an overlap average becomes a time average which uses SUM and
+			// therefore does not need query_mapper
 			// for other reductions we must use query mapper if there is 
 			// a risk of a custom number to ensure all data is combined before being added to
 			// a chart.
