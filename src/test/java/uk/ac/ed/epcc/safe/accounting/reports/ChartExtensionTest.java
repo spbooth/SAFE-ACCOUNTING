@@ -64,6 +64,12 @@ public class ChartExtensionTest extends ExtensionTestCase {
 			testChart("testDistinctUsers.xml","csv", new File(getOutputDir()+"DistictUsers.csv"));
 		}
 	}
+	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testOtherReductions() throws Exception {
+		testChart("testJobSizeChart.xml","csv", new File(getOutputDir()+"JobSizeChart.csv"));
+	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testOverlapCSVTimeChartPlot() throws Exception {

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:res="http://safe.epcc.ed.ac.uk/restrict"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<rep:Title>Job sizes</rep:Title>
+
+<per:Period>
+	<per:StartTime>29-09-2008</per:StartTime>
+	<per:EndTime>29-10-2008</per:EndTime>
+</per:Period>
+<rep:Section>
+<rep:Title>Job sizes</rep:Title>	
+
+	<rep:Text>
+		This report covers the period
+		<par:Parameter
+			format="ConsisePeriod"
+			name="Period" />
+		.
+	</rep:Text>
+
+
+<cha:TimeChart>
+<cha:Plot>batch:CPUs</cha:Plot>
+<cha:Reduction>MAX</cha:Reduction>
+<cha:RateScale>false</cha:RateScale>
+<cha:Label>Max cpus</cha:Label>
+<cha:Line>true</cha:Line>
+<cha:AddChart>
+<cha:Plot>batch:CPUs</cha:Plot>
+<cha:Reduction>MEDIAN</cha:Reduction>
+<cha:RateScale>false</cha:RateScale>
+<cha:Label>median cpus</cha:Label>
+<cha:Line>true</cha:Line>
+</cha:AddChart>
+<cha:AddChart>
+<cha:Plot>batch:CPUs</cha:Plot>
+<cha:Reduction>AVG</cha:Reduction>
+<cha:RateScale>false</cha:RateScale>
+<cha:Label>mean cpus</cha:Label>
+<cha:Line>true</cha:Line>
+</cha:AddChart>
+<cha:AddChart>
+<cha:Plot>batch:CPUs</cha:Plot>
+<cha:Reduction>MIN</cha:Reduction>
+<cha:RateScale>false</cha:RateScale>
+<cha:Label>Min cpus</cha:Label>
+<cha:Line>true</cha:Line>
+</cha:AddChart>
+
+</cha:TimeChart>
+
+
+
+</rep:Section>
+</rep:Report>

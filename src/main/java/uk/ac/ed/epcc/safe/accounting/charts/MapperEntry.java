@@ -648,20 +648,48 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
         Logger log = conn.getService(LoggerService.class).getLogger(getClass());
         log.debug(" params end="+tc.getEndDate()+" start="+tc.getStartDate());
         TimePeriod period = tc.getPeriod();
-        // average length of plot period
-        long len = (period.getEnd().getTime() - period.getStart().getTime())/tc.getChartData().getItems();
-        log.debug("prod is "+ap.getTag());
-        log.debug("cutoff value = "+cutoff);
-		double cutoff_ratio = ((double)cutoff)/((double)len);
-		log.debug("cutoff ratio = "+cutoff_ratio);
+        
+        boolean force_query_mapper = false;
+		if( red != Reduction.SUM && red != Reduction.AVG) {
+			// These are the only two cases where overlap makes sense
+			// AVG maps to time average in a charts so won't use a custom number here
+			allow_overlap=false;
+		}
+		if( ! ( allow_overlap &&  start_prop != null && red == Reduction.AVG)) {
+			// an overlap average becomes a time average which uses SUM and
+			// therefore does not need query_mapper
+			// for other reductions we must use query mapper if there is 
+			// a risk of a custom number to ensure all data is combined before being added to
+			// a chart.
+			force_query_mapper = red.customNumber();
+		}
+		
+		if( red == Reduction.MIN || red == Reduction.MAX) {
+			// iteration methods below don't work with min/max
+			// even if we implement a merge routine this can go wrong 
+			// because the initial value in the dataset is zero
+			force_query_mapper = true;
+		}
         
      // create dataset, don't add labels yet as labels
 		// vector may grow as data added
-    	boolean query_mapper_on = useQueryMapper(ap);
-    	if( cutoff_ratio > conn.getDoubleParam("timechart.max_cutoff_ratio", 10.0)) {
-    		// This only looks at the narrowed cutoff value.
-    		// assumption is that if the cutoff 
-    		query_mapper_on=false;
+    	boolean query_mapper_on = force_query_mapper || useQueryMapper(ap);
+        
+    	if( ! force_query_mapper) {
+    		// average length of plot period
+    		long len = (period.getEnd().getTime() - period.getStart().getTime())/tc.getChartData().getItems();
+    		log.debug("prod is "+ap.getTag());
+    		log.debug("cutoff value = "+cutoff);
+    		double cutoff_ratio = ((double)cutoff)/((double)len);
+    		log.debug("cutoff ratio = "+cutoff_ratio);
+
+
+    		if( cutoff_ratio > conn.getDoubleParam("timechart.max_cutoff_ratio", 10.0)) {
+    			// This only looks at the narrowed cutoff value.
+    			// assumption is that if the cutoff ismuch bigger than the plot period
+    			// we are better iterating if we can
+    			query_mapper_on=false;
+    		}
     	}
     	if( query_mapper_on  ){
     		try{

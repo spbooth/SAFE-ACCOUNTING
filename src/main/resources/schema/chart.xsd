@@ -258,7 +258,7 @@
 	</xsd:group>
 	<xsd:simpleType name="ReductionType">
 		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="SUM|AVG|MIN|MAX|DISTINCT" />
+			<xsd:pattern value="SUM|AVG|MIN|MAX|MEDIAN|DISTINCT" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
