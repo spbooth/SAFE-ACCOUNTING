@@ -47,7 +47,7 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
 
 /** Common base class for turning a {@link DataObjectFactory} into a {@link UsageProducer}
  * This class implements most of the query logic needed to implement UsageProducer
- * but down not constrain the class of the {@link ExpressionTargetContainer} more than is required to implement {@link UsageProducer}
+ * but does not constrain the class of the {@link ExpressionTargetContainer} more than is required to implement {@link UsageProducer}
  *  It is not necessary to implement {@link UsageProducer} directly as any factory that
  *  supports properties can be wrapped in a {@link UsageProducerWrapper}
  * 
