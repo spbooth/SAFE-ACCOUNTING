@@ -62,14 +62,7 @@ public class RoleAccessor<T extends AppUser> implements Accessor<Boolean,T>, Fil
 	public SQLFilter<T> getNullFilter(boolean is_null) throws CannotFilterException{
 		throw new CannotFilterException("Cannot check role for null");
 	}
-	public boolean canSet() {
-		
-		return false;
-	}
-	public void setValue(T r, Boolean value) {
-		throw new UnsupportedOperationException("Set not supported");
-		
-	}
+	
 	public SQLFilter<T> getOrderFilter(boolean descending)
 			throws CannotFilterException {
 		throw new CannotFilterException("Order filter not supported");

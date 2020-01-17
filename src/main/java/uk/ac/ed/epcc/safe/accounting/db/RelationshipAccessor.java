@@ -95,14 +95,7 @@ public class RelationshipAccessor<T extends DataObject> implements Accessor<Bool
 	public SQLFilter<T> getNullFilter(boolean is_null) throws CannotFilterException{
 		throw new CannotFilterException("Cannot check relationship for null");
 	}
-	public boolean canSet() {
-		
-		return false;
-	}
-	public void setValue(T r, Boolean value) {
-		throw new UnsupportedOperationException("Set not supported");
-		
-	}
+	
 	public SQLFilter<T> getOrderFilter(boolean descending)
 			throws CannotFilterException {
 		throw new CannotFilterException("Order filter not supported");
