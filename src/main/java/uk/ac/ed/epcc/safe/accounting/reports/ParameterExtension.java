@@ -476,7 +476,12 @@ public class ParameterExtension extends ReportExtension {
 				if( efil !=null) {
 					fil.addFilter(efil);
 				}
-				return fac.getInput(fil);
+				boolean restrict = true;
+				String res = getAttribute("restrict", param);
+				if( res != null && ! res.isEmpty()) {
+					restrict = Boolean.parseBoolean(res);
+				}
+				return fac.getInput(fil,restrict);
 			}
 		}
 		

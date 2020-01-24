@@ -168,6 +168,15 @@
 				</xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
+		<xsd:attribute name="restrict" use="optional" type="xsd:boolean" default="true">
+		<xsd:annotation>
+				<xsd:documentation>
+					Should the input be restricted by its filter. This defaults to true
+					and should only be set to false to support embedded reports where the parameter value
+					does not come from the input
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
 		<xsd:attribute name="unselected" type="xsd:string">
 			<xsd:annotation>
 				<xsd:documentation>
