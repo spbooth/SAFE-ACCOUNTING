@@ -55,7 +55,9 @@ public class JobmanagerParser extends AbstractPropertyContainerParser {
     @AutoTable(length=64) public static final PropertyTag<String> ceID=new PropertyTag<>(jobmanager,"ceID",String.class);
     @AutoTable(length=128) public static final PropertyTag<String> lrmsID=new PropertyTag<>(jobmanager,"lrmsID",String.class);
     @AutoTable(unique=true) public static final PropertyTag<Date> timestamp=new PropertyTag<>(jobmanager,"timestamp",Date.class);
-    private final static DateFormat df = new SimpleDateFormat("y-M-d H:m:s");
+    
+    // not static as SimpleDateFormat not thread safe
+    private final DateFormat df = new SimpleDateFormat("y-M-d H:m:s");
  
 	private ValueParserPolicy vis;
 	

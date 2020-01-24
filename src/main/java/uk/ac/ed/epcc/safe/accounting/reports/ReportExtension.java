@@ -127,13 +127,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public static final String PERIOD_NS = "http://safe.epcc.ed.ac.uk/period";
 	
 	public static final String PROPERTY_PARAM_PREFIX = "property:";
-	protected static final SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	private static final SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
-	private static final SimpleDateFormat altTimestampFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-	private static final SimpleDateFormat altDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-	private static final SimpleDateFormat altMonthFormat = new SimpleDateFormat("MM-yyyy");
-	private static final SimpleDateFormat fmts[] = {timestampFormat,altTimestampFormat,altDateFormat,dateFormat,altMonthFormat,monthFormat};
+	
 	private final Document doc;
 	protected final ErrorSet errors;
 	final Logger log;
@@ -1008,9 +1002,10 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	
 		// Start time
 		Calendar start = Calendar.getInstance();
+		ReportDateParser p = new ReportDateParser(getValueParser(Date.class));
 		String start_string = getParamNS(PERIOD_NS, START_TIME, e);
 		if (start_string != null) {
-			setTime(start, start_string);
+			p.setTime(start, start_string);
 	
 		} else {
 			// for debugging use CurrentTimeService
@@ -1035,7 +1030,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		if( end_string != null) {
 	
 			Calendar end = Calendar.getInstance();
-			setTime(end, end_string);
+			p.setTime(end, end_string);
 	
 			// This conditional is put in to catch the case where a user 
 			// specifies a start time and end time where start <= end (which is 
@@ -1128,54 +1123,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 	
 	}
-	protected void setTime(Calendar time, String timeString) throws Exception {
 	
-		AppContext conn=getContext();
-		if( timeString.equalsIgnoreCase("Epoch")){
-			time.setTimeInMillis(0);
-			return;
-		}
-		if( timeString.equalsIgnoreCase("Now")){
-			time.setTimeInMillis(System.currentTimeMillis());
-			return;
-		}
-		if( timeString.equalsIgnoreCase("Forever")){
-			time.setTimeInMillis(Long.MAX_VALUE);
-			return;
-		}
-	    ValueParser<Date>vp = getValueParser(Date.class);
-	    timeString=timeString.trim();
-	    boolean search=true;
-	    for( int i=0; search && i< fmts.length; i++){
-	    	SimpleDateFormat df = fmts[i];
-    		String pattern = df.toPattern();
-	    	try{
-	    		// We need to supress the 2 diget year matching
-	    		// as this can incorrectly match days or months.
-	    		// only accept if length and both hyphens match
-	    		// if there is only 1 hyphen we get -1 for both
-	    		int pattern_first = pattern.indexOf('-');
-				int string_first = timeString.indexOf('-');
-				if( pattern.length() == timeString.length() && pattern_first == string_first && pattern.indexOf('-', pattern_first) == timeString.indexOf('-', string_first)){
-	    			time.setTime(fmts[i].parse(timeString));
-	    			search = false;
-	    			break;
-	    		}
-	    	}catch(Exception e){
-	    		throw new uk.ac.ed.epcc.safe.accounting.reports.exceptions.ParseException("Cannot parse "+timeString+" as date/time using "+pattern);
-	    	}
-	    }
-	    if( search ){
-	    	try{
-	    		if( vp != null ){
-	    			time.setTime((Date) vp.parse(timeString.trim()));
-	    		}
-	    	}catch(Exception e5){
-	    		throw new uk.ac.ed.epcc.safe.accounting.reports.exceptions.ParseException("Cannot parse "+timeString+" as date/time");
-	    	}
-	    }
-			
-	}
 	/** Store the table in the parameters list and just reference it
 	 * via a processing instruction. This is to expose the table to a ContentBuilder
 	 * in an embedded report.

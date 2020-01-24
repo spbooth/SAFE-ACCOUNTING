@@ -57,7 +57,8 @@ public class PeriodExtension extends ReportExtension {
 	public static Node format(Document doc, TimePeriod p){
 		Element result = doc.createElementNS(PERIOD_NS, PERIOD);
 		Element start = doc.createElementNS(PERIOD_NS, START_TIME);
-		start.appendChild(doc.createTextNode(timestampFormat.format(p.getStart())));
+		ReportDateParser format = new ReportDateParser(null);
+		start.appendChild(doc.createTextNode(format.format(p.getStart())));
 		result.appendChild(start);
 		
 		if( p instanceof SplitPeriod){
@@ -83,7 +84,7 @@ public class PeriodExtension extends ReportExtension {
 
 			}else if( p instanceof RegularSplitPeriod){
 				Element end = doc.createElementNS(PERIOD_NS, END_TIME);
-				end.appendChild(doc.createTextNode(timestampFormat.format(p.getEnd())));
+				end.appendChild(doc.createTextNode(format.format(p.getEnd())));
 				result.appendChild(end);
 				result.appendChild(doc.createElementNS(PERIOD_NS, NUMBER_OF_SPLITS)).appendChild(doc.createTextNode(Integer.toString(((RegularSplitPeriod)p).getNsplit())));
 			}else{
@@ -91,7 +92,7 @@ public class PeriodExtension extends ReportExtension {
 			}
 		}else{
 			Element end = doc.createElementNS(PERIOD_NS, END_TIME);
-			end.appendChild(doc.createTextNode(timestampFormat.format(p.getEnd())));
+			end.appendChild(doc.createTextNode(format.format(p.getEnd())));
 			result.appendChild(end);
 		}
 		return result;

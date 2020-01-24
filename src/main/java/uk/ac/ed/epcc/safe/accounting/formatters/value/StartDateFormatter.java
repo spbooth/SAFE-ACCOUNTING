@@ -25,7 +25,8 @@ import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 @Description("Start time of a TimePeriod")
 public class StartDateFormatter<T extends TimePeriod> implements DomFormatter<T> {
-	public static final SimpleDateFormat default_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	// not static as SimpleDateFormat not thead safe
+	public final SimpleDateFormat default_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public Class<T> getTarget() {
 		

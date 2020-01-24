@@ -28,8 +28,6 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 
 /** Parser for alps syslog information
@@ -145,10 +143,9 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 		STANDARD_ATTRIBUTES.put(PBS_ID.getName(),new PBSIdParser());
 	}
 	
+	// not static as SimpleDateFormat not thread safe
 	
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-	private static final SimpleDateFormat df_no_tz = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-	private static final SimpleDateFormat sf = new SimpleDateFormat("'p0-'yyyyMMdd't'HHmmss");
+	private final SimpleDateFormat sf = new SimpleDateFormat("'p0-'yyyyMMdd't'HHmmss");
 	
 	private static final Pattern parse_pattern = Pattern.compile("\\S+ (?<TIMESTAMP>\\S+) (?<HOSTNAME>\\S+) (?<RECORDTYPE>\\S+) (?<TAG>\\S+) (?<SUBMISSION>\\S+)"
 			+ " \\S+ " + "apid=(?<APID>\\S+), (?<MESSAGE>\\w+)(?<ATTRS>.*)");
@@ -256,10 +253,12 @@ public class AlpsLogParser extends AbstractPropertyContainerParser implements In
 	 */
 	public static Date parseDate(boolean parse_timezone, String timestamp) throws ParseException {
 		if( parse_timezone){
+			 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 			// Remove sub-milisecond values
 			timestamp = new StringBuffer(timestamp).delete(23, 26).toString();
 			return df.parse(timestamp);
 		}else{
+			SimpleDateFormat df_no_tz = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 			timestamp = timestamp.substring(0, 23);
 			return df_no_tz.parse(timestamp);
 		}

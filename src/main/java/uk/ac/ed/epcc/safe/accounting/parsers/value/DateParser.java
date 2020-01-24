@@ -36,13 +36,6 @@ import java.util.Date;
 
 public class DateParser implements ValueParser<Date> {
 	
-	private static final SimpleDateFormat defaultFormat = new SimpleDateFormat(
-	"yyyy-MM-dd");
-	
-	/**
-	 * Simple date format that accepts dates in the default ISO 8601 format yyyy-MM-dd
-	 */
-	public static final DateParser PARSER = new DateParser(defaultFormat);
 	
 	/**
 	 * The date format used
@@ -54,7 +47,7 @@ public class DateParser implements ValueParser<Date> {
 	}
 	
 	public DateParser() {
-		this.format = defaultFormat;
+		this(new SimpleDateFormat("yyyy-MM-dd"));
 	}
 
 	/*

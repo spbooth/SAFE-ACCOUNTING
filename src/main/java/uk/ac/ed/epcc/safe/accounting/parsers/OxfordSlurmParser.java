@@ -86,7 +86,8 @@ public class OxfordSlurmParser extends BatchParser implements  Contexed,ConfigPa
 	@OptionalTable
     public static final PropertyTag<Integer> ALOCGRES_GPU_PROP = new PropertyTag<>(slurm,"AllocGRESgpu",Integer.class,"gres/gpu field");
   
-	public static final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+	// not static as SimpleDateFormat not thread safe
+	public final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
 	private static MakerMap GRES = new MakerMap();
 	private static final Pattern ATTR_PATTERN=Pattern.compile("(\\w+):([^,\\s]*)");
 	private static ContainerEntryMaker gres_parser = new AbstractNestedContainerEntryMaker(GRES) {

@@ -39,9 +39,10 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 
 public class DiracSLURMParser extends AbstractKeyPairParser {
+	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+
 	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
 
-	public static final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
 	
     public static final PropertyRegistry slurm_reg = new PropertyRegistry("diracslurm", "Dirac slurm properties");
     
@@ -120,10 +121,10 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
 		SLURM_ATTRIBUTES.addParser(ACCOUNT_PROP, StringParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(JOB_NAME_PROP, StringParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(PARTITION_PROP, StringParser.PARSER);
-		SLURM_ATTRIBUTES.addParser(SUBMIT_PROP, SLURM_DATE_PARSER);
+		SLURM_ATTRIBUTES.addParser(SUBMIT_PROP, new DateParser(new SimpleDateFormat(DATE_FORMAT)));
 		SLURM_ATTRIBUTES.addParser(RESERVED_PROP, SlurmDurationParser.PARSER);
-		SLURM_ATTRIBUTES.addParser(START_PROP, SLURM_DATE_PARSER);
-		SLURM_ATTRIBUTES.addParser(END_PROP, SLURM_DATE_PARSER);
+		SLURM_ATTRIBUTES.addParser(START_PROP, new DateParser(new SimpleDateFormat(DATE_FORMAT)));
+		SLURM_ATTRIBUTES.addParser(END_PROP, new DateParser(new SimpleDateFormat(DATE_FORMAT)));
 		SLURM_ATTRIBUTES.addParser(ELAPSED_PROP, SlurmDurationParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(N_NODES_PROP, IntegerParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(N_CPUS_PROP, IntegerParser.PARSER);

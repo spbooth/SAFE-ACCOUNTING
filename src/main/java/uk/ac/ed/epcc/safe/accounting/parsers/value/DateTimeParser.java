@@ -25,8 +25,6 @@ import java.text.SimpleDateFormat;
 
 public class DateTimeParser extends DateParser{
 	
-	private static final SimpleDateFormat defaultFormat = new SimpleDateFormat(
-	"yyyy-MM-dd HH:mm:ss");
 	
 	/**
 	 * Simple date format that accepts dates in the default ISO 8601 format yyyy-MM-dd
@@ -34,6 +32,6 @@ public class DateTimeParser extends DateParser{
 	public static final DateTimeParser PARSER = new DateTimeParser();
 	
 	public DateTimeParser(){
-		super(defaultFormat);
+		super(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 	}
 }

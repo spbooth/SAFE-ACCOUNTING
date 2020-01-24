@@ -46,7 +46,8 @@ public class GridFtpTransferParser extends BaseParser {
 
 	private static final String patt="^DATE=(\\d{14}.\\d{6}) HOST=(.*) PROG=(.*) NL.EVNT=.* START=(\\d{14}.\\d{6}) USER=(.*) FILE=(.*) BUFFER=(\\d*) BLOCK=(\\d*) NBYTES=(\\d*) VOLUME=(.*) STREAMS=(\\d*) STRIPES=(\\d*) DEST=\\[(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\] TYPE=(.*) CODE=(\\d*)$";
 	private static final Pattern p = Pattern.compile(patt);
-	private static final DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss.SSS");
+	// not static as SimpleDateFormat not thread safe
+	private final DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss.SSS");
 	public static final PropertyRegistry gftp_reg = new PropertyRegistry("gridftp", "GridFtp properties");
 	@AutoTable
 	public static PropertyTag<Date> start = new PropertyTag<>(gftp_reg, "Start", Date.class);

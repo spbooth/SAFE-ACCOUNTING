@@ -23,7 +23,8 @@ import uk.ac.ed.epcc.webapp.Description;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 @Description("End time of a TimePeriod")
 public class EndDateFormatter<T extends TimePeriod> implements DomFormatter<T> {
-	public static final SimpleDateFormat default_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	// not static as SimpleDateFormat not thread safe
+	public final SimpleDateFormat default_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public Class<T> getTarget() {
 		

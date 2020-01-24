@@ -104,7 +104,8 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 		globus_reg.lock();
 	}
 	private final long grace_millis=300000L;
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	// not static as SimpleDateFormat not thread safe
+	private final SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private static final Pattern parse_patten=Pattern.compile(
 			"\\S+ (\\d\\d\\d\\d/\\d\\d/\\d\\d \\d\\d:\\d\\d:\\d\\d) "+
 			"(\\S+) (\\S+) (.*)"

@@ -36,6 +36,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -958,15 +959,12 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 		// arguably we could just re-throw to prevent the errors being captured
 		// however this does allow us to capture multple errors and display them together
 		Logger log =getLogger();
-		ErrorSet error_set = new ErrorSet();
-		String tag = name!=null?name:"identity";
-		error_set.setName(tag);
-		error_set.setMaxDetails(16);
-		error_set.setMaxEntry(16);
 		
-		ErrorSetErrorListener listener = new ErrorSetErrorListener(tag, log, error_set);
-		error_sets.add(error_set);
-		getTransformerFactory().setErrorListener(listener);
+		String tag = name!=null?name:"identity";
+		ErrorListener listener = makeErrorListener(log, tag);
+		if( listener != null ) {
+			getTransformerFactory().setErrorListener(listener);
+		}
 		// Generate the transformer.
 		Transformer transformer;
 		if( name != null ){
@@ -984,6 +982,16 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 			}
 		}
 		return transformer;
+	}
+	protected ErrorListener makeErrorListener(Logger log, String tag) {
+		ErrorSet error_set = new ErrorSet();
+		error_set.setName(tag);
+		error_set.setMaxDetails(16);
+		error_set.setMaxEntry(16);
+		
+		ErrorSetErrorListener listener = new ErrorSetErrorListener(tag, log, error_set);
+		error_sets.add(error_set);
+		return listener;
 	}
     public boolean hasErrors(){
     	for( ErrorSet e : error_sets){

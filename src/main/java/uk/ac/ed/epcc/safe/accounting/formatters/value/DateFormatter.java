@@ -31,14 +31,14 @@ import uk.ac.ed.epcc.webapp.Description;
 @Description("Format a date")
 public class DateFormatter implements DomFormatter<Date> {
 
-	public static final SimpleDateFormat default_format = new SimpleDateFormat("yyyy-MM-dd");
+	private static final String DEFAULT_FORMAT = "yyyy-MM-dd";
 	private final DateFormat fmt;
 	
 	public DateFormatter(DateFormat f){
 		this.fmt=f;
 	}
 	public DateFormatter(){
-		this(default_format);
+		this(new SimpleDateFormat(DEFAULT_FORMAT));
 	}
 	
 	public Class<Date> getTarget() {

@@ -428,8 +428,9 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 
 	private static final Pattern plugin_pattern = Pattern.compile("plugin: (?<PLUGINNAME>\\S+) (([{\\[](?<ATTRS>.*)[\\]}])|(?<TIMESTAMP>.*))(,\\s)?");
 
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
-	private static final SimpleDateFormat df_no_tz = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	// not static as SimpleDateFormat not thread safe
+	private final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
+	private final SimpleDateFormat df_no_tz = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	private static final Pattern timestamp_pattern = Pattern.compile("APP_START (?<START>\\S+) APP_STOP (?<STOP>\\S+)");
 
 	private static final Pattern attribute_pattern = Pattern.compile("['\"](?<ATTRNAME>\\S+)['\"][,:] ([{](?<SUBATTRS>[^}]+)|[\\[](?<ATTRLIST>[^\\]]+)|['\"](?<ATTRSTRING>[^\"]+)|(?<ATTRVALUE>[^,]+))");

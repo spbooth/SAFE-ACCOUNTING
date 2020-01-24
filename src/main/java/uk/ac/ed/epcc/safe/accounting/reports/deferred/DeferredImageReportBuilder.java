@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
@@ -58,6 +59,31 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 public class DeferredImageReportBuilder extends ReportBuilder{
 	
 	
+	@Override
+	protected ErrorListener makeErrorListener(Logger log, String tag) {
+		return new ErrorListener() {
+			
+			@Override
+			public void warning(TransformerException exception) throws TransformerException {
+				log.warn(tag, exception);
+				throw exception;
+				
+			}
+			
+			@Override
+			public void fatalError(TransformerException exception) throws TransformerException {
+				log.fatal(tag,exception);
+				throw exception;
+			}
+			
+			@Override
+			public void error(TransformerException exception) throws TransformerException {
+				log.error(tag,exception);
+				throw exception;
+				
+			}
+		};
+	}
 	public DeferredImageReportBuilder(AppContext conn,TextProvider template) throws URISyntaxException, ParserConfigurationException {
 		super(new DeferredImageTypeRegistry(conn));
 		setTemplate(template);

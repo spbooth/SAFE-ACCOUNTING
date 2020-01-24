@@ -32,6 +32,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
 @Description("Formats a period as text giving an inclusive date range")
 public class TextPeriodFormatter implements DomFormatter<TimePeriod> {
 
+	// not static as SimpleDateFormat not thread safe
 	DateFormat df = new SimpleDateFormat("dd MMMMMMM yyyy");
 	
 	public Class<TimePeriod> getTarget() {
