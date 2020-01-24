@@ -110,7 +110,16 @@
 		</xsd:sequence>	
 </xsd:complexType>
 </xsd:element>
-
+<xsd:element name="Div">
+<xsd:annotation>
+        	<xsd:documentation>A container for content, useful for making include file well-formed</xsd:documentation>
+</xsd:annotation>
+<xsd:complexType mixed="true">
+		<xsd:sequence>
+		<xsd:group ref="Content" maxOccurs="unbounded" minOccurs="0"/>
+		</xsd:sequence>	
+</xsd:complexType>
+</xsd:element>
 
 	<xsd:complexType name="TextContentType" mixed="true">
 		<xsd:annotation>
@@ -171,6 +180,8 @@
 	redefining this group.
 	</xsd:documentation></xsd:annotation>
 	<xsd:choice>
+	<xsd:element ref="par:Include"/>
+	<xsd:element ref="Div"/>
 	<xsd:element ref="Text" />
 	<xsd:element ref="PreFormatted" />
 	<xsd:element ref="Comment" />

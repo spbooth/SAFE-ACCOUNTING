@@ -308,7 +308,7 @@
 	<xsd:annotation>
 	<xsd:documentation>
 	Conditional expansion within a FormatParameter.
-	Contents are expanded if required expression is NOT defiend
+	Contents are expanded if required expression is NOT defined
 	</xsd:documentation>
 	</xsd:annotation>
 	</xsd:element>
@@ -514,4 +514,10 @@
 			type="xsd:string">
 		</xsd:attribute>
 	</xsd:complexType>
+
+	<xsd:element name="Include">
+		<xsd:complexType>
+			<xsd:attribute name="file" type="xsd:string" use="required"></xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
 </xsd:schema>

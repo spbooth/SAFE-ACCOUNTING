@@ -285,7 +285,40 @@ public class ParameterExtensionTest extends WebappTestBase {
 				out.toString().contains("My String is Mary had a little lamb."));
 
 	}
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testIncludedStringParameter() throws Exception {				
+		
+		String templateName = "testInclude";
+		
+		// Create a HTMLForm.
+		HTMLForm form = new HTMLForm(ctx);
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<>();
+		ReportBuilderTest.setupParams(ctx,params);
+		
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
+		reportBuilder.setupExtensions(params);
+		reportBuilder.buildReportParametersForm(form, params);
+		
+		((TextInput)form.getInput("MyString")).setValue("Mary had a little lamb");
 
+		// Get the params values from the Form
+		ReportBuilder.extractReportParametersFromForm(form, params);
+		
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		reportBuilder.renderXML(params, out);
+		
+		// Look for errors
+		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
+		
+		// Check it was correctly formatted.
+		assertTrue("Report wasn't correctly formatted "+out.toString()+" does not contain string "+"My String is Mary had a little lamb.", 
+				out.toString().contains("My String is Mary had a little lamb."));
+
+	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testDateParameter() throws Exception {				
