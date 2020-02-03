@@ -368,7 +368,7 @@ public class ParameterExtension extends ReportExtension {
 			return new TextInput();			
 
 		} else if (type.equals("Date")) {
-			return new RelativeDateInput();
+			return new RelativeDateInput(now);
 			//return new DayMultiInput();	
 		} else if (type.equals("Month")) {
 			return BoundedDateInput.getInstance(getContext(), Calendar.MONTH);
@@ -442,7 +442,7 @@ public class ParameterExtension extends ReportExtension {
 			return new MapperEntryInput(conn, producer, tag);
 						
 		} else if (type.equals("Period")){
-			return new SimplePeriodInput();
+			return new SimplePeriodInput(now);
 		}else if (type.equals("RegularSplitPeriod")){
 			return new RegularPeriodInput(now);
 		}else if (type.equals("CalendarPeriod")){

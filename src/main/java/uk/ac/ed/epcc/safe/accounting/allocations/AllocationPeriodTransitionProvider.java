@@ -31,6 +31,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.content.Labeller;
 import uk.ac.ed.epcc.webapp.content.Table;
@@ -148,7 +149,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 				input.setValue((CalendarFieldSplitPeriod)p);
 				f.addInput("Period", "Period", input );
 			}else {
-				SimplePeriodInput input = new SimplePeriodInput(1L, Calendar.MONTH);
+				SimplePeriodInput input = new SimplePeriodInput(conn.getService(CurrentTimeService.class).getCurrentTime(),1L, Calendar.MONTH);
 				input.setValue(p);
 				f.addInput("Period", "Period", input );
 			}

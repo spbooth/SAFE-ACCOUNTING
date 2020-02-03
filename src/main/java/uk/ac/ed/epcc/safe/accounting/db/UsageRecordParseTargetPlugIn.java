@@ -36,6 +36,7 @@ import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
 import uk.ac.ed.epcc.safe.accounting.update.UsageRecordPolicy;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.forms.Form;
@@ -393,7 +394,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		}
 
 		public void buildForm(Form f, P target, AppContext conn) throws TransitionException {
-			f.addInput(PERIOD, PERIOD, new SimplePeriodInput());
+			f.addInput(PERIOD, PERIOD, new SimplePeriodInput(conn.getService(CurrentTimeService.class).getCurrentTime()));
 			PropertyContainerParseTargetComposite plugin = target.getComposite(PropertyContainerParseTargetComposite.class);
 			if( plugin == null || ! (plugin instanceof UsageRecordParseTargetPlugIn)) {
 				throw new ConsistencyError("Expected composite not found");
@@ -439,7 +440,7 @@ public  class ReEvaluateAction extends FormAction {
 }
 
 public void buildForm(Form f, P target, AppContext conn) throws TransitionException {
-	f.addInput(PERIOD, PERIOD, new SimplePeriodInput());
+	f.addInput(PERIOD, PERIOD, new SimplePeriodInput(conn.getService(CurrentTimeService.class).getCurrentTime()));
 	PropertyContainerParseTargetComposite plugin = target.getComposite(PropertyContainerParseTargetComposite.class);
 	if( plugin == null || ! (plugin instanceof UsageRecordParseTargetPlugIn)) {
 		throw new ConsistencyError("Expected composite not found");

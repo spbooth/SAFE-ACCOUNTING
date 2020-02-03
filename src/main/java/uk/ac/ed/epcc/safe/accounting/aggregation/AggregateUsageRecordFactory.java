@@ -58,6 +58,7 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.NumberOp;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
@@ -846,7 +847,7 @@ ConfigParamProvider{
 			@Override
 			public void buildForm(Form f, AggregateUsageRecordFactory target, AppContext conn)
 					throws TransitionException {
-				f.addInput(RANGE, "Time range to regenerate", new SimplePeriodInput());
+				f.addInput(RANGE, "Time range to regenerate", new SimplePeriodInput(conn.getService(CurrentTimeService.class).getCurrentTime()));
 				f.addAction("Regenerate", new RangeAction(target));
 			}
 

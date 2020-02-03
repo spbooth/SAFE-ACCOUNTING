@@ -485,7 +485,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		if( USE_DATE_PREF.isEnabled(getContext())) {
 			return new DateInput();
 		}
-		return new TimeStampMultiInput(1000L, Calendar.DAY_OF_MONTH);
+		return new TimeStampMultiInput(getContext().getService(CurrentTimeService.class).getCurrentTime(),1000L, Calendar.DAY_OF_MONTH);
 	}
 	
 
