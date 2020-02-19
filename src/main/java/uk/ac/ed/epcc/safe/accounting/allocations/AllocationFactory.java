@@ -488,15 +488,26 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		return new TimeStampMultiInput(getContext().getService(CurrentTimeService.class).getCurrentTime(),1000L, Calendar.DAY_OF_MONTH);
 	}
 	
+    public final Selector<BoundedDateInput> getDateSelector(){
+    	return new Selector<BoundedDateInput>() {
 
+			@Override
+			public BoundedDateInput getInput() {
+				return getDateInput();
+			}
+    		
+    	};
+    }
 	
 	
 	
 	@Override
-	protected Map<String, Object> getSelectors() {
-		Map<String,Object>res = super.getSelectors();
-		res.put(StandardProperties.STARTED_TIMESTAMP, getDateInput());
-		res.put(StandardProperties.COMPLETED_TIMESTAMP, getDateInput());
+	protected Map<String, Selector> getSelectors() {
+		Map<String,Selector>res = super.getSelectors();
+		
+		Selector<BoundedDateInput> s = getDateSelector();
+		res.put(StandardProperties.STARTED_TIMESTAMP, s);
+		res.put(StandardProperties.COMPLETED_TIMESTAMP, s);
 		AccessorMap map = getAccessorMap();
 		SessionService sess = getContext().getService(SessionService.class);
 		// Restrict index properties to those we have a particular role on
@@ -506,7 +517,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 				IndexedProducer prod = tag.getFactory(getContext());
 				if( prod instanceof DataObjectFactory){
 					DataObjectFactory dof = (DataObjectFactory) prod;
-					res.put(field, dof.getInput(sess.getRelationshipRoleFilter(dof, AllocationPeriodTransitionProvider.ALLOCATION_ADMIN_RELATIONSHIP, dof.getFinalSelectFilter())));
+					res.put(field, dof.getSelector(sess.getRelationshipRoleFilter(dof, AllocationPeriodTransitionProvider.ALLOCATION_ADMIN_RELATIONSHIP, dof.getFinalSelectFilter())));
 					
 				}
 			}

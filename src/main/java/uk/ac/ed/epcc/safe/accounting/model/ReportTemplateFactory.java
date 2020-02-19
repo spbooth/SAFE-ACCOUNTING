@@ -42,6 +42,7 @@ import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
 import uk.ac.ed.epcc.webapp.forms.factory.FormCreator;
+import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
@@ -60,6 +61,7 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataNotFoundException;
 import uk.ac.ed.epcc.webapp.model.data.filter.SQLValueFilter;
 import uk.ac.ed.epcc.webapp.model.data.forms.Creator;
+import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.timer.TimerService;
 
@@ -262,10 +264,25 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 	}
 	
 	@Override
-	protected Map<String, Object> getSelectors() {
-		Map<String,Object>result = new HashMap<>();
-		result.put(ReportTemplate.TEMPLATE_NAME, new TemplateNameInput());
-		result.put(ReportTemplate.REPORT_GROUP, new SetInput<>(reportGroups.getGroups()));
+	protected Map<String, Selector> getSelectors() {
+		Map<String,Selector>result = new HashMap<>();
+		result.put(ReportTemplate.TEMPLATE_NAME, new Selector() {
+
+			@Override
+			public Input getInput() {
+				return new TemplateNameInput();
+			}
+		}
+				
+				);
+		result.put(ReportTemplate.REPORT_GROUP, new Selector() {
+
+			@Override
+			public Input getInput() {
+				return new SetInput<>(reportGroups.getGroups());
+			}
+			
+		});
 		return result;
 	}
 	public R findByFileName(String fileName) throws DataException {

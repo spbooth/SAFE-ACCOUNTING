@@ -37,6 +37,7 @@ import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.editors.xml.DomVisitor;
 import uk.ac.ed.epcc.webapp.forms.html.RedirectResult;
 import uk.ac.ed.epcc.webapp.forms.inputs.ConstantInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.IntegerFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
@@ -44,6 +45,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
+import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.forms.registry.SummaryContentProvider;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedTypeProducer;
 import uk.ac.ed.epcc.webapp.model.xml.XMLOverlay;
@@ -130,11 +132,19 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 	 * @see uk.ac.ed.epcc.webapp.model.data.DataObjectFactory#getSelectors()
 	 */
 	@Override
-	protected Map<String, Object> getSelectors() {
-		Map<String,Object> sel = new HashMap<>(super.getSelectors());
-		ConstantInput<String> group_input = new ConstantInput<>(ReportBuilder.REPORT_TEMPLATE_GROUP);
-		group_input.setValue(ReportBuilder.REPORT_TEMPLATE_GROUP);
-		sel.put(TextFileOverlay.GROUP, group_input);
+	protected Map<String, Selector> getSelectors() {
+		Map<String,Selector> sel = new HashMap<>(super.getSelectors());
+		
+		sel.put(TextFileOverlay.GROUP, new Selector() {
+
+			@Override
+			public Input getInput() {
+				ConstantInput<String> group_input = new ConstantInput<>(ReportBuilder.REPORT_TEMPLATE_GROUP);
+				group_input.setValue(ReportBuilder.REPORT_TEMPLATE_GROUP);
+				return group_input;
+			}
+			
+		});
 		
 		return sel;
 	}

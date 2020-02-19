@@ -33,6 +33,7 @@ import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.TableStructureContributer;
+import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 /** A {@link Composite} implementation of {@link PropertyContainerParseTarget}
  * 
  * A table that supports parsing should have a sub-class composite installed.
@@ -299,7 +300,7 @@ public abstract class PropertyContainerParseTargetComposite<T extends DataObject
 		return super.addTranslations(translations);
 	}
 	@Override
-	public Map<String, Object> addSelectors(Map<String, Object> selectors) {
+	public Map<String, Selector> addSelectors(Map<String, Selector> selectors) {
 		PropertyContainerParser<R> parser = getParser();
 		if( parser instanceof TableStructureContributer) {
 			((TableStructureContributer)parser).addSelectors(selectors);

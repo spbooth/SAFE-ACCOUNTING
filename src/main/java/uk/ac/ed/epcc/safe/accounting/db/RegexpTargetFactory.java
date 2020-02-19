@@ -3,11 +3,13 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Map;
 
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.RegexpInput;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
+import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 
 public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClassificationFactory<T> {
 	
@@ -18,12 +20,20 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClass
 	}
 	
 	@Override
-	protected Map<String, Object> getSelectors() {
-		Map<String, Object> selectors = super.getSelectors();
-		RegexpInput regexp_input = new RegexpInput();
-		regexp_input.setSingle(true);
-		regexp_input.setBoxWidth(32);
-		selectors.put(REGEX_FIELD, regexp_input);
+	protected Map<String, Selector> getSelectors() {
+		Map<String, Selector> selectors = super.getSelectors();
+		
+		selectors.put(REGEX_FIELD, new Selector() {
+
+			@Override
+			public Input getInput() {
+				RegexpInput regexp_input = new RegexpInput();
+				regexp_input.setSingle(true);
+				regexp_input.setBoxWidth(32);
+				return regexp_input;
+			}
+			
+		});
 		return selectors;
 	}
 
