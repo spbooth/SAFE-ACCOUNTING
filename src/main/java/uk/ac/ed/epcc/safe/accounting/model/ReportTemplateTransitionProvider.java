@@ -265,7 +265,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 					}
 				}
 				Map<String,Object> defaults = new HashMap<String, Object>();
-				if( builder.buildReportParametersForm(f, parameters,defaults,new ChainedTransitionResult<>(ReportTemplateTransitionProvider.this, target, PREVIEW))) {
+				if( builder.buildReportParametersForm(f, parameters,defaults)) {
 					setMap(parameters, target.getContextParameters(),defaults, f, false);
 					if( builder.hasReportParameters()){
 						f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,defaults,PREVIEW,false));
@@ -619,7 +619,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		Map<String, Object> reportParameters = target.getParameters();
 		Form form = new BaseForm(c);
 		Map<String,Object> defaults = new HashMap<String, Object>();
-		builder.buildReportParametersForm(form, reportParameters,defaults,null);
+		builder.buildReportParametersForm(form, reportParameters,defaults);
 		
 		// don't set any context parameters locking inputs in this form
 		// because parseReportParameters below won't retrieve the values for locked input forms

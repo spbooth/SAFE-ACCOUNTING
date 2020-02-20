@@ -161,7 +161,7 @@ public class ParameterExtension extends ReportExtension {
 	 * @throws Exception
 	 */
 	
-	public boolean buildReportParametersForm(FormResult self,Map defaults,Form form, Document reportTemplateDocument) throws Exception {
+	public boolean buildReportParametersForm(Map defaults,Form form, Document reportTemplateDocument) throws Exception {
 		SetParamsVisitor setter = new SetParamsVisitor(false, params);
 		// Find the parameters which have been defined
 		NodeList paramNodes = reportTemplateDocument.getElementsByTagNameNS(
@@ -232,7 +232,7 @@ public class ParameterExtension extends ReportExtension {
 			}
 			break;
 			case PARAMETER_STAGE_ELEMENT:
-				if( form.poll(self)) {
+				if( form.poll()) {
 					assert(params != null);
 					ReportBuilder.extractReportParametersFromForm(form, params);
 				}else {

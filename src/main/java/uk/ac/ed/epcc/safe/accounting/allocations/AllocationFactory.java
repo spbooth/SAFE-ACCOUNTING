@@ -877,7 +877,18 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 						String field = getAccessorMap().getField(t);
 						if( field != null ){
 							log.debug("Field name is"+field);
-							i = DataObjectFormFactory.getInput(getContext(), getSelectors(), getConfigTag(), field);
+							Selector sel = getSelectors().get(field);
+							if( sel != null ) {
+								i = sel.getInput();
+							}
+							// try a property override
+							if( i == null ) {
+								i = DataObjectFormFactory.getInputFromName(getContext(), getConfigTag(), field);
+							}
+							// finally from DB type
+							if( i == null ) {
+								i = DataObjectFormFactory.getInputFromType(getContext(), res, res.getInfo(field));
+							}
 						}
 						if( i != null ){
 							log.debug("input type is"+i.getClass().getCanonicalName());
