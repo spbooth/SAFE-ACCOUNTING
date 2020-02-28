@@ -282,9 +282,11 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		}
 
 		@Override
-		public void postUpdate(T o, Form f,Map<String,Object> orig) throws DataException {
-			String diff = f.diff(orig);
-			notifyModified(o,diff);
+		public void postUpdate(T o, Form f,Map<String,Object> orig, boolean changed) throws DataException {
+			if( changed ) {
+				String diff = f.diff(orig);
+				notifyModified(o,diff);
+			}
 		}
 
 		@Override

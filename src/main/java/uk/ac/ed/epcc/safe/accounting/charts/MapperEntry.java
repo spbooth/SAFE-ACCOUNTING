@@ -638,7 +638,7 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 	@SuppressWarnings("unchecked")
 	private boolean addTimeChartData(PlotEntry e, TimeChart tc, UsageProducer ap, RecordSelector sel,
 			PeriodSequencePlot ds,boolean allow_overlap) throws Exception {
-		try(TimeClosable time = new TimeClosable(getContext(), ap.getTag()+".addTimeChartDate")){
+		try(TimeClosable time = new TimeClosable(getContext(), ()-> ap.getTag()+".addTimeChartDate")){
 		PropExpression<? extends Number> prop_tag = e.getPlotProperty();
 		PropExpression<Date> start_prop = e.getStartProperty();
 		PropExpression<Date> end_prop = e.getEndProperty();
