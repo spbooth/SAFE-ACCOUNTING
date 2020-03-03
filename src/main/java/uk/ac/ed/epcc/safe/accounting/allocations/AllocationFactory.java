@@ -303,7 +303,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		public boolean allow(SessionService<?> serv, T target) {
 			return serv.hasRelationship(AllocationFactory.this, target, 
 					AllocationManager.EDIT_ALLOCATION_RELATIONSHIP, 
-					serv.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE));
+					() -> serv.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE));
 		}
 
 		/* (non-Javadoc)
@@ -909,7 +909,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	public boolean canView(T target, SessionService<?> sess) {
 		return sess.hasRelationship(this, target, 
 				AllocationManager.VIEW_ALLOCATION_RELATIONSHIP,
-				sess.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE));
+				() -> sess.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE));
 	}
 	@Override
 	public BaseFilter<T> getViewFilter(SessionService sess) {
