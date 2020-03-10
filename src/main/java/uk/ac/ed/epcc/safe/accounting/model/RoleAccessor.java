@@ -20,7 +20,9 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Accessor;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
+import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
 import uk.ac.ed.epcc.webapp.session.AppUser;
 import uk.ac.ed.epcc.webapp.session.AppUserFactory;
@@ -56,8 +58,12 @@ public class RoleAccessor<T extends AppUser> implements Accessor<Boolean,T>, Fil
 	}
 	public SQLFilter<T> getFilter(MatchCondition match,
 			Boolean val) throws CannotFilterException {
-		AppUserFactory<T> fac = serv.getLoginFactory();
-		return fac.getRoleFilter(role);
+		
+		try {
+			return FilterConverter.convert(serv.getPersonInRoleFilter(role));
+		} catch (NoSQLFilterException e) {
+			throw new CannotFilterException(e);
+		}
 	}
 	public SQLFilter<T> getNullFilter(boolean is_null) throws CannotFilterException{
 		throw new CannotFilterException("Cannot check role for null");
