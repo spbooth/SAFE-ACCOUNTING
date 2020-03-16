@@ -773,8 +773,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		for(PropertyTag tag : getIndexProperties()){
 			if( tag instanceof ReferenceTag && map.hasProperty(tag)){
 				ReferenceTag ref = (ReferenceTag) tag;
-				DataObjectItemInput<?> i = (DataObjectItemInput) f.getInput(ref.getTable());
-				DataObject o = i.getItem();
+				//DataObjectItemInput<?> i = (DataObjectItemInput) f.getInput(ref.getTable());
+				DataObject o = (DataObject) f.getItem(ref.getTable());
 				if( o != null ){
 					sel.add(new SelectClause<IndexedReference>(ref,ref.makeReference(o)));
 				}

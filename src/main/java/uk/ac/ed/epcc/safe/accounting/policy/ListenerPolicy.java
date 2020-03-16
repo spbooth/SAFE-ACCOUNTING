@@ -37,6 +37,8 @@ import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
+import uk.ac.ed.epcc.webapp.forms.inputs.Input;
+import uk.ac.ed.epcc.webapp.forms.inputs.LockedInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
@@ -221,7 +223,11 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 		@Override
 		public FormResult action(Form f)
 				throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
-			SetInput<String> policy_input = (SetInput<String>) f.getInput("Listener");
+			Input input = f.getInput("Listener");
+			if( input instanceof LockedInput) {
+				input = ((LockedInput)input).getNested();
+			}
+			SetInput<String> policy_input = (SetInput<String>) input;
 			StringBuilder sb = new StringBuilder();
 			boolean seen=false;
 			for(Iterator<String> it = policy_input.getItems(); it.hasNext();){

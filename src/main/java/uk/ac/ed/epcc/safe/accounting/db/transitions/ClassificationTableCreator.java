@@ -72,10 +72,10 @@ public class ClassificationTableCreator extends AbstractContexed implements Form
 			try{
 				String table_name=(String) f.get(TABLE);
 				String type_tag = (String) f.get(TYPE);
-				ClassInput<PropertyClassificationFactory> input = (ClassInput<PropertyClassificationFactory>) f.getInput(TYPE);
+				//ClassInput<PropertyClassificationFactory> input = (ClassInput<PropertyClassificationFactory>) f.getInput(TYPE);
 				ConfigService serv = conn.getService(ConfigService.class);
 				serv.setProperty("class."+table_name, type_tag);
-			    Class<? extends PropertyClassificationFactory> target = input.getItem();
+			    Class<? extends PropertyClassificationFactory> target = (Class<? extends PropertyClassificationFactory>) f.getItem(TYPE);
 			    if( DataObjectFactory.AUTO_CREATE_TABLES_FEATURE.isEnabled(conn)){
 			    	conn.makeObject(target, table_name);
 			    }else{

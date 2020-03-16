@@ -120,8 +120,7 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 			@Override
 			public FormResult action(Form f)
 					throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
-				SetInput<ConfigPropertyRegistry> input=(SetInput<ConfigPropertyRegistry>) f.getInput("Finder");	
-				input.getItem().addDefinition(getContext(), (String)f.get("Name"), (String)f.get("Type"));
+				((ConfigPropertyRegistry)f.getItem("Finder")).addDefinition(getContext(), (String)f.get("Name"), (String)f.get("Type"));
 				return new ViewTableResult(target);
 			}
 		}
@@ -157,8 +156,8 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 			public FormResult action(Form f)
 					throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
 				try {
-					PropertyTagInput input = (PropertyTagInput) f.getInput("Prop");
-					defs.addConfigProperty(getContext(), finder, table, input.getItem(), (String)f.get("Expr"));
+					//PropertyTagInput input = (PropertyTagInput) f.getInput("Prop");
+					defs.addConfigProperty(getContext(), finder, table, ((PropertyTag)f.getItem("Prop")), (String)f.get("Expr"));
 				} catch (Exception e) {
 					getLogger().error( "Error setting derived prop",e);
 					throw new ActionException("Operation failed",e);

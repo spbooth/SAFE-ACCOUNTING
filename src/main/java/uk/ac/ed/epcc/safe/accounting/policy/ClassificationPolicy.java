@@ -283,10 +283,10 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 		public FormResult action(Form f)
 				throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
 			SetInput<PropertyTag<String>> name_input = (SetInput<PropertyTag<String>>) f.getInput("Name");
-			SetInput<ReferenceTag> ref_input = (SetInput<ReferenceTag>) f.getInput("Ref");
+			//SetInput<ReferenceTag> ref_input = (SetInput<ReferenceTag>) f.getInput("Ref");
 			AppContext c = getContext();
 			ConfigService serv = c.getService(ConfigService.class);
-			serv.setProperty(prefix+name_input.getValue(), ref_input.getItem().getFullName());
+			serv.setProperty(prefix+name_input.getValue(), ((ReferenceTag)f.getItem("Ref")).getFullName());
 			//TODO consider creating a reference field if it does not exist
 			return new ViewTableResult(target);
 		}
@@ -374,7 +374,7 @@ public FormResult action(Form f)
 		@Override
 		public FormResult action(Form f)
 				throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
-			PropertyTag<String> name=((SetInput<PropertyTag<String>>) f.getInput("Name")).getItem();
+			PropertyTag<String> name=(PropertyTag<String>) f.getItem("Name");
 			try {
 				regenerate(name);
 			} catch (Exception e) {

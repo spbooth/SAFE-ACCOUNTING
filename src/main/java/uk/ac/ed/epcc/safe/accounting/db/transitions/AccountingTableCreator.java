@@ -71,7 +71,7 @@ public class AccountingTableCreator extends AbstractContexed implements FormCrea
 				String table_name=(String) f.get(TABLE);
 				String handler_tag = (String) f.get(HANDLER);
 				String parser_tag = (String) f.get(PARSER);
-				ClassInput<PropertyContainerParser> input = (ClassInput<PropertyContainerParser>) f.getInput(PARSER);
+				//ClassInput<PropertyContainerParser> input = (ClassInput<PropertyContainerParser>) f.getInput(PARSER);
 				ConfigService serv = conn.getService(ConfigService.class);
 				serv.setProperty("class."+ConfigPlugInOwner.PARSER_PREFIX+table_name, parser_tag);
 				serv.setProperty("class."+table_name, handler_tag);
@@ -81,7 +81,7 @@ public class AccountingTableCreator extends AbstractContexed implements FormCrea
 					// This assumes that the ConfigPlugInOwner does not add any additional
 					// table specification e.g. by adding standard policies.
 					// safer to auto-create if enabled.
-					PropertyContainerParser parser = conn.makeObject(input.getItem());
+					PropertyContainerParser parser = conn.makeObject((Class<? extends PropertyContainerParser>)f.getItem(PARSER));
 					TableSpecification spec = parser.modifyDefaultTableSpecification(new TableSpecification(),null,table_name);
 					if( spec != null ){
 						DataBaseHandlerService dbh = conn.getService(DataBaseHandlerService.class);

@@ -30,6 +30,8 @@ import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
 import uk.ac.ed.epcc.webapp.forms.inputs.ClassInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.Input;
+import uk.ac.ed.epcc.webapp.forms.inputs.LockedInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
@@ -144,7 +146,11 @@ public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPl
 			@Override
 			public FormResult action(Form f)
 					throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
-				SetInput<Class> policy_input = (SetInput<Class>) f.getInput("Policy");
+				Input input = f.getInput("Policy");
+				if( input instanceof LockedInput) {
+					input = ((LockedInput)input).getNested();
+				}
+				SetInput<Class> policy_input = (SetInput<Class>) input;
 				StringBuilder sb = new StringBuilder();
 				boolean seen=false;
 				for(Iterator<Class> it = policy_input.getItems(); it.hasNext();){
@@ -210,8 +216,8 @@ public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPl
 					
 					@SuppressWarnings("unchecked")
 					public void validate(Form f) throws ValidateException {
-						ClassInput<PropertyContainerPolicy> input = (ClassInput<PropertyContainerPolicy>) f.getInput("Policy");
-						Class target = input.getItem();
+						//ClassInput<PropertyContainerPolicy> input = (ClassInput<PropertyContainerPolicy>) f.getInput("Policy");
+						Class target = (Class) f.getItem("Policy");
 						for( PropertyContainerPolicy pol : getPolicies()){
 							if( pol.getClass() == target){
 								throw new ValidateException("This Policy is already in force");
