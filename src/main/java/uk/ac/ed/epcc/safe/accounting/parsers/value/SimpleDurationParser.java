@@ -119,4 +119,17 @@ public class SimpleDurationParser implements ValueParser<Duration> {
 		long hours = millis / 60L;
 		return ""+hours+":"+minutes+":"+seconds+"."+String.format("%03d", frac);
 	}
+
+	@Override
+	public Duration convert(Object in) {
+		Duration v = ValueParser.super.convert(in);
+		if( v != null || in == null  ) {
+			return v;
+		}
+		// format any non Duration numbers as milliseconds
+		if( in instanceof Number) {
+			return new Duration((Number)in,1L);
+		}
+		return null;
+	}
 }

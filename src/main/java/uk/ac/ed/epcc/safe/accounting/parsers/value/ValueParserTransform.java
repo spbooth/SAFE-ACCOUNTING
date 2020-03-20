@@ -35,8 +35,11 @@ public class ValueParserTransform<T> implements Transform{
 		if( old == null ){
 			return null;
 		}
-		if( parser != null && parser.getType().isAssignableFrom(old.getClass())){
-			return parser.format((T)old);
+		if( parser != null ){
+			T val = parser.convert(old);
+			if( val != null ) {
+				return parser.format(val);
+			}
 		}
 		return old;
 	}

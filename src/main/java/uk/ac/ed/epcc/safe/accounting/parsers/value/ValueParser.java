@@ -68,4 +68,20 @@ public interface ValueParser<T> extends ValueFormatter<T>{
 	 * @return String
 	 */
 	public abstract String format(T value);
+	
+	/** Try to apply standard convertions to type T
+	 * return null if conversion not supported
+	 * 
+	 * @param in
+	 * @return
+	 */
+	default public T convert(Object in) {
+		if( in == null ) {
+			return null;
+		}
+		if( getType().isAssignableFrom(in.getClass())) {
+			return (T) in;
+		}
+		return null;
+	}
 }
