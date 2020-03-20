@@ -232,6 +232,15 @@ public class AtomExtension extends ReportExtension {
 		throw new ParseException("No nested atom element");
 	}
 	public AtomResult combine(Operator op,Period period,RecordSet set, Node element) throws IllegalReductionException, Exception{
+		Element[] arg = getArgs(element);
+		Number a = (Number)expandNumberGroup(period, set, arg[0]).value;
+		Number b = (Number)expandNumberGroup(period, set, arg[1]).value;
+		Number res = op.operate(a, b);
+		log.debug("combine: "+a+op.text()+b+"->"+res);
+		return new AtomResult<>(null,res);
+	}
+
+	protected Element[] getArgs(Node element) throws ReportException {
 		int pos=0;
 		Element arg[] = new Element[2];
 		NodeList list = element.getChildNodes();
@@ -248,11 +257,7 @@ public class AtomExtension extends ReportExtension {
 		if( pos != 2 ){
 			throw new ReportException( "atom:Combine Expecting two child nodes");	
 		}
-		Number a = (Number)expandNumberGroup(period, set, arg[0]).value;
-		Number b = (Number)expandNumberGroup(period, set, arg[1]).value;
-		Number res = op.operate(a, b);
-		log.debug("combine: "+a+op.text()+b+"->"+res);
-		return new AtomResult<>(null,res);
+		return arg;
 	}
 	public String percent(Period period, RecordSet set, Node e) {
 		NumberFormat pf = NumberFormat.getPercentInstance();
@@ -272,12 +277,18 @@ public class AtomExtension extends ReportExtension {
 			}
 		}
 		try {
-			return pf.format(combine(Operator.DIV,period,set,e).value);
+			Element[] arg = getArgs(e);
+			Number a = (Number)expandNumberGroup(period, set, arg[0]).value;
+			Number b = (Number)expandNumberGroup(period, set, arg[1]).value;
+			// always do divide as double for percentage
+			return pf.format(a.doubleValue()/b.doubleValue());
 		} catch (Exception e1) {
 			addError("bad percentage", "Error calculating percentage",e);
 			return "";
 		}
 	}
+
+	
 	public String define(String name,Period period,RecordSet set,Node def) {
 		// def is the Define element
 		 NodeList list = def.getChildNodes();

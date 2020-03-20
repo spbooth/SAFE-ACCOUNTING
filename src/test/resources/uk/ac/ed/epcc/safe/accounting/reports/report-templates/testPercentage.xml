@@ -14,6 +14,7 @@
 	
 	<Section>
 	<Text> A basic percentage <ato:Percentage><ato:Number>53.5</ato:Number><ato:Number>100.0</ato:Number></ato:Percentage></Text>
+	<Text> A int percentage <ato:Percentage><ato:Number>2</ato:Number><ato:Number>3</ato:Number></ato:Percentage></Text>
 	
 	<Text> A formatted percentage <ato:Percentage min_fraction="3"><ato:Number>53.5</ato:Number><ato:Number>100.0</ato:Number></ato:Percentage></Text>
 	</Section>
