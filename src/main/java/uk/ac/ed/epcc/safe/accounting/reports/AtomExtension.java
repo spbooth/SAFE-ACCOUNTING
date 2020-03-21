@@ -188,10 +188,7 @@ public class AtomExtension extends ReportExtension {
 		} else if (MAXIMUM_ELEMENT.equals(name)) {
 			return expandSimpleReduction(element, set, period, Reduction.MAX);
 		} else if (COUNT_ELEMENT.equals(name)) {
-			  if( producer == null ) {
-				  return new AtomResult<>(StandardProperties.COUNT_PROP, 0L);
-			  }
-				return new AtomResult<>(StandardProperties.COUNT_PROP,producer.getRecordCount(selector));
+			  return new AtomResult<>(StandardProperties.COUNT_PROP,expandCount(set,period, element));
 		} else if (ADD_ELEMENT.equals(name)){
 			return combine(Operator.ADD, period, set, element);
 		}else if (SUB_ELEMENT.equals(name)){
@@ -230,6 +227,31 @@ public class AtomExtension extends ReportExtension {
 			}
 		}
 		throw new ParseException("No nested atom element");
+	}
+	private long expandCount(RecordSet set,Period period, Node element) throws Exception {
+		// count is allowed to contain filter elements
+		
+		// have to look for additional filters etc.
+		set = new RecordSet(set); // copy
+		// add filters.
+		NodeList list = element.getChildNodes();
+		for(int i=0 ; i < list.getLength(); i++){
+			Node n = list.item(i);
+			short nodeType = n.getNodeType();
+			String localName = n.getLocalName();
+			String namespaceURI = n.getNamespaceURI();
+			if( nodeType==Node.ELEMENT_NODE && localName.equals(FILTER_ELEMENT) && namespaceURI.equals(FILTER_LOC)){
+				set = addFilterElement(set, (Element) n);
+			}else if( nodeType==Node.ELEMENT_NODE){
+				throw new ParseException("Unexpected content in Count "+localName);
+			}
+		}
+		UsageProducer<?> producer = set.getUsageProducer();
+		if( producer == null) {
+			return 0L;
+		}
+		return producer.getRecordCount(set.getPeriodSelector(period));
+		
 	}
 	public AtomResult combine(Operator op,Period period,RecordSet set, Node element) throws IllegalReductionException, Exception{
 		Element[] arg = getArgs(element);
@@ -281,7 +303,11 @@ public class AtomExtension extends ReportExtension {
 			Number a = (Number)expandNumberGroup(period, set, arg[0]).value;
 			Number b = (Number)expandNumberGroup(period, set, arg[1]).value;
 			// always do divide as double for percentage
-			return pf.format(a.doubleValue()/b.doubleValue());
+			double frac = 0.0;
+			if( b.doubleValue() > 0.0 ) {
+				frac = a.doubleValue()/b.doubleValue();
+			}
+			return pf.format(frac);
 		} catch (Exception e1) {
 			addError("bad percentage", "Error calculating percentage",e);
 			return "";

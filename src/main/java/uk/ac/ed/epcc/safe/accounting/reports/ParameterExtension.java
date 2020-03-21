@@ -326,7 +326,12 @@ public class ParameterExtension extends ReportExtension {
 							String sub_name=value_element.getAttribute(NAME_ATTR);
 							String sub_value = value_element.getAttribute(VALUE_ATTR);
 							if( sub_name != null && value !=null ){
-								setValue(name+"."+sub_name,sub_value,multi.getInput(sub_name),value_element);
+								Input input2 = multi.getInput(sub_name);
+								if( input2 == null ) {
+									addError("unrecognised sub-input", "Input "+sub_name+" not found", param);
+								}else {
+									setValue(name+"."+sub_name,sub_value,input2,value_element);
+								}
 							}
 						}
 					}

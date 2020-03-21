@@ -20,6 +20,8 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 /** This is a combination of an {@link ExpressionTargetGenerator}
  * and a {@link RecordSelector}
  * 
+ * @see RecordSet
+ * 
  * @author spb
  * @param <F> type of {@link ExpressionTargetGenerator}
  *
@@ -59,6 +61,13 @@ public class ObjectSet<F extends ExpressionTargetGenerator> {
 		
 	}
 
+	/** get the {@link RecordSelector} for the selected objects
+	 * 
+	 * Note if this is a {@link RecordSet} this does not include the
+	 * period selector.
+	 * 
+	 * @return
+	 */
 	public final  RecordSelector getRecordSelector(){
 		if(has_error) {
 			return null;
