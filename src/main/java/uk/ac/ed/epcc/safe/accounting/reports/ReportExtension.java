@@ -1031,6 +1031,11 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	
 			Calendar end = Calendar.getInstance();
 			p.setTime(end, end_string);
+			
+			if( start.getTime().equals(end.getTime())) {
+				// single point
+				return new RegularSplitPeriod(start.getTime(), end.getTime(), 1);
+			}
 	
 			// This conditional is put in to catch the case where a user 
 			// specifies a start time and end time where start <= end (which is 

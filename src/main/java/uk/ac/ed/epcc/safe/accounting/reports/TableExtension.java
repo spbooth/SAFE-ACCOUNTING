@@ -39,7 +39,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
 import uk.ac.ed.epcc.safe.accounting.ColName;
 import uk.ac.ed.epcc.safe.accounting.CountReduction;
 import uk.ac.ed.epcc.safe.accounting.DateReductionTarget;
@@ -68,7 +67,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ExpressionException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
@@ -435,7 +433,7 @@ public class TableExtension extends ReportExtension {
 			
 			// Get the dates, if there are any, default to the dates set in recordSet
 			this.dates = recordSet.getBounds();
-			this.use_overlap = recordSet.useOverlap();
+			this.use_overlap = recordSet.useOverlap() && period.getStart().before(period.getEnd());
 			Element paramElement = extension.getParamElement("Date", tableElement);
 			if( paramElement != null){
 				DateBounds dateProperties = extension.getDateProperties(recordSet,paramElement);
