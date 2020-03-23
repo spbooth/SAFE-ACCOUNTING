@@ -468,7 +468,7 @@ public class AtomExtension extends ReportExtension {
 			CacheKey key = new CacheKey(set, period, red);
 			result = result_cache.get(key);
 			if(result == null || ! CACHE_ATOM_RESULTS.isEnabled(getContext())){
-				if( set.useOverlap()){
+				if( set.useOverlap() && period.getStart().before(period.getEnd())){
 					OverlapHandler handler = new OverlapHandler(getContext(), producer);
 					PropExpression<Date> bounds[] = set.getBounds();
 					result =  new AtomResult(expression,handler.getOverlapSum((NumberReductionTarget) red, 
