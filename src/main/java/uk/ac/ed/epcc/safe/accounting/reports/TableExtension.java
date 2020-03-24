@@ -618,7 +618,7 @@ public class TableExtension extends ReportExtension {
 					extension.addError("bad recordset", "producerS is null", columnNode);
 					return "";
 				}
-				if( columnNode.getNamespaceURI().equals(TABLE_LOC)){
+				if( TABLE_LOC.equals(columnNode.getNamespaceURI())){
 					String columnType = columnNode.getLocalName();	
 					PropExpression property = extension.getPropertyExpression(columnNode, producer.getFinder());
 					if (property == null) {

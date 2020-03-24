@@ -965,7 +965,7 @@ public class ParameterExtension extends ReportExtension {
 
 		for(int j=0;j<list.getLength();j++){
 			Node c = list.item(j);
-			if( c.getNodeType() == Node.ELEMENT_NODE && c.getNamespaceURI().equals(FilterExtension.FILTER_LOC)){
+			if( c.getNodeType() == Node.ELEMENT_NODE && FilterExtension.FILTER_LOC.equals(c.getNamespaceURI())){
 				RecordSelector s  = getRecordSelectElement(finder, (Element)c); 
 				if( s != null ){
 					sel.add(s);
@@ -1022,7 +1022,7 @@ public class ParameterExtension extends ReportExtension {
 	}
 	private Node expandElement(Document doc, Element item) throws ReportException {
 		//String s = makeString(item);
-		if(item.getNamespaceURI().equals(PARAMETER_LOC)){
+		if(PARAMETER_LOC.equals(item.getNamespaceURI())){
 			if( item.getLocalName().equals(PARAMETER_ELEM)){
 				return  parameter(item);
 			}else if( item.getLocalName().equals(REPEAT_ELEMENT)){
