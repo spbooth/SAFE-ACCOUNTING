@@ -93,7 +93,6 @@
 			<xsd:element ref="par:IfNotSet" />
 			<xsd:element ref="par:Optional" />
 			<xsd:element ref="res:RestrictedSection" />
-			<xsd:element ref="par:Include" />
 		</xsd:choice>
 	</xsd:group>	
 
