@@ -1,5 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.policy;
 
+import java.io.ByteArrayInputStream;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.AccountingUpdater;
@@ -116,7 +117,7 @@ public class NestedParsePolicy extends BaseUsageRecordPolicy implements SummaryP
 			    }
 				
 				AccountingUpdater<Use, String> updater = new AccountingUpdater<>(conn, meta_data, parse_target);
-				updater.receiveAccountingData(update, true, false, false);
+				updater.receiveAccountingData(new ByteArrayInputStream( update.getBytes()), true, false, false);
 				
 			}
 			

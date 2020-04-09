@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
 import java.util.Iterator;
 
 import uk.ac.ed.epcc.junit.TargetProvider;
@@ -36,7 +37,7 @@ public class PropertyContainerParseTargetInterfaceTestImp<R,X extends PropertyCo
 		if( skipText==null ||skipText.isEmpty()) {
 			return;
 		}
-		for( Iterator<R> it = target.getParser().splitRecords(skipText); it.hasNext() ;) {
+		for( Iterator<R> it = target.getParser().splitRecords(new ByteArrayInputStream(skipText.getBytes())); it.hasNext() ;) {
 			R current_line = it.next();
 			DerivedPropertyMap map = new DerivedPropertyMap(contexed.getContext());
 			assertFalse(target.parse(map, current_line));
@@ -53,7 +54,7 @@ public class PropertyContainerParseTargetInterfaceTestImp<R,X extends PropertyCo
 		if( exceptionText == null || exceptionText.isEmpty()) {
 			return;
 		}
-		for( Iterator<R> it = target.getParser().splitRecords(exceptionText); it.hasNext() ;) {
+		for( Iterator<R> it = target.getParser().splitRecords(new ByteArrayInputStream( exceptionText.getBytes())); it.hasNext() ;) {
 			R current_line = it.next();
 			DerivedPropertyMap map = new DerivedPropertyMap(contexed.getContext());
 			try {
@@ -75,7 +76,7 @@ public class PropertyContainerParseTargetInterfaceTestImp<R,X extends PropertyCo
 		if( updateText == null || updateText.isEmpty()) {
 			return;
 		}
-		for( Iterator<R> it = target.getParser().splitRecords(updateText); it.hasNext() ;) {
+		for( Iterator<R> it = target.getParser().splitRecords(new ByteArrayInputStream( updateText.getBytes())); it.hasNext() ;) {
 			R current_line = it.next();
 			DerivedPropertyMap map = new DerivedPropertyMap(contexed.getContext());
 			assertTrue(target.parse(map, current_line));

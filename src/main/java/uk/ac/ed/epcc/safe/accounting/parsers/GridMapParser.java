@@ -16,6 +16,8 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +29,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
+import uk.ac.ed.epcc.safe.accounting.update.UnixStreamLineSpliter;
 import uk.ac.ed.epcc.webapp.AppContext;
 
 
@@ -69,9 +72,13 @@ public class GridMapParser extends AbstractPropertyContainerParser {
 	}
 
 	@Override
-	public Iterator<String> splitRecords(String update)
+	public Iterator<String> splitRecords(InputStream update)
 			throws AccountingParseException {
-		return new UnixFileSplitter(update);
+		try {
+			return new UnixStreamLineSpliter(getContext(),update);
+		} catch (IOException e) {
+			throw new AccountingParseException(e);
+		}
 	}
 
 }

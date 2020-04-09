@@ -9,6 +9,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -241,7 +242,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 		meta.setAll(defaults);
 		PropExpressionMap expr = owner.getDerivedProperties();
 		meta.addDerived(expr);
-		Iterator<I> lines = parser.splitRecords(updateText);
+		Iterator<I> lines = parser.splitRecords(new ByteArrayInputStream(  updateText.getBytes()));
 		
 		UsageRecordParseTarget<I> target = getParseTarget();
 		target.startParse(meta);
@@ -386,7 +387,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 
 		PropertyMap defaults = getDefaults();
 		PropertyContainerParser<I> parser = target.getParser();
-		Iterator<I> lines = parser.splitRecords(updateText);
+		Iterator<I> lines = parser.splitRecords(new ByteArrayInputStream(  updateText.getBytes()));
 		
 		
 		try {

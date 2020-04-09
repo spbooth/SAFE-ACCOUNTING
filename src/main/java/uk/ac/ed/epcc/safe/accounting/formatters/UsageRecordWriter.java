@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.formatters;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -234,7 +235,7 @@ public class UsageRecordWriter implements Contexed {
 					ioException);
 		}
 
-		return this.formatAcountingData(defaults, inputBuffer.toString());
+		return this.formatAcountingData(defaults,new ByteArrayInputStream(inputBuffer.toString().getBytes()));
 	}
 
 	/**
@@ -258,7 +259,7 @@ public class UsageRecordWriter implements Contexed {
 	 *           If a problem occurs while parsing the usage records that come in
 	 *           through the input stream
 	 */
-	public String formatAcountingData(PropertyMap defaults, String usageRecords)
+	public String formatAcountingData(PropertyMap defaults, InputStream usageRecords)
 			throws AccountingFormattingException, AccountingParseException {
 		// If mode is null, default properties will be used
 		String mode = this.context.getInitParameter(PROP_MODE);
@@ -274,8 +275,7 @@ public class UsageRecordWriter implements Contexed {
 		PropertyFinder finder = parser.initFinder( null, mode);
 		urWriter.init(this.context, finder, mode);
 
-		Iterator<String> recordIterator = parser.splitRecords(usageRecords
-				.toString());
+		Iterator<String> recordIterator = parser.splitRecords(usageRecords);
 
 		// Start everything going
 		try {

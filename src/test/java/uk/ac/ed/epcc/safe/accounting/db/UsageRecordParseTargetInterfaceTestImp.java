@@ -2,6 +2,8 @@ package uk.ac.ed.epcc.safe.accounting.db;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -52,7 +54,7 @@ public class UsageRecordParseTargetInterfaceTestImp<R,X extends UsageRecordParse
     	UploadContext uploadContext = getUploadContext();
 	//System.out.println(updateText);
 	AccountingUpdater u = new AccountingUpdater(contexed.getContext(),uploadContext.getDefaults(),getUsageRecordParseTarget());
-	String result = u.receiveAccountingData( updateText, false,false,false);
+	String result = u.receiveAccountingData(new ByteArrayInputStream( updateText.getBytes()), false,false,false);
 	
 	Assert.assertFalse(result.contains("Error in accounting parse"));
 }

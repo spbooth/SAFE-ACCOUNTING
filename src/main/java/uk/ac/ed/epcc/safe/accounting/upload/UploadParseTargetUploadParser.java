@@ -16,12 +16,15 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.upload;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.db.UploadParseTarget;
 import uk.ac.ed.epcc.safe.accounting.db.UploadParseTargetUpdater;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.model.data.stream.StreamData;
 /** UploadParser to populate an {@link UploadParseTarget} 
  * 
  * The target factory can be hard-wired by setting the parameter
@@ -42,7 +45,17 @@ public class UploadParseTargetUploadParser extends AbstractContexed implements U
     }
 	@SuppressWarnings("unchecked")
 	public String upload(Map<String, Object> parameters) throws UploadException {
-		String update = (String) parameters.get("update");
+		Object o = parameters.get("update");
+		InputStream update = null;
+		if( o != null) {
+			if( o instanceof InputStream) {
+				update = (InputStream) o;
+			}else if( o instanceof String ) {
+				update = new ByteArrayInputStream(((String)o).getBytes());
+			}else if( o instanceof StreamData) {
+				update = ((StreamData)o).getInputStream();
+			}
+		}
 		if( update == null ){
 			throw new UploadException("No update data");
 		}

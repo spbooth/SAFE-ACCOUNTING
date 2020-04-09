@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.upload;
 
+import java.io.ByteArrayInputStream;
 import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.db.AccountingUpdater;
@@ -105,7 +106,7 @@ public class AccountingUploadParser extends AbstractContexed implements UploadPa
         boolean replace = (parameters.get("replace") != null);
         boolean augment = (parameters.get("augment") != null);
         boolean verify = (parameters.get("verify") != null);
-        String result = new AccountingUpdater(conn,defaults,parse_target).receiveAccountingData( update, replace,verify,augment);
+        String result = new AccountingUpdater(conn,defaults,parse_target).receiveAccountingData(new ByteArrayInputStream( update.getBytes()), replace,verify,augment);
 		
 		return result;
 	}

@@ -8,7 +8,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -193,7 +195,7 @@ public abstract class AbstractRecordTestCase<R> extends
 		 */
 		for (BadRecordText record : this.getBadRecords()){
 			
-			Iterator<R> lines = parser.splitRecords(record.getText());
+			Iterator<R> lines = parser.splitRecords(record.getStream());
 			while(lines.hasNext()){
 				R rec = lines.next();
 				String line = parser.formatRecord(rec);
@@ -354,6 +356,9 @@ public abstract class AbstractRecordTestCase<R> extends
 		 */
 		public String getText() {
 			return this.record;
+		}
+		public InputStream getStream() {
+			return new ByteArrayInputStream(getText().getBytes());
 		}
 
 		/*

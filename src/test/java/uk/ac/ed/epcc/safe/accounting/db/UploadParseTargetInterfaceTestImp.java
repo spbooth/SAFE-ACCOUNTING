@@ -1,5 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.io.ByteArrayInputStream;
+
 import org.junit.Assert;
 
 import uk.ac.ed.epcc.junit.TargetProvider;
@@ -37,7 +39,7 @@ public class UploadParseTargetInterfaceTestImp<R,X extends UploadParseTarget<R>>
 			base.takeBaseline();
 		}
 		UploadParseTargetUpdater<R> updater = new UploadParseTargetUpdater<>(ctx, getUploadParseTarget());
-		String result = updater.receiveData(getUploadContext().getDefaultParams(), updateText,errors,skips);
+		String result = updater.receiveData(getUploadContext().getDefaultParams(),new ByteArrayInputStream( updateText.getBytes()),errors,skips);
 		//TestDataHelper.saveDataSet("NGSRecord", "NGSRecord", "lsf");
 		Assert.assertEquals(0,errors.size());
 		Assert.assertEquals(0,skips.size());

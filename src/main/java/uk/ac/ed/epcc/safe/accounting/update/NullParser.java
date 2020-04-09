@@ -13,6 +13,7 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.update;
 
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -73,7 +74,7 @@ public class NullParser extends AbstractContexed implements PropertyContainerPar
 	}
 
 
-	public Iterator<String> splitRecords(String update)
+	public Iterator<String> splitRecords(InputStream update)
 			throws AccountingParseException {
 		throw new AccountingParseException("Attempting to split records with a NullParser");
 	}

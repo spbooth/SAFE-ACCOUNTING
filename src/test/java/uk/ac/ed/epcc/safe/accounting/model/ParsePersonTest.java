@@ -6,6 +6,7 @@ package uk.ac.ed.epcc.safe.accounting.model;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class ParsePersonTest extends PersonTest {
     	Map<String,Object>  params = new HashMap<>();
     	String update = "sbooth:x:73964:4047:Stephen Booth:/exports/home/sbooth:/bin/bash\n" +
     			"millingw:x:309546:4047:Malcolm Illingworth:/exports/home/millingw:/bin/bash\n";
-    	String result = updater.receiveData(params, update, errors, skip_list);
+    	String result = updater.receiveData(params,new ByteArrayInputStream( update.getBytes()), errors, skip_list);
     	System.out.println(result);
     	assertEquals(2, updater.getLineCount());
     	assertEquals(2, updater.getUpdateCount());

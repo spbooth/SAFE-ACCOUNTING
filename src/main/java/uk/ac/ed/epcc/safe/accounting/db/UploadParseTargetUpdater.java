@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class UploadParseTargetUpdater<R> {
     	this.conn=c;
     	this.target=target;
     }
-    public String receiveData(Map<String,Object> params, String update){
+    public String receiveData(Map<String,Object> params, InputStream update){
     	ErrorSet errors = new ErrorSet();
     	ErrorSet skip_list = new ErrorSet();
     	return receiveData(params, update, errors, skip_list);
@@ -69,7 +70,7 @@ public class UploadParseTargetUpdater<R> {
     public int getUpdateCount(){
     	return updates;
     }
-	public String receiveData(Map<String, Object> params, String update,
+	public String receiveData(Map<String, Object> params, InputStream update,
 			ErrorSet errors, ErrorSet skip_list) {
 		PropertyMap meta_data = target.getGlobals(params);
     	
@@ -89,7 +90,7 @@ public class UploadParseTargetUpdater<R> {
     		
     	
     	}catch(Exception e){
-    		errors.add("Initialisation error", update, e);
+    		errors.add("Initialisation error","", e);
     		getLogger().error("Error initialising parse",e);
     		return "Error initialising parse";
     	}

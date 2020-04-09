@@ -16,6 +16,10 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -41,6 +45,7 @@ import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
 import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.safe.accounting.update.StringSplitter;
+import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
@@ -408,17 +413,78 @@ public class LSFParser extends BatchParser implements  Contexed {
 	
 	
 	
-	
+	public class Splitter  implements Iterator<String> {
+		private BufferedReader reader;
+		private String next;
+		public Splitter(InputStream stream) throws IOException {
+			reader = new BufferedReader(new InputStreamReader(stream));
+			next = nextLine();
+		}
+
+		
+		protected String nextLine() throws IOException {
+			while(true) {
+				String tmp = reader.readLine();
+				if( tmp == null ) {
+					return null;
+				}
+				tmp = clean(tmp);
+				if( ! tmp.isEmpty()) {
+					return tmp;
+				}
+			}
+		}
+
+		protected String nextMerge() throws IOException {
+			String merge = nextLine();
+			if( merge == null ) {
+				return null;
+			}
+			while( merge.endsWith("!")) {
+				merge = merge.substring(0, merge.length()-1);
+				String add = nextLine();
+				if( add == null ) {
+					return merge;
+				}
+				merge = merge+add;
+			}
+			return merge;
+		}
+		protected String clean(String in) {
+			return in.trim();
+		}
+		@Override
+		public boolean hasNext() {
+			return next != null;
+		}
+
+		@Override
+		public String next() {
+			String result = next;
+			try {
+				next = nextMerge();
+			} catch (IOException e) {
+				next=null;
+				getLogger().error("Error reading next line", e);
+			}
+			return result;
+		}
+
+	}
+
 	
 	@Override
-	public Iterator<String> splitRecords(String update)
+	public Iterator<String> splitRecords(InputStream update)
 	throws AccountingParseException 
 	{
 		
 		
-		// merge continuation lines before splitting.
-		// seems to add space at beginning of continuation line
-		return new StringSplitter(update.replaceAll("!\n ", ""));
+		
+		try {
+			return new Splitter(update);
+		} catch (IOException e) {
+			throw new AccountingParseException(e);
+		}
 	}
 	
 	// debug method to show tokenised values

@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.update;
 
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -53,11 +54,11 @@ public interface PropertyContainerParser<R> extends PropertyContainerUpdater{
    * Though the individual records are usually also represented as Strings they can
    * also use some intermediate representation such as a DOM tree or JSON object.
    * 
-   * @param update string containing multiple records
+   * @param update {@link InputStream} containing multiple records
    * @return Iterator<R> over individual records
    * @throws AccountingParseException 
    */
-  public Iterator<R> splitRecords(String update) throws AccountingParseException;
+  public Iterator<R> splitRecords(InputStream update) throws AccountingParseException;
  
   /** format the record back to a String.
    * 

@@ -16,6 +16,8 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.update;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -109,9 +111,13 @@ public abstract class AbstractPropertyContainerParser extends AbstractPropertyCo
 	 * @return Iterator<String>
    * @throws AccountingParseException If a problem occurs while splitting the records
 	 */
-	public Iterator<String> splitRecords(String update)
+	public Iterator<String> splitRecords(InputStream update)
 			throws AccountingParseException {
-		return new StringSplitter(update);
+		try {
+			return new StreamLineSplitter(getContext(),update);
+		} catch (IOException e) {
+			throw new AccountingParseException("Exception splitting lines", e);
+		}
 	}
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser#formatRecord(java.lang.Object)

@@ -1,5 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
@@ -12,6 +14,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
+import uk.ac.ed.epcc.safe.accounting.update.StreamLineSplitter;
 import uk.ac.ed.epcc.safe.accounting.update.StringSplitter;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -178,97 +181,103 @@ public class AprunCmdParser<T> extends AbstractPropertyContainerParser  {
 	 * @param update, list of aprun commands separated by newline characters
 	 * @return return a list of individual aprun commands that takes account of MPMD
 	 */
-	public Iterator<String> splitRecords(String update)
+	public Iterator<String> splitRecords(InputStream update)
 			throws AccountingParseException {
-		
+
 		String full_cmd = new String("");
 		String attrApid = null;
-		
+
 		// iterate through a set of aprun commands separated by newlines
-		StringSplitter cmds = new StringSplitter(update);
-		while (cmds.hasNext()) {
-			
-			String current_cmd = cmds.next();
-			
-			// extract the apid (placed by NestedParsePolicy.postCreate method)
-			// and strip the aprun command path
-			int i = current_cmd.indexOf(ALPS_ID.getAlias(0));
-			if (-1 == i) {
-				throw new AccountingParseException("Error alps id not found in, '" + update + "'.");
-			}
-			else if (0 != i) {
-				throw new AccountingParseException("Error alps id not found at start of, '" + update + "'.");
-			}
-			attrApid = current_cmd.substring(i, current_cmd.indexOf(CHAR_WHITESPACE));
-			
-			i = current_cmd.indexOf(APRUN_CMD_NAME);
-			if (-1 == i) {
-				throw new AccountingParseException("Error aprun command name not found in, '" + update + "'.");
-			}
-			i += APRUN_CMD_NAME.length();
-			current_cmd = current_cmd.substring(i, current_cmd.length());
-			
-			// distinguish those colons that are being used to format a MPMD aprun command
-			// from those colons that are simply used within the application argument list and
-			// replace the latter with semi-colons
-			i = 0;
-			int len = current_cmd.length();
-			do {
-				i = current_cmd.indexOf(CHAR_COLON, i);
+		StreamLineSplitter cmds;
+		try {
+			cmds= new StreamLineSplitter(getContext(),update);
+
+			while (cmds.hasNext()) {
+
+				String current_cmd = cmds.next();
+
+				// extract the apid (placed by NestedParsePolicy.postCreate method)
+				// and strip the aprun command path
+				int i = current_cmd.indexOf(ALPS_ID.getAlias(0));
 				if (-1 == i) {
-					break;
+					throw new AccountingParseException("Error alps id not found in, '" + update + "'.");
 				}
-				
-				int i2 = i+1;
-				while (i2 < len && CHAR_WHITESPACE == current_cmd.charAt(i2)) {
-					i2++;
+				else if (0 != i) {
+					throw new AccountingParseException("Error alps id not found at start of, '" + update + "'.");
 				}
-				
-				if (len == i2) {
-					current_cmd = current_cmd.substring(0, i) + STRING_WHITESPACE
-							+ current_cmd.substring(i+1);
+				attrApid = current_cmd.substring(i, current_cmd.indexOf(CHAR_WHITESPACE));
+
+				i = current_cmd.indexOf(APRUN_CMD_NAME);
+				if (-1 == i) {
+					throw new AccountingParseException("Error aprun command name not found in, '" + update + "'.");
 				}
-				else if (CHAR_HYPHEN != current_cmd.charAt(i2)) {
-					current_cmd = current_cmd.substring(0, i) + STRING_SEMICOLON
-							+ current_cmd.substring(i+1);
+				i += APRUN_CMD_NAME.length();
+				current_cmd = current_cmd.substring(i, current_cmd.length());
+
+				// distinguish those colons that are being used to format a MPMD aprun command
+				// from those colons that are simply used within the application argument list and
+				// replace the latter with semi-colons
+				i = 0;
+				int len = current_cmd.length();
+				do {
+					i = current_cmd.indexOf(CHAR_COLON, i);
+					if (-1 == i) {
+						break;
+					}
+
+					int i2 = i+1;
+					while (i2 < len && CHAR_WHITESPACE == current_cmd.charAt(i2)) {
+						i2++;
+					}
+
+					if (len == i2) {
+						current_cmd = current_cmd.substring(0, i) + STRING_WHITESPACE
+								+ current_cmd.substring(i+1);
+					}
+					else if (CHAR_HYPHEN != current_cmd.charAt(i2)) {
+						current_cmd = current_cmd.substring(0, i) + STRING_SEMICOLON
+								+ current_cmd.substring(i+1);
+					}
+
+					i++;
+				} while (i < len);
+
+
+				// iterate through the individual commands that make up a MPMD aprun command
+				Integer apnum = (-1 == current_cmd.indexOf(CHAR_COLON)) ? -1 : 0;
+				StringSplitter single_cmds = new StringSplitter(current_cmd, STRING_COLON);
+
+				while (single_cmds.hasNext()) {
+					// prepend the alps id and aprun command number to the aprun command string
+					// these two fields are unique to each aprun command stored in AprunCommandLog
+					attrApid = attrApid.replace(CHAR_EQUALS, CHAR_WHITESPACE);
+
+					String single_cmd = attrApid + " " + APRUN_CMD_NUM.getAlias(0) + " " + apnum.toString() + " ";
+					single_cmd += single_cmds.next();
+
+					full_cmd += single_cmd;
+					if (single_cmds.hasNext()) {
+						apnum += 1;
+						full_cmd += " " + STRING_COLON + " ";
+					}
 				}
-				
-				i++;
-			} while (i < len);
-			
-		
-			// iterate through the individual commands that make up a MPMD aprun command
-			Integer apnum = (-1 == current_cmd.indexOf(CHAR_COLON)) ? -1 : 0;
-			StringSplitter single_cmds = new StringSplitter(current_cmd, STRING_COLON);
-			
-			while (single_cmds.hasNext()) {
-				// prepend the alps id and aprun command number to the aprun command string
-				// these two fields are unique to each aprun command stored in AprunCommandLog
-				attrApid = attrApid.replace(CHAR_EQUALS, CHAR_WHITESPACE);
-				
-				String single_cmd = attrApid + " " + APRUN_CMD_NUM.getAlias(0) + " " + apnum.toString() + " ";
-				single_cmd += single_cmds.next();
-				
-				full_cmd += single_cmd;
-				if (single_cmds.hasNext()) {
-					apnum += 1;
+				attrApid = null;
+
+				if (cmds.hasNext()) {
 					full_cmd += " " + STRING_COLON + " ";
 				}
-			}
-			attrApid = null;
-			
-			if (cmds.hasNext()) {
-				full_cmd += " " + STRING_COLON + " ";
-			}
-			
-		}	
-		
-		// remove extraneous spaces surrounding equals signs and commas
-		// that are sometimes used within attribute arguments
-		full_cmd = full_cmd.replaceAll(REGEX_EQUALS, STRING_EQUALS);
-		full_cmd = full_cmd.replaceAll(REGEX_COMMA, STRING_COMMA);
-		
-		return new StringSplitter(full_cmd, STRING_COLON);
+
+			}	
+
+			// remove extraneous spaces surrounding equals signs and commas
+			// that are sometimes used within attribute arguments
+			full_cmd = full_cmd.replaceAll(REGEX_EQUALS, STRING_EQUALS);
+			full_cmd = full_cmd.replaceAll(REGEX_COMMA, STRING_COMMA);
+
+			return new StringSplitter(full_cmd, STRING_COLON);
+		} catch (IOException e) {
+			throw new AccountingParseException(e);
+		}
 	}
 	
 	

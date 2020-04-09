@@ -16,7 +16,10 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.Iterator;
 import java.util.Map;
@@ -250,7 +253,7 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 	 * uk.ac.ed.epcc.safe.accounting.BaseParser#splitRecords(java.lang.String)
 	 */
 	@Override
-	public Iterator<String> splitRecords(String records)
+	public Iterator<String> splitRecords(InputStream records)
 			throws AccountingParseException {
 
 		try {
@@ -258,7 +261,7 @@ public class XMLRecordParser extends BatchParser implements Contexed {
 			try {
 				XMLReader parser = XMLReaderFactory.createXMLReader();
 				parser.setContentHandler(handler);
-				parser.parse(new InputSource(new StringReader(records)));
+				parser.parse(new InputSource(new BufferedReader(new InputStreamReader(records))));
 			} catch (SAXException e) {
 				throw new AccountingParseException(
 						"Problem while separating OGF-UR usage records", e);

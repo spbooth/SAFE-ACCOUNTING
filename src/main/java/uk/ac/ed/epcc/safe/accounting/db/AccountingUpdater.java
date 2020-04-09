@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -72,7 +73,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 	 * @param augment missing fields should be added to existing records
 	 * @return String status message
 	 */
-	public synchronized  final String receiveAccountingData( String update, boolean replace, boolean verify, boolean augment){
+	public synchronized  final String receiveAccountingData( InputStream update, boolean replace, boolean verify, boolean augment){
 		int n_lines=0;
 		int skip=0;
 		int duplicate=0;

@@ -16,6 +16,8 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +32,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
+import uk.ac.ed.epcc.safe.accounting.update.UnixStreamLineSpliter;
 import uk.ac.ed.epcc.webapp.AppContext;
 /** PropertyContainerParser based on regular expressions.
  * 
@@ -75,9 +78,13 @@ public abstract class RegexpParser extends AbstractPropertyContainerParser {
 	}
 
 	@Override
-	public Iterator<String> splitRecords(String update)
+	public Iterator<String> splitRecords(InputStream update)
 			throws AccountingParseException {
-		return new UnixFileSplitter(update);
+		try {
+			return new UnixStreamLineSpliter(getContext(),update);
+		} catch (IOException e) {
+			throw new AccountingParseException(e);
+		}
 	}
 
 	
