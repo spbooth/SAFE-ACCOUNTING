@@ -492,7 +492,7 @@ public class LSFParser extends BatchParser implements  Contexed {
 					buf = new char[1024];
 				}
 			}
-			return new StringSplitter(fileData.toString());
+			return new StringSplitter(fileData.toString().replaceAll("!\n ", ""));
 			
 			// This should work but ....
 			// return new Splitter(update);
