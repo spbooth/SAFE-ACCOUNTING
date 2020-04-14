@@ -479,9 +479,23 @@ public class LSFParser extends BatchParser implements  Contexed {
 	{
 		
 		
-		
 		try {
-			return new Splitter(update);
+			// force to string and use old string splitter 
+			// because of strange line-join 
+			StringBuffer fileData = new StringBuffer(1000);
+			try(BufferedReader reader = new BufferedReader(new InputStreamReader(update))){
+				char[] buf = new char[1024];
+				int numRead = 0;
+				while ((numRead = reader.read(buf)) != -1) {
+					String readData = String.valueOf(buf, 0, numRead);
+					fileData.append(readData);
+					buf = new char[1024];
+				}
+			}
+			return new StringSplitter(fileData.toString());
+			
+			// This should work but ....
+			// return new Splitter(update);
 		} catch (IOException e) {
 			throw new AccountingParseException(e);
 		}
