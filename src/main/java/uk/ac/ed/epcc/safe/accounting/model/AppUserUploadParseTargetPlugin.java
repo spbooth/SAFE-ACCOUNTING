@@ -64,8 +64,11 @@ public class AppUserUploadParseTargetPlugin<A extends AppUser,R> extends NameFin
 			PropertyRegistry role_reg = new PropertyRegistry("roles", "role properties");
 			for( String role :  role_list){
 				try {
-					PropertyTag<Boolean> role_tag = new PropertyTag<>(role_reg, role, Boolean.class);
-					mapi2.put(role_tag, new RoleAccessor<>(serv, role));
+					// Can have stange role names particularly from auto-generated funding body roles
+					if( PropertyTag.allowedName(role)) {
+						PropertyTag<Boolean> role_tag = new PropertyTag<>(role_reg, role, Boolean.class);
+						mapi2.put(role_tag, new RoleAccessor<>(serv, role));
+					}
 				}catch(Exception t) {
 					getLogger().error("Error making role accessor for ["+role+"]", t);
 				}
