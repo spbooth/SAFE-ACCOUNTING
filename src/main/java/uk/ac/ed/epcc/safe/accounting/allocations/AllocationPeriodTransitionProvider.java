@@ -33,6 +33,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
 import uk.ac.ed.epcc.webapp.content.Labeller;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.forms.Form;
@@ -280,7 +281,19 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 			}
 			manager.finishIndexTable(tab, target);
 			if( tab.hasData()) {
-				cb.addText("Dates in red indicate records that cross the time period of the filter. Grey End-dates indicate an allocation that is past");
+				ExtendedXMLBuilder text = cb.getText();
+				text.clean("Dates in ");
+				text.open("span");
+				text.addClass("warn");
+				text.clean("red");
+				text.close();
+				text.clean(" indicate records that cross the time period of the filter. ");
+				text.open("span");
+				text.addClass("grey");
+				text.clean("Grey");
+				text.close();
+				text.clean(" End-dates indicate an allocation that is past");
+				text.appendParent();
 				cb.addTable(c, tab);
 			}
 		}catch(Exception e){
