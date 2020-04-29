@@ -18,7 +18,7 @@
 <table class="form">
 <tr class="even">
 <th>
-<label class="required">MyMachine</label>
+<span class="required">MyMachine</span>
 </th>
 <td>Junk</td>
 </tr>
