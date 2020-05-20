@@ -116,7 +116,7 @@
 </xsd:annotation>
 <xsd:complexType mixed="true">
 		<xsd:sequence>
-		<xsd:group ref="Content" maxOccurs="unbounded" minOccurs="0"/>
+		<xsd:group ref="ReportGroup" maxOccurs="unbounded" minOccurs="0"/>
 		</xsd:sequence>	
 </xsd:complexType>
 </xsd:element>
