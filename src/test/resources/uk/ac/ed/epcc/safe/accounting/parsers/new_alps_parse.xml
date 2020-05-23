@@ -1,0 +1,139 @@
+<Diff><TableSpecification name='ALPSLog'>
+<apid type='Integer' nullable='true'/>
+<alpsBootTime type='Long' nullable='true'/>
+<aprun_entry_tag type='String' nullable='true' max='32'/>
+<apsys_entry_tag type='String' nullable='true' max='32'/>
+<batch_string_id type='String' nullable='true' max='32'/>
+<batch_id type='Integer' nullable='true'/>
+<batch_array_index type='String' nullable='true' max='32'/>
+<user type='Integer' nullable='true'/>
+<hostname type='String' nullable='true' max='32'/>
+<num_nodes type='Integer' nullable='true'/>
+<node_list type='String' nullable='true' max='16777215'/>
+<aprunStartTime type='Long' nullable='true'/>
+<apsysEndTime type='Long' nullable='true'/>
+<cwd type='String' nullable='true' max='16777215'/>
+<cmd_line type='String' nullable='true' max='16777215'/>
+<exit_code type='String' nullable='true' max='32'/>
+<exitcode_array type='String' nullable='true' max='16777215'/>
+<exitsignal_array type='String' nullable='true' max='16777215'/>
+<duplicate_key type='Index' unique='true'><Column name='apid'/><Column name='alpsBootTime'/></duplicate_key>
+<alps_time type='Index' unique='false'><Column name='aprunStartTime'/><Column name='apsysEndTime'/></alps_time>
+<time type='Index' unique='false'><Column name='apsysEndTime'/></time>
+</TableSpecification>
+<ALPSLog id='1'>
+<apid>33182918</apid>
+<alpsBootTime>1544626484</alpsBootTime>
+<aprun_entry_tag>12188</aprun_entry_tag>
+<apsys_entry_tag>12192</apsys_entry_tag>
+<batch_string_id>5884441.sdb</batch_string_id>
+<batch_id>5884441</batch_id>
+<batch_array_index></batch_array_index>
+<user>5496</user>
+<hostname>c4-1c0s0n1</hostname>
+<num_nodes>2</num_nodes>
+<node_list>3018,3031</node_list>
+<aprunStartTime>1547227822</aprunStartTime>
+<apsysEndTime>1547227835</apsysEndTime>
+<cwd>/fs3/z01/z01/aturner/benchmark/ARCHER/OpenSBLI/Benchmark_1024ss</cwd>
+<cmd_line>/opt/cray/alps/5.2.5-2.0502.9955.44.1.ari/bin/aprun -n 48 ./OpenSBLI_mpi </cmd_line>
+<exit_code>137</exit_code>
+<exitcode_array>0</exitcode_array>
+<exitsignal_array>9:0</exitsignal_array>
+</ALPSLog>
+<TableSpecification name='AprunCommandLog'>
+<alps_id type='Integer' nullable='true'/>
+<aprun_cmd_num type='Integer' nullable='true'/>
+<architecture type='String' nullable='true' max='32'/>
+<bypass_app_transfer type='Boolean' nullable='false'/>
+<batch_args type='Boolean' nullable='false'/>
+<reconnect type='Boolean' nullable='false'/>
+<cpu_binding type='String' nullable='true' max='128'/>
+<cpu_binding_file type='String' nullable='true' max='32'/>
+<cpus_per_pe type='Integer' nullable='true'/>
+<debug type='Integer' nullable='true'/>
+<environment type='String' nullable='true' max='32'/>
+<exclude_node_list type='String' nullable='true' max='128'/>
+<exclude_node_list_file type='String' nullable='true' max='32'/>
+<cpus type='Integer' nullable='true'/>
+<xeon_phi_placement type='Boolean' nullable='false'/>
+<node_list type='String' nullable='true' max='128'/>
+<node_list_file type='String' nullable='true' max='32'/>
+<memory_per_pe type='String' nullable='true' max='32'/>
+<pes type='Integer' nullable='true'/>
+<pes_per_node type='Integer' nullable='true'/>
+<access_mode type='String' nullable='true' max='32'/>
+<protection_domain type='String' nullable='true' max='32'/>
+<p_governor type='String' nullable='true' max='32'/>
+<p_state type='String' nullable='true' max='32'/>
+<quiet type='Boolean' nullable='false'/>
+<specialized_cpus type='String' nullable='true' max='32'/>
+<relaunch type='String' nullable='true' max='32'/>
+<pes_per_numa_node type='Integer' nullable='true'/>
+<numa_node_list type='String' nullable='true' max='32'/>
+<numa_nodes_per_node type='Integer' nullable='true'/>
+<strict_memory_containment type='Boolean' nullable='false'/>
+<sync_output type='Boolean' nullable='false'/>
+<cpu_time_limit type='Integer' nullable='true'/>
+<app_exe_path type='String' nullable='true' max='16777215'/>
+<app_exe_name type='String' nullable='true' max='128'/>
+<app_attrs type='String' nullable='true' max='16777215'/>
+<app_id type='Integer' nullable='true'/>
+<ParentID reference='ALPSLog'/>
+<AprunApplicationID reference='AprunApplication'/>
+<duplicate_key type='Index' unique='true'><Column name='alps_id'/><Column name='aprun_cmd_num'/></duplicate_key>
+</TableSpecification>
+<AprunCommandLog id='1'>
+<alps_id>33182918</alps_id>
+<aprun_cmd_num>-1</aprun_cmd_num>
+<architecture></architecture>
+<bypass_app_transfer>false</bypass_app_transfer>
+<batch_args>false</batch_args>
+<reconnect>false</reconnect>
+<cpu_binding></cpu_binding>
+<cpu_binding_file></cpu_binding_file>
+<cpus_per_pe>1</cpus_per_pe>
+<debug>0</debug>
+<environment></environment>
+<exclude_node_list></exclude_node_list>
+<exclude_node_list_file></exclude_node_list_file>
+<cpus>0</cpus>
+<xeon_phi_placement>false</xeon_phi_placement>
+<node_list></node_list>
+<node_list_file></node_list_file>
+<memory_per_pe>2.6G</memory_per_pe>
+<pes>48</pes>
+<pes_per_node>24</pes_per_node>
+<access_mode>exclusive</access_mode>
+<protection_domain></protection_domain>
+<p_governor>performance</p_governor>
+<p_state></p_state>
+<quiet>false</quiet>
+<specialized_cpus></specialized_cpus>
+<relaunch></relaunch>
+<pes_per_numa_node>12</pes_per_numa_node>
+<numa_node_list></numa_node_list>
+<numa_nodes_per_node>2</numa_nodes_per_node>
+<strict_memory_containment>false</strict_memory_containment>
+<sync_output>false</sync_output>
+<cpu_time_limit>0</cpu_time_limit>
+<app_exe_path>./OpenSBLI_mpi</app_exe_path>
+<app_exe_name>OpenSBLI_mpi</app_exe_name>
+<app_attrs></app_attrs>
+<app_id>0</app_id>
+<ParentID>1</ParentID>
+</AprunCommandLog>
+<TableSpecification name='Properties'>
+<Name type='String' nullable='false' max='255'/>
+<Value type='String' nullable='false' max='255'/>
+<name_key type='Index' unique='true'><Column name='Name'/></name_key>
+</TableSpecification>
+<Properties id='1'>
+<Name>reference.AprunCommandLog.ParentID</Name>
+<Value>ALPSLog</Value>
+</Properties>
+<Properties id='2'>
+<Name>reference.AprunCommandLog.AprunApplicationID</Name>
+<Value>AprunApplication</Value>
+</Properties>
+</Diff>

@@ -1,0 +1,2 @@
+<150>1 2019-01-11T17:30:22.150322+00:00 c4-1c0s0n1 aprun 12188 p0-20181212t145444 [alps_msgs@34] apid=33182918, Starting, user=5496, batch_id=5884441.sdb, cmd_line="/opt/cray/alps/5.2.5-2.0502.9955.44.1.ari/bin/aprun -n 48 ./OpenSBLI_mpi ", num_nodes=2, node_list=3018,3031, cwd="/fs3/z01/z01/aturner/benchmark/ARCHER/OpenSBLI/Benchmark_1024ss"
+<150>1 2019-01-11T17:30:35.218953+00:00 c4-1c0s0n1 apsys 12192 p0-20181212t145444 [alps_msgs@34] apid=33182918, Finishing, user=5496, batch_id=5884441.sdb, exit_code=137, exitcode_array=0, exitsignal_array=9:0
