@@ -23,12 +23,12 @@ import java.net.URL;
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.apps.MimeConstants;
+import org.apache.fop.configuration.Configuration;
+import org.apache.fop.configuration.DefaultConfigurationBuilder;
 
 import uk.ac.ed.epcc.webapp.AppContext;
 
