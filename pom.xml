@@ -146,7 +146,7 @@
 			<version>2.5</version>
 			<exclusions>
 			<exclusion>
-			<groupId>javax.servler</groupId>
+			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			</exclusion>
 			</exclusions>
