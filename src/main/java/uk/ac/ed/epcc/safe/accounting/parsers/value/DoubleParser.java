@@ -23,6 +23,7 @@ import uk.ac.ed.epcc.webapp.Description;
 @Description("Parse a double value")
 public class DoubleParser implements ValueParser<Double> {
 
+	public static DoubleParser PARSER = new DoubleParser();
 	public Class<Double> getType() {
 		return Double.class;
 	}

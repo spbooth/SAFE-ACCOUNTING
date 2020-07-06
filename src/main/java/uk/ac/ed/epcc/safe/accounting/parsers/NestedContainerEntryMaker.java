@@ -3,6 +3,8 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.util.regex.Pattern;
 
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+
 /** A {@link ContainerEntryMaker} for composite entries
  * that contain multiples values given as comma separated name=value pairs
  * 
@@ -13,6 +15,9 @@ import java.util.regex.Pattern;
  */
 public class NestedContainerEntryMaker extends AbstractNestedContainerEntryMaker {
 
+	public NestedContainerEntryMaker(PropertyTag<String> raw, MakerMap map) {
+		super(raw, map);
+	}
 	public NestedContainerEntryMaker(MakerMap map) {
 		super(map);
 	}

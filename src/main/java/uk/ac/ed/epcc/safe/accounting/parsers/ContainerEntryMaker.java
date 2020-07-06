@@ -21,6 +21,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
+import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 
 /** A nested parser that parses a single field or fragment of record generating proeprty values.
  * <p>
@@ -98,8 +99,14 @@ public interface ContainerEntryMaker
    *           null and this the parser does not support <code>null</code>
    *           strings
    */
-  public void setValue(PropertyMap map, String valueString)
+  public default void setValue(PropertyMap map, String valueString)
     throws IllegalArgumentException,
     NullPointerException,
-    AccountingParseException;
+    AccountingParseException{
+	  try {
+		setValue((PropertyContainer) map, valueString);
+	} catch (InvalidPropertyException e) {
+		throw new ConsistencyError("Unexpected exception", e);
+	} 
+  };
 }

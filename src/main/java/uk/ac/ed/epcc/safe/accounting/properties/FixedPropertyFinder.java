@@ -34,7 +34,7 @@ import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
  */
 
 
-public class FixedPropertyFinder implements PropertyFinder {
+public class FixedPropertyFinder implements PropertyFinder, Iterable<PropertyTag>{
 	public static final String PROPERTY_FINDER_NAME_REGEXP="[a-zA-Z]\\w*";
 	public static final String PROPERTY_FINDER_SEPERATOR=":";
 	public static final String PROPERTY_FINDER_PREFIX_REGEXP=PROPERTY_FINDER_NAME_REGEXP+PROPERTY_FINDER_SEPERATOR;
@@ -62,6 +62,9 @@ public class FixedPropertyFinder implements PropertyFinder {
 
 	public Iterator<Entry<String, PropertyTag>> getIterator(){
 		return this.registry.entrySet().iterator();
+	}
+	public Iterator<PropertyTag> iterator(){
+		return this.registry.values().iterator();
 	}
 	
 	public PropertyTag<?> find(String name) {
