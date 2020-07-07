@@ -14,6 +14,7 @@
 package uk.ac.ed.epcc.safe.accounting.expr;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,11 +33,11 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTuple;
  */
 
 
-public final class ExpressionTuple {
+public final class ExpressionTuple implements Comparable<ExpressionTuple>{
 	private final Map<PropExpression,Object> data;
 	private final int hash;
 	public ExpressionTuple(Map<PropExpression,Object> values){
-		data=new HashMap<>();
+		data=new LinkedHashMap<>();
 		int tmp=0;
 		for(PropExpression e : values.keySet()){
 			Object val = values.get(e);
@@ -51,7 +52,7 @@ public final class ExpressionTuple {
 		hash=tmp;
 	}
 	public ExpressionTuple(Set<PropExpression> keys, ExpressionTarget rec) throws InvalidExpressionException {
-		data=new HashMap<>();
+		data=new LinkedHashMap<>();
 		int tmp=0;
 		for(PropExpression e : keys){
 			@SuppressWarnings("unchecked")
@@ -125,5 +126,35 @@ public final class ExpressionTuple {
 		   return data.values().iterator().next();
 		}
 		return this;
+	}
+	@Override
+	public int compareTo(ExpressionTuple o) {
+		for(PropExpression<?> tag: data.keySet()){
+			Object my_data = data.get(tag);
+			Object peer_data = o.data.get(tag);
+			if( my_data == null && peer_data != null ) {
+				return -1;
+			}
+			if( my_data != null && peer_data == null ) {
+				return 1;
+			}
+			if( my_data != null && peer_data != null ) {
+				if( my_data instanceof Comparable) {
+					int res = ((Comparable)my_data).compareTo(peer_data);
+					if( res != 0 ) {
+						return res;
+					}
+				}else {
+					if( ! my_data.equals(peer_data)) {
+						// arbitrary order
+						int res = my_data.hashCode() - peer_data.hashCode();
+						if( res != 0) {
+							return res;
+						}
+					}
+				}
+			}
+		}
+		return 0;
 	}
 }
