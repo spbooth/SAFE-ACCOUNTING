@@ -520,4 +520,17 @@
 			<xsd:attribute name="file" type="xsd:string" use="required"></xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
+	<xsd:group name="Content">
+	<xsd:annotation><xsd:documentation>
+	General content elements. Specialised schemas can add custom elements by
+	redefining this group.
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+	<xsd:element ref="Include"/>
+	<xsd:element ref="IfSet"/>
+	<xsd:element ref="IfNotSet"/>
+	<xsd:element ref="Repeat"/>
+	<xsd:element ref="Optional"/>
+	</xsd:choice>
+	</xsd:group>
 </xsd:schema>

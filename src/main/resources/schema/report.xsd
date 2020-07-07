@@ -180,7 +180,7 @@
 	redefining this group.
 	</xsd:documentation></xsd:annotation>
 	<xsd:choice>
-	<xsd:element ref="par:Include"/>
+
 	<xsd:element ref="Div"/>
 	<xsd:element ref="Text" />
 	<xsd:element ref="PreFormatted" />

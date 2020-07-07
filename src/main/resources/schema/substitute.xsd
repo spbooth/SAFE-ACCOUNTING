@@ -87,11 +87,11 @@
 			<xsd:element ref="par:FormatParameter" />
 			<xsd:element ref="par:Repeat" />
 			<xsd:element ref="par:For" />
+			<xsd:element ref="par:IfSet"/>
+			<xsd:element ref="par:IfNotSet"/>
+			<xsd:element ref="par:Optional"/>
 			<xsd:element ref="mac:Macro" />
 			<xsd:element ref="mac:Switch" />
-			<xsd:element ref="par:IfSet" />
-			<xsd:element ref="par:IfNotSet" />
-			<xsd:element ref="par:Optional" />
 			<xsd:element ref="res:RestrictedSection" />
 		</xsd:choice>
 	</xsd:group>	
