@@ -67,6 +67,7 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 public class SlurmParser extends BatchParser implements  Contexed,ConfigParamProvider {
 	private static final String PARSE_FORMAT_SUFFIX = ".parse.format";
 	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
+	private static final String SKIP_SUB_JOBS_SUFFIX = ".skip_sub_jobs";
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	
 	public SlurmParser(AppContext conn) {
@@ -307,6 +308,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	
 	
 	private boolean skip_cancelled=false;
+	private boolean skip_sub_jobs=false;
 	private String table;
 	private String tags[];
 	private int count;
@@ -356,6 +358,10 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 			return false;
 		}
 		if( skip_cancelled && state.startsWith("CANCELLED")){
+			return false;
+		}
+		Boolean sub_job = map.getProperty(SUB_JOB);
+		if( skip_cancelled && sub_job != null && sub_job) {
 			return false;
 		}
 	    }catch(NumberFormatException e){
@@ -416,6 +422,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		finder.addFinder(StandardProperties.base);
 		this.table=table;
 		skip_cancelled = conn.getBooleanParameter(table+SKIP_CANCELLED_SUFFIX, false);
+		skip_sub_jobs = conn.getBooleanParameter(table+SKIP_SUB_JOBS_SUFFIX, false);
 		
 		Logger log = getLogger();
 		for(PropertyTag tag : slurm) {
@@ -467,6 +474,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	@Override
 	public void addConfigParameters(Set<String> params) {
 		params.add(table+SKIP_CANCELLED_SUFFIX);
+		params.add(table+SKIP_SUB_JOBS_SUFFIX);
 		params.add(table+PARSE_FORMAT_SUFFIX);
 		
 	}
