@@ -143,7 +143,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	public static final PropertyTag<String> JOB_ID = new PropertyTag<>(slurm, "JobID", String.class,"Slurm JOB id");
 	@AutoTable
 	public static final PropertyTag<Boolean> SUB_JOB = new PropertyTag<>(slurm,"SubJob",Boolean.class,"Is this a slurm sub-job");
-	@AutoTable
+	@OptionalTable
 	public static final PropertyTag<String> JOB_ID_RAW = new PropertyTag<>(slurm, "JobIDRaw", String.class,"RAW Slurm JOB id");
 	@AutoTable(unique=true,length=200)
 	public static final PropertyTag<String> JOB_NAME_PROP = new PropertyTag<>(slurm, "JobName", String.class,"Job name");
@@ -175,7 +175,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
     public static final PropertyTag<Long> MaxRSS = new PropertyTag<>(slurm,"MaxRSS", Long.class,"Maximum resident set size of all tasks in job.");
     @OptionalTable
     public static final PropertyTag<String> MaxRSSNode = new PropertyTag<String>(slurm, "MaxRSSNode", String.class, "The node on which the maxrss occurred. ");
-	@OptionalTable(target=Integer.class)
+	@OptionalTable
 	public static final PropertyTag<Integer> MaxRSSTask = new PropertyTag<Integer>(slurm,"MaxRSSTask",Integer.class,"The task ID where the maxrss occurred. ");
 	
 	@OptionalTable
@@ -196,7 +196,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	
 	@OptionalTable(length=128)
 	public static final PropertyTag<String> NodeList = new PropertyTag<>(slurm,"NodeList",String.class,"List of nodes in job/step. ");
-	@AutoTable
+	@OptionalTable
     public static final PropertyTag<Integer> N_NODES_PROP = new PropertyTag<>(slurm, "NNodes", Integer.class,"Number of nodes in a job or step.");
 	@AutoTable
     public static final PropertyTag<Integer> N_TASKS_PROP = new PropertyTag<>(slurm, "NTasks", Integer.class,"Total number of tasks in a job or step. ");
@@ -206,7 +206,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	public static final PropertyTag<String> PARTITION_PROP = new PropertyTag<>(slurm, "Partition", String.class);
 	@AutoTable
 	public static final PropertyTag<String> QOS = new PropertyTag<>(slurm, "QOS", String.class,"Quality of service");
-	@AutoTable
+	@OptionalTable
 	public static final PropertyTag<Integer> QOSRAW = new PropertyTag<>(slurm, "QOSRAW", Integer.class,"Numeric id of Quality of Service.");
 
 	@OptionalTable
@@ -226,12 +226,12 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	@OptionalTable
 	public static final PropertyTag<String> ReqGRES = new PropertyTag<>(slurm,"ReqGRES",String.class);
 	
-	@AutoTable
+	@OptionalTable
 	public static final PropertyTag<Long> REQ_MEM_PROP = new PropertyTag<>(slurm, "ReqMem", Long.class);
 	@OptionalTable
 	public static final PropertyTag<Integer> ReqNodes = new PropertyTag<>(slurm,"ReqNodes",Integer.class,"Requested minimum Node count for the job/step.");
 
-	@OptionalTable
+	@AutoTable(length = 128)
 	public static final PropertyTag<String> Reservation = new PropertyTag<>(slurm,"Reservation",String.class,"Reservation Name");
 	@OptionalTable
 	public static final PropertyTag<Integer> ReservationId = new PropertyTag<>(slurm,"ReservationId",Integer.class,"Reservation Id");
@@ -245,7 +245,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	
 	@AutoTable(unique=true)
 	public static final PropertyTag<Date> START_PROP = new PropertyTag<>(slurm,"Start",Date.class,"Job start");
-	@AutoTable
+	@OptionalTable
 	public static final PropertyTag<String> STATE_PROP = new PropertyTag<>(slurm, "State", String.class);
 	@AutoTable
 	public static final PropertyTag<Date> SUBMIT_PROP = new PropertyTag<>(slurm,"Submit",Date.class,"Job submit");
@@ -263,7 +263,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	@OptionalTable
 	public static final PropertyTag<Duration> TotalCPU = new PropertyTag<>(slurm, "TotalCPU", Duration.class,"The sum of the SystemCPU and UserCPU time used by the job or job step. The total CPU time of the job may exceed the job's elapsed time for jobs that include multiple job steps. ");
 
-	// Not parsing TresUsage*
+	
 	
 	@OptionalTable
 	public static final PropertyTag<Integer> UID = new PropertyTag<>(slurm,"UID",Integer.class);
