@@ -8,17 +8,12 @@
 <Group type='String' nullable='true' max='32'/>
 <JobID type='String' nullable='true' max='32'/>
 <SubJob type='Boolean' nullable='false'/>
-<JobIDRaw type='String' nullable='true' max='32'/>
 <JobName type='String' nullable='true' max='200'/>
-<NCPUS type='Integer' nullable='true'/>
-<NNodes type='Integer' nullable='true'/>
 <NTasks type='Integer' nullable='true'/>
 <Partition type='String' nullable='true' max='32'/>
 <QOS type='String' nullable='true' max='32'/>
-<QOSRAW type='Integer' nullable='true'/>
-<ReqMem type='Long' nullable='true'/>
+<Reservation type='String' nullable='true' max='128'/>
 <Start type='Long' nullable='true'/>
-<State type='String' nullable='true' max='32'/>
 <Submit type='Long' nullable='true'/>
 <Timelimit type='Integer' nullable='true'/>
 <User type='String' nullable='true' max='32'/>
@@ -30,19 +25,17 @@
 </TableSpecification>
 <CirrusSlurm id='1'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>80268</Elapsed>
 <End>1593996743</End>
 <Group>ic033</Group>
 <JobID>18432</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18432</JobIDRaw>
 <JobName>fmather1307</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>long</QOS>
 <Start>1593916475</Start>
-<State>COMPLETED</State>
 <Submit>1593792833</Submit>
 <Timelimit>1209600000</Timelimit>
 <User>fmather</User>
@@ -53,16 +46,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='2'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>80268</Elapsed>
 <End>1593996743</End>
 <JobID>18432.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18432.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593916475</Start>
-<State>COMPLETED</State>
 <Submit>1593916475</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -70,16 +61,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='3'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>80268</Elapsed>
 <End>1593996743</End>
 <JobID>18432.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18432.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593916475</Start>
-<State>COMPLETED</State>
 <Submit>1593916475</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -88,19 +77,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='4'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>79919</Elapsed>
 <End>1593996658</End>
 <Group>ic033</Group>
 <JobID>18433</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18433</JobIDRaw>
 <JobName>fmather1308</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>long</QOS>
 <Start>1593916739</Start>
-<State>COMPLETED</State>
 <Submit>1593792833</Submit>
 <Timelimit>1209600000</Timelimit>
 <User>fmather</User>
@@ -111,16 +98,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='5'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>79919</Elapsed>
 <End>1593996658</End>
 <JobID>18433.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18433.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593916739</Start>
-<State>COMPLETED</State>
 <Submit>1593916739</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -128,16 +113,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='6'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>79919</Elapsed>
 <End>1593996658</End>
 <JobID>18433.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18433.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593916739</Start>
-<State>COMPLETED</State>
 <Submit>1593916739</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -146,19 +129,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='7'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>77197</Elapsed>
 <End>1593995429</End>
 <Group>ic033</Group>
 <JobID>18434</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18434</JobIDRaw>
 <JobName>fmather1309</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>long</QOS>
 <Start>1593918232</Start>
-<State>COMPLETED</State>
 <Submit>1593792833</Submit>
 <Timelimit>1209600000</Timelimit>
 <User>fmather</User>
@@ -169,16 +150,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='8'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>77197</Elapsed>
 <End>1593995429</End>
 <JobID>18434.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18434.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593918232</Start>
-<State>COMPLETED</State>
 <Submit>1593918232</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -186,16 +165,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='9'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>77197</Elapsed>
 <End>1593995429</End>
 <JobID>18434.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18434.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593918232</Start>
-<State>COMPLETED</State>
 <Submit>1593918232</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -204,19 +181,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='10'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>81919</Elapsed>
 <End>1594001109</End>
 <Group>ic033</Group>
 <JobID>18435</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18435</JobIDRaw>
 <JobName>fmather1310</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>long</QOS>
 <Start>1593919190</Start>
-<State>COMPLETED</State>
 <Submit>1593792833</Submit>
 <Timelimit>1209600000</Timelimit>
 <User>fmather</User>
@@ -227,16 +202,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='11'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>81919</Elapsed>
 <End>1594001109</End>
 <JobID>18435.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18435.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593919190</Start>
-<State>COMPLETED</State>
 <Submit>1593919190</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -244,16 +217,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='12'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic033</Account>
 <Elapsed>81919</Elapsed>
 <End>1594001109</End>
 <JobID>18435.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18435.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593919190</Start>
-<State>COMPLETED</State>
 <Submit>1593919190</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -262,16 +233,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='13'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>0</Elapsed>
 <End>1593816758</End>
 <JobID>18482.0</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18482.0</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593816758</Start>
-<State>COMPLETED</State>
 <Submit>1593816758</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -279,16 +248,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='14'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>0</Elapsed>
 <End>1593816758</End>
 <JobID>18482.1</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18482.1</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593816758</Start>
-<State>COMPLETED</State>
 <Submit>1593816758</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -296,16 +263,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='15'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>10</Elapsed>
 <End>1593816768</End>
 <JobID>18482.2</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18482.2</JobIDRaw>
 <JobName>blockMesh</JobName>
-<NNodes>1</NNodes>
 <Start>1593816758</Start>
-<State>COMPLETED</State>
 <Submit>1593816758</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -313,16 +278,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='16'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>10</Elapsed>
 <End>1593816778</End>
 <JobID>18482.3</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18482.3</JobIDRaw>
 <JobName>decomposePar</JobName>
-<NNodes>1</NNodes>
 <Start>1593816768</Start>
-<State>COMPLETED</State>
 <Submit>1593816768</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -330,16 +293,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='17'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>1</Elapsed>
 <End>1593816922</End>
 <JobID>18483.0</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18483.0</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593816921</Start>
-<State>COMPLETED</State>
 <Submit>1593816921</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -347,16 +308,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='18'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>0</Elapsed>
 <End>1593816922</End>
 <JobID>18483.1</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18483.1</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593816922</Start>
-<State>COMPLETED</State>
 <Submit>1593816922</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -364,16 +323,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='19'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>9</Elapsed>
 <End>1593816931</End>
 <JobID>18483.2</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18483.2</JobIDRaw>
 <JobName>blockMesh</JobName>
-<NNodes>1</NNodes>
 <Start>1593816922</Start>
-<State>COMPLETED</State>
 <Submit>1593816922</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -381,16 +338,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='20'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>9</Elapsed>
 <End>1593816941</End>
 <JobID>18483.3</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18483.3</JobIDRaw>
 <JobName>decomposePar</JobName>
-<NNodes>1</NNodes>
 <Start>1593816932</Start>
-<State>COMPLETED</State>
 <Submit>1593816932</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -398,19 +353,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='21'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>142181</Elapsed>
 <End>1594001547</End>
 <Group>sc004</Group>
 <JobID>18519</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18519</JobIDRaw>
 <JobName>6GHzId65004</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593859366</Start>
-<State>FAILED</State>
 <Submit>1593859365</Submit>
 <Timelimit>345600000</Timelimit>
 <User>adabbech</User>
@@ -421,16 +374,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='22'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>142181</Elapsed>
 <End>1594001547</End>
 <JobID>18519.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18519.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593859366</Start>
-<State>FAILED</State>
 <Submit>1593859366</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -438,16 +389,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='23'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>142181</Elapsed>
 <End>1594001547</End>
 <JobID>18519.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18519.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593859366</Start>
-<State>COMPLETED</State>
 <Submit>1593859366</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -456,16 +405,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='24'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>1</Elapsed>
 <End>1593860311</End>
 <JobID>18534.0</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.0</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593860310</Start>
-<State>COMPLETED</State>
 <Submit>1593860310</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -473,16 +420,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='25'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>0</Elapsed>
 <End>1593860311</End>
 <JobID>18534.1</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.1</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593860311</Start>
-<State>COMPLETED</State>
 <Submit>1593860311</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -490,16 +435,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='26'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>9</Elapsed>
 <End>1593860320</End>
 <JobID>18534.2</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.2</JobIDRaw>
 <JobName>blockMesh</JobName>
-<NNodes>1</NNodes>
 <Start>1593860311</Start>
-<State>COMPLETED</State>
 <Submit>1593860311</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -507,16 +450,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='27'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>12</Elapsed>
 <End>1593860332</End>
 <JobID>18534.3</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.3</JobIDRaw>
 <JobName>decomposePar</JobName>
-<NNodes>1</NNodes>
 <Start>1593860320</Start>
-<State>COMPLETED</State>
 <Submit>1593860320</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -524,16 +465,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='28'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>2273</Elapsed>
 <End>1593862606</End>
 <JobID>18534.4</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.4</JobIDRaw>
 <JobName>iconHexMesh</JobName>
-<NNodes>4</NNodes>
 <Start>1593860333</Start>
-<State>COMPLETED</State>
 <Submit>1593860333</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -541,16 +480,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='29'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>49</Elapsed>
 <End>1593862655</End>
 <JobID>18534.5</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.5</JobIDRaw>
 <JobName>checkMesh</JobName>
-<NNodes>4</NNodes>
 <Start>1593862606</Start>
-<State>COMPLETED</State>
 <Submit>1593862606</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -558,16 +495,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='30'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>48</Elapsed>
 <End>1593862703</End>
 <JobID>18534.6</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.6</JobIDRaw>
 <JobName>renumberMesh</JobName>
-<NNodes>4</NNodes>
 <Start>1593862655</Start>
-<State>COMPLETED</State>
 <Submit>1593862655</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -575,16 +510,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='31'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>93</Elapsed>
 <End>1593862796</End>
 <JobID>18534.7</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.7</JobIDRaw>
 <JobName>redistributeMeshPar</JobName>
-<NNodes>4</NNodes>
 <Start>1593862703</Start>
-<State>COMPLETED</State>
 <Submit>1593862703</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -592,16 +525,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='32'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>46</Elapsed>
 <End>1593862842</End>
 <JobID>18534.8</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.8</JobIDRaw>
 <JobName>checkMesh</JobName>
-<NNodes>4</NNodes>
 <Start>1593862796</Start>
-<State>COMPLETED</State>
 <Submit>1593862796</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -609,16 +540,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='33'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>9</Elapsed>
 <End>1593862851</End>
 <JobID>18534.9</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.9</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593862842</Start>
-<State>COMPLETED</State>
 <Submit>1593862842</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -626,16 +555,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='34'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>45</Elapsed>
 <End>1593862896</End>
 <JobID>18534.10</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.10</JobIDRaw>
 <JobName>changeDictionary</JobName>
-<NNodes>4</NNodes>
 <Start>1593862851</Start>
-<State>COMPLETED</State>
 <Submit>1593862851</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -643,16 +570,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='35'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>58</Elapsed>
 <End>1593862954</End>
 <JobID>18534.11</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.11</JobIDRaw>
 <JobName>renumberMesh</JobName>
-<NNodes>4</NNodes>
 <Start>1593862896</Start>
-<State>COMPLETED</State>
 <Submit>1593862896</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -660,16 +585,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='36'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>146</Elapsed>
 <End>1593863100</End>
 <JobID>18534.12</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.12</JobIDRaw>
 <JobName>iconCellLimiter</JobName>
-<NNodes>4</NNodes>
 <Start>1593862954</Start>
-<State>COMPLETED</State>
 <Submit>1593862954</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -677,16 +600,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='37'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>76</Elapsed>
 <End>1593863176</End>
 <JobID>18534.13</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.13</JobIDRaw>
 <JobName>iconConfigureAMI</JobName>
-<NNodes>4</NNodes>
 <Start>1593863100</Start>
-<State>COMPLETED</State>
 <Submit>1593863100</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -694,16 +615,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='38'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>70</Elapsed>
 <End>1593863246</End>
 <JobID>18534.14</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.14</JobIDRaw>
 <JobName>iconPotentialFoam</JobName>
-<NNodes>4</NNodes>
 <Start>1593863176</Start>
-<State>COMPLETED</State>
 <Submit>1593863176</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -711,16 +630,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='39'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>3</Elapsed>
 <End>1593863249</End>
 <JobID>18534.15</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.15</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593863246</Start>
-<State>COMPLETED</State>
 <Submit>1593863246</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -728,16 +645,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='40'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>0</Elapsed>
 <End>1593863249</End>
 <JobID>18534.16</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.16</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593863249</Start>
-<State>COMPLETED</State>
 <Submit>1593863249</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -745,16 +660,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='41'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>6647</Elapsed>
 <End>1593869896</End>
 <JobID>18534.17</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.17</JobIDRaw>
 <JobName>iconSimplecFoam</JobName>
-<NNodes>4</NNodes>
 <Start>1593863249</Start>
-<State>COMPLETED</State>
 <Submit>1593863249</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -762,16 +675,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='42'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>0</Elapsed>
 <End>1593869897</End>
 <JobID>18534.18</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.18</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593869897</Start>
-<State>COMPLETED</State>
 <Submit>1593869897</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -779,16 +690,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='43'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>42</Elapsed>
 <End>1593869939</End>
 <JobID>18534.19</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.19</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593869897</Start>
-<State>COMPLETED</State>
 <Submit>1593869897</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -796,16 +705,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='44'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>53</Elapsed>
 <End>1593869992</End>
 <JobID>18534.20</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.20</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593869939</Start>
-<State>COMPLETED</State>
 <Submit>1593869939</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -813,16 +720,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='45'>
 <AllocCPUS>144</AllocCPUS>
+<AllocNodes>4</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>789</Elapsed>
 <End>1593870781</End>
 <JobID>18534.21</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.21</JobIDRaw>
 <JobName>sample</JobName>
-<NNodes>4</NNodes>
 <Start>1593869992</Start>
-<State>COMPLETED</State>
 <Submit>1593869992</Submit>
 <AllocTRESnode>4</AllocTRESnode>
 <AllocTRESmem>1080066834432</AllocTRESmem>
@@ -830,16 +735,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='46'>
 <AllocCPUS>1</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ic005</Account>
 <Elapsed>1</Elapsed>
 <End>1593871031</End>
 <JobID>18534.22</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18534.22</JobIDRaw>
 <JobName>bash</JobName>
-<NNodes>1</NNodes>
 <Start>1593871030</Start>
-<State>COMPLETED</State>
 <Submit>1593871030</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>7500464128</AllocTRESmem>
@@ -847,19 +750,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='47'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>48256</Elapsed>
 <End>1593995877</End>
 <Group>sc004</Group>
 <JobID>18733</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18733</JobIDRaw>
 <JobName>8GHzId85032</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593947621</Start>
-<State>FAILED</State>
 <Submit>1593947621</Submit>
 <Timelimit>345600000</Timelimit>
 <User>adabbech</User>
@@ -870,16 +771,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='48'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>48256</Elapsed>
 <End>1593995877</End>
 <JobID>18733.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18733.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593947621</Start>
-<State>FAILED</State>
 <Submit>1593947621</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -887,16 +786,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='49'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>48256</Elapsed>
 <End>1593995877</End>
 <JobID>18733.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18733.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593947621</Start>
-<State>COMPLETED</State>
 <Submit>1593947621</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -905,19 +802,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='50'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>53276</Elapsed>
 <End>1594015213</End>
 <Group>sc004</Group>
 <JobID>18785</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18785</JobIDRaw>
 <JobName>8GHzId85064</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593961937</Start>
-<State>FAILED</State>
 <Submit>1593961933</Submit>
 <Timelimit>345600000</Timelimit>
 <User>adabbech</User>
@@ -928,16 +823,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='51'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>53276</Elapsed>
 <End>1594015213</End>
 <JobID>18785.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18785.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593961937</Start>
-<State>FAILED</State>
 <Submit>1593961937</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -945,16 +838,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='52'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>53276</Elapsed>
 <End>1594015213</End>
 <JobID>18785.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18785.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593961937</Start>
-<State>COMPLETED</State>
 <Submit>1593961937</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -963,19 +854,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='53'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>59731</Elapsed>
 <End>1594021893</End>
 <Group>sc004</Group>
 <JobID>18787</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18787</JobIDRaw>
 <JobName>6GHzId65032</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593962162</Start>
-<State>FAILED</State>
 <Submit>1593962162</Submit>
 <Timelimit>345600000</Timelimit>
 <User>adabbech</User>
@@ -986,16 +875,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='54'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>59731</Elapsed>
 <End>1594021893</End>
 <JobID>18787.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18787.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593962162</Start>
-<State>FAILED</State>
 <Submit>1593962162</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1003,16 +890,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='55'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec110-guest</Account>
 <Elapsed>59731</Elapsed>
 <End>1594021893</End>
 <JobID>18787.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18787.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593962162</Start>
-<State>COMPLETED</State>
 <Submit>1593962162</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1021,19 +906,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='56'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>40291</Elapsed>
 <End>1594012152</End>
 <Group>dc014</Group>
 <JobID>18804</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18804</JobIDRaw>
 <JobName>PERFORMANCE_MATRIX-BIBD_Lingeling</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593971861</Start>
-<State>COMPLETED</State>
 <Submit>1593971861</Submit>
 <Timelimit>345600000</Timelimit>
 <User>jlps</User>
@@ -1044,16 +927,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='57'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>40291</Elapsed>
 <End>1594012152</End>
 <JobID>18804.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18804.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593971861</Start>
-<State>COMPLETED</State>
 <Submit>1593971861</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1061,16 +942,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='58'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>40291</Elapsed>
 <End>1594012152</End>
 <JobID>18804.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18804.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593971861</Start>
-<State>COMPLETED</State>
 <Submit>1593971861</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1079,19 +958,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='59'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>16311</Elapsed>
 <End>1593990594</End>
 <Group>dc014</Group>
 <JobID>18819</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18819</JobIDRaw>
 <JobName>athanor_sonet_test</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593974283</Start>
-<State>COMPLETED</State>
 <Submit>1593974283</Submit>
 <Timelimit>25200000</Timelimit>
 <User>nttd</User>
@@ -1102,16 +979,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='60'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>16311</Elapsed>
 <End>1593990594</End>
 <JobID>18819.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18819.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593974283</Start>
-<State>COMPLETED</State>
 <Submit>1593974283</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1119,16 +994,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='61'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>16311</Elapsed>
 <End>1593990594</End>
 <JobID>18819.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18819.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593974283</Start>
-<State>COMPLETED</State>
 <Submit>1593974283</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1137,19 +1010,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='62'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>16298</Elapsed>
 <End>1593990581</End>
 <Group>dc014</Group>
 <JobID>18820</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18820</JobIDRaw>
 <JobName>athanor_knapsack_test</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593974283</Start>
-<State>COMPLETED</State>
 <Submit>1593974283</Submit>
 <Timelimit>25200000</Timelimit>
 <User>nttd</User>
@@ -1160,16 +1031,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='63'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>16298</Elapsed>
 <End>1593990581</End>
 <JobID>18820.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18820.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593974283</Start>
-<State>COMPLETED</State>
 <Submit>1593974283</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1177,16 +1046,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='64'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>16298</Elapsed>
 <End>1593990581</End>
 <JobID>18820.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18820.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593974283</Start>
-<State>COMPLETED</State>
 <Submit>1593974283</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1195,19 +1062,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='65'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>17348</Elapsed>
 <End>1593991631</End>
 <Group>dc014</Group>
 <JobID>18821</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18821</JobIDRaw>
 <JobName>athanor_meb_test</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593974283</Start>
-<State>COMPLETED</State>
 <Submit>1593974283</Submit>
 <Timelimit>25200000</Timelimit>
 <User>nttd</User>
@@ -1218,16 +1083,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='66'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>17348</Elapsed>
 <End>1593991631</End>
 <JobID>18821.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18821.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593974283</Start>
-<State>COMPLETED</State>
 <Submit>1593974283</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1235,16 +1098,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='67'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>17348</Elapsed>
 <End>1593991631</End>
 <JobID>18821.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18821.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593974283</Start>
-<State>COMPLETED</State>
 <Submit>1593974283</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1253,19 +1114,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='68'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>16205</Elapsed>
 <End>1593990491</End>
 <Group>dc014</Group>
 <JobID>18828</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18828</JobIDRaw>
 <JobName>chuffed-sym_sonet_test</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593974286</Start>
-<State>COMPLETED</State>
 <Submit>1593974284</Submit>
 <Timelimit>25200000</Timelimit>
 <User>nttd</User>
@@ -1276,16 +1135,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='69'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>16205</Elapsed>
 <End>1593990491</End>
 <JobID>18828.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18828.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593974286</Start>
-<State>COMPLETED</State>
 <Submit>1593974286</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1293,16 +1150,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='70'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec112-guest</Account>
 <Elapsed>16205</Elapsed>
 <End>1593990491</End>
 <JobID>18828.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18828.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593974286</Start>
-<State>COMPLETED</State>
 <Submit>1593974286</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1311,19 +1166,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='71'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec122</Account>
 <Elapsed>28809</Elapsed>
 <End>1594013932</End>
 <Group>ec122</Group>
 <JobID>18846</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18846</JobIDRaw>
 <JobName>s_0</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593985123</Start>
-<State>COMPLETED</State>
 <Submit>1593985123</Submit>
 <Timelimit>30600000</Timelimit>
 <User>engs1759</User>
@@ -1334,16 +1187,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='72'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec122</Account>
 <Elapsed>28809</Elapsed>
 <End>1594013932</End>
 <JobID>18846.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18846.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593985123</Start>
-<State>COMPLETED</State>
 <Submit>1593985123</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1351,16 +1202,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='73'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec122</Account>
 <Elapsed>28809</Elapsed>
 <End>1594013932</End>
 <JobID>18846.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18846.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593985123</Start>
-<State>COMPLETED</State>
 <Submit>1593985123</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1369,16 +1218,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='74'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec122</Account>
 <Elapsed>28807</Elapsed>
 <End>1594013932</End>
 <JobID>18846.0</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18846.0</JobIDRaw>
 <JobName>au3txt</JobName>
-<NNodes>1</NNodes>
 <Start>1593985125</Start>
-<State>COMPLETED</State>
 <Submit>1593985125</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1386,19 +1233,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='75'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec122</Account>
 <Elapsed>28809</Elapsed>
 <End>1594013955</End>
 <Group>ec122</Group>
 <JobID>18847</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18847</JobIDRaw>
 <JobName>s_0.2</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593985146</Start>
-<State>COMPLETED</State>
 <Submit>1593985145</Submit>
 <Timelimit>30600000</Timelimit>
 <User>engs1759</User>
@@ -1409,16 +1254,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='76'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec122</Account>
 <Elapsed>28809</Elapsed>
 <End>1594013955</End>
 <JobID>18847.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18847.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593985146</Start>
-<State>COMPLETED</State>
 <Submit>1593985146</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1426,16 +1269,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='77'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec122</Account>
 <Elapsed>28809</Elapsed>
 <End>1594013955</End>
 <JobID>18847.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18847.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593985146</Start>
-<State>COMPLETED</State>
 <Submit>1593985146</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1444,16 +1285,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='78'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>ec122</Account>
 <Elapsed>28807</Elapsed>
 <End>1594013955</End>
 <JobID>18847.0</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18847.0</JobIDRaw>
 <JobName>au3txt</JobName>
-<NNodes>1</NNodes>
 <Start>1593985148</Start>
-<State>COMPLETED</State>
 <Submit>1593985148</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1461,19 +1300,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='79'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>17298</Elapsed>
 <End>1594002811</End>
 <Group>dc022</Group>
 <JobID>18848</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18848</JobIDRaw>
 <JobName>HR8799c_clouds</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593985513</Start>
-<State>COMPLETED</State>
 <Submit>1593985512</Submit>
 <Timelimit>345600000</Timelimit>
 <User>niallw</User>
@@ -1484,16 +1321,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='80'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>17298</Elapsed>
 <End>1594002811</End>
 <JobID>18848.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18848.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593985513</Start>
-<State>COMPLETED</State>
 <Submit>1593985513</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1501,16 +1336,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='81'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>17298</Elapsed>
 <End>1594002811</End>
 <JobID>18848.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18848.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593985513</Start>
-<State>COMPLETED</State>
 <Submit>1593985513</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1519,16 +1352,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='82'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>17296</Elapsed>
 <End>1594002811</End>
 <JobID>18848.0</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18848.0</JobIDRaw>
 <JobName>taurex</JobName>
-<NNodes>1</NNodes>
 <Start>1593985515</Start>
-<State>COMPLETED</State>
 <Submit>1593985515</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1536,19 +1367,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='83'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>19142</Elapsed>
 <End>1594004659</End>
 <Group>dc022</Group>
 <JobID>18849</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18849</JobIDRaw>
 <JobName>HR8799d_clouds</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593985517</Start>
-<State>COMPLETED</State>
 <Submit>1593985516</Submit>
 <Timelimit>345600000</Timelimit>
 <User>niallw</User>
@@ -1559,16 +1388,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='84'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>19142</Elapsed>
 <End>1594004659</End>
 <JobID>18849.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18849.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593985517</Start>
-<State>COMPLETED</State>
 <Submit>1593985517</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1576,16 +1403,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='85'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>19142</Elapsed>
 <End>1594004659</End>
 <JobID>18849.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18849.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593985517</Start>
-<State>COMPLETED</State>
 <Submit>1593985517</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1594,16 +1419,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='86'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>19140</Elapsed>
 <End>1594004659</End>
 <JobID>18849.0</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18849.0</JobIDRaw>
 <JobName>taurex</JobName>
-<NNodes>1</NNodes>
 <Start>1593985519</Start>
-<State>COMPLETED</State>
 <Submit>1593985519</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1611,19 +1434,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='87'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>14145</Elapsed>
 <End>1593999666</End>
 <Group>dc022</Group>
 <JobID>18850</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18850</JobIDRaw>
 <JobName>HR8799e_clouds</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593985521</Start>
-<State>COMPLETED</State>
 <Submit>1593985519</Submit>
 <Timelimit>345600000</Timelimit>
 <User>niallw</User>
@@ -1634,16 +1455,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='88'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>14145</Elapsed>
 <End>1593999666</End>
 <JobID>18850.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18850.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593985521</Start>
-<State>COMPLETED</State>
 <Submit>1593985521</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1651,16 +1470,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='89'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>14145</Elapsed>
 <End>1593999666</End>
 <JobID>18850.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18850.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593985521</Start>
-<State>COMPLETED</State>
 <Submit>1593985521</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1669,16 +1486,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='90'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>dc022</Account>
 <Elapsed>14143</Elapsed>
 <End>1593999666</End>
 <JobID>18850.0</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18850.0</JobIDRaw>
 <JobName>taurex</JobName>
-<NNodes>1</NNodes>
 <Start>1593985523</Start>
-<State>COMPLETED</State>
 <Submit>1593985523</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1686,38 +1501,34 @@
 </CirrusSlurm>
 <CirrusSlurm id='91'>
 <AllocCPUS>7020</AllocCPUS>
+<AllocNodes>195</AllocNodes>
 <Account>sc038</Account>
 <Elapsed>0</Elapsed>
 <End>1593990518</End>
 <Group>sc038</Group>
 <JobID>18853</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18853</JobIDRaw>
 <JobName>YewParNSHivert</JobName>
-<NNodes>195</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593990518</Start>
-<State>CANCELLED by 11887</State>
 <Submit>1593989871</Submit>
 <Timelimit>1200000</Timelimit>
 <User>ruairidh</User>
 </CirrusSlurm>
 <CirrusSlurm id='92'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>sc038</Account>
 <Elapsed>12</Elapsed>
 <End>1593990581</End>
 <Group>sc038</Group>
 <JobID>18854</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18854</JobIDRaw>
 <JobName>YewParNSHivert</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593990569</Start>
-<State>COMPLETED</State>
 <Submit>1593990469</Submit>
 <Timelimit>1200000</Timelimit>
 <User>ruairidh</User>
@@ -1728,16 +1539,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='93'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>sc038</Account>
 <Elapsed>12</Elapsed>
 <End>1593990581</End>
 <JobID>18854.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18854.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593990569</Start>
-<State>COMPLETED</State>
 <Submit>1593990569</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1745,16 +1554,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='94'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>sc038</Account>
 <Elapsed>12</Elapsed>
 <End>1593990581</End>
 <JobID>18854.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18854.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593990569</Start>
-<State>COMPLETED</State>
 <Submit>1593990569</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1763,16 +1570,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='95'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>sc038</Account>
 <Elapsed>6</Elapsed>
 <End>1593990581</End>
 <JobID>18854.0</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18854.0</JobIDRaw>
 <JobName>NS-hivert</JobName>
-<NNodes>1</NNodes>
 <Start>1593990575</Start>
-<State>FAILED</State>
 <Submit>1593990575</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1780,19 +1585,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='96'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>4</Elapsed>
 <End>1593994680</End>
 <Group>d171</Group>
 <JobID>18858</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18858</JobIDRaw>
 <JobName>s6539</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593994676</Start>
-<State>FAILED</State>
 <Submit>1593994675</Submit>
 <Timelimit>37200000</Timelimit>
 <User>s1926539</User>
@@ -1803,16 +1606,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='97'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>4</Elapsed>
 <End>1593994680</End>
 <JobID>18858.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18858.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593994676</Start>
-<State>FAILED</State>
 <Submit>1593994676</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1820,16 +1621,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='98'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>4</Elapsed>
 <End>1593994680</End>
 <JobID>18858.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18858.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593994676</Start>
-<State>COMPLETED</State>
 <Submit>1593994676</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1838,19 +1637,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='99'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>15393</Elapsed>
 <End>1594010136</End>
 <Group>d171</Group>
 <JobID>18859</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18859</JobIDRaw>
 <JobName>s6539</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593994743</Start>
-<State>FAILED</State>
 <Submit>1593994743</Submit>
 <Timelimit>37200000</Timelimit>
 <User>s1926539</User>
@@ -1861,16 +1658,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='100'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>15393</Elapsed>
 <End>1594010136</End>
 <JobID>18859.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18859.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593994743</Start>
-<State>FAILED</State>
 <Submit>1593994743</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1878,16 +1673,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='101'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>15393</Elapsed>
 <End>1594010136</End>
 <JobID>18859.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18859.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593994743</Start>
-<State>COMPLETED</State>
 <Submit>1593994743</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1896,19 +1689,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='102'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>4</Elapsed>
 <End>1593994910</End>
 <Group>d171</Group>
 <JobID>18860</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18860</JobIDRaw>
 <JobName>NR</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593994906</Start>
-<State>FAILED</State>
 <Submit>1593994906</Submit>
 <Timelimit>37200000</Timelimit>
 <User>s1926539</User>
@@ -1919,16 +1710,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='103'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>4</Elapsed>
 <End>1593994910</End>
 <JobID>18860.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18860.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593994906</Start>
-<State>FAILED</State>
 <Submit>1593994906</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1936,16 +1725,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='104'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>4</Elapsed>
 <End>1593994910</End>
 <JobID>18860.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18860.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593994906</Start>
-<State>COMPLETED</State>
 <Submit>1593994906</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1954,19 +1741,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='105'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>12813</Elapsed>
 <End>1594008492</End>
 <Group>d171</Group>
 <JobID>18861</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18861</JobIDRaw>
 <JobName>NR</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593995679</Start>
-<State>COMPLETED</State>
 <Submit>1593995679</Submit>
 <Timelimit>37200000</Timelimit>
 <User>s1926539</User>
@@ -1977,16 +1762,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='106'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>12813</Elapsed>
 <End>1594008492</End>
 <JobID>18861.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18861.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593995679</Start>
-<State>COMPLETED</State>
 <Submit>1593995679</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -1994,16 +1777,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='107'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>12813</Elapsed>
 <End>1594008492</End>
 <JobID>18861.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18861.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593995679</Start>
-<State>COMPLETED</State>
 <Submit>1593995679</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -2012,19 +1793,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='108'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>2</Elapsed>
 <End>1593995909</End>
 <Group>d171</Group>
 <JobID>18862</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18862</JobIDRaw>
 <JobName>NR</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593995907</Start>
-<State>FAILED</State>
 <Submit>1593995907</Submit>
 <Timelimit>37200000</Timelimit>
 <User>s1926539</User>
@@ -2035,16 +1814,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='109'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>2</Elapsed>
 <End>1593995909</End>
 <JobID>18862.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18862.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593995907</Start>
-<State>FAILED</State>
 <Submit>1593995907</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -2052,16 +1829,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='110'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>2</Elapsed>
 <End>1593995909</End>
 <JobID>18862.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18862.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593995907</Start>
-<State>COMPLETED</State>
 <Submit>1593995907</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -2070,19 +1845,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='111'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>13</Elapsed>
 <End>1593995966</End>
 <Group>d171</Group>
 <JobID>18863</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18863</JobIDRaw>
 <JobName>NR</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593995953</Start>
-<State>FAILED</State>
 <Submit>1593995953</Submit>
 <Timelimit>37200000</Timelimit>
 <User>s1926539</User>
@@ -2093,16 +1866,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='112'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>13</Elapsed>
 <End>1593995966</End>
 <JobID>18863.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18863.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593995953</Start>
-<State>FAILED</State>
 <Submit>1593995953</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -2110,16 +1881,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='113'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>13</Elapsed>
 <End>1593995966</End>
 <JobID>18863.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18863.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593995953</Start>
-<State>COMPLETED</State>
 <Submit>1593995953</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -2128,19 +1897,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='114'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>89</Elapsed>
 <End>1593996103</End>
 <Group>d171</Group>
 <JobID>18864</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18864</JobIDRaw>
 <JobName>NR</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593996014</Start>
-<State>CANCELLED by 11601</State>
 <Submit>1593996013</Submit>
 <Timelimit>37200000</Timelimit>
 <User>s1926539</User>
@@ -2151,16 +1918,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='115'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>90</Elapsed>
 <End>1593996104</End>
 <JobID>18864.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18864.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593996014</Start>
-<State>CANCELLED</State>
 <Submit>1593996014</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -2168,16 +1933,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='116'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>89</Elapsed>
 <End>1593996103</End>
 <JobID>18864.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18864.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593996014</Start>
-<State>COMPLETED</State>
 <Submit>1593996014</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -2186,19 +1949,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='117'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>41</Elapsed>
 <End>1593996098</End>
 <Group>d171</Group>
 <JobID>18865</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18865</JobIDRaw>
 <JobName>NR</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593996057</Start>
-<State>CANCELLED by 11601</State>
 <Submit>1593996057</Submit>
 <Timelimit>37200000</Timelimit>
 <User>s1926539</User>
@@ -2209,16 +1970,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='118'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>42</Elapsed>
 <End>1593996099</End>
 <JobID>18865.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18865.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593996057</Start>
-<State>CANCELLED</State>
 <Submit>1593996057</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -2226,16 +1985,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='119'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>41</Elapsed>
 <End>1593996098</End>
 <JobID>18865.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18865.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593996057</Start>
-<State>COMPLETED</State>
 <Submit>1593996057</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -2244,19 +2001,17 @@
 </CirrusSlurm>
 <CirrusSlurm id='120'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>14276</Elapsed>
 <End>1594010394</End>
 <Group>d171</Group>
 <JobID>18866</JobID>
 <SubJob>false</SubJob>
-<JobIDRaw>18866</JobIDRaw>
 <JobName>NR</JobName>
-<NNodes>1</NNodes>
 <Partition>standard</Partition>
 <QOS>standard</QOS>
 <Start>1593996118</Start>
-<State>FAILED</State>
 <Submit>1593996118</Submit>
 <Timelimit>37200000</Timelimit>
 <User>s1926539</User>
@@ -2267,16 +2022,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='121'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>14276</Elapsed>
 <End>1594010394</End>
 <JobID>18866.batch</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18866.batch</JobIDRaw>
 <JobName>batch</JobName>
-<NNodes>1</NNodes>
 <Start>1593996118</Start>
-<State>FAILED</State>
 <Submit>1593996118</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>
@@ -2284,16 +2037,14 @@
 </CirrusSlurm>
 <CirrusSlurm id='122'>
 <AllocCPUS>36</AllocCPUS>
+<AllocNodes>1</AllocNodes>
 <Account>d171</Account>
 <Elapsed>14276</Elapsed>
 <End>1594010394</End>
 <JobID>18866.extern</JobID>
 <SubJob>true</SubJob>
-<JobIDRaw>18866.extern</JobIDRaw>
 <JobName>extern</JobName>
-<NNodes>1</NNodes>
 <Start>1593996118</Start>
-<State>COMPLETED</State>
 <Submit>1593996118</Submit>
 <AllocTRESnode>1</AllocTRESnode>
 <AllocTRESmem>270016708608</AllocTRESmem>

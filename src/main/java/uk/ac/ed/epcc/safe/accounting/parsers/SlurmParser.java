@@ -191,7 +191,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
     public static final PropertyTag<String> MinCPUNode = new PropertyTag<String>(slurm, "MinCPUNode", String.class, "The node on which the mincpu occurred. ");
 	@OptionalTable
 	public static final PropertyTag<Integer> MinCPUTask = new PropertyTag<Integer>(slurm,"MinCPUTask",Integer.class,"The task ID where the mincpu occurred. ");
-	@AutoTable
+	@OptionalTable
 	public static final PropertyTag<Integer> N_CPUS_PROP = new PropertyTag<>(slurm, "NCPUS", Integer.class,"Total number of CPUs allocated to the job. Equivalent to AllocCPUS.");
 	
 	@OptionalTable(length=128)
@@ -384,8 +384,18 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 			derv.peer(StandardProperties.GROUPNAME_PROP, GROUP_PROP);
 			
 			derv.peer(BatchParser.PARTITION_PROP, PARTITION_PROP);
-			derv.peer(BatchParser.NODE_COUNT_PROP, N_NODES_PROP);
+			
+			// we expect the Alloc variants to be used so we alias these to 
+			// BatchParser generics
+			// add a one way aliases so all 3 can be resolved if only
+			// one is defined
+			derv.peer(BatchParser.NODE_COUNT_PROP, ALLOC_NODES);
+			derv.put(ALLOC_NODES, N_NODES_PROP); 
+			derv.put(N_NODES_PROP, BatchParser.NODE_COUNT_PROP);
 			derv.peer(BatchParser.PROC_COUNT_PROP, ALLOC_CPUS);
+			derv.put(ALLOC_CPUS, N_CPUS_PROP);
+			derv.put(N_CPUS_PROP, BatchParser.PROC_COUNT_PROP);
+			
 			derv.peer(BatchParser.JOB_NAME_PROP, JOB_NAME_PROP);
 			derv.put(BatchParser.WALLCLOCK_PROP, new DurationSecondsPropExpression(ELAPSED_PROP));
 		} catch (PropertyCastException e) {
