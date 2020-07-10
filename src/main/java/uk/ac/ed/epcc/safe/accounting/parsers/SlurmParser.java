@@ -78,12 +78,12 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 
 	@AutoTable
 	public static final PropertyTag<Integer> ALLOC_CPUS = new PropertyTag<>(slurm, "AllocCPUS", Integer.class,"Allocated cpus");
-	@OptionalTable
+	@OptionalTable(length=128)
     public static final PropertyTag<String> ALLOCGRES_PROP = new PropertyTag<>(slurm,"AllocGRES",String.class);
       @AutoTable
 	public static final PropertyTag<Integer> ALLOC_NODES = new PropertyTag<>(slurm, "AllocNodes", Integer.class,"Allocated nodes");
 
-    @OptionalTable
+    @OptionalTable(length=128)
     public static final PropertyTag<String> ALLOCTRES_PROP = new PropertyTag<>(slurm,"AllocTRES",String.class);
  
     @AutoTable(length=64)
@@ -224,7 +224,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 
 	@OptionalTable
 	public static final PropertyTag<Integer> ReqCPUS = new PropertyTag<>(slurm,"ReqCPUS",Integer.class,"Number of requested CPUs. ");
-	@OptionalTable
+	@OptionalTable(length=128)
 	public static final PropertyTag<String> ReqGRES = new PropertyTag<>(slurm,"ReqGRES",String.class);
 	
 	@OptionalTable
