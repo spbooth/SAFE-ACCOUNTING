@@ -146,7 +146,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	public static final PropertyTag<Boolean> SUB_JOB = new PropertyTag<>(slurm,"SubJob",Boolean.class,"Is this a slurm sub-job");
 	@OptionalTable
 	public static final PropertyTag<String> JOB_ID_RAW = new PropertyTag<>(slurm, "JobIDRaw", String.class,"RAW Slurm JOB id");
-	@AutoTable(unique=true,length=200)
+	@AutoTable(length=200)
 	public static final PropertyTag<String> JOB_NAME_PROP = new PropertyTag<>(slurm, "JobName", String.class,"Job name");
 
 	@OptionalTable
