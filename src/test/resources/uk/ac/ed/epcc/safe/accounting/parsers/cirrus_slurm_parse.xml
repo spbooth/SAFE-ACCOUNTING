@@ -21,7 +21,7 @@
 <AllocTRESmem type='Long' nullable='true'/>
 <AllocTRESbilling type='Integer' nullable='true'/>
 <AllocTREScpu type='Integer' nullable='true'/>
-<duplicate_key type='Index' unique='true'><Column name='JobID'/><Column name='JobName'/><Column name='Start'/></duplicate_key>
+<duplicate_key type='Index' unique='true'><Column name='JobID'/><Column name='Start'/></duplicate_key>
 </TableSpecification>
 <CirrusSlurm id='1'>
 <AllocCPUS>36</AllocCPUS>
