@@ -16,7 +16,10 @@
 	uk.ac.ed.epcc.webapp.model.*,
 	uk.ac.ed.epcc.safe.accounting.*,
 	uk.ac.ed.epcc.safe.accounting.properties.*"%>
-<%@ include file="/session.jsf"%>
+<%@ page import="java.util.*" %>
+<%@ taglib uri="http://safe.epcc.ed.ac.uk/webapp" prefix="wb" %>
+<wb:ServiceInit/>
+<wb:session/>
 <%
 	String page_title = service_name+" Accounting Property Information";
     String producer = request.getParameter("producer");
@@ -39,7 +42,7 @@
     	usage_producer = accounting_service.getUsageProducer(producer);
     }
 %>
-<%@ include file="/std_header.jsf"%>
+<%@ include file="std_header.jsf"%>
   <div class="block">
   <h1>Accounting Properties</h1>
   <P>Every accounting record consists of a set of properties. These properties can be generated 
@@ -135,4 +138,4 @@ for(UsageProducer prod : man.getProducers(UsageProducer.class)){
 }
 }%>
 
-<%@ include file="/std_footer.jsf"%>
+<%@ include file="std_footer.jsf"%>
