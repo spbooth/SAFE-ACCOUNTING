@@ -15,8 +15,8 @@
 	import="uk.ac.ed.epcc.webapp.*, 
 	uk.ac.ed.epcc.webapp.model.*,
 	uk.ac.ed.epcc.safe.accounting.*,
+	java.util.*,
 	uk.ac.ed.epcc.safe.accounting.properties.*"%>
-<%@ page import="java.util.*" %>
 <%@ taglib uri="http://safe.epcc.ed.ac.uk/webapp" prefix="wb" %>
 <wb:ServiceInit/>
 <wb:session/>
