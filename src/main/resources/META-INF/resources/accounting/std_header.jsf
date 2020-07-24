@@ -28,5 +28,5 @@
 <wb:navigation/>
 </nav>
 <header>
-<jsp:include page="/page_header.jsp"/>
+<wb:PageHeader/>
 </header>
