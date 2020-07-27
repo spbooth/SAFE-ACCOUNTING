@@ -13,6 +13,8 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting;
 
+import java.util.Iterator;
+
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -43,7 +45,7 @@ public interface ExpressionTargetGenerator<T> extends PropertyTargetGenerator<T>
 	    * If passed null it should return null.
 	    * 
 	    * @param record
-	    * @return
+	    * @return {@link ExpressionTargetContainer} corresponding to record
 	    */
 	   public ExpressionTargetContainer getExpressionTarget(T record);
 	   
@@ -52,21 +54,21 @@ public interface ExpressionTargetGenerator<T> extends PropertyTargetGenerator<T>
 	   /** Is this a record from this {@link ExpressionTargetGenerator}.
 	    * 
 	    * @param record
-	    * @return
+	    * @return boolean
 	    */
 	   public boolean isMyTarget(T record);
 	   /** get an iterator over the {@link ExpressionTargetContainer}s
 	    * 
 	    * @param sel
-	    * @return
+	    * @return {@link Iterator} over selected records
 	    * @throws Exception
 	    */
 	   public CloseableIterator<ExpressionTargetContainer> getExpressionIterator(RecordSelector sel) throws Exception;
 	   
 	   /** find an {@link ExpressionTargetContainer} that matches the selector
 	    * 
-	    * @param sel
-	    * @return
+	    * @param sel {@link RecordSelector}
+	    * @return {@link ExpressionTargetContainer} matching selector
 	    * @throws Exception
 	    */
 	   public default ExpressionTargetContainer findExpression(RecordSelector sel) throws Exception{

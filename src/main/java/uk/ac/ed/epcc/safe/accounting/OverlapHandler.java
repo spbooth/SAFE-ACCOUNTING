@@ -821,8 +821,7 @@ public class OverlapHandler<T> {
 	 * @param rec 
 	 * @param start_prop PropertyTag for record start 
 	 * @param end_prop   PropertyTag for record end
-	 * @param p_start    Period start
-	 * @param p_end      Period end
+	 * @param p TimePeriod
 	 * @param op   Reduction operation
 	 * @return double fraction
 	 */

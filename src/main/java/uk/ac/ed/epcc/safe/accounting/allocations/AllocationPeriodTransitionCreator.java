@@ -15,9 +15,7 @@ package uk.ac.ed.epcc.safe.accounting.allocations;
 
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryCreator;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 public class AllocationPeriodTransitionCreator extends AbstractContexed implements
 		 TransitionFactoryCreator<AllocationPeriodTransitionProvider> {

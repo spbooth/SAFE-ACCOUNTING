@@ -17,7 +17,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
-import uk.ac.ed.epcc.webapp.time.Period;
 
 public class AllocationPeriod implements PropertyTarget{
 
