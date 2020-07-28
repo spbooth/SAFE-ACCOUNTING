@@ -18,12 +18,11 @@ package uk.ac.ed.epcc.safe.accounting;
 
 import java.util.List;
 
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.forms.Identified;
 /** Class to build a table of per-job information.
  * 
  * @author spb
+ * @param <UR> Type of usage record
  *
  */
 

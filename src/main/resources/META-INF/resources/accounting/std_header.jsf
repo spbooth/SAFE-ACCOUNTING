@@ -11,20 +11,22 @@
 <%--| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |--%>
 <%--| See the License for the specific language governing permissions and      |--%>
 <%--| limitations under the License.                                           |--%>
-<%@page import="uk.ac.ed.epcc.safe.accounting.reports.ParameterExtension"%>
-<%@page import="uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter"%>
-<%@page import="uk.ac.ed.epcc.webapp.content.HtmlBuilder" %>
-<%
-String page_title="Reporting formats";
-%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page contentType="text/html;charset=UTF-8"  pageEncoding="UTF-8"%>
+<%@ page import="uk.ac.ed.epcc.webapp.content.HtmlBuilder" %>
 <%@ taglib uri="http://safe.epcc.ed.ac.uk/webapp" prefix="wb" %>
-<wb:ServiceInit/>
-<wb:session/>
-<%@ include file="std_header.jsf"%>
-<div class="block">
-<% HtmlBuilder cb = new HtmlBuilder();
-ParameterExtension.getDocumentation(conn, cb);
-%>
-<%=cb.toString() %>
-</div>
-<%@ include file="std_footer.jsf"%>
+<html lang="en">
+<head>
+ <title><%= HtmlBuilder.strip(page_title) %></title>
+ <meta name="description" content="<%=service_name%> <%=website_name%>">
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<wb:headings />
+</head>
+<body>
+<nav>
+<wb:navigation/>
+</nav>
+<header>
+<wb:PageHeader/>
+</header>

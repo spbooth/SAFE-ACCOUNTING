@@ -6,7 +6,7 @@ public interface PropertyImplementationProvider {
 	 /** Describe implementation of a property.
      * Used by accounting_properties.jsp
      * @param tag
-     * @return
+     * @return description of property implementation
      */
 	public String getImplemenationInfo(PropertyTag<?> tag);
 }

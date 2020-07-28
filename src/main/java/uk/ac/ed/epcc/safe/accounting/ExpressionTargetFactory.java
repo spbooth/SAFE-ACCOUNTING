@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
 public interface ExpressionTargetFactory<T> extends ExpressionTargetGenerator<T>, DerivedPropertyFactory
 {
 	/** fetch the underlying {@link AccessorMap}
+	 * @return AccessorMap
 	 * 
 	 */
 	public AccessorMap<T> getAccessorMap();

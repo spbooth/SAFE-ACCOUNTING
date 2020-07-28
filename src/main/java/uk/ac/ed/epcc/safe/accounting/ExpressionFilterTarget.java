@@ -39,7 +39,7 @@ public interface ExpressionFilterTarget<T> extends Targetted<T>{
 	/** A lightweight test if the {@link PropExpression} resolves.
 	 * 
 	 * @param expr
-	 * @return
+	 * @return boolean does the {@link PropExpression} resolve
 	 */
 	public <R> boolean resolves(PropExpression<R> expr);
 	

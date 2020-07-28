@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.Vector;
 
 import uk.ac.ed.epcc.safe.accounting.db.DefaultAccountingService;
-import uk.ac.ed.epcc.safe.accounting.db.DefaultUsageProducer;
 import uk.ac.ed.epcc.safe.accounting.db.NarrowTag;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
@@ -139,7 +138,6 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 	 * @param tag 
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
 	public UsageManager(AppContext c,String tag) {
 		this(c,tag,null);
 	}

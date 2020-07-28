@@ -24,7 +24,7 @@ public class ErrorPageResult extends CustomPageResult {
 
 	@Override
 	public ContentBuilder addContent(AppContext conn, ContentBuilder cb) {
-		cb.addHeading(2, title);
+		cb.addHeading(1, title);
 		if( content != null) {
 			cb.addObject(content);
 		}

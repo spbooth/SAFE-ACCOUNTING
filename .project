@@ -3,7 +3,6 @@
 	<name>ACCOUNTING-JAR</name>
 	<comment></comment>
 	<projects>
-		<project>WEBAPP-JAR</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -68,7 +68,7 @@ public abstract class ReductionTarget<T,D> {
 	 * is needed for DISTINCT reductions by iteration.
 	 * 
 	 * @param o
-	 * @return
+	 * @return T 
 	 */
 	public T map(D o) {
 		return (T) o;

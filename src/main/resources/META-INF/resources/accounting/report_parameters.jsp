@@ -12,12 +12,18 @@
 <%--| See the License for the specific language governing permissions and      |--%>
 <%--| limitations under the License.                                           |--%>
 <%@page import="uk.ac.ed.epcc.webapp.tags.WebappHeadTag"%>
-<%@ page
-	import="java.util.*,uk.ac.ed.epcc.webapp.*,uk.ac.ed.epcc.webapp.model.*,uk.ac.ed.epcc.webapp.forms.html.*,uk.ac.ed.epcc.safe.accounting.reports.*,uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder.*,uk.ac.ed.epcc.safe.accounting.reports.forms.html.*"%>
-
-<%@ include file="/session.jsf"%>
+<%@ page import="java.util.*"%>
+<%@page import="uk.ac.ed.epcc.webapp.*"%>
+<%@ page import="uk.ac.ed.epcc.webapp.model.*"%>
+<%@ page import="uk.ac.ed.epcc.webapp.forms.html.*"%>
+<%@ page import="uk.ac.ed.epcc.safe.accounting.reports.*"%>
+<%@ page import="uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder.*"%>
+<%@ page import="uk.ac.ed.epcc.safe.accounting.reports.forms.html.*"%>
 <%@page import="uk.ac.ed.epcc.safe.accounting.servlet.ReportServlet"%>
 <%@page import="uk.ac.ed.epcc.webapp.servlet.*"%>
+<%@ taglib uri="http://safe.epcc.ed.ac.uk/webapp" prefix="wb" %>
+<wb:ServiceInit/>
+<wb:session/>
 <%
 	Map<String, Object> params = conn.getService(ServletService.class).getParams();
 	String templateName = (String) params.get("TemplateName");
@@ -64,9 +70,7 @@
 	String page_title = builder.getTitle();
 %>
 <wb:css url="service_desk.css"/>
-<%@ include file="/std_header.jsf"%>
-<%@ include file="/back.jsf"%>
-<%@ include file="/scripts/form_context.jsf"%>
+<%@ include file="std_header.jsf"%>
 
 <div class="block">
 <h1><%=page_title%></h1>
@@ -77,8 +81,10 @@
 Fields shown in black are required fields. Fields shown in grey are optional and
 may be omitted.
 </p>
-
-<h3>Please set the following parameters:</h3>
+</div>
+<wb:FormContext/>
+<div class="block">
+<h2>Please set the following parameters:</h2>
 
 <form method="get" 
    action="<%=response.encodeURL(web_path + "/ReportServlet/"
@@ -100,5 +106,4 @@ may be omitted.
   </form>
 </div>
 
-<%@ include file="/back.jsf" %>
-<%@ include file="/std_footer.jsf" %>
+<%@ include file="std_footer.jsf" %>
