@@ -58,7 +58,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  * 
  * <b>GlobusJobManagerParser.<i>table</i>.<i>jobmanager-type</i></b> is set then this is used as the
  * table name of manager table (Assumed to support the batch:JobID and batch:SubmittedTimestamp and batch:JobId properties).
- * When a remote table is configured the record will not evaluate as complete until the master record has been located.
+ * When a remote table is configured the record will not evaluate as complete until the parent record has been located.
  * 
  * 
  * 
@@ -173,19 +173,19 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 								sel.add(new SelectClause<>(BatchParser.JOB_ID_PROP, job_id));
 								sel.add(new SelectClause<>(BatchParser.SUBMITTED_PROP, MatchCondition.GT, new Date(point-grace_millis)));
 								sel.add(new SelectClause<>(BatchParser.SUBMITTED_PROP, MatchCondition.LT, new Date(point+grace_millis)));
-								UsageRecordFactory.Use master;
+								UsageRecordFactory.Use parent;
 								try {
-									master = (Use) fac.find(fac.getFilter(sel));
+									parent = (Use) fac.find(fac.getFilter(sel));
 								} catch (Exception e) {
-									throw new AccountingParseException("Error finding master", e);
+									throw new AccountingParseException("Error finding parent", e);
 								}
-								if( master != null ){
-									log.debug("found master "+master.getIdentifier());
-									Integer id = Integer.valueOf(master.getID());
+								if( parent != null ){
+									log.debug("found parent "+parent.getIdentifier());
+									Integer id = Integer.valueOf(parent.getID());
 									assert(id.intValue() > 0);
 									map.setProperty(GLOBUS_PARENT_ID, id);
 								}else{
-									log.debug("No master found for "+job_id);
+									log.debug("No parent found for "+job_id);
 								}
 							}
 							return true;
@@ -287,7 +287,7 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 			if( fac != null ){
 				manager_factories.put(name, fac);
 			}else{
-				log.error("No master factory found for "+key+"->"+tag);
+				log.error("No parent factory found for "+key+"->"+tag);
 			}
 		}
 	}
@@ -298,13 +298,13 @@ public class GlobusJobManagerParser extends AbstractPropertyContainerParser impl
 		log.debug("In postComplete");
 		UsageRecordFactory fac = manager_factories.get(record.getProperty(GLOBUS_MANAGER));
 		if(fac != null ){
-			log.debug("Setting master");
+			log.debug("Setting parent");
 			ExpressionTargetContainer proxy = fac.getExpressionTarget((DataObjectPropertyContainer) fac.find(record.getProperty(GLOBUS_PARENT_ID)));
 			ReferenceTag ref = (ReferenceTag) fac.getFinder().find(IndexedReference.class,tag);
 			
 			proxy.setProperty(ref,record.getProperty(ref));
 			proxy.commit();
-			log.debug("Master set");
+			log.debug("parent set");
 		}
 	}
 

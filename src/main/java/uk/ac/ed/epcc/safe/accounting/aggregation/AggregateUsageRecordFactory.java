@@ -112,7 +112,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  * <p>
  * Configuration properties
  * <ul>
- * <li> <b>master.<i>table</i></b> name of the original un-aggregated {@link UsageProducer}.</li>
+ * <li> <b>parent.<i>table</i></b> name of the original un-aggregated {@link UsageProducer}.</li>
  * <li> <b>key.<i>table</i>.<i>prop-name</i></b> boolean property to force a numeric property to be a key prop
  * <li> <b><i>table</i>.aggregate_using_end</b> Force the aggregation periods to depend only on the completion time. In this case the aggregate
  * represents records that completed within the aggregate time frame
@@ -129,7 +129,7 @@ AccessorContributer<AggregateUsageRecordFactory.AggregateRecord>,
 TableContentProvider,
 TableTransitionContributor,
 ConfigParamProvider{
-	public static final String MASTER_PREFIX = "master.";
+	public static final String PARENT_PREFIX = "parent.";
 	private static final String COMPLETED_TIMESTAMP = "CompletedTimestamp";
 	private static final String STARTED_TIMESTAMP = "StartedTimestamp";
 	private static final Feature USE_FAST_REGENERATE = new Feature("aggregate.use_fast_regenerate",true,"Use reductions to speed up regenerate");
@@ -257,7 +257,7 @@ ConfigParamProvider{
 		AppContext c = getContext();
 		String tag = getTag();
 		if( parent == null ){
-			parent_producer = c.getInitParameter(MASTER_PREFIX + tag);
+			parent_producer = c.getInitParameter(PARENT_PREFIX + tag);
 			if( parent_producer != null){
 				parent = c.getService(AccountingService.class).getUsageProducer(parent_producer);
 			}
@@ -268,7 +268,7 @@ ConfigParamProvider{
 	 */
 	@Override
 	public void addConfigParameters(Set<String> props) {
-		props.add(MASTER_PREFIX+getConfigTag());
+		props.add(PARENT_PREFIX+getConfigTag());
 		props.add(getConfigTag()+".aggregate_using_end");
 		// props to force/reset key/sum
 		for( PropertyTag t : getKeyProperties()) {
@@ -478,7 +478,7 @@ ConfigParamProvider{
 		
 	}
 
-	public UsageProducer getMaster() {
+	public UsageProducer getParent() {
 		if( parent == null) {
 			getFinder();
 		}

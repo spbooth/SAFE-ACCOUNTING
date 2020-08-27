@@ -108,7 +108,7 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 	public void testaggregate() throws Exception{
 		ConfigUsageRecordFactory sge_fac = new ConfigUsageRecordFactory(ctx, "SGERecord");
 		AggregateUsageRecordFactory fac = ctx.makeParamObject(DailyAggregateUsageRecordFactory.class,ctx,"DailyAggregate",sge_fac);
-		UsageProducer<Use> raw_fac = fac.getMaster();
+		UsageProducer<Use> raw_fac = fac.getParent();
 		Date start = raw_fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.ENDED_PROP), new AndRecordSelector());
 		Date end = raw_fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP), new AndRecordSelector());
 		if( start == null || end == null){
@@ -154,7 +154,7 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testRegenerate() throws Exception{
 		AggregateUsageRecordFactory fac = new DailyAggregateUsageRecordFactory(ctx,"DailyAggregate");
-		UsageProducer<?> raw_fac = fac.getMaster();
+		UsageProducer<?> raw_fac = fac.getParent();
 		Date start = raw_fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.ENDED_PROP), new AndRecordSelector());
 		Date end = raw_fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP), new AndRecordSelector());
 		if( start == null || end == null){
@@ -196,7 +196,7 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testRegenerate2() throws Exception{
 		AggregateUsageRecordFactory fac = new DailyAggregateUsageRecordFactory(ctx,"DailyAggregate");
-		UsageProducer<?> raw_fac = fac.getMaster();
+		UsageProducer<?> raw_fac = fac.getParent();
 		
 		Date start = raw_fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.ENDED_PROP), new AndRecordSelector());
 		Date end = raw_fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP), new AndRecordSelector());
@@ -270,7 +270,7 @@ public class AggregateUsageRecordFactoryTest extends WebappTestBase {
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testHourlyRegenerate2() throws Exception{
 		AggregateUsageRecordFactory fac = new HourlyAggregateUsageRecordFactory(ctx,"DailyAggregate");
-		UsageProducer<?> raw_fac = fac.getMaster();
+		UsageProducer<?> raw_fac = fac.getParent();
 		
 		Date start = raw_fac.getReduction(new DateReductionTarget(Reduction.MIN,StandardProperties.ENDED_PROP), new AndRecordSelector());
 		Date end = raw_fac.getReduction(new DateReductionTarget(Reduction.MAX,StandardProperties.ENDED_PROP), new AndRecordSelector());

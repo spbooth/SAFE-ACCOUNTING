@@ -78,13 +78,13 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
  * an aggregation usage record with user defined time bounds. These aggregated properties can be paired with a manager edited value to
  * represent an allocation constraint. However Additional unconstrained properties can also be accumulated.
  * <p>
- * The property <b>master.<em>table-name</em></b> defines the name of the {@link UsageProducer} where aggregated values come from.
+ * The property <b>parent.<em>table-name</em></b> defines the name of the {@link UsageProducer} where aggregated values come from.
  * </p>
  * <p>
- * The index properties and completion time are used to tie {@link ExpressionTargetContainer}s from the master table to {@link ChargedAllocationRecord}s
+ * The index properties and completion time are used to tie {@link ExpressionTargetContainer}s from the parent table to {@link ChargedAllocationRecord}s
  * </p>
  * <p>
- * Fields that match properties in the master producer generate accumulation properties (with the same property tag) other fields are normal
+ * Fields that match properties in the parent producer generate accumulation properties (with the same property tag) other fields are normal
  * allocations.
  * </p>
  * <p>Usage is accumulated in <em>ALL</em> allocations that match the target record. Each {@link ChargedAllocationRecord} therefore represents a
@@ -108,43 +108,43 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		TableContentProvider,TableTransitionContributor{
 	
 
-	private final UsageProducer<Use> master;
-	private final String master_producer;
+	private final UsageProducer<Use> parent;
+	private final String parent_producer;
 	  
 	public ChargedAllocationFactory(AppContext c, String table) {
 		this(c,table,null);
 	}
 	@SuppressWarnings("unchecked")
-	public ChargedAllocationFactory(AppContext c, String table,UsageProducer<Use> master_factory) {
+	public ChargedAllocationFactory(AppContext c, String table,UsageProducer<Use> parent_factory) {
 		super(c, table);
 		Logger log = c.getService(LoggerService.class).getLogger(getClass());
 		log.debug("table is " + table);
-		master_producer = c.getInitParameter("master." + table);
-		log.debug("Master tag is " + master_producer);
-		if( master_factory == null ){
+		parent_producer = c.getInitParameter("parent." + table);
+		log.debug("Parent tag is " + parent_producer);
+		if( parent_factory == null ){
 			AccountingService acct_service = c.getService(AccountingService.class);
 
-			if( master_producer != null){
-				master = acct_service.getUsageProducer(master_producer);
+			if( parent_producer != null){
+				parent = acct_service.getUsageProducer(parent_producer);
 			}else{
-				master=acct_service.getUsageProducer();
+				parent=acct_service.getUsageProducer();
 			}
 		}else{
-			master=master_factory;
+			parent=parent_factory;
 		}
-		assert(master != null);
+		assert(parent != null);
 	}
 	
 	
 
 	@Override
 	public void customAccessors(AccessorMap<T> map, MultiFinder finder,PropExpressionMap derived) {
-		if(master != null){
-			finder.addFinder(master.getFinder());
-			// add derived properties from master 
+		if(parent != null){
+			finder.addFinder(parent.getFinder());
+			// add derived properties from parent 
 			// that resolve
 			
-				PropExpressionMap props = master.getDerivedProperties();
+				PropExpressionMap props = parent.getDerivedProperties();
 				
 				map.addDerived(getContext(), props);
 				map.clearUnresolvableDefinitions();
@@ -167,12 +167,12 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	 */
 	protected Set<PropertyTag<? extends Number>> makeAccumulations(){
 		LinkedHashSet<PropertyTag<? extends Number>> result = new LinkedHashSet<>();
-		if( master == null ){
+		if( parent == null ){
 			return result;
 		}
 		AccessorMap<T> map = getAccessorMap();
 		for(PropertyTag<? extends Number> t : map.getProperties(Number.class)){
-			if(master.hasProperty(t) && map.getField(t)!=null){
+			if(parent.hasProperty(t) && map.getField(t)!=null){
 				result.add(t);
 			}
 		}
@@ -217,12 +217,12 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	}
 @Override
 	protected Set<PropertyTag<? extends Number>> makeAllocationProperties() {
-		// only want properties not in the master table
+		// only want properties not in the parent table
 		Set<PropertyTag<? extends Number>> result = super.makeAllocationProperties();
-		PropertyFinder master_finder = master.getFinder();
+		PropertyFinder parent_finder = parent.getFinder();
 		for(Iterator it = result.iterator(); it.hasNext();){
 			PropertyTag tag = (PropertyTag) it.next();
-			if( master_finder.hasProperty(tag)){
+			if( parent_finder.hasProperty(tag)){
 				it.remove();
 			}
 		}
@@ -305,14 +305,14 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 			sel.add(new SelectClause<IndexedReference>(t, record));
 		}
 		// only expect one value but easiest to loop
-		for( Map<ReductionTarget,Object> data : master.getIndexedReductionMap(list, sel).values()){
+		for( Map<ReductionTarget,Object> data : parent.getIndexedReductionMap(list, sel).values()){
 			for( ReductionTarget r : data.keySet() ){
 				record.setProperty((PropertyTag)r.getExpression(), data.get(r));
 			}
 		}
 		record.commit();
 	}
-	/** Do a direct reduction on the master {@link UsageProducer}
+	/** Do a direct reduction on the parent {@link UsageProducer}
 	 * for records that end overlapping with the allocation
 	 * 
 	 * @param record
@@ -327,7 +327,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 			sel.add(new SelectClause<IndexedReference>(t, record));
 		}
 		sel.add(new PeriodOverlapRecordSelector(record, StandardProperties.ENDED_PROP));
-		return master.getReduction(new NumberSumReductionTarget(expr), sel);
+		return parent.getReduction(new NumberSumReductionTarget(expr), sel);
 	}
 	/** regenerate all records
 	 * 
@@ -508,10 +508,10 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	 */
 	@Override
 	public void addSummaryContent(ContentBuilder hb) {
-		if( master == null) {
-			hb.addHeading(3, "No Master Producer");
+		if( parent == null) {
+			hb.addHeading(3, "No Parent Producer");
 		}else {
-			hb.addHeading(3,"Master Producer: "+master.getTag());
+			hb.addHeading(3,"Parent Producer: "+parent.getTag());
 		}
 		addTable(hb,"Index Properties",getIndexProperties());
 		addTable(hb, "Allocation properties", getAllocationProperties());

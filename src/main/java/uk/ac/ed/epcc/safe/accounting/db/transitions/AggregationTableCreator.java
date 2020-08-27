@@ -45,7 +45,7 @@ import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
 public class AggregationTableCreator extends AbstractContexed implements FormCreator{
 
 	
-	private static final String MASTER_TAG = "master_tag";
+	private static final String PARENT_TAG = "parent_tag";
 	private static final String HANDLER = "Handler";
 	private static final String TABLE = "Table";
 	
@@ -57,8 +57,8 @@ public class AggregationTableCreator extends AbstractContexed implements FormCre
 		ClassInput<AggregateUsageRecordFactory> handler_input = new ClassInput<>(conn, AggregateUsageRecordFactory.class);
 		handler_input.setValue(conn.getInitParameter("aggregate_handler.default", "DailyUsageRecordFactory"));
 		f.addInput(HANDLER,"Table handler type",handler_input);
-		ConstructedObjectInput<UsageRecordFactory> master_input = new ConstructedObjectInput<>(conn, UsageRecordFactory.class);
-		f.addInput(MASTER_TAG, "Factory to aggregate", new OptionalListInputWrapper<>(master_input));
+		ConstructedObjectInput<UsageRecordFactory> parent_input = new ConstructedObjectInput<>(conn, UsageRecordFactory.class);
+		f.addInput(PARENT_TAG, "Factory to aggregate", new OptionalListInputWrapper<>(parent_input));
 		
 	
 		f.addAction("Create", new CreateAction());
@@ -71,13 +71,13 @@ public class AggregationTableCreator extends AbstractContexed implements FormCre
 			try{
 				String table_name=(String) f.get(TABLE);
 				String handler_tag = (String) f.get(HANDLER);
-				String master_tag = (String) f.get(MASTER_TAG);
+				String parent_tag = (String) f.get(PARENT_TAG);
 				
 				ConfigService serv = conn.getService(ConfigService.class);
 				
 				serv.setProperty("class."+table_name, handler_tag);
-				if( master_tag != null ) {
-					serv.setProperty(AggregateUsageRecordFactory.MASTER_PREFIX+table_name, master_tag);
+				if( parent_tag != null ) {
+					serv.setProperty(AggregateUsageRecordFactory.PARENT_PREFIX+table_name, parent_tag);
 				}
 				
 				return new TableListResult();

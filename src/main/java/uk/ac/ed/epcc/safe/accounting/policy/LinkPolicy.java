@@ -306,14 +306,14 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 
 	public void getTableTransitionSummary(ContentBuilder hb,
 			SessionService operator) {
-		hb.addText("This policy links entries from this table to a master record in a different table, reference properties between the"+
+		hb.addText("This policy links entries from this table to a parent record in a different table, reference properties between the"+
 				" two tables are set if they exist."+
-				" Records are only inserted in this table if a matching master record is found."+
-				" Unset properties in the master table that correspond to local properties will be populated.");
+				" Records are only inserted in this table if a matching parent record is found."+
+				" Unset properties in the parent table that correspond to local properties will be populated.");
 		if( remote_tag == null ){
-			hb.addHeading(5,"No master table set");
+			hb.addHeading(5,"No parent table set");
 		}else{
-			hb.addHeading(5,"Master table: "+remote_tag.getTable());
+			hb.addHeading(5,"parent table: "+remote_tag.getTable());
 		}
 		hb.addHeading(6,"Match properties");
 		
@@ -354,16 +354,16 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 		public void buildForm(Form f, DataObjectFactory target,
 				AppContext conn) throws TransitionException {
 			TableInput<UsageRecordFactory> input = new TableInput<>(conn,UsageRecordFactory.class);
-			f.addInput("table", "Master table", input);
+			f.addInput("table", "parent table", input);
 			if( remote_tag != null ){
 				f.put("table", remote_tag.getTable());
 			}
-			f.addAction("Set Master", new SetRemoteAction(target));
+			f.addAction("Set parent", new SetRemoteAction(target));
 		}
 	}
 	public Map<TableTransitionKey, Transition> getTableTransitions() {
 		Map<TableTransitionKey,Transition> result = new HashMap<>();
-		result.put(new AdminOperationKey("Set Master", "Set the master table for LinkPolicy"), new SetRemoteTransition());
+		result.put(new AdminOperationKey("Set parent", "Set the parent table for LinkPolicy"), new SetRemoteTransition());
 		return result;
 	}
 	
@@ -380,7 +380,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 			spec.setField(name, new ReferenceFieldType(remote_table));
 		
 			try {
-				// Add an index to optimise back-joins from the master table to this one.
+				// Add an index to optimise back-joins from the parent table to this one.
 				spec.new Index(name+"_idx", c.getBooleanParameter(LINK_POLICY_UNIQUE+table_name, false), name);
 			} catch (InvalidArgument e) {
 				getLogger().error("Error making index",e);

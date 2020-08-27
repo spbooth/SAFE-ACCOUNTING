@@ -130,7 +130,7 @@ public class ListenerPolicy extends BaseUsageRecordPolicy implements SummaryProv
 	InvalidPropertyException {
 		updates=0;
 		// defer the creation of the AggregateUsageRecordFactory classes to the parse stage.
-		// remember the master object created internally contains this policy
+		// remember the parent object created internally contains this policy
 		// so if we don't delay creation we get infinite recursion.
 		listeners=makeListeners().toArray(new UsageRecordListener[0]);
 		
