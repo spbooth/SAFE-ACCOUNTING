@@ -16,6 +16,9 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.UsageManager;
@@ -35,6 +38,7 @@ import uk.ac.ed.epcc.webapp.Feature;
 public class DefaultAccountingService extends AbstractContexed implements AccountingService{
 	public static final Feature DEFAULT_COMPOSITE_FEATURE = new Feature("accounting.producer.default_composite",false,"UsageProducers default to composite mode");
 	public static final String DEFAULT_PRODUCER_NAME = "accounting";
+	private Map<String,ConfigUsageManager> cache = new HashMap<>();
 	public DefaultAccountingService(AppContext c){
 		super(c);
 	}
@@ -42,7 +46,14 @@ public class DefaultAccountingService extends AbstractContexed implements Accoun
 		return getUsageManager(DEFAULT_PRODUCER_NAME);
 	}
 	public UsageManager getUsageManager(String name){
-		return ConfigUsageManager.getInstance(getContext(),name);
+		if( cache.containsKey(name)) {
+			return cache.get(name);
+		}
+		ConfigUsageManager mgr = ConfigUsageManager.getInstance(getContext(),name);
+		if( mgr != null ) {
+			cache.put(name,mgr);
+		}
+		return mgr;
 	}
 	public UsageProducer getUsageProducer(){
 		return getUsageManager();
@@ -80,7 +91,7 @@ public class DefaultAccountingService extends AbstractContexed implements Accoun
 	
 	
 	public void cleanup() {
-		
+		cache.clear();
 	}
 	
 	public Class<? super AccountingService> getType() {

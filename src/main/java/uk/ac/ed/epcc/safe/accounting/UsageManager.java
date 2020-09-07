@@ -36,7 +36,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.ContextCached;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
@@ -55,7 +54,7 @@ import uk.ac.ed.epcc.webapp.timer.TimeClosable;
  */
 
 public abstract class UsageManager<UR> extends AbstractContexed implements
-		UsageProducer<UR> , ContextCached{
+		UsageProducer<UR> {
 
 	
     public class MultiIterator extends AbstractMultiIterator<UR>{
