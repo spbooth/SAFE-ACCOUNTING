@@ -78,7 +78,7 @@ public class AccountingTableCreator extends AbstractContexed implements FormCrea
 				
 				// Note that the following step is only needed if auto_table is not enabled.
 				if( ! DataObjectFactory.AUTO_CREATE_TABLES_FEATURE.isEnabled(getContext())){
-					DataObjectFactory fac = conn.makeContexedObject(DataObjectFactory.class, table_name);
+					DataObjectFactory fac = conn.makeObject(DataObjectFactory.class, table_name);
 					TableSpecification spec = fac.getFinalTableSpecification(conn, table_name);
 					if( spec != null ){
 						DataBaseHandlerService dbh = conn.getService(DataBaseHandlerService.class);

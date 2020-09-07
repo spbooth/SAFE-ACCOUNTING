@@ -93,7 +93,7 @@ public class ConfigUsageManager extends UsageManager {
 		}
 		try {
 			// want to cache in context if feature enabled
-			return conn.makeContexedObject(ConfigUsageManager.class, tag);
+			return conn.makeObject(ConfigUsageManager.class, tag);
 		} catch (Exception e) {
 			return null;
 		}
