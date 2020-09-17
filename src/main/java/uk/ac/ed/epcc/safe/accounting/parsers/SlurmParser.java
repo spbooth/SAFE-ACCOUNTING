@@ -404,6 +404,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 			
 			derv.peer(BatchParser.JOB_NAME_PROP, JOB_NAME_PROP);
 			derv.put(BatchParser.WALLCLOCK_PROP, new DurationSecondsPropExpression(ELAPSED_PROP));
+			derv.peer(BatchParser.QUEUE_PROP,QOS);
 		} catch (PropertyCastException e) {
 			getLogger().error("Error setting standard derived props",e);
 		}

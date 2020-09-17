@@ -55,7 +55,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 
 public class ServeDataChartExtension extends ChartExtension {
-    public static final Feature DEFERRED_CHARTS= new Preference("reports.html.deferred_charts", false, "Defer chart generation until image is requested by browser");
+    public static final Feature DEFERRED_CHARTS= new Preference("reports.html.deferred_charts", false, "Defer chart generation in reports until image is requested by browser");
 	
     public ServeDataChartExtension(AppContext c,NumberFormat nf) throws ParserConfigurationException {
 		super(c,nf);
