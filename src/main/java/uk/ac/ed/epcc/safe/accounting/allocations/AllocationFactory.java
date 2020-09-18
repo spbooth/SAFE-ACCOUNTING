@@ -1084,7 +1084,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		return true;
 	}
 
-	/**
+	/** Is it leagal to update to the proposed values
 	 * @param map
 	 * @throws ListenerObjection
 	 */

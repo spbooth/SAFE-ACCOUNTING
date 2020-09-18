@@ -68,7 +68,7 @@
 
 	<xsd:group name="TableColumns">
 		<xsd:choice>
-			<xsd:element name="Column" type="ColumnType" />
+			<xsd:element name="Column" type="SummaryColumnType" />
 		</xsd:choice>
 	</xsd:group>
 

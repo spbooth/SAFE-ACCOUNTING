@@ -18,10 +18,8 @@ package uk.ac.ed.epcc.safe.accounting;
 
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
@@ -36,7 +34,6 @@ import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.content.Transform;
 import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
-
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 /** Class to build a table of expressions values with one row per record.
@@ -51,9 +48,8 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>> extends AbstractContexed{
 	
 	private F up;
-	private Map<String,PropExpression> props;
-	private Map<String,Transform> transforms;
-	private List<String> labels;
+
+	private List<ColName> col_names;
 	private int max_data_points=-1;
 	private int skip_data_points=0;
 	private PropExpression warning=null;
@@ -61,9 +57,8 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 	public ExpressionTargetTableMaker(AppContext c,F up){
 		super(c);
 		this.up=up;
-		labels=new LinkedList<>();
-		this.props=new HashMap<>();
-		this.transforms=new HashMap<>();
+		col_names=new LinkedList<>();
+		
 		check_every=c.getIntegerParameter("expression_target_table_maker.check_every", 500);
 	}
 	public ExpressionTargetTableMaker(AppContext c,F up, List<ColName> props){
@@ -76,12 +71,7 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 		Logger log = getLogger();
 		PropExpression<?> t = col.getTag();
 		if( up.compatible(t)){
-			labels.add(col.getName());
-			this.props.put(col.getName(),t);
-			Transform l = col.getTransform();
-			if( l != null){
-				this.transforms.put(col.getName(), l);
-			}
+			col_names.add(col);
 		}else{
 			log.debug("Property "+t.toString()+" not supported");
 		}
@@ -111,7 +101,6 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 	public  final Table<String,Object> makeTable( RecordSelector sel) throws Exception{
 	   Table res = new Table();
 	  
-	 
 	   try(CloseableIterator<E> it = ( max_data_points >= 0 )?
 			   up.getIterator(sel, skip_data_points, max_data_points > 0 ?(skip_data_points+max_data_points):-1)
 			   : up.getIterator(sel)){
@@ -121,12 +110,25 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 			   E record = it.next();
 			   Object key = makeKey(record);
 			   ExpressionTargetContainer et = up.getExpressionTarget(record);
-			   for(String lab : labels){
-				   PropExpression t = props.get(lab);
+			   for(ColName c : col_names){
+				   String lab = c.getName();
+				   PropExpression t = c.getTag();
 				   try{
 					   Object val = et.evaluateExpression(t);
 					   if( val != null){
-						   res.put(lab, key,val );
+						   PropExpression dyn = c.getNameExpression();
+						   if( dyn == null) {
+							   res.put(lab, key,val );
+						   }else {
+							  
+							   Object dlab = et.evaluateExpression(dyn);
+							   if( dlab != null ) {
+								   res.put(dlab, key, val);
+								   if( lab != null && ! lab.isEmpty()) {
+									   res.addToGroup(lab, dlab);
+								   }
+							   }
+						   }
 					   }
 				   }catch(InvalidExpressionException e){
 					   getLogger().debug("Skipping invalid property "+lab+"->"+t.toString(), e);
@@ -166,8 +168,12 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 			   }
 		   }
 	   }
-	   for(String lab : labels){
-		   PropExpression t = props.get(lab);
+	   // place column groups contiguoslu after first column generated
+	   res.packAllColumnGroups();
+	   // Now set formats
+	   for(ColName c : col_names){
+		   String lab = c.getName();
+		   PropExpression t = c.getTag();
 		   if( Number.class.isAssignableFrom(t.getTarget())){
 			   res.setColFormat(lab, new Transform() {
 				
@@ -194,7 +200,7 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 		   if( t instanceof FormatProvider){
 			   res.setColFormat(lab,new LabellerTransform(getContext(),((FormatProvider)t).getLabeller()));
 		   }
-		   Transform trans = transforms.get(lab);
+		   Transform trans = c.getTransform();
 		   if( trans != null ){
 			   res.setColFormat(lab, trans);
 		   }

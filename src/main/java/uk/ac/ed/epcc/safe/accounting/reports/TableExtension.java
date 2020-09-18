@@ -228,35 +228,74 @@ public class TableExtension extends ReportExtension {
 		}
 		
 	}
+	/** A {@link TableProxy} base class
+	 * 
+	 * @author spb
+	 *
+	 */
+    public static abstract class AbstractTable implements TableProxy{
+		
+		
+		CompoundTable compoundTable;
+		TableExtension extension;
+		
+		
+		
+		public AbstractTable(TableExtension extension, CompoundTable compoundTable)  {
+			this.compoundTable = compoundTable;
+			this.extension = extension;
+			
+			
+		}
+		
 	
+		
+		/**
+		 * @param columnNode
+		 * @param property
+		 * @return
+		 */
+		protected PropExpression addLabeller(Element columnNode, PropExpression property) {
+			// Optionally use a labeller
+			String labeller = extension.getAttribute("labeller", columnNode);
+			if( labeller != null && labeller.length() > 0){
+				Labeller lab = extension.getContext().makeObjectWithDefault(Labeller.class, null, labeller);
+				if( lab != null){
+					property = new LabelPropExpression(lab, property);
+				}else{
+					extension.addError("bad labeller", "Labeller "+labeller+" did not resolve", columnNode);
+				}
+			}
+			return property;
+		}
+		
+		
+		
+	}
 	/** A {@link TableProxy} that generates a table using a {@link JobTableMaker}.
 	 * 
 	 * Each row of the table comes from a separate job record. 
 	 * @author spb
 	 *
 	 */
-	public static class SimpleTable implements TableProxy{
+	public static class SimpleTable extends ObjectTable{
 		
-		private static final String MAX_ROWS_ELEMENT = "MaxRows";
+		
 		private static final String SKIP_ROWS="SkipRows";
-		private static final String WARNING_ELEMENT = "Warning";
+		
 		private static final String DEFAULT_LIST = "DefaultPropertyList";
-		CompoundTable compoundTable;
-		TableExtension extension;
+	
 		Period period;
-		RecordSet recordSet;
-		JobTableMaker tableMaker;
+		
 		
 		public SimpleTable(TableExtension extension, CompoundTable compoundTable, 
 				Period period, RecordSet recordSet, Node tableNode) throws BadTableException {
-			this.compoundTable = compoundTable;
-			this.extension = extension;
+			super(extension,compoundTable,recordSet,tableNode,new JobTableMaker(extension.getContext(), recordSet.getUsageProducer()));
 			this.period = period;
-			this.recordSet = recordSet;
+			
 			UsageProducer up = recordSet.getUsageProducer();
 			PropertyFinder finder = recordSet.getFinder();
-			tableMaker = new JobTableMaker(extension.getContext(),
-					up);
+			
 
 			try{
 				Element tableElement = (Element)tableNode;
@@ -287,7 +326,7 @@ public class TableExtension extends ReportExtension {
 											tr = new LabellerTransform(conn, l);
 										}
 									}
-									tableMaker.addColumn(new ColName(t, label,tr));
+									tableMaker.addColumn(new ColName(t, label,null,tr));
 								}else {
 									extension.addError("bad default property", prop_name);
 								}
@@ -308,98 +347,31 @@ public class TableExtension extends ReportExtension {
 			}catch(Exception e){
 				throw new BadTableException("Error setting SkipRows", e);
 			}
-			try{
-				// See if MaxRows is set
-				Element tableElement = (Element)tableNode;
-				if (extension.hasParam(MAX_ROWS_ELEMENT, tableElement)) {
-					tableMaker.setMaxDataPoints(
-							Integer.parseInt(extension.getParam(MAX_ROWS_ELEMENT, tableElement).trim()));
-				}
-			}catch(Exception e){
-				extension.addError("Bad Table", "Error setting MaxRows", e);
-			}
-			try{
-				// See if Warning
-				Element tableElement = (Element)tableNode;
-				if (extension.hasParam(WARNING_ELEMENT, tableElement)) {
-					tableMaker.setWarningExpression(extension.getExpression(finder, extension.getParam(WARNING_ELEMENT, tableElement)));
-				}
-			}catch(Exception e){
-				extension.addError("Bad Table", "Error setting Warning", e);
-			}
-		}
-	
-		/**
-		 * Configure the JobTableMaker by adding columns or setting MaxRows.
-		 * 
-		 * @param columnNode
-		 * @return String
-		 */
-		public String addColumn(Node columnNode) {
-			Element data_element = (Element) columnNode;
-			UsageProducer producer = recordSet.getUsageProducer();
-			if( producer == null) {
-				return "";
-			}
-			String columnName=null;
-			try {
-				columnName = extension.getParam("Name", data_element);
-			} catch (Exception e) {
-				extension.addError("Bad Column","Error getting column name",e);
-				return "";
-			}
-	
 			
-			PropExpression data_tag;
-			try {
-				data_tag = extension.getPropertyExpression(columnNode, producer.getFinder());
-				tableMaker.addColumn(new ColName(data_tag, columnName));
-			} catch (ExpressionException e) {
-				extension.addError("Bad expression", "No property found",e);
-				return "";
-			}
-			
-			return "";
-		
 		}
 	
 		
-		public Table postProcess(Node instructions) {
-			Table<String,Object> table;
+	
+		
+		protected Table makeRawTable() throws BadTableException { 
+			
 			AppContext conn = extension.getContext();
+			//store period to custom formatters can retreive
+			conn.setAttribute(CURRENT_PERIOD_ATTR, period);
 			try {
+				RecordSet recordSet = (RecordSet) set;
 				AndRecordSelector selector = recordSet.getPeriodSelector(period);
 				UsageProducer<?> up = recordSet.getUsageProducer();
 				if( up == null ) {
 					// assume narrowed composite producer
-					table = new Table<>();
+					return new Table<>();
 				}else {
-					table = tableMaker.makeTable(selector);
+					return tableMaker.makeTable(selector);
 				}
 			} catch (Exception e) {
-				extension.addError("Table Error", "Error making JobTable", e);
-				table = new Table<>();
+				throw new BadTableException("Error making JobTable", e);
 			}		
 			
-			//store period to custom formatters can retreive
-			conn.setAttribute(CURRENT_PERIOD_ATTR, period);
-			period=null; // drop uneeded references for GC
-			recordSet=null;
-			tableMaker=null;
-			if (compoundTable == null) {
-				Table result =  extension.processTable(table, instructions);
-				table=null;
-				return result;
-				
-			} else {
-				compoundTable.addTable(
-						extension.processTable(table, instructions));
-				table=null;
-				compoundTable=null;
-				return null;
-				
-			}			
-		
 		
 		}		
 		
@@ -534,11 +506,10 @@ public class TableExtension extends ReportExtension {
 	 * @author spb
 	 *
 	 */
-	public static class SummaryObjectTable implements TableProxy{
+	public static class SummaryObjectTable extends AbstractTable{
 		boolean use_overlap=false;
 	
-		CompoundTable compoundTable;
-		TableExtension extension;
+		
 		ObjectSet recordSet;
 		List<String> col_names;
 		Map<String,ReductionTarget> cols;
@@ -552,8 +523,7 @@ public class TableExtension extends ReportExtension {
 		public SummaryObjectTable(TableExtension extension, 
 				CompoundTable compoundTable,  
 				ObjectSet recordSet, Node tableNode) throws BadTableException {
-			this.compoundTable = compoundTable;
-			this.extension = extension;
+			super(extension,compoundTable);
 			this.recordSet = recordSet;
 
 			if( recordSet == null) {
@@ -615,7 +585,7 @@ public class TableExtension extends ReportExtension {
 				}
 				ExpressionTargetGenerator producer = recordSet.getGenerator();
 				if( producer == null) {
-					extension.addError("bad recordset", "producerS is null", columnNode);
+					extension.addError("bad recordset", "producer is null", columnNode);
 					return "";
 				}
 				if( TABLE_LOC.equals(columnNode.getNamespaceURI())){
@@ -715,24 +685,7 @@ public class TableExtension extends ReportExtension {
 			return "";
 
 		}
-		/**
-		 * @param columnNode
-		 * @param property
-		 * @return
-		 */
-		protected PropExpression addLabeller(Element columnNode, PropExpression property) {
-			// Optionally use a labeller
-			String labeller = extension.getAttribute("labeller", columnNode);
-			if( labeller != null && labeller.length() > 0){
-				Labeller lab = extension.getContext().makeObjectWithDefault(Labeller.class, null, labeller);
-				if( lab != null){
-					property = new LabelPropExpression(lab, property);
-				}else{
-					extension.addError("bad labeller", "Labeller "+labeller+" did not resolve", columnNode);
-				}
-			}
-			return property;
-		}
+		
 		
 		public Table postProcess(Node instructions) {	
 			ExpressionTargetFactory<?> ef = (ExpressionTargetFactory<?>) recordSet.getGenerator();
@@ -933,23 +886,22 @@ public class TableExtension extends ReportExtension {
 	 * @author spb
 	 *
 	 */
-	public static class ObjectTable implements TableProxy{
+	public static class ObjectTable extends AbstractTable{
 		
 		private static final String MAX_ROWS_ELEMENT = "MaxRows";
 		private static final String WARNING_ELEMENT = "Warning";
-		CompoundTable compoundTable;
-		TableExtension extension;
+		
 		ObjectSet set;
 		ExpressionTargetTableMaker tableMaker;
-		
 		public ObjectTable(TableExtension extension, CompoundTable compoundTable, 
 				ObjectSet set,Node tableNode) {
-			this.compoundTable = compoundTable;
-			this.extension = extension;
+			this(extension,compoundTable,set,tableNode,new ExpressionTargetTableMaker(extension.getContext(),set.getGenerator()));
+		}
+		public ObjectTable(TableExtension extension, CompoundTable compoundTable, 
+				ObjectSet set,Node tableNode,ExpressionTargetTableMaker tableMaker) {
+			super(extension,compoundTable);
 			this.set=set;
-			
-			
-			tableMaker = new ExpressionTargetTableMaker(extension.getContext(),this.set.getGenerator());
+			this.tableMaker = tableMaker;
 
 			try{
 				// See if MaxRows is set
@@ -973,44 +925,79 @@ public class TableExtension extends ReportExtension {
 		}
 	
 		/**
-		 * Configure the JobTableMaker by adding columns or setting MaxRows.
+		 * Configure the TableMaker by adding column
 		 * 
 		 * @param columnNode
 		 * @return String
 		 */
 		public String addColumn(Node columnNode) {
 			Element data_element = (Element) columnNode;
-			String columnName=null;
+
 			try {
-				columnName = extension.getParam("Name", data_element);
-			} catch (Exception e) {
-				extension.addError("Bad Column","Error getting column name",e);
-				return "";
+				if( set == null) {
+					extension.addError("bad recordset", "record set is null", columnNode);
+					return "";
+				}
+				ExpressionTargetGenerator producer = set.getGenerator();
+				if( producer == null) {
+					extension.addError("bad recordset", "producer is null", columnNode);
+					return "";
+				}
+				if( TABLE_LOC.equals(columnNode.getNamespaceURI())){
+					PropExpression property = extension.getPropertyExpression(columnNode, producer.getFinder());
+					if (property == null) {
+						throw new BadTableException("Missing or illegal Property element");		
+					}
+
+					String name;
+					if( property instanceof PropertyTag){
+						name=((PropertyTag)property).getName();
+					}else{
+						name=property.toString();
+					}
+					// use  property name as the default
+					String col_name = extension.getParamWithDefault("Name", name, (Element)columnNode);
+					PropExpression name_prop=null;
+					// unless we have a NameExpression element
+					if( extension.hasChild("NameExpression", (Element)columnNode)) {
+						Element ne = extension.getParamElement("NameExpression", (Element) columnNode);
+						name_prop = extension.getPropertyExpression(ne,producer.getFinder());
+						if( name_prop == null ) {
+							throw new BadTableException("Illegal NameExpression element");
+						}
+						name_prop= addLabeller(ne, name_prop);
+
+						String group = extension.getAttribute("name", ne);
+						if( group != null) {
+							col_name=group;
+						}
+					}
+
+					tableMaker.addColumn(new ColName(property,col_name,name_prop));
+				}else{
+					extension.addError("Bad Namespace", "Unexpected namespace "+columnNode.getNamespaceURI());
+				}
+			} catch (Exception tr) {
+				extension.addError("Error adding Data Column to table", 
+						tr.getClass().getCanonicalName(), tr);
+
 			}
-	
-			
-			PropExpression data_tag;
-			try {
-				data_tag = extension.getPropertyExpression(columnNode, set.getGenerator().getFinder());
-				tableMaker.addColumn(new ColName(data_tag, columnName));
-			} catch (ExpressionException e) {
-				extension.addError("Bad expression", "No property found",e);
-				return "";
-			}
-			
 			return "";
-		
+
 		}
 	
-		
-		public Table postProcess(Node instructions) throws BadTableException {
-			Table<String,Object> table;
+		protected Table makeRawTable() throws BadTableException {
 			try {
 				// We ignore the period for a ObjectTable
-				table = tableMaker.makeTable(set.getRecordSelector());
+				return tableMaker.makeTable(set.getRecordSelector());
 			} catch (Exception e) {
-				throw new BadTableException("Error making JobTable", e);
-			}		
+				throw new BadTableException("Error making ObjectTable", e);
+			}	
+		}
+		
+		public Table postProcess(Node instructions) throws BadTableException {
+			Table<String,Object> table = makeRawTable();
+				
 			AppContext conn = extension.getContext();
 			if (compoundTable == null) {
 				Table result = extension.processTable(table, instructions);

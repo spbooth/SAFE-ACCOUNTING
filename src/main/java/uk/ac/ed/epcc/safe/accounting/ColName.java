@@ -24,18 +24,35 @@ import uk.ac.ed.epcc.webapp.content.Transform;
 public class ColName{
 	private final PropExpression tag;
 	private final String name;
+	private final PropExpression name_expr;
 	private final Transform transform;
-	public ColName(PropExpression tag, String name){
-		this(tag,name,null);
+	public ColName(PropExpression tag, String name,PropExpression name_expr){
+		this(tag,name,name_expr,null);
 	}
-	public ColName(PropExpression tag, String name,Transform transform){
+	/** Parameters for a Table column
+	 * 
+	 * @param tag  {@link PropExpression} to generate in column
+	 * @param name Name of the column (or group if dynamic)
+	 * @param name_expr Optional {@link PropExpression} to generate the column name dynamically
+	 * @param transform Optional {@link Transform} to apply to the column
+	 */
+	public ColName(PropExpression tag, String name,PropExpression name_expr,Transform transform){
 		this.tag=tag;
 		this.name=name;
+		this.name_expr=name_expr;
 		this.transform=transform;
 	}
+	/** Get the expression to generate as the cell data
+	 * 
+	 * @return
+	 */
 	public PropExpression getTag(){
 		return tag;
 	}
+	/** Get the name of the colum (or column group)
+	 * 
+	 * @return
+	 */
 	public String getName(){
 		if( name != null){
 			return name;
@@ -45,6 +62,19 @@ public class ColName{
 		}
 		return tag.toString();
 	}
+	/** Get a dynamic name of a column within a column group.
+	 * If null is returned this represents a simple column
+	 * 
+	 * @param t
+	 * @return
+	 */
+	public PropExpression getNameExpression() {
+		return name_expr;
+	}
+	/** Get an optional transform for the Column
+	 * 
+	 * @return
+	 */
 	public Transform getTransform(){
 		return transform;
 	}
