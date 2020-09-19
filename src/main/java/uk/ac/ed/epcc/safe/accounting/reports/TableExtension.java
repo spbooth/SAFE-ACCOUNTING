@@ -1409,6 +1409,11 @@ public class TableExtension extends ReportExtension {
 				}
 			}else if(instruction.equals("PrintHeadings")){
 				target.setPrintHeadings(getBooleanParam("Value", true, inst));
+			}else if(instruction.equals("packColumnGroup")) {
+				String col = normalise(getText(inst));
+				target.packColumnGroup(col);
+			}else if(instruction.equals("packAllColumnGroups")){
+				target.packAllColumnGroups();
 			}
 		} catch (Exception t) {
 			getLogger().error( "Error processing table " + instruction,t);

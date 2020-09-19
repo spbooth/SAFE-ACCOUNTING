@@ -168,8 +168,6 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 			   }
 		   }
 	   }
-	   // place column groups contiguoslu after first column generated
-	   res.packAllColumnGroups();
 	   // Now set formats
 	   for(ColName c : col_names){
 		   String lab = c.getName();

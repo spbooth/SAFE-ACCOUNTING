@@ -52,7 +52,7 @@ public class DeRefExpression<R extends DataObject,T> implements PropExpression<T
 	}
 	@Override
 	public String toString(){
-		return super.toString()+"("+target_object.toString()+"["+expr.toString()+"])";
+		return getClass().getName()+"("+target_object.toString()+"["+expr.toString()+"])";
 	}
 	public <X> X accept(BasePropExpressionVisitor<X> vis) throws Exception {
 		if( vis instanceof PropExpressionVisitor){
