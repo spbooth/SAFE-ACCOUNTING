@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!-- Copyright - The University of Edinburgh 2015 -->
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:fmt="http://safe.epcc.ed.ac.uk/format"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<Title>Test Distinct</Title>  
+<per:Period>
+	<per:StartTime>29-09-2008</per:StartTime>
+	<per:EndTime>29-10-2008</per:EndTime>
+</per:Period>
+
+
+<par:Distinct var="V" expr="Person[WebName]">
+<Section>
+<Title>Report for <par:Parameter name="V"/></Title>
+<fil:Filter>
+<fil:EQ><fil:Property>Person[WebName]</fil:Property><fil:Value><par:Parameter name="V"/></fil:Value></fil:EQ>
+</fil:Filter>
+<Text>
+<ato:Count/> jobs.
+</Text>
+</Section>
+</par:Distinct>
+
+
+</Report>

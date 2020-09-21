@@ -1247,4 +1247,24 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		return result;
 		
 	}
+	/** recursively walk the tree adding all Filter elements
+	   * 
+	   * @param up
+	   * @param n
+	   * @return
+	   */
+	protected RecordSet addFilterNode(RecordSet up, Node n) {
+		if( n.getNodeType()==Node.ELEMENT_NODE && n.getLocalName().equals(FILTER_ELEMENT)){
+			return addFilterElement(up, (Element)n);
+		}else{
+			NodeList list =n.getChildNodes();
+			for(int i=0;i<list.getLength();i++){
+				Node c = list.item(i);
+				up = addFilterNode(up,c);
+			}
+			assert(up != null);
+			return up;
+		}
+		
+	}
 }

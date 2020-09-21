@@ -71,7 +71,7 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
 		return etf.exists(selector);
 	}
 	@Override
-	public <PT> Set<PT> getValues(PropertyTag<PT> data_tag, RecordSelector selector) throws Exception {
+	public <PT> Set<PT> getValues(PropExpression<PT> data_tag, RecordSelector selector) throws Exception {
 		return etf.getValues(data_tag, selector);
 	}
 

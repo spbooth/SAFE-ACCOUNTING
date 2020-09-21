@@ -18,6 +18,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
+import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
 import uk.ac.ed.epcc.webapp.jdbc.filter.SetMaker;
@@ -29,11 +30,11 @@ import uk.ac.ed.epcc.webapp.model.data.SetMapper;
 
 public class PropertyMaker<T extends DataObject,PT> extends SetMaker<T, PT> {
 	private final Repository res;
-	public PropertyMaker(AccessorMap<T> map,Repository res,PropertyTag<PT> propertyTag, boolean distinct) throws InvalidSQLPropertyException {
+	public PropertyMaker(AccessorMap<T> map,Repository res,PropExpression<PT> expr, boolean distinct) throws InvalidSQLPropertyException {
 		super(map.getContext(),map.getTarget());			
-		SQLValue<PT> sqlAccessor = map.getSQLValue(propertyTag);
+		SQLValue<PT> sqlAccessor = map.getSQLValue(expr);
 		if( sqlAccessor == null ){
-			throw new InvalidSQLPropertyException(propertyTag);
+			throw new InvalidSQLPropertyException(expr);
 		}
 		SetMapper<PT> mapper = new SetMapper<>(sqlAccessor);					
 		setMapper(mapper);			

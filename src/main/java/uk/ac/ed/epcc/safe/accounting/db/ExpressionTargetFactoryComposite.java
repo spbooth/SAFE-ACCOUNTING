@@ -231,8 +231,8 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 		return fil;
 	}
 	@Override
-	public <PT> Set<PT> getValues(PropertyTag<PT> tag, RecordSelector selector) throws Exception {
-		if( ! hasProperty(tag)){
+	public <PT> Set<PT> getValues(PropExpression<PT> tag, RecordSelector selector) throws Exception {
+		if( ! compatible(tag)){
 			return new HashSet<>();
 		}
 		BaseFilter<T> filter = map.getFilter(selector);	
@@ -244,7 +244,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 			DataObjectFactory<T> fac = getFactory();
 			AccessorMap m = getAccessorMap();
 			for(T o : fac.getResult(filter)){
-				result.add(map.getContainer(o).getProperty(tag));
+				result.add(map.getContainer(o).evaluateExpression(tag));
 			}
 			return result;
 		}

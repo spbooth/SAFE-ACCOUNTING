@@ -78,7 +78,7 @@ public class NullUsageProducer<UR> extends AbstractContexed implements UsageProd
 	}
 
 	@Override
-	public <PT> Set<PT> getValues(PropertyTag<PT> data_tag, RecordSelector selector) throws Exception {
+	public <PT> Set<PT> getValues(PropExpression<PT> data_tag, RecordSelector selector) throws Exception {
 		return new HashSet<>();
 	}
 

@@ -80,7 +80,28 @@ public class ParameterExtensionTest extends WebappTestBase {
 		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
 		checkContent(null, "expected_for.xml", out.toString());
 	}
-	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testDistinct() throws Exception{
+		
+		String templateName = "testDistinct";
+		
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<>();
+		ReportBuilderTest.setupParams(ctx, params);
+		
+
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
+		reportBuilder.setupExtensions(params);
+		
+		
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ReportType	XML = new ReportType("XML","xml", "text/xml","XML"); 
+		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
+		checkContent(null, "expected_distinct.xml", out.toString());
+	}
 	@Test
 	public void testRepeat() throws Exception{
 

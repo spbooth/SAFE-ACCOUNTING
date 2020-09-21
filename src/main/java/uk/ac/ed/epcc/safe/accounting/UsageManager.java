@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -180,12 +181,12 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 		map=tmp;
 	}
 
-	
-	public <PT> Set<PT> getValues(PropertyTag<PT> propertyTag, RecordSelector selector)
+	@Override
+	public <PT> Set<PT> getValues(PropExpression<PT> propertyTag, RecordSelector selector)
 			throws Exception {
 		Set<PT>  result = null;
 		for (UsageProducer<UR> prod : factories.values()) {
-			if( prod.hasProperty(propertyTag)){
+			if( prod.compatible(propertyTag)){
 				if (result == null ) {
 					result = prod.getValues(propertyTag, selector);
 
@@ -195,6 +196,9 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 				}
 			}
 
+		}
+		if( result == null) {
+			return new HashSet<PT>();
 		}
 		return result;
 	}

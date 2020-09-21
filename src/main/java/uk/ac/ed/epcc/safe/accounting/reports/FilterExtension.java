@@ -114,11 +114,11 @@ public class FilterExtension extends ReportExtension{
 		  try{
 			  if( filters instanceof Node){
 				  Node n = (Node) filters;
-				  prev = addNode(prev,n);
+				  prev = addFilterNode(prev,n);
 			  }else if(filters instanceof NodeIterator){
 				  NodeIterator list = (NodeIterator) filters;
 				  for(Node n=list.nextNode(); n != null; n=list.nextNode()){
-					  prev=addNode(prev, n);
+					  prev=addFilterNode(prev, n);
 				  }
 			  }else{
 				  addError("Bad Filter Specification","unexpected type "+filters.getClass().getCanonicalName());
@@ -171,11 +171,11 @@ public class FilterExtension extends ReportExtension{
 		  try{
 			  if( filters instanceof Node){
 				  Node n = (Node) filters;
-				  result = addNode(result,n);
+				  result = addFilterNode(result,n);
 			  }else if(filters instanceof NodeIterator){
 				  NodeIterator list = (NodeIterator) filters;
 				  for(Node n=list.nextNode(); n != null; n=list.nextNode()){
-					  result=addNode(result, n);
+					  result=addFilterNode(result, n);
 				  }
 			  }else{
 				  addError("Bad Filter Specification","unexpected type "+filters.getClass().getCanonicalName());
@@ -253,26 +253,6 @@ public class FilterExtension extends ReportExtension{
 
 	  return result;
   }
-  /** recursively walk the tree adding all Filter elements
-   * 
-   * @param up
-   * @param n
-   * @return
-   */
-  protected RecordSet addNode(RecordSet up, Node n) {
-	if( n.getNodeType()==Node.ELEMENT_NODE && n.getLocalName().equals(FILTER_ELEMENT)){
-		return addFilterElement(up, (Element)n);
-	}else{
-		NodeList list =n.getChildNodes();
-		for(int i=0;i<list.getLength();i++){
-			Node c = list.item(i);
-			up = addNode(up,c);
-		}
-		assert(up != null);
-		return up;
-	}
-	
-}
   public boolean hasRecords(Period period,RecordSet set){
 	  if(set.hasError()) {
 		  return false;

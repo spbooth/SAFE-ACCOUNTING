@@ -2,6 +2,8 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
 	xmlns:acc="http://safe.epcc.ed.ac.uk/restrict"
+	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+	xmlns:per="http://safe.epcc.ed.ac.uk/period"
 	xmlns:xalan="http://xml.apache.org/xalan"
 	xmlns:param="xalan://uk.ac.ed.epcc.safe.accounting.reports.ParameterExtension"
 	extension-element-prefixes="param">
@@ -25,6 +27,11 @@
 	</xsl:template>
 	<xsl:template match="par:For">		
 		<xsl:apply-templates select="param:For($ParameterExtension,self::*)" />
+	</xsl:template>
+	<xsl:template match="par:Distinct">	
+	<xsl:variable name="filter" select="(ancestor::*/fil:Filter|fil:Filter)"/>
+	<xsl:variable name="PeriodNode" select="(ancestor::*/per:Period|per:Period)[last()]"/>	
+		<xsl:apply-templates select="param:Distinct($ParameterExtension,$PeriodNode,$filter,self::*)" />
 	</xsl:template>
 	<!--  remove the parameter defs -->
     <xsl:template match="par:ParameterDef"/>

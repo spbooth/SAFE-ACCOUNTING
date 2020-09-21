@@ -15,6 +15,7 @@ package uk.ac.ed.epcc.safe.accounting.selector;
 
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTargetFactory;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
@@ -95,7 +96,7 @@ public interface PropertyTargetGenerator<UR> extends PropertyTargetFactory, Comp
    	 * 
    	 * @throws Exception 
    	 */
-   	public <PT> Set<PT> getValues(PropertyTag<PT> data_tag, RecordSelector selector) 
+   	public <PT> Set<PT> getValues(PropExpression<PT> data_tag, RecordSelector selector) 
    		throws Exception;
    	
 }

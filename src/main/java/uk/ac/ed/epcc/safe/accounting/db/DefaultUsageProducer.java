@@ -169,8 +169,8 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 		return exists(getFilter(selector));
 	}
 	@Override
-	public final  <PT> Set<PT> getValues(PropertyTag<PT> tag, RecordSelector selector) throws Exception {
-		if( ! hasProperty(tag)){
+	public final  <PT> Set<PT> getValues(PropExpression<PT> tag, RecordSelector selector) throws Exception {
+		if( ! compatible(tag)){
 			return new HashSet<>();
 		}
 		BaseFilter<T> filter = getFilter(selector);	
@@ -182,7 +182,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 			Set<PT> result = new HashSet<>();
 			for(T o : new FilterSet(filter)){
 				ExpressionTargetContainer proxy = map.getContainer(o);
-				result.add(proxy.getProperty(tag));
+				result.add(proxy.evaluateExpression(tag));
 				proxy.release();
 				o.release();
 			}

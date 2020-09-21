@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><Report xmlns="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:fmt="http://safe.epcc.ed.ac.uk/format" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Title>Test Distinct</Title>
+<Section>
+<Title>Report for atlas015</Title>
+<Text>
+2 jobs.
+</Text>
+</Section>
+<Section>
+<Title>Report for bhaddow</Title>
+<Text>
+7 jobs.
+</Text>
+</Section>
+<Section>
+<Title>Report for jschroe1</Title>
+<Text>
+65 jobs.
+</Text>
+</Section>
+<Section>
+<Title>Report for lhcb003</Title>
+<Text>
+3 jobs.
+</Text>
+</Section>
+<Section>
+<Title>Report for lhcb022</Title>
+<Text>
+5 jobs.
+</Text>
+</Section>
+<Section>
+<Title>Report for ngsadminuser</Title>
+<Text>
+1 jobs.
+</Text>
+</Section>
+<Section>
+<Title>Report for prdatlas014</Title>
+<Text>
+11 jobs.
+</Text>
+</Section>
+<Section>
+<Title>Report for s0565741</Title>
+<Text>
+25 jobs.
+</Text>
+</Section>
+<Section>
+<Title>Report for v1busaba</Title>
+<Text>
+35 jobs.
+</Text>
+</Section>
+<Section>
+<Title>Report for wwei1</Title>
+<Text>
+46 jobs.
+</Text>
+</Section>
+</Report>

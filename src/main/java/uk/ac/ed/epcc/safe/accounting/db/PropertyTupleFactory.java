@@ -294,8 +294,8 @@ Tagged{
 		return exists(getFilter(selector));
 	}
 	@Override
-	public final <PT> Set<PT> getValues(PropertyTag<PT> tag, RecordSelector selector) throws DataException, InvalidExpressionException, CannotFilterException {
-		if( ! hasProperty(tag)){
+	public final <PT> Set<PT> getValues(PropExpression<PT> tag, RecordSelector selector) throws DataException, InvalidExpressionException, CannotFilterException {
+		if( ! compatible(tag)){
 			return new HashSet<>();
 		}
 		BaseFilter<T> filter = getFilter(selector);	

@@ -423,6 +423,29 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
+	<xsd:element name="Distinct">
+	<xsd:annotation><xsd:documentation>
+	Generates a repeated section with a parameter set to the set of distinct values generated 
+	by a propexpression evaluated against the targets of filter.
+	 If parameter expansion is required in the filter ParameterRef expansion should be used.
+	Note that the iteration parameter cannot be retrieved by reference except by other parameter operations.
+	Only Parameter expansion, Repeat and For constructs are legal within this element.
+	</xsd:documentation></xsd:annotation>
+	
+	<xsd:complexType>
+	<xsd:sequence>
+	<xsd:any processContents="lax" minOccurs="0"
+		maxOccurs="unbounded" />
+    </xsd:sequence>
+	<xsd:attribute name="expr" type="xsd:string"
+		use="required">
+	<xsd:annotation><xsd:documentation>source table/factory of the loop</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+	<xsd:attribute name="var" type="xsd:string" use="required">
+	<xsd:annotation><xsd:documentation>The name of the parameter variable that contains the current target of the loop</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+	</xsd:complexType>
+	</xsd:element>
 	<xsd:element name="For">
 	<xsd:annotation><xsd:documentation>
 	Generates a repeated section with a parameter set to set of expression target objects
@@ -447,7 +470,6 @@
 	</xsd:attribute>
 	</xsd:complexType>
 	</xsd:element>
-	
 	<xsd:complexType name="ContentType" mixed="true">
 		<xsd:sequence>
 			<xsd:any processContents="lax" minOccurs="0"

@@ -87,6 +87,7 @@
 			<xsd:element ref="par:FormatParameter" />
 			<xsd:element ref="par:Repeat" />
 			<xsd:element ref="par:For" />
+			<xsd:element ref="par:Distinct" />
 			<xsd:element ref="par:IfSet"/>
 			<xsd:element ref="par:IfNotSet"/>
 			<xsd:element ref="par:Optional"/>
