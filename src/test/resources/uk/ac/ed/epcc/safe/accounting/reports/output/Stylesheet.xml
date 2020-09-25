@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><Report xmlns="http://safe.epcc.ed.ac.uk/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd">
+<?xml version="1.0" encoding="UTF-8"?><Report xmlns="http://safe.epcc.ed.ac.uk/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!-- Copyright - The University of Edinburgh 2015 -->
 <Title>This is a test</Title>
 <Section>

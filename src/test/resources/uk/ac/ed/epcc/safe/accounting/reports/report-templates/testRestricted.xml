@@ -2,7 +2,6 @@
 <!-- Copyright - The University of Edinburgh 2015 -->
 <rep:Report 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../../schema/report.xsd"
   xmlns:rep="http://safe.epcc.ed.ac.uk/report"
   xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
   xmlns:mac="http://safe.epcc.ed.ac.uk/macro"
