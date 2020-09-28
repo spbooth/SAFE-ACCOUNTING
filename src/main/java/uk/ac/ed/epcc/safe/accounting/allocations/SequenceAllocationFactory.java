@@ -202,11 +202,15 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 	}
 	public void setStart(T period, Date d) throws Exception {
 		period.setProperty(StandardProperties.STARTED_PROP, d);
-		period.commit();
+		if( period.commit() ) {
+			notifyModified(period, "Start changed");
+		}
 	}
 	public void setEnd(T period, Date d) throws Exception {
 		period.setProperty(StandardProperties.ENDED_PROP, d);
-		period.commit();
+		if( period.commit() ) {
+			notifyModified(period, "End changed");
+		}
 	}
 
 	public boolean isEmpty(TimePeriod period, PropertyContainer sequence) throws Exception{
