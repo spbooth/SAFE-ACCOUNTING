@@ -158,6 +158,60 @@ public int size() {
 			}
 		}
   }
+  public static final String ALIAS_PREFIX = "alias.";
+  /** Add config properties as aliases (definitions of PropertyTags aleady in scope).
+   * 
+   * The alias
+   * can be as simple as one property is equal to another, or can involve
+   * complicated property expressions . This is under the control of java
+   * properties of the form
+   * </p>
+   * <blockquote> alias.<em>table-name</em>.
+   * <em>name</em>=<em>prop-expression</em> </blockquote>
+   * <p>
+   * Where <em>name</em> must be the name of a property currently in scope.
+   * 
+   * @param ctx
+   * @param finder
+   * @param table
+   */
+  public void addAliasesFromProperties( AppContext ctx,PropertyFinder finder, String table) {
+	  String prefix = ALIAS_PREFIX + table + ".";
+		int prefixLength = prefix.length();
+		Parser parser = new Parser(ctx, finder);
+		Map<String, String> derived_properties = ctx.getInitParameters(prefix);
+
+		for (String key : derived_properties.keySet()) {
+			String aliasName = key.substring(prefixLength);
+			PropertyTag<?> origTag = finder.find(aliasName);
+			if (origTag == null) {
+				/*
+				 * TODO if this class is merged with DerivedPropertyPolicy, a new
+				 * property tag would be created here instead of reporting an error
+				 */
+				getLogger(ctx).error("Error while making an alias for '" + aliasName
+						+ "':  Couldn't find property '" + aliasName + "'");
+				continue;
+			}
+
+			try {
+				PropExpression alias = parser.parse(derived_properties.get(key));
+			
+					put(origTag, alias);
+				
+					
+
+			} catch (ParseException e) {
+				getLogger(ctx).error( "Error making alias for property '" + aliasName
+						+ "': Couldn't interpret expression '" + derived_properties.get(key) + "'",e);
+			} catch (PropertyCastException e) {
+				getLogger(ctx).error("Type mis-match aliasing properties",e);
+				
+			} catch (InvalidPropertyException e) {
+				getLogger(ctx).error("Property not found ",e);
+			}
+		}
+  }
 @SuppressWarnings("unchecked")
 private void resolve(PropertyRegistry reg, AppContext ctx, String prefix,
 		Set<String> missing, Parser parser,

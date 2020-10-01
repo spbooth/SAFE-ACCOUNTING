@@ -88,7 +88,7 @@ public class AliasPropertyPolicy extends BasePolicy implements TableTransitionCo
 	public AliasPropertyPolicy(AppContext conn) {
 		super(conn);
 	}
-	private static final String ALIAS_PREFIX = "alias.";
+	
 	private PropExpressionMap aliases = new PropExpressionMap();
     private PropertyFinder cached_finder;
 	private String table;
@@ -104,41 +104,8 @@ public class AliasPropertyPolicy extends BasePolicy implements TableTransitionCo
 		finder.addFinder(StandardProperties.base);
 		finder.addFinder(BatchParser.batch);
 
-		String prefix = ALIAS_PREFIX + table + ".";
-		int prefixLength = prefix.length();
-		Parser parser = new Parser(ctx, finder);
-		Map<String, String> derived_properties = ctx.getInitParameters(prefix);
-
-		for (String key : derived_properties.keySet()) {
-			String aliasName = key.substring(prefixLength);
-			PropertyTag<?> origTag = finder.find(aliasName);
-			if (origTag == null) {
-				/*
-				 * TODO if this class is merged with DerivedPropertyPolicy, a new
-				 * property tag would be created here instead of reporting an error
-				 */
-				getLogger().error("Error while making an alias for '" + aliasName
-						+ "':  Couldn't find property '" + aliasName + "'");
-				continue;
-			}
-
-			try {
-				PropExpression alias = parser.parse(derived_properties.get(key));
-			
-					this.aliases.put(origTag, alias);
-				
-					
-
-			} catch (ParseException e) {
-				getLogger().error( "Error making alias for property '" + aliasName
-						+ "': Couldn't interpret expression '" + derived_properties.get(key) + "'",e);
-			} catch (PropertyCastException e) {
-				getLogger().error("Type mis-match aliasing properties",e);
-				
-			} catch (InvalidPropertyException e) {
-				getLogger().error("Property not found ",e);
-			}
-		}
+		this.aliases.addAliasesFromProperties(ctx, finder, table);
+		
 		cached_finder=finder.copy();
 		this.table=table;
 		return finder;
@@ -165,7 +132,7 @@ public class AliasPropertyPolicy extends BasePolicy implements TableTransitionCo
 
 				PropertyTag tag = (PropertyTag) f.getItem(PROPERTY_INPUT);
 				ConfigService cfg = getContext().getService(ConfigService.class);
-				cfg.setProperty(ALIAS_PREFIX+table+"."+tag.getFullName(),(String) f.get(EXPR_INPUT));
+				cfg.setProperty(PropExpressionMap.ALIAS_PREFIX+table+"."+tag.getFullName(),(String) f.get(EXPR_INPUT));
 
 
 				return new ViewTableResult(target);
