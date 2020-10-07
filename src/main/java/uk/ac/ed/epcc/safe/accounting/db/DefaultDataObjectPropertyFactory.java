@@ -29,7 +29,7 @@ public abstract  class DefaultDataObjectPropertyFactory<T extends DataObjectProp
 	
 	
 
-	private ExpressionTargetFactoryComposite<T> etf = new ExpressionTargetFactoryComposite<>(this);
+	protected final ExpressionTargetFactoryComposite<T> etf = new ExpressionTargetFactoryComposite<>(this);
 	 
 	
 	/** Extension point to allow custom accessors and registries to be added.
