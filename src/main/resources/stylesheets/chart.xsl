@@ -29,8 +29,8 @@
       </xsl:apply-templates>
     </xsl:copy>
  	</xsl:template>
- 	<xsl:template mode="inline" match="par:PrameterRef">
- 	<xsl:copy-of select="param:parameter($ParameterExtension,self::*)" />
+ 	<xsl:template mode="inline" match="par:ParameterRef">
+ 	<xsl:copy-of select="param:inlineParameterRef($ParameterExtension,self::*)" />
  	</xsl:template>
 	<xsl:template mode="inline" match="fil:Filter">
 	<xsl:param name="filcontext"/>
@@ -51,6 +51,7 @@
 	<!-- deferred chart -->
 	<xsl:variable name="spec">
 	<xsl:copy>
+	    <xsl:apply-templates mode="inline" select="@*"/>
 		<xsl:copy-of select="$PeriodNode"/>
 		<xsl:copy-of select="plotter:formatRecordSet($ChartExtension,$filter)" />
 		<xsl:apply-templates mode="inline" select="cha:*">
@@ -108,9 +109,12 @@
 	<!-- deferred chart -->
 	<xsl:variable name="spec">
 	<xsl:copy>
+	    <xsl:apply-templates mode="inline" select="@*"/>
 		<xsl:copy-of select="$PeriodNode"/>
 		<xsl:copy-of select="plotter:formatRecordSet($ChartExtension,$filter)" />
-		<xsl:apply-templates mode="inline" select="cha:*"/>
+		<xsl:apply-templates mode="inline" select="cha:*">
+		<xsl:with-param name="filcontext" select="$filter"/>
+		</xsl:apply-templates>
 	</xsl:copy>
 	</xsl:variable>
 	<xsl:copy-of select="plotter:emitDeferredChart($ChartExtension,$spec,$caption)"/>
@@ -158,9 +162,12 @@
 	<!-- deferred chart -->
 	<xsl:variable name="spec">
 	<xsl:copy>
+	    <xsl:apply-templates mode="inline" select="@*"/>
 		<xsl:copy-of select="$PeriodNode"/>
 		<xsl:copy-of select="plotter:formatRecordSet($ChartExtension,$filter)" />
-		<xsl:apply-templates mode="inline" select="cha:*"/>
+		<xsl:apply-templates mode="inline" select="cha:*">
+		<xsl:with-param name="filcontext" select="$filter"/>
+		</xsl:apply-templates>
 	</xsl:copy>
     </xsl:variable>
 	<xsl:copy-of select="plotter:emitDeferredChart($ChartExtension,$spec,$caption)"/>

@@ -848,6 +848,33 @@ public class ParameterExtension extends ReportExtension {
 		return formatObject(param, parameterFormat);
 
 	}
+	@SuppressWarnings("unchecked")
+	public DocumentFragment inlineParameterRef(Node node) throws ReportException {
+		Element element = (Element)node;
+		
+		
+
+		if( element == null ){
+			addError("Malformed Parameter", "Missing Parameter or Value element");
+			return getDocument().createDocumentFragment();
+		}
+		String parameterName = this.getAttribute(NAME_ATTR, element);
+		Object param = getFormParameter(parameterName);
+		
+		if( parameterName == null ){
+			addError("Missing name", "No name specified for Parameter element");
+			// No name
+			return getDocument().createDocumentFragment();
+		}
+		if( param instanceof Number) {
+			// force raw formatting of numbers
+			param =  ((Number)param).toString();
+		}
+		
+		return formatObject(param, null);
+
+	}
+	
 	/** Do repeated expansion of a document fragment based on a parameter that provides a series of values
 	 * 
 	 * @param node

@@ -18,7 +18,6 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.io.ByteArrayOutputStream;
 import java.text.NumberFormat;
-import java.util.function.Supplier;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -31,22 +30,16 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import uk.ac.ed.epcc.safe.accounting.charts.MapperEntry;
-import uk.ac.ed.epcc.safe.accounting.charts.PlotEntry;
 import uk.ac.ed.epcc.safe.accounting.reports.deferred.DeferredChartFactory;
-import uk.ac.ed.epcc.safe.accounting.reports.exceptions.FormatException;
 import uk.ac.ed.epcc.safe.accounting.servlet.ReportServlet;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
-import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayMimeStreamData;
 import uk.ac.ed.epcc.webapp.model.serv.SettableServeDataProducer;
 import uk.ac.ed.epcc.webapp.preferences.Preference;
 import uk.ac.ed.epcc.webapp.servlet.ServeDataServlet;
 import uk.ac.ed.epcc.webapp.servlet.ServletService;
 import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
-import uk.ac.ed.epcc.webapp.session.SessionService;
-import uk.ac.ed.epcc.webapp.time.Period;
 /** ChartExtension that uses the ServeDataServlet
  * 
  * @author spb

@@ -145,7 +145,13 @@
 				</xsd:documentation></xsd:annotation>
 			</xsd:element>
 			<xsd:element name="PlotLabel" type="par:TextOrParameterType"
-				minOccurs="0" maxOccurs="1" />
+				minOccurs="0" maxOccurs="1" >
+				<xsd:annotation>
+				<xsd:documentation>
+				The Quantity axis label to use for this plot.
+				</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="Reduction" type="ReductionType"
 				maxOccurs="1" minOccurs="0">
 			</xsd:element>
