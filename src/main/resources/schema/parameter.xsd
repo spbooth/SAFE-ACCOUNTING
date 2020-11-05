@@ -444,6 +444,10 @@
 	<xsd:attribute name="var" type="xsd:string" use="required">
 	<xsd:annotation><xsd:documentation>The name of the parameter variable that contains the current target of the loop</xsd:documentation></xsd:annotation>
 	</xsd:attribute>
+	<xsd:attribute name="period" type="xsd:string" use="optional">
+	<xsd:annotation><xsd:documentation>The name of a form parameter containing the period. If not set a period is parsed from an enclosing element. However
+	this cannot be as a result of parameter expansion</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
 	</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="For">

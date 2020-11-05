@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -1072,13 +1073,25 @@ public class ParameterExtension extends ReportExtension {
 			  }
 		}
 		Period period = null;
-		if( period_node != null) {
+		String period_name = element.getAttribute("period");
+		if( period_name != null ) {
+			Object o = getFormParameter(period_name);
+			if( o != null && o instanceof Period) {
+				period = (Period) o;
+			}
+		}
+		if( period == null && period_node != null) {
 			try {
 			period = makePeriod(period_node);
 			}catch(Exception e) {
 				addError("BadDistinct", "Invalid period",period_node,e);
 				return result;
 			}
+		}
+		
+		if( period == null ) {
+			addError("BadDistinct","Missing period");
+			return result;
 		}
 		UsageProducer prod = recordSet.getUsageProducer();
 		PropertyFinder finder = prod.getFinder();
@@ -1100,10 +1113,23 @@ public class ParameterExtension extends ReportExtension {
 		try{
 			variable_names.add(variable);
 		
-		TreeSet set = new TreeSet();
+		TreeSet set = new TreeSet(new Comparator() {
+
+			@Override
+			public int compare(Object o1, Object o2) {
+				if( o1 instanceof Comparable) {
+					return ((Comparable)o1).compareTo(o2);
+				}
+				// fallback arbitrary order consistent with equals
+				return o1.hashCode() - o2.hashCode();
+			}
+		});
 		set.addAll(prod.getValues(expr, recordSet.getPeriodSelector(period)));
 		for(Object o : set) {
 				try{
+					if ( o instanceof IndexedReference) {
+						o = ((IndexedReference)o).getIndexed(getContext());
+					}
 					params.put(variable, o);
 					NodeList content_list = element.getChildNodes();
 					for(int j=0; j<content_list.getLength();j++){
