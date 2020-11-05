@@ -90,9 +90,11 @@ public abstract class ChartExtension extends ReportExtension {
 	private static final String N_PLOTS_ELEMENT = "NPlots";
 	private static final String OVERLAP_ELEMENT = "Overlap";
 	private static final String PLOT_LABEL_ELEMENT = "PlotLabel";
+	private static final String RATE_LABEL_ELEMENT = "RateScaleLabel";
 	private static final String NORM_ELEMENT = "Norm";
 	private static final String REDUCTION_ELEMENT = "Reduction";
 	private static final String SCALE_ELEMENT = "Scale";
+	private static final String TIME_SCALE_ELEMENT = "TimeScale";
 	private static final String RATE_SCALE_ELEMENT = "RateScale";
 	private static final String END_PROP_ELEMENT = "EndProp";
 	private static final String START_PROP_ELEMENT = "StartProp";
@@ -170,6 +172,7 @@ public abstract class ChartExtension extends ReportExtension {
 		//TODO make this an element with additional params for label and scale.
 		result.setRateScale( getBooleanParam(RATE_SCALE_ELEMENT,result.isRateScale(), e));
 		result.setScale(getNumberParam(SCALE_ELEMENT, result.getScale(), e).doubleValue());
+		result.setTimeScale(getNumberParam(TIME_SCALE_ELEMENT, result.getTimeScale(), e).doubleValue());
 		String red = getParam(REDUCTION_ELEMENT, e);
 		if( red != null){
 			try{
@@ -181,6 +184,10 @@ public abstract class ChartExtension extends ReportExtension {
 		String label = getExpandedParam(PLOT_LABEL_ELEMENT, e);
 		if( label != null ){
 			result.setLabel(label);
+		}
+		String rate_label = getExpandedParam(RATE_LABEL_ELEMENT, e);
+		if( rate_label != null ){
+			result.setTimeUnit(rate_label);
 		}
 		Element norm_e = getParamElement(NORM_ELEMENT, e);
 		if( norm_e != null ) {
