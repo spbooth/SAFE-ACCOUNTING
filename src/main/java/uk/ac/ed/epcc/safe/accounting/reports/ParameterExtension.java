@@ -1066,11 +1066,14 @@ public class ParameterExtension extends ReportExtension {
 		RecordSet recordSet = new RecordSet(serv);
 		if( filters instanceof Node) {
 			addFilterNode(recordSet, (Node) filters);
-		}else if( filters instanceof NodeList) {
+		}else if( filters instanceof NodeIterator) {
 			 NodeIterator list = (NodeIterator) filters;
 			  for(Node n=list.nextNode(); n != null; n=list.nextNode()){
 				  recordSet=addFilterNode(recordSet, n);
 			  }
+		}else if( filters != null) {
+			addError("Unexpected filter type ", filters.getClass().getCanonicalName());
+			return result;
 		}
 		Period period = null;
 		String period_name = element.getAttribute("period");
