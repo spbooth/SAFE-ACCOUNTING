@@ -6,7 +6,7 @@
 <End type='Long' nullable='true'/>
 <ExitCode type='String' nullable='true' max='32'/>
 <Group type='String' nullable='true' max='32'/>
-<JobID type='String' nullable='true' max='32'/>
+<JobID type='String' nullable='true' max='128'/>
 <SubJob type='Boolean' nullable='false'/>
 <JobName type='String' nullable='true' max='200'/>
 <NTasks type='Integer' nullable='true'/>
