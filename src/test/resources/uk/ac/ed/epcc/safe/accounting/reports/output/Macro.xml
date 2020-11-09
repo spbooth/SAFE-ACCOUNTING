@@ -3,16 +3,17 @@
 	
 	
 	
-	
+	<Section>
 	<Heading>Macro A</Heading>
-	<bracket>igor</bracket>
+	<Div>igor</Div>
 	
 	<Heading>Macro B</Heading>
-	<bracket>cuddles</bracket> 
+	<Div>cuddles</Div> 
 
 	<Heading>Macro C</Heading>
-	fred
+	<Text>fred</Text>
 	
 	
-	Throw the switch!!!
+	<Text>Throw the switch!!!</Text>
+	</Section>
 </Report>

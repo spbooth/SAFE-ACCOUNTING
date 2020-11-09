@@ -29,7 +29,7 @@
 		<xsl:apply-templates select="param:For($ParameterExtension,self::*)" />
 	</xsl:template>
 	<xsl:template match="par:Distinct">	
-	<xsl:variable name="filter" select="(ancestor::*/fil:Filter|fil:Filter)"/>
+	<xsl:variable name="filter" select="ancestor::*/fil:Filter"/>
 	<xsl:variable name="PeriodNode" select="(ancestor::*/per:Period|per:Period)[last()]"/>	
 		<xsl:apply-templates select="param:Distinct($ParameterExtension,$PeriodNode,$filter,self::*)" />
 	</xsl:template>

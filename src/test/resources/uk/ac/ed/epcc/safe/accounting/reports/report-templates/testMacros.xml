@@ -11,10 +11,10 @@
   xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
   xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
 
-	<mac:MacroDef name="macro_a"><bracket>igor</bracket></mac:MacroDef>
-	<mac:MacroDef name="macro_b"><bracket>cuddles</bracket></mac:MacroDef>
+	<mac:MacroDef name="macro_a"><Div>igor</Div></mac:MacroDef>
+	<mac:MacroDef name="macro_b"><Div>cuddles</Div></mac:MacroDef>
 	<mac:MacroDef name="macro_c">fred</mac:MacroDef>
-	
+	<Section>
 	<Heading>Macro A</Heading>
 	<mac:Macro name="macro_a"/>
 	
@@ -22,17 +22,18 @@
 	<mac:Macro name="macro_b"/> 
 
 	<Heading>Macro C</Heading>
-	<mac:Macro name="macro_c"/>
+	<Text><mac:Macro name="macro_c"/></Text>
 	
 	
 	<mac:Switch>
 	<mac:Case Key="igor">
 	<mac:Value><mac:Macro name="macro_a"/></mac:Value>
-	<mac:Body>Throw the switch!!!</mac:Body>
+	<mac:Body><Text>Throw the switch!!!</Text></mac:Body>
 	</mac:Case>
 	<mac:Case Key="cuddles">
 	<mac:Value><mac:Macro name="macro_a"/></mac:Value>
-	<mac:Body>Will you be my friend</mac:Body>
+	<mac:Body><Text>Will you be my friend</Text></mac:Body>
 	</mac:Case>
 	</mac:Switch>
+	</Section>
 </Report>

@@ -4,6 +4,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.reports;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -65,6 +66,7 @@ public class MacroExtensionTest extends ExtensionTestCase {
 		//System.out.println("Expecting");
 		//System.out.println(expectedOutput);
 		// Check it was correctly formatted.
+		//assertEquals(expectedOutput, result);
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, result),
 				result.replaceAll("\r?\n", "\n").contains(expectedOutput.replaceAll("\r?\n", "\n")));

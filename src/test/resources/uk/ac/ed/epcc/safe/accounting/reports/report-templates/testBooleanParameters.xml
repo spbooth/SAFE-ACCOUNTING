@@ -14,7 +14,7 @@
 <par:ParameterDef name="MyBoolean" type="Boolean" value="true"/>
 <par:ParameterDef name="MyOtherBoolean" type="Boolean" value="false"/>
 
-<Text>My Boolean is <par:Parameter name="MyBoolean" value="false"/>.</Text>
+<Text>My Boolean is <par:Parameter name="MyBoolean"/>.</Text>
 <Text>My other Boolean is <par:Parameter name="MyOtherBoolean"/>.</Text>
 
 </Report>
