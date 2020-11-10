@@ -9,7 +9,9 @@
 <h1>Test Plots</h1>
 <h2>Time Chart Plot</h2>
 <div class="graph">
+<figure>
 <img alt="figure" src="test/Data/ServeData/1/image.png"/>
+</figure>
 </div>
 </div>
 </div>
