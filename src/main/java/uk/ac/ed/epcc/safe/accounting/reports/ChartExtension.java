@@ -152,14 +152,15 @@ public abstract class ChartExtension extends ReportExtension {
 		}else {
 			name = getExpandedParam(PLOT_ELEMENT,e);
 			if( name == null  || name.isEmpty()){
-				throw new ReportException("No Plot quantity was specified");
+				addError("Bad PlotEntry", "No plot property specified", e);
+				return null;
 			}
 			start_name = getParam(START_PROP_ELEMENT, e);
 			end_name = getParam(END_PROP_ELEMENT,e);
 			result = serv.getPlotEntry( errors,finder, name,start_name,end_name);
 		}
 		if( result == null ){
-			addError("Invalid Plot Quantity","The specified quantity "+name+" does not correspond to a plottable quantity or named PlotEntry");
+			addError("Invalid Plot Quantity","The specified quantity "+name+" does not correspond to a plottable quantity or named PlotEntry",e);
 			return null;
 		}
 		if( start_name != null && start_name.trim().length() > 0 && result.getStartProperty() == null ){

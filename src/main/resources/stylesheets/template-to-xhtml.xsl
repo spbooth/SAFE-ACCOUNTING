@@ -123,13 +123,15 @@
 <xsl:template match="rep:Figure|Figure|figure">
 <xsl:element name="div">
 <xsl:attribute name="class">graph</xsl:attribute>
+<xsl:element name="figure">
 <xsl:copy-of select="svg:*" />
 <xsl:apply-templates select="rep:Caption|Caption|caption" />
+</xsl:element>
 </xsl:element>
 </xsl:template>
 
 <xsl:template match="rep:Caption|Caption|caption" >
-<p><xsl:apply-templates/></p>
+<figcaption><xsl:apply-templates/></figcaption>
 </xsl:template>
 
 <xsl:template match="rep:NoData|NoData">

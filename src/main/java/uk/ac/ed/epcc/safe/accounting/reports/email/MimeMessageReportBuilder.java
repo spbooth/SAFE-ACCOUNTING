@@ -43,6 +43,7 @@ import uk.ac.ed.epcc.safe.accounting.reports.ReportType;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -58,7 +59,7 @@ import uk.ac.ed.epcc.webapp.model.data.stream.MimeStreamDataWrapper;
  *
  */
 public class MimeMessageReportBuilder extends ReportBuilder{
-	
+	public static final Feature MIME_REPORT_LOG_SOURCE = new Feature("mime_message_report.log_source",false,"Full logging for reports sent by email");
 	
 	/* Having real trouble getting a mime structure that works in outlook
 	 * 
@@ -93,6 +94,7 @@ public class MimeMessageReportBuilder extends ReportBuilder{
 		log = getContext().getService(LoggerService.class).getLogger(getClass());
 		this.report_template=report_template;
 		setTemplate(report_template);
+		log_source = MIME_REPORT_LOG_SOURCE.isEnabled(conn);
 		if( params == null ){
 			this.params = new HashMap<>();
 		}else{
