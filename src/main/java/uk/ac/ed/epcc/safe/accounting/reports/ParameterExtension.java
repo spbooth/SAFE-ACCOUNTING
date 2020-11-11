@@ -1097,12 +1097,12 @@ public class ParameterExtension extends ReportExtension {
 			return result;
 		}
 		UsageProducer prod = recordSet.getUsageProducer();
-		PropertyFinder finder = prod.getFinder();
 		if( prod == null ){
 			addError("Bad Distinct", "No usage Producer");
 			return result;
 		}
 		
+		PropertyFinder finder = prod.getFinder();
 		String expr_text = getAttribute("expr", element);
 		PropExpression expr = null;
 		try {
