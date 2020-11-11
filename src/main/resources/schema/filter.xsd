@@ -15,11 +15,12 @@
 <xsd:schema elementFormDefault="qualified"
 	targetNamespace="http://safe.epcc.ed.ac.uk/filter"
 	xmlns="http://safe.epcc.ed.ac.uk/filter"
-
+ 	xmlns:sub="http://safe.epcc.ed.ac.uk/substitute"
 	xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
 	xmlns:prop="http://safe.epcc.ed.ac.uk/propexpression" >
-
+	<xsd:import namespace="http://safe.epcc.ed.ac.uk/substitute" 
+		schemaLocation="substitute.xsd"/>
 	<xsd:import schemaLocation="propexpression.xsd" namespace="http://safe.epcc.ed.ac.uk/propexpression"></xsd:import>
 	<xsd:complexType name="PropertyFilterType">
 	<xsd:annotation><xsd:documentation>
@@ -106,6 +107,7 @@
 		a very powerful route to accessing domain specific filters.
 		</xsd:documentation></xsd:annotation>
 		</xsd:element>
+		<xsd:group ref="sub:Content"/>
 	</xsd:choice>
 	</xsd:group>
 
