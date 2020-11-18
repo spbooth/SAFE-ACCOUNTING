@@ -1059,9 +1059,7 @@ public class ParameterExtension extends ReportExtension {
 			addError("Bad Variable","Overiding the existing parameter named "+variable);
 			return result;
 		}
-		if( parameter_names != null){
-			parameter_names.add(variable);
-		}
+		
 		AccountingService serv = getContext().getService(AccountingService.class);
 		RecordSet recordSet = new RecordSet(serv);
 		if( filters instanceof Node) {
@@ -1114,6 +1112,9 @@ public class ParameterExtension extends ReportExtension {
 		
 		
 		try{
+			if( parameter_names != null){
+				parameter_names.add(variable);
+			}
 			variable_names.add(variable);
 		
 		TreeSet set = new TreeSet(new Comparator() {
