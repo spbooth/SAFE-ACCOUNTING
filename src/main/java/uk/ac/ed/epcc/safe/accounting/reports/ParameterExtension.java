@@ -232,7 +232,7 @@ public class ParameterExtension extends ReportExtension {
 			// while being built if early stages are set from params
 			
 			
-			if( params.containsKey(name)) {
+			if( input != null && params.containsKey(name)) {
 				input.accept(setter);
 			}
 			break;
