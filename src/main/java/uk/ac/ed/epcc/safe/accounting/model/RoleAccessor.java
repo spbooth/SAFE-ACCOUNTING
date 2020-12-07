@@ -60,7 +60,7 @@ public class RoleAccessor<T extends AppUser> implements Accessor<Boolean,T>, Fil
 			Boolean val) throws CannotFilterException {
 		
 		try {
-			return FilterConverter.convert(serv.getPersonInRoleFilter(role));
+			return FilterConverter.convert(serv.getGlobalRoleFilter(role));
 		} catch (NoSQLFilterException e) {
 			throw new CannotFilterException(e);
 		}
