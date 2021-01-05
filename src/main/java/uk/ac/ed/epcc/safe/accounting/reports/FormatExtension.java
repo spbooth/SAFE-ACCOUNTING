@@ -172,7 +172,7 @@ public class FormatExtension<T> extends ReportExtension {
 			if( "IfDef".equals(nodeName)){
 				String prop = e.getAttribute("required");
 				// only process contents if required property not null
-				if( prop != null ){
+				if( prop != null && ! prop.isEmpty()){
 					PropExpression<?> t = expander.parse(prop);
 					if( t != null ){
 						

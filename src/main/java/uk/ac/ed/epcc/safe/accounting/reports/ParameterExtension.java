@@ -528,7 +528,7 @@ public class ParameterExtension extends ReportExtension {
 	}
 	private BaseFilter getFilterFromPolicy(DataObjectFactory fac,Element e) {
 		String name = e.getAttribute("name");
-		if( name == null ) {
+		if( name == null && ! name.isEmpty()) {
 			addError("bad FilterPolicy","No name attribute", e);
 			return null;
 		}
@@ -685,7 +685,7 @@ public class ParameterExtension extends ReportExtension {
 			if( IF_DEF_ELEMENT.equals(nodeName)){
 				String prop = e.getAttribute("required");
 				// only process contents if required property not null
-				if( prop != null ){
+				if( prop != null && ! prop.isEmpty()){
 					
 					if( expander.isDefined(prop) ){
 							DocumentFragment result = doc.createDocumentFragment();

@@ -75,12 +75,9 @@ public class XMLDateTimeParser implements ValueParser<Date> {
 		throw new ConsistencyError("Error getting DataTypeFactory",e);
 	}
     XMLGregorianCalendar xmlCal = null;
-    try {
+   
     xmlCal =
       xmlDataTypeFactory.newXMLGregorianCalendar(valueString.trim());
-    } catch (IllegalArgumentException e) {
-    	throw new IllegalArgumentException(valueString);
-    }
 
     return xmlCal.toGregorianCalendar().getTime();
   }
