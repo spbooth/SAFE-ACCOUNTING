@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
@@ -41,6 +42,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.model.TimePurgeFactory;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
+import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.filter.FilterDelete;
 import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
@@ -55,7 +57,7 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
  * @param <T> class of UsageRecord
  *
  */ 
-public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContainer>  extends DataObjectFactory<T> implements UsageProducer<T>,TimePurgeFactory {
+public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContainer>  extends DataObjectFactory<T> implements UsageProducer<T>,TimePurgeFactory,PropertyImplementationProvider {
 	private ExpressionTargetFactoryComposite<T> etf = new ExpressionTargetFactoryComposite<>(this);
 	    
 		protected DefaultUsageProducer(){
@@ -213,6 +215,14 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 		this.composite=composite;
 		return old;
 	}
+
+	@Override
+	public String getImplemenationInfo(PropertyTag<?> tag) {
+	
+		return etf.getAccessorMap().getImplemenationInfo(tag);
+	}
+
+	
 
 
 

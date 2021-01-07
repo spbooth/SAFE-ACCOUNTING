@@ -27,6 +27,7 @@ import java.util.Vector;
 
 import uk.ac.ed.epcc.safe.accounting.db.DefaultAccountingService;
 import uk.ac.ed.epcc.safe.accounting.db.NarrowTag;
+import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -43,6 +44,7 @@ import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.iterator.AbstractMultiIterator;
 import uk.ac.ed.epcc.webapp.model.data.iterator.NestedIterator;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.timer.TimeClosable;
 /** A composite {@link UsageProducer} that combines results from several 
  * underlying {@link UsageProducer}s.
@@ -55,7 +57,7 @@ import uk.ac.ed.epcc.webapp.timer.TimeClosable;
  */
 
 public abstract class UsageManager<UR> extends AbstractContexed implements
-		UsageProducer<UR> {
+		UsageProducer<UR> , PropertyImplementationProvider{
 
 	
     public class MultiIterator extends AbstractMultiIterator<UR>{
@@ -465,11 +467,20 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 		StringBuilder sb = new StringBuilder();
 		boolean seen=false;
 		for(UsageProducer<UR> prod: factories.values()){
-			if( prod instanceof PropertyImplementationProvider){
+			PropertyImplementationProvider imp = null;
+			if( prod instanceof PropertyImplementationProvider) {
+				imp = (PropertyImplementationProvider) prod;
+			}else if( prod instanceof IndexedProducer){
+				ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory((IndexedProducer)prod);
+				if( etf != null ) {
+					imp = etf.getAccessorMap();
+				}
+			}
+			if( imp != null) {
 				if( seen ){
 					sb.append(" , ");
 				}
-				sb.append(((PropertyImplementationProvider)prod).getImplemenationInfo(tag));
+				sb.append(imp.getImplemenationInfo(tag));
 				seen=true;
 			}
 		}

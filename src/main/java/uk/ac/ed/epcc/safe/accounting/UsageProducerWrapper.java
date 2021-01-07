@@ -19,7 +19,7 @@ import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
  *
  * @param <UR>
  */
-public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
+public class UsageProducerWrapper<UR> implements UsageProducer<UR> , PropertyImplementationProvider{
 
 	public UsageProducerWrapper(AppContext conn, String tag,ExpressionTargetFactory<UR> etf) {
 		super();
@@ -135,6 +135,11 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> {
 		boolean old = this.composite;
 		this.composite=composite;
 		return old;
+	}
+
+	@Override
+	public String getImplemenationInfo(PropertyTag<?> tag) {
+		return etf.getAccessorMap().getImplemenationInfo(tag);
 	}
 
 }
