@@ -16,6 +16,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.Feature;
@@ -81,6 +82,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 			ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(getContext());
 			map.makeReferences(refs);
 			finder.addFinder(refs);
+			finder.addFinder(StandardProperties.time); // accessormap adds this
 			PropertyRegistry derived = new PropertyRegistry(table+"DerivedProperties","Derived properties for table "+table);
 			expression_map = new PropExpressionMap();
 			PropertyRegistry def = new PropertyRegistry(table,"Properties for table "+table);
