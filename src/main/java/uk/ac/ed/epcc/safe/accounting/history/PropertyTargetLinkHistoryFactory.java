@@ -15,8 +15,8 @@ package uk.ac.ed.epcc.safe.accounting.history;
 
 import uk.ac.ed.epcc.safe.accounting.db.ExpressionTargetFactoryComposite;
 import uk.ac.ed.epcc.webapp.Indexed;
+import uk.ac.ed.epcc.webapp.model.data.HistoryFactory;
 import uk.ac.ed.epcc.webapp.model.data.IndexedLinkManager;
-import uk.ac.ed.epcc.webapp.model.history.HistoryFactory;
 import uk.ac.ed.epcc.webapp.model.history.LinkHistoryManager;
 
 

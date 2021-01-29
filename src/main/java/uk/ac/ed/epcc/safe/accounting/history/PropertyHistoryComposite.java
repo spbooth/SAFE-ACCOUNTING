@@ -20,10 +20,10 @@ import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.webapp.model.data.Composite;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
+import uk.ac.ed.epcc.webapp.model.data.HistoryFactory;
 import uk.ac.ed.epcc.webapp.model.data.IndexedFieldValue;
 import uk.ac.ed.epcc.webapp.model.data.Repository;
-import uk.ac.ed.epcc.webapp.model.history.HistoryFactory;
-import uk.ac.ed.epcc.webapp.model.history.HistoryFactory.HistoryRecord;
+import uk.ac.ed.epcc.webapp.model.data.HistoryFactory.HistoryRecord;
 /** A {@link Composite} to customise a {@link HistoryFactory} for
  * property support.
  * 
