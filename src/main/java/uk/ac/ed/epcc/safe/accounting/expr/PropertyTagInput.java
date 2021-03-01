@@ -23,6 +23,8 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
 /** input for selecting a {@link PropertyTag} from a {@link PropertyFinder}
  * 
  * @author spb
@@ -65,9 +67,13 @@ public PropertyTag getItem() {
 }
 public void setItem(PropertyTag item) {
 	if( item == null ){
-		setValue(null);
+		setNull();
 	}else{
-		setValue(item.getFullName());
+		try {
+			setValue(item.getFullName());
+		} catch (TypeException e) {
+			throw new TypeError(e);
+		}
 	}
 	
 }

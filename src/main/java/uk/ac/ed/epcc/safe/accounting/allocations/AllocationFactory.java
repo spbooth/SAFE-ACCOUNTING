@@ -69,6 +69,8 @@ import uk.ac.ed.epcc.webapp.forms.inputs.BoundedDateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.DateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampMultiInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
 import uk.ac.ed.epcc.webapp.forms.result.BackResult;
 import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
@@ -656,11 +658,19 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		c.set(Calendar.MINUTE,0);
 		c.set(Calendar.HOUR,0);
 		c.set(Calendar.DAY_OF_YEAR,1);
-		start.setValue(c.getTime());
+		try {
+			start.setValue(c.getTime());
+		} catch (TypeException e) {
+			throw new TypeError(e);
+		}
 		
 		Input<Date> end = getDateInput();
 		c.add(Calendar.YEAR,1);
-		end.setValue(c.getTime());
+		try {
+			end.setValue(c.getTime());
+		} catch (TypeException e) {
+			throw new TypeError(e);
+		}
 		
 		filter_form.addInput("StartDate","Start Date", start );
 		filter_form.addInput("EndDate","End Date",end );

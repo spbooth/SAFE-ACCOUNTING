@@ -43,6 +43,8 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.result.ViewTransitionResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTargetlessTransition;
@@ -147,11 +149,19 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 			if( p instanceof CalendarFieldSplitPeriod) {
 				CalendarFieldPeriodInput input = CalendarFieldPeriodInput.getInstance(conn,Calendar.MONTH);
 				
-				input.setValue((CalendarFieldSplitPeriod)p);
+				try {
+					input.setValue((CalendarFieldSplitPeriod)p);
+				} catch (TypeException e) {
+					getLogger().error("Error setting period", e);
+				}
 				f.addInput("Period", "Period", input );
 			}else {
 				SimplePeriodInput input = new SimplePeriodInput(conn.getService(CurrentTimeService.class).getCurrentTime(),1L, Calendar.MONTH);
-				input.setValue(p);
+				try {
+					input.setValue(p);
+				} catch (TypeException e) {
+					getLogger().error("Error setting period", e);
+				}
 				f.addInput("Period", "Period", input );
 			}
 			// If we have any references then allow filter on these.
@@ -173,7 +183,11 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 						}
 						IndexedReference ref = map.getProperty(tag, null);
 						if( ref != null){
-							i.setValue(ref.getID());
+							try {
+								i.setValue(ref.getID());
+							} catch (TypeException e) {
+								throw new TypeError(e);
+							}
 						}
 						// don't use same names as in target path
 						String key = FILTER_FORM_PREFIX+tag.getFullName();

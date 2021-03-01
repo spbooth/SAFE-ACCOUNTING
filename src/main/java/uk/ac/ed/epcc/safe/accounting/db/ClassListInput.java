@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.AbstractInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
 
 /** An input to select a class from a pre-defined set.
  * 
@@ -85,7 +86,7 @@ public class ClassListInput extends AbstractInput<String> implements ListInput<S
 		return getTagByItem(item);
 	}
 
-	public String convert(Object v) throws TypeError {
+	public String convert(Object v)  {
           if( v == null ){
         	  return null;
           }
@@ -111,7 +112,11 @@ public class ClassListInput extends AbstractInput<String> implements ListInput<S
 	}
 
 	public void setItem(Class item) {
-		setValue(getTagByItem(item));
+		try {
+			setValue(getTagByItem(item));
+		} catch (TypeException e) {
+			throw new TypeError(e);
+		}
 	}
 
 	public <R> R accept(InputVisitor<R> vis) throws Exception {

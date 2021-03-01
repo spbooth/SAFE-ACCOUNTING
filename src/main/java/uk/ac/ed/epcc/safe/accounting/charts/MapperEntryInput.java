@@ -24,6 +24,8 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseAbstractInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Form Input for selecting a MapperEntry
  *  
@@ -59,9 +61,13 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 	
 	public void setItem(MapperEntry item) {
 		if( item == null ){
-			setValue(null);
+			setNull();
 		}else{
-			setValue(getTagByItem(item));
+			try {
+				setValue(getTagByItem(item));
+			} catch (TypeException e) {
+				throw new TypeError(e);
+			}
 		}
 	}
 	

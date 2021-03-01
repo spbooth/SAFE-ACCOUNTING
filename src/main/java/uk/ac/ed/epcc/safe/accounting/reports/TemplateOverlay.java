@@ -38,6 +38,8 @@ import uk.ac.ed.epcc.webapp.editors.xml.DomVisitor;
 import uk.ac.ed.epcc.webapp.forms.html.RedirectResult;
 import uk.ac.ed.epcc.webapp.forms.inputs.ConstantInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.Input;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
 import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.IntegerFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
@@ -140,7 +142,11 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 			@Override
 			public Input getInput() {
 				ConstantInput<String> group_input = new ConstantInput<>(ReportBuilder.REPORT_TEMPLATE_GROUP);
-				group_input.setValue(ReportBuilder.REPORT_TEMPLATE_GROUP);
+				try {
+					group_input.setValue(ReportBuilder.REPORT_TEMPLATE_GROUP);
+				} catch (TypeException e) {
+					throw new TypeError(e);
+				}
 				return group_input;
 			}
 			

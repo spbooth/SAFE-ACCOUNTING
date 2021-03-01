@@ -92,6 +92,8 @@ import uk.ac.ed.epcc.webapp.forms.inputs.RelativeDateInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
@@ -316,7 +318,11 @@ public class ParameterExtension extends ReportExtension {
 					//also try the convert method
 					// if the input is a multi-input but not a parse input
 					// this might be easier.
-					input.setValue(input.convert(value));
+					try {
+						input.setValue(input.convert(value));
+					} catch (TypeException e) {
+						throw new ParseException("Error converting value", e);
+					}
 				}
 			}
 			if( input instanceof MultiInput){

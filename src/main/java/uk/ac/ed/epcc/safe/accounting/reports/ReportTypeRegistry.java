@@ -11,6 +11,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -43,7 +45,11 @@ public class ReportTypeRegistry extends AbstractContexed {
 		}
 
 		public void setItem(ReportType item) {
-			setValue(item.toString());
+			try {
+				setValue(item.toString());
+			} catch (TypeException e) {
+				throw new TypeError(e);
+			}
 		}
 
 		public ReportType getItembyValue(String value) {

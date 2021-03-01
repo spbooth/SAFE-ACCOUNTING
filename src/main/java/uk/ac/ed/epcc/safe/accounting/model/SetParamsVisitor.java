@@ -15,6 +15,8 @@ import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseMultiInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.PasswordInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
 import uk.ac.ed.epcc.webapp.forms.inputs.UnmodifiableInput;
 
 /** An {@link InputVisitor} that adds/sets the form contents to a map.
@@ -104,7 +106,7 @@ public class SetParamsVisitor implements InputVisitor<Object> {
         return visitBaseInput(input);
     }
 
-    private <T> Object visitBaseInput(Input<T> input) throws ParseException{
+    private <T> Object visitBaseInput(Input<T> input) throws ParseException, TypeException{
         if( set_map){
             T value = input.getValue();
             if( value != null ){
@@ -118,7 +120,7 @@ public class SetParamsVisitor implements InputVisitor<Object> {
             		if( input instanceof ParseInput){
             			((ParseInput<T>)input).parse(s);
             		}else{
-            			input.setValue(input.convert(s));
+						input.setValue(input.convert(s));
             		}
             	}
             	else  {

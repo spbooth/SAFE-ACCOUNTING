@@ -25,6 +25,8 @@ import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.ParseAbstractInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
+import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Form Input for selecting a PlotEntry defined in the config properties.
  * 
@@ -71,9 +73,13 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 	
 	public void setItem(PlotEntry item) {
 		if( item == null ){
-			setValue(null);
+			setNull();
 		}else{
-			setValue(getTagByItem(item));
+			try {
+				setValue(getTagByItem(item));
+			} catch (TypeException e) {
+				throw new TypeError(e);
+			}
 		}
 	}
 	
