@@ -361,7 +361,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 			return false;
 		}
 		Boolean sub_job = map.getProperty(SUB_JOB);
-		if( skip_cancelled && sub_job != null && sub_job) {
+		if( skip_sub_jobs && sub_job != null && sub_job) {
 			return false;
 		}
 	    }catch(NumberFormatException e){
