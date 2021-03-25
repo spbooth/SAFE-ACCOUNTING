@@ -335,7 +335,7 @@ public class ExpressionLexer implements ExpressionParser.Lexer{
 	public void yyerror(String s) {
 		LoggerService serv = conn.getService(LoggerService.class);
 		if( serv != null ){
-			serv.getLogger(getClass()).error(s);
+			serv.getLogger(getClass()).warn(s);
 		}
 		
 	}

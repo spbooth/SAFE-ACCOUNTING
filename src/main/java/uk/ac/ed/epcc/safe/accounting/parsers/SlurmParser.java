@@ -68,6 +68,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	private static final String PARSE_FORMAT_SUFFIX = ".parse.format";
 	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
 	private static final String SKIP_SUB_JOBS_SUFFIX = ".skip_sub_jobs";
+	private static final String SKIP_TOP_JOBS_SUFFIX = ".skip_top_jobs";
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	
 	public SlurmParser(AppContext conn) {
@@ -144,6 +145,12 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	public static final PropertyTag<String> JOB_ID = new PropertyTag<>(slurm, "JobID", String.class,"Slurm JOB id");
 	@AutoTable
 	public static final PropertyTag<Boolean> SUB_JOB = new PropertyTag<>(slurm,"SubJob",Boolean.class,"Is this a slurm sub-job");
+	@OptionalTable
+	public static final PropertyTag<Boolean> SCRIPT_JOB = new PropertyTag<>(slurm,"ScriptJob",Boolean.class,"Is this the slurm batch script sub-job");
+	@OptionalTable
+	public static final PropertyTag<Boolean> EXTERN_JOB = new PropertyTag<>(slurm,"ExternJob",Boolean.class,"Is this the slurm extern sub-job");
+	@OptionalTable(length=32)
+	public static final PropertyTag<String> JOB_ID_BASE = new PropertyTag<>(slurm, "JobIDBase", String.class,"Slurm JOB id without any sub-job suffix");
 	@OptionalTable(length=128)
 	public static final PropertyTag<String> JOB_ID_RAW = new PropertyTag<>(slurm, "JobIDRaw", String.class,"RAW Slurm JOB id");
 	@AutoTable(length=200)
@@ -286,16 +293,42 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		@Override
 		public void setValue(PropertyContainer container, String valueString) throws IllegalArgumentException,
 				InvalidPropertyException, NullPointerException, AccountingParseException {
-			container.setProperty(JOB_ID, valueString);
-			container.setProperty(SUB_JOB, valueString.contains("."));
 			
+			container.setProperty(JOB_ID, valueString);
+			boolean sub_job = valueString.contains(".");
+			container.setProperty(SUB_JOB, sub_job);
+			if( sub_job) {
+				int pos = valueString.indexOf(".");
+				String base = valueString.substring(0, pos);
+				String suffix = valueString.substring(pos+1);
+				container.setProperty(JOB_ID_BASE, base);
+				container.setProperty(SCRIPT_JOB, suffix.equals("batch"));
+				container.setProperty(EXTERN_JOB, suffix.equals("extern"));
+			}else {
+				container.setProperty(SCRIPT_JOB, false);
+				container.setProperty(EXTERN_JOB, false);
+				container.setProperty(JOB_ID_BASE, valueString);
+			}
 		}
 
 		@Override
 		public void setValue(PropertyMap map, String valueString)
 				throws IllegalArgumentException, NullPointerException, AccountingParseException {
 			map.setProperty(JOB_ID, valueString);
-			map.setProperty(SUB_JOB, valueString.contains("."));
+			boolean sub_job = valueString.contains(".");
+			map.setProperty(SUB_JOB, sub_job);
+			if( sub_job) {
+				int pos = valueString.indexOf(".");
+				String base = valueString.substring(0, pos);
+				String suffix = valueString.substring(pos+1);
+				map.setProperty(JOB_ID_BASE, base);
+				map.setProperty(SCRIPT_JOB, suffix.equals("batch"));
+				map.setProperty(EXTERN_JOB, suffix.equals("extern"));
+			}else {
+				map.setProperty(SCRIPT_JOB, false);
+				map.setProperty(EXTERN_JOB, false);
+				map.setProperty(JOB_ID_BASE, valueString);
+			}
 			
 		}
 		
@@ -309,6 +342,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	
 	private boolean skip_cancelled=false;
 	private boolean skip_sub_jobs=false;
+	private boolean skip_top_jobs=false;
 	private String table;
 	private String tags[];
 	private int count;
@@ -362,6 +396,9 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		}
 		Boolean sub_job = map.getProperty(SUB_JOB);
 		if( skip_sub_jobs && sub_job != null && sub_job) {
+			return false;
+		}
+		if( skip_top_jobs && sub_job != null && ! sub_job) {
 			return false;
 		}
 	    }catch(NumberFormatException e){
@@ -424,7 +461,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		this.table=table;
 		skip_cancelled = conn.getBooleanParameter(table+SKIP_CANCELLED_SUFFIX, false);
 		skip_sub_jobs = conn.getBooleanParameter(table+SKIP_SUB_JOBS_SUFFIX, false);
-		
+		skip_top_jobs = conn.getBooleanParameter(table+SKIP_TOP_JOBS_SUFFIX, false);
 		Logger log = getLogger();
 		for(PropertyTag tag : slurm) {
 

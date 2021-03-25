@@ -119,6 +119,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	private static final String LINK_POLICY_UNIQUE = "LinkPolicy.unique.";
 	private static final String LINK_POLICY_LINK = "LinkPolicy.link.";
 	private static final String LINK_POLICY_REQUIRE_LINK = "LinkPolicy.require_link.";
+	private static final String LINK_POLICY_COPY_PROPERTIES = "LinkPolicy.copy_properties.";
 	private static final String LINK_POLICY_GRACE = "LinkPolicy.grace.";
 	private static final String LINK_POLICY_TARGET = "LinkPolicy.target.";
 	
@@ -131,6 +132,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	private Set<PropertyTag> inside_date_properties=null;
 	private long grace_millis;
 	private boolean require_link=true;
+	private boolean copy_props=true;
 	private Logger log;
 	private String my_table;
 	@SuppressWarnings("unchecked")
@@ -141,6 +143,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 		my_table=table;
 		grace_millis = 1000L * c.getLongParameter(LINK_POLICY_GRACE+table, 4000L);
 		require_link = c.getBooleanParameter(LINK_POLICY_REQUIRE_LINK+table, true);
+		copy_props = c.getBooleanParameter(LINK_POLICY_COPY_PROPERTIES+table, true);
 		log = c.getService(LoggerService.class).getLogger(getClass());
 		//System.out.println("grace is "+grace_millis);
 		String target_name = c.getInitParameter(LINK_POLICY_TARGET+table);
@@ -176,7 +179,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 								   match_map.put(store_tag,remote_tag);
 							   }
 						   }
-					   }else{
+					   }else if( copy_props){
 						   
 						   // may-be copy property 
 						   // if remote table has a writable property with same simple name
