@@ -21,6 +21,9 @@ public class RegexpTarget extends AccountingClassification implements Matcher {
 		}
 		return patt;
 	}
+	public void setRegexp(Pattern p) {
+		record.setOptionalProperty(RegexpTargetFactory.REGEX_FIELD, p.pattern());
+	}
 	@Override
 	public boolean matches(String name) {
 		return getRegexp().matcher(name).matches();

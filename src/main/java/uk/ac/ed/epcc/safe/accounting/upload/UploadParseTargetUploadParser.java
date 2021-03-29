@@ -25,6 +25,7 @@ import uk.ac.ed.epcc.safe.accounting.db.UploadParseTargetUpdater;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.model.data.stream.StreamData;
+import uk.ac.ed.epcc.webapp.servlet.ServletService;
 /** UploadParser to populate an {@link UploadParseTarget} 
  * 
  * The target factory can be hard-wired by setting the parameter
@@ -45,7 +46,7 @@ public class UploadParseTargetUploadParser extends AbstractContexed implements U
     }
 	@SuppressWarnings("unchecked")
 	public String upload(Map<String, Object> parameters) throws UploadException {
-		Object o = parameters.get("update");
+		Object o = parameters.get(ServletService.DEFAULT_PAYLOAD_PARAM);
 		InputStream update = null;
 		if( o != null) {
 			if( o instanceof InputStream) {
