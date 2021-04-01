@@ -398,7 +398,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		if( skip_sub_jobs && sub_job != null && sub_job) {
 			return false;
 		}
-		if( skip_top_jobs && sub_job != null && ! sub_job) {
+		if( skip_top_jobs && (sub_job == null || ! sub_job)) {
 			return false;
 		}
 	    }catch(NumberFormatException e){
@@ -513,6 +513,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	public void addConfigParameters(Set<String> params) {
 		params.add(table+SKIP_CANCELLED_SUFFIX);
 		params.add(table+SKIP_SUB_JOBS_SUFFIX);
+		params.add(table+SKIP_TOP_JOBS_SUFFIX);
 		params.add(table+PARSE_FORMAT_SUFFIX);
 		
 	}
