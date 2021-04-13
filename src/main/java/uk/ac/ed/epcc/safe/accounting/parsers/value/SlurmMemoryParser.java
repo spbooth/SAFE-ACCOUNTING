@@ -23,13 +23,14 @@ import uk.ac.ed.epcc.webapp.Description;
  * @author spb
  *
  */
-@Description("Parse a number of bytes in K/M/G")
+@Description("Parse a number of bytes in K/M/G/T")
 public class SlurmMemoryParser implements ValueParser<Long> {
-    private static final Pattern patt = Pattern.compile("(\\d+)\\s*([kmg]?)b?n?c?",Pattern.CASE_INSENSITIVE);
-    private static final Pattern float_patt = Pattern.compile("(\\d+\\.\\d*)\\s*([kmg]?)b?n?c?",Pattern.CASE_INSENSITIVE);
+    private static final Pattern patt = Pattern.compile("(\\d+)\\s*([kmgt]?)b?n?c?",Pattern.CASE_INSENSITIVE);
+    private static final Pattern float_patt = Pattern.compile("(\\d+\\.\\d*)\\s*([kmgt]?)b?n?c?",Pattern.CASE_INSENSITIVE);
 	private static final long K=1024L;
 	private static final long M=K*K;
 	private static final long G=K*M;
+	private static final long T=K*G;
 	public static SlurmMemoryParser PARSER = new SlurmMemoryParser();
     public Class<Long> getType() {
 		return Long.class;
@@ -46,6 +47,8 @@ public class SlurmMemoryParser implements ValueParser<Long> {
 				val *= M;
 			}else if( unit.equalsIgnoreCase("g")){
 				val *= G;
+			}else if( unit.equalsIgnoreCase("t")) {
+				val *= T;
 			}
 			return Long.valueOf(val);
 		}
@@ -59,6 +62,8 @@ public class SlurmMemoryParser implements ValueParser<Long> {
 				val *= M;
 			}else if( unit.equalsIgnoreCase("g")){
 				val *= G;
+			}else if( unit.equalsIgnoreCase("t")) {
+				val *= T;
 			}
 			return Long.valueOf((long)val);
 		}
@@ -69,7 +74,10 @@ public class SlurmMemoryParser implements ValueParser<Long> {
 	public String format(Long value) {
 		long val = value.longValue();
 		String unit="b";
-		if( (val % G) == 0L){
+		if( (val % T) == 0L){
+			val /= T;
+			unit="tb";
+		}else if( (val % G) == 0L){
 			val /= G;
 			unit="gb";
 		}else if ((val%M)==0L){

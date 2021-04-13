@@ -36,6 +36,7 @@ import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
+import uk.ac.ed.epcc.webapp.session.SessionService;
 /** Class to build a table of expressions values with one row per record.
  * 
  * @author spb
@@ -185,7 +186,7 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 		   }
 		   if( Date.class.isAssignableFrom(t.getTarget())){
 			   res.setColFormat(lab, new Transform(){
-				   DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+				   DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,getContext().getService(SessionService.class).getLocale());
 				public Object convert(Object old) {
 					if( old instanceof Date){
 						return df.format((Date) old);
