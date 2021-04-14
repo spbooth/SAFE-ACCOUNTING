@@ -1,12 +1,7 @@
 <?xml version="1.0"?>
 <!-- Copyright - The University of Edinburgh 2015 -->
 <dataset>
-    <TableSpecification name='Properties'>
-        <Name type='String' nullable='false' max='255'/>
-        <Value type='String' nullable='false' max='255'/>
-    </TableSpecification>
-    <Properties id='1'><Name>GroupEntry.list</Name><Value>Machine,Queue,Account,Project,Group,User,Institute,School</Value></Properties>
-<TableSpecification name='Pe'>
+ <TableSpecification name='Pe'>
 <Name type='String' nullable='false' max='64'/>
 </TableSpecification>
 <TableSpecification name='Machine'>

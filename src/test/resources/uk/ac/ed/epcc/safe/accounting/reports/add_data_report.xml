@@ -1,10 +1,6 @@
 <Diff><Person id='589'>
 <WebName>fred@example.com</WebName>
 </Person>
-<Properties id='2'>
-<Name>reference.ServeData.PersonId</Name>
-<Value>Person</Value>
-</Properties>
 <TableSpecification name='ReportTemplateOverlay'>
 <Group type='String' nullable='false' max='64'/>
 <Name type='String' nullable='false' max='255'/>

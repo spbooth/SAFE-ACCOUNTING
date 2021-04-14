@@ -15,10 +15,6 @@
 <Expires>1572602400</Expires>
 <PersonId>589</PersonId>
 </DeferredCharts>
-<Properties id='2'>
-<Name>reference.DeferredCharts.PersonId</Name>
-<Value>Person</Value>
-</Properties>
 <TableSpecification name='ReportTemplateOverlay'>
 <Group type='String' nullable='false' max='64'/>
 <Name type='String' nullable='false' max='255'/>
