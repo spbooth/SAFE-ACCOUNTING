@@ -31,6 +31,17 @@
 	</xsd:annotation>
     <xsd:complexType></xsd:complexType>
     </xsd:element>
+    <xsd:element name="EagerStage">
+    <xsd:annotation>
+	<xsd:documentation>
+	Like a Stage element but if the form validates in its initial state then
+	proceed to the next stage immediately without giving the user an opportunity to
+	change the default values. This is intended to skip stages where the parameters
+	are pre-defined by the calling context 
+	</xsd:documentation>
+	</xsd:annotation>
+    <xsd:complexType></xsd:complexType>
+    </xsd:element>
     <xsd:element name="ParameterDef">
 	<xsd:annotation>
 	<xsd:documentation>

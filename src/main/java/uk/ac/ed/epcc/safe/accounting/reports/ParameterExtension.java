@@ -66,6 +66,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.ClassTableCreator;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.content.ContentBuilder;
+import uk.ac.ed.epcc.webapp.forms.Field;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
 import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
@@ -154,6 +155,7 @@ public class ParameterExtension extends ReportExtension {
 	private static final String NAME_ATTR = "name";
 	static final String PARAMETER_DEF_ELEMENT = "ParameterDef";
 	static final String PARAMETER_STAGE_ELEMENT = "Stage";
+	static final String PARAMETER_EAGER_STAGE_ELEMENT = "EagerStage";
 	public static final String PARAMETER_LOC = "http://safe.epcc.ed.ac.uk/parameter";	
 	public ParameterExtension(AppContext ctx, NumberFormat nf)
 			throws ParserConfigurationException {
@@ -238,6 +240,20 @@ public class ParameterExtension extends ReportExtension {
 				input.accept(setter);
 			}
 			break;
+			case PARAMETER_EAGER_STAGE_ELEMENT:
+				if( form.validate()) {
+					
+					//Fake a stage operation using current form state.
+					for(Field ff : form) {
+						// copy value to extension params so
+						// they can be used to make later form stages
+						ReportBuilder.setInputValue(params, ff.getInput());
+						// and lock the field
+						ff.lock();
+					}
+					form.setTargetStage(form.getTargetStage()+1);
+					break; 
+				}// fall through to a real stage opetation
 			case PARAMETER_STAGE_ELEMENT:
 				if( form.poll()) {
 					assert(params != null);
