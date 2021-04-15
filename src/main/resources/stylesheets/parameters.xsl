@@ -33,8 +33,10 @@
 	<xsl:variable name="PeriodNode" select="(ancestor::*/per:Period|per:Period)[last()]"/>	
 		<xsl:apply-templates select="param:Distinct($ParameterExtension,$PeriodNode,$filter,self::*)" />
 	</xsl:template>
-	<!--  remove the parameter defs -->
+	<!--  remove the parameter defs etc-->
     <xsl:template match="par:ParameterDef"/>
+    <xsl:template match="par:Stage"/>
+    <xsl:template match="par:EagerStage"/>
     
     <xsl:template match="par:IfSet">
     <xsl:choose>
