@@ -175,7 +175,7 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 		for(PropertyTag<String> tag : tagmap.keySet()){
 			ReferenceTag ctag = tagmap.get(tag);
 			NameFinder fac = getContext().makeObject(NameFinder.class,ctag.getTable());
-			DataCache dataCache = fac.getDataCache();
+			DataCache dataCache = fac.getDataCache(true);
 			assert dataCache != null : "Null datacache";
 			caches.put(tag, dataCache);
 		}

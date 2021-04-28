@@ -153,7 +153,7 @@ public class RurLogParser extends AbstractPropertyContainerParser implements Inc
 			"Integral of virtual memory used by process in MB-usecs", -1L);
 	@AutoTable(target=Long.class)
 	public static final AttributePropertyTag<Long> MAX_VIRTUAL_MEMORY_INTEGRAL = new AttributePropertyTag<>(rur_reg, "max_vm", null, Long.class,
-			"Number of accelerators with the minimum nonzero power cap", -1L);		
+			"Maximum virtual memory used", -1L);		
 	@AutoTable(target=Long.class)
 	public static final AttributePropertyTag<Long> SWAPPED_PAGE_COUNT = new AttributePropertyTag<>(rur_reg, "pgswapcnt", null, Long.class,
 			"Number of pages swapped", -1L);
