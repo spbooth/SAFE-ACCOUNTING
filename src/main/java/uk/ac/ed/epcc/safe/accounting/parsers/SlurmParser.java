@@ -439,6 +439,8 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 			derv.put(ALLOC_CPUS, N_CPUS_PROP);
 			derv.put(N_CPUS_PROP, BatchParser.PROC_COUNT_PROP);
 			
+			derv.peer(BatchParser.TASK_COUNT_PROP, N_TASKS_PROP);
+			
 			derv.peer(BatchParser.JOB_NAME_PROP, JOB_NAME_PROP);
 			derv.put(BatchParser.WALLCLOCK_PROP, new DurationSecondsPropExpression(ELAPSED_PROP));
 			derv.peer(BatchParser.QUEUE_PROP,QOS);

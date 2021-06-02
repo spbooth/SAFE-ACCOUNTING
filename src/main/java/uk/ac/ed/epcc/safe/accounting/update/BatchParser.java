@@ -62,6 +62,7 @@ public abstract class BatchParser extends BaseParser {
    
 	public static final PropertyTag<Integer> NODE_COUNT_PROP = new PropertyTag<>(batch,"Nodes",Integer.class,"Number of distributed memory nodes allocated to the job");
 
+    public static final PropertyTag<Integer> TASK_COUNT_PROP = new PropertyTag<>(batch,"Tasks",Integer.class,"Number of tasks (mpi) used by the job");
     
     public static final PropertyTag<String> PARTITION_PROP = new PropertyTag<>(batch,"Partition",String.class,"Named allocated partition of resource");
   
@@ -108,6 +109,10 @@ public abstract class BatchParser extends BaseParser {
 		// use requested value if we don't have actual value and vice versa
 		res.put(PROC_COUNT_PROP, REQUESTED_CPUS_PROP);
 		res.put(REQUESTED_CPUS_PROP,PROC_COUNT_PROP);
+		
+		// fall back to requested cpus if task count not explicit
+		//res.put(TASK_COUNT_PROP, REQUESTED_CPUS_PROP);
+		
 		// default cputime to residency seconds
 		res.put(StandardProperties.CPU_TIME_PROP, TIME_PROP);
 		res.put(WAIT_PROP, new BinaryPropExpression(
