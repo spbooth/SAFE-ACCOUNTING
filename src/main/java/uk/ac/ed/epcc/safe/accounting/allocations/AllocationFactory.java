@@ -105,6 +105,7 @@ import uk.ac.ed.epcc.webapp.model.period.SplitTransition;
 import uk.ac.ed.epcc.webapp.preferences.Preference;
 import uk.ac.ed.epcc.webapp.servlet.LoginServlet;
 import uk.ac.ed.epcc.webapp.servlet.TransitionServlet;
+import uk.ac.ed.epcc.webapp.servlet.ViewTransitionKey;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 import uk.ac.ed.epcc.webapp.time.Period;
@@ -561,7 +562,10 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	@SuppressWarnings("unchecked")
 	public boolean allowTransition(AppContext c, T target, AllocationKey<T> key) {
 		SessionService service = c.getService(SessionService.class);
-		if( service.hasRoleFromList(ALLOCATION_ADMIN_ROLE,getTag()+ALLOCATION_ADMIN_ROLE)){
+		// we allow non-modifying view transitions for users without the admin roles 
+		// as these should be navigation transitions that any user allowed to view thr transition can use.
+		if( service.hasRoleFromList(ALLOCATION_ADMIN_ROLE,getTag()+ALLOCATION_ADMIN_ROLE) ||
+				((key instanceof ViewTransitionKey) && ((ViewTransitionKey)key).isNonModifying(target))){
 			Transition<T> t = getTransition(target, key);
 			if( t != null){
 				if( t instanceof TargetLessTransition){

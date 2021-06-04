@@ -298,7 +298,7 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 	protected final LinkedHashMap<AllocationKey<T>, Transition<T>> makeTransitions() {
 		
 		LinkedHashMap<AllocationKey<T>, Transition<T>> result = new LinkedHashMap<>();
-		result.put(new AllocationKey<T>(AllocationRecord.class, "<<<"), new SequenceTransition<>(this, this, false));
+		result.put(new ViewAllocationKey<T>(AllocationRecord.class, "<<<"), new SequenceTransition<>(this, this, false));
 		result.put(new AllocationKey<T>(AllocationRecord.class,"<Merge"), new MergeTransition<>(this, this, false));
 		result.put(new AllocationKey<T>(AllocationRecord.class,"ChangeStart","Change the start date"), new MoveDateTransition<>(this,this,true));
 		result.putAll(super.makeTransitions());
@@ -307,7 +307,7 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 		result.put(new AllocationKey<T>(AllocationRecord.class,"ChangeEnd","Change the end date"), new MoveDateTransition<>(this,this,false));
 
 		result.put(new AllocationKey<T>(AllocationRecord.class,"Merge>"), new MergeTransition<>(this, this, true));
-		result.put(new AllocationKey<T>(AllocationRecord.class, ">>>"), new SequenceTransition<>(this, this, true));
+		result.put(new ViewAllocationKey<T>(AllocationRecord.class, ">>>"), new SequenceTransition<>(this, this, true));
 
 		return result;
 	}
