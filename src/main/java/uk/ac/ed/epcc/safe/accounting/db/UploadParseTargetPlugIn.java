@@ -7,7 +7,6 @@ import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
-import uk.ac.ed.epcc.safe.accounting.policy.DerivedPropertyPolicy;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
