@@ -119,7 +119,6 @@
 
 	<dependencies>
 
-
 		<dependency>
 			<groupId>epcc.ed.ac.uk</groupId>
 			<artifactId>webapp</artifactId>
