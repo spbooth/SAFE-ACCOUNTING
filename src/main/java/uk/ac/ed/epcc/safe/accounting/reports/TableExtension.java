@@ -820,7 +820,11 @@ public class TableExtension extends ReportExtension {
 						Object raw = row.get(sel);
 						if( exp instanceof FormatProvider) {
 							Labeller l = ((FormatProvider)exp).getLabeller();
-							raw = l.getLabel(conn, raw);
+							if( l != null ) {
+								raw = l.getLabel(conn, raw);
+							}else {
+								getLogger(conn).warn("null labeller from expression "+exp);
+							}
 						}
 						if( raw != null) {
 							String col= raw.toString();

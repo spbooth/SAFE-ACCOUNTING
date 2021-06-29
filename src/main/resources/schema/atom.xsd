@@ -312,6 +312,6 @@
 		<xsd:attribute name="max_integer" type="xsd:int" use="optional"></xsd:attribute>
     </xsd:attributeGroup>
 
-    <xsd:attribute name="NewAttribute" type="xsd:string"></xsd:attribute>
+    
 
 </xsd:schema>
