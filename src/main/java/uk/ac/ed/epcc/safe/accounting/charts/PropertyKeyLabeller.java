@@ -17,10 +17,12 @@
 package uk.ac.ed.epcc.safe.accounting.charts;
 
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
+import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.strategy.KeyLabeller;
+import uk.ac.ed.epcc.webapp.content.EnumeratingLabeller;
 import uk.ac.ed.epcc.webapp.content.Labeller;
 /** Adaptor class that converts a {@link Labeller} into the {@link KeyLabeller} needed for the Chart classes
  * If no Labeller is provided it uses toString on the key property.
@@ -92,6 +94,33 @@ public class PropertyKeyLabeller<K> extends KeyLabeller<ExpressionTargetContaine
 		} else if (!labeller.equals(other.labeller))
 			return false;
 		return true;
+	}
+
+	public Labeller<K, ?> getLabeller() {
+		return labeller;
+	}
+	
+	/** If the installed {@link Labeller} is an {@link EnumeratingLabeller}
+	 * then generate additional sets for the range of the {@link EnumeratingLabeller}.
+	 * 
+	 */
+	public void populateRange() {
+		Labeller l = labeller;
+		if( l == null && key_property instanceof LabelPropExpression){
+			l = ((LabelPropExpression)key_property).getLabeller();
+		}
+		if( l != null && l instanceof EnumeratingLabeller) {
+			EnumeratingLabeller<K,?> el = (EnumeratingLabeller<K, ?>) l;
+			for(Object o : el.getRange()) {
+				newSet(o);
+			}
+		}
+	}
+
+	@Override
+	public int[] getPerm() {
+		populateRange();
+		return super.getPerm();
 	}
 
 }

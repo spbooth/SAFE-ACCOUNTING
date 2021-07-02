@@ -486,7 +486,11 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
 			return makePieTimeChartPlot(e, (PieTimeChart) tc, ap, sel, nplots, allow_overlap);
 		}
 		if( tc instanceof BarTimeChart){
-			return makeBarTimeChartPlot(e.getLabel(),e, (BarTimeChart) tc, ap, sel, nplots, allow_overlap);
+			String label = e.getLabel();
+			if( label ==  null) {
+				label=""; // can't be null
+			}
+			return makeBarTimeChartPlot(label,e, (BarTimeChart) tc, ap, sel, nplots, allow_overlap);
 		}
 		return null;
 	}

@@ -205,11 +205,13 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		Set<AllocationListener<T>> result = new LinkedHashSet<>();
 		String list = c.getInitParameter(table+".allocation_listeners");
 		if( list != null ){
-			for(String name : list.split("\\s,\\s")){
+			for(String name : list.split("\\s*,\\s*")){
 				try{
 					AllocationListener l = c.makeObject(AllocationListener.class, name);
 					if( l != null ){
 						result.add(l);
+					}else {
+						getLogger().warn("Unresolved Allocation listener "+name);
 					}
 				}catch(Exception t){
 					getLogger().error("Error making allocation listener "+name, t);

@@ -35,6 +35,13 @@ public class Power2RangeLabeller<T extends Number> implements Labeller<T,Power2R
 		}
 		private final int lower;
 		private final int upper;
+		
+		public int getLower() {
+			return lower;
+		}
+		public int getUpper() {
+			return upper;
+		}
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -84,6 +91,14 @@ public class Power2RangeLabeller<T extends Number> implements Labeller<T,Power2R
 	}
 	public Range getLabel(AppContext conn, T key) {
 		int i=key.intValue();
+		return getRange(i);
+	}
+	/** Get a power-of-2 range object including a speficied value.
+	 * 
+	 * @param i
+	 * @return
+	 */
+	protected Range getRange(int i) {
 		int upper=1;
 		while(upper< i){
 			upper*=2;

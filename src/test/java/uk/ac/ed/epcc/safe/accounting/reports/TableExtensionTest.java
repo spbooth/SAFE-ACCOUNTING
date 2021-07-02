@@ -160,6 +160,22 @@ public class TableExtensionTest extends ExtensionTestCase {
 		testTables("csv", "testSlowdownReport.xml",new File(getOutputDir()+"SlowdownReport.csv"));
 		
 	}
+	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testNameExpressionTableEnum() throws Exception {	
+		Feature.setTempFeature(ctx, DefaultAccountingService.DEFAULT_COMPOSITE_FEATURE, false);
+		testTables("csv", "testSlowdownReport2.xml",new File(getOutputDir()+"SlowdownReport2.csv"));
+		
+	}
+	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testNameExpressionTableEnumComposite() throws Exception {
+		Feature.setTempFeature(ctx, DefaultAccountingService.DEFAULT_COMPOSITE_FEATURE, true);
+		testTables("csv", "testSlowdownReport2.xml",new File(getOutputDir()+"SlowdownReport2.csv"));
+		
+	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testMedianExpressionTable() throws Exception {	

@@ -75,6 +75,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.BlankTransform;
+import uk.ac.ed.epcc.webapp.content.EnumeratingLabeller;
 import uk.ac.ed.epcc.webapp.content.FormatDateTransform;
 import uk.ac.ed.epcc.webapp.content.FormatProvider;
 import uk.ac.ed.epcc.webapp.content.InvalidArgument;
@@ -250,7 +251,7 @@ public class TableExtension extends ReportExtension {
 		
 	
 		
-		/**
+		/** add a {@link Labeller} to a {@link PropExpression} to make a {@link LabelPropExpression}
 		 * @param columnNode
 		 * @param property
 		 * @return
@@ -516,16 +517,30 @@ public class TableExtension extends ReportExtension {
 	 *
 	 */
 	public static class SummaryObjectTable extends AbstractTable{
+		public static final class NumberTransform implements Transform {
+			public Object convert(Object old) {
+				if( old == null ){
+					return Double.valueOf(0.0);
+				}
+				return old;
+			}
+		}
 		boolean use_overlap=false;
 	
 		
 		ObjectSet recordSet;
 		List<String> col_names;
+		// map of column names to ReductionTarget for normal columns
 		Map<String,ReductionTarget> cols;
 		Map<IndexReduction,ReductionTarget> expr_cols;
 		Map<IndexReduction,String> expr_groups;
+		// map of column names to ReductionTarget for dynamically generated columns 
 		Map<String,ReductionTarget> dynamic_cols;
+		// map of dynamically generated labels to String this allows dynamic labels to have a natural sort order
 		TreeMap<Object,String> dynamic_sort_data;
+		// map of Reductions to EnumeratingLabeller we want to use a common instance
+		// of any labeller as EnumeratingLabeller needs to see all the data
+		Map<IndexReduction,EnumeratingLabeller> enum_labellers;
 		Set<ReductionTarget> reductions;
 		Set<IndexReduction> indexes;
 		
@@ -559,7 +574,7 @@ public class TableExtension extends ReportExtension {
 					return o1.toString().compareTo(o2.toString());
 				}
 			});
-			
+			enum_labellers = new HashMap<>();
 			cols = new HashMap<>();
 			
 			expr_cols = new HashMap<>();
@@ -775,7 +790,7 @@ public class TableExtension extends ReportExtension {
 			}
 			return table;
 		}
-		/**
+		/** Populate a {@link Table} from an indexed reduction map.
 		 * @param conn
 		 * @param table
 		 * @param data
@@ -784,6 +799,9 @@ public class TableExtension extends ReportExtension {
 				Map<ExpressionTuple, ReductionMapResult> data) {
 			// copy data into table keyed by tuple.
 			if(data != null ){
+				
+			
+				
 				for(ExpressionTuple tup : data.keySet()){
 					Object key;
 					if( expr_cols.isEmpty()) {
@@ -819,11 +837,24 @@ public class TableExtension extends ReportExtension {
 						PropExpression exp = sel.getExpression();
 						Object raw = row.get(sel);
 						if( exp instanceof FormatProvider) {
-							Labeller l = ((FormatProvider)exp).getLabeller();
+							FormatProvider fp = (FormatProvider)exp;
+							// make sure we use a common EnumeratingLabeller
+							Labeller l = enum_labellers.get(sel);
+							if( l == null) {
+								l = fp.getLabeller();
+								if( l instanceof EnumeratingLabeller) {
+									enum_labellers.put(sel, (EnumeratingLabeller) l);
+								}
+							}
 							if( l != null ) {
 								raw = l.getLabel(conn, raw);
-							}else {
-								getLogger(conn).warn("null labeller from expression "+exp);
+							}
+						}else if( exp instanceof LabelPropExpression) {
+							// just capture the labeller
+							LabelPropExpression lp = (LabelPropExpression) exp;
+							Labeller l = lp.getLabeller();
+							if( l instanceof EnumeratingLabeller) {
+								enum_labellers.put(sel, (EnumeratingLabeller) l);
 							}
 						}
 						if( raw != null) {
@@ -847,19 +878,42 @@ public class TableExtension extends ReportExtension {
 					}
 				}
 			}
+			// Ensure all columns requested by EnumeratingLabellers are present
+			for(Map.Entry<IndexReduction, EnumeratingLabeller> e : enum_labellers.entrySet()) {
+				EnumeratingLabeller l = e.getValue();
+				IndexReduction sel = e.getKey();
+				ReductionTarget target = expr_cols.get(sel);
+				for(Object o : l.getRange()) {
+					String col = o.toString();
+					dynamic_sort_data.put(o, col);
+					dynamic_cols.put(col, target);
+					table.getCol(col);
+					String group = expr_groups.get(sel);
+					if( group != null) {
+						try {
+							table.addToGroup(group, col);
+						} catch (InvalidArgument e1) {
+							getLogger(conn).error("Error adding to column group", e1);
+						}
+					}
+				}
+			}
 			// set col formats
 			for(String col : col_names){
 				ReductionTarget o = cols.get(col);
 				setColFormat(conn, table, col, o);
 			}
+			
 			for(Map.Entry<String,ReductionTarget> e : dynamic_cols.entrySet()) {
 				String col = e.getKey();
 				ReductionTarget target = e.getValue();
 				setColFormat(conn, table, col, target);
 				
 			}
+			
+			
 			// Dynamic data always goes at the end sorted
-			// by the raw data
+			// by the natural ordering of the raw keys
 			for(String col : dynamic_sort_data.values()) {
 				table.setColLast(col);
 			}
@@ -874,15 +928,7 @@ public class TableExtension extends ReportExtension {
 			if( target != null && table.hasCol(col) ){
 				PropExpression t = target.getExpression();
 				if( Number.class.isAssignableFrom(target.getTarget())){
-					table.setColFormat(col, new Transform() {
-						
-						public Object convert(Object old) {
-							if( old == null ){
-								return Double.valueOf(0.0);
-							}
-							return old;
-						}
-					});
+					table.setColFormat(col, new NumberTransform());
 				}else if( t instanceof FormatProvider ){
 					table.setColFormat(col, new LabellerTransform(conn,((FormatProvider)t).getLabeller()));
 				}

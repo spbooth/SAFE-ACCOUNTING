@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<rep:Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:rep="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:res="http://safe.epcc.ed.ac.uk/restrict"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+<rep:Title>Scheduling coefficient report</rep:Title>
+
+<!--  Period -->
+	<per:Period><per:StartTime>Epoch</per:StartTime><per:EndTime>Forever</per:EndTime></per:Period>
+	<fil:Filter>
+	<fil:NE><fil:Property>CPUs</fil:Property><fil:Value>2</fil:Value></fil:NE>
+	</fil:Filter>
+<rep:Section>
+<rep:SubSection>
+<rep:Title>Job counts</rep:Title>
+<tab:SummaryTable>
+<tab:Index labeller="IncludeZeroPower2RangeLabeller"><tab:Name>Runtime/h</tab:Name><tab:Property>Elapsed/3600</tab:Property></tab:Index>
+<tab:SumColumn><tab:NameExpression labeller="Power2RangeEnumeratingLabeller" name="counts">CPUs</tab:NameExpression><tab:Property>JobCount</tab:Property></tab:SumColumn>
+<tab:SortRows/>
+<tab:TotalColumn><tab:Name>Total</tab:Name><tab:Column>counts</tab:Column></tab:TotalColumn>
+
+
+</tab:SummaryTable>
+</rep:SubSection>
+<rep:SubSection>
+<rep:Title>Slowdown</rep:Title>
+<tab:CompoundTable>
+<tab:SummaryTable>
+<tab:Index labeller="IncludeZeroPower2RangeLabeller"><tab:Name>Runtime/h</tab:Name><tab:Property>Elapsed/3600</tab:Property></tab:Index>
+<tab:AverageColumn><tab:NameExpression labeller="Power2RangeEnumeratingLabeller">CPUs</tab:NameExpression><tab:Property>Slowdown</tab:Property></tab:AverageColumn>
+<tab:SortRows/>
+</tab:SummaryTable>
+</tab:CompoundTable>
+</rep:SubSection>
+
+</rep:Section>
+</rep:Report>
