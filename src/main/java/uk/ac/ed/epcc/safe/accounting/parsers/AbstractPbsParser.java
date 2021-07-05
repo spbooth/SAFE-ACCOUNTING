@@ -17,8 +17,10 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -299,61 +301,63 @@ public abstract class AbstractPbsParser extends BatchParser implements Contexed{
 	/**
 	 * All attributes declared in the PBS manuals
 	 */
-	protected static final MakerMap STANDARD_ATTRIBUTES = new MakerMap();
+	protected static final Map<String,ContainerEntryMaker> STANDARD_ATTRIBUTES;
 	static {
+		MakerMap m = new MakerMap();
 		/* The comments list the record types the properties are contained in */
 		// S
-		STANDARD_ATTRIBUTES.addParser(PBS_ACCOUNTING_ID_PROP,StringParser.PARSER);
+		m.addParser(PBS_ACCOUNTING_ID_PROP,StringParser.PARSER);
 		// B, E
-		STANDARD_ATTRIBUTES.addParser(PBS_ACCOUNT_PROP,StringParser.PARSER);
+		m.addParser(PBS_ACCOUNT_PROP,StringParser.PARSER);
 		// E
-		STANDARD_ATTRIBUTES.addParser(PBS_ALTERNATE_ID_PROP,StringParser.PARSER);
+		m.addParser(PBS_ALTERNATE_ID_PROP,StringParser.PARSER);
 		// B
-		STANDARD_ATTRIBUTES.put(PBS_AUTHORIZED_GROUPS_PROP.getName(),new PBSAuthorizedGroupsMaker());
+		m.put(PBS_AUTHORIZED_GROUPS_PROP.getName(),new PBSAuthorizedGroupsMaker());
 		// B
-		STANDARD_ATTRIBUTES.addParser(PBS_AUTHORIZED_HOSTS_PROP,StringParser.PARSER);
+		m.addParser(PBS_AUTHORIZED_HOSTS_PROP,StringParser.PARSER);
 		// B
-		STANDARD_ATTRIBUTES.addParser(PBS_AUTHORIZED_USERS_PROP,StringParser.PARSER);
+		m.addParser(PBS_AUTHORIZED_USERS_PROP,StringParser.PARSER);
 		// E, S
-		STANDARD_ATTRIBUTES.addParser(PBS_ELIGIBLE_TIME_PROP,TimestampParser.PARSER);
+		m.addParser(PBS_ELIGIBLE_TIME_PROP,TimestampParser.PARSER);
 		// B, E
-		STANDARD_ATTRIBUTES.addParser(PBS_ENDED_PROP,TimestampParser.PARSER);
+		m.addParser(PBS_ENDED_PROP,TimestampParser.PARSER);
 		// E, S
-		STANDARD_ATTRIBUTES.addParser(PBS_ENTERED_QUEUE_PROP,TimestampParser.PARSER);
+		m.addParser(PBS_ENTERED_QUEUE_PROP,TimestampParser.PARSER);
 		// B, S
-		STANDARD_ATTRIBUTES.addParser(PBS_EXEC_HOST_PROP,StringParser.PARSER);
+		m.addParser(PBS_EXEC_HOST_PROP,StringParser.PARSER);
 		// E
-		STANDARD_ATTRIBUTES.addParser(PBS_EXIT_PROP,IntegerParser.PARSER);
+		m.addParser(PBS_EXIT_PROP,IntegerParser.PARSER);
 		// E, S
-		STANDARD_ATTRIBUTES.addParser(PBS_GROUP_PROP,StringParser.PARSER);
+		m.addParser(PBS_GROUP_PROP,StringParser.PARSER);
 		// All record types
 		// Actually this is parsed directly not via the MakerMap see parse method
-		STANDARD_ATTRIBUTES.put(PBS_ID_STRING_PROP.getName(),pbs_id_maker);
+		m.put(PBS_ID_STRING_PROP.getName(),pbs_id_maker);
 		// E, S
-		STANDARD_ATTRIBUTES.addParser(PBS_JOB_NAME_PROP,StringParser.PARSER);
+		m.addParser(PBS_JOB_NAME_PROP,StringParser.PARSER);
 		// All record types
-		STANDARD_ATTRIBUTES.addParser(PBS_JOB_TIMESTAMP_PROP,PbsDateParser.PARSER);
+		m.addParser(PBS_JOB_TIMESTAMP_PROP,PbsDateParser.PARSER);
 		// B
-		STANDARD_ATTRIBUTES.put(PBS_OWNER_PROP.getName(),new PBSOwnerEntryMaker());
+		m.put(PBS_OWNER_PROP.getName(),new PBSOwnerEntryMaker());
 		// B, E, Q, S
-		STANDARD_ATTRIBUTES.addParser(PBS_QUEUE_PROP,StringParser.PARSER);
+		m.addParser(PBS_QUEUE_PROP,StringParser.PARSER);
 		// All record types
-		STANDARD_ATTRIBUTES.addParser(PBS_RECORD_TYPE_PROP,StringParser.PARSER);
+		m.addParser(PBS_RECORD_TYPE_PROP,StringParser.PARSER);
 		// B
-		STANDARD_ATTRIBUTES.addParser(PBS_RESERVATION_DURATION_PROP,IntegerParser.PARSER);
+		m.addParser(PBS_RESERVATION_DURATION_PROP,IntegerParser.PARSER);
 		// B, E
-		STANDARD_ATTRIBUTES.addParser(PBS_RESERVATION_ID_PROP,StringParser.PARSER);
+		m.addParser(PBS_RESERVATION_ID_PROP,StringParser.PARSER);
 		// B, E
-		STANDARD_ATTRIBUTES.addParser(PBS_RESERVATION_NAME_PROP,StringParser.PARSER);
+		m.addParser(PBS_RESERVATION_NAME_PROP,StringParser.PARSER);
 		// S
-		STANDARD_ATTRIBUTES.addParser(PBS_SESSION_PROP,IntegerParser.PARSER);
+		m.addParser(PBS_SESSION_PROP,IntegerParser.PARSER);
 		// B, E, S
-		STANDARD_ATTRIBUTES.addParser(PBS_STARTED_PROP,TimestampParser.PARSER);
+		m.addParser(PBS_STARTED_PROP,TimestampParser.PARSER);
 		// B, E, S
-		STANDARD_ATTRIBUTES.addParser(PBS_SUBMITTED_PROP,TimestampParser.PARSER);
+		m.addParser(PBS_SUBMITTED_PROP,TimestampParser.PARSER);
 		// E, S
-		STANDARD_ATTRIBUTES.addParser(PBS_USER_PROP,StringParser.PARSER);
+		m.addParser(PBS_USER_PROP,StringParser.PARSER);
 
+		STANDARD_ATTRIBUTES= Collections.unmodifiableMap(m);
 	}
 
 	
