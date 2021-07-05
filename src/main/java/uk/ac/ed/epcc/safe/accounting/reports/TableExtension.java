@@ -917,6 +917,27 @@ public class TableExtension extends ReportExtension {
 			for(String col : dynamic_sort_data.values()) {
 				table.setColLast(col);
 			}
+			
+			// look for EnumeratingLabeller on a single index column
+			// and expand rows as needed
+			if( indexes.size() == 1) {
+				IndexReduction res = indexes.iterator().next();
+				PropExpression expr = res.getExpression();
+				if( expr instanceof LabelPropExpression) {
+					Labeller l = ((LabelPropExpression) expr).getLabeller();
+					if( l instanceof EnumeratingLabeller) {
+						EnumeratingLabeller e = (EnumeratingLabeller) l;
+						for( Object o : e.getRange()) {
+							table.addRow(o);
+						}
+						table.sortRows();
+					}
+				}
+				
+				
+			}
+			
+			
 		}
 		/**
 		 * @param conn
