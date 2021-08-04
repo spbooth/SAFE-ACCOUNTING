@@ -582,7 +582,7 @@ public class OverlapHandler<T> {
 							for(ReductionTarget data_key : data.keySet()){
 								ReductionTarget key2 = mapping.get(data_key);
 								Object value = data.get(data_key);
-								new_data.put(key2,value);
+								new_data.put(key2,data_key.map(value));
 							}
 							data.clear();
 							result.put(key,new_data);
@@ -622,7 +622,7 @@ public class OverlapHandler<T> {
 								ReductionMapResult data = scratch.get(key);
 								ReductionMapResult new_data = new ReductionMapResult();
 								for(ReductionTarget data_key : data.keySet()){
-									new_data.put(mapping.get(data_key),data.get(data_key));
+									new_data.put(mapping.get(data_key),data_key.map(data.get(data_key)));
 								}
 								data.clear();
 								result.put(key,new_data);
@@ -754,7 +754,7 @@ public class OverlapHandler<T> {
     	}
     	if(start_prop == null ||  target.getReduction().equals(Reduction.DISTINCT)) {
     		// Don't weight distinct, ideally this should be a custom
-    		// number class to allow iteration to work but weighting
+    		// number class (added by the map call above) to allow iteration to work but weighting
     		// is always wrong
     		if( overlaps(rec, start_prop, end_prop, p.getStart(), p.getEnd())) {
     			// Just to be same make sure we do overlap the period

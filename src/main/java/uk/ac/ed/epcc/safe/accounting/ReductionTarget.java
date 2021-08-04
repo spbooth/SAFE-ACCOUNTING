@@ -63,9 +63,10 @@ public abstract class ReductionTarget<T,D> {
 		return (T) op.operator().operate(a, b);
 	}
 	/** map the underlying object to the reduction result type.
-	 * This is only used when performing the reduction by iteration.
-	 * normally the underlying type will be the same but mapping
-	 * is needed for DISTINCT reductions by iteration.
+	 * normally the underlying type will be the same but {@link CountReduction}
+	 * generates the native value for the Property (adding a group by when
+	 * combined with other SQL reductions) and these need to be wrapped in
+	 * a custom number type.
 	 * 
 	 * @param o
 	 * @return T 
