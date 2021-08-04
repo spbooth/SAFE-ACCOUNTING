@@ -110,6 +110,18 @@ public class TableExtensionTest extends ExtensionTestCase {
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
+	public void testTableWithDistinct() throws Exception {	
+		testTables("csv", "testSummaryTableWithDistinct.xml",new File(getOutputDir()+"SummaryTableWithDistinct.csv"));
+		
+	}
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testTableWithDistinctOverlap() throws Exception {	
+		testTables("csv", "testSummaryTableWithDistinctOverlap.xml",new File(getOutputDir()+"SummaryTableWithDistinctOverlap.csv"));
+		
+	}
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
 	public void testSummaryTableStringData() throws Exception {	
 		testTables("csv", "testSummaryTableWithStringProperty.xml",new File(getOutputDir()+"SummaryTableWithStringData.csv"));
 		
