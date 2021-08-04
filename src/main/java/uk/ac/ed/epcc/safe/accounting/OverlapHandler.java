@@ -715,7 +715,7 @@ public class OverlapHandler<T> {
 							res.put(target, NumberOp.add((Number)res.get(target), temp));
 							seen=true;
 						}else{
-							res.put(target, target.combine(res.get(target), rec.evaluateExpression(target.getExpression())));
+							res.put(target, target.combine(res.get(target), target.map(rec.evaluateExpression(target.getExpression()))));
 							if( target.getReduction() != Reduction.INDEX){
 								seen=true;
 							}
