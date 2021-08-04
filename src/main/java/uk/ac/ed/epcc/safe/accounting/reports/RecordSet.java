@@ -131,6 +131,11 @@ public Logger getLogger() {
 		if( bounds == null ) {
 			throw new RecordSelectException("No time bounds set");
 		}
+		if( bounds.length == 0 ) {
+			// all times requested
+			return sel;
+		}
+		
 		ExpressionTargetGenerator<?> up = getGenerator();
 		if( bounds.length == 1 && up.compatible(bounds[0])){
 				 sel.add(new PeriodOverlapRecordSelector(period, bounds[0]));
