@@ -103,6 +103,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
+import uk.ac.ed.epcc.webapp.model.data.NamedFilterWrapper;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DurationInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -130,8 +131,11 @@ import uk.ac.ed.epcc.webapp.time.Period;
  *
  */
 public class ParameterExtension extends ReportExtension {
-	
-    private static final String IF_DEF_ELEMENT = "IfDef";
+	/**
+	 * 
+	 */
+    public static final String REPORT_SELECT_RELATIONHIP = "ReportSelect";
+	private static final String IF_DEF_ELEMENT = "IfDef";
 	private static final String IF_ELEMENT = "If";
 	private static final String IF_NDEF_ELEMENT = "IfNDef";
 	private static final String TITLE_ATTR = "title";
@@ -539,6 +543,12 @@ public class ParameterExtension extends ReportExtension {
 				BaseFilter efil = getFilter(param, fac);
 				if( efil != null) {
 					return fac.getInput(efil);
+				}
+				// Allow reporting customisation by relationship
+				// This will often be a named filter
+				BaseFilter repfil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, REPORT_SELECT_RELATIONHIP,null);				
+				if( repfil != null ) {
+					return fac.getInput(repfil);
 				}
 			}
 			return factory.getInput();	
