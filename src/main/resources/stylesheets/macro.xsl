@@ -14,7 +14,7 @@
     <!--  Expand definition use -->
     <xsl:template match="mac:Macro">
     	<xsl:variable name="macro_name" select="@name"/>
-    	<xsl:apply-templates select="preceding::mac:MacroDef[@name=$macro_name]" mode="expand"/>
+    	<xsl:apply-templates select="preceding::mac:MacroDef[@name=$macro_name][last()]" mode="expand"/>
     </xsl:template>
     
     <xsl:template match="mac:MacroDef" mode="expand">
