@@ -501,7 +501,15 @@ public class ParameterExtension extends ReportExtension {
 					role=role.substring(1);
 				}else{
 					//narrow the default selector by default
-					fil.addFilter(fac.getFinalSelectFilter());
+					// if the ReportSelect relationship is defined narrow by taht instead
+					
+					// Allow reporting customisation by relationship
+					// This will often be a named filter
+					BaseFilter repfil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, REPORT_SELECT_RELATIONHIP,null);
+					if(repfil == null) {
+						repfil = fac.getFinalSelectFilter();
+					}
+					fil.addFilter(repfil);
 				}
 				BaseFilter fil2 = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
 				if( fil2 == null ){
