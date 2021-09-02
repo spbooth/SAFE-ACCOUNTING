@@ -388,7 +388,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		    String state = map.getProperty(STATE_PROP);
 		
 		// Illegal states
-		if( state == null || state.startsWith("RUNNING") || state.startsWith("PENDING") || state.startsWith("REQUEUED")){
+		if( state == null || state.startsWith("RUNNING") || state.startsWith("PENDING") || state.startsWith("REQUEUED") || state.startsWith("FAILED")){
 			return false;
 		}
 		if( skip_cancelled && state.startsWith("CANCELLED")){
