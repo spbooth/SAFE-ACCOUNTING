@@ -67,6 +67,7 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 public class SlurmParser extends BatchParser implements  Contexed,ConfigParamProvider {
 	private static final String PARSE_FORMAT_SUFFIX = ".parse.format";
 	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
+	private static final String SKIP_FAILED_SUFFIX = ".skip_failed";
 	private static final String SKIP_SUB_JOBS_SUFFIX = ".skip_sub_jobs";
 	private static final String SKIP_TOP_JOBS_SUFFIX = ".skip_top_jobs";
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
@@ -341,6 +342,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	
 	
 	private boolean skip_cancelled=false;
+	private boolean skip_failed=false;
 	private boolean skip_sub_jobs=false;
 	private boolean skip_top_jobs=false;
 	private String table;
@@ -388,10 +390,13 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		    String state = map.getProperty(STATE_PROP);
 		
 		// Illegal states
-		if( state == null || state.startsWith("RUNNING") || state.startsWith("PENDING") || state.startsWith("REQUEUED") || state.startsWith("FAILED")){
+		if( state == null || state.startsWith("RUNNING") || state.startsWith("PENDING") || state.startsWith("REQUEUED")){
 			return false;
 		}
 		if( skip_cancelled && state.startsWith("CANCELLED")){
+			return false;
+		}
+		if( skip_failed && state.startsWith("FAILED")){
 			return false;
 		}
 		Boolean sub_job = map.getProperty(SUB_JOB);
@@ -462,6 +467,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		finder.addFinder(StandardProperties.base);
 		this.table=table;
 		skip_cancelled = conn.getBooleanParameter(table+SKIP_CANCELLED_SUFFIX, false);
+		skip_failed = conn.getBooleanParameter(table+SKIP_FAILED_SUFFIX, false);
 		skip_sub_jobs = conn.getBooleanParameter(table+SKIP_SUB_JOBS_SUFFIX, false);
 		skip_top_jobs = conn.getBooleanParameter(table+SKIP_TOP_JOBS_SUFFIX, false);
 		Logger log = getLogger();
@@ -514,6 +520,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	@Override
 	public void addConfigParameters(Set<String> params) {
 		params.add(table+SKIP_CANCELLED_SUFFIX);
+		params.add(table+SKIP_FAILED_SUFFIX);
 		params.add(table+SKIP_SUB_JOBS_SUFFIX);
 		params.add(table+SKIP_TOP_JOBS_SUFFIX);
 		params.add(table+PARSE_FORMAT_SUFFIX);
