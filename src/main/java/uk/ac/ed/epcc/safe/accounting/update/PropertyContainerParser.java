@@ -22,7 +22,6 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 
 

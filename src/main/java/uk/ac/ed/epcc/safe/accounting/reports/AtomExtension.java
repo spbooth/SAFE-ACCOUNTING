@@ -62,6 +62,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 public class AtomExtension extends ReportExtension {
     
+	private static final String ATOM_PLUGIN_ELEMENT = "AtomPlugin";
 	private static final String OVERLAP_AVERAGE_ELEMENT = "OverlapAverage";
 	private static final String OVERLAP_SUM_ELEMENT = "OverlapSum";
 	private static final String DIV_ELEMENT = "Div";
@@ -197,11 +198,25 @@ public class AtomExtension extends ReportExtension {
 			return combine(Operator.MUL, period, set, element);
 		}else if (DIV_ELEMENT.equals(name)){
 			return combine(Operator.DIV, period, set, element);
+		}else if (ATOM_PLUGIN_ELEMENT.equals(name)) {
+			return plugin(period,set,element);
 		}
 		
 		
 		throw new ParseException("unexpected content");
 	}
+	private AtomResult plugin(Period period, RecordSet set, Element element) throws Exception {
+		String name = element.getAttribute("name");
+		if( name == null || name.isEmpty()) {
+			throw new ReportException("No name for AtomPlugin");
+		}
+		AtomPlugin p = getContext().makeObject(AtomPlugin.class, name);
+		if( p == null ) {
+			throw new ReportException("No AtomPlugin resulved name="+name);
+		}
+		return p.evaluate(period, set);
+	}
+
 	public AtomResult expandAtom(Period period,RecordSet set,Node element) throws IllegalReductionException, Exception{
 		if( set.hasError()) {
 			throw new ReportException("Bad record set");
