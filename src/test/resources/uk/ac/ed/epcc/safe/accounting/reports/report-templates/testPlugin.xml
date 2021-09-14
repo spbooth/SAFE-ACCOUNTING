@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!-- Copyright - The University of Edinburgh 2015 -->
+<Report 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://safe.epcc.ed.ac.uk/report"
+  xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
+  xmlns:per="http://safe.epcc.ed.ac.uk/period"
+  xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+  xmlns:tab="http://safe.epcc.ed.ac.uk/table"
+  xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
+  xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+	<Title>Test Atoms</Title>	
+	
+	<Section>
+	<Text>PI=<ato:Atom max_fraction="3"><ato:AtomPlugin name="piplugin"/></ato:Atom></Text>
+	</Section>
+</Report>
