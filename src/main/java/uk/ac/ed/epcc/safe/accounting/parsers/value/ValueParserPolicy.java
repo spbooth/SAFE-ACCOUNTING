@@ -106,9 +106,11 @@ public class ValueParserPolicy implements
 	}
 	@SuppressWarnings("unchecked")
 	public final <T> ValueParser<T> getValueParser(Class<? extends T> clazz,String tag){
-		ValueParser res = serv.getValueParser(tag);
-		if( res != null && clazz.isAssignableFrom(res.getType())){
-			return res;
+		if( tag != null && ! tag.isEmpty()) {
+			ValueParser res = serv.getValueParser(tag);
+			if( res != null && clazz.isAssignableFrom(res.getType())){
+				return res;
+			}
 		}
 		return getDefaultValueParser(clazz);
 	}
