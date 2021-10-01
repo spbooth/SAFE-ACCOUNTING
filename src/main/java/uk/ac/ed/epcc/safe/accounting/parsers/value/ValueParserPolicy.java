@@ -88,7 +88,7 @@ public class ValueParserPolicy implements
 	}
 	public final <T> ValueParser<T> getValueParser(Class<? extends T> clazz)
 	{
-		if( format != null ){
+		if( format != null && ! format.isEmpty()){
 			return getValueParser(clazz, format);
 		}
 		return getDefaultValueParser(clazz);
