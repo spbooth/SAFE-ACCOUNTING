@@ -68,6 +68,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	private static final String PARSE_FORMAT_SUFFIX = ".parse.format";
 	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
 	private static final String SKIP_FAILED_SUFFIX = ".skip_failed";
+	private static final String SKIP_NODE_FAILED_SUFFIX = ".skip_node_failed";
 	private static final String SKIP_SUB_JOBS_SUFFIX = ".skip_sub_jobs";
 	private static final String SKIP_TOP_JOBS_SUFFIX = ".skip_top_jobs";
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
@@ -343,6 +344,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	
 	private boolean skip_cancelled=false;
 	private boolean skip_failed=false;
+	private boolean skip_node_failed=false;
 	private boolean skip_sub_jobs=false;
 	private boolean skip_top_jobs=false;
 	private String table;
@@ -398,6 +400,14 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		}
 		if( skip_failed && state.startsWith("FAILED")){
 			return false;
+		}
+		if( state.startsWith("NODE_FAIL" )){
+			map.setOptionalProperty(BatchParser.SUCCESS_PROP, Boolean.FALSE);
+			if( skip_node_failed) {
+				return false;
+			}
+		}else {
+			map.setOptionalProperty(BatchParser.SUCCESS_PROP, Boolean.TRUE);
 		}
 		Boolean sub_job = map.getProperty(SUB_JOB);
 		if( skip_sub_jobs && sub_job != null && sub_job) {
@@ -468,6 +478,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		this.table=table;
 		skip_cancelled = conn.getBooleanParameter(table+SKIP_CANCELLED_SUFFIX, false);
 		skip_failed = conn.getBooleanParameter(table+SKIP_FAILED_SUFFIX, false);
+		skip_node_failed = conn.getBooleanParameter(table+SKIP_NODE_FAILED_SUFFIX, false);
 		skip_sub_jobs = conn.getBooleanParameter(table+SKIP_SUB_JOBS_SUFFIX, false);
 		skip_top_jobs = conn.getBooleanParameter(table+SKIP_TOP_JOBS_SUFFIX, false);
 		Logger log = getLogger();
@@ -521,6 +532,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	public void addConfigParameters(Set<String> params) {
 		params.add(table+SKIP_CANCELLED_SUFFIX);
 		params.add(table+SKIP_FAILED_SUFFIX);
+		params.add(table+SKIP_NODE_FAILED_SUFFIX);
 		params.add(table+SKIP_SUB_JOBS_SUFFIX);
 		params.add(table+SKIP_TOP_JOBS_SUFFIX);
 		params.add(table+PARSE_FORMAT_SUFFIX);
