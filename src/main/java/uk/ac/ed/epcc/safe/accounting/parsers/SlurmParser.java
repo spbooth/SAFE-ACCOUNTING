@@ -137,7 +137,12 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	public static final PropertyTag<Date> END_PROP = new PropertyTag<>(slurm,"End",Date.class,"Job end");
 	@AutoTable
 	public static final PropertyTag<String> EXIT_CODE_PROP = new PropertyTag<>(slurm, "ExitCode", String.class,"The exit code returned by the job script or salloc, typically as set by the exit() function. Following the colon is the signal that caused the process to terminate if it was terminated by a signal. ");
-	    
+	@OptionalTable    
+	public static final PropertyTag<Boolean> SUCCESS_PROP = new PropertyTag<>(slurm,"Success",Boolean.class,"Job did not return a failed state");
+	
+	@OptionalTable
+	public static final PropertyTag<Boolean> NODE_FAIL_PROP = new PropertyTag<>(slurm,"NodeFail",Boolean.class,"Did the job terminate due to a node failure");
+	
 	@OptionalTable
 	public static final PropertyTag<Integer> GID_PROP = new PropertyTag<>(slurm,"GID",Integer.class,"The group identifier of the user who ran the job.");
 	@AutoTable
@@ -398,16 +403,22 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		if( skip_cancelled && state.startsWith("CANCELLED")){
 			return false;
 		}
-		if( skip_failed && state.startsWith("FAILED")){
-			return false;
+		if(state.startsWith("FAILED")) {
+			if( skip_failed ){
+				return false;
+			}
+			map.setOptionalProperty(SUCCESS_PROP, Boolean.FALSE);
+		}else {
+			map.setOptionalProperty(SUCCESS_PROP, Boolean.TRUE);
 		}
 		if( state.startsWith("NODE_FAIL" )){
-			map.setOptionalProperty(BatchParser.SUCCESS_PROP, Boolean.FALSE);
+			map.setOptionalProperty(NODE_FAIL_PROP, Boolean.TRUE);
+			map.setOptionalProperty(SUCCESS_PROP, Boolean.FALSE); // should not count as success
 			if( skip_node_failed) {
 				return false;
 			}
 		}else {
-			map.setOptionalProperty(BatchParser.SUCCESS_PROP, Boolean.TRUE);
+			map.setOptionalProperty(NODE_FAIL_PROP, Boolean.FALSE);
 		}
 		Boolean sub_job = map.getProperty(SUB_JOB);
 		if( skip_sub_jobs && sub_job != null && sub_job) {
@@ -459,6 +470,9 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 			derv.peer(BatchParser.JOB_NAME_PROP, JOB_NAME_PROP);
 			derv.put(BatchParser.WALLCLOCK_PROP, new DurationSecondsPropExpression(ELAPSED_PROP));
 			derv.peer(BatchParser.QUEUE_PROP,QOS);
+			
+			derv.peer(BatchParser.SUCCESS_PROP,SUCCESS_PROP);
+			derv.peer(BatchParser.FAULT_PROP,NODE_FAIL_PROP);
 		} catch (PropertyCastException e) {
 			getLogger().error("Error setting standard derived props",e);
 		}
