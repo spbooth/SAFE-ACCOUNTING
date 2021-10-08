@@ -19,11 +19,19 @@ public class StreamLineSplitter extends AbstractContexed implements CloseableIte
 	private String next;
 	public StreamLineSplitter(AppContext conn,InputStream stream) throws IOException {
 		super(conn);
-		reader = new BufferedReader(new InputStreamReader(stream));
-		next = nextLine();
+		if( stream == null ) {
+			reader = null;
+			next = null;
+		}else {
+			reader = new BufferedReader(new InputStreamReader(stream));
+			next = nextLine();
+		}
 	}
 
 	protected String nextLine() throws IOException {
+		if( reader == null) {
+			return null;
+		}
 		while(true) {
 			String tmp = reader.readLine();
 			if( tmp == null ) {
@@ -58,7 +66,9 @@ public class StreamLineSplitter extends AbstractContexed implements CloseableIte
 
 	@Override
 	public void close() throws Exception {
-		reader.close();
+		if( reader != null ) {
+			reader.close();
+		}
 	}
 
 }
