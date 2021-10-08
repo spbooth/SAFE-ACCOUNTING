@@ -8,12 +8,13 @@ import java.util.Iterator;
 
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 /** A wrapper class to iterate over the (non empty) lines in a stream
  * 
  * @author Stephen Booth
  *
  */
-public class StreamLineSplitter extends AbstractContexed implements Iterator<String> {
+public class StreamLineSplitter extends AbstractContexed implements CloseableIterator<String> {
 	private BufferedReader reader;
 	private String next;
 	public StreamLineSplitter(AppContext conn,InputStream stream) throws IOException {
@@ -53,6 +54,11 @@ public class StreamLineSplitter extends AbstractContexed implements Iterator<Str
 			getLogger().error("Error reading next line", e);
 		}
 		return result;
+	}
+
+	@Override
+	public void close() throws Exception {
+		reader.close();
 	}
 
 }
