@@ -159,7 +159,7 @@ private FieldType makeFieldType(AppContext c, PropertyTag tag,
 	}else if( tag instanceof IndexedTag){
 		type = new ReferenceFieldType(((IndexedTag) tag).getTable());
 	}else if( target == Boolean.class ){
-		type = new BooleanFieldType(false, false);
+		type = new BooleanFieldType(false, conn.getBooleanParameter("auto_tag."+tag.getFullName(), false));
 	}else{
 		
 		type=null;
