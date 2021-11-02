@@ -119,6 +119,8 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	public static final PropertyTag<String> COMMENT_PROP = new PropertyTag<>(slurm,"Comment", String.class,"The job's comment string when the AccountingStoreJobComment parameter in the slurm.conf file is set (or defaults) to YES. The Comment string can be modified by invoking sacctmgr modify job or the specialized sjobexitmod command. ");
 	@OptionalTable
 	public static final PropertyTag<Long> ConsumedEnergy = new PropertyTag<>(slurm,"ConsumedEnergy",Long.class,"Total energy consumed by all tasks in job, in joules. Note: Only in case of exclusive job allocation this value reflects the jobs' real energy consumption. ");
+	@OptionalTable
+	public static final PropertyTag<Long> ConsumedEnergyRaw = new PropertyTag<>(slurm,"ConsumedEnergyRaw",Long.class,"Total raw energy consumed by all tasks in job, in joules. Note: Only in case of exclusive job allocation this value reflects the jobs' real energy consumption. ");
 	
 	@OptionalTable
     public static final PropertyTag<Duration> CPU_TIME_PROP = new PropertyTag<>(slurm,"CPUTime",Duration.class,"Time used (Elapsed time * CPU count) by a job or step in HH:MM:SS format.");
