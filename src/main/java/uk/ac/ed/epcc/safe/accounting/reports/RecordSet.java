@@ -71,6 +71,7 @@ public class RecordSet extends ObjectSet<UsageProducer>{
 	  if( orig.bounds != null ) {
 		  this.bounds=orig.bounds.clone();
 	  }
+	  this.use_overlap=orig.use_overlap;
   }
   /** get the {@link UsageProducer}. This is allowed to return null
    * in the case where no records match the current {@link RecordSelector}.

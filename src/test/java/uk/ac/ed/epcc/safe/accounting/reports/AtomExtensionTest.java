@@ -15,6 +15,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.ac.ed.epcc.safe.accounting.OverlapHandler;
 import uk.ac.ed.epcc.safe.accounting.db.DefaultAccountingService;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.WebappTestBase;
@@ -50,6 +51,11 @@ public class AtomExtensionTest extends WebappTestBase {
 	
 	String overlapOutput=
 			"The user 's0565741' used 8935 seconds between 2008-10-01 04:30:00 and 2008-10-01 04:40:00.";	
+	
+	
+	String overlapAverageOutput=
+			"The user 's0565741' used an average of 14.892 cpus between 2008-10-01 04:30:00 and 2008-10-01 04:40:00.";	
+
 	String atomatomOutput=
 			"The user 's0565741' used 17870 seconds between 2008-10-01 04:30:00 and 2008-10-01 04:40:00.";			
  
@@ -253,6 +259,101 @@ public class AtomExtensionTest extends WebappTestBase {
 		assertTrue("SumAtom wasn't correctly formatted: Got\n"+out.toString()+
 				"Expected\n"+overlapOutput, 
 				out.toString().contains(overlapOutput));
+		
+	}
+	
+	@Test
+	@DataBaseFixtures({"AtomExtensionData.xml"})
+	public void testOverlapAverageSummaryAtom() throws Exception {	
+		Feature.setTempFeature(ctx, OverlapHandler.USE_QUERY_MAPPER_FEATURE, true);
+		Feature.setTempFeature(ctx, OverlapHandler.USE_CASE_OVERLAP, true);
+		String templateName = "testOverlapAverageAtom";
+		
+		// Create a HTMLForm.
+		HTMLForm form = new HTMLForm(ctx);
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<>();
+		ReportBuilderTest.setupParams(ctx,params);
+		
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
+		reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
+		reportBuilder.buildReportParametersForm(form, params);
+		
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		reportBuilder.renderXML(params, out);
+	
+		// Look for errors
+		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
+		
+		// Check it was correctly formatted.		
+		assertTrue("SumAtom wasn't correctly formatted: Got\n"+out.toString()+
+				"Expected\n"+overlapAverageOutput, 
+				out.toString().contains(overlapAverageOutput));
+		
+	}
+	
+	@Test
+	@DataBaseFixtures({"AtomExtensionData.xml"})
+	public void testOverlapAverageSummaryAtom2() throws Exception {	
+		Feature.setTempFeature(ctx, OverlapHandler.USE_QUERY_MAPPER_FEATURE, true);
+		Feature.setTempFeature(ctx, OverlapHandler.USE_CASE_OVERLAP, false);
+		String templateName = "testOverlapAverageAtom";
+		
+		// Create a HTMLForm.
+		HTMLForm form = new HTMLForm(ctx);
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<>();
+		ReportBuilderTest.setupParams(ctx,params);
+		
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
+		reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
+		reportBuilder.buildReportParametersForm(form, params);
+		
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		reportBuilder.renderXML(params, out);
+	
+		// Look for errors
+		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
+		
+		// Check it was correctly formatted.		
+		assertTrue("SumAtom wasn't correctly formatted: Got\n"+out.toString()+
+				"Expected\n"+overlapAverageOutput, 
+				out.toString().contains(overlapAverageOutput));
+		
+	}
+	
+	@Test
+	@DataBaseFixtures({"AtomExtensionData.xml"})
+	public void testOverlapAverageSummaryAtom3() throws Exception {		
+		Feature.setTempFeature(ctx, OverlapHandler.USE_QUERY_MAPPER_FEATURE, false);
+		String templateName = "testOverlapAverageAtom";
+		
+		// Create a HTMLForm.
+		HTMLForm form = new HTMLForm(ctx);
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<>();
+		ReportBuilderTest.setupParams(ctx,params);
+		
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
+		reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
+		reportBuilder.buildReportParametersForm(form, params);
+		
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		reportBuilder.renderXML(params, out);
+	
+		// Look for errors
+		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
+		
+		// Check it was correctly formatted.		
+		assertTrue("SumAtom wasn't correctly formatted: Got\n"+out.toString()+
+				"Expected\n"+overlapAverageOutput, 
+				out.toString().contains(overlapAverageOutput));
 		
 	}
 	@Test
