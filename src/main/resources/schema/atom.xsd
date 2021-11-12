@@ -322,6 +322,9 @@
 
 
     <xsd:complexType name="AtomPluginType">
-    	<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+        <xsd:sequence>
+        	<xsd:any></xsd:any>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"></xsd:attribute>
     </xsd:complexType>
 </xsd:schema>

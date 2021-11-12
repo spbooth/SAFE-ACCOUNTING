@@ -214,7 +214,7 @@ public class AtomExtension extends ReportExtension {
 		if( p == null ) {
 			throw new ReportException("No AtomPlugin resulved name="+name);
 		}
-		return p.evaluate(period, set);
+		return p.evaluate(this,element,period, set);
 	}
 
 	public AtomResult expandAtom(Period period,RecordSet set,Node element) throws IllegalReductionException, Exception{

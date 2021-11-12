@@ -1,5 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
+import org.w3c.dom.Element;
+
 import uk.ac.ed.epcc.safe.accounting.reports.AtomExtension.AtomResult;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -12,7 +14,7 @@ public class PiAtomPlugin extends AbstractContexed implements AtomPlugin<Number>
 	}
 
 	@Override
-	public AtomResult<Number> evaluate(Period period, RecordSet set) throws Exception {
+	public AtomResult<Number> evaluate(AtomExtension ext,Element element,Period period, RecordSet set) throws Exception {
 		return new AtomResult<Number>(null,Math.PI);
 	}
 
