@@ -323,7 +323,7 @@
 
     <xsd:complexType name="AtomPluginType">
         <xsd:sequence>
-        	<xsd:any></xsd:any>
+        	<xsd:any minOccurs="0"></xsd:any>
         </xsd:sequence>
         <xsd:attribute name="name" type="xsd:string"></xsd:attribute>
     </xsd:complexType>
