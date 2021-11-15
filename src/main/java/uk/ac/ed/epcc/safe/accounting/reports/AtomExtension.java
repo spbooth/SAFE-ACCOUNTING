@@ -83,7 +83,7 @@ public class AtomExtension extends ReportExtension {
 	 * this allows the expression to be passed up to the formatting code.
 	 * 
 	 */
-	static class AtomResult<N>{
+	public static class AtomResult<N>{
 		@Override
 		public String toString() {
 			return "AtomResult [expr=" + expr + ", value=" + value + "]";

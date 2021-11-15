@@ -33,6 +33,7 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.period.SplitManager;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
+import uk.ac.ed.epcc.webapp.time.ViewPeriod;
 /** AllocationManagers are the factory classes for Allocations and
  * provide transitions to edit the allocations.
  * 
@@ -120,4 +121,15 @@ public static final String VIEW_ALLOCATION_RELATIONSHIP = "AllocationView";
  
  public AllocationPeriodTransitionProvider getTransitionProvider();
  
+ /** Get the name for the type to use in messages etc.
+  * 
+  * @return
+  */
+ public String getTypeName();
+ 
+ /** get a default {@link ViewPeriod} appropriate to this type of allocation
+  * 
+  * @return
+  */
+ public ViewPeriod getDefaultViewPeriod();
 }

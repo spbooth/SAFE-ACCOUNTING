@@ -63,6 +63,7 @@ import uk.ac.ed.epcc.webapp.model.data.transition.AbstractViewPathTransitionProv
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.CalendarFieldSplitPeriod;
 import uk.ac.ed.epcc.webapp.time.Period;
+import uk.ac.ed.epcc.webapp.time.ViewPeriod;
 /** Provide a filtered view of allocations from a nested
  * {@link AllocationManager}. Transitions only implement changes to the filter
  * including changes of time period. The changes to the records themselves is handled by
@@ -207,7 +208,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 	};
 	public class IndexTransition extends AbstractDirectTargetlessTransition<AllocationPeriod>{
 		public FormResult doTransition(AppContext c) throws TransitionException {
-			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(ViewPeriod.getViewPeriod(c)));
+			return new ViewTransitionResult<>(AllocationPeriodTransitionProvider.this, new AllocationPeriod(manager.getDefaultViewPeriod()));
 		}
 		
 	}
@@ -306,7 +307,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 				text.addClass("grey");
 				text.clean("Grey");
 				text.close();
-				text.clean(" End-dates indicate an allocation that is past");
+				text.clean(" End-dates indicate an "+manager.getTypeName().toLowerCase()+" that is past");
 				text.appendParent();
 				cb.addTable(c, tab);
 			}
@@ -362,7 +363,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 		if( id == null || id.size()==0){
 			// make a default
 			
-			return new AllocationPeriod(ViewPeriod.getViewPeriod(getContext()));
+			return new AllocationPeriod(getDefaultViewPeriod());
 		}
 		AllocationPeriod result = new AllocationPeriod(ViewPeriod.parsePeriod(id.pop()));
 		PropertyFinder finder =manager.getFinder();
@@ -385,6 +386,10 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 		return result;
 	}
 
+	public ViewPeriod getDefaultViewPeriod() {
+		return manager.getDefaultViewPeriod();
+	}
+
 	public LinkedList<String> getID(AllocationPeriod target) {
 		LinkedList<String> result = new LinkedList<>();
 		result.add(target.getPeriod().toString());
@@ -401,6 +406,8 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 	public PeriodKey getIndexTransition() {
 		return INDEX_KEY;
 	}
+
+	
 
 	
 }

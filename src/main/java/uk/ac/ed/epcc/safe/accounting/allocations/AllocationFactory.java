@@ -110,6 +110,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.session.UnknownRelationshipException;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
+import uk.ac.ed.epcc.webapp.time.ViewPeriod;
 /** An Allocation represents a resource allocated rather than a resource consumed. 
  * This extends {@link UsageRecordFactory} and include a {@link ConfigUploadParseTargetPlugin} to allow full use of policies and to allow allocations to be parsed 
  * from an external source.
@@ -127,7 +128,7 @@ import uk.ac.ed.epcc.webapp.time.TimePeriod;
  * 
  * @author spb
  *
- * @param <T>
+ * @param <T> type of record
  * @param <R> intermediate record type for parse
  */
 
@@ -270,8 +271,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 				supress = new HashSet<>();
 			}
 			if( ! editEnds()){
-				supress.add(StandardProperties.STARTED_TIMESTAMP);
-				supress.add(StandardProperties.COMPLETED_TIMESTAMP);
+				supress.add(getStartField());
+				supress.add(getEndField());
 			}
 			AccessorMap<T> map = getAccessorMap();
 			
@@ -325,8 +326,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	}
 	public class AllocationValidator implements FormValidator{
 		public void validate(Form f) throws  ValidateException{
-			Date start=(Date)f.get(StandardProperties.STARTED_TIMESTAMP);
-			Date end=(Date)f.get(StandardProperties.COMPLETED_TIMESTAMP);
+			Date start=(Date)f.get(getStartField());
+			Date end=(Date)f.get(getEndField());
 			if( ! end.after(start) ){
 				throw new ValidateException("End not after Start");
 			}
@@ -468,8 +469,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		PropertyMap def_props = new PropertyMap();
 		def_props.setAll(defaults);
 		Map<String,Object> defs = new HashMap<>();
-		defs.put(StandardProperties.STARTED_TIMESTAMP, p.getStart());
-		defs.put(StandardProperties.COMPLETED_TIMESTAMP, p.getEnd());
+		defs.put(getStartField(), p.getStart());
+		defs.put(getEndField(), p.getEnd());
 		def_props.setProperty(StandardProperties.STARTED_PROP, p.getStart());
 		def_props.setProperty(StandardProperties.ENDED_PROP, p.getEnd());
 		AccessorMap map = getAccessorMap();
@@ -486,7 +487,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	/** Get the correct input to use for the date fields
 	 * 
 	 */
-	public final BoundedDateInput getDateInput(){
+	public BoundedDateInput getDateInput(){
 		if( USE_DATE_PREF.isEnabled(getContext())) {
 			return new DateInput();
 		}
@@ -503,16 +504,34 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
     		
     	};
     }
-	
-	
+    /** Get the start field using properties.
+	 * As parsers etc might create a non-standard field that the
+	 * standard property is aliased to this is more robust than
+	 * using the default field in StandardProperties
+	 * 
+	 * @return String field name
+	 */
+	protected String getStartField() {
+		return getAccessorMap().getField(StandardProperties.STARTED_PROP);
+	}
+	/** Get the end field using properties.
+	 * As parsers etc might create a non-standard field that the
+	 * standard property is aliased to this is more robust than
+	 * using the default field in StandardProperties
+	 * 
+	 * @return String field name
+	 */
+	protected String getEndField() {
+		return getAccessorMap().getField(StandardProperties.ENDED_PROP);
+	}
 	
 	@Override
 	protected Map<String, Selector> getSelectors() {
 		Map<String,Selector>res = super.getSelectors();
 		
 		Selector<BoundedDateInput> s = getDateSelector();
-		res.put(StandardProperties.STARTED_TIMESTAMP, s);
-		res.put(StandardProperties.COMPLETED_TIMESTAMP, s);
+		res.put(getStartField(), s);
+		res.put(getEndField(), s);
 		AccessorMap map = getAccessorMap();
 		SessionService sess = getContext().getService(SessionService.class);
 		// Restrict index properties to those we have a particular role on
@@ -969,8 +988,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	@Override
 	protected Map<String, String> getTranslations() {
 		Map<String,String> result = new HashMap<>();
-		result.put(StandardProperties.STARTED_TIMESTAMP, "Allocation Start");
-		result.put(StandardProperties.COMPLETED_TIMESTAMP, "Allocation End");
+		result.put(getStartField(), getTypeName()+" Start");
+		result.put(getEndField(), getTypeName()+" End");
 		return result;
 	}
 	private Set<PropertyTag<? extends Number>> split_properties = null;
@@ -989,11 +1008,21 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		Set<PropertyTag<? extends Number>> result = new LinkedHashSet<>();
 		AppContext conn = getContext();
 		for(PropertyTag<? extends Number> p : getAllocationProperties()) {
-			if( conn.getBooleanParameter("split_property."+getTag()+"."+p.getName(), true)) {
+			if( conn.getBooleanParameter("split_property."+getTag()+"."+p.getName(), splitByDefault())) {
 				result.add(p);
 			}
 		}
 		return result;
+	}
+	/** Should numeric properties be divided by default
+	 * when record is split.
+	 * This is the default. The behaviour of individual properties 
+	 * can be customised using config settings.
+	 * 
+	 * @return
+	 */
+	protected boolean splitByDefault() {
+		return true;
 	}
 	/** perform per property rounding in a sub-class
 	 * 
@@ -1160,7 +1189,28 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		params.add(getTag()+"."+LIST_PROPERTIES_SUFFIX);
 	}
 
-	
+	/** Get the type name to use in messages etc.
+	 * 
+	 * @return String
+	 */
+	public String getTypeName() {
+		return "Allocation";
+	}
+
+	@Override
+	public ViewPeriod getDefaultViewPeriod() {
+		AppContext conn =getContext();
+		Calendar start = Calendar.getInstance();
+		CurrentTimeService time = conn.getService(CurrentTimeService.class);
+		start.setTime(time.getCurrentTime());
+		start.set(Calendar.MILLISECOND,0);
+		start.set(Calendar.SECOND,0);
+		start.set(Calendar.MINUTE,0);
+		start.set(Calendar.HOUR_OF_DAY,0);
+		start.set(Calendar.DAY_OF_YEAR,1);
+		start.add(Calendar.YEAR, conn.getIntegerParameter("default_period.back",-1));
+		return new ViewPeriod(start,Calendar.YEAR,1,conn.getIntegerParameter("default_period.length", 3));
+	}
 	
 	
 }

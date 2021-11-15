@@ -56,7 +56,8 @@ import uk.ac.ed.epcc.webapp.time.TimePeriodComparator;
  * 
  * @author spb
  *
- * @param <T>
+ * @param <T> type of record
+ * @param <R> intermediate record type for parse
  */
 public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends AllocationFactory<T,R>  implements SequenceManager<T>, TableContentProvider{
 	private ReferenceTag<T,?> self_tag=null;
@@ -226,8 +227,8 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 		@Override
 		public void validate(Form f) throws ValidateException {
 			super.validate(f);
-			Date start=(Date)f.get(StandardProperties.STARTED_TIMESTAMP);
-			Date end=(Date)f.get(StandardProperties.COMPLETED_TIMESTAMP);
+			Date start=(Date)f.get(getStartField());
+			Date end=(Date)f.get(getEndField());
 			TimePeriod period = new Period(start,end);
 			PropertyMap seq = new PropertyMap();
 			AccessorMap map = getAccessorMap();

@@ -1258,7 +1258,7 @@ public class ParameterExtension extends ReportExtension {
 		return null;
 	}
 	@Override
-	protected  String getText(Element e) throws ReportException{
+	public  String getText(Element e) throws ReportException{
 		// Filters etc may want to use pre-defined parameters
 		// like current authenticated user.
 		if( e.getElementsByTagNameNS(PARAMETER_LOC, PARAMETER_ELEM).getLength()>0){
