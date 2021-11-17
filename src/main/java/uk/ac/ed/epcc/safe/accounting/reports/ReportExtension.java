@@ -325,7 +325,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * @return
 	 * @throws ReportException
 	 */
-	protected final boolean hasParam(String name, Element elem) throws ReportException{
+	public final boolean hasParam(String name, Element elem) throws ReportException{
 		if( elem == null) {
 			return false;
 		}
@@ -378,7 +378,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		return elems.getLength()==1;
 	}
 	
-	protected final int getIntParam(String name, int def, Element elem) throws Exception{
+	public final int getIntParam(String name, int def, Element elem) throws Exception{
 		Element v;
 		if( name == null ){
 			v = elem;
@@ -409,7 +409,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		  return def;
 		}
 	}
-	protected final boolean getBooleanParam(String name, boolean def, Element elem) throws Exception{
+	public final boolean getBooleanParam(String name, boolean def, Element elem) throws Exception{
 		Element inner = getParamElement(name, elem);
 		if( inner == null) {
 			return def;
@@ -449,7 +449,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * @return Number
 	 * @throws Exception 
 	 */
-	protected final Number getNumberParam(String name, Number def, Element elem) throws Exception{
+	public final Number getNumberParam(String name, Number def, Element elem) throws Exception{
 		Element v;
 		if( name == null ){
 			v = elem;
@@ -489,7 +489,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		return def;
 	}
 	
-	protected final int getIntParamNS(String namespace,String name, int def, Element elem) throws Exception{
+	public final int getIntParamNS(String namespace,String name, int def, Element elem) throws Exception{
 		Element inner = getParamElementNS(namespace, name, elem);
 		if( inner == null ) {
 			return def;

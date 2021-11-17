@@ -415,7 +415,7 @@ public abstract class SelectBuilder {
 				return s;
 			}
 
-	protected final String getParamNS(String namespace, String name, Element elem)
+	public final String getParamNS(String namespace, String name, Element elem)
 			throws ReportException {
 		if( elem == null){
 			return null;
@@ -469,7 +469,7 @@ public abstract class SelectBuilder {
 				  for(int i=0; i<list.getLength();i++){
 					  Node n = list.item(i);
 					  String namespace = n.getNamespaceURI();
-					  if( n.getNodeType() == Node.ELEMENT_NODE && n.getLocalName().equals(name) && (namespace == null || namespace.equals(target_namespace))){
+					  if( n.getNodeType() == Node.ELEMENT_NODE && n.getLocalName().equals(name) && (namespace == null || target_namespace == null || namespace.equals(target_namespace))){
 						if( result == null){
 							result=((Element)n);
 						}else{

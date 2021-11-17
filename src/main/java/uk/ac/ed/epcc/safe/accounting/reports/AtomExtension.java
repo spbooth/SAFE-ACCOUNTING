@@ -324,7 +324,7 @@ public class AtomExtension extends ReportExtension {
 			}
 			return pf.format(frac);
 		} catch (Exception e1) {
-			addError("bad percentage", "Error calculating percentage",e);
+			addError("bad percentage", "Error calculating percentage",e,e1);
 			return "";
 		}
 	}
