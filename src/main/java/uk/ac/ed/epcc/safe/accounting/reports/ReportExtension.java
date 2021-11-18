@@ -379,44 +379,19 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	}
 	
 	public final int getIntParam(String name, int def, Element elem) throws Exception{
-		Element v;
-		if( name == null ){
-			v = elem;
-		}else{
-			v = getParamElementNS(elem.getNamespaceURI(), name, elem);
-		}
-		if( v == null ){
-			return def;
-		}
-		if( hasParameterRef(v)){
-			Object ref_data = getParameterRef(v);
-			if( ref_data != null ){
-				Number val =  convert(null,Number.class,ref_data);
-				if( val != null ){
-					return val.intValue();
-				}
-			}
-			return def;
-		}
-		String s = getText(v);
-		if( s == null || s.trim().length() == 0){
-			return def;
-		}
-		try{
-			return Integer.parseInt(s.trim());
-		}catch(Exception e){
-		  addError("Error parsing Integer param","Param "+name+" value"+s,e);
-		  return def;
-		}
+		return getIntParamNS(elem.getNamespaceURI(), name, def, elem);
 	}
 	public final boolean getBooleanParam(String name, boolean def, Element elem) throws Exception{
-		Element inner = getParamElement(name, elem);
+		return getBooleanParamNS(elem.getNamespaceURI(), name, def, elem);
+	}
+	public final boolean getBooleanParamNS(String namespace,String name, boolean def, Element elem) throws Exception{
+		Element inner = getParamElementNS(namespace,name, elem);
 		if( inner == null) {
 			return def;
 		}
 		String s=null;
 		if( hasParameterRef(inner)) {
-			Object ref_data = getParameterRef(elem);
+			Object ref_data = getParameterRef(inner);
 			if( ref_data != null ){
 				if( ref_data instanceof Boolean) {
 					return ((Boolean)ref_data).booleanValue();
@@ -450,11 +425,14 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * @throws Exception 
 	 */
 	public final Number getNumberParam(String name, Number def, Element elem) throws Exception{
+		return getNumberParamNS(elem.getNamespaceURI(), name, def, elem);
+	}	
+	public final Number getNumberParamNS(String namespace,String name, Number def, Element elem) throws Exception{
 		Element v;
 		if( name == null ){
 			v = elem;
 		}else{
-			v = getParamElementNS(elem.getNamespaceURI(), name, elem);
+			v = getParamElementNS(namespace, name, elem);
 		}
 		if( v == null ){
 			return def;
@@ -495,7 +473,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			return def;
 		}
 		if( hasParameterRef(inner)) {
-			Object ref_data = getParameterRef(elem);
+			Object ref_data = getParameterRef(inner);
 			if( ref_data != null ){
 				Number val =  convert(null,Number.class,ref_data);
 				if( val != null ){
