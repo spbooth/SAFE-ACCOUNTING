@@ -843,10 +843,12 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	@SuppressWarnings("unchecked")
 	public   Table<String,T> addIndexTable(Table<String,T> tab, T target, PropertyTarget template) {
 		Date now = getContext().getService(CurrentTimeService.class).getCurrentTime();
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		// Use the input to format so we only need to override
+		// one method to change resolution
+		BoundedDateInput input = getDateInput();
 		tab.put("View", target, new Link(getContext(), "View", target.getViewTransition()));
 		String start_date = START_DATE_COL;
-		tab.put(start_date, target, df.format(target.getStart()));
+		tab.put(start_date, target, input.getString(target.getStart()));
 
 		Date period_start = null;
 		if( template != null ){
@@ -858,7 +860,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		}
 
 		String end_date = END_DATE_COL;
-		tab.put(end_date, target,df.format(target.getEnd())); 
+		tab.put(end_date, target,input.getString(target.getEnd())); 
 
 		Date period_end = null;
 		if( template != null ){
