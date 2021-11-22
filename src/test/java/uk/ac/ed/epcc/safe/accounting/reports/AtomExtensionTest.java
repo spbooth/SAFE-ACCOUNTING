@@ -529,6 +529,33 @@ public class AtomExtensionTest extends WebappTestBase {
 						out.toString().contains(output));
 	}
 	@Test
+	public void testPeriodDuration() throws TransformerFactoryConfigurationError, Exception{
+		String templateName = "testPeriodDuration";
+		
+		// Create a HTMLForm.
+				HTMLForm form = new HTMLForm(ctx);
+				
+				// Get the params values from the Form
+				Map<String,Object> params = new HashMap<>();
+				ReportBuilderTest.setupParams(ctx,params);
+				
+				ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
+				reportBuilder.setupExtensions(reportBuilder.getReportTypeReg().getReportType("XML"),params);
+				reportBuilder.buildReportParametersForm(form, params);
+				
+				// render the form
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				reportBuilder.renderXML(params, out);
+			
+				// Look for errors
+				ReportBuilderTest.checkErrors(reportBuilder.getErrors());
+				String output="Period is 48:00:00";
+				// Check it was correctly formatted.		
+				assertTrue("Plugin wasn't correctly formatted: Got\n"+out.toString()+
+						"Expected\n"+output,
+						out.toString().contains(output));
+	}
+	@Test
 	public void testFormattedPercentage() throws TransformerFactoryConfigurationError, Exception{
 		String templateName = "testPercentage";
 		

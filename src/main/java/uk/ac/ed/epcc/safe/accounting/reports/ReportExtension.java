@@ -735,7 +735,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		if( node instanceof Element){
 			Element e = (Element) node;
 			String  format = e.getAttribute("format");
-			if( format != null) {
+			if( format != null && ! format.isEmpty()) {
 				ValueFormatter vf = getContext().makeObjectWithDefault(ValueFormatter.class, null,FORMATTER_PREFIX, format);
 				if( vf != null  && Number.class.isAssignableFrom(vf.getType())) {
 					return vf;
