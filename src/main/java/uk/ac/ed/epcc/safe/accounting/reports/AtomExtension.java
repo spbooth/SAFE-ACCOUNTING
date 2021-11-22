@@ -48,6 +48,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Operator;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
+import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.time.Period;
 
 /**
@@ -62,6 +63,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 public class AtomExtension extends ReportExtension {
     
+	public static final String PERIOD_DURATION_ELEMENT = "PeriodDuration";
 	private static final String ATOM_PLUGIN_ELEMENT = "AtomPlugin";
 	private static final String OVERLAP_AVERAGE_ELEMENT = "OverlapAverage";
 	private static final String OVERLAP_SUM_ELEMENT = "OverlapSum";
@@ -200,6 +202,8 @@ public class AtomExtension extends ReportExtension {
 			return combine(Operator.DIV, period, set, element);
 		}else if (ATOM_PLUGIN_ELEMENT.equals(name)) {
 			return plugin(period,set,element);
+		}else if( PERIOD_DURATION_ELEMENT.equals(name)) {
+			return new AtomResult<Duration>(null, new Duration(period.getStart(),period.getEnd()));
 		}
 		
 		

@@ -51,6 +51,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.expr.parse.FormatVisitor;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomValueFormatter;
+import uk.ac.ed.epcc.safe.accounting.formatters.value.NumberValueFormatter;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -68,6 +69,7 @@ import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.content.FormatProvider;
 import uk.ac.ed.epcc.webapp.content.Labeller;
+import uk.ac.ed.epcc.webapp.content.NumberTransform;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.content.TableFormatPolicy;
 import uk.ac.ed.epcc.webapp.content.TableXMLFormatter;
@@ -702,7 +704,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * @throws Exception 
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> String display(NumberFormat format, PropExpression<T> tag, T value) throws Exception {
+	public <T> String display(ValueFormatter<Number> format, PropExpression<T> tag, T value) throws Exception {
 		Object data = value;
 		if (tag != null) {
 			if( Number.class.isAssignableFrom(tag.getTarget()) && data == null){
@@ -728,10 +730,20 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * @param node
 	 * @return
 	 */
-	public NumberFormat getNumberFormat(Node node){
+	public ValueFormatter<Number> getNumberFormat(Node node){
 		
 		if( node instanceof Element){
 			Element e = (Element) node;
+			String  format = e.getAttribute("format");
+			if( format != null) {
+				ValueFormatter vf = getContext().makeObjectWithDefault(ValueFormatter.class, null,FORMATTER_PREFIX, format);
+				if( vf != null  && Number.class.isAssignableFrom(vf.getType())) {
+					return vf;
+				}
+		    	
+			}
+			
+			
 			NumberFormat result;
 			if( nf == null){
 				result=NumberFormat.getInstance();
@@ -754,9 +766,9 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			}catch(Exception t){
 				addError("Bad Number Format", t.getMessage(),e);
 			}
-			return result;
+			return new NumberValueFormatter(result);
 		}
-		return nf;
+		return new NumberValueFormatter(nf);
 	}
 	public boolean checkNode(Element e) throws TemplateValidateException{
 		return false;

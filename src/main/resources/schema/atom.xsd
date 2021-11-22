@@ -144,6 +144,7 @@
 			<xsd:element ref="Atom"/>
 			<xsd:element ref="AtomValue"/>
 			<xsd:element ref="AtomPlugin"/>
+			<xsd:element ref="PeriodDuration"/>
 		</xsd:choice>
 	</xsd:group>
 
@@ -242,8 +243,17 @@
    contents should have been replaced by a numerical value.
    </xsd:documentation>
    </xsd:annotation>
-   
    </xsd:element>
+   
+   <xsd:element name="PeriodDuration">
+   <xsd:annotation>
+   <xsd:documentation>
+   The length of the current reporting period as a Duration
+   </xsd:documentation>
+   </xsd:annotation>
+   </xsd:element>
+   
+   
 	<xsd:element name="Define" type="DefineType">
 		<xsd:annotation>
 			<xsd:documentation>
@@ -308,6 +318,7 @@
     </xsd:complexType>
 
     <xsd:attributeGroup name="NumberFormatGroup">
+        <xsd:attribute name="format" type="xsd:string" use="optional"/>
     	<xsd:attribute name="min_fraction"
 			type="xsd:int" use="optional">
 		</xsd:attribute>
