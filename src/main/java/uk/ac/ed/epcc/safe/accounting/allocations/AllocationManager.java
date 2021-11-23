@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.allocations;
 
+import java.util.Calendar;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
@@ -132,4 +133,10 @@ public static final String VIEW_ALLOCATION_RELATIONSHIP = "AllocationView";
   * @return
   */
  public ViewPeriod getDefaultViewPeriod();
+ 
+ /** get the finest resolution {@link Calendar} field to use in date inpus
+  * 
+  * @return
+  */
+ public int getMinDateField();
 }

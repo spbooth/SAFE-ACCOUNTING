@@ -487,11 +487,21 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	/** Get the correct input to use for the date fields
 	 * 
 	 */
-	public BoundedDateInput getDateInput(){
-		if( USE_DATE_PREF.isEnabled(getContext())) {
+	public final BoundedDateInput getDateInput(){
+		int min = getMinDateField();
+		if( USE_DATE_PREF.isEnabled(getContext()) && (min == Calendar.DAY_OF_YEAR || min == Calendar.DAY_OF_MONTH)) {
 			return new DateInput();
 		}
-		return new TimeStampMultiInput(getContext().getService(CurrentTimeService.class).getCurrentTime(),1000L, Calendar.DAY_OF_MONTH);
+	
+		return new TimeStampMultiInput(getContext().getService(CurrentTimeService.class).getCurrentTime(),1000L, min);
+	}
+
+	/** Get he minimum resolution {@link Calendar} field to use for date inputs
+	 * 
+	 * @return
+	 */
+	public int getMinDateField() {
+		return Calendar.DAY_OF_MONTH;
 	}
 	
     public final Selector<BoundedDateInput> getDateSelector(){
