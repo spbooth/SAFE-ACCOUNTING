@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.charts.DataRange;
 import uk.ac.ed.epcc.webapp.config.ConfigService;
 import uk.ac.ed.epcc.webapp.config.FilteredProperties;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
@@ -59,6 +60,8 @@ public class PlotEntry {
 	  private String label=null;
 	  private String time_unit=null;
 	  private String mode=null;
+	  // optional DataRange to use in plot
+	  private DataRange range=null;
 	 
 	 
 	  private Reduction red=Reduction.SUM;
@@ -551,6 +554,12 @@ public boolean equals(Object obj) {
 	} else if (!time_unit.equals(other.time_unit))
 		return false;
 	return true;
+}
+public DataRange getRange() {
+	return range;
+}
+public void setRange(DataRange range) {
+	this.range = range;
 }
 
 }

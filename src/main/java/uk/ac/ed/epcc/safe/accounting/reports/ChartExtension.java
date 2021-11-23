@@ -48,6 +48,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.BarTimeChart;
 import uk.ac.ed.epcc.webapp.charts.BarTimeChartData;
+import uk.ac.ed.epcc.webapp.charts.DataRange;
 import uk.ac.ed.epcc.webapp.charts.PeriodChart;
 import uk.ac.ed.epcc.webapp.charts.PeriodSequencePlot;
 import uk.ac.ed.epcc.webapp.charts.PeriodSetPlot;
@@ -77,6 +78,7 @@ import uk.ac.ed.epcc.webapp.time.SplitPeriod;
  * 
  */
 public abstract class ChartExtension extends ReportExtension {
+	private static final String RANGE_ELEMENT = "Range";
 	private static final String WARNING_LEVEL_ELEMENT = "WarningLevel";
 	private static final String NUMBER_OF_TIME_BLOCKS_ELEMENT = "NumberOfTimeBlocks";
 	private static final String QUANTITY_ELEMENT = "Quantity";
@@ -195,7 +197,13 @@ public abstract class ChartExtension extends ReportExtension {
 			PlotEntry norm = getPlotEntry(set, norm_e);
 			result.setNorm(norm);
 		}
-		
+		Element range_e = getParamElement(RANGE_ELEMENT, e);
+		if(range_e != null) {
+			Number min = getNumberParam("Min", null, range_e);
+			Number max = getNumberParam("Max", null, range_e);
+			DataRange r = new DataRange(min, max);
+			result.setRange(r);
+		}
 	
 		return result;
 	}

@@ -47,6 +47,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.charts.BarTimeChart;
 import uk.ac.ed.epcc.webapp.charts.Chart;
+import uk.ac.ed.epcc.webapp.charts.DataRange;
 import uk.ac.ed.epcc.webapp.charts.PeriodChart;
 import uk.ac.ed.epcc.webapp.charts.PeriodPlot;
 import uk.ac.ed.epcc.webapp.charts.PeriodSequencePlot;
@@ -575,6 +576,10 @@ public abstract class MapperEntry extends AbstractContexed implements Cloneable{
     			}
     		}
         	
+        }
+        DataRange r = e.getRange();
+        if(r != null ) {
+        	ds.setRange(r);
         }
         return ds;
     }

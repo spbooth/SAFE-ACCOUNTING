@@ -166,6 +166,11 @@
 				A prop-expression of type date defining the end of the record.
 				</xsd:documentation></xsd:annotation>
 			</xsd:element>
+			<xsd:element name="Range" type="RangeType" maxOccurs="1" minOccurs="0">
+			 <xsd:annotation><xsd:documentation>
+				Optional value bound for plot.
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
 			<xsd:element name="Overlap" type="xsd:boolean" maxOccurs="1"
 				minOccurs="0">
 				<xsd:annotation><xsd:documentation>
@@ -270,6 +275,12 @@
 		</xsd:sequence>
 	</xsd:group>
 
+    <xsd:element name="Min" type="par:TextOrParameterType">
+    <xsd:annotation><xsd:documentation>Minimum axis value - number</xsd:documentation></xsd:annotation>
+    </xsd:element>
+  	<xsd:element name="Max" type="par:TextOrParameterType">
+  	<xsd:annotation><xsd:documentation>Maximum axis value - number</xsd:documentation></xsd:annotation>
+    </xsd:element>
 	<xsd:group name="Chart">
 	<xsd:choice>
 	<xsd:element ref="TimeChart"/>
@@ -283,7 +294,12 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
-    
+    <xsd:complexType name="RangeType">
+    <xsd:sequence>
+    <xsd:element ref="Min" maxOccurs="1" minOccurs="0"/>
+    <xsd:element ref="Max" maxOccurs="1" minOccurs="0"/>
+    </xsd:sequence>
+    </xsd:complexType>
 
     <xsd:complexType name="PlotType"></xsd:complexType>
 </xsd:schema>
