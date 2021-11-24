@@ -554,6 +554,16 @@ public class AtomExtensionTest extends WebappTestBase {
 				assertTrue("Plugin wasn't correctly formatted: Got\n"+out.toString()+
 						"Expected\n"+output,
 						out.toString().contains(output));
+				String output2="Period/15 is 3:12:00";
+				// Check it was correctly formatted.		
+				assertTrue("Plugin wasn't correctly formatted: Got\n"+out.toString()+
+						"Expected\n"+output2,
+						out.toString().contains(output2));
+				String output3="Period/17 is 2:49:24";
+				// Check it was correctly formatted.		
+				assertTrue("Plugin wasn't correctly formatted: Got\n"+out.toString()+
+						"Expected\n"+output3,
+						out.toString().contains(output3));
 	}
 	@Test
 	public void testFormattedPercentage() throws TransformerFactoryConfigurationError, Exception{

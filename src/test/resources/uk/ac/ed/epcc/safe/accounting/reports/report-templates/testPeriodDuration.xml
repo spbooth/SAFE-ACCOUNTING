@@ -17,5 +17,7 @@
 	</per:Period>
 	<Section>
     <Text>Period is <ato:Atom format="Duration"><ato:PeriodDuration/></ato:Atom></Text>
+    <Text>Period/15 is <ato:Atom format="Duration"><ato:Div><ato:PeriodDuration/><ato:Number>15</ato:Number></ato:Div></ato:Atom></Text>
+     <Text>Period/17 is <ato:Atom format="Duration"><ato:Div><ato:PeriodDuration/><ato:Number>17</ato:Number></ato:Div></ato:Atom></Text>
 	</Section>
 </Report>
