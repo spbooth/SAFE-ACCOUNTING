@@ -1,5 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
@@ -8,6 +10,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
+import uk.ac.ed.epcc.safe.accounting.parsers.value.BigDecimalParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.DateParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.DoubleParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
@@ -117,10 +120,12 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	public static final PropertyTag<String> CLUSTER_PROP = new PropertyTag<>(slurm,"Cluster", String.class,"Cluster name.");
 	@OptionalTable(length = 128)
 	public static final PropertyTag<String> COMMENT_PROP = new PropertyTag<>(slurm,"Comment", String.class,"The job's comment string when the AccountingStoreJobComment parameter in the slurm.conf file is set (or defaults) to YES. The Comment string can be modified by invoking sacctmgr modify job or the specialized sjobexitmod command. ");
+	
+	// Note we have seen these values overflow a long so use double
 	@OptionalTable
-	public static final PropertyTag<Long> ConsumedEnergy = new PropertyTag<>(slurm,"ConsumedEnergy",Long.class,"Total energy consumed by all tasks in job, in joules. Note: Only in case of exclusive job allocation this value reflects the jobs' real energy consumption. ");
+	public static final PropertyTag<Double> ConsumedEnergy = new PropertyTag<>(slurm,"ConsumedEnergy",Double.class,"Total energy consumed by all tasks in job, in joules. Note: Only in case of exclusive job allocation this value reflects the jobs' real energy consumption. ");
 	@OptionalTable
-	public static final PropertyTag<Long> ConsumedEnergyRaw = new PropertyTag<>(slurm,"ConsumedEnergyRaw",Long.class,"Total raw energy consumed by all tasks in job, in joules. Note: Only in case of exclusive job allocation this value reflects the jobs' real energy consumption. ");
+	public static final PropertyTag<Double> ConsumedEnergyRaw = new PropertyTag<>(slurm,"ConsumedEnergyRaw",Double.class,"Total raw energy consumed by all tasks in job, in joules. Note: Only in case of exclusive job allocation this value reflects the jobs' real energy consumption. ");
 	
 	@OptionalTable
     public static final PropertyTag<Duration> CPU_TIME_PROP = new PropertyTag<>(slurm,"CPUTime",Duration.class,"Time used (Elapsed time * CPU count) by a job or step in HH:MM:SS format.");
@@ -515,8 +520,10 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 				SLURM_ATTRIBUTES.addParser(tag, SlurmMemoryParser.PARSER);
 			}else if( tag.getTarget() == Integer.class) {
 				SLURM_ATTRIBUTES.addParser(tag, IntegerParser.PARSER);
+			}else if( tag.getTarget() == BigDecimal.class) {
+				SLURM_ATTRIBUTES.addParser(tag, BigDecimalParser.PARSER);
 			}else if( Number.class.isAssignableFrom(tag.getTarget())) {
-				SLURM_ATTRIBUTES.addParser(null, DoubleParser.PARSER);
+				SLURM_ATTRIBUTES.addParser(tag, DoubleParser.PARSER);
 			}
 
 		}
