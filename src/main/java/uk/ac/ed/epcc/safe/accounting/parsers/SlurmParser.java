@@ -30,6 +30,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
 import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
+import uk.ac.ed.epcc.safe.accounting.update.FailProperty;
 import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
@@ -148,7 +149,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	public static final PropertyTag<Boolean> SUCCESS_PROP = new PropertyTag<>(slurm,"Success",Boolean.class,"Job did not return a failed state");
 	
 	@OptionalTable
-	public static final PropertyTag<Boolean> NODE_FAIL_PROP = new PropertyTag<>(slurm,"NodeFail",Boolean.class,"Did the job terminate due to a node failure");
+	public static final PropertyTag<Boolean> NODE_FAIL_PROP = new FailProperty(slurm,"NodeFail","Did the job terminate due to a node failure");
 	
 	@OptionalTable
 	public static final PropertyTag<Integer> GID_PROP = new PropertyTag<>(slurm,"GID",Integer.class,"The group identifier of the user who ran the job.");

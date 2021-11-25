@@ -79,7 +79,7 @@ public abstract class BatchParser extends BaseParser {
     public static final PropertyTag<Number> WAIT_PROP = new PropertyTag<>(batch,"Wait",Number.class,"Wait time in milliseconds");
    
     public static final PropertyTag<Number> CPU_WAIT_PROP = new PropertyTag<>(batch,"CPUWait",Number.class,"Wait time in milliseconds proportional to CPUS");
-    public static final PropertyTag<Boolean> FAULT_PROP = new PropertyTag<>(batch,"Fault",Boolean.class,"Did a hardware fault terminate this job");
+    public static final PropertyTag<Boolean> FAULT_PROP = new FailProperty(batch,"Fault","Did a hardware fault terminate this job");
     public static final PropertyTag<Boolean> SUCCESS_PROP = new PropertyTag<>(batch,"Success",Boolean.class,"Did job succeed");
     public static final PropertyTag<Boolean> SUBJOB_PROP = new PropertyTag<>(batch,"SubJob",Boolean.class,"Is this a sub-job and should be recorded not charged");
     
