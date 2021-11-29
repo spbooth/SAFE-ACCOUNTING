@@ -400,7 +400,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 				}else if( ref_data instanceof String) {
 					s=ref_data.toString();
 				}else {
-					addError("Expecting Boolean", "Got "+ref_data.toString()+" instead of boolean");
+					addError("Expecting Boolean", "Got "+ref_data.toString()+" instead of boolean for "+name);
 					return def;
 				}
 			}
