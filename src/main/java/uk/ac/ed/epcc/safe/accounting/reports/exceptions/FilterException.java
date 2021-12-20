@@ -12,22 +12,22 @@ import uk.ac.ed.epcc.safe.accounting.reports.RecordSet;
 public class FilterException extends ReportException {
 
 	public FilterException() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public FilterException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public FilterException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public FilterException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 }

@@ -12,7 +12,7 @@ import uk.ac.ed.epcc.webapp.junit4.ConfigFixtures;
 public class SQLValueTableExtensionTest extends TableExtensionTest {
 
 	public SQLValueTableExtensionTest() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	@Test
 	public void checkFeatures() {

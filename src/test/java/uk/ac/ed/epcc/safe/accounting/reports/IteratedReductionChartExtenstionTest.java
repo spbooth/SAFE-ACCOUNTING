@@ -13,7 +13,7 @@ import uk.ac.ed.epcc.webapp.junit4.ConfigFixtures;
 public class IteratedReductionChartExtenstionTest extends ChartExtensionTest {
 
 	public IteratedReductionChartExtenstionTest() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Test

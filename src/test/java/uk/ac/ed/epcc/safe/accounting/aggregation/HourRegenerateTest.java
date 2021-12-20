@@ -13,7 +13,7 @@ import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 public class HourRegenerateTest extends WebappTestBase {
 
 	public HourRegenerateTest() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	/** This is a regression test for a bug where the regeneration loop got stuck

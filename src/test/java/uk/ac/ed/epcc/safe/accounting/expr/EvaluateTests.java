@@ -37,7 +37,7 @@ public class EvaluateTests extends WebappTestBase {
 	public static final PropertyTag<Long> LONG_A = new PropertyTag<>(test,"LongA",Long.class);
 
 	public EvaluateTests() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Test

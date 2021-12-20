@@ -11,7 +11,7 @@ import uk.ac.ed.epcc.webapp.junit4.ConfigFixtures;
 public class NoQueryMapperChartExtenstionTest extends ChartExtensionTest {
 
 	public NoQueryMapperChartExtenstionTest() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Test

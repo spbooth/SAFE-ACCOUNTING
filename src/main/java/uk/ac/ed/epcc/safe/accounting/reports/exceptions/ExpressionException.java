@@ -12,22 +12,22 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 public class ExpressionException extends ReportException {
 
 	public ExpressionException() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public ExpressionException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public ExpressionException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public ExpressionException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 }
