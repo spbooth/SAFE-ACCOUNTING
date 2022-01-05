@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
+import uk.ac.ed.epcc.safe.accounting.db.MatchSelectVisitor;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory.Use;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
@@ -66,6 +67,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.TableInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.session.SessionService;
+import uk.ac.ed.epcc.webapp.timer.TimeClosable;
 /** LinkPolicy is used to cross link two accounting tables when the raw data is spread across 
  * two different sources. For example when using a globus-jobmanager to submit jobs to a batch system.
  * Most of the required data is in the batch accounting log but information about the connection credentials is only available in
@@ -78,20 +80,23 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * <p>
  * Configuration Properties:
  * <ul>
- * <li> <b>LinkPolicy.target.<i>table-name</i></b> defines the remote table we are linking to.
+ * <li> <b>LinkPolicy.target.<i>table-name</i></b> defines the remote table we are linking to.</li>
  * <li> <b>LinkPolicy.link.<i>table-name</i>.<i>local-prop</i></b> defines a property name in the remote table
  *          that has to match <i>local-prop</i> in the local table. The special value <b>inside</b> means that the property is a data property 
- *          that should lie between start and end of the parent record as defined using the {@link StandardProperties}.
+ *          that should lie between start and end of the parent record as defined using the {@link StandardProperties}.</li>
  * <li> <b>LinkPolicy.grace.<i>table-name</i></b> defines a matching threshold (in seconds) for time properties.
- *         Properties are taken as matching if they are within the specified threshold. Defaults to 4000 seconds.
- * <li> <b>LinkPolicy.require_link.<i>table-name</i></b> can be set to false if we don't want to allow records without a valid link to be parsed.
+ *         Properties are taken as matching if they are within the specified threshold. Defaults to 4000 seconds.</li>
+ * <li> <b>LinkPolicy.require_link.<i>table-name</i></b> can be set to false if we want to allow records without valid matching properties to be parsed.</li>
+ * <li> <b>LinkPolicy.copy_properties.<i>table-name</i></b> can be set to false to disable property copying to the primary table.</li>
+ * 
+ * 
  * </ul>
  * 
  * If a match is found the ReferenceProperty to the primary table is set in the parse method.
  * Then in the PostCreate method the remote object is updated to set the back-reference (if there is one)
- * and the any common properties (based on simple names) that are not already set. 
+ * and any common properties (based on simple names) that are not already set. 
  * Only properties from previous (parser/policies) that are writable in the primary table will be copied.
- * If you want to define expressions that copy primary properties into the secondary table do this in policies installed
+ * If you want to define expressions that make primary properties available in the secondary table do this in policies installed
  * later than the LinkPolicy   
  * <p>
  * Note that as the mapping between primary and secondary tables is expected to be one-to-one, 
@@ -103,9 +108,10 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * If the mapping is not one-to-one for example a log of executables run inside a batch job then it does not make sense to copy properties into the main table.
  * <p>
  * If the mapping is one-to-one 
- * you should also set the <b>LinkPolicy.unique.<i>table-name</i></b> property to false before the table is created so the table
- * index is created as a unique key,
+ * you should also set the <b>LinkPolicy.unique.<i>table-name</i></b> property to true before the table is created so the table
+ * index (containing references to the primary) is created as a unique key,
  * @author spb
+ * @param <R> type of primary record
  *
  */
 
@@ -134,7 +140,10 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	private boolean require_link=true;
 	private boolean copy_props=true;
 	private Logger log;
+	private boolean use_cache=false;
 	private String my_table;
+	
+	private R last_peer=null;
 	@SuppressWarnings("unchecked")
 	@Override
 	public PropertyFinder initFinder( PropertyFinder prev,
@@ -201,11 +210,71 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 			getLogger().error("LinkPolicy target not a RefenceTag to a UsageRecordFactory "+tag);
 			return null;
 		}
-		
+		use_cache = ! c.getBooleanParameter(LINK_POLICY_UNIQUE+table, false);
 		// this policy defines no new properties.
 		return null;
 	}
-	
+	public R getPrimary(DerivedPropertyMap rec) throws AccountingParseException {
+		try(TimeClosable t = new TimeClosable(getContext(), "LinkPolicy.getPrimary")){
+			AndRecordSelector sel = new AndRecordSelector();
+			for(Map.Entry<PropertyTag, PropertyTag> entry : match_map.entrySet()) {
+				PropertyTag local = entry.getKey();
+				PropertyTag remote = entry.getValue();
+				Object o = rec.getProperty(local);
+				if( o == null ){
+					if( require_link){
+						throw new AccountingParseException("Link Property "+local.getFullName()+" is null");
+					}else{
+						return null;
+					}
+				}
+				if( remote.getTarget() == Date.class && grace_millis != 0L){
+					Date point = (Date) rec.getProperty(local);
+					if( point != null ){
+						// might be a partial record
+						sel.add(new SelectClause(remote,MatchCondition.GT, new Date(point.getTime()-grace_millis)));
+						sel.add(new SelectClause(remote,MatchCondition.LT, new Date(point.getTime()+grace_millis)));
+					}else{
+						// assume partial record so skip this policy
+						return null;
+					}
+				}else{
+
+					sel.add(new SelectClause(remote,rec.getProperty(local)));
+				}
+			}
+			for(PropertyTag date : inside_date_properties){
+				Date point = (Date) rec.getProperty(date);
+				if( point != null){
+					// might be a partial record
+					sel.add(new SelectClause(StandardProperties.ENDED_PROP,MatchCondition.GE, new Date(point.getTime()-grace_millis)));
+					sel.add(new SelectClause(StandardProperties.STARTED_PROP,MatchCondition.LE, new Date(point.getTime()+grace_millis)));
+				}else{
+					// assume partial record so just skip policy
+					return null;
+				}
+			}
+			if( last_peer != null && use_cache) {
+				// use_cache is true so we are expecting multiple records
+				// to map to the same primary. Check the last primary we 
+				// used. Assumption is that matching the selector programmatically
+				// is going to be faster than searching a large database table.
+				MatchSelectVisitor<ExpressionTargetContainer> vis = new MatchSelectVisitor<>(last_peer.getProxy());
+				try {
+					if( sel.visit(vis)) {
+						return last_peer;
+					}
+				} catch (Exception e) {
+					log.error("Error matching stored peer against selector",e);
+				}
+			}
+
+			return remote_fac.find(remote_fac.getFilter(sel),true);
+		}catch(Exception e){
+			log.error("Error finding peer in LinkPolicy",e);
+		}
+		return null;
+	}
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.safe.accounting.policy.BasePolicy#parse(uk.ac.ed.epcc.safe.accounting.PropertyMap)
 	 */
@@ -213,58 +282,17 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	@Override
 	public void parse(DerivedPropertyMap rec) throws AccountingParseException {
 		if( remote_tag != null ){
-		   AndRecordSelector sel = new AndRecordSelector();
-		   for(PropertyTag local : match_map.keySet()){
-			   PropertyTag remote = match_map.get(local);
-			   Object o = rec.getProperty(local);
-			   if( o == null ){
-				   if( require_link){
-					   throw new AccountingParseException("Link Property "+local.getFullName()+" is null");
-				   }else{
-					   return;
-				   }
-			   }
-			   if( remote.getTarget() == Date.class && grace_millis != 0L){
-				   Date point = (Date) rec.getProperty(local);
-				   if( point != null ){
-					   // might be a partial record
-					   sel.add(new SelectClause(remote,MatchCondition.GT, new Date(point.getTime()-grace_millis)));
-					   sel.add(new SelectClause(remote,MatchCondition.LT, new Date(point.getTime()+grace_millis)));
-				   }else{
-					   // assume partial record so skip this policy
-					   return;
-				   }
-			   }else{
-				
-				   sel.add(new SelectClause(remote,rec.getProperty(local)));
-			   }
-		   }
-		   for(PropertyTag date : inside_date_properties){
-			   Date point = (Date) rec.getProperty(date);
-			   if( point != null){
-				   // might be a partial record
-				   sel.add(new SelectClause(StandardProperties.ENDED_PROP,MatchCondition.GE, new Date(point.getTime()-grace_millis)));
-				   sel.add(new SelectClause(StandardProperties.STARTED_PROP,MatchCondition.LE, new Date(point.getTime()+grace_millis)));
-			   }else{
-				   // assume partial record so just skip policy
-				   return;
-			   }
-		   }
-		   UsageRecordFactory.Use peer = null;
-		   try{
-			    peer =remote_fac.find(remote_fac.getFilter(sel),true);
-		   }catch(Exception e){
-			     getLogger().error("Error finding peer in LinkPolicy",e);
-		   }
-		   if( peer == null ){
-			   throw new SkipRecord("No link record found");
-		   }
-		   //System.out.println("Found peer");
-		   try {
-			remote_tag.set(rec,peer);
-		} catch (InvalidPropertyException e) {
-			throw new AccountingParseException("Cannot set peer reference");
-		}
+			R peer = getPrimary(rec);
+			if( peer == null ){
+				throw new SkipRecord("No link record found");
+			}
+			last_peer=peer;
+			//System.out.println("Found peer");
+			try {
+				remote_tag.set(rec,peer);
+			} catch (InvalidPropertyException e) {
+				throw new AccountingParseException("Cannot set peer reference");
+			}
 		}
 	}
 	/* (non-Javadoc)
@@ -275,10 +303,19 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	public void postCreate(PropertyContainer props, ExpressionTargetContainer r) throws Exception {
 		IndexedReference<R> peer_ref = (IndexedReference<R>) props.getProperty(remote_tag, null);
         
-        
+        if( back_ref == null && copy_properties.isEmpty()) {
+        	// nothing to do
+        	return;
+        }
         //System.out.println("In post create ");
-		if( peer_ref != null && peer_ref.getID() > 0){
-			R peer = remote_fac.find(peer_ref.getID());
+		if( peer_ref != null && ! peer_ref.isNull()){
+			R peer = null;
+			if( last_peer != null && peer_ref.getID() == last_peer.getID()) {
+				// should be remembered from the parse stage
+				peer = last_peer;
+			}else {
+				peer = remote_fac.find(peer_ref.getID());
+			}
 			ExpressionTargetContainer proxy = remote_fac.getExpressionTarget(peer);
 			if( back_ref != null && proxy.writable(back_ref)){
 				log.debug("set back reference");
@@ -402,5 +439,14 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 		params.add(LINK_POLICY_UNIQUE+my_table);
 		}
 		
+	}
+	@Override
+	public String endParse() {
+		last_peer = null;
+		return super.endParse();
+	}
+	@Override
+	public void startParse(PropertyContainer staticProps) throws Exception {
+		last_peer=null;
 	}
 }
