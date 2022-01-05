@@ -73,6 +73,12 @@ public abstract class UploadParseTargetPlugIn<T extends DataObject,R> extends Pr
 	
 
 	@Override
+	public void lateParse(DerivedPropertyMap map) throws AccountingParseException {
+		for(PropertyContainerPolicy pol : getPlugInOwner().getPolicies()){
+			pol.lateParse(map);
+		}
+	}
+	@Override
 	public PropertyMap getGlobals(Map<String, Object> params) {
 		String global_parse_properties = getContext().getInitParameter(GLOBAL_PROPERTIES_PARAMETERS_PREFIX+getFactory().getConfigTag());
 		ValueParserPolicy policy = new ValueParserPolicy(getContext());

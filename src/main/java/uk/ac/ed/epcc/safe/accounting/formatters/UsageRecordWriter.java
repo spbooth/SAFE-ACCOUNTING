@@ -315,7 +315,9 @@ public class UsageRecordWriter implements Contexed {
 					for (UsageRecordPolicy policy : policies) {
 						policy.parse(map);
 					}
-
+				for (UsageRecordPolicy policy : policies) {
+					policy.lateParse(map);
+				}
 				// add date and text
 				map.setProperty(StandardProperties.INSERTED_PROP, parseStartDate);
 				map.setProperty(StandardProperties.TEXT_PROP, record);

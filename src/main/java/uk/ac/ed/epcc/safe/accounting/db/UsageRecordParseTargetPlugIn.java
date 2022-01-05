@@ -22,6 +22,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
@@ -88,6 +89,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		super(fac);
 	}
 
+	@Override
 	public boolean parse(DerivedPropertyMap map, R current_line) throws AccountingParseException {
 		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		// Note each stage of the parse sees the derived properties
@@ -128,6 +130,16 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		}
 	}
 
+	@Override
+	public void lateParse(DerivedPropertyMap map) throws AccountingParseException {
+		PlugInOwner<R> plugin_owner = getPlugInOwner();
+		for (PropertyContainerPolicy pol : plugin_owner.getPolicies()) {
+			pol.lateParse(map);
+		}
+		
+	}
+
+	@Override
 	public boolean isComplete(ExpressionTargetContainer r) {
 		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		PropertyContainerParser parser = plugin_owner.getParser();
@@ -138,6 +150,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		return true;
 	}
 
+	@Override
 	public void deleteRecord(ExpressionTargetContainer old_record) throws Exception, DataFault {
 		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		for (PropertyContainerPolicy pol : plugin_owner.getPolicies()) {
@@ -148,8 +161,10 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		old_record.delete();
 	}
 
-	public boolean commitRecord(PropertyContainer map, ExpressionTargetContainer record) throws DataFault {
+	@Override
+	public boolean commitRecord(PropertyMap map,ExpressionTargetContainer record) throws DataFault {
 		PlugInOwner<R> plugin_owner = getPlugInOwner();
+		
 		record.commit(); // create it
 		if (isComplete(record)) {
 			// apply post create once complete
@@ -176,6 +191,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 	 * @param record
 	 * @return true if record modified
 	 */
+	@Override
 	public boolean updateRecord(DerivedPropertyMap map, ExpressionTargetContainer record) throws Exception {
 		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		// incomplete records have not called postCreate
@@ -220,6 +236,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		
 	}
 
+	@Override
 	public boolean allowReplace(DerivedPropertyMap map, ExpressionTargetContainer record) {
 		PlugInOwner<R> plugin_owner = getPlugInOwner();
 		for (PropertyContainerPolicy pol : plugin_owner.getPolicies()) {
@@ -232,6 +249,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		return true;
 	}
 
+	@Override
 	public ExpressionTargetContainer prepareRecord(DerivedPropertyMap map)
 			throws DataFault, InvalidPropertyException, AccountingParseException {
 		T record = getFactory().makeBDO();
@@ -295,6 +313,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 						if (text != null && text.trim().length() > 0) {
 							R ir = getParser().getRecord(text);
 							if (parse(map, ir)) {
+								lateParse(map);
 								if( allowReplace(map, rec)) {
 									if (updateRecord(map, rec)) {
 										updates++;

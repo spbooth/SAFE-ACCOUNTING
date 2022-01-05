@@ -260,7 +260,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 					defaults.setContainer(map);
 				}
 				if (target.parse(map, current_line)) {
-
+					target.lateParse(map);
 					R record = fac.makeBDO();
 					ExpressionTargetContainer proxy = fac.getExpressionTarget(record);
 					map.setContainer(proxy);
@@ -412,6 +412,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
 			}
 			try {
 				target.parse(map, rec);
+				target.lateParse(map);
 				sucessfulRecords.add(current_line);
 			} catch (Exception e) {
 				/*

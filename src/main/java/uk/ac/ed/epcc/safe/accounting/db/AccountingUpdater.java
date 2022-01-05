@@ -175,13 +175,13 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     				}
     				
                     // make an un-commited record from the map
-    				ExpressionTargetContainer record = target.prepareRecord(map);
+    				//ExpressionTargetContainer record = target.prepareRecord(map);
     				
     				
     				
     				ExpressionTargetContainer old_record = null;
     				if( replace || check_exists){
-    					old_record = target.findDuplicate(record);
+    					old_record = target.findDuplicate(map);
     				}
     				if( old_record != null && target.isComplete(old_record)){
     					// we already have this record
@@ -191,7 +191,8 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     							old_record.release();
     							old_record=null;
     							// new record
-    							target.commitRecord(map, record);
+    							target.lateParse(map);
+    							target.commitRecord(map,target.prepareRecord(map));
     							n_replace++;
     						}else{
     							throw new SkipRecord("replace veto");
@@ -199,11 +200,12 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     					}else{
     						duplicate++;
     						if( verify ){
+    							target.lateParse(map);
     							try{
     								boolean ok=true;
     								for(PropertyTag t : old_record.getDefinedProperties()){
     									Object old_value = old_record.getProperty(t, null);
-    									Object new_value = record.getProperty(t, null);
+    									Object new_value = map.getProperty(t, null);
     									if(compare(old_value, new_value)){
     										verify_list.add(t.getName()+" differs", t.getName()+" "+old_value+"->"+new_value+" :"+current_line);
     										ok=false;
@@ -217,6 +219,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     							}
     						}
     						if( augment ){
+    							target.lateParse(map);
     							// update any missing properties (writable properties currently at null)
     							// ie additional fields added to the database. Existing parsed values are
     							// not changed.
@@ -224,7 +227,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     								boolean unchanged=true;
     								for(PropertyTag t : old_record.getDefinedProperties()){
     									Object old_value = old_record.getProperty(t, null);
-    									Object new_value = record.getProperty(t, null);
+    									Object new_value = map.getProperty(t, null);
     									if(old_record.writable(t) && old_value == null && new_value != null){
     										old_record.setProperty(t, new_value);
     										unchanged=false;
@@ -244,9 +247,10 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     					if( old_record != null ){
     						// must be a partial record
     						// add in new info
+    						target.lateParse(map);
     						int num_set = map.setContainer(old_record);
     						if( num_set > 0 ){
-    							if( target.commitRecord(map, old_record) ){
+    							if( target.commitRecord(map,old_record) ){
     								insert++;
     							}else{
     								n_partial++;
@@ -256,7 +260,8 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     						}
     						old_record.release();
     					}else{
-    						if(  target.commitRecord(map, record) ){
+    						target.lateParse(map);
+    						if(  target.commitRecord(map,target.prepareRecord(map)) ){
     							insert++;
     						}else{
     							n_partial++;
@@ -265,7 +270,6 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     					}
     					
     				}
-    				record.release();
     			}
     			map.release();
     		}catch (SkipRecord s){

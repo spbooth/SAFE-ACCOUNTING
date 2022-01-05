@@ -104,6 +104,7 @@ public class UploadParseTargetUpdater<R> {
     				meta_data.setContainer(map);
     			}
     			if( target.parse(map, current_line) ){
+    				target.lateParse(map);
     			    ExpressionTargetContainer record = target.make(map);
     			   
     			    if( record == null ){

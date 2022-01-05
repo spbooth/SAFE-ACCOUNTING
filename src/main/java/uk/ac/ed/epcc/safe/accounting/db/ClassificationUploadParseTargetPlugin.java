@@ -83,6 +83,9 @@ public class ClassificationUploadParseTargetPlugin<T extends Classification,R> e
 					p.parse(map);
 				}
 				for(PropertyContainerPolicy p : pol){
+					p.lateParse(map);
+				}
+				for(PropertyContainerPolicy p : pol){
 					p.endParse();
 				}
 				map.setContainer(container);

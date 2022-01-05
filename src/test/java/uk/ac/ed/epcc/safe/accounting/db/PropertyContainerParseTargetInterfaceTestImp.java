@@ -59,6 +59,7 @@ public class PropertyContainerParseTargetInterfaceTestImp<R,X extends PropertyCo
 			DerivedPropertyMap map = new DerivedPropertyMap(contexed.getContext());
 			try {
 				target.parse(map, current_line);
+				target.lateParse(map);
 				fail("Expecting exception");
 			}catch(AccountingParseException e) {
 				// ok expecting this

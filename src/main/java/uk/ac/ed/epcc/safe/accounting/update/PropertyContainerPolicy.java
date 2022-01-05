@@ -46,5 +46,15 @@ public interface PropertyContainerPolicy extends PropertyContainerUpdater {
 	 */
 	public void parse(DerivedPropertyMap rec) throws AccountingParseException;
 	
-	
+	/** Similar to {@link #parse(DerivedPropertyMap)} however calls to this method are deferred
+	 * till after any check for duplicate records. properties added here must not
+	 * be needed to find duplicates. This method should only be used where the operation 
+	 * is significantly expensive e.g. a nested database lookup
+	 * 
+	 * @param rec
+	 * @throws AccountingParseException
+	 */
+	public default void lateParse(DerivedPropertyMap rec) throws AccountingParseException{
+		
+	}
 }

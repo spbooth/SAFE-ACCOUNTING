@@ -20,6 +20,7 @@ import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
+import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
@@ -66,7 +67,7 @@ public interface UsageRecordParseTarget<R> extends PropertyContainerParseTarget<
 	 * @return true if record was complete
 	 * @throws DataFault
 	 */
-	public abstract boolean commitRecord(PropertyContainer map, ExpressionTargetContainer record)
+	public abstract boolean commitRecord(PropertyMap map,ExpressionTargetContainer record)
 			throws DataFault;
 
 	/** Perform a full update of an existing record. This includes applying

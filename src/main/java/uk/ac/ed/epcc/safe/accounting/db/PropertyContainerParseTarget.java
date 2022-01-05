@@ -38,6 +38,8 @@ import uk.ac.ed.epcc.webapp.model.data.Composable;
 public interface PropertyContainerParseTarget<R> extends PlugInOwner<R>, Composable{
 	/** Parse a text line into a DerivedPropertyMap. This will add
 	 * derived definitions as well as terminal data values.
+	 * Any properties required by {@link #findDuplicate(PropertyContainer)} must be
+	 * set by this method
 	 * 
 	 * @param map DerivedPropertyMap to be populated
 	 * @param current_line
@@ -47,7 +49,15 @@ public interface PropertyContainerParseTarget<R> extends PlugInOwner<R>, Composa
 	public abstract boolean parse(DerivedPropertyMap map, R current_line)
 			throws AccountingParseException;
 
-	
+	/** Similar to {@link #parse(DerivedPropertyMap, Object)} but
+	 * applied after any duplicate detection.
+	 * 
+	 * 
+	 * @param map
+	 * @throws AccountingParseException
+	 */
+	public abstract void lateParse(DerivedPropertyMap map)
+			throws AccountingParseException;
 	/** Start a batch parse. This allocates any temporary state.
      * Some properties may be set globally for all records in the parse
 	 * rather than provided record by record. The startParse method is passed all known properties of this type 
