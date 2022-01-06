@@ -78,6 +78,10 @@ import uk.ac.ed.epcc.webapp.timer.TimeClosable;
  * primary record is not found (This is to protect against the data being loaded out of sequence).
  * This will prevent this policy from working with a {@link IncrementalPropertyContainerParser}
  * <p>
+ * As finding the peer requires a database search but will usually not be one of the unique properties
+ * this is usually set in the {@link #lateParse(DerivedPropertyMap)} stage. This can be switched to the parse
+ * phase using a config parameter
+ * <p>
  * Configuration Properties:
  * <ul>
  * <li> <b>LinkPolicy.target.<i>table-name</i></b> defines the remote table we are linking to.</li>
@@ -88,6 +92,8 @@ import uk.ac.ed.epcc.webapp.timer.TimeClosable;
  *         Properties are taken as matching if they are within the specified threshold. Defaults to 4000 seconds.</li>
  * <li> <b>LinkPolicy.require_link.<i>table-name</i></b> can be set to false if we want to allow records without valid matching properties to be parsed.</li>
  * <li> <b>LinkPolicy.copy_properties.<i>table-name</i></b> can be set to false to disable property copying to the primary table.</li>
+ * <li> <b>LinkPolicy.late_parse.<i>table-name</i></b> can be set to false to disable late parsing.</li>
+
  * 
  * 
  * </ul>
@@ -126,6 +132,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	private static final String LINK_POLICY_LINK = "LinkPolicy.link.";
 	private static final String LINK_POLICY_REQUIRE_LINK = "LinkPolicy.require_link.";
 	private static final String LINK_POLICY_COPY_PROPERTIES = "LinkPolicy.copy_properties.";
+	private static final String LINK_POLICY_LATE_PARSE = "LinkPolicy.late_parse.";
 	private static final String LINK_POLICY_GRACE = "LinkPolicy.grace.";
 	private static final String LINK_POLICY_TARGET = "LinkPolicy.target.";
 	
@@ -141,6 +148,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	private boolean copy_props=true;
 	private Logger log;
 	private boolean use_cache=false;
+	private boolean late_parse=true;
 	private String my_table;
 	
 	private R last_peer=null;
@@ -153,6 +161,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 		grace_millis = 1000L * c.getLongParameter(LINK_POLICY_GRACE+table, 4000L);
 		require_link = c.getBooleanParameter(LINK_POLICY_REQUIRE_LINK+table, true);
 		copy_props = c.getBooleanParameter(LINK_POLICY_COPY_PROPERTIES+table, true);
+		late_parse = c.getBooleanParameter(LINK_POLICY_LATE_PARSE+table,true);
 		log = c.getService(LoggerService.class).getLogger(getClass());
 		//System.out.println("grace is "+grace_millis);
 		String target_name = c.getInitParameter(LINK_POLICY_TARGET+table);
@@ -279,8 +288,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	 * @see uk.ac.ed.epcc.safe.accounting.policy.BasePolicy#parse(uk.ac.ed.epcc.safe.accounting.PropertyMap)
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
-	public void parse(DerivedPropertyMap rec) throws AccountingParseException {
+	public void rawParse(DerivedPropertyMap rec) throws AccountingParseException {
 		if( remote_tag != null ){
 			R peer = getPrimary(rec);
 			if( peer == null ){
@@ -293,6 +301,18 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 			} catch (InvalidPropertyException e) {
 				throw new AccountingParseException("Cannot set peer reference");
 			}
+		}
+	}
+	@Override
+	public void lateParse(DerivedPropertyMap rec) throws AccountingParseException {
+		if( late_parse) {
+			rawParse(rec);
+		}
+	}
+	@Override
+	public void parse(DerivedPropertyMap rec) throws AccountingParseException {
+		if( ! late_parse) {
+			rawParse(rec);
 		}
 	}
 	/* (non-Javadoc)

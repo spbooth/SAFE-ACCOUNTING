@@ -186,12 +186,12 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     				if( old_record != null && target.isComplete(old_record)){
     					// we already have this record
     					if( replace ){
+    						target.lateParse(map);
     						if( target.allowReplace(map, old_record)){
     							target.deleteRecord(old_record);
     							old_record.release();
     							old_record=null;
     							// new record
-    							target.lateParse(map);
     							target.commitRecord(map,target.prepareRecord(map));
     							n_replace++;
     						}else{
