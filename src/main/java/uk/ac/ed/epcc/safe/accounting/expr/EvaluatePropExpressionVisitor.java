@@ -26,6 +26,8 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Indexed;
+import uk.ac.ed.epcc.webapp.content.Labeller;
+import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFunc;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
@@ -231,7 +233,16 @@ public abstract class EvaluatePropExpressionVisitor extends AbstractContexed imp
 
 	@SuppressWarnings("unchecked")
 	public <T,R> R visitLabelPropExpression(LabelPropExpression<T,R> expr) throws Exception {
-		return expr.getLabeller().getLabel(conn, (T) expr.getExpr().accept(this));
+		Labeller<T, R> labeller = expr.getLabeller();
+		T val = (T) expr.getExpr().accept(this);
+		if( labeller.accepts(val)) {
+			return labeller.getLabel(conn, val);
+		}else {
+			if( val == null ) {
+				return null;
+			}
+			throw new InvalidArgument("Invalid labeller input "+val.getClass().getCanonicalName()+" "+val);
+		}
 	}
 
 	public Object visitDurationSecondPropExpression(

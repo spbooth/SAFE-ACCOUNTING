@@ -90,10 +90,13 @@ public class Power2RangeLabeller<T extends Number> implements Labeller<T,Power2R
 		
 	}
 	public Range getLabel(AppContext conn, T key) {
+		if( key == null) {
+			return null;
+		}
 		int i=key.intValue();
 		return getRange(i);
 	}
-	/** Get a power-of-2 range object including a speficied value.
+	/** Get a power-of-2 range object including a specified value.
 	 * 
 	 * @param i
 	 * @return
