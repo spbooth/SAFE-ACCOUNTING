@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,21 +24,12 @@ public class PeriodExtensionTest extends ExtensionTestCase {
 	public void testDefaultPeriod() throws Exception {
 		
 		// Has to resolve data in period
-		TestTimeService serv = new TestTimeService();
-		Calendar start = Calendar.getInstance();
-		start.set(Calendar.YEAR, 2008);
-		start.set(Calendar.MONTH,Calendar.NOVEMBER);
-		serv.setResult(start.getTime());
-		ctx.setService(serv);
+		setTime(2008, Calendar.NOVEMBER, 07, 10, 42);
 		
-		String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
-				"Aug", "Sep", "Oct", "Nov", "Dec"};
-		//Calendar start = Calendar.getInstance();	
-		
-		start.add(Calendar.MONTH, -1);
 		String defaultPeriod = 
 				"Default Period" + System.getProperty("line.separator") +
-				"01-"+months[start.get(Calendar.MONTH)]+"-"+start.get(Calendar.YEAR);
+				"2008-10-01";
+				
 		
 		testPeriod("testDefaultPeriod","csv", defaultPeriod);
 		

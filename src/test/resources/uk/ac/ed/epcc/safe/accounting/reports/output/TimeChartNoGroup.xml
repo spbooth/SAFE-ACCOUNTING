@@ -2,7 +2,7 @@
 <!-- Copyright - The University of Edinburgh 2015 -->
 <Heading>Time Chart Plot without a Group</Heading>
 <table class="auto" cols="4" rows="1">
-<tr count="0"><th class="first" count="0">29-Sep-2008 06-Oct-2008</th><th class="main" count="1">06-Oct-2008 14-Oct-2008</th><th class="main" count="2">14-Oct-2008 21-Oct-2008</th><th class="main" count="3">21-Oct-2008 29-Oct-2008</th></tr>
+<tr count="0"><th class="first" count="0">2008-09-29 2008-10-06</th><th class="main" count="1">2008-10-06 2008-10-14</th><th class="main" count="2">2008-10-14 2008-10-21</th><th class="main" count="3">2008-10-21 2008-10-29</th></tr>
 <tr count="1"><td class="first" count="0" numeric="true">603028</td><td class="main" count="1" numeric="true">0</td><td class="main" count="2" numeric="true">0</td><td class="main" count="3" numeric="true">0</td></tr>
 </table>
 </fragment>

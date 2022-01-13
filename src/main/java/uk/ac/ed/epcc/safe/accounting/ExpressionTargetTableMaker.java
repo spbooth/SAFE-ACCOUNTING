@@ -17,6 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -186,7 +187,7 @@ public class ExpressionTargetTableMaker<E,F extends ExpressionTargetGenerator<E>
 		   }
 		   if( Date.class.isAssignableFrom(t.getTarget())){
 			   res.setColFormat(lab, new Transform(){
-				   DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,getContext().getService(SessionService.class).getLocale());
+				   DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				public Object convert(Object old) {
 					if( old instanceof Date){
 						return df.format((Date) old);
