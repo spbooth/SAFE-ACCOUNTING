@@ -1393,10 +1393,15 @@ public class TableExtension extends ReportExtension {
 				}
 			}else if(instruction.equals("Transform")){
 				String col = getParam("Column",inst);
+				String dest = getParam("Dest", inst);
 				String type = getParam("Type",inst);
 				Transform transform = makeTableTransform(inst, type);
 				if( transform != null ){
-					target.transformCol(col, transform);
+					if( dest == null ) {
+						target.transformCol(col, transform);
+					}else {
+						target.transformCol(col, transform, dest);
+					}
 				}
 			}else if(instruction.equals("TransformKey")){
 				String col = getParam("Column",inst);
