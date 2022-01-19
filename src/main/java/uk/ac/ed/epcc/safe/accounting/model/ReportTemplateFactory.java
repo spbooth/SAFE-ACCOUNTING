@@ -70,6 +70,14 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
 public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectFactory<R> {
 	
 
+	/** prefix for a config parameter (suffix is the group name) if this parameter
+	 * is defined it is the name of a role that is needed to list the members of a group.
+	 * As it only affects the listing it does not provide any meaningful security but
+	 * it is a cheap way of reducing the visibility of certain groups without having to
+	 * evaluate the access control on each report.
+	 * 
+	 */
+	private static final String REPORT_GROUP_REQUIRED_ROLE_PREFIX = "report_group_required_role.";
 	static final String SORT_PRIORITY = "SortPriority";
 	private final ReportGroups reportGroups;
 
@@ -132,9 +140,13 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 				if( ! useGroups()){
 					return null;
 				}
+				SessionService sess = getContext().getService(SessionService.class);
 				SQLOrFilter<R> fil = new SQLOrFilter<>(getTarget());
 				for(String g : group.split("\\s*,\\s*")){
-					fil.addFilter(new SQLValueFilter<>(getTarget(), res, ReportTemplate.REPORT_GROUP, g));
+					String required_role = getContext().getInitParameter(REPORT_GROUP_REQUIRED_ROLE_PREFIX+g);
+					if( required_role == null || required_role.isEmpty() || sess.hasRole(required_role)) {
+						fil.addFilter(new SQLValueFilter<>(getTarget(), res, ReportTemplate.REPORT_GROUP, g));
+					}
 				}
 				return getResult(fil);
 			}
