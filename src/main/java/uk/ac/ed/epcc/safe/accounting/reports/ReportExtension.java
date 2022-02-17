@@ -252,7 +252,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 				if( expr_str.endsWith("]")){
 					expr_str=expr_str.substring(0, expr_str.lastIndexOf("]"));
 					value = params.get(parm_name);
-					ExpressionTarget et = ExpressionCast.getExpressionTarget(value);
+					ExpressionTarget et = ExpressionCast.getExpressionTarget(getContext(), value);
 					if( et != null){
 						Parser p = et.getParser();
 						try {
@@ -1242,6 +1242,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	   * @return
 	   */
 	protected RecordSet addFilterNode(RecordSet up, Node n) {
+		debug(makeString(n));
 		if( n.getNodeType()==Node.ELEMENT_NODE && n.getLocalName().equals(FILTER_ELEMENT)){
 			return addFilterElement(up, (Element)n);
 		}else{

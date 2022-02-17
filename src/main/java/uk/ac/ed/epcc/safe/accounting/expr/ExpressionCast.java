@@ -2,6 +2,7 @@ package uk.ac.ed.epcc.safe.accounting.expr;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.ExpressionTargetFactoryComposite;
+import uk.ac.ed.epcc.safe.accounting.properties.OwnedPropertyTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.selector.PropertyTargetGenerator;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -72,7 +73,7 @@ public class ExpressionCast {
 			return null;
 		}
 	}
-	public static ExpressionTarget getExpressionTarget(Object o) {
+	public static ExpressionTarget getExpressionTarget(AppContext ctx,Object o) {
 		if( o == null || o instanceof ExpressionTarget) {
 			return (ExpressionTarget) o;
 		}
@@ -81,6 +82,9 @@ public class ExpressionCast {
 			if( etf != null) {
 				return etf.getExpressionTarget(o);
 			}
+		}
+		if( o instanceof OwnedPropertyTarget) {
+			return new OwnedPropertyTargetExpressionWrapper(ctx, (OwnedPropertyTarget) o);
 		}
 		return null;
 	}

@@ -93,7 +93,7 @@ public abstract class EvaluatePropExpressionVisitor extends AbstractContexed imp
 		}
 		Indexed target = ref.getIndexed(getContext());
 		PropExpression<?> expression = deRefExpression.getExpression();
-		ExpressionTarget et = ExpressionCast.getExpressionTarget(target);
+		ExpressionTarget et = ExpressionCast.getExpressionTarget(getContext(),target);
 		if (et != null) {
 
 			return et.evaluateExpression(expression);

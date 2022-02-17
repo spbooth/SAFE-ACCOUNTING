@@ -193,11 +193,11 @@ public class AtomExtension extends ReportExtension {
 		} else if (COUNT_ELEMENT.equals(name)) {
 			  return new AtomResult<>(StandardProperties.COUNT_PROP,expandCount(set,period, element));
 		} else if (ADD_ELEMENT.equals(name)){
-			return combine(Operator.ADD, period, set, element);
+			return combineAll(Operator.ADD, period, set, element);
 		}else if (SUB_ELEMENT.equals(name)){
 			return combine(Operator.SUB, period, set, element);
 		}else if (MUL_ELEMENT.equals(name)){
-			return combine(Operator.MUL, period, set, element);
+			return combineAll(Operator.MUL, period, set, element);
 		}else if (DIV_ELEMENT.equals(name)){
 			return combine(Operator.DIV, period, set, element);
 		}else if (ATOM_PLUGIN_ELEMENT.equals(name)) {
@@ -280,7 +280,15 @@ public class AtomExtension extends ReportExtension {
 		log.debug("combine: "+a+op.text()+b+"->"+res);
 		return new AtomResult<>(null,res);
 	}
-
+	public AtomResult combineAll(Operator op,Period period,RecordSet set, Node element) throws IllegalReductionException, Exception{
+		Element[] arg = getArgs(element);
+		Number res = (Number)expandNumberGroup(period, set, arg[0]).value;
+		for( int i=1; i< arg.length ; i++) {
+			Number b = (Number)expandNumberGroup(period, set, arg[1]).value;
+			res = op.operate(res, b);
+		}
+		return new AtomResult<>(null,res);
+	}
 	protected Element[] getArgs(Node element) throws ReportException {
 		int pos=0;
 		Element arg[] = new Element[2];

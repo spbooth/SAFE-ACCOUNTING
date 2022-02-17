@@ -20,6 +20,7 @@
 	xmlns:prop="http://safe.epcc.ed.ac.uk/propexpression"
 	xmlns:per="http://safe.epcc.ed.ac.uk/period"
 	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
+	xmlns:par="http://safe.epcc.ed.ac.uk/parameter"
 	xmlns:pref="http://safe.epcc.ed.ac.uk/substitute" xmlns:param="http://safe.epcc.ed.ac.uk/parameter">
 
 	<xsd:import schemaLocation="propexpression.xsd"
@@ -120,7 +121,12 @@
 <xsd:element ref="Numeric"/>
 </xsd:sequence>
 </xsd:complexType>
-
+<xsd:group name="MultiGroup">
+<xsd:choice>
+<xsd:group ref="NumberGroup"/>
+<xsd:group ref="par:Content"/>
+</xsd:choice>
+</xsd:group>
 	<xsd:group name="NumberGroup">
 		<xsd:annotation>
 			<xsd:documentation>
@@ -149,15 +155,16 @@
 	</xsd:group>
 
 	
-	<xsd:element name="Add" type="BinaryType">
+	<xsd:element name="Add" type="MultiType">
 		<xsd:annotation>
 			<xsd:documentation>
-				Add two NumberGroup elements over the current selection.
+				Add two or more NumberGroup elements over the current selection.
 				Unlike a complex prop-expression, this combines the
-				result of 2 separate queries.
+				result of separate queries.
 			</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
+	
 	<xsd:element name="Sub" type="BinaryType">
 		<xsd:annotation>
 			<xsd:documentation>
@@ -167,12 +174,12 @@
 			</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
-	<xsd:element name="Mul" type="BinaryType">
+	<xsd:element name="Mul" type="MultiType">
 		<xsd:annotation>
 			<xsd:documentation>
-				Multiply two NumberGroup elements over the current
+				Multiply two or more NumberGroup elements over the current
 				selection. Unlike a complex prop-expression, this
-				combines the result of 2 separate queries.
+				combines the result of separate queries.
 			</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
@@ -191,6 +198,11 @@
 		<xsd:sequence>
 			<xsd:group ref="NumberGroup" />
 			<xsd:group ref="NumberGroup" />
+		</xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="MultiType">
+		<xsd:sequence>
+			<xsd:group ref="MultiGroup" maxOccurs="unbounded" minOccurs="1"/>
 		</xsd:sequence>
     </xsd:complexType>
 
@@ -219,6 +231,7 @@
 
 	<xsd:complexType name="AtomType">
 		<xsd:sequence>
+			<xsd:element ref="par:Parameter" minOccurs="0" maxOccurs="1" />
 			<xsd:element ref="per:Period" minOccurs="0" maxOccurs="1" />
 			<xsd:element ref="fil:Filter" minOccurs="0"
 				maxOccurs="unbounded" />

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
 import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
+import uk.ac.ed.epcc.safe.accounting.expr.AbstractExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.CasePropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.EvaluatePropExpressionVisitor;
@@ -152,7 +153,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	 * @author spb
 	 *
 	 */
-	public class ExpressionTargetProxy  extends EvaluatePropExpressionVisitor implements ExpressionTargetContainer{
+	public class ExpressionTargetProxy  extends AbstractExpressionTarget implements ExpressionTargetContainer{
 
 		private final X record;
 		private Set<PropertyTag> missing;
@@ -196,17 +197,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			}
 			return result;
 		}
-		public <R> R evaluateExpression(PropExpression<R> expr, R def){
-			try {
-				R val = evaluateExpression(expr);
-				if( val == null ) {
-					return def;
-				}
-				return val;
-			} catch (InvalidExpressionException e) {
-				return def;
-			}
-		}
+		
 		public void flush(){
 			if( cache != null ){
 				cache.clear();
@@ -304,22 +295,12 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		public Parser getParser() {
 			return new Parser(getContext(), new SetPropertyFinder(getDefinedProperties()));
 		}
-		private MatchSelectVisitor<ExpressionTargetProxy> match_visitor=null;
-		@Override
-		protected boolean matches(RecordSelector sel) throws Exception {
-			if(match_visitor == null){
-				match_visitor=new MatchSelectVisitor<>(this);
-			}
 		
-			return sel.visit(match_visitor).booleanValue();
-			
-		}
 		@Override
 		public void release() {
 			missing.clear();
 			flush();
 			cache=null;
-			match_visitor=null;
 			eject(this);
 		}
 		@Override
@@ -341,10 +322,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		public X getRecord() {
 			return record;
 		}
-		@Override
-		public Object visitMethodPropExpression(MethodPropExpression<?> method) throws Exception {
-			return method.evaluate(this);
-		}
+		
 	}
 	public class SQLExpressionVisitor extends CreateSQLExpressionPropExpressionVisitor{
 		public SQLExpressionVisitor(AppContext c) {

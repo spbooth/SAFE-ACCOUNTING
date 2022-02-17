@@ -89,8 +89,7 @@ public class MatchSelectVisitor<T extends ExpressionTarget> implements SelectorV
 
 	public <I> Boolean visitRelationClause(RelationClause<I> c)
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return c.match.compare(target.evaluateExpression(c.left), target.evaluateExpression(c.right));
 	}
 
 	public Boolean visitPeriodOverlapRecordSelector(

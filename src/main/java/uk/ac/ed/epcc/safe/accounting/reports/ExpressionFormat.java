@@ -44,7 +44,7 @@ public class ExpressionFormat implements DomFormatter<Object> {
 	}
 	
 	public Node format(Document doc,Object o) throws InvalidExpressionException, ParseException {
-		ExpressionTarget t = ExpressionCast.getExpressionTarget(o);
+		ExpressionTarget t = ExpressionCast.getExpressionTarget(conn,o);
 		if( t == null) {
 			throw new InvalidExpressionException("ExpressionTarget cannot be generated for "+o);
 		}

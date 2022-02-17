@@ -665,7 +665,7 @@ public class ParameterExtension extends ReportExtension {
 		DocumentFragment result = doc.createDocumentFragment();
 		Object o = getFormParameter(name);
 		if( o != null && ! (o instanceof ExpressionTarget)){
-			o = ExpressionCast.getExpressionTarget(o);
+			o = ExpressionCast.getExpressionTarget(getContext(),o);
 		}
 		if( o != null && o instanceof ExpressionTarget){
 			ExpressionExpander expander = new ExpressionExpander(getContext(), parse_vis);
