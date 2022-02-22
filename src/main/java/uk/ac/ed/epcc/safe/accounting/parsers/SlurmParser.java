@@ -1,7 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
@@ -75,6 +74,8 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	private static final String SKIP_NODE_FAILED_SUFFIX = ".skip_node_failed";
 	private static final String SKIP_SUB_JOBS_SUFFIX = ".skip_sub_jobs";
 	private static final String SKIP_TOP_JOBS_SUFFIX = ".skip_top_jobs";
+	// Mak jobs within a reservation as sub-jobs (which will supress charging)
+	private static final String MARK_RESERVATION_AS_SUB_JOB_SUFFIX = ".make_reservation_as_sub_job";
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	
 	public SlurmParser(AppContext conn) {
@@ -360,6 +361,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	private boolean skip_node_failed=false;
 	private boolean skip_sub_jobs=false;
 	private boolean skip_top_jobs=false;
+	private boolean mark_reservation_as_subjobs=false;
 	private String table;
 	private String tags[];
 	private int count;
@@ -435,6 +437,13 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		if( skip_top_jobs && (sub_job == null || ! sub_job)) {
 			return false;
 		}
+		
+		Integer n  = map.getProperty(ReservationId);
+		if( mark_reservation_as_subjobs && n != null ) {
+			// Do this after skip processing. This allows us
+			// to only record reservation jobs as sub-jobs
+			map.setOptionalProperty(SUB_JOB, Boolean.TRUE);
+		}
 	    }catch(NumberFormatException e){
 	    	throw new AccountingParseException(e);
 	    }catch( IllegalArgumentException e2){
@@ -461,6 +470,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 			derv.peer(StandardProperties.GROUPNAME_PROP, GROUP_PROP);
 			
 			derv.peer(BatchParser.PARTITION_PROP, PARTITION_PROP);
+			derv.peer(BatchParser.RESERVATION_NAME_PROP, Reservation);
 			
 			// we expect the Alloc variants to be used so we alias these to 
 			// BatchParser generics
@@ -503,6 +513,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		skip_node_failed = conn.getBooleanParameter(table+SKIP_NODE_FAILED_SUFFIX, false);
 		skip_sub_jobs = conn.getBooleanParameter(table+SKIP_SUB_JOBS_SUFFIX, false);
 		skip_top_jobs = conn.getBooleanParameter(table+SKIP_TOP_JOBS_SUFFIX, false);
+		mark_reservation_as_subjobs = conn.getBooleanParameter(table+MARK_RESERVATION_AS_SUB_JOB_SUFFIX, false);
 		Logger log = getLogger();
 		for(PropertyTag tag : slurm) {
 
