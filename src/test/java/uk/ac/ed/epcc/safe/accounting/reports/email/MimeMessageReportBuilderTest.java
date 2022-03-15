@@ -54,7 +54,7 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 		MimeMessageReportBuilder builder = new MimeMessageReportBuilder(ctx, "complex", params);
 		Emailer es = new Emailer(ctx);
 		
-		MimeMessage message = es.makeBlankEmail(ctx, new String[]{"fred@example.org"}, null, "Test report");
+		MimeMessage message = es.makeBlankEmail(ctx, new String[]{"fred@example.org"}, "Test report");
 		MimeMultipart mp = new MimeMultipart("mixed");
 //		MimeBodyPart text = new MimeBodyPart();
 //		text.setText("Here is some text\nSome more text\n");
@@ -75,7 +75,7 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 		MimeMessageReportBuilder builder = new MimeMessageReportBuilder(ctx, "complex", params);
 		Emailer es = new Emailer(ctx);
 		
-		MimeMessage message = es.makeBlankEmail(ctx, new String[]{"fred@example.org"}, null, "Test report");
+		MimeMessage message = es.makeBlankEmail(ctx, new String[]{"fred@example.org"}, "Test report");
 		MimeMultipart mp = new MimeMultipart("mixed");
 		MimeBodyPart text = new MimeBodyPart();
 		text.setText("Here is some text Some more text\n\n");
@@ -117,7 +117,7 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 	        text.append("\n");
 	    }
 		TemplateFile template = new TemplateFile(text.toString());
-		MimeMessage m = es.templateMessage(new String[] { "fred@example.com"}, new Hashtable(), null, true, template);
+		MimeMessage m = es.templateMessage(new String[] { "fred@example.com"}, new Hashtable(), null, true,true, template);
 		MimeMultipart mp = (MimeMultipart) m.getContent();
 		
 		Map params = new HashMap();
