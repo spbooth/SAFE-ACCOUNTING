@@ -68,6 +68,7 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
  *
  */
 public class SlurmParser extends BatchParser implements  Contexed,ConfigParamProvider {
+	private static final String TRIVIAL_PARSE_SUFFIX = ".trivial_parse";
 	private static final String PARSE_FORMAT_SUFFIX = ".parse.format";
 	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
 	private static final String SKIP_FAILED_SUFFIX = ".skip_failed";
@@ -359,8 +360,10 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	private boolean skip_cancelled=false;
 	private boolean skip_failed=false;
 	private boolean skip_node_failed=false;
-	private boolean skip_sub_jobs=false;
+	private boolean skip_sub_jobs=true; // usually want sub jobs to a different table
 	private boolean skip_top_jobs=false;
+	private boolean trivial_parse=false; // Just accept all records without parsing the text, this is for a parser invoked from a SubJobPolicy
+	                                  // though the additional saving is small it means we don't need to have the fields set statically
 	private boolean mark_reservation_as_subjobs=false;
 	private String table;
 	private String tags[];
@@ -371,6 +374,10 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 
 	@Override
 	public boolean parse(DerivedPropertyMap map, String record) throws AccountingParseException {
+		if( trivial_parse ) {
+			return true;
+		}
+		
 		String fields[] = record.trim().split("\\|",-1);
 		if( tags == null && count==0) {
 			// set tags from header;
@@ -511,8 +518,9 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		skip_cancelled = conn.getBooleanParameter(table+SKIP_CANCELLED_SUFFIX, false);
 		skip_failed = conn.getBooleanParameter(table+SKIP_FAILED_SUFFIX, false);
 		skip_node_failed = conn.getBooleanParameter(table+SKIP_NODE_FAILED_SUFFIX, false);
-		skip_sub_jobs = conn.getBooleanParameter(table+SKIP_SUB_JOBS_SUFFIX, false);
+		skip_sub_jobs = conn.getBooleanParameter(table+SKIP_SUB_JOBS_SUFFIX, true);
 		skip_top_jobs = conn.getBooleanParameter(table+SKIP_TOP_JOBS_SUFFIX, false);
+		trivial_parse = conn.getBooleanParameter(table+TRIVIAL_PARSE_SUFFIX, false);
 		mark_reservation_as_subjobs = conn.getBooleanParameter(table+MARK_RESERVATION_AS_SUB_JOB_SUFFIX, false);
 		Logger log = getLogger();
 		for(PropertyTag tag : slurm) {
@@ -571,6 +579,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		params.add(table+SKIP_SUB_JOBS_SUFFIX);
 		params.add(table+SKIP_TOP_JOBS_SUFFIX);
 		params.add(table+PARSE_FORMAT_SUFFIX);
+		params.add(table+TRIVIAL_PARSE_SUFFIX);
 		
 	}
 

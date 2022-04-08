@@ -22,6 +22,9 @@ import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
+import uk.ac.ed.epcc.safe.accounting.upload.UploadException;
+import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 
 /** Interface extending  {@link PropertyContainerParseTarget} for parsing Usage records.
@@ -103,4 +106,18 @@ public interface UsageRecordParseTarget<R> extends PropertyContainerParseTarget<
 	 */
 	public abstract boolean allowReplace(DerivedPropertyMap map, ExpressionTargetContainer record);
 
+	
+	public static <R> UsageRecordParseTarget<R> getParseTarget(AppContext conn,String table){
+		UsageRecordParseTarget parse_target = conn.makeObject(UsageRecordParseTarget.class, table);
+        if( parse_target == null ){
+        	DataObjectFactory<?> fac = conn.makeObject(DataObjectFactory.class,table);
+        	if( fac != null) {
+        		PropertyContainerParseTargetComposite comp = fac.getComposite(PropertyContainerParseTargetComposite.class);
+        		if( comp != null && comp instanceof UsageRecordParseTarget) {
+        			parse_target = (UsageRecordParseTarget) comp;
+        		}
+        	}
+        }
+        return parse_target;
+	}
 }

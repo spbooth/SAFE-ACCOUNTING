@@ -49,12 +49,12 @@ public class UsageRecordParseTargetInterfaceTestImp<R,X extends UsageRecordParse
 	}
 
     
-    public void receiveAccounting(String updateText) {
+    public void receiveAccounting(String updateText) throws Exception {
 	
     	UploadContext uploadContext = getUploadContext();
 	//System.out.println(updateText);
-	AccountingUpdater u = new AccountingUpdater(contexed.getContext(),uploadContext.getDefaults(),getUsageRecordParseTarget());
-	String result = u.receiveAccountingData(new ByteArrayInputStream( updateText.getBytes()), false,false,false);
+	AccountingUpdater u = new AccountingUpdater(contexed.getContext(),uploadContext.getDefaults(),getUsageRecordParseTarget(), false,false,false);
+	String result = u.receiveAccountingData(new ByteArrayInputStream( updateText.getBytes()));
 	
 	Assert.assertFalse(result.contains("Error in accounting parse"));
 }

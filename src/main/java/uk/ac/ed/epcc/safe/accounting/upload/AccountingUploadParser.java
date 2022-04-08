@@ -82,19 +82,11 @@ public class AccountingUploadParser extends AbstractContexed implements UploadPa
         	throw new UploadException("No destination table specified");
         }
 		// First check for direct implementation
-        UsageRecordParseTarget parse_target = conn.makeObject(UsageRecordParseTarget.class, table);
-        if( parse_target == null ){
-        	DataObjectFactory<?> fac = conn.makeObject(DataObjectFactory.class,table);
-        	if( fac != null) {
-        		PropertyContainerParseTargetComposite comp = fac.getComposite(PropertyContainerParseTargetComposite.class);
-        		if( comp != null && comp instanceof UsageRecordParseTarget) {
-        			parse_target = (UsageRecordParseTarget) comp;
-        		}
-        	}
-        	if( parse_target == null) {
-        		throw new UploadException("Table "+table+" does not have an accounting table configured");
-        	}
+        UsageRecordParseTarget parse_target = UsageRecordParseTarget.getParseTarget(conn, table);
+        if( parse_target == null) {
+        	throw new UploadException("Table "+table+" does not have an accounting table configured");
         }
+        
         PropertyFinder finder = parse_target.getFinder();
         ValueParserPolicy vis = new ValueParserPolicy(getContext());
         for(String s : parameters.keySet()){
@@ -116,8 +108,13 @@ public class AccountingUploadParser extends AbstractContexed implements UploadPa
         boolean replace = (parameters.get("replace") != null);
         boolean augment = (parameters.get("augment") != null);
         boolean verify = (parameters.get("verify") != null);
-        String result = new AccountingUpdater(conn,defaults,parse_target).receiveAccountingData(update, replace,verify,augment);
-		
-		return result;
+        AccountingUpdater u;
+		try {
+			u = new AccountingUpdater(conn,defaults,parse_target, replace,verify,augment);
+		} catch (Exception e) {
+			getLogger().error("Error initialising parse", e);
+			return "Error initialising parse";
+		}
+		return u.receiveAccountingData(update);
 	}
 }

@@ -19,6 +19,10 @@ package uk.ac.ed.epcc.safe.accounting.update;
 
 /** Indicates a record that should be ignored without warning.
  * 
+ * This can be thrown by a policy to abort the parse.
+ * Parses can return false to abort a parse but they can also throw
+ * {@link SkipRecord} to provide an informational message about why the record was skipped.
+ * 
  * @author spb
  *
  */

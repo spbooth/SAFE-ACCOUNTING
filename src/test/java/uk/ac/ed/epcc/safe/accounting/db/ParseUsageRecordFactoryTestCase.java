@@ -444,7 +444,7 @@ public abstract class ParseUsageRecordFactoryTestCase<F extends UsageRecordFacto
     	return null;
     }
 
-public final void receiveAccounting(String updateText) {
+public final void receiveAccounting(String updateText) throws Exception {
 	plugin_owner_test.receiveAccounting(updateText);
 }
 @Test

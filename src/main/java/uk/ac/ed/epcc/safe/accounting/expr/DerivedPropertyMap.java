@@ -57,6 +57,19 @@ public class DerivedPropertyMap extends PropertyMap implements ExpressionTarget{
   public void addDerived(PropExpressionMap map){
 	  derived.getAllFrom(map);
   }
+  /** Copy contents to another {@link DerivedPropertyMap}.
+   * no derived properties are promoted to non-derived
+   * 
+   * @param dest
+   */
+  public void setDerivedPropertyMap(DerivedPropertyMap dest) {
+	  for(PropertyTag t : nonDerivedPropertySet()) {
+		  if( dest.writable(t)) {
+			  dest.setProperty(t, getNonDerivedProperty(t));
+		  }
+	  }
+	  dest.addDerived(derived);
+  }
   
   @Override
 public <T> T getProperty(PropertyTag<T> key) {
@@ -83,9 +96,13 @@ public <T> T getNonDerivedProperty(PropertyTag<T> key) {
 }
 @Override
 public Set<PropertyTag> propertySet() {
+	Set<PropertyTag> res = nonDerivedPropertySet();
+	res.addAll(derived.keySet());
+	return res;
+}
+public Set<PropertyTag> nonDerivedPropertySet() {
 	Set<PropertyTag> res = new HashSet<>();
 	res.addAll(super.propertySet());
-	res.addAll(derived.keySet());
 	return res;
 }
 /** evaluate a derived property expression.

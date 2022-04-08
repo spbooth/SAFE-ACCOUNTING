@@ -85,10 +85,16 @@ public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPl
 	
 		@Override
 		protected Set<PropertyContainerPolicy> makePolicies() {
+			Set<PropertyContainerPolicy> policies= new LinkedHashSet<>();
+			String prefix = POLICIES_PREFIX;
+			addPolicies(prefix, policies);
+			return policies;
+		}
+		protected void addPolicies(String prefix, Set<PropertyContainerPolicy> policies) {
 			AppContext ctx = getContext();
 			Logger log = ctx.getService(LoggerService.class).getLogger(getClass());
-			Set<PropertyContainerPolicy> policies= new LinkedHashSet<>();
-	    	String policy_list = ctx.getInitParameter(POLICIES_PREFIX+getTag());
+	    	
+			String policy_list = ctx.getInitParameter(prefix+getTag());
 	    	log.debug("policy list="+policy_list);
 	    	if( policy_list != null){
 
@@ -109,7 +115,6 @@ public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPl
 	    		}
 	    	}
 	    	log.debug("policies size is "+policies.size());
-			return policies;
 		}
 		
 		protected SetInput getPolicyInput(){
