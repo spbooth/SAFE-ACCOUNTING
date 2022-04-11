@@ -364,6 +364,8 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	private boolean skip_top_jobs=false;
 	private boolean trivial_parse=false; // Just accept all records without parsing the text, this is for a parser invoked from a SubJobPolicy
 	                                  // though the additional saving is small it means we don't need to have the fields set statically
+									  // as a sanity check it checks that a JOB_ID parameter is already set in the record
+	                                  // this is so direct parse to a sub-job table will also be possible.
 	private boolean mark_reservation_as_subjobs=false;
 	private String table;
 	private String tags[];
@@ -374,7 +376,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 
 	@Override
 	public boolean parse(DerivedPropertyMap map, String record) throws AccountingParseException {
-		if( trivial_parse ) {
+		if( trivial_parse  && map.getProperty(JOB_ID) != null) {
 			return true;
 		}
 		
