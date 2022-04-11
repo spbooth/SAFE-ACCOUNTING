@@ -147,6 +147,13 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	public static final PropertyTag<Date> END_PROP = new PropertyTag<>(slurm,"End",Date.class,"Job end");
 	@AutoTable
 	public static final PropertyTag<String> EXIT_CODE_PROP = new PropertyTag<>(slurm, "ExitCode", String.class,"The exit code returned by the job script or salloc, typically as set by the exit() function. Following the colon is the signal that caused the process to terminate if it was terminated by a signal. ");
+	
+	@OptionalTable
+	public static final PropertyTag<Integer> EXIT_RETURN_PROP = new PropertyTag<>(slurm,"ExitCodeReturn",Integer.class,"The exit code returned by the job script or salloc, typically as set by the exit() function.");
+	@OptionalTable
+	public static final PropertyTag<Integer> EXIT_SIGNAL_PROP = new PropertyTag<>(slurm,"ExitCodeReturn",Integer.class,"The signal that caused the process to terminate if it was terminated by a signal.");
+
+	
 	@OptionalTable    
 	public static final PropertyTag<Boolean> SUCCESS_PROP = new PropertyTag<>(slurm,"Success",Boolean.class,"Job did not return a failed state");
 	
@@ -327,25 +334,44 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 				container.setProperty(JOB_ID_BASE, valueString);
 			}
 		}
+	}
+	public static class SlurmExitParser implements ContainerEntryMaker{
+
+			@Override
+			public void setValue(PropertyContainer container, String valueString) throws InvalidPropertyException {
+				
+				container.setProperty(EXIT_CODE_PROP, valueString);
+				if( valueString == null || valueString.isEmpty()) {
+					return;
+				}
+				int pos = valueString.indexOf(':');
+				if( pos < 0 ) {
+					return;
+				}
+				
+				int exit = Integer.valueOf(valueString.substring(0, pos));
+				int sig = Integer.valueOf(valueString.substring(pos+1));
+				container.setProperty(EXIT_RETURN_PROP, exit);
+				container.setProperty(EXIT_SIGNAL_PROP, sig);
+				
+			}
 
 		@Override
 		public void setValue(PropertyMap map, String valueString)
-				throws IllegalArgumentException, NullPointerException, AccountingParseException {
-			map.setProperty(JOB_ID, valueString);
-			boolean sub_job = valueString.contains(".");
-			map.setProperty(SUB_JOB, sub_job);
-			if( sub_job) {
-				int pos = valueString.indexOf(".");
-				String base = valueString.substring(0, pos);
-				String suffix = valueString.substring(pos+1);
-				map.setProperty(JOB_ID_BASE, base);
-				map.setProperty(SCRIPT_JOB, suffix.equals("batch"));
-				map.setProperty(EXTERN_JOB, suffix.equals("extern"));
-			}else {
-				map.setProperty(SCRIPT_JOB, false);
-				map.setProperty(EXTERN_JOB, false);
-				map.setProperty(JOB_ID_BASE, valueString);
+				 {
+			map.setProperty(EXIT_CODE_PROP, valueString);
+			if( valueString == null || valueString.isEmpty()) {
+				return;
 			}
+			int pos = valueString.indexOf(':');
+			if( pos < 0 ) {
+				return;
+			}
+			
+			int exit = Integer.valueOf(valueString.substring(0, pos));
+			int sig = Integer.valueOf(valueString.substring(pos+1));
+			map.setProperty(EXIT_RETURN_PROP, exit);
+			map.setProperty(EXIT_SIGNAL_PROP, sig);
 			
 		}
 		
@@ -551,6 +577,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		}
 		// detect sub-jobs
 		SLURM_ATTRIBUTES.put(JOB_ID.getName(), new SlurmIDParser());
+		SLURM_ATTRIBUTES.put(EXIT_CODE_PROP.getName(), new SlurmExitParser());
        
         PropertyTag res[] = {ALLOCGRES_PROP, ALLOCTRES_PROP, ReqGRES};
         ValueParserService serv = getContext().getService(ValueParserService.class);
