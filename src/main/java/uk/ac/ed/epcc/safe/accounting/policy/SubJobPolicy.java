@@ -38,7 +38,7 @@ public class SubJobPolicy<U extends UsageRecordFactory.Use,R> extends BasePolicy
 	public PropertyFinder initFinder(PropertyFinder prev, String table) {
 		this.table=table;
 		String sub_job_table = conn.getInitParameter(table+SUB_JOB_TABLE_SUFFIX);
-		if( sub_job_table != null ) {
+		if( sub_job_table != null && ! sub_job_table.isEmpty()) {
 			target = UsageRecordParseTarget.getParseTarget(conn, sub_job_table);
 			if( target == null) {
 				getLogger().error("Failed to make UsageRecordParseTarget from "+sub_job_table);
