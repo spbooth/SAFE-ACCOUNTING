@@ -7,6 +7,7 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.BigDecimalParser;
@@ -34,6 +35,7 @@ import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.config.FilteredProperties;
+import uk.ac.ed.epcc.webapp.content.Labeller;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
@@ -376,8 +378,64 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		}
 		
 	}
-	
-	
+	public static class ReturnLabeller implements Labeller<String,Integer>{
+
+		@Override
+		public Class<Integer> getTarget() {
+			return Integer.class;
+		}
+
+		@Override
+		public Integer getLabel(AppContext conn, String key) {
+			if( key == null ) {
+				return null;
+			}
+			int pos = key.indexOf(':');
+			if( pos < 1) {
+				return null;
+			}
+			try {
+				return Integer.valueOf(key.substring(0,pos));
+			}catch(Exception e) {
+				return null;
+			}
+		}
+
+		@Override
+		public boolean accepts(Object o) {
+			return o instanceof String;
+		}
+		
+	}
+	public static class SignalLabeller implements Labeller<String,Integer>{
+
+		@Override
+		public Class<Integer> getTarget() {
+			return Integer.class;
+		}
+
+		@Override
+		public Integer getLabel(AppContext conn, String key) {
+			if( key == null ) {
+				return null;
+			}
+			int pos = key.indexOf(':');
+			if( pos < 1) {
+				return null;
+			}
+			try {
+				return Integer.valueOf(key.substring(pos+1));
+			}catch(Exception e) {
+				return null;
+			}
+		}
+
+		@Override
+		public boolean accepts(Object o) {
+			return o instanceof String;
+		}
+		
+	}
 	// not static as SimpleDateFormat not thread safe
 	public final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
 	
@@ -526,6 +584,10 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 			
 			derv.peer(BatchParser.SUCCESS_PROP,SUCCESS_PROP);
 			derv.peer(BatchParser.FAULT_PROP,NODE_FAIL_PROP);
+			
+			// support extracting return/signal in code
+			derv.put(EXIT_RETURN_PROP, new LabelPropExpression<String, Integer>(new ReturnLabeller(), EXIT_CODE_PROP));
+			derv.put(EXIT_SIGNAL_PROP, new LabelPropExpression<String, Integer>(new SignalLabeller(), EXIT_CODE_PROP));
 		} catch (PropertyCastException e) {
 			getLogger().error("Error setting standard derived props",e);
 		}
