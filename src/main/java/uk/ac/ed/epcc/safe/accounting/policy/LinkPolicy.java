@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.policy;
 
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -150,6 +151,8 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	private boolean use_cache=false;
 	private boolean late_parse=true;
 	private String my_table;
+	private int hits;
+	private int misses;
 	
 	private R last_peer=null;
 	@SuppressWarnings("unchecked")
@@ -271,13 +274,14 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 				MatchSelectVisitor<ExpressionTargetContainer> vis = new MatchSelectVisitor<>(last_peer.getProxy());
 				try {
 					if( sel.visit(vis)) {
+						hits++;
 						return last_peer;
 					}
 				} catch (Exception e) {
 					log.error("Error matching stored peer against selector",e);
 				}
 			}
-
+			misses++;
 			return remote_fac.find(remote_fac.getFilter(sel),true);
 		}catch(Exception e){
 			log.error("Error finding peer in LinkPolicy",e);
@@ -463,10 +467,15 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 	@Override
 	public String endParse() {
 		last_peer = null;
-		return super.endParse();
+		int total = hits + misses;
+		double rate = ((double)hits)/((double)total);
+		NumberFormat pc = NumberFormat.getPercentInstance();
+		return "LinkPolicy hit-rate hits="+hits+" misses="+misses+" "+pc.format(rate);
 	}
 	@Override
 	public void startParse(PropertyContainer staticProps) throws Exception {
 		last_peer=null;
+		hits=0;
+		misses=0;
 	}
 }

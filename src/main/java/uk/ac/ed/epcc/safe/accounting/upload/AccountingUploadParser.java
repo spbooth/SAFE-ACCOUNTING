@@ -33,6 +33,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.stream.StreamData;
 import uk.ac.ed.epcc.webapp.servlet.ServletService;
+import uk.ac.ed.epcc.webapp.timer.DefaultTimerService;
+import uk.ac.ed.epcc.webapp.timer.TimerService;
 /** Class to upload an accounting table that implements {@link UsageRecordParseTarget} either directly
  * or by composite.
  * Upload parameters are passed as a map.
@@ -108,13 +110,30 @@ public class AccountingUploadParser extends AbstractContexed implements UploadPa
         boolean replace = (parameters.get("replace") != null);
         boolean augment = (parameters.get("augment") != null);
         boolean verify = (parameters.get("verify") != null);
-        AccountingUpdater u;
+        boolean profile = (parameters.get("profile") != null);
+        
 		try {
-			u = new AccountingUpdater(conn,defaults,parse_target, replace,verify,augment);
+			TimerService timer = null;
+			if( profile ) {
+				timer = conn.getService(TimerService.class);
+				if( timer == null ) {
+					timer = new DefaultTimerService(conn);
+					conn.setService(timer);
+				}
+			}
+			AccountingUpdater u = new AccountingUpdater(conn,defaults,parse_target, replace,verify,augment);
+			String message = u.receiveAccountingData(update);
+			if( timer != null ) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(message);
+				timer.timerStats(sb);
+				message = sb.toString();
+			}
+			return message;
 		} catch (Exception e) {
 			getLogger().error("Error initialising parse", e);
 			return "Error initialising parse";
 		}
-		return u.receiveAccountingData(update);
+		
 	}
 }
