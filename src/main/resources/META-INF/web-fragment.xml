@@ -12,18 +12,15 @@
 <!--| WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |-->
 <!--| See the License for the specific language governing permissions and      |-->
 <!--| limitations under the License.                                           |-->
-<web-fragment id="WebFragment_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
+<web-fragment id="ACCOUNTING_JAR" version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-fragment_4_0.xsd">
  <name>ACCOUNTING_JAR</name> 
+ <distributable/>
  <servlet>
   <description>Template reports</description>
   <servlet-name>TemplateReportServlet</servlet-name>
 
   <servlet-class>uk.ac.ed.epcc.safe.accounting.servlet.ReportServlet</servlet-class>
    <init-param><param-name>basic_auth.realm</param-name><param-value>SAFE User</param-value></init-param>
-</servlet>
- <servlet>
-<servlet-name>TemplateServlet</servlet-name>
-<servlet-class>uk.ac.ed.epcc.safe.accounting.servlet.TemplateServlet</servlet-class>
 </servlet>
 <servlet-mapping>
 <servlet-name>TemplateReportServlet</servlet-name>

@@ -353,6 +353,8 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 				}
 			}
 			map.release();
+			// We don't want very long held locks so commit between records.
+			db_serv.commitTransaction();
 		}catch (SkipRecord s){
 			skip_list.add(s.getMessage(),fmt);
 			skip++;
@@ -362,8 +364,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 			errors.add("Unexpected parse error",fmt);
 			log.error("Unexpected Error parsing line "+fmt,e);
 		}
-		// We don't want very long held locks so commit between records.
-		db_serv.commitTransaction();
+		
 	}
 	/** compares two values, ignoring any differences due to null or
 	 * numerical type. We are looking for significant data differences not non-persisted values or

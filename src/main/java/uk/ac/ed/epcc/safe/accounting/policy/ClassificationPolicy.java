@@ -107,7 +107,7 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 	private Set<PropertyTag<String>> available_names = new HashSet<>();
 	private Set<ReferenceTag> available_refs = new HashSet<>();
 	private String table;
-	
+	private int bad_evaluate=0;
 	public ClassificationPolicy(AppContext c){
 		super(c);
 	}
@@ -127,7 +127,7 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 						try {
 							value = dpm.evaluate(String.class, exp);
 						} catch (Exception e) {
-
+							bad_evaluate++;
 						}
 					}
 				}
@@ -161,6 +161,9 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 			}
 			cache.clear();
 		}
+		if( bad_evaluate > 0 ) {
+			errors.append("Errors in evaluating fallback expression: "+bad_evaluate+"\n");
+		}
 		caches.clear();
 		caches=null;
 		return errors.toString();
@@ -177,8 +180,11 @@ public class ClassificationPolicy extends BasePolicy implements Contexed,TableTr
 			NameFinder fac = getContext().makeObject(NameFinder.class,ctag.getTable());
 			DataCache dataCache = fac.getDataCache(true);
 			assert dataCache != null : "Null datacache";
-			caches.put(tag, dataCache);
+			if( dataCache != null) {
+				caches.put(tag, dataCache);
+			}
 		}
+		bad_evaluate=0;
 	}
 	
 	@SuppressWarnings("unchecked")
