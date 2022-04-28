@@ -62,6 +62,7 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.time.Period;
+import uk.ac.ed.epcc.webapp.timer.TimeClosable;
 
 /**
  * Class to implement {@link UsageRecordParseTarget} using a {@link PlugInOwner}
@@ -168,7 +169,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		record.commit(); // create it
 		if (isComplete(record)) {
 			// apply post create once complete
-			try {
+			try(TimeClosable cr = new TimeClosable(getContext(), "commitRecord")) {
 				PropertyContainerParser parser = plugin_owner.getParser();
 				if (parser instanceof IncrementalPropertyContainerParser) {
 					((IncrementalPropertyContainerParser) parser).postComplete(record);

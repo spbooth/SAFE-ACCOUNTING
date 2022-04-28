@@ -53,6 +53,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
 
 
 public class AccountingUploadParser extends AbstractContexed implements UploadParser{
+	private static final String UPLOAD_TIMER = "upload";
 	public static final String UPDATE_INPUT = ServletService.DEFAULT_PAYLOAD_PARAM;
 	public static final String TABLE_INPUT = "table";
 	public AccountingUploadParser(AppContext c){
@@ -113,17 +114,20 @@ public class AccountingUploadParser extends AbstractContexed implements UploadPa
         boolean profile = (parameters.get("profile") != null);
         
 		try {
-			TimerService timer = null;
+			TimerService timer = conn.getService(TimerService.class);
 			if( profile ) {
-				timer = conn.getService(TimerService.class);
 				if( timer == null ) {
 					timer = new DefaultTimerService(conn);
 					conn.setService(timer);
 				}
 			}
+			if( timer != null) {
+				timer.startTimer(UPLOAD_TIMER);
+			}
 			AccountingUpdater u = new AccountingUpdater(conn,defaults,parse_target, replace,verify,augment);
 			String message = u.receiveAccountingData(update);
 			if( timer != null ) {
+				timer.stopTimer(UPLOAD_TIMER);
 				StringBuilder sb = new StringBuilder();
 				sb.append(message);
 				timer.timerStats(sb);

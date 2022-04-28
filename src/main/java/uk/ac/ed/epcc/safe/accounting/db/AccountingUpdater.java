@@ -36,6 +36,7 @@ import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
+import uk.ac.ed.epcc.webapp.timer.TimeClosable;
 /** Class to import new accounting data and store it in a {@link UsageRecordFactory}
  * 
  * @author spb
@@ -137,7 +138,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 	 */
 	public final String receiveAccountingData( InputStream update){
     	Iterator<R> lines;
-    	try{
+    	try(TimeClosable split = new TimeClosable(conn, "splitRecords")){
 			lines = parser.splitRecords(update);
     	}catch(Exception e){
     		log.error("Error initialising parse",e);
@@ -208,7 +209,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 	public void receiveRecord(DerivedPropertyMap input_data,R current_line) {
 		String fmt = parser.formatRecord(current_line);
 		n_lines++;
-		try{
+		try(TimeClosable rr= new TimeClosable(conn, "receiveRecord")){
 			DerivedPropertyMap map = new DerivedPropertyMap(conn);
 			if( input_data != null ){
 				// make sure no derived properties are promoted to non-derived
@@ -354,7 +355,9 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 			}
 			map.release();
 			// We don't want very long held locks so commit between records.
-			db_serv.commitTransaction();
+			try(TimeClosable cm = new TimeClosable(conn, "Commit transaction")){
+				db_serv.commitTransaction();
+			}
 		}catch (SkipRecord s){
 			skip_list.add(s.getMessage(),fmt);
 			skip++;
