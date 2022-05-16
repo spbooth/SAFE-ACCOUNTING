@@ -125,23 +125,28 @@
 	<xsl:template match="rep:table|Table|table">
 		<fo:table table-layout="fixed" width="100%">
 			<xsl:apply-templates select="rep:tr[position()=1]/*|Tr[position()=1]/*|tr[position()=1]/*" mode="columns" />
-			<xsl:apply-templates select="rep:tr[position()=1][not(child::rep:td)]|Tr[position()=1][not(child::Td)]|tr[position()=1][not(child::td)]" mode="header"/>
+			<fo:table-header font-size="10pt" font-family="sans-serif" background-color="#e7e7e7">
+			<!-- Assume all th cells come from header rows -->
+			<xsl:apply-templates select="rep:tr[rep:th][not(child::rep:td)]|Tr[Th][not(child::Td)]|tr[th][not(child::td)]" mode="header"/>
+			</fo:table-header>
 			<fo:table-body font-size="8pt" font-family="sans-serif"
 				hyphenate="true">
+				<!-- Assume all td cells come from body -->
 				<xsl:apply-templates select="rep:tr[rep:td]|Tr[Td]|tr[td]" />
 			</fo:table-body>
 		</fo:table>
 	</xsl:template>
  
 	<xsl:template match="rep:th|rep:td|Th|Td|th|td" mode="columns">
-		<fo:table-column column-width="proportional-column-width(1)" />
+		<fo:table-column column-width="proportional-column-width(1)"/>
+	</xsl:template>
+	<xsl:template match="rep:th[@colspan]|rep:td[@colspan]|Th[@colspan]|Td[@colspan]|th[@colspan]|td[@colspan]" mode="columns">
+		<fo:table-column column-width="proportional-column-width(1)" number-columns-repeated="{@colspan}"/>
 	</xsl:template>
 	<xsl:template match="rep:tr|Tr|tr" mode="header">
-		<fo:table-header font-size="10pt" font-family="sans-serif" background-color="#e7e7e7">
 			<fo:table-row>
 				<xsl:apply-templates select="rep:th|Th|th" />
 			</fo:table-row>
-		</fo:table-header>
 	</xsl:template>
 	
 	<xsl:template match="rep:tr|Tr|tr">
@@ -161,19 +166,28 @@
 			<xsl:apply-templates select="rep:th|rep:td|Th|Td|th|td" />
 		</fo:table-row>
 	</xsl:template>
-
+    <xsl:template mode="span" match="@*"></xsl:template>
+	<xsl:template mode="span" match="@rowspan">
+	<xsl:attribute name="number-rows-spanned"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
+	<xsl:template mode="span" match="@colspan">
+	<xsl:attribute name="number-columns-spanned"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
 	<xsl:template match="rep:th|Th|th">
 		<fo:table-cell border-color="black" border-style="solid"
 			border-width="0.2mm">
+			<xsl:apply-templates mode="span" select="@*"/>
 			<fo:block font-weight="bold" text-align="center" background-color="inherit">
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:table-cell>
 	</xsl:template>
 
+	
 	<xsl:template match="rep:td[@class='highlight']|Td[@class='highlight']|td[@class='highlight']">
 		<fo:table-cell border-color="black" border-style="solid"
 			border-width="0.2mm" background-color="#ffffcc">
+				<xsl:apply-templates mode="span" select="@*"/>
 			<fo:block text-align="right">
 				<xsl:apply-templates />
 			</fo:block>
@@ -279,6 +293,7 @@
 	<xsl:template match="rep:td|Td|td">
 		<fo:table-cell border-color="black" border-style="solid"
 			border-width="0.2mm" background-color="inherit">
+				<xsl:apply-templates mode="span" select="@*"/>
 			<fo:block text-align="right">
 				<xsl:apply-templates />
 			</fo:block>

@@ -121,6 +121,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 	public static final ReportTemplateKey HTML = new ReportTemplateViewKey("HTML", "Generate HTML");
 	public static final ReportTemplateKey PDF = new ReportTemplateViewKey("PDF", "Generate PDF");
 	public static final ReportTemplateKey CSV = new ReportTemplateViewKey("CSV", "Generate CSV");
+	public static final ReportTemplateKey FOP = new ReportDeveloperTemplateViewKey("FOP", "Generate FOP");
 
 	private static final class ReportTemplateViewKey extends ReportTemplateKey implements ViewTransitionKey<Report>{
 		private ReportTemplateViewKey(String name, String help) {
@@ -131,6 +132,22 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 		public boolean allow(AppContext c, Report target) 
 		{
 			return target != null && canView(c, target);
+		}
+
+		@Override
+		public boolean isNonModifying(Report target) {
+			return true;
+		}
+	}
+	private static final class ReportDeveloperTemplateViewKey extends ReportTemplateKey implements ViewTransitionKey<Report>{
+		private ReportDeveloperTemplateViewKey(String name, String help) {
+			super(name, help);
+		}
+
+		@Override
+		public boolean allow(AppContext c, Report target) 
+		{
+			return target != null&& c.getService(SessionService.class).hasRole(ReportBuilder.REPORT_DEVELOPER) && canView(c, target);
 		}
 
 		@Override
@@ -274,6 +291,9 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 					f.addAction("HTML", new NextAction(new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target,defaults, HTML,new_window));
 					f.addAction("PDF", new NextAction(new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target,defaults,PDF,new_window));
 					f.addAction("CSV", new NextAction(new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target,defaults, CSV,new_window));
+					if(isReportDeveloper(conn.getService(SessionService.class))) {
+						f.addAction("FOP", new NextAction("FOP",target,defaults, FOP,new_window));
+					}
 				}
 			}
 			catch (Exception e) {
@@ -427,6 +447,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
      	addTransition(HTML, new ExportTransition(ReportTypeRegistry.HTML));
      	addTransition(PDF, new ExportTransition(reg.getReportType("pdf")));
      	addTransition(CSV, new ExportTransition(reg.getReportType("csv")));
+    	addTransition(FOP, new ExportTransition(reg.getReportType("fop")));
     }
 
 	@Override

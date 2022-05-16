@@ -84,6 +84,7 @@ import uk.ac.ed.epcc.webapp.content.LabellerTransform;
 import uk.ac.ed.epcc.webapp.content.NumberFormatTransform;
 import uk.ac.ed.epcc.webapp.content.Operator;
 import uk.ac.ed.epcc.webapp.content.Table;
+import uk.ac.ed.epcc.webapp.content.Table.Col;
 import uk.ac.ed.epcc.webapp.content.Transform;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
@@ -157,6 +158,7 @@ public class TableExtension extends ReportExtension {
 		 * @throws BadTableException 
 		 */
 		public Table postProcess(Node instructions) throws BadTableException;
+		
 	}
 	/** A {@link TableProxy} for a combining multiple generated tables into one composite table.
 	 * 
@@ -168,10 +170,12 @@ public class TableExtension extends ReportExtension {
 	public static class CompoundTable implements TableProxy {
 		CompoundTable parent;
 		TableExtension extension;
-		Table<String,Object> table;
+		Table<Object,Object> table;
+	
 		public CompoundTable(TableExtension extension){
 			this(extension,null);
 		}
+		
 		public CompoundTable(TableExtension extension,CompoundTable parent) {
 			this.extension = extension;
 			this.parent=parent;
@@ -180,10 +184,23 @@ public class TableExtension extends ReportExtension {
 			
 		}
 		
-		public void addTable(Table<String,Object> table) {
+		
+		public void addTable(Table table) throws InvalidArgument {
 			mergeKeys(table);
-			this.table.add(table);			
+			this.table.addRows(table);
+			for(Object o : table.getCols()) {
+				Col donor_col = table.getCol(o);
+				Object dest_key=o;
+				Object group = table.getGroup(o);
+				if( group != null ) {
+					dest_key = new ColumnGroupKey(o, group.toString());
+				}
+				Col dest_col = this.table.getCol(dest_key);
+				dest_col.combineData(Operator.ADD, donor_col);
+				dest_col.mergeName(donor_col);
+			}
 		}
+		
 		/**
 		 * @param table
 		 */
@@ -200,15 +217,22 @@ public class TableExtension extends ReportExtension {
 			}
 		}
 		
-		public Table postProcess(Node instructions) {
+		public Table postProcess(Node instructions) throws BadTableException {
 			if( parent == null ){
 				Table result = extension.processTable(table, instructions);
 				table=null;
 				return result;
 			}else{
-				parent.addTable(extension.processTable(table, instructions));
+
+				try {
+					parent.addTable(extension.processTable(table, instructions));
+				} catch (InvalidArgument e) {
+					throw new BadTableException("Invalid column group", e);
+				}
+
 				parent=null;
 				table=null;
+
 				return null;
 			}
 		}
@@ -216,9 +240,9 @@ public class TableExtension extends ReportExtension {
 		@Override
 		public String toString() {
 			String string = "CompoundTable[";
-			Iterator<String> columns = table.getColumNames().iterator();
+			Iterator columns = table.getColumNames().iterator();
 			while (columns.hasNext()) {
-				String columnName = columns.next();
+				String columnName = columns.next().toString();
 				string += columnName;
 				if (columns.hasNext()) {
 					string += ",";
@@ -238,6 +262,7 @@ public class TableExtension extends ReportExtension {
 		
 		
 		CompoundTable compoundTable;
+	
 		TableExtension extension;
 		
 		
@@ -249,7 +274,6 @@ public class TableExtension extends ReportExtension {
 			
 		}
 		
-	
 		
 		/** add a {@link Labeller} to a {@link PropExpression} to make a {@link LabelPropExpression}
 		 * @param columnNode
@@ -502,7 +526,11 @@ public class TableExtension extends ReportExtension {
 			
 			period=null; // for GC
 			dates=null;
-			table =addToCompound(table);
+			try {
+				table =addToCompound(table);
+			} catch (InvalidArgument e) {
+				extension.addError("Bad group", "Error adding table as group", e);
+			}
 			
 			return table;
 
@@ -711,7 +739,7 @@ public class TableExtension extends ReportExtension {
 		}
 		
 		
-		public Table postProcess(Node instructions) {	
+		public Table postProcess(Node instructions)  {	
 			ExpressionTargetFactory<?> ef = (ExpressionTargetFactory<?>) recordSet.getGenerator();
 			ReductionHandler<?,?> red_hand = new ReductionHandler(ef,false);
 			final AppContext conn = extension.getContext();
@@ -746,21 +774,36 @@ public class TableExtension extends ReportExtension {
 			}
 			table = extension.processTable(table, instructions);
 			conn.removeAttribute(CURRENT_PERIOD_ATTR);
-			table = addToCompound(table);	
+			try {
+				table = addToCompound(table);
+			} catch (InvalidArgument e) {
+				extension.addError("Bad group", "Error adding table as group", e);
+			}	
 			return table;
 
 		}
 		/**
 		 * @param table
 		 * @return
+		 * @throws InvalidArgument 
 		 */
-		protected Table<String, Object> addToCompound(Table<String, Object> table) {
+		protected Table<String, Object> addToCompound(Table<String, Object> table) throws InvalidArgument {
 			if (compoundTable != null) {
 				// we must only merge columns using the appropriate Operator
 				compoundTable.mergeKeys(table);
 				compoundTable.table.addRows(table);
 				// process all columns remaining in the table
 				for(String col : table.getCols()) {
+					Object dest = col;
+					Object group = table.getGroup(col);
+					if( group != null ) {
+						dest = new ColumnGroupKey(col, group.toString());
+						compoundTable.table.getCol(dest);
+						compoundTable.table.addToGroup(group, dest);
+					
+					}
+					Table<Object, Object>.Col dest_col = compoundTable.table.getCol(dest);
+					Table<String, Object>.Col src_col = table.getCol(col);
 					if( cols.containsKey(col)) {
 						// This is a reduction col
 						Reduction red = cols.get(col).getReduction();
@@ -768,7 +811,7 @@ public class TableExtension extends ReportExtension {
 							// These have been mapped to time average 
 							red = Reduction.SUM;
 						}
-						compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
+						dest_col.combineData(red.operator(), src_col);
 					}else if( dynamic_cols.containsKey(col)) {
 						// A dynamic col from a name expression
 						Reduction red = dynamic_cols.get(col).getReduction();
@@ -776,11 +819,12 @@ public class TableExtension extends ReportExtension {
 							// These have been mapped to time average 
 							red = Reduction.SUM;
 						}
-						compoundTable.table.getCol(col).combine(red.operator(), table.getCol(col));
+						dest_col.combineData(red.operator(), src_col);
 					}else {
 						// generated by a processing instruction
-						compoundTable.table.getCol(col).combine(Operator.MERGE, table.getCol(col));
+						dest_col.combineData(Operator.MERGE, src_col);
 					}
+					dest_col.mergeName(src_col);
 				}
 				
 				
@@ -1084,10 +1128,16 @@ public class TableExtension extends ReportExtension {
 				table=null;
 				return result;
 			} else {
-				compoundTable.addTable(
-						extension.processTable(table, instructions));
+
+				try {
+					compoundTable.addTable(extension.processTable(table, instructions));
+				} catch (InvalidArgument e) {
+					throw new BadTableException("Invalid column group", e);
+				}
+
 				table=null;
 				compoundTable=null;
+			
 				return null;
 				
 			}			
@@ -1165,6 +1215,7 @@ public class TableExtension extends ReportExtension {
 	public DocumentFragment postProcess(TableProxy proxy,  Node instructions) throws BadTableException {
 		try {
 			startTimer("postProcess "+proxy.getClass().getSimpleName());
+			
 			Table table = proxy.postProcess(instructions);		
 
 			if (table != null) {
@@ -1197,7 +1248,7 @@ public class TableExtension extends ReportExtension {
 	private PropExpression getPropertyExpression(Node node, PropertyFinder finder) throws ExpressionException {
 		return getPropertyExpression(node, finder, PROPERTY_ELEMENT);
 	}
-	private Table<String,Object> processTable(Table<String,Object> table, Node instructions) {
+	private Table<String,Object> processTable(Table table, Node instructions) {
 		if (table == null) {
 			table = new Table<>();
 		}
@@ -1221,7 +1272,7 @@ public class TableExtension extends ReportExtension {
 	 * @param inst
 	 *            the inst
 	 */
-	private Table processTable(Table<String,Object> target, Element inst) {
+	private Table processTable(Table target, Element inst) {
 		String instruction = inst.getLocalName();
 		try {
 
@@ -1229,8 +1280,7 @@ public class TableExtension extends ReportExtension {
 				String indexName = getParam("Name", inst);
 				target.setKeyName(indexName);
 
-			} else 
-				if (instruction.equals("PercentColumn")) {
+			} else if (instruction.equals("PercentColumn")) {
 				String name = getParam("Name", inst);
 				String column = getParam("Column", inst);
 				Number totalOver = getNumberParam("TotalOver",null, inst);
@@ -1500,6 +1550,12 @@ public class TableExtension extends ReportExtension {
 				}
 			}else if(instruction.equals("PrintHeadings")){
 				target.setPrintHeadings(getBooleanParam("Value", true, inst));
+			}else if(instruction.equals("ShowColumnGroups")) {
+				target.setPrintGroups(true);
+			}else if(instruction.equals("AddColumnToGroup")) {
+				String col = getParam("Column", inst);
+				String group = getParam("Group", inst);
+				target.addToGroup(group, col);
 			}else if(instruction.equals("packColumnGroup")) {
 				String col = normalise(getText(inst));
 				target.packColumnGroup(col);

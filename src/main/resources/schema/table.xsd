@@ -85,7 +85,7 @@
 			<xsd:annotation><xsd:documentation>A group-by index for the table, The distinct tuples of index values define the rows of the resulting table. Records where the index value resolves to null are excluded.</xsd:documentation></xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Column" type="IndexType" >
-			<xsd:annotation><xsd:documentation>A group-by index for the table, The distinct tuples of index values define the rows of the resulting table. Records where the index value resolves to null are allowed.</xsd:documentation></xsd:annotation>
+			<xsd:annotation><xsd:documentation>Similar to Index except that these values don't contribute to the row definition. Column values are assumed to be derivable from the Index values.</xsd:documentation></xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SumColumn" type="SummaryColumnType" >
 			<xsd:annotation><xsd:documentation>A SUM reduction of a numerical expression</xsd:documentation></xsd:annotation>
@@ -355,9 +355,27 @@
 	   	</xsd:element>
 	   	<xsd:element name="PrintHeadings" type="PrintHeadingsType">
 	   	</xsd:element>
+	   	<xsd:element name="ShowColumnGroups" >
+	   		<xsd:annotation>
+	   			<xsd:documentation>
+	   				Show Column groups as an additional table header
+	   			</xsd:documentation>
+	   		</xsd:annotation>
+	   	</xsd:element>
 	   	<xsd:element name="ThresholdRows" type="ThresholdRowsType"></xsd:element>
 	   	<xsd:element name="packColumnGroup" type="par:TextOrParameterType"
 	   		minOccurs="0" maxOccurs="unbounded" />
+	   	<xsd:element name="AddColumnToGroup" >
+	   	<xsd:complexType>
+	   			<xsd:all>
+	   				<xsd:element name="Column"
+	   					type="par:TextOrParameterType" />
+	   				<xsd:element name="Group"
+	   					type="par:TextOrParameterType" />
+	   			</xsd:all>
+	   		</xsd:complexType>
+	   	
+	   	</xsd:element>
 	   	<xsd:element name="packAllColumnGroups"></xsd:element>	
 	   </xsd:choice>
 	</xsd:group>
@@ -627,6 +645,11 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="PrintHeadingsType">
+		<xsd:sequence>
+			<xsd:element name="Value" type="par:TextOrParameterType"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ShowGroupsType">
 		<xsd:sequence>
 			<xsd:element name="Value" type="par:TextOrParameterType"></xsd:element>
 		</xsd:sequence>
