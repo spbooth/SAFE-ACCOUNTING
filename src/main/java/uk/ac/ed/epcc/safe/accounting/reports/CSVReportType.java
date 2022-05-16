@@ -18,8 +18,8 @@ import java.text.NumberFormat;
 import uk.ac.ed.epcc.webapp.AppContext;
 
 public final class CSVReportType extends ReportType {
-	public CSVReportType(String name,String extension, String mime, String description) {
-		super(name,extension, mime, description);
+	public CSVReportType(String name,String extension, String mime, String description,String help,String image) {
+		super(name,extension, mime, description,help,image);
 	}
 
 	public NumberFormat getNumberFormat(AppContext conn){

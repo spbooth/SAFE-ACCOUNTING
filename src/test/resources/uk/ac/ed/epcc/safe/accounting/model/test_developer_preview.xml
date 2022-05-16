@@ -39,6 +39,12 @@
 <img class="icon" alt="PDF" src="test/accounting/pdf-file-48x48.png"/>PDF</button>
 <button class="input_button" type="submit" formtarget="_blank" title="Generate CSV" name="CSV" value="CSV">
 <img class="icon" alt="CSV" src="test/accounting/csv-file-48x48.png"/>CSV</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate FOP" name="FOP" value="FOP">FOP</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate EHTML" name="EHTML" value="EHTML">EHTML</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate XML" name="XML" value="XML">XML</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate RXML" name="RXML" value="RXML">RXML</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate XHTML" name="XHTML" value="XHTML">XHTML</button>
+<button class="input_button" type="submit" formtarget="_blank" title="Generate TXT" name="TXT" value="TXT">TXT</button>
 </fieldset>
 </Form>
 </transition_page>

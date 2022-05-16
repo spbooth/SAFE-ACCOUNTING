@@ -118,10 +118,10 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 
 	
 	public static final ReportTemplateKey PREVIEW = new ReportTemplateViewKey("View", "Update report parameters");
-	public static final ReportTemplateKey HTML = new ReportTemplateViewKey("HTML", "Generate HTML");
-	public static final ReportTemplateKey PDF = new ReportTemplateViewKey("PDF", "Generate PDF");
-	public static final ReportTemplateKey CSV = new ReportTemplateViewKey("CSV", "Generate CSV");
-	public static final ReportTemplateKey FOP = new ReportDeveloperTemplateViewKey("FOP", "Generate FOP");
+	//public static final ReportTemplateKey HTML = new ReportTemplateViewKey("HTML", "Generate HTML");
+	//public static final ReportTemplateKey PDF = new ReportTemplateViewKey("PDF", "Generate PDF");
+	//public static final ReportTemplateKey CSV = new ReportTemplateViewKey("CSV", "Generate CSV");
+	//public static final ReportTemplateKey FOP = new ReportDeveloperTemplateViewKey("FOP", "Generate FOP");
 
 	private static final class ReportTemplateViewKey extends ReportTemplateKey implements ViewTransitionKey<Report>{
 		private ReportTemplateViewKey(String name, String help) {
@@ -139,6 +139,45 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			return true;
 		}
 	}
+	public static final class ReportTypeKey extends ReportTemplateKey implements ViewTransitionKey<Report>{
+		public ReportTypeKey(ReportType t) {
+			super(t.name(), t.getHelp());
+			this.type=t;
+		}
+
+		private final ReportType type;
+
+		@Override
+		public boolean allow(AppContext c, Report target) {
+			return target != null && type.allowSelect(c.getService(SessionService.class)) && canView(c, target);
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = super.hashCode();
+			result = prime * result + ((type == null) ? 0 : type.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!super.equals(obj))
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ReportTypeKey other = (ReportTypeKey) obj;
+			if (type == null) {
+				if (other.type != null)
+					return false;
+			} else if (!type.equals(other.type))
+				return false;
+			return true;
+		}
+	}
+	
 	private static final class ReportDeveloperTemplateViewKey extends ReportTemplateKey implements ViewTransitionKey<Report>{
 		private ReportDeveloperTemplateViewKey(String name, String help) {
 			super(name, help);
@@ -288,12 +327,19 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 						f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,defaults,PREVIEW,false));
 					}
 					boolean new_window=DOWNLOAD_FROM_NEW_TAB.isEnabled(conn);
-					f.addAction("HTML", new NextAction(new Icon(conn,"HTML","/accounting/html-file-48x48.png"),target,defaults, HTML,new_window));
-					f.addAction("PDF", new NextAction(new Icon(conn,"PDF","/accounting/pdf-file-48x48.png"),target,defaults,PDF,new_window));
-					f.addAction("CSV", new NextAction(new Icon(conn,"CSV","/accounting/csv-file-48x48.png"),target,defaults, CSV,new_window));
-					if(isReportDeveloper(conn.getService(SessionService.class))) {
-						f.addAction("FOP", new NextAction("FOP",target,defaults, FOP,new_window));
+					ReportTypeRegistry reg = ReportTypeRegistry.getInstance(conn);
+					SessionService sess = conn.getService(SessionService.class);
+					for( ReportType t : reg.getReportTypes()) {
+						if( t.allowSelect(sess)) {
+							String image = t.getImage();
+							if( image != null ) {
+								f.addAction(t.name(), new NextAction(new Icon(conn,t.name(),image), target, defaults, new ReportTypeKey(t), new_window));
+							}else {
+								f.addAction(t.name(), new NextAction(t.name(), target, defaults, new ReportTypeKey(t), new_window));
+							}
+						}
 					}
+					
 				}
 			}
 			catch (Exception e) {
@@ -444,10 +490,13 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			this.logFac = new ReportLogFactory(conn, conn.getService(SessionService.class).getLoginFactory(), fac);
 		}
      	addTransition(PREVIEW, new PreviewTransition());
-     	addTransition(HTML, new ExportTransition(ReportTypeRegistry.HTML));
-     	addTransition(PDF, new ExportTransition(reg.getReportType("pdf")));
-     	addTransition(CSV, new ExportTransition(reg.getReportType("csv")));
-    	addTransition(FOP, new ExportTransition(reg.getReportType("fop")));
+     	for(ReportType t  : reg.getReportTypes()) {
+     		addTransition(new ReportTypeKey(t), new ExportTransition(t));
+     	}
+//     	addTransition(HTML, new ExportTransition(ReportTypeRegistry.HTML));
+//     	addTransition(PDF, new ExportTransition(reg.getReportType("pdf")));
+//     	addTransition(CSV, new ExportTransition(reg.getReportType("csv")));
+//    	addTransition(FOP, new ExportTransition(reg.getReportType("fop")));
     }
 
 	@Override

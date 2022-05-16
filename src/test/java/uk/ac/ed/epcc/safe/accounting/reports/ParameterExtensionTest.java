@@ -76,7 +76,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		ReportType	XML = new ReportType("XML","xml", "text/xml","XML"); 
+		ReportType	XML = new ReportType("XML","xml", "text/xml","XML",null,null); 
 		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
 		checkContent(null, "expected_for.xml", out.toString());
 	}
@@ -98,7 +98,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		ReportType	XML = new ReportType("XML","xml", "text/xml","XML"); 
+		ReportType	XML = new ReportType("XML","xml", "text/xml","XML",null,null); 
 		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
 		checkContent(null, "expected_distinct.xml", out.toString());
 	}
@@ -130,7 +130,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		ReportType	XML = new ReportType("XML","xml", "text/xml","XML"); 
+		ReportType	XML = new ReportType("XML","xml", "text/xml","XML",null,null); 
 		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
 	
 		checkContent(null, "expected_period.xml", out.toString());
@@ -927,7 +927,7 @@ public void testParameterUserExpression() throws Exception {
 
 		// Get the params values from the Form
 		ReportBuilder.extractReportParametersFromForm(form, params);	
-		params.put("ReportType", ReportTypeRegistry.HTML);
+		params.put("ReportType", ReportTypeRegistry.getInstance(ctx).getReportType("HTML"));
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		reportBuilder.renderXML(params, out);
@@ -1114,7 +1114,7 @@ public void testParameterReportType3() throws Exception {
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		
-		ReportType	XML = new ReportType("XML","xml", "text/xml","XML"); 
+		ReportType	XML = new ReportType("XML","xml", "text/xml","XML",null,null); 
 		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
 		String string = out.toString();
 		System.out.println(string);
@@ -1151,7 +1151,7 @@ public void testParameterReportType3() throws Exception {
 		// render the form
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		
-		ReportType	XML = new ReportType("XML","xml", "text/xml","XML"); 
+		ReportType	XML = new ReportType("XML","xml", "text/xml","XML",null,null); 
 		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
 		String string = out.toString();
 		System.out.println(string);

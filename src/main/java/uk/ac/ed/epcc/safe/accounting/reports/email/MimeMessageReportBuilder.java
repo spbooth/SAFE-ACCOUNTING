@@ -232,8 +232,8 @@ public class MimeMessageReportBuilder extends ReportBuilder{
 	public static class MailReportTypeRegistry extends ReportTypeRegistry{
 		// email embedded html. Don't change the mime type as some email clients 
 		// only recognise text/html content.
-		public static final ReportType	MHTML = new DeveloperReportType("MHTML","html","text/html","HTML email part");
-		public static final ReportType	MTXT = new DeveloperReportType("MTXT","txt","text/plain","Text email part");
+		public static final ReportType	MHTML = new DeveloperReportType("MHTML","html","text/html","HTML email part",null,null);
+		public static final ReportType	MTXT = new DeveloperReportType("MTXT","txt","text/plain","Text email part",null,null);
 	//  
 		public MailReportTypeRegistry(AppContext conn) {
 			super(conn);

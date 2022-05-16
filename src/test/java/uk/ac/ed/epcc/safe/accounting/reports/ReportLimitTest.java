@@ -11,6 +11,7 @@ import org.junit.Test;
 import uk.ac.ed.epcc.safe.accounting.model.Report;
 import uk.ac.ed.epcc.safe.accounting.model.ReportTemplateTransitionProvider;
 import uk.ac.ed.epcc.safe.accounting.model.SetParamsVisitor;
+import uk.ac.ed.epcc.safe.accounting.model.ReportTemplateTransitionProvider.ReportTypeKey;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
@@ -124,7 +125,7 @@ public class ReportLimitTest extends AbstractTransitionServletTest {
 		Report target = new Report("TimeChart.xml",params);
 		setAction("CSV");
 		runTransition();
-		checkRedirectToTransition(prov, ReportTemplateTransitionProvider.CSV, target);
+		checkRedirectToTransition(prov,  new ReportTypeKey( ReportTypeRegistry.getInstance(ctx).getReportType("CSV")), target);
 		runTransition(); // it is a direct transition
 	}
 	@Test

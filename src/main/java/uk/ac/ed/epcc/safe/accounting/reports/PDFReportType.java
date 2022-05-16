@@ -33,11 +33,13 @@ import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import uk.ac.ed.epcc.webapp.AppContext;
 
 public final class PDFReportType extends ReportType {
-	public PDFReportType(String name,String extension, String mime, String description) {
-		super(name,extension,mime,description);
+	public PDFReportType(String name,String extension, String mime, String description,String help,String image) {
+		super(name,extension,mime,description,help,image);
 	}
 
-	
+	public PDFReportType(String name,String extension, String mime, String description) {
+		this(name,extension,mime,description,null,null);
+	}
 	
 	private static FopFactory fopFactory = null;
 	public Result getResult(AppContext conn, OutputStream out) throws Exception{

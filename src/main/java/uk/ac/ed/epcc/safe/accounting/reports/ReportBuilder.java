@@ -294,7 +294,9 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 						name,
 						conn.getInitParameter("extension."+name,name.toLowerCase()),
 						conn.getInitParameter("mime."+name,"text/plain"),
-						conn.getInitParameter("description."+name,name+" ReportType")
+						conn.getInitParameter("description."+name,name+" ReportType"),
+						conn.getInitParameter("help."+name),
+						conn.getInitParameter("image."+name)
 				);
 				
 			}catch(Exception t){
@@ -585,7 +587,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 	}
 	
 	public void setupExtensions(Map<String,Object> params) throws ParserConfigurationException{
-		setupExtensions(ReportTypeRegistry.HTML, params);
+		setupExtensions(ReportTypeRegistry.getInstance(getContext()).getReportType("HTML"), params);
 	}
 	public void setupExtensions(ReportType reportType,Map<String,Object> params)
 		throws ParserConfigurationException 
@@ -799,7 +801,8 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 	 * @throws Exception
 	 */
 	public void renderContent(Map<String,Object> params,SimpleXMLBuilder builder) throws Exception{
-		setupExtensions(ReportTypeRegistry.EHTML,params);
+		ReportType ehtml = ReportTypeRegistry.getInstance(getContext()).getReportType("EHTML");
+		setupExtensions(ehtml,params);
 		//setupExtensions(HTML,params);
 		for(Object o : params.values()){
 			if( o instanceof ReportExtension){
@@ -813,7 +816,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 		// refer to them by reference.
 		XMLBuilderSaxHandler handler = new XMLBuilderSaxHandler(builder,params);
 		SAXResult result = new SAXResult(handler);
-		renderXML(ReportTypeRegistry.EHTML, params, result);
+		renderXML(ehtml, params, result);
 	}
 
 	public void renderXML(ReportType type, Map<String, Object> params,

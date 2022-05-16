@@ -158,7 +158,7 @@ public class DeferredImageReportBuilder extends ReportBuilder{
 	
 	public static class DeferredImageTypeRegistry extends ReportTypeRegistry{
 		
-		public static final ReportType	DPNG = new DeveloperReportType("DPNG","png","image/png","PNG Image");
+		public static final ReportType	DPNG = new DeveloperReportType("DPNG","png","image/png","PNG Image",null,null);
 	//  
 		public DeferredImageTypeRegistry(AppContext conn) {
 			super(conn);

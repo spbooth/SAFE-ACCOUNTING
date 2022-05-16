@@ -29,12 +29,16 @@ public class ReportType {
 	private final String extension;
 	private final String mime;
 	final String description;
+	final String help;
+	final String image;
 
-	public ReportType(String name,String extension, String mime,String description) {
+	public ReportType(String name,String extension, String mime,String description,String help,String image) {
 		this.name = name;
 		this.extension = extension;
 		this.mime = mime;
 		this.description=description;
+		this.help=help;
+		this.image=image;
 		
 	}
 	public String name(){
@@ -42,6 +46,12 @@ public class ReportType {
 	}
 	public String getExtension() {
 		return extension;
+	}
+	public String getHelp() {
+		return help;
+	}
+	public String getImage() {
+		return image;
 	}
 
 	public boolean allowSelect(SessionService sess){

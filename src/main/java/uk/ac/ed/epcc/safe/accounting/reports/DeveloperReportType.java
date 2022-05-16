@@ -18,8 +18,8 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 public class DeveloperReportType extends ReportType{
 
 	public DeveloperReportType(String name, String extension, String mime,
-			String description) {
-		super(name, extension, mime, description);
+			String description,String help,String image) {
+		super(name, extension, mime, description,help,image);
 	}
 
 	@Override

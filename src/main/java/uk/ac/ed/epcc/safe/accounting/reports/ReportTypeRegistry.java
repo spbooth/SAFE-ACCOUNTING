@@ -1,10 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -26,8 +22,8 @@ public class ReportTypeRegistry extends AbstractContexed {
 
 	private Map<String,ReportType> report_type_reg = new LinkedHashMap<>();
 	// Standard ReportTypes These can be extended from the config
-    public static final ReportType	HTML = new ReportType("HTML","html", "text/html","HTML web page"); 
-    public static final ReportType	EHTML = new DeveloperReportType("EHTML","html","application/xhtml+xml","embedded XHTML web page");
+  //  public static final ReportType	HTML = new ReportType("HTML","html", "text/html","HTML web page"); 
+  //  public static final ReportType	EHTML = new DeveloperReportType("EHTML","html","application/xhtml+xml","embedded XHTML web page");
 //    public static final ReportType	PDF = new PDFReportType("PDF","pdf", "application/pdf", "Portable Document Format"); 
 //	public static final ReportType FOP = new DeveloperReportType("FOP","fop","text/xml","FOP formating lanuage XML"); 
 //    public static final ReportType	CSV = new CSVReportType("CSV","csv", "text/csv", "Comma seperated values");
@@ -113,7 +109,7 @@ public class ReportTypeRegistry extends AbstractContexed {
 		}
 
 		if (type == null) {
-			type = HTML;
+			type = getReportType("HTML");
 		}
 		return type;
 	}
@@ -125,9 +121,13 @@ public class ReportTypeRegistry extends AbstractContexed {
 	 */
 	protected Set<ReportType> getSpecialReportTypes(){
 		LinkedHashSet<ReportType> special = new LinkedHashSet<>();
-		special.add(HTML);
-		special.add(EHTML);
+//		special.add(HTML);
+//		special.add(EHTML);
 		return special;
+	}
+	
+	public Collection<ReportType> getReportTypes(){
+		return  Collections.unmodifiableCollection(report_type_reg.values());
 	}
 	/** Look up a report type.
 	 * If we can't find by name try looking up by extension.
@@ -175,9 +175,11 @@ public class ReportTypeRegistry extends AbstractContexed {
 			String extension = conn.getInitParameter(REPORT_TYPE_CONFIG_PREFIX+"."+name+".extension", name.toLowerCase());
 			String mime = conn.getInitParameter(REPORT_TYPE_CONFIG_PREFIX+"."+name+".mime", "text/"+name.toLowerCase());
 			String description = conn.getInitParameter(REPORT_TYPE_CONFIG_PREFIX+"."+name+".description", name.toLowerCase());
+			String help = conn.getInitParameter(REPORT_TYPE_CONFIG_PREFIX+"."+name+".help");
+			String image = conn.getInitParameter(REPORT_TYPE_CONFIG_PREFIX+"."+name+".image");
 			Class<? extends ReportType> clazz = conn.getPropertyClass(ReportType.class, ReportType.class, name);
 			try {
-				ReportType type= conn.makeParamObject(clazz, name,extension,mime,description);
+				ReportType type= conn.makeParamObject(clazz, name,extension,mime,description,help,image);
 				if( type != null  ){
 					report_type_reg.put(name,type);
 				}

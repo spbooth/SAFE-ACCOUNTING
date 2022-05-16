@@ -13,7 +13,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import uk.ac.ed.epcc.safe.accounting.model.ReportTemplateTransitionProvider.ReportTypeKey;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
+import uk.ac.ed.epcc.safe.accounting.reports.ReportTypeRegistry;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.TestTimeService;
 import uk.ac.ed.epcc.webapp.forms.html.BaseHTMLForm;
@@ -241,7 +243,7 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		HashMap<String, Object> params=new HashMap<>();
 		params.put("Message", "Hello world");
 		Report report = new Report("SimpleTestReport.xml",params);
-		setTransition(prov, ReportTemplateTransitionProvider.CSV, report);
+		setTransition(prov,  new ReportTypeKey( ReportTypeRegistry.getInstance(ctx).getReportType("CSV")), report);
 		runTransition();
 		
 		checkRedirect("/Data/ServeData/1/SimpleTestReport.csv");

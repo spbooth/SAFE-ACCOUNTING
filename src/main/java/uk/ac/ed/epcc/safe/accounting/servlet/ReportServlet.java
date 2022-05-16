@@ -110,6 +110,9 @@ public class ReportServlet extends SessionServlet {
 			String templateFileName = args.get(pos);
 			args.remove(pos);			
    
+			ReportTypeRegistry reg = ReportTypeRegistry.getInstance(conn);
+			ReportType html = reg.getReportType("HTML");
+			
 			templateName =  ReportBuilder.getTemplateName(templateFileName);
 			builder = ReportBuilder.getInstance(conn);
 			report_params.put("TemplateName", templateName);
@@ -117,7 +120,7 @@ public class ReportServlet extends SessionServlet {
 			Object type = report_params.get("submit");
 			if (type instanceof String) {
 				if (((String)type).startsWith("Preview")) {
-					reportType = ReportTypeRegistry.HTML;
+					reportType = html;
 				}
 				else {
 					reportType = builder.getReportTypeReg().getReportType(((String)type).replace("Export as ", ""));
@@ -135,7 +138,7 @@ public class ReportServlet extends SessionServlet {
 				reportType = builder.getReportTypeReg().getTemplateType(templateFileName);
 			}
 			if (reportType == null && DEFAULT_REPORT_TYPE_FEATURE.isEnabled(conn)) {
-				reportType=ReportTypeRegistry.HTML;
+				reportType=html;
 			}
 			if( reportType != null){
 				report_params.put("ReportType", reportType);
