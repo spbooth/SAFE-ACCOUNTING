@@ -16,8 +16,6 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.reports;
 
-import java.text.NumberFormat;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.DocumentFragment;
@@ -32,8 +30,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
 
 public class TableChartExtension extends ChartExtension {
 
-	public TableChartExtension(AppContext c,NumberFormat nf) throws ParserConfigurationException {
-		super(c,nf);
+	public TableChartExtension(AppContext c,ReportType type) throws ParserConfigurationException {
+		super(c,type);
 	}
 
 	

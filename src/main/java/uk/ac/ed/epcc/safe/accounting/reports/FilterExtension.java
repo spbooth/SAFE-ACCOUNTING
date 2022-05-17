@@ -16,8 +16,6 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.reports;
 
-import java.text.NumberFormat;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Element;
@@ -58,8 +56,8 @@ public class FilterExtension extends ReportExtension{
 	  }
 	  
 	
-  public FilterExtension( AppContext conn,NumberFormat nf) throws ParserConfigurationException{
-	  super(conn,nf);
+  public FilterExtension( AppContext conn,ReportType type) throws ParserConfigurationException{
+	  super(conn,type);
   }
   /** Make the default RecordSet if no Filter clauses are specified
    * 

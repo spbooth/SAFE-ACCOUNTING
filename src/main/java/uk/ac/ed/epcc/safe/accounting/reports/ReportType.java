@@ -87,5 +87,12 @@ public class ReportType {
 	public final String toString() {
 		return name.toString();
 	}
+	/** Does table formatting allow cell spanning
+	 * 
+	 * @return
+	 */
+	public boolean allowCellSpan() {
+		return true;
+	}
 	
 }

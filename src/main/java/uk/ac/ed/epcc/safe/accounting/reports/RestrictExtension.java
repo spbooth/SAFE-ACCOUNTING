@@ -16,14 +16,9 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.reports;
 
-import java.text.NumberFormat;
-
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.RestrictException;
@@ -49,9 +44,9 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
 public class RestrictExtension extends ReportExtension {
 	public static final String RESTRICT_LOC="http://safe.epcc.ed.ac.uk/restrict";
 	public static final Feature REPORT_DEFAULT_ALLOW = new Feature("report.default_allow",true,"Default permission for reports is allow");
-	public RestrictExtension(AppContext conn, NumberFormat nf)
+	public RestrictExtension(AppContext conn, ReportType type)
 			throws ParserConfigurationException {
-		super(conn, nf);
+		super(conn, type);
 	}
 
 	/** Check the current user corresponds to the specified restrictions 

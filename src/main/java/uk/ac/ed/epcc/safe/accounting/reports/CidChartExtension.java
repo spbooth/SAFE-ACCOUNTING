@@ -47,8 +47,8 @@ public class CidChartExtension extends ChartExtension {
     private final Map<String,MimeStreamData>  data = new LinkedHashMap<>();
     private int count=0;
     private Random rng;
-	public CidChartExtension(AppContext c,NumberFormat nf) throws ParserConfigurationException {
-		super(c,nf);
+	public CidChartExtension(AppContext c,ReportType type) throws ParserConfigurationException {
+		super(c,type);
 		rng=new Random();
 	}
 

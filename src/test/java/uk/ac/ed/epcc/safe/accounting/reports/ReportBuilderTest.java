@@ -279,8 +279,8 @@ public class ReportBuilderTest extends WebappTestBase {
 		setupParams(ctx, params);
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");
 		reportBuilder.setupExtensions(params);
-		
-		SVGChartExtension svg = new SVGChartExtension(ctx,NumberFormat.getInstance());
+		ReportType pdf = reportBuilder.getReportTypeReg().getReportType("pdf");
+		SVGChartExtension svg = new SVGChartExtension(ctx,pdf);
 		params.put("ChartExtension", svg);
 		reportBuilder.register(svg);
 		params.put("ParameterExtension", new ParameterExtension(ctx, null));
@@ -289,7 +289,8 @@ public class ReportBuilderTest extends WebappTestBase {
 		reportBuilder.buildReportParametersForm(form, params);
 
 		// render the form
-		params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, reportBuilder.getReportTypeReg().getReportType("pdf"));
+		
+		params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, pdf);
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		reportBuilder.renderXML(params,out);

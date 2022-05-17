@@ -17,16 +17,12 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.awt.Dimension;
-import java.text.NumberFormat;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
 
 import uk.ac.ed.epcc.webapp.AppContext;
 
@@ -41,8 +37,8 @@ import uk.ac.ed.epcc.webapp.AppContext;
 
 public class SVGChartExtension extends ChartExtension {
 
-	public SVGChartExtension(AppContext c,NumberFormat nf) throws ParserConfigurationException {
-		super(c,nf);
+	public SVGChartExtension(AppContext c,ReportType type) throws ParserConfigurationException {
+		super(c,type);
 	}
 
 	@Override

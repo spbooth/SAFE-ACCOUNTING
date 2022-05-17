@@ -16,35 +16,15 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.reports;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.URIResolver;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
@@ -54,10 +34,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 
@@ -66,23 +43,12 @@ import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.xml.ErrorSetErrorListener;
 import uk.ac.ed.epcc.safe.accounting.xml.LSResolver;
-import uk.ac.ed.epcc.webapp.AbstractContexed;
-import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.ContextCached;
-import uk.ac.ed.epcc.webapp.CurrentTimeService;
-import uk.ac.ed.epcc.webapp.Feature;
-import uk.ac.ed.epcc.webapp.content.ContentBuilder;
-import uk.ac.ed.epcc.webapp.content.HtmlBuilder;
-import uk.ac.ed.epcc.webapp.content.SimpleXMLBuilder;
-import uk.ac.ed.epcc.webapp.content.XMLBuilderSaxHandler;
+import uk.ac.ed.epcc.webapp.*;
+import uk.ac.ed.epcc.webapp.content.*;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.forms.Form;
-import uk.ac.ed.epcc.webapp.forms.inputs.Input;
-import uk.ac.ed.epcc.webapp.forms.inputs.ItemInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.LockedInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
-import uk.ac.ed.epcc.webapp.forms.result.FormResult;
+import uk.ac.ed.epcc.webapp.forms.inputs.*;
 import uk.ac.ed.epcc.webapp.limits.LimitException;
 import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -596,10 +562,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 		
 		// Note that reportType might be null when building
 		// the parameter form
-		NumberFormat nf = NumberFormat.getInstance();
-		if( reportType != null){
-			nf =	reportType.getNumberFormat(conn);
-		}
+		
 		ValueParserPolicy pol = new ValueParserPolicy(getContext());
 		if( reportType != null){
 			String mimeType = reportType.getMimeType();
@@ -629,12 +592,12 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 		}
 		
 		//always need parameter and restrict extension
-		ReportExtension parme = new ParameterExtension(conn, nf);
+		ReportExtension parme = new ParameterExtension(conn, reportType);
 		parme.setPolicy(pol);
 		parme.setParams(reportType,parameter_names,params);
 		register(parme);
 		params.put(PARAMETER_EXTENSION_TAG, parme);
-		RestrictExtension rest = new RestrictExtension(conn, nf);
+		RestrictExtension rest = new RestrictExtension(conn, reportType);
 		rest.setPolicy(pol);
 		rest.setParams(reportType,parameter_names,params);
 		register(rest);
@@ -653,7 +616,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 					getLogger().error("Extension "+extension_name+" not defined");
 				}else{
 					try {
-						ReportExtension ext = conn.makeParamObject(clazz, conn,nf);
+						ReportExtension ext = conn.makeParamObject(clazz, conn,reportType);
 						String param_name = conn.getInitParameter("ReportBuilder."+extension_name+".name",extension_name);
 						getLogger().debug("Adding extension "+ext.getClass().getCanonicalName()+" as "+param_name);
 						ext.setPolicy(pol);

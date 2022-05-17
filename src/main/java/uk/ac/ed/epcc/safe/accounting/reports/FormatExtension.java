@@ -16,20 +16,11 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.reports;
 
-import java.text.NumberFormat;
 import java.util.Date;
-import java.util.Iterator;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import org.w3c.dom.*;
 
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
@@ -53,9 +44,9 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 public class FormatExtension<T> extends ReportExtension {
     public static final String FORMAT_LOC="http://safe.epcc.ed.ac.uk/format";
-	public FormatExtension(AppContext conn, NumberFormat nf)
+	public FormatExtension(AppContext conn, ReportType type)
 			throws ParserConfigurationException {
-		super(conn, nf);
+		super(conn, type);
 	}
 	public Element getFirstElement(NodeList list, String name){
 		for(int i=0 ;i< list.getLength();i++){

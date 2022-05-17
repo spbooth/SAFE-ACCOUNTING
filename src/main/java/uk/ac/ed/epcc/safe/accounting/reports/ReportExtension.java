@@ -18,15 +18,8 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.io.ByteArrayOutputStream;
 import java.security.Principal;
-import java.text.DateFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
+import java.text.*;
+import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,12 +29,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
@@ -49,34 +37,16 @@ import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 //import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.expr.parse.FormatVisitor;
-import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
-import uk.ac.ed.epcc.safe.accounting.formatters.value.DomValueFormatter;
-import uk.ac.ed.epcc.safe.accounting.formatters.value.NumberValueFormatter;
-import uk.ac.ed.epcc.safe.accounting.formatters.value.ValueFormatter;
+import uk.ac.ed.epcc.safe.accounting.formatters.value.*;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
-import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.UnresolvedNameException;
+import uk.ac.ed.epcc.safe.accounting.properties.*;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ExpressionException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
-import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
-import uk.ac.ed.epcc.webapp.CurrentTimeService;
-import uk.ac.ed.epcc.webapp.Indexed;
-import uk.ac.ed.epcc.webapp.content.FormatProvider;
-import uk.ac.ed.epcc.webapp.content.Labeller;
-import uk.ac.ed.epcc.webapp.content.NumberTransform;
-import uk.ac.ed.epcc.webapp.content.Table;
-import uk.ac.ed.epcc.webapp.content.TableFormatPolicy;
-import uk.ac.ed.epcc.webapp.content.TableXMLFormatter;
-import uk.ac.ed.epcc.webapp.content.TableXMLGenerator;
-import uk.ac.ed.epcc.webapp.content.XMLBuilderSaxHandler;
-import uk.ac.ed.epcc.webapp.content.XMLDomBuilder;
-import uk.ac.ed.epcc.webapp.content.XMLGenerator;
+import uk.ac.ed.epcc.webapp.*;
+import uk.ac.ed.epcc.webapp.content.*;
 import uk.ac.ed.epcc.webapp.limits.LimitException;
 import uk.ac.ed.epcc.webapp.limits.LimitService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
@@ -131,6 +101,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	private final Document doc;
 	protected final ErrorSet errors;
 	final Logger log;
+	protected final ReportType type;
 	protected final NumberFormat nf; // number format used for final user display
 	protected DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	protected Map<String,Object> params=null;
@@ -139,11 +110,15 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	private boolean use_reference = false;
 	private TimerService timer;
 	
-	public ReportExtension(AppContext conn,NumberFormat nf) throws ParserConfigurationException{
+	public ReportExtension(AppContext conn,ReportType type) throws ParserConfigurationException{
 		super(conn);
 		
-		
-		this.nf=nf;
+		this.type=type;
+		if( type == null) {
+			this.nf=NumberFormat.getInstance();
+		}else {
+			this.nf=type.getNumberFormat(conn);
+		}
 		
 		DocumentBuilderFactory fac= DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = fac.newDocumentBuilder();
@@ -1126,7 +1101,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public void setUseReference(boolean val) {
 		use_reference=val;
 	}
-	protected DocumentFragment format(Table table, String type,String prefix) {
+	protected DocumentFragment format(Table table, String table_type,String prefix) {
 		if( use_reference ){
 			if( table != null && table.hasData()){
 				return addReference(new TableXMLGenerator(getContext(), nf, table));
@@ -1137,8 +1112,8 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		DocumentFragment frag = document.createDocumentFragment();
 		if (table != null && table.hasData()) {
 			Class<? extends TableFormatPolicy> clazz = getDefaultTableFormatPolicy();
-			if( ! empty(type)){
-				clazz=getContext().getPropertyClass(TableFormatPolicy.class, getDefaultTableFormatPolicy(), type);
+			if( ! empty(table_type)){
+				clazz=getContext().getPropertyClass(TableFormatPolicy.class, getDefaultTableFormatPolicy(), table_type);
 			}
 			TableFormatPolicy fmt;
 			try {
@@ -1148,6 +1123,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 					xmlDomBuilder.setPrefix(prefix);
 				}
 				fmt = getContext().makeParamObject(clazz,xmlDomBuilder, nf);
+				fmt.setAllowSpan(type.allowCellSpan());
 				fmt.add(table);
 			} catch (Exception e) {
 				addError("format_error", "Error formatting table", e);

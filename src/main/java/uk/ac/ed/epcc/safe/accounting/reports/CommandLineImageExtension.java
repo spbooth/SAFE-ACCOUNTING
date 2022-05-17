@@ -17,8 +17,6 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.NumberFormat;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -34,10 +32,10 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 public class CommandLineImageExtension extends ChartExtension {
 	
-    public CommandLineImageExtension(AppContext c,NumberFormat nf) 
+    public CommandLineImageExtension(AppContext c,ReportType type) 
     	throws ParserConfigurationException 
     {
-		super(c,nf);
+		super(c,type);
 	}
 	private int count=0;
 	

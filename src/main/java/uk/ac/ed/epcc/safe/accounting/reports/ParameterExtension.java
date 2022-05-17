@@ -161,9 +161,9 @@ public class ParameterExtension extends ReportExtension {
 	static final String PARAMETER_STAGE_ELEMENT = "Stage";
 	static final String PARAMETER_EAGER_STAGE_ELEMENT = "EagerStage";
 	public static final String PARAMETER_LOC = "http://safe.epcc.ed.ac.uk/parameter";	
-	public ParameterExtension(AppContext ctx, NumberFormat nf)
+	public ParameterExtension(AppContext ctx, ReportType type)
 			throws ParserConfigurationException {
-		super(ctx,nf);
+		super(ctx,type);
 		
 	}
 	protected Set<String> variable_names=new LinkedHashSet<>();

@@ -151,8 +151,8 @@ public class AtomExtension extends ReportExtension {
 			return true;
 		}
 	}
-	public AtomExtension(AppContext conn,NumberFormat nf) throws ParserConfigurationException {
-		super(conn,nf);
+	public AtomExtension(AppContext conn,ReportType type) throws ParserConfigurationException {
+		super(conn,type);
 	}
 	
 	public AtomResult expandNumberGroup(Period period,RecordSet set, Element element) throws IllegalReductionException, Exception{

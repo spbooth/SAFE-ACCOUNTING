@@ -19,11 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
-import java.text.NumberFormat;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,30 +28,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.charts.ChartService;
-import uk.ac.ed.epcc.safe.accounting.charts.MapperEntry;
-import uk.ac.ed.epcc.safe.accounting.charts.PlotEntry;
-import uk.ac.ed.epcc.safe.accounting.charts.SetMapperEntry;
+import uk.ac.ed.epcc.safe.accounting.charts.*;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.charts.BarTimeChart;
-import uk.ac.ed.epcc.webapp.charts.BarTimeChartData;
-import uk.ac.ed.epcc.webapp.charts.DataRange;
-import uk.ac.ed.epcc.webapp.charts.PeriodChart;
-import uk.ac.ed.epcc.webapp.charts.PeriodSequencePlot;
-import uk.ac.ed.epcc.webapp.charts.PeriodSetPlot;
-import uk.ac.ed.epcc.webapp.charts.PieTimeChart;
-import uk.ac.ed.epcc.webapp.charts.Plot;
-import uk.ac.ed.epcc.webapp.charts.SetPeriodChart;
-import uk.ac.ed.epcc.webapp.charts.TimeChart;
+import uk.ac.ed.epcc.webapp.charts.*;
 import uk.ac.ed.epcc.webapp.content.Table;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
@@ -127,8 +107,8 @@ public abstract class ChartExtension extends ReportExtension {
 		return c.has_data ;
 	}
 	private final ChartService serv;
-	public ChartExtension(AppContext c,NumberFormat nf) throws ParserConfigurationException {
-		super(c,nf);
+	public ChartExtension(AppContext c,ReportType type) throws ParserConfigurationException {
+		super(c,type);
 		serv=c.getService(ChartService.class);
 	}
 	@Override

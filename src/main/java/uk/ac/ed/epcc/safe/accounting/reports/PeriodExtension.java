@@ -17,7 +17,6 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.text.DateFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,11 +29,7 @@ import org.w3c.dom.Node;
 
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.UnexpandedContentException;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.time.CalendarFieldSplitPeriod;
-import uk.ac.ed.epcc.webapp.time.Period;
-import uk.ac.ed.epcc.webapp.time.RegularSplitPeriod;
-import uk.ac.ed.epcc.webapp.time.SplitPeriod;
-import uk.ac.ed.epcc.webapp.time.TimePeriod;
+import uk.ac.ed.epcc.webapp.time.*;
 
 
 /** Extension for parsing time period specifications from the XML report.
@@ -97,8 +92,8 @@ public class PeriodExtension extends ReportExtension {
 		}
 		return result;
 	}
-	public PeriodExtension(AppContext conn,NumberFormat nf) throws ParserConfigurationException {
-		super(conn,nf);
+	public PeriodExtension(AppContext conn,ReportType type) throws ParserConfigurationException {
+		super(conn,type);
 	}
 
 	/** get Period start date for display to user

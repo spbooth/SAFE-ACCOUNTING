@@ -13,8 +13,6 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.reports;
 
-import java.text.NumberFormat;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -22,9 +20,9 @@ import uk.ac.ed.epcc.webapp.content.TableFormatPolicy;
 
 public class DataTableExtension extends TableExtension {
 
-	public DataTableExtension(AppContext conn, NumberFormat nf)
+	public DataTableExtension(AppContext conn, ReportType type)
 			throws ParserConfigurationException {
-		super(conn, nf);
+		super(conn, type);
 	}
 
 	@Override

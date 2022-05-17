@@ -27,4 +27,9 @@ public final class CSVReportType extends ReportType {
 		nf.setGroupingUsed(false);
 		return nf;
 	}
+
+	@Override
+	public boolean allowCellSpan() {
+		return false;
+	}
 }

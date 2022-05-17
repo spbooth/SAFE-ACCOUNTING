@@ -13,7 +13,6 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.reports;
 
-import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,9 +30,9 @@ import uk.ac.ed.epcc.webapp.AppContext;
 public class EmbeddedExtension extends ReportExtension {
 
 	Map<String,Object> fragments = new HashMap<>();
-	public EmbeddedExtension(AppContext conn, NumberFormat nf)
+	public EmbeddedExtension(AppContext conn, ReportType type)
 			throws ParserConfigurationException {
-		super(conn, nf);
+		super(conn, type);
 	}
 	
 	public String addFragment(String key, Object data){

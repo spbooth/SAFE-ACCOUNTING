@@ -17,7 +17,6 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.io.ByteArrayOutputStream;
-import java.text.NumberFormat;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -25,10 +24,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 
 import uk.ac.ed.epcc.safe.accounting.reports.deferred.DeferredChartFactory;
 import uk.ac.ed.epcc.safe.accounting.servlet.ReportServlet;
@@ -50,8 +46,8 @@ import uk.ac.ed.epcc.webapp.session.SessionDataProducer;
 public class ServeDataChartExtension extends ChartExtension {
     public static final Feature DEFERRED_CHARTS= new Preference("reports.html.deferred_charts", false, "Defer chart generation in reports until image is requested by browser");
 	
-    public ServeDataChartExtension(AppContext c,NumberFormat nf) throws ParserConfigurationException {
-		super(c,nf);
+    public ServeDataChartExtension(AppContext c,ReportType type) throws ParserConfigurationException {
+		super(c,type);
 	}
 
 	@Override

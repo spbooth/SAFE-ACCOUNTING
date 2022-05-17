@@ -1152,8 +1152,8 @@ public class TableExtension extends ReportExtension {
 		}
 		
 	}
-	public TableExtension(AppContext conn,NumberFormat nf) throws ParserConfigurationException {
-		super(conn,nf);
+	public TableExtension(AppContext conn,ReportType type) throws ParserConfigurationException {
+		super(conn,type);
 	}
 	
 	public CompoundTable newCompoundTable() {
