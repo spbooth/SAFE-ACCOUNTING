@@ -52,7 +52,7 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 	public void testSimpleRelated() throws MessagingException, Exception{
 		Map params = new HashMap();
 		MimeMessageReportBuilder builder = new MimeMessageReportBuilder(ctx, "complex", params);
-		Emailer es = new Emailer(ctx);
+		Emailer es = Emailer.getFactory(ctx);
 		
 		MimeMessage message = es.makeBlankEmail(ctx, new String[]{"fred@example.org"}, "Test report");
 		MimeMultipart mp = new MimeMultipart("mixed");
@@ -73,7 +73,7 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 	public void testTextAndAttachment() throws MessagingException, Exception{
 		Map params = new HashMap();
 		MimeMessageReportBuilder builder = new MimeMessageReportBuilder(ctx, "complex", params);
-		Emailer es = new Emailer(ctx);
+		Emailer es = Emailer.getFactory(ctx);
 		
 		MimeMessage message = es.makeBlankEmail(ctx, new String[]{"fred@example.org"}, "Test report");
 		MimeMultipart mp = new MimeMultipart("mixed");
@@ -96,7 +96,7 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 	
 	@Test
 	public void testThunderbirdStructure() throws MessagingException, IOException{
-		Emailer es = new Emailer(ctx);
+		Emailer es = Emailer.getFactory(ctx);
 		MimeMessage m = new MimeMessage(es.getSession(ctx),getClass().getResourceAsStream("works.eml"));
 		
 		checkRelatedMessage(m);
@@ -106,7 +106,7 @@ public class MimeMessageReportBuilderTest extends WebappTestBase {
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
 	public void testWithTemplate() throws TransformerFactoryConfigurationError, Exception{
-		Emailer es = new Emailer(ctx);
+		Emailer es = Emailer.getFactory(ctx);
 		
 		
 		BufferedReader br = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream("test_email.txt")) );
