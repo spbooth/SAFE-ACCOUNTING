@@ -125,10 +125,12 @@
 	<xsl:template match="rep:table|Table|table">
 		<fo:table table-layout="fixed" width="100%">
 			<xsl:apply-templates select="rep:tr[position()=1]/*|Tr[position()=1]/*|tr[position()=1]/*" mode="columns" />
+			<xsl:if test="rep:tr[rep:th][not(child::rep:td)]|Tr[Th][not(child::Td)]|tr[th][not(child::td)]">
 			<fo:table-header font-size="10pt" font-family="sans-serif" background-color="#e7e7e7">
 			<!-- Assume all th cells come from header rows -->
 			<xsl:apply-templates select="rep:tr[rep:th][not(child::rep:td)]|Tr[Th][not(child::Td)]|tr[th][not(child::td)]" mode="header"/>
 			</fo:table-header>
+			</xsl:if>
 			<fo:table-body font-size="8pt" font-family="sans-serif"
 				hyphenate="true">
 				<!-- Assume all td cells come from body -->
