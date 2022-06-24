@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.util.Map;
 
 import uk.ac.ed.epcc.safe.accounting.db.AccountingUpdater;
-import uk.ac.ed.epcc.safe.accounting.db.PropertyContainerParseTargetComposite;
 import uk.ac.ed.epcc.safe.accounting.db.UsageRecordParseTarget;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
 import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParserPolicy;
@@ -30,7 +29,6 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.stream.StreamData;
 import uk.ac.ed.epcc.webapp.servlet.ServletService;
 import uk.ac.ed.epcc.webapp.timer.DefaultTimerService;

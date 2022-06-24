@@ -6,10 +6,6 @@ import java.util.Set;
 
 import uk.ac.ed.epcc.junit.TargetProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
-import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
-import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerPolicy;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 
 public class PluginOwnerTestCaseImpl<R,X extends PlugInOwner<R>> implements PluginOwnerTestCase<R, X> {
 
