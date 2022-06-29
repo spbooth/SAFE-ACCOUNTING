@@ -94,7 +94,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 		s.setField(ReportTemplate.REPORT_NAME, new StringFieldType(false, null, c.getIntegerParameter("report.template.name.length", 64)));
 		s.setField(ReportTemplate.TEMPLATE_NAME, new StringFieldType(false, null, c.getIntegerParameter("report.template.path.length", 128)));
 		s.setField(ReportTemplate.REPORT_DESCRIPTION, new StringFieldType(false, null, c.getIntegerParameter("report.template.description.length", 255)));
-		s.setField(ReportTemplate.REPORT_GROUP, new StringFieldType(true, reportGroups.getDefaultGroup(), 32));
+		s.setOptionalField(ReportTemplate.REPORT_GROUP, new StringFieldType(true, reportGroups.getDefaultGroup(), 32));
 		s.setOptionalField(ReportTemplateFactory.SORT_PRIORITY, new IntegerFieldType(false, 50));
 		try {
 			s.new Index("name_index",true,ReportTemplate.TEMPLATE_NAME);

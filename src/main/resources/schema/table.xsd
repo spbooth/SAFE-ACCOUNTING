@@ -209,6 +209,8 @@
 	   					type="par:TextOrParameterType" />
 	   				<xsd:element name="Value"
 	   					type="par:TextOrParameterType" />
+	   				<xsd:element name="ColCount" minOccurs="0" maxOccurs="1"
+	   					type="par:TextOrParameterType" />
 	   			</xsd:all>
 	   		</xsd:complexType>
 	   	</xsd:element>
@@ -687,6 +689,10 @@
 			<xsd:element name="Maximum"
 				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
 			</xsd:element>
+			<xsd:element name="Merge"
+				type="par:TextOrParameterType" maxOccurs="1" minOccurs="0">
+			</xsd:element>
 		</xsd:all>
 	</xsd:complexType>
+	
 </xsd:schema>

@@ -74,18 +74,8 @@ import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.content.BlankTransform;
-import uk.ac.ed.epcc.webapp.content.EnumeratingLabeller;
-import uk.ac.ed.epcc.webapp.content.FormatDateTransform;
-import uk.ac.ed.epcc.webapp.content.FormatProvider;
-import uk.ac.ed.epcc.webapp.content.InvalidArgument;
-import uk.ac.ed.epcc.webapp.content.Labeller;
-import uk.ac.ed.epcc.webapp.content.LabellerTransform;
-import uk.ac.ed.epcc.webapp.content.NumberFormatTransform;
-import uk.ac.ed.epcc.webapp.content.Operator;
-import uk.ac.ed.epcc.webapp.content.Table;
+import uk.ac.ed.epcc.webapp.content.*;
 import uk.ac.ed.epcc.webapp.content.Table.Col;
-import uk.ac.ed.epcc.webapp.content.Transform;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
@@ -1383,7 +1373,12 @@ public class TableExtension extends ReportExtension {
 			    String row = getParam("Row", inst);
 			    String col = getParam("Column", inst);
 			    String val = getParam("Value", inst);
-			    target.put(col,row,val);
+			    Integer span = getIntParam("ColCount", 1, inst);
+			    if( span > 1 ) {
+			    	target.put(col, row, new MultiColumnText(span, null, val));
+			    }else {
+			    	target.put(col,row,val);
+			    }
 			}else if ( instruction.equals("SortColumns")) {
 				target.sortCols(null);
 			}else if ( instruction.equals("SortRows")) {
@@ -1530,24 +1525,25 @@ public class TableExtension extends ReportExtension {
 				target.addTable(key, old);
 			}else if( instruction.equals("ThresholdRows")) {
 				String col = getParam("Column", inst);
+				String merge = getParam("Merge", inst);
 				Number min = getNumberParam("Minimum",null, inst);
 				Number max = getNumberParam("Maximum",null, inst);
 				if(col != null) {
 					if( min != null  ) {
 						try {
-							target.thresholdRows(col, MatchCondition.LT, min);
+							target.thresholdRows(col, MatchCondition.LT, min,merge);
 						}catch(Exception t) {
 							addError("Bad threshold", "Minimum", t);
 						}
-					}
-					if( max != null ) {
+					}else if( max != null ) {
 						try {
-							target.thresholdRows(col, MatchCondition.GT, max);
+							target.thresholdRows(col, MatchCondition.GT, max,merge);
 						}catch(Exception t) {
 							addError("Bad threshold", "Maximum", t);
 						}
 					}
 				}
+			
 			}else if(instruction.equals("PrintHeadings")){
 				target.setPrintHeadings(getBooleanParam("Value", true, inst));
 			}else if(instruction.equals("ShowColumnGroups")) {
