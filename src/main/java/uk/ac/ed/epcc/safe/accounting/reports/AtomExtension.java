@@ -279,7 +279,7 @@ public class AtomExtension extends ReportExtension {
 	public AtomResult combineAll(Operator op,Period period,RecordSet set, Node element) throws IllegalReductionException, Exception{
 		LinkedList<Element> arg = getUnboundedArgs(element);
 		try {
-			Number res = (Number)expandNumberGroup(period, set, arg.getFirst()).value;
+			Number res = (Number)expandNumberGroup(period, set, arg.pop()).value;
 			for(Element e : arg){
 				Number b = (Number)expandNumberGroup(period, set, e).value;
 				res = op.operate(res, b);
