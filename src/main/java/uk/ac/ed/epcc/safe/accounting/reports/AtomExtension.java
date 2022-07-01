@@ -17,11 +17,7 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.text.NumberFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -273,7 +269,7 @@ public class AtomExtension extends ReportExtension {
 		
 	}
 	public AtomResult combine(Operator op,Period period,RecordSet set, Node element) throws IllegalReductionException, Exception{
-		Element[] arg = getArgs(element);
+		Element[] arg = getBinaryArgs(element);
 		Number a = (Number)expandNumberGroup(period, set, arg[0]).value;
 		Number b = (Number)expandNumberGroup(period, set, arg[1]).value;
 		Number res = op.operate(a, b);
@@ -281,15 +277,19 @@ public class AtomExtension extends ReportExtension {
 		return new AtomResult<>(null,res);
 	}
 	public AtomResult combineAll(Operator op,Period period,RecordSet set, Node element) throws IllegalReductionException, Exception{
-		Element[] arg = getArgs(element);
-		Number res = (Number)expandNumberGroup(period, set, arg[0]).value;
-		for( int i=1; i< arg.length ; i++) {
-			Number b = (Number)expandNumberGroup(period, set, arg[1]).value;
-			res = op.operate(res, b);
+		LinkedList<Element> arg = getUnboundedArgs(element);
+		try {
+			Number res = (Number)expandNumberGroup(period, set, arg.getFirst()).value;
+			for(Element e : arg){
+				Number b = (Number)expandNumberGroup(period, set, e).value;
+				res = op.operate(res, b);
+			}
+			return new AtomResult<>(null,res);
+		}catch(NoSuchElementException nse) {
+			throw new ReportException("atom:CombineAll no child nodes", nse);
 		}
-		return new AtomResult<>(null,res);
 	}
-	protected Element[] getArgs(Node element) throws ReportException {
+	protected Element[] getBinaryArgs(Node element) throws ReportException {
 		int pos=0;
 		Element arg[] = new Element[2];
 		NodeList list = element.getChildNodes();
@@ -307,6 +307,17 @@ public class AtomExtension extends ReportExtension {
 			throw new ReportException( "atom:Combine Expecting two child nodes");	
 		}
 		return arg;
+	}
+	protected LinkedList<Element> getUnboundedArgs(Node element) throws ReportException {
+		LinkedList<Element> args = new LinkedList<>();
+		NodeList list = element.getChildNodes();
+		for( int i=0;i<list.getLength();i++){
+			Node n = list.item(i);
+			if( n.getNodeType()==Node.ELEMENT_NODE && n.getNamespaceURI()==element.getNamespaceURI()){
+				args.add((Element)n);
+			}
+		}
+		return args;
 	}
 	public String percent(Period period, RecordSet set, Node e) {
 		NumberFormat pf = NumberFormat.getPercentInstance();
@@ -326,7 +337,7 @@ public class AtomExtension extends ReportExtension {
 			}
 		}
 		try {
-			Element[] arg = getArgs(e);
+			Element[] arg = getBinaryArgs(e);
 			Number a = (Number)expandNumberGroup(period, set, arg[0]).value;
 			Number b = (Number)expandNumberGroup(period, set, arg[1]).value;
 			// always do divide as double for percentage
