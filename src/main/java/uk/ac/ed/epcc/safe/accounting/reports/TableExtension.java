@@ -1557,6 +1557,9 @@ public class TableExtension extends ReportExtension {
 				target.packColumnGroup(col);
 			}else if(instruction.equals("packAllColumnGroups")){
 				target.packAllColumnGroups();
+			}else if(instruction.equals("Caption")) {
+				String caption = normalise(getText(inst));
+				target.setCaption(caption);
 			}
 		} catch (Exception t) {
 			getLogger().error( "Error processing table " + instruction,t);

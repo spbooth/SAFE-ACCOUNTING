@@ -379,6 +379,7 @@
 	   	
 	   	</xsd:element>
 	   	<xsd:element name="packAllColumnGroups"></xsd:element>	
+	   	<xsd:element name="Caption" type="par:TextOrParameterType"/>
 	   </xsd:choice>
 	</xsd:group>
 
