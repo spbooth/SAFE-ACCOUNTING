@@ -75,6 +75,7 @@ public abstract class BatchParser extends BaseParser {
     
     public static final PropertyTag<Number> TIME_PROP = new PropertyTag<>(batch,"Time",Number.class,"Residency seconds proportional to associated CPUS");
     public static final PropertyTag<Number> HOURS_PROP = new PropertyTag<>(batch,"CPUHours",Number.class,"Residency hours proportional to associated CPUS");
+    public static final PropertyTag<Number> NODE_HOURS_PROP = new PropertyTag<>(batch,"NodeHours",Number.class,"Residency hours proportional to node count");
         
     public static final PropertyTag<Number> WAIT_PROP = new PropertyTag<>(batch,"Wait",Number.class,"Wait time in milliseconds");
    
@@ -106,6 +107,8 @@ public abstract class BatchParser extends BaseParser {
 				new BinaryPropExpression(RESIDENCY_PROP, Operator.DIV, new ConstPropExpression<>(Integer.class,Integer.valueOf(1000))));
 		res.put(HOURS_PROP,
 				new BinaryPropExpression(RESIDENCY_PROP, Operator.DIV, new ConstPropExpression<>(Integer.class,Integer.valueOf(3600*1000))));
+		res.put(NODE_HOURS_PROP,
+				new BinaryPropExpression(new BinaryPropExpression(NODE_COUNT_PROP,Operator.MUL,StandardProperties.RUNTIME_PROP), Operator.DIV, new ConstPropExpression<>(Integer.class,Integer.valueOf(3600*1000))));
 
 		// use requested value if we don't have actual value and vice versa
 		res.put(PROC_COUNT_PROP, REQUESTED_CPUS_PROP);
