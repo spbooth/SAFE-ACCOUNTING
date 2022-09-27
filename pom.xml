@@ -157,6 +157,26 @@
 		<!-- override version from versionused by fop-->
 <dependency>
     <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik-bridge</artifactId>
+    <version>1.15</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik-extension</artifactId>
+    <version>1.15</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik-gvt</artifactId>
+    <version>1.15</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik-transcoder</artifactId>
+    <version>1.15</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.xmlgraphics</groupId>
     <artifactId>batik-anim</artifactId>
     <version>1.15</version>
 </dependency>
