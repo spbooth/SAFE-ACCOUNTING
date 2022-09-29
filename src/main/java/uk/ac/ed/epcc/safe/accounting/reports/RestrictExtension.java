@@ -238,4 +238,34 @@ public class RestrictExtension extends ReportExtension {
 			}
 		}
 	}
+
+	@Override
+	public boolean wantReplace(Element e) {
+		return RESTRICT_LOC.equals(e.getNamespaceURI());
+	}
+
+	@Override
+	public Node replace(Element e) {
+		String name = e.getLocalName();
+		switch(name) {
+		case "RestrictedSection": return restrictedSection(e);
+		case "RequriedRole":
+		case "SufficientRole":
+		case "RequireRelationship":
+		case "SufficientRelationship":
+			return null; // Just remove report access markup
+		}
+		
+		return super.replace(e);
+	}
+	public Node restrictedSection(Element e) {
+		boolean allow=true;
+		NodeList roles = e.getElementsByTagNameNS(RESTRICT_LOC, "Roles");
+		for(int i=0 ; i < roles.getLength() ; i++) {
+			allow = allow && checkAccess(roles.item(i));
+		}
+		NodeList content = e.getElementsByTagNameNS(RESTRICT_LOC, allow ? "Content" : "Fallback");
+		return transformNodeListContents(content);
+		
+	}
 }

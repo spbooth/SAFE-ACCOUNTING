@@ -11,7 +11,7 @@
  -->
 	<!-- Import the identity transformation. -->
 	<xsl:import href="identity.xsl" />
-	<xsl:import href="restrict.xsl" />
+	<!--  <xsl:import href="restrict.xsl" /> -->
 	<!-- register external parameters with param statements -->
 	<xsl:param name="ParameterExtension"/>
 	

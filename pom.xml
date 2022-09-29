@@ -153,7 +153,34 @@
 			<version>2.0.26</version>
 		</dependency>
 		
-
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-svggen -->
+		<!-- override version from versionused by fop
+<dependency>
+    <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik-bridge</artifactId>
+    <version>1.15</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik-extension</artifactId>
+    <version>1.15</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik-gvt</artifactId>
+    <version>1.15</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik-transcoder</artifactId>
+    <version>1.15</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik-anim</artifactId>
+    <version>1.15</version>
+</dependency>
+-->
 		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
 		<dependency>
 			<groupId>javax.servlet</groupId>

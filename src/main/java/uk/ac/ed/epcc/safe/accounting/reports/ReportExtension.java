@@ -65,10 +65,15 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  * 
  * Each extension also implements {@link TemplateValidator} and should perform
  * additional checks for the Elements that they support.
+ * 
+ * 
+ * Originally methods from these extensions were used to implement custom operations within an associated stylesheet
+ * however stylesheet extensions mechanisms are tied to the xlst implementation so it is more standards conforming to
+ * have the extension implement the entire DOM to DOM document translation
  * @author spb
  *
  */
-public abstract class ReportExtension extends SelectBuilder implements Contexed, TemplateValidator{
+public abstract class ReportExtension extends SelectBuilder implements Contexed, TemplateValidator, DomTransform{
 	
 	private static final String NAME_ATTR = "name";
 	private static final String PARAMETER_REF_NAME = "ParameterRef";
@@ -98,7 +103,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	
 	public static final String PROPERTY_PARAM_PREFIX = "property:";
 	
-	private final Document doc;
+	private Document doc;
 	protected final ErrorSet errors;
 	final Logger log;
 	protected final ReportType type;
@@ -1091,6 +1096,24 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 	
 	}
+	/** find the period element that is in scope for an element
+	 * must be 
+	 * 
+	 * @param e
+	 * @return
+	 * @throws Exception 
+	 */
+	public Period findPeriodInScope(Element e) throws Exception {
+		NodeList periods = e.getElementsByTagNameNS(PERIOD_NS, PERIOD_ELEMENT);
+		if( periods.getLength() > 0 ) {
+			return makePeriod(periods.item(periods.getLength()-1)); // last cild period
+		}
+		Node parent = e.getParentNode();
+		if( parent.getNodeType() == Node.DOCUMENT_NODE) {
+			return makePeriod(null);
+		}
+		return findPeriodInScope((Element) parent);
+	}
 	
 	/** Store the table in the parameters list and just reference it
 	 * via a processing instruction. This is to expose the table to a ContentBuilder
@@ -1232,4 +1255,69 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		
 	}
+	@Override
+	public void transform(Document source, Document destination) {
+		doc = destination;
+		destination.appendChild(transformElement(source.getDocumentElement()));
+	}
+	public Node transformNode(Node source) {
+		switch(source.getNodeType()) {
+		case Node.ELEMENT_NODE: return transformElement((Element)source);
+		default: 
+			Node new_node = source.cloneNode(true);
+			getDocument().adoptNode(new_node);
+			return new_node;
+		}
+	}
+	public Node transformNodeList(NodeList content) {
+		DocumentFragment result = getDocument().createDocumentFragment();
+		for( int i = 0 ; i < content.getLength() ; i++) {
+			Node item = content.item(i);
+			if( item.getNodeType() != Node.ATTRIBUTE_NODE) {
+				Node n = transformNode(item);
+				if( n != null ) {
+					result.appendChild(n);
+				}
+			}
+		}
+		return result;
+	}
+	public Node transformNodeListContents(NodeList content) {
+		DocumentFragment result = getDocument().createDocumentFragment();
+		for( int i = 0 ; i < content.getLength() ; i++) {
+			Node item = content.item(i);
+			if( item.getNodeType() == Node.ELEMENT_NODE) {
+				
+				result.appendChild(transformNodeList(item.getChildNodes()));
+			}
+		}
+		return result;
+	}
+	
+	public boolean wantReplace(Element e) {
+		return false;
+	}
+	public Node replace(Element e) {
+		return null;
+	}
+	public Node transformElement(Element source) {
+		if( wantReplace(source)) {
+			return replace(source);
+		}else {
+			Element new_element = (Element) source.cloneNode(false);
+			getDocument().adoptNode(new_element);
+			NodeList children = source.getChildNodes();
+			if(children != null) {
+				for( int i=0 ; i < children.getLength(); i++) {
+					Node c = transformNode(children.item(i));
+					if( c != null ) {
+						new_element.appendChild(c);
+					}
+				}
+			}
+			return new_element;
+			
+		}
+	}
+	
 }

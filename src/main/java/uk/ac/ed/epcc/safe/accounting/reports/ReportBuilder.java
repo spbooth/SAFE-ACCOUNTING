@@ -85,7 +85,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 
 	public static final Feature CHECK_PARAMETER_NAMES = new Feature("reports.check_parameter_names",true,"Check that report parameter names come from the valid set");
 	public static final Feature EMBEDDED_USE_REFERENCE = new Feature("reports.embedded.use_reference",true,"XMLGenerators (e.g. tables) are added directly to the final XMLBuilder to allow links etc");
-	public static final Feature ALWAYS_RUN_PARAMETER_TRANSFORM = new Feature("reports.always_run_parameter_transform",true,"Assume checking if transform is needed is as expensive as ruuning it");
+	//public static final Feature ALWAYS_RUN_PARAMETER_TRANSFORM = new Feature("reports.always_run_parameter_transform",true,"Assume checking if transform is needed is as expensive as ruuning it");
 	public class Resolver implements URIResolver {
 
 		public Source resolve(String href, String base)
@@ -444,6 +444,9 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 		}
 	}
 
+	private void logSource(String text,Document s) {
+		logSource(text,new DOMSource(s));
+	}
 	private void logSource(String text, Source s){
 		if( log_source) {
 			try{
@@ -781,28 +784,15 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 		SAXResult result = new SAXResult(handler);
 		renderXML(ehtml, params, result);
 	}
-
-	public void renderXML(ReportType type, Map<String, Object> params,
-			Result out) throws Exception {
-
-		// Get the XML input document
-		Source xmlSource = new DOMSource(getParameterDocument());
-
-		// always try parameters.
-		xmlSource = runParametersTransform( xmlSource,params);
-		// Get the report type
+	private Document transformList(Document xmlSource,String transform_names[],int count,Map<String, Object> params) throws DataFault, TransformerFactoryConfigurationError, TransformerException {
 		TimerService timer = conn.getService(TimerService.class);
-		
-		
-		String transform_list = conn.getInitParameter("ReportBuilder."+type.name()+".transform_list", "identity.xsl");
-		getLogger().debug("Transform list ReportBuilder."+type.name()+".transform_list is "+transform_list);
-		String transform_names[] = transform_list.split("\\s*,\\s*");
 		String name="";
-		try{
-			for( int i=0; i< (transform_names.length-1) ; i++){
-				name = transform_names[i];
-				name = name.trim();
-				if( name.length() > 0){
+
+		for( int i=0; i< count ; i++){
+			name = transform_names[i];
+			name = name.trim();
+			if( name.length() > 0){
+				if( name.endsWith(".xsl")) {
 					if( timer != null){
 						timer.startTimer("xml-transform "+name);
 					}
@@ -812,13 +802,71 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 					logSource(name, xmlSource);
 					// Perform the transformation, sending the output to the response.
 					DOMResult result = new DOMResult(docBuilder.newDocument());
-					transformer.transform(xmlSource, result);
-					xmlSource = new DOMSource(result.getNode());
+					transformer.transform(new DOMSource(xmlSource), result);
+					xmlSource = (Document) result.getNode();
 					if( timer != null){
 						timer.stopTimer("xml-transform "+name);
 					}
+				}else {
+					Object x = params.get(name);
+					if( x != null && x instanceof DomTransform) {
+						DomTransform t = (DomTransform)x;
+
+						if( timer != null){
+							timer.startTimer("dom-transform "+name);
+						}
+						Document new_doc = docBuilder.newDocument();
+						t.transform(xmlSource, new_doc);
+						xmlSource=new_doc;
+						if( timer != null){
+							timer.stopTimer("dom-transform "+name);
+						}
+					}else {
+						getLogger().error("Bad DOMTransform "+name);
+					}
 				}
 			}
+		}
+		return xmlSource;
+	}
+
+	/** Generate a report result.
+	 * 
+	 * This proceeds as a series of transformation that can either be XLST stylesheets
+	 * or a {@link DomTransform}. The last transform in the chain must be a XLST transform
+	 * and may be generating a non XML result.
+	 * 
+	 * @param type
+	 * @param params
+	 * @param out
+	 * @throws Exception
+	 */
+	public void renderXML(ReportType type, Map<String, Object> params,
+			Result out) throws Exception {
+
+		// Get the XML input document
+		Document xmlSource = getParameterDocument();
+
+		// always try parameters.
+		//xmlSource = runParametersTransform( xmlSource,params);
+		// Get the report type
+		
+		
+		String parameter_transform_list = conn.getInitParameter("ReportBuilder."+type.name()+".parameter_transform_list", "RestrictExtension,ParameterExtension");
+
+		String transform_list = conn.getInitParameter("ReportBuilder."+type.name()+".transform_list", "identity.xsl");
+			String parameter_transform_names[] = parameter_transform_list.split("\\s*,\\s*");
+		String transform_names[] = transform_list.split("\\s*,\\s*");
+		TimerService timer = conn.getService(TimerService.class);
+		String name="";
+		try{
+			// parameter/restrict transform
+			xmlSource = transformList(xmlSource, parameter_transform_names, parameter_transform_names.length , params);
+			
+			getLogger().debug("Transform list ReportBuilder."+type.name()+".transform_list is "+transform_list);
+
+			xmlSource = transformList(xmlSource, transform_names, transform_names.length -1, params);
+			
 			name = transform_names[transform_names.length-1];
 			//name=null;
 			if( timer != null){
@@ -827,7 +875,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 			logSource(name, xmlSource);
 			Transformer transformer = getXSLTransform(name, params);
 			
-			transformer.transform(xmlSource,out );
+			transformer.transform(new DOMSource(xmlSource),out );
 			if( timer != null){
 				timer.stopTimer("xml-transform "+name);
 			}
@@ -970,24 +1018,24 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
     public Set<ErrorSet> getErrors(){
     	return error_sets;
     }
-	// The routine that generates the html:
-	protected Source runParametersTransform(Source xmlSource,
-			Map<String, Object> params) throws Exception {
-		// If the report has parameter content the first pass will substitute them.
-		// Is the test as expensive as the transform ??
-		if (ALWAYS_RUN_PARAMETER_TRANSFORM.isEnabled(getContext()) || needParameterTransform()) {
-
-			Transformer transformer = getXSLTransform(
-					"parameters.xsl", params);
-			logSource("parameters.xsl", xmlSource);
-			// Perform the transformation, sending the output to the response.
-			DOMResult result = new DOMResult();
-			transformer.transform(xmlSource, result);
-			xmlSource = new DOMSource(result.getNode());
-
-		}
-		return xmlSource;
-	}
+//	// The routine that generates the html:
+//	protected Document runParametersTransform(Document xmlSource,
+//			Map<String, Object> params) throws Exception {
+//		// If the report has parameter content the first pass will substitute them.
+//		// Is the test as expensive as the transform ??
+//		if (ALWAYS_RUN_PARAMETER_TRANSFORM.isEnabled(getContext()) || needParameterTransform()) {
+//
+//			Transformer transformer = getXSLTransform(
+//					"parameters.xsl", params);
+//			logSource("parameters.xsl", xmlSource);
+//			// Perform the transformation, sending the output to the response.
+//			DOMResult result = new DOMResult();
+//			transformer.transform(new DOMSource(xmlSource), result);
+//			xmlSource = (Document) result.getNode();
+//
+//		}
+//		return xmlSource;
+//	}
 
 	
 

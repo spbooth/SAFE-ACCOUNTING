@@ -672,9 +672,12 @@ public class ParameterExtension extends ReportExtension {
 			
 			expander.setExpressionTarget((ExpressionTarget)o);
 			for(int i=0;i<template.getLength();i++){
-				Node new_n = copyNode(expander,doc, template.item(i));
-				if( new_n != null){
-					result.appendChild(new_n);
+				Node item = template.item(i);
+				if( item.getNodeType() != Node.ATTRIBUTE_NODE ) {
+					Node new_n = copyNode(expander,doc, item);
+					if( new_n != null ){
+						result.appendChild(new_n);
+					}
 				}
 			}
 			result.appendChild(doc.createTextNode("\n"));
@@ -933,7 +936,7 @@ public class ParameterExtension extends ReportExtension {
 		}
 		String parameterName = this.getAttribute(NAME_ATTR, element);
 		if( parameterName == null ){
-			addError("Missing name", "No name specified for Parameter element");
+			addError("Missing name", "No name specified for Repeat element");
 			// No name
 			return result;
 		}
@@ -978,7 +981,7 @@ public class ParameterExtension extends ReportExtension {
 			for( Object dat : list){
 				try{
 					params.put(variable,dat);
-					result.appendChild(expand(doc,element.getChildNodes()));
+					result.appendChild(transformNodeList(element.getChildNodes()));
 				}catch(Exception e){
 					addError("Bad Repeat", "Exception in repeat expansion", e);
 				}
@@ -1010,7 +1013,7 @@ public class ParameterExtension extends ReportExtension {
 		
 		String variable = this.getAttribute(VAR_ATTR, element);
 		if( variable == null || variable.trim().length() == 0){
-			addError("Bad Repeat", "No variable specified");
+			addError("Bad For", "No variable specified");
 			return result;
 		}
 		if( parameter_names != null && parameter_names.contains(variable)){
@@ -1056,7 +1059,7 @@ public class ParameterExtension extends ReportExtension {
 						if( item.getNodeType() == Node.ELEMENT_NODE && 
 								((Element)item).getNamespaceURI().equals(element.getNamespaceURI())  &&
 								((Element)item).getLocalName().equals(CONTENT_ELEM)) {
-							result.appendChild(expand(doc,item.getChildNodes()));
+							result.appendChild(transformNodeList(item.getChildNodes()));
 						}
 					}
 				}catch(Exception e){
@@ -1180,7 +1183,7 @@ public class ParameterExtension extends ReportExtension {
 						// expand all child content elements (schema only expects one)
 						Node item = content_list.item(j);
 						if( item.getNodeType() != Node.ATTRIBUTE_NODE ) {
-							result.appendChild(expandNode(doc,item));
+							result.appendChild(transformNode(item));
 						}
 					}
 				}catch(Exception e){
@@ -1199,6 +1202,7 @@ public class ParameterExtension extends ReportExtension {
 		return result;
 		
 	}
+	/*
 	private Node expand(Document doc,NodeList childNodes) throws ReportException {
 		DocumentFragment result = doc.createDocumentFragment();
 		for(int i=0;i<childNodes.getLength();i++){
@@ -1257,13 +1261,14 @@ public class ParameterExtension extends ReportExtension {
 		}
 		return null;
 	}
+	*/
 	@Override
-	public  String getText(Element e) throws ReportException{
+	public  String getText(Node e) throws ReportException{
 		// Filters etc may want to use pre-defined parameters
 		// like current authenticated user.
-		if( e.getElementsByTagNameNS(PARAMETER_LOC, PARAMETER_ELEM).getLength()>0){
+		if( e.getNodeType() == Node.ELEMENT_NODE && ((Element)e).getElementsByTagNameNS(PARAMETER_LOC, PARAMETER_ELEM).getLength()>0){
 			
-				final String text = super.getText((Element)expandElement(getDocument(), e));
+				final String text = super.getText(transformNode( e));
 				log.debug("Text expanded to "+text);
 				return text;
 		}else{
@@ -1332,5 +1337,83 @@ public class ParameterExtension extends ReportExtension {
 				"the report generation it might be easier to use a ParameterRef element");
 		cb.addTable(c, c.getService(ValueParserService.class).getDocumentationTable());
 		return cb;
+	}
+	@Override
+	public boolean wantReplace(Element e) {
+		return PARAMETER_LOC.equals(e.getNamespaceURI());
+	}
+	@Override
+	public Node replace(Element e) {
+		String name = e.getLocalName();
+		try {
+			switch(name) {
+			case "Parameter": return parameter(e);
+			case "FormatParameter": return formatParameter(e.getAttribute("name"), e.getChildNodes());
+			case "Repeat" : return repeat(e);
+			case FOR_ELEMENT : return For(e);
+			case "Distinct": return doDistinct(e);
+			case "IfSet":  
+				String a_name = e.getAttribute("name");
+				if( variable_names.contains(a_name)) {
+					addError("Illegal expansion","Parameter "+a_name+" is a loop variable and cannot be accessed using "+e.getLocalName());
+					return null;
+				}
+				boolean set = isSet(a_name);
+				NodeList content = e.getElementsByTagNameNS(PARAMETER_LOC, set ? "Content": "Fallback");
+				return transformNodeListContents(content);
+
+			case "IfNotSet":  
+				String a_name2 = e.getAttribute("name");
+				if( variable_names.contains(a_name2)) {
+					addError("Illegal expansion","Parameter "+a_name2+" is a loop variable and cannot be accessed using "+e.getLocalName());
+					return null;
+				}
+				boolean not_set =  ! isSet(a_name2);
+				NodeList content2 = e.getElementsByTagNameNS(PARAMETER_LOC, not_set ? "Content": "Fallback");
+				return transformNodeListContents(content2);
+			case "Optional": return doOptional(e);
+			case PARAMETER_REF_ELEMENT:
+			   Node n =  e.cloneNode(true); // keep parameter ref for later stages
+			   getDocument().adoptNode(n);
+			   return n;
+			case PARAMETER_DEF_ELEMENT:
+			case PARAMETER_STAGE_ELEMENT:
+			case PARAMETER_EAGER_STAGE_ELEMENT:
+			case "Text":
+			case "PageTitle": return null;
+			default: addError("unexpected expansion", name, e);
+			}
+		}catch(Exception er) {
+			addError("parameter", "Error expanding parameter content", e, er);
+		}
+		return super.replace(e);
+	}
+	
+	private Node doDistinct(Element e) {
+		return null;
+	}
+	private Node doOptional(Element e) {
+		try {
+			String text= getText(value(e));
+			NodeList options = e.getElementsByTagNameNS(PARAMETER_LOC, "Option");
+			for(int i=0 ; i<options.getLength(); i++) {
+				Element option = (Element) options.item(i);
+				NodeList targets= option.getElementsByTagNameNS(PARAMETER_LOC, "Target");
+				boolean expand=false;
+				for(int j=0 ;j < targets.getLength(); j++) {
+					Element target = (Element) targets.item(j);
+					if( text.equals(getText(target))) {
+						expand=true;
+					}
+				}
+				if( expand ) {
+					return transformNodeListContents(option.getElementsByTagNameNS(PARAMETER_LOC, CONTENT_ELEM));
+				}
+			}
+			
+		} catch (Exception e1) {
+			addError("Bad Optional","Error making Optional",e,e1);
+		}
+		return null;
 	}
 }

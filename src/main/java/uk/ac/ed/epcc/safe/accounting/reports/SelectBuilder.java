@@ -372,9 +372,10 @@ public abstract class SelectBuilder {
 	 * @param e Element
 	 * @return String
 	 */
-	public String getText(Element e) throws ReportException {
-		StringBuilder result = new StringBuilder();
+	public String getText(Node e) throws ReportException {
+		
 		NodeList list = e.getChildNodes();
+		StringBuilder result = new StringBuilder();
 		for(int i=0; i< list.getLength(); i++){
 			Node n = list.item(i);
 			int type = n.getNodeType();
