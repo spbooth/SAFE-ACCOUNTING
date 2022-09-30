@@ -260,12 +260,14 @@ public class RestrictExtension extends ReportExtension {
 	}
 	public Node restrictedSection(Element e) {
 		boolean allow=true;
-		NodeList roles = e.getElementsByTagNameNS(RESTRICT_LOC, "Roles");
-		for(int i=0 ; i < roles.getLength() ; i++) {
-			allow = allow && checkAccess(roles.item(i));
+		NodeList children = e.getChildNodes();
+		for(int i=0 ; i < children.getLength() ; i++) {
+			Node n = children.item(i);
+			if( n.getNodeType() == Node.ELEMENT_NODE && n.getLocalName().equals("Roles") && (n.getNamespaceURI() == null || n.getNamespaceURI().equals(RESTRICT_LOC))) {
+				allow = allow && checkAccess(n);
+			}
 		}
-		NodeList content = e.getElementsByTagNameNS(RESTRICT_LOC, allow ? "Content" : "Fallback");
-		return transformNodeListContents(content);
-		
+		String expand = allow ? "Content" : "Fallback";
+		return transformSubElementContents(e, expand);
 	}
 }

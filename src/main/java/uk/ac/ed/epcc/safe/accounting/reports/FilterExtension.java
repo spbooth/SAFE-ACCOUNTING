@@ -59,20 +59,6 @@ public class FilterExtension extends ReportExtension{
   public FilterExtension( AppContext conn,ReportType type) throws ParserConfigurationException{
 	  super(conn,type);
   }
-  /** Make the default RecordSet if no Filter clauses are specified
-   * 
-   * @return RecordSet
-   */
-  
-  public RecordSet makeSelector() {
-	  try{
-		  AccountingService serv = getContext().getService(AccountingService.class);
-		  return new RecordSet(serv);
-	  }catch(Exception t){
-		  addError("RecordSet Error","Error making default selector" , t);
-		  return null;
-	  }
-  }
   /** Make a RecordSet based on all the Filter clauses in scope.
    * 
    * @param filters

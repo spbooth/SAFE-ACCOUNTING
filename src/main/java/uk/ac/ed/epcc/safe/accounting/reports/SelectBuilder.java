@@ -128,7 +128,15 @@ public abstract class SelectBuilder {
 				
 			}
 	
-	
+	/** Parse a string into a value appropriate to a target {@link PropExpression}
+	 * 
+	 * @param <T>  Type being parsed
+	 * @param tag  {@link PropExpression} used to set type.
+	 * @param fmt  Optional format string to force a particular value parser
+	 * @param value Text value to parse
+	 * @return
+	 * @throws Exception
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T parse(PropExpression<T> tag,String fmt, String value) throws Exception {
 		if (tag == null) {
@@ -140,6 +148,14 @@ public abstract class SelectBuilder {
 		
 	}
 
+	/** PArse a string into a {@link PropExpression}
+	 * 
+	 * @param finder
+	 * @param name
+	 * @return
+	 * @throws UnresolvedNameException
+	 * @throws ParseException
+	 */
 	public PropExpression getExpression(PropertyFinder finder, String name) throws UnresolvedNameException, ParseException {
 		if(name == null || name.trim().length()==0){
 			throw new ParseException("Empty expression");

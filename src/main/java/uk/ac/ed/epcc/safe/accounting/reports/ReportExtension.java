@@ -31,6 +31,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.*;
 
+import uk.ac.ed.epcc.safe.accounting.AccountingService;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
@@ -140,25 +141,46 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 	    timer = conn.getService(TimerService.class);
 	}
+	/** Get a logger for this class
+	 * 
+	 * @return
+	 */
 	protected final Logger getLogger(){
 		return log;
 	}
-	
+	/** Utility method to start a named timer
+	 * 
+	 * @param name
+	 */
 	protected final void startTimer(String name){
 		if( timer != null){
 			timer.startTimer(name);
 		}
 	}
+	/** Utility method to stop a named timer
+	 * 
+	 * @param name
+	 */
 	protected final void stopTimer(String name){
 		if( timer != null){
 			timer.stopTimer(name);
 		}
 	}
+	/** Cache the reporting context internally
+	 * 
+	 * @param type
+	 * @param names
+	 * @param p
+	 */
 	public void setParams(ReportType type,Set<String> names,Map<String,Object> p){
 		this.parameter_names=names;
 		this.params=p;
 	}
-	
+	/** Add an error to the internal error set
+	 * 
+	 * @param type
+	 * @param details
+	 */
 	public final void addError(String type,String details){
 		log.debug("add error "+type+" "+details);
 		errors.add(type, details);
@@ -174,6 +196,11 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		log.debug(details);
 	}
+	/** Add an error to the internal error set. A text version of the 
+	 * Node will be added to the detailed error message so only use for
+	 * nodes relatively close to the leaf nodes
+	 * 
+	 */
 	public final void addError(String type, String details, Node e){
 		addError(type, details+"\n"+makeString(e));
 	}
@@ -204,6 +231,10 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			throw (LimitException) t;
 		}
 	}
+	/** Get the ErrorSet for this object
+	 * 
+	 * @return
+	 */
 	public ErrorSet getErrors(){
 		return errors;
 	}
@@ -222,6 +253,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 */
 	public Object getFormParameter(String name) {
 		if( name.startsWith(PROPERTY_PARAM_PREFIX)){
+			// lookup  config parameter
 			return getContext().getInitParameter(name.substring(PROPERTY_PARAM_PREFIX.length()));
 		}
 		Object value = null;
@@ -259,11 +291,11 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	protected final Document getDocument(){
 		return doc;
 	}
-	/** Parse a {@link PropExpression} in a nested element
+	/** Read a value of a type corresponding to a {@link PropExpression} from a child element
 	 * the value can also be provided as a ParameterRef element
-	 * @param expr
-	 * @param name
-	 * @param elem
+	 * @param expr {@link PropExpression} acting as target for the value
+	 * @param name Name of the element containing the target
+	 * @param elem parent Element
 	 * @return
 	 * @throws Exception
 	 */
@@ -327,6 +359,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * @return
 	 */
 	protected Object getParameterRef(Element e){
+		// This looks for all decendent nodes but there should only be one
 		NodeList list = e.getElementsByTagNameNS(ReportBuilder.PARAMETER_LOC, PARAMETER_REF_NAME);
 		if( list.getLength()==1){
 			Element ref = (Element) list.item(0);
@@ -334,8 +367,8 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		return null;
 	}
-	/** get an array from all the child ParameterRef elements
-	 * 
+	/** get an array of parameter values for all ParameterRef elements
+	 * that are descendents of the specified element
 	 * @param e
 	 * @return
 	 */
@@ -349,23 +382,48 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		return list;
 	}
-	/** Test for existance of a ParameterRef
-	 * 
+	/** Test for existance of a ParameterRefs as descendant elements of
+	 * a target element
 	 * @param e
 	 * @return
 	 */
 	protected boolean hasParameterRef(Element e){
-		String s = makeString(e);
 		NodeList elems = e.getElementsByTagNameNS(ReportBuilder.PARAMETER_LOC, PARAMETER_REF_NAME);
 		return elems.getLength()==1;
 	}
-	
+	/** Get an integer value from a sub-element.
+	 * The sub-element should be from the same namespace as the parent
+	 * 
+	 * @param name Name of the sub-element
+	 * @param def  default value
+	 * @param elem parent element
+	 * @return
+	 * @throws Exception
+	 */
 	public final int getIntParam(String name, int def, Element elem) throws Exception{
 		return getIntParamNS(elem.getNamespaceURI(), name, def, elem);
 	}
+	/** Get a boolean value from a sub-element
+	 * The sub-element should be from the same namespace as the parent
+	 * 
+	 * @param name
+	 * @param def
+	 * @param elem
+	 * @return
+	 * @throws Exception
+	 */
 	public final boolean getBooleanParam(String name, boolean def, Element elem) throws Exception{
 		return getBooleanParamNS(elem.getNamespaceURI(), name, def, elem);
 	}
+	/** Get a boolean value from a sub-element
+	 * 
+	 * @param namespace  The namespace of the sub-element
+	 * @param name       The name of the sub-element
+	 * @param def        The default value to use
+	 * @param elem       The parent element
+	 * @return
+	 * @throws Exception
+	 */
 	public final boolean getBooleanParamNS(String namespace,String name, boolean def, Element elem) throws Exception{
 		Element inner = getParamElementNS(namespace,name, elem);
 		if( inner == null) {
@@ -433,6 +491,13 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		return parseNumberWithDef( def, text);
 		}
 	}
+	/** Parse a number with a default value (used if the text is empty or fails to parse)
+	 * 
+	 * @param def
+	 * @param s
+	 * @return
+	 * @throws ParseException
+	 */
 	protected static Number parseNumberWithDef(Number def, String s) throws ParseException {
 		if( s == null || s.trim().length() == 0){
 			return def;
@@ -448,7 +513,15 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		return def;
 	}
-	
+	/** Get an integer value from sub-element with a specific namespace
+	 * 
+	 * @param namespace
+	 * @param name
+	 * @param def
+	 * @param elem
+	 * @return
+	 * @throws Exception
+	 */
 	public final int getIntParamNS(String namespace,String name, int def, Element elem) throws Exception{
 		Element inner = getParamElementNS(namespace, name, elem);
 		if( inner == null ) {
@@ -478,7 +551,14 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	
 	
 	
-	
+	/** Parse a {@link PropertyTag} from a {@link PropertyFinder} with the name specified in
+	 * an {@link Element}
+	 * 
+	 * @param finder
+	 * @param element
+	 * @return
+	 * @throws Exception
+	 */
 	public PropertyTag getTag(PropertyFinder finder, Element element) throws Exception{
 		String data_str = getText(element);
 		if( data_str == null || data_str.trim().length() == 0){
@@ -491,7 +571,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		return finder.find(name.trim());
 	}
 
-	/** format a {@link PropExpression} in a fomat that can be parsed
+	/** format a {@link PropExpression} in a format that can be parsed
 	 * 
 	 * @param e
 	 * @return
@@ -507,8 +587,8 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 
 	/** get a template param with config-parameter expansion
 	 * 
-	 * @param name
-	 * @param elem
+	 * @param name  The Name of the sub-element containing the parameter
+	 * @param elem  The parent {@link Element}
 	 * @return
 	 * @throws ReportException
 	 */
@@ -575,7 +655,14 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		return null;
 	}
 	
-	
+	/** Generic Number parsing class
+	 * 
+	 * @param nf
+	 * @param target
+	 * @param value
+	 * @return
+	 * @throws ParseException
+	 */
 	public static Number parseNumber(NumberFormat nf,Class target, String value) throws ParseException{
 		if( target == Integer.class){
 			return  Integer.parseInt(value);
@@ -613,7 +700,14 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		return value.toString();
 	}
 	
-	
+	/** Format a value based on its class
+	 * 
+	 * @param <T>
+	 * @param target
+	 * @param value
+	 * @return
+	 * @throws Exception
+	 */
 	public <T> String formatByClass(Class<? extends T> target, T value) throws Exception{	
 			if( value == null ){
 				return "";
@@ -756,6 +850,14 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public boolean empty(String value){
 		return value == null || value.trim().length() == 0;
 	}
+	/** PArse a {@link PropExpression} from the contents of a parameter node
+	 * 
+	 * @param node   parent Node
+	 * @param finder  {@link PropertyFinder}
+	 * @param name   name of parameter node
+	 * @return
+	 * @throws ExpressionException
+	 */
 	public PropExpression getPropertyExpression(Node node, PropertyFinder finder, String name) throws ExpressionException {
 		Element element = (Element) node;		
 		String data_str=null;
@@ -781,6 +883,13 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			throw new ExpressionException("Parse failed", e);
 		}
 	}
+	/** Parse a {@link PropExpression} from the contents of an Element
+	 * 
+	 * @param element
+	 * @param finder
+	 * @return
+	 * @throws ExpressionException
+	 */
 	public PropExpression getPropertyExpression(Element element, PropertyFinder finder) throws ExpressionException {
 	
 		String data_str=null;
@@ -806,7 +915,15 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			throw new ExpressionException("Parse failed", e);
 		}	
 	}
-	
+	/** Add a reference to an {@link XMLGenerator} to the document.
+	 * The {@link XMLGenerator} will be added to the parameter list
+	 * allowing a later stage to call the generator.
+	 * Normally this is used for {@link XMLGenerator}s that can generate clickable
+	 * links to avoid this being lost during processing stages
+	 * 
+	 * @param gen
+	 * @return
+	 */
 	public DocumentFragment addReference(XMLGenerator gen){
 		Document doc = getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
@@ -860,6 +977,13 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		log.debug("No formatter found for "+name);
 		return null;
 	}
+	/** Format an object into a {@link DocumentFragment} controlled by a named formatter.
+	 * 
+	 * @param param
+	 * @param parameterFormat
+	 * @return
+	 * @throws ReportException
+	 */
 	protected DocumentFragment formatObject(Object param, String parameterFormat)
 			throws ReportException {
 				Document doc=getDocument();
@@ -1096,22 +1220,64 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 	
 	}
-	/** find the period element that is in scope for an element
-	 * must be 
+	/** create a {@link RecordSet} for all Filters in scope.
+	 * This considers Filter elements that are children all ancestor Elements (top down) then child FilterElement
+	 * @param target
+	 * @return
+	 */
+	public RecordSet makeRecordSetInScope(Element target) {
+		RecordSet result = makeSelector();
+		visitFilters(result, target);
+		return result;
+	}
+	private void visitFilters(RecordSet set, Element target) {
+		Node parent = target.getParentNode();
+		if( parent.getNodeType() == Node.ELEMENT_NODE) {
+			visitFilters(set, (Element) parent);
+		}
+		NodeList filters = target.getChildNodes();
+		for( int i= 0 ; i< filters.getLength() ; i++) {
+			Node n = filters.item(i);
+			if( n.getNodeType()==Node.ELEMENT_NODE && n.getLocalName().equals(FILTER_ELEMENT) && (n.getNamespaceURI() == null || n.getNamespaceURI().equals(FILTER_LOC))) {
+				addFilterElement(set, (Element)n);
+			}
+		}
+	}
+	
+	/** find the period element that is in scope for an element.
+	 * 
+	 * Period elements may be declared as children of the reporting element or as children of any ancestor
+	 * element. To avoid ambiguity the period element should occur before any reporting element or any
+	 * child containing reporting elements.
+	 * 
+	 * This method recurses up the document from the target element looking for the first level that an
+	 * element is located.
 	 * 
 	 * @param e
 	 * @return
 	 * @throws Exception 
 	 */
 	public Period findPeriodInScope(Element e) throws Exception {
-		NodeList periods = e.getElementsByTagNameNS(PERIOD_NS, PERIOD_ELEMENT);
-		if( periods.getLength() > 0 ) {
-			return makePeriod(periods.item(periods.getLength()-1)); // last cild period
+		Period result = null;
+		
+		NodeList children = e.getChildNodes();
+		Element period = null;
+		for(int i=0; i< children.getLength(); i++) {
+			Node n = children.item(i);
+			if( n.getNodeType()==Node.ELEMENT_NODE && n.getLocalName().equals(PERIOD_ELEMENT) && (n.getNamespaceURI()== null || n.getNamespaceURI().equals(PERIOD_NS))) {
+				period = (Element)n;
+			}
 		}
+		if( period != null) {
+			// found one, take the lat defiend at this level
+			return makePeriod(period);
+		}
+		
 		Node parent = e.getParentNode();
 		if( parent.getNodeType() == Node.DOCUMENT_NODE) {
 			return makePeriod(null);
 		}
+		// Look in next level up
 		return findPeriodInScope((Element) parent);
 	}
 	
@@ -1282,11 +1448,13 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		return result;
 	}
-	public Node transformNodeListContents(NodeList content) {
+	public Node transformSubElementContents(Element parent,String name) {
 		DocumentFragment result = getDocument().createDocumentFragment();
+		NodeList content  = parent.getChildNodes();
+		
 		for( int i = 0 ; i < content.getLength() ; i++) {
 			Node item = content.item(i);
-			if( item.getNodeType() == Node.ELEMENT_NODE) {
+			if( item.getNodeType() == Node.ELEMENT_NODE && item.getLocalName().equals(name) && (item.getNamespaceURI() == parent.getNamespaceURI())) {
 				
 				result.appendChild(transformNodeList(item.getChildNodes()));
 			}
@@ -1319,5 +1487,18 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			
 		}
 	}
+	/** Make the default RecordSet if no Filter clauses are specified
+	   * 
+	   * @return RecordSet
+	   */
+	public RecordSet makeSelector() {
+		  try{
+			  AccountingService serv = getContext().getService(AccountingService.class);
+			  return new RecordSet(serv);
+		  }catch(Exception t){
+			  addError("RecordSet Error","Error making default selector" , t);
+			  return null;
+		  }
+	  }
 	
 }

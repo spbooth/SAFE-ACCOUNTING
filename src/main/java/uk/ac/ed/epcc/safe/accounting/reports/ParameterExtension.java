@@ -1084,25 +1084,9 @@ public class ParameterExtension extends ReportExtension {
 	 * @return DocumentFragment
 	 */
 	public DocumentFragment Distinct(Node period_node, Object filters,Node node) {
-		Element element = (Element)node;
 		Document doc=getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
-
-		if( element == null ){
-			addError("Malformed Distinct", "Missing filter and content");
-			return result;
-		}
-		
-		String variable = this.getAttribute(VAR_ATTR, element);
-		if( variable == null || variable.trim().length() == 0){
-			addError("Bad Distinct", "No variable specified");
-			return result;
-		}
-		if( parameter_names != null && parameter_names.contains(variable)){
-			addError("Bad Variable","Overiding the existing parameter named "+variable);
-			return result;
-		}
-		
+		Element element = (Element)node;
 		AccountingService serv = getContext().getService(AccountingService.class);
 		RecordSet recordSet = new RecordSet(serv);
 		if( filters instanceof Node) {
@@ -1137,6 +1121,33 @@ public class ParameterExtension extends ReportExtension {
 			addError("BadDistinct","Missing period");
 			return result;
 		}
+		
+		
+		
+		
+
+		return doDistinct(period, recordSet, result, element);
+		
+	}
+	private DocumentFragment doDistinct(Period period, RecordSet recordSet, DocumentFragment result, Element element) {
+		if( element == null ){
+			addError("Malformed Distinct", "Missing filter and content");
+			return result;
+		}
+		
+		String variable = this.getAttribute(VAR_ATTR, element);
+		if( variable == null || variable.trim().length() == 0){
+			addError("Bad Distinct", "No variable specified");
+			return result;
+		}
+		if( parameter_names != null && parameter_names.contains(variable)){
+			addError("Bad Variable","Overiding the existing parameter named "+variable);
+			return result;
+		}
+		
+		
+		
+		
 		UsageProducer prod = recordSet.getUsageProducer();
 		if( prod == null ){
 			addError("Bad Distinct", "No usage Producer");
@@ -1200,7 +1211,6 @@ public class ParameterExtension extends ReportExtension {
 			variable_names.remove(variable);
 		}
 		return result;
-		
 	}
 	/*
 	private Node expand(Document doc,NodeList childNodes) throws ReportException {
@@ -1359,8 +1369,8 @@ public class ParameterExtension extends ReportExtension {
 					return null;
 				}
 				boolean set = isSet(a_name);
-				NodeList content = e.getElementsByTagNameNS(PARAMETER_LOC, set ? "Content": "Fallback");
-				return transformNodeListContents(content);
+				String expand = set ? "Content": "Fallback";
+				return transformSubElementContents(e, expand);
 
 			case "IfNotSet":  
 				String a_name2 = e.getAttribute("name");
@@ -1369,8 +1379,8 @@ public class ParameterExtension extends ReportExtension {
 					return null;
 				}
 				boolean not_set =  ! isSet(a_name2);
-				NodeList content2 = e.getElementsByTagNameNS(PARAMETER_LOC, not_set ? "Content": "Fallback");
-				return transformNodeListContents(content2);
+				String expand2 = not_set ? "Content": "Fallback";
+				return transformSubElementContents(e, expand2);
 			case "Optional": return doOptional(e);
 			case PARAMETER_REF_ELEMENT:
 			   Node n =  e.cloneNode(true); // keep parameter ref for later stages
@@ -1390,24 +1400,38 @@ public class ParameterExtension extends ReportExtension {
 	}
 	
 	private Node doDistinct(Element e) {
-		return null;
+		DocumentFragment result = getDocument().createDocumentFragment();
+		try {
+			return doDistinct(findPeriodInScope(e), makeRecordSetInScope(e), result, e);
+		} catch (Exception e1) {
+			addError("Bad distinct", "Error evaluating distinct clause", e,e1);
+			return result;
+		}
 	}
 	private Node doOptional(Element e) {
 		try {
 			String text= getText(value(e));
-			NodeList options = e.getElementsByTagNameNS(PARAMETER_LOC, "Option");
-			for(int i=0 ; i<options.getLength(); i++) {
-				Element option = (Element) options.item(i);
-				NodeList targets= option.getElementsByTagNameNS(PARAMETER_LOC, "Target");
-				boolean expand=false;
-				for(int j=0 ;j < targets.getLength(); j++) {
-					Element target = (Element) targets.item(j);
-					if( text.equals(getText(target))) {
-						expand=true;
+			NodeList children = e.getChildNodes();
+			for(int i=0 ; i<children.getLength(); i++) {
+				Node n = children.item(i);
+				if( n.getNodeType()==Node.ELEMENT_NODE && n.getLocalName().equals("Option") && (n.getNamespaceURI()== null|| n.getNamespaceURI().equals(e.getNamespaceURI()) )){				
+					Element option = (Element)n;
+					NodeList targets = option.getChildNodes();
+
+
+					boolean expand=false;
+					for(int j=0 ;j < targets.getLength(); j++) {
+						Node tn = targets.item(j);
+						if( tn.getNodeType()==Node.ELEMENT_NODE && tn.getLocalName().equals("Target")) {
+							Element target = (Element) targets.item(j);
+							if( text.equals(getText(target))) {
+								expand=true;
+							}
+						}
 					}
-				}
-				if( expand ) {
-					return transformNodeListContents(option.getElementsByTagNameNS(PARAMETER_LOC, CONTENT_ELEM));
+					if( expand ) {
+						return transformSubElementContents(option, CONTENT_ELEM);
+					}
 				}
 			}
 			
