@@ -40,6 +40,7 @@ import uk.ac.ed.epcc.webapp.time.*;
  */
 public class PeriodExtension extends ReportExtension {
 
+	
 	private static final String PERIOD = PERIOD_ELEMENT;
 
 	/** static formatting method. 
@@ -144,5 +145,27 @@ public class PeriodExtension extends ReportExtension {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public boolean wantReplace(Element e) {
+		return e.getNamespaceURI().equals(PERIOD_NS) ;
+	}
+	@Override
+	public Node replace(Element e) {
+		try {
+			String name = e.getLocalName();
+			Period p = findPeriodInScope(e);
+			String format = e.getAttribute("format");
+			switch(name) {
+			case "StartDate": return getDocument().createTextNode((String)getStart(p,format));
+			case "EndDate":return getDocument().createTextNode((String)getEnd(p,format));
+			case PERIOD_ELEMENT: return null;
+			default:addError("unexpected expansion", name, e); return null;
+			}
+		}catch(Exception e1) {
+			addError("bad_period", "Error formatting period", e, e1);
+		}
+		return super.replace(e);
 	}
 }

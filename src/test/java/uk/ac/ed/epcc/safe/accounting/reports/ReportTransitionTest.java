@@ -36,7 +36,7 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		runTransition();
 		checkForward("/scripts/transition.jsp");
 		checkFormContent("/normalize.xsl", "add_data_preview.xml");
-		checkDiff("/cleanup.xsl", "add_data_report.xml");
+
 	}
 	
 	@Test

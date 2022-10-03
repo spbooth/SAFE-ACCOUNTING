@@ -96,9 +96,12 @@ public class FormatExtension<T> extends ReportExtension {
 				ExpressionTargetContainer rec = prod.getExpressionTarget(obj);
 				expander.setExpressionTarget(rec);
 				for(int i=0;i<template.getLength();i++){
-					Node new_n = copyNode(expander,doc, template.item(i));
-					if( new_n != null){
-						result.appendChild(new_n);
+					Node n = template.item(i);
+					if( n.getNodeType() != Node.ATTRIBUTE_NODE) {
+						Node new_n = copyNode(expander,doc, n);
+						if( new_n != null){
+							result.appendChild(new_n);
+						}
 					}
 				}
 				result.appendChild(doc.createTextNode("\n"));
@@ -324,5 +327,18 @@ public class FormatExtension<T> extends ReportExtension {
 			return ((Date)o).getTime() == 0L;
 		}
 		return false;
+	}
+	@Override
+	public boolean wantReplace(Element e) {
+		return e.getLocalName().equals("Format") && FORMAT_LOC.equals(e.getNamespaceURI());
+	}
+	@Override
+	public Node replace(Element e) {
+		try {
+			return format(makeRecordSetInScope(e), findPeriodInScope(e), e.getChildNodes());
+		} catch (Exception e1) {
+			addError("bad Format", "Error formatting section",e1);
+			return null;
+		}
 	}
 }

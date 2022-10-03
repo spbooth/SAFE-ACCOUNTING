@@ -1,7 +1,6 @@
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-	xmlns:mac="http://safe.epcc.ed.ac.uk/macro"
-	xmlns:xalan="http://xml.apache.org/xalan" >
+	xmlns:mac="http://safe.epcc.ed.ac.uk/macro" >
  
 	<!-- Import the identity transformation. -->
 	<xsl:import href="identity.xsl" />
