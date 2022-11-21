@@ -17,6 +17,7 @@ import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 public class StreamLineSplitter extends AbstractContexed implements CloseableIterator<String> {
 	private BufferedReader reader;
 	private String next;
+	private int line_count=0;
 	public StreamLineSplitter(AppContext conn,InputStream stream) throws IOException {
 		super(conn);
 		if( stream == null ) {
@@ -39,6 +40,7 @@ public class StreamLineSplitter extends AbstractContexed implements CloseableIte
 			}
 			tmp = clean(tmp);
 			if( ! tmp.isEmpty()) {
+				line_count++;
 				return tmp;
 			}
 		}
@@ -59,7 +61,7 @@ public class StreamLineSplitter extends AbstractContexed implements CloseableIte
 			next = nextLine();
 		} catch (IOException e) {
 			next=null;
-			getLogger().error("Error reading next line", e);
+			getLogger().error("Error reading next line "+line_count, e);
 		}
 		return result;
 	}
