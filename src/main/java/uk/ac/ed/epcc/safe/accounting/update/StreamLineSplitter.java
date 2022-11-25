@@ -1,9 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.update;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Iterator;
 
 import uk.ac.ed.epcc.webapp.AbstractContexed;
@@ -34,7 +31,13 @@ public class StreamLineSplitter extends AbstractContexed implements CloseableIte
 			return null;
 		}
 		while(true) {
-			String tmp = reader.readLine();
+			String tmp = null;
+			try {
+				tmp = reader.readLine();
+			}catch(EOFException eofe) {
+				// its supposed to return null on end of line but
+				// some streams don't
+			}
 			if( tmp == null ) {
 				return null;
 			}
