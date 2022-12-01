@@ -29,6 +29,11 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.AbstractContexed;
 import uk.ac.ed.epcc.webapp.AppContext;
+import uk.ac.ed.epcc.webapp.Feature;
+import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
+import uk.ac.ed.epcc.webapp.model.cron.LockFactory;
+import uk.ac.ed.epcc.webapp.model.cron.LockFactory.Lock;
+import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.stream.StreamData;
 import uk.ac.ed.epcc.webapp.servlet.ServletService;
 import uk.ac.ed.epcc.webapp.timer.DefaultTimerService;
@@ -54,6 +59,7 @@ public class AccountingUploadParser extends AbstractContexed implements UploadPa
 	private static final String UPLOAD_TIMER = "upload";
 	public static final String UPDATE_INPUT = ServletService.DEFAULT_PAYLOAD_PARAM;
 	public static final String TABLE_INPUT = "table";
+	public static final Feature USE_LOCK = new Feature("AccountingUploadParser.use_lock",true,"Set global lock when uploading");
 	public AccountingUploadParser(AppContext c){
 		super(c);
 	}
@@ -82,6 +88,9 @@ public class AccountingUploadParser extends AbstractContexed implements UploadPa
         if( table == null ){
         	throw new UploadException("No destination table specified");
         }
+        LockFactory lock_factory = LockFactory.getFactory(conn);
+        
+       	
 		// First check for direct implementation
         UsageRecordParseTarget parse_target = UsageRecordParseTarget.getParseTarget(conn, table);
         if( parse_target == null) {
@@ -111,7 +120,13 @@ public class AccountingUploadParser extends AbstractContexed implements UploadPa
         boolean verify = (parameters.get("verify") != null);
         boolean profile = (parameters.get("profile") != null);
         
-		try {
+		try(Lock lock= USE_LOCK.isEnabled(conn) ? lock_factory.makeFromString("AccountingUpload."+table): null) {
+
+        	if( lock != null ) {
+        		if( ! lock.takeLock()) {
+        			throw new UploadException("Lock already held for table "+table);
+        		}
+        	}
 			TimerService timer = conn.getService(TimerService.class);
 			if( profile ) {
 				if( timer == null ) {
