@@ -1,9 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.update;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Iterator;
 
 import uk.ac.ed.epcc.webapp.AbstractContexed;
@@ -17,6 +14,7 @@ import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 public class StreamLineSplitter extends AbstractContexed implements CloseableIterator<String> {
 	private BufferedReader reader;
 	private String next;
+	private int line_count=0;
 	public StreamLineSplitter(AppContext conn,InputStream stream) throws IOException {
 		super(conn);
 		if( stream == null ) {
@@ -33,12 +31,19 @@ public class StreamLineSplitter extends AbstractContexed implements CloseableIte
 			return null;
 		}
 		while(true) {
-			String tmp = reader.readLine();
+			String tmp = null;
+			try {
+				tmp = reader.readLine();
+			}catch(EOFException eofe) {
+				// its supposed to return null on end of line but
+				// some streams don't
+			}
 			if( tmp == null ) {
 				return null;
 			}
 			tmp = clean(tmp);
 			if( ! tmp.isEmpty()) {
+				line_count++;
 				return tmp;
 			}
 		}
@@ -59,7 +64,7 @@ public class StreamLineSplitter extends AbstractContexed implements CloseableIte
 			next = nextLine();
 		} catch (IOException e) {
 			next=null;
-			getLogger().error("Error reading next line", e);
+			getLogger().error("Error reading next line "+line_count, e);
 		}
 		return result;
 	}
