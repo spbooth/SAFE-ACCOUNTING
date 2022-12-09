@@ -654,8 +654,8 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 			throw new ConsistencyError("Not implemented yet");
 		}else {
 			try {
-				Period period = makePeriod(ElementSet.ancestors_self(source).select(PERIOD_NS, PERIOD_ELEMENT).pollLast());
-				RecordSet set = addFilterElementSet(makeSelector(), ElementSet.ancestors_self(source).select(FILTER_LOC, FILTER_ELEMENT));
+				Period period = makePeriod(ElementSet.ancestors_self(source).select(new Match(PERIOD_NS, PERIOD_ELEMENT)).pollLast());
+				RecordSet set = addFilterElementSet(makeSelector(), ElementSet.ancestors_self(source).select(new Match(FILTER_LOC, FILTER_ELEMENT)));
 				
 				
 				
@@ -683,20 +683,20 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 				}
 
 				Plot ds = makeDataSet(set, plot_entry, mapper_entry, chart, source);
-				for(Element add_data : ElementSet.select(source, CHART_LOC, "AddData")) {
-					RecordSet set2 = addFilterElementSet(set, ElementSet.select(add_data, FILTER_LOC, FILTER_ELEMENT));
+				for(Element add_data : ElementSet.select(source, new Match(CHART_LOC, "AddData"))) {
+					RecordSet set2 = addFilterElementSet(set, ElementSet.select(add_data, new Match(FILTER_LOC, FILTER_ELEMENT)));
 					PlotEntry plot2 = getPlotEntry(set2, add_data);
 					Plot ds2 = makeDataSet(ds,set2, plot2, mapper_entry, chart, add_data);
 				}
 				result.appendChild(addPlot(ds, set, plot_entry, mapper_entry, chart, source));
 				if( extra != null) {
-					for(Element add_chart: ElementSet.select(source, CHART_LOC, extra)) {
-						RecordSet set2 = addFilterElementSet(set, ElementSet.select(add_chart, FILTER_LOC, FILTER_ELEMENT));
+					for(Element add_chart: ElementSet.select(source, new Match(CHART_LOC, extra))) {
+						RecordSet set2 = addFilterElementSet(set, ElementSet.select(add_chart,new Match( FILTER_LOC, FILTER_ELEMENT)));
 						PlotEntry plot_entry2 = getPlotEntry(set2, add_chart);
 						MapperEntry mapper_entry2 = getMapperEntry(set2, add_chart);
 						Plot dsd = makeDataSet(set2, plot_entry2, mapper_entry2, chart, add_chart);
-						for(Element add_data : ElementSet.select(add_chart, CHART_LOC, "AddData")) {
-							RecordSet set3 = addFilterElementSet(set2, ElementSet.select(add_data, FILTER_LOC, FILTER_ELEMENT));
+						for(Element add_data : ElementSet.select(add_chart, new Match(CHART_LOC, "AddData"))) {
+							RecordSet set3 = addFilterElementSet(set2, ElementSet.select(add_data, new Match(FILTER_LOC, FILTER_ELEMENT)));
 							PlotEntry plot3 = getPlotEntry(set3, add_data);
 							Plot ds3 = makeDataSet(dsd,set3, plot3, mapper_entry2, chart, add_data);
 						}

@@ -1353,7 +1353,7 @@ public class ParameterExtension extends ReportExtension {
 	private Node doDistinct(Element e) {
 		DocumentFragment result = getDocument().createDocumentFragment();
 		try {
-			return doDistinct(findPeriodInScope(e), addFilterElementSet(makeSelector(), ElementSet.ancestors(e).select(FILTER_LOC, FILTER_ELEMENT)), result, e);
+			return doDistinct(findPeriodInScope(e), addFilterElementSet(makeSelector(), ElementSet.ancestors(e).select(new Match(FILTER_LOC,FILTER_ELEMENT))), result, e);
 		} catch (Exception e1) {
 			addError("Bad distinct", "Error evaluating distinct clause", e,e1);
 			return result;

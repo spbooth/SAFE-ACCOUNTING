@@ -784,6 +784,24 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 		SAXResult result = new SAXResult(handler);
 		renderXML(ehtml, params, result);
 	}
+	private IdentityDomTransform findTransform(Map<String, Object> params,String name) {
+		if( name.contains("+")) {
+			// create a MultiDomTransform
+			MultiDomTransform mdt = new MultiDomTransform();
+			for(String sub : name.split("\\+")) {
+				IdentityDomTransform st = findTransform(params,sub);
+				if( st != null) {
+					mdt.addTransform(st);
+				}
+			}
+			return mdt;
+		}
+		Object x = params.get(name);
+		if( x != null && x instanceof IdentityDomTransform) {
+			return (IdentityDomTransform) x;
+		}
+		return null;
+	}
 	private Document transformList(Document xmlSource,String transform_names[],int count,Map<String, Object> params) throws DataFault, TransformerFactoryConfigurationError, TransformerException {
 		TimerService timer = conn.getService(TimerService.class);
 		String name="";
@@ -808,7 +826,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 						timer.stopTimer("xml-transform "+name);
 					}
 				}else {
-					Object x = params.get(name);
+					Object x = findTransform(params, name);
 					if( x != null && x instanceof DomTransform) {
 						DomTransform t = (DomTransform)x;
 

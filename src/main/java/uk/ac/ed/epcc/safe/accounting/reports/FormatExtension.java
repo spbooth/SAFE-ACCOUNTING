@@ -337,7 +337,7 @@ public class FormatExtension<T> extends ReportExtension {
 		String name = e.getLocalName();
 		try {
 			switch(name) {
-			case "Format": return format(addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)), findPeriodInScope(e), e.getChildNodes());
+			case "Format": return format(addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(new Match(FILTER_LOC,FILTER_ELEMENT))), findPeriodInScope(e), e.getChildNodes());
 			}
 		} catch (Exception e1) {
 			addError("bad Format "+name, "Error formatting section",e1);

@@ -75,7 +75,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
  * @author spb
  *
  */
-public abstract class ReportExtension extends SelectBuilder implements Contexed, TemplateValidator, DomTransform{
+public abstract class ReportExtension extends SelectBuilder implements Contexed, TemplateValidator, IdentityDomTransform{
 	
 	private static final String NAME_ATTR = "name";
 	private static final String PARAMETER_REF_NAME = "ParameterRef";
@@ -290,8 +290,13 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * 
 	 * @return Document
 	 */
-	protected final Document getDocument(){
+	@Override
+	public final Document getDocument(){
 		return doc;
+	}
+	@Override
+	public final void setDocument(Document doc) {
+		this.doc=doc;
 	}
 	/** Read a value of a type corresponding to a {@link PropExpression} from a child element
 	 * the value can also be provided as a ParameterRef element
@@ -1240,7 +1245,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * @throws Exception 
 	 */
 	public Period findPeriodInScope(Element e) throws Exception {
-		Element period = ElementSet.ancestors_self(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast();
+		Element period = ElementSet.ancestors_self(e).select(new Match(PERIOD_NS,PERIOD_ELEMENT)).pollLast();
 		return makePeriod(period);
 	}
 	
@@ -1384,82 +1389,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		
 	}
-	@Override
-	public void transform(Document source, Document destination) {
-		doc = destination;
-		destination.appendChild(transformElement(source.getDocumentElement()));
-	}
-	public Node transformNode(Node source) {
-		switch(source.getNodeType()) {
-		case Node.ELEMENT_NODE: return transformElement((Element)source);
-		default: 
-			Node new_node = source.cloneNode(true);
-			getDocument().adoptNode(new_node);
-			return new_node;
-		}
-	}
-	public Node transformNodeList(NodeList content) {
-		DocumentFragment result = getDocument().createDocumentFragment();
-		for( int i = 0 ; i < content.getLength() ; i++) {
-			Node item = content.item(i);
-			if( item.getNodeType() != Node.ATTRIBUTE_NODE) {
-				Node n = transformNode(item);
-				if( n != null ) {
-					result.appendChild(n);
-				}
-			}
-		}
-		return result;
-	}
-	public Node transformElementSet(ElementSet content) {
-		DocumentFragment result = getDocument().createDocumentFragment();
-		for(Element e : content) {
-			Node n =  transformElement(e);
-			if( n != null) {
-				result.appendChild(n);
-			}
-		}
-		return result;
-	}
-	public Node transformSubElementContents(Element parent,String name) {
-		DocumentFragment result = getDocument().createDocumentFragment();
-		NodeList content  = parent.getChildNodes();
-		
-		for( int i = 0 ; i < content.getLength() ; i++) {
-			Node item = content.item(i);
-			if( item.getNodeType() == Node.ELEMENT_NODE && item.getLocalName().equals(name) && (item.getNamespaceURI() == parent.getNamespaceURI())) {
-				
-				result.appendChild(transformNodeList(item.getChildNodes()));
-			}
-		}
-		return result;
-	}
 	
-	public boolean wantReplace(Element e) {
-		return false;
-	}
-	public Node replace(Element e) {
-		return null;
-	}
-	public Node transformElement(Element source) {
-		if( wantReplace(source)) {
-			return replace(source);
-		}else {
-			Element new_element = (Element) source.cloneNode(false);
-			getDocument().adoptNode(new_element);
-			NodeList children = source.getChildNodes();
-			if(children != null) {
-				for( int i=0 ; i < children.getLength(); i++) {
-					Node c = transformNode(children.item(i));
-					if( c != null ) {
-						new_element.appendChild(c);
-					}
-				}
-			}
-			return new_element;
-			
-		}
-	}
 	public Text addText(String text) {
 		return getDocument().createTextNode(text);
 	}

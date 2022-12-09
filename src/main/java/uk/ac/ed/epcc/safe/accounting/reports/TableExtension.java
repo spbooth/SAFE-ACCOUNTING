@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -94,6 +95,12 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 
 public class TableExtension extends ReportExtension {
+	private static final String OBJECT_SET_ELEMENT = "ObjectSet";
+	private static final String COMPOUND_TABLE_ELEMENT = "CompoundTable";
+	private static final String SUMMARY_OBJECT_TABLE_ELEMENT = "SummaryObjectTable";
+	private static final String SUMMARY_TABLE_ELEMENT = "SummaryTable";
+	private static final String OBJECT_TABLE_ELEMENT = "ObjectTable";
+	private static final String TABLE_ELEMENT = "Table";
 	//private static final String PROPERTY_ELEMENT = "Property";
 	public static final String CURRENT_PERIOD_ATTR = "current.period";
 	private static final String TABLE_LOC = "http://safe.epcc.ed.ac.uk/table";
@@ -1001,10 +1008,16 @@ public class TableExtension extends ReportExtension {
 		static final String tags[] = {"Index","Column","SumColumn","AverageColumn","MedianColumn","MinColumn","MaxColumn","CountDistinctColumn"};
 		@Override
 		public void addColumns(Element table) {
-			ElementSet set = new ElementSet();
+			
+			Predicate<Element> rule = null;
 			for(String tag : tags) {
-				ElementSet.select(set,table, TABLE_LOC, tag);
+				if( rule == null) {
+					rule = new Match(TABLE_LOC,tag);
+				}else {
+					rule = rule.or(new Match(TABLE_LOC,tag));
+				}
 			}
+			ElementSet set = ElementSet.select(table, rule);
 			for(Element e : set) {
 				addColumn(e);
 			}
@@ -1167,7 +1180,7 @@ public class TableExtension extends ReportExtension {
 		}
 		@Override
 		public void addColumns(Element table) {
-			for(Element col : ElementSet.select(table, TABLE_LOC, "Column")) {
+			for(Element col : ElementSet.select(table,new Match(TABLE_LOC,"Column"))) {
 				addColumn(col);
 			}
 			
@@ -1663,35 +1676,7 @@ public class TableExtension extends ReportExtension {
 	public Node replace(Element e) {
 		String name = e.getLocalName();
 		try {
-			switch(name) {
-				
-				case "SummaryTable":
-					SummaryTable sum = newSummaryTable(findPeriodInScope(e),
-							addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
-							e);
-					sum.addColumns(e);
-					return postProcess(sum, e);
-				case "Table":
-					SimpleTable simple = newSimpleTable(findPeriodInScope(e),
-							addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
-							e);
-					simple.addColumns(e);
-					return postProcess(simple, e);
-				case "ObjectTable":
-					ObjectTable object = newObjectTable(makeObjectSet(getParamElementNS(FILTER_LOC, "ObjectSet", e)), e);
-					object.addColumns(e);
-					return postProcess(object, e);
-				case "SummaryObjectTable":
-					SummaryObjectTable object_sum = newSummaryObjectTable(makeObjectSet(getParamElementNS(FILTER_LOC, "ObjectSet", e)),e);
-					object_sum.addColumns(e);
-				case "CompoundTable":
-					CompoundTable comp = newCompoundTable();
-					visitSubTables(comp,e);
-					return postProcess(comp, e);
-				default:
-					addError("unrecognised table type", name, e);
-					return null;
-			}
+			return visitTable(null,e);
 			
 		}catch(LimitException le) {
 			throw le;
@@ -1701,9 +1686,50 @@ public class TableExtension extends ReportExtension {
 		return super.replace(e);
 	}
 
-	private void visitSubTables(CompoundTable comp, Element e) {
-		// TODO Auto-generated method stub
-		throw new ConsistencyError("Not implemented yet");
+	private DocumentFragment visitSubTables(CompoundTable comp, Element parent) throws BadTableException, Exception {
+		// Visit all of the sub-tables specifying a parent
+		for(Element e : ElementSet.select(parent,Match.match(TABLE_LOC, TABLE_ELEMENT,OBJECT_TABLE_ELEMENT,SUMMARY_TABLE_ELEMENT,SUMMARY_OBJECT_TABLE_ELEMENT,COMPOUND_TABLE_ELEMENT))) {
+			return visitTable(comp, e);
+		}
+		return null;
+	}
+
+	private DocumentFragment visitTable(CompoundTable comp, Element e)
+			throws BadTableException, Exception, ReportException {
+		String name = e.getLocalName();
+		switch(name) {
+		case TABLE_ELEMENT:
+			SimpleTable simple = newSimpleTable(comp,
+					findPeriodInScope(e),
+					addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(new Match(FILTER_LOC,FILTER_ELEMENT))),
+					e);
+			simple.addColumns(e);
+			return postProcess(simple, e);
+		case OBJECT_TABLE_ELEMENT:
+			ObjectTable object = newObjectTable(comp,
+					makeObjectSet(getParamElementNS(FILTER_LOC, OBJECT_SET_ELEMENT, e)), e);
+			object.addColumns(e);
+			return postProcess(object, e);
+		case SUMMARY_TABLE_ELEMENT:
+			SummaryTable sum = newSummaryTable(comp,
+					findPeriodInScope(e),
+					addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(new Match(FILTER_LOC,FILTER_ELEMENT))),
+					e);
+			sum.addColumns(e);
+			return postProcess(sum, e);
+		case SUMMARY_OBJECT_TABLE_ELEMENT:
+			SummaryObjectTable object_sum = newSummaryObjectTable(comp,
+					makeObjectSet(getParamElementNS(FILTER_LOC, OBJECT_SET_ELEMENT, e)),e);
+			object_sum.addColumns(e);
+			return postProcess(object_sum, e);
+		case COMPOUND_TABLE_ELEMENT:
+			CompoundTable inner = newCompoundTable(comp);
+			visitSubTables(inner, e);
+			return postProcess(inner, e);
+		default:
+			addError("unrecognised table type", name, e);
+			return null;	
+		}
 	}
 
 }

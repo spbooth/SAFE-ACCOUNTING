@@ -534,12 +534,11 @@ public class AtomExtension extends ReportExtension {
 		case "Define": 
 			try {
 			define(e.getAttribute("name"), 
-				makePeriod(ElementSet.ancestors_self(e).select(PERIOD_NS,PERIOD_ELEMENT)
+				makePeriod(ElementSet.ancestors_self(e).select(new Match(PERIOD_NS,PERIOD_ELEMENT))
 						.merge(
-								ElementSet.select(e, null, "*")
-								.select(PERIOD_NS, PERIOD_ELEMENT)
+								ElementSet.select(e,new Match(null,"*")).select(new Match(PERIOD_NS,PERIOD_ELEMENT))
 								).pollLast()),
-				addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT).merge(ElementSet.select(e, null, "*").select(FILTER_LOC, FILTER_ELEMENT)))
+				addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(new Match(FILTER_LOC,FILTER_ELEMENT)).merge(ElementSet.select(e,new Match(null,"*")).select(new Match(FILTER_LOC,FILTER_ELEMENT))))
 				,  e);
 			}catch(Exception e1) {
 				addError("Error in atom:define", "Unexpected exception", e, e1);
@@ -548,8 +547,8 @@ public class AtomExtension extends ReportExtension {
 		case "Percentage":
 			try {
 			return addText(
-					percent(makePeriod(ElementSet.ancestors_self(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast()),
-							addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
+					percent(makePeriod(ElementSet.ancestors_self(e).select(new Match(PERIOD_NS,PERIOD_ELEMENT)).pollLast()),
+							addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(new Match(FILTER_LOC,FILTER_ELEMENT))),
 							e)
 					);
 			}catch(Exception e1) {
@@ -573,8 +572,8 @@ public class AtomExtension extends ReportExtension {
 		case "AtomPlugin":
 			try {
 				return addText(
-						formatAtom(makePeriod(ElementSet.ancestors_self(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast()),
-								addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
+						formatAtom(makePeriod(ElementSet.ancestors_self(e).select(new Match(PERIOD_NS,PERIOD_ELEMENT)).pollLast()),
+								addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(new Match(FILTER_LOC,FILTER_ELEMENT))),
 								e)
 						);
 				}catch(Exception e1) {
@@ -584,8 +583,8 @@ public class AtomExtension extends ReportExtension {
 		case "AtomValue":
 			try {
 				return addText(
-						rawAtom(makePeriod(ElementSet.ancestors_self(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast()),
-								addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
+						rawAtom(makePeriod(ElementSet.ancestors_self(e).select(new Match(PERIOD_NS,PERIOD_ELEMENT)).pollLast()),
+								addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(new Match(FILTER_LOC,FILTER_ELEMENT))),
 								e)
 						);
 				}catch(Exception e1) {
@@ -595,8 +594,8 @@ public class AtomExtension extends ReportExtension {
 		case "Property":
 			try {
 				return addText(
-						formatPropertyList(makePeriod(ElementSet.ancestors_self(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast()),
-								addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
+						formatPropertyList(makePeriod(ElementSet.ancestors_self(e).select(new Match(PERIOD_NS,PERIOD_ELEMENT)).pollLast()),
+								addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(new Match(FILTER_LOC,FILTER_ELEMENT))),
 								e)
 						);
 				}catch(Exception e1) {
@@ -605,9 +604,9 @@ public class AtomExtension extends ReportExtension {
 				}
 		case "IfRecords":
 			try {
-				if( hasRecords(makePeriod(ElementSet.ancestors(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast()),
-									addFilterElementSet(makeSelector(), ElementSet.ancestors(e).select(FILTER_LOC, FILTER_ELEMENT)))) {
-					return transformElementSet(ElementSet.select(e, null, "*"));
+				if( hasRecords(makePeriod(ElementSet.ancestors(e).select(new Match(PERIOD_NS,PERIOD_ELEMENT)).pollLast()),
+									addFilterElementSet(makeSelector(), ElementSet.ancestors(e).select(new Match(FILTER_LOC,FILTER_ELEMENT))))) {
+					return transformElementSet(ElementSet.select(e,new Match(null,"*")));
 				}else {
 					return null;
 				}

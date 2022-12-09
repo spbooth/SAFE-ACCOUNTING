@@ -20,7 +20,7 @@
 	
 	<xsl:include href="filter.xsl" />
 	<!--  <xsl:include href="period.xsl" /> -->
-    <xsl:include href="tables.xsl" />
+    <!--  <xsl:include href="tables.xsl" /> -->
 	<!--  <xsl:include href="chart.xsl" /> --> 
 	<!--  <xsl:include href="format.xsl" /> -->
 	

@@ -1,6 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -34,47 +35,48 @@ public class ElementSet extends TreeSet<Element> {
 		throw new ConsistencyError("Unsupported type "+o.getClass().getCanonicalName());
 	}
 	
-	/** Select children of an element by name and add to an existing {@link ElementSet}
-	 * 
-	 * This is intended as part of a pseudo XPATH search so a tag of * will
-	 * match all elements
+	
+	/** Select children of an {@link Element} using a {@link Predicate} and add to an existing
+	 * {@link ElementSet}
 	 * 
 	 * @param set
 	 * @param target
-	 * @param ns
-	 * @param tag
-	 * @return modified ElementSet
+	 * @param rule
+	 * @return
 	 */
-	public static ElementSet select(ElementSet set,Element target, String ns, String tag) {
+	public static ElementSet select(ElementSet set,Element target, Predicate<Element> rule) {
 		NodeList children = target.getChildNodes();
 		for(int i=0 ; i< children.getLength();i++) {
 			Node child = children.item(i);
 			if( child.getNodeType()==Node.ELEMENT_NODE ) {
 				Element e =(Element)child;
-				if( (ns==null || ns.equals(e.getNamespaceURI()) && (tag.equals("*") || tag.equals(e.getLocalName()))))  {
+				if( rule.test(e))  {
 					set.add(e);
 				}
 			}
 		}
 		return set;
 	}
-	/** Select all child elements of the {@link ElementSet} members by name.
-	 * 
+	/** Select all child elements of this {@link ElementSet} filtered using a {@link Predicate}.
+	 * adding the results to an existing {@link ElementSet}
 	 * @param set
-	 * @param ns
-	 * @param tag
+	 * @param rule
 	 * @return
 	 */
-	public ElementSet select(ElementSet set,String ns,String tag) {
+	public ElementSet select(ElementSet set,Predicate<Element> rule) {
 		for(Element e : this) {
-			select(set,e,ns,tag);
+			select(set,e,rule);
 		}
 		return set;
 	}
-	public ElementSet select(String ns,String tag) {
-		return select(new ElementSet(),ns,tag);
+	/** Select all child elements of this {@link ElementSet} filtered using a {@link Predicate}.
+	 * returning a new {@link ElementSet}
+	 * @param rule
+	 * @return
+	 */
+	public ElementSet select(Predicate<Element> rule) {
+		return select(new ElementSet(),rule);
 	}
-	
 	public static ElementSet ancestors(Element p) {
 		ElementSet result = new ElementSet();
 		Node parent = p.getParentNode();
@@ -94,7 +96,7 @@ public class ElementSet extends TreeSet<Element> {
 		}
 		return result;
 	}
-	public static ElementSet select(Element p,String ns, String tag) {	
-		return select(new ElementSet(),p,ns,tag);
+	public static ElementSet select(Element p,Predicate<Element> rule) {	
+		return select(new ElementSet(),p,rule);
 	}
 }
