@@ -149,7 +149,7 @@ public class PeriodExtension extends ReportExtension {
 	
 	@Override
 	public boolean wantReplace(Element e) {
-		return e.getNamespaceURI().equals(PERIOD_NS) ;
+		return PERIOD_NS.equals(e.getNamespaceURI()) ;
 	}
 	@Override
 	public Node replace(Element e) {
@@ -158,8 +158,8 @@ public class PeriodExtension extends ReportExtension {
 			Period p = findPeriodInScope(e);
 			String format = e.getAttribute("format");
 			switch(name) {
-			case "StartDate": return getDocument().createTextNode((String)getStart(p,format));
-			case "EndDate":return getDocument().createTextNode((String)getEnd(p,format));
+			case "StartDate": return getDocument().createTextNode(getStart(p,format).toString());
+			case "EndDate":return getDocument().createTextNode(getEnd(p,format).toString());
 			case PERIOD_ELEMENT: return null;
 			default:addError("unexpected expansion", name, e); return null;
 			}

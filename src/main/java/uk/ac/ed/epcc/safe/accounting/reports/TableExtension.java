@@ -76,9 +76,11 @@ import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.content.*;
 import uk.ac.ed.epcc.webapp.content.Table.Col;
+import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.limits.LimitException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.time.Period;
@@ -284,7 +286,9 @@ public class TableExtension extends ReportExtension {
 			return property;
 		}
 		
+		public abstract String addColumn(Node columnNode); 
 		
+		public abstract void addColumns(Element table);
 		
 	}
 	/** A {@link TableProxy} that generates a table using a {@link JobTableMaker}.
@@ -619,8 +623,13 @@ public class TableExtension extends ReportExtension {
 		 * @return String
 		 */
 		@SuppressWarnings("unchecked")
+		@Override
 		public final String addColumn(Node columnNode) {
 			try {
+				if( columnNode.getNodeType() != Node.ELEMENT_NODE) {
+					extension.addError("bad type","expecting column element",columnNode);
+					return "";
+				}
 				if( recordSet == null) {
 					extension.addError("bad recordset", "record set is null", columnNode);
 					return "";
@@ -989,6 +998,17 @@ public class TableExtension extends ReportExtension {
 				}
 			}
 		}
+		static final String tags[] = {"Index","Column","SumColumn","AverageColumn","MedianColumn","MinColumn","MaxColumn","CountDistinctColumn"};
+		@Override
+		public void addColumns(Element table) {
+			ElementSet set = new ElementSet();
+			for(String tag : tags) {
+				ElementSet.select(set,table, TABLE_LOC, tag);
+			}
+			for(Element e : set) {
+				addColumn(e);
+			}
+		}
 
 
 
@@ -1044,10 +1064,15 @@ public class TableExtension extends ReportExtension {
 		 * @param columnNode
 		 * @return String
 		 */
+		@Override
 		public String addColumn(Node columnNode) {
 			Element data_element = (Element) columnNode;
 
 			try {
+				if( columnNode.getNodeType() != Node.ELEMENT_NODE) {
+					extension.addError("bad type","expecting column element",columnNode);
+					return "";
+				}
 				if( set == null) {
 					extension.addError("bad recordset", "record set is null", columnNode);
 					return "";
@@ -1139,6 +1164,13 @@ public class TableExtension extends ReportExtension {
 		public String toString() {
 			String string = "SimpleTable[]";
 			return string;
+		}
+		@Override
+		public void addColumns(Element table) {
+			for(Element col : ElementSet.select(table, TABLE_LOC, "Column")) {
+				addColumn(col);
+			}
+			
 		}
 		
 	}
@@ -1619,6 +1651,59 @@ public class TableExtension extends ReportExtension {
 		
 		DocumentFragment frag = format(table, type,getReportPrefix(n));
 		return frag;
+	}
+
+	
+	@Override
+	public boolean wantReplace(Element e) {
+		return TABLE_LOC.equals(e.getNamespaceURI());
+	}
+
+	@Override
+	public Node replace(Element e) {
+		String name = e.getLocalName();
+		try {
+			switch(name) {
+				
+				case "SummaryTable":
+					SummaryTable sum = newSummaryTable(findPeriodInScope(e),
+							addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
+							e);
+					sum.addColumns(e);
+					return postProcess(sum, e);
+				case "Table":
+					SimpleTable simple = newSimpleTable(findPeriodInScope(e),
+							addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
+							e);
+					simple.addColumns(e);
+					return postProcess(simple, e);
+				case "ObjectTable":
+					ObjectTable object = newObjectTable(makeObjectSet(getParamElementNS(FILTER_LOC, "ObjectSet", e)), e);
+					object.addColumns(e);
+					return postProcess(object, e);
+				case "SummaryObjectTable":
+					SummaryObjectTable object_sum = newSummaryObjectTable(makeObjectSet(getParamElementNS(FILTER_LOC, "ObjectSet", e)),e);
+					object_sum.addColumns(e);
+				case "CompoundTable":
+					CompoundTable comp = newCompoundTable();
+					visitSubTables(comp,e);
+					return postProcess(comp, e);
+				default:
+					addError("unrecognised table type", name, e);
+					return null;
+			}
+			
+		}catch(LimitException le) {
+			throw le;
+		}catch(Exception e1) {
+			addError("bad_table table:"+name, e1.getMessage(), e, e1);
+		}
+		return super.replace(e);
+	}
+
+	private void visitSubTables(CompoundTable comp, Element e) {
+		// TODO Auto-generated method stub
+		throw new ConsistencyError("Not implemented yet");
 	}
 
 }

@@ -87,7 +87,12 @@
 	</xsl:for-each>
 	<xsl:choose>
 	<xsl:when test="plotter:hasData($ChartExtension,$chart)">
+	<xsl:if test="not(@nographic)">
 	<xsl:copy-of select="plotter:addChart($ChartExtension,$chart,$caption)"/>
+	</xsl:if>
+	<xsl:if test="@table">
+	<xsl:copy-of select="plotter:addChartTable($ChartExtension,$chart,$caption)"/>
+	</xsl:if>
 	</xsl:when>
 	<xsl:otherwise>
 	<xsl:if test="not(@quiet)">

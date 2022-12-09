@@ -48,6 +48,7 @@
 			<xsd:element ref="Caption" maxOccurs="1" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="quiet" type="xsd:boolean" use="optional"></xsd:attribute>
+		<xsd:attribute name="table" type="xsd:boolean" default="false" use="optional"></xsd:attribute>
 	</xsd:complexType>
 
 	<xsd:element name="NumberOfTimeBlocks"

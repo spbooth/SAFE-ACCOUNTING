@@ -164,7 +164,7 @@ public Logger getLogger() {
 		return use_overlap && hasOverlapBounds() ;
 	}
 
-/** set the ucrrent {@link UsageProducer} by name.
+/** set the current {@link UsageProducer} by name.
  * This will clear all selectors and set the tag returned by {@link #getProducerTag()}
  * 
  * @param name

@@ -58,7 +58,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 
 public class AtomExtension extends ReportExtension {
-    
+    public static final String ATOM_LOC="http://safe.epcc.ed.ac.uk/atom";
 	public static final String PERIOD_DURATION_ELEMENT = "PeriodDuration";
 	private static final String ATOM_PLUGIN_ELEMENT = "AtomPlugin";
 	private static final String OVERLAP_AVERAGE_ELEMENT = "OverlapAverage";
@@ -519,6 +519,106 @@ public class AtomExtension extends ReportExtension {
 			return result;
 		}
 		throw new ParseException("No reduction expression specified");
+	}
+
+	@Override
+	public boolean wantReplace(Element e) {
+		// TODO Auto-generated method stub
+		return ATOM_LOC.equals(e.getNamespaceURI());
+	}
+
+	@Override
+	public Node replace(Element e) {
+		String name = e.getLocalName();
+		switch(name) {
+		case "Define": 
+			try {
+			define(e.getAttribute("name"), 
+				makePeriod(ElementSet.ancestors_self(e).select(PERIOD_NS,PERIOD_ELEMENT)
+						.merge(
+								ElementSet.select(e, null, "*")
+								.select(PERIOD_NS, PERIOD_ELEMENT)
+								).pollLast()),
+				addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT).merge(ElementSet.select(e, null, "*").select(FILTER_LOC, FILTER_ELEMENT)))
+				,  e);
+			}catch(Exception e1) {
+				addError("Error in atom:define", "Unexpected exception", e, e1);
+			}
+			return null;
+		case "Percentage":
+			try {
+			return addText(
+					percent(makePeriod(ElementSet.ancestors_self(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast()),
+							addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
+							e)
+					);
+			}catch(Exception e1) {
+				addError("Error in atom:Percentage", "Unexpected exception", e, e1);
+				return null;
+			}
+		case "Sum":
+		case "Distinct":
+		case "Average":
+		case "Median":
+		case "Minimum":
+		case "Maximum":
+		case "Count":
+		case "Number":
+		case "Value":
+		case "Add":
+		case "Sub":
+		case "Mul":
+		case "Div":
+		case "Atom":
+		case "AtomPlugin":
+			try {
+				return addText(
+						formatAtom(makePeriod(ElementSet.ancestors_self(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast()),
+								addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
+								e)
+						);
+				}catch(Exception e1) {
+					addError("Error in atom:"+name, "Unexpected exception", e, e1);
+					return null;
+				}
+		case "AtomValue":
+			try {
+				return addText(
+						rawAtom(makePeriod(ElementSet.ancestors_self(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast()),
+								addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
+								e)
+						);
+				}catch(Exception e1) {
+					addError("Error in atom:"+name, "Unexpected exception", e, e1);
+					return null;
+				}
+		case "Property":
+			try {
+				return addText(
+						formatPropertyList(makePeriod(ElementSet.ancestors_self(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast()),
+								addFilterElementSet(makeSelector(), ElementSet.ancestors_self(e).select(FILTER_LOC, FILTER_ELEMENT)),
+								e)
+						);
+				}catch(Exception e1) {
+					addError("Error in atom:"+name, "Unexpected exception", e, e1);
+					return null;
+				}
+		case "IfRecords":
+			try {
+				if( hasRecords(makePeriod(ElementSet.ancestors(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast()),
+									addFilterElementSet(makeSelector(), ElementSet.ancestors(e).select(FILTER_LOC, FILTER_ELEMENT)))) {
+					return transformElementSet(ElementSet.select(e, null, "*"));
+				}else {
+					return null;
+				}
+			} catch (Exception e1) {
+				addError("Error in atom:"+name, "Unexpected exception", e, e1);
+				return null;
+			}
+		}
+		
+		
+		return super.replace(e);
 	}	
 
 }

@@ -852,10 +852,9 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 		// Get the report type
 		
 		
-		String parameter_transform_list = conn.getInitParameter("ReportBuilder."+type.name()+".parameter_transform_list", "RestrictExtension,ParameterExtension");
-
-		String transform_list = conn.getInitParameter("ReportBuilder."+type.name()+".transform_list", "identity.xsl");
-			String parameter_transform_names[] = parameter_transform_list.split("\\s*,\\s*");
+		String parameter_transform_list = conn.getExpandedProperty("ReportBuilder."+type.name()+".parameter_transform_list", "RestrictExtension,ParameterExtension");
+		String transform_list = conn.getExpandedProperty("ReportBuilder."+type.name()+".transform_list", "identity.xsl");
+		String parameter_transform_names[] = parameter_transform_list.split("\\s*,\\s*");
 		String transform_names[] = transform_list.split("\\s*,\\s*");
 		TimerService timer = conn.getService(TimerService.class);
 		String name="";
@@ -880,6 +879,9 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 				timer.stopTimer("xml-transform "+name);
 			}
 		}catch(Exception t){
+			if( t instanceof LimitException) {
+				throw t;
+			}
 			if( t instanceof TransformerException && t.getCause() instanceof LimitException) {
 				throw (LimitException) t.getCause();
 			}

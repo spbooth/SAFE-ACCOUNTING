@@ -30,9 +30,9 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.*;
+import org.w3c.dom.traversal.NodeIterator;
 
-import uk.ac.ed.epcc.safe.accounting.AccountingService;
-import uk.ac.ed.epcc.safe.accounting.ErrorSet;
+import uk.ac.ed.epcc.safe.accounting.*;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 //import uk.ac.ed.epcc.safe.accounting.UsageProducer;
@@ -44,6 +44,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.*;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ExpressionException;
 import uk.ac.ed.epcc.safe.accounting.reports.exceptions.ReportException;
+import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.*;
@@ -103,6 +104,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public static final String PERIOD_NS = "http://safe.epcc.ed.ac.uk/period";
 	
 	public static final String PROPERTY_PARAM_PREFIX = "property:";
+	private static final String TARGET_ELEMENT = "Target";
 	
 	private Document doc;
 	protected final ErrorSet errors;
@@ -570,6 +572,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	public PropertyTag getTag(PropertyFinder finder, String name){
 		return finder.find(name.trim());
 	}
+	
 
 	/** format a {@link PropExpression} in a format that can be parsed
 	 * 
@@ -1074,6 +1077,12 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		  
 		  return rs;
 	  }
+	protected RecordSet addFilterElementSet(RecordSet set, ElementSet elements) {
+		for(Element e : elements) {
+			set = addFilterElement(set, e);
+		}
+		return set;
+	}
 	public Period makePeriod(Node region) throws Exception {
 	
 		
@@ -1220,65 +1229,19 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 	
 	}
-	/** create a {@link RecordSet} for all Filters in scope.
-	 * This considers Filter elements that are children all ancestor Elements (top down) then child FilterElement
-	 * @param target
-	 * @return
-	 */
-	public RecordSet makeRecordSetInScope(Element target) {
-		RecordSet result = makeSelector();
-		visitFilters(result, target);
-		return result;
-	}
-	private void visitFilters(RecordSet set, Element target) {
-		Node parent = target.getParentNode();
-		if( parent.getNodeType() == Node.ELEMENT_NODE) {
-			visitFilters(set, (Element) parent);
-		}
-		NodeList filters = target.getChildNodes();
-		for( int i= 0 ; i< filters.getLength() ; i++) {
-			Node n = filters.item(i);
-			if( n.getNodeType()==Node.ELEMENT_NODE && n.getLocalName().equals(FILTER_ELEMENT) && (n.getNamespaceURI() == null || n.getNamespaceURI().equals(FILTER_LOC))) {
-				addFilterElement(set, (Element)n);
-			}
-		}
-	}
+	
+	
 	
 	/** find the period element that is in scope for an element.
-	 * 
-	 * Period elements may be declared as children of the reporting element or as children of any ancestor
-	 * element. To avoid ambiguity the period element should occur before any reporting element or any
-	 * child containing reporting elements.
-	 * 
-	 * This method recurses up the document from the target element looking for the first level that an
-	 * element is located.
+	 *  Equivalent to (ancestor::*\/per:Period|per:Period)[last()])
 	 * 
 	 * @param e
 	 * @return
 	 * @throws Exception 
 	 */
 	public Period findPeriodInScope(Element e) throws Exception {
-		Period result = null;
-		
-		NodeList children = e.getChildNodes();
-		Element period = null;
-		for(int i=0; i< children.getLength(); i++) {
-			Node n = children.item(i);
-			if( n.getNodeType()==Node.ELEMENT_NODE && n.getLocalName().equals(PERIOD_ELEMENT) && (n.getNamespaceURI()== null || n.getNamespaceURI().equals(PERIOD_NS))) {
-				period = (Element)n;
-			}
-		}
-		if( period != null) {
-			// found one, take the lat defiend at this level
-			return makePeriod(period);
-		}
-		
-		Node parent = e.getParentNode();
-		if( parent.getNodeType() == Node.DOCUMENT_NODE) {
-			return makePeriod(null);
-		}
-		// Look in next level up
-		return findPeriodInScope((Element) parent);
+		Element period = ElementSet.ancestors_self(e).select(PERIOD_NS, PERIOD_ELEMENT).pollLast();
+		return makePeriod(period);
 	}
 	
 	/** Store the table in the parameters list and just reference it
@@ -1448,6 +1411,16 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 		}
 		return result;
 	}
+	public Node transformElementSet(ElementSet content) {
+		DocumentFragment result = getDocument().createDocumentFragment();
+		for(Element e : content) {
+			Node n =  transformElement(e);
+			if( n != null) {
+				result.appendChild(n);
+			}
+		}
+		return result;
+	}
 	public Node transformSubElementContents(Element parent,String name) {
 		DocumentFragment result = getDocument().createDocumentFragment();
 		NodeList content  = parent.getChildNodes();
@@ -1487,6 +1460,9 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			
 		}
 	}
+	public Text addText(String text) {
+		return getDocument().createTextNode(text);
+	}
 	/** Make the default RecordSet if no Filter clauses are specified
 	   * 
 	   * @return RecordSet
@@ -1500,5 +1476,59 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 			  return null;
 		  }
 	  }
+	public boolean hasRecords(Period period, RecordSet set) {
+		if(set.hasError()) {
+			return false;
+		}
+		try {
+			UsageProducer<?> producer = set.getUsageProducer();
+			if( producer == null ) {
+				return false;
+			}
+			AndRecordSelector selector = set.getPeriodSelector(period);
 	
+			return producer.exists(selector);
+		} catch (Exception e) {
+			addError("Filter Error", "Error checking for records", e);
+			return false;
+		}
+	}
+	public ObjectSet makeObjectSet(Element elem) throws ReportException {
+	
+	
+		ObjectSet result = new ObjectSet();
+		String target = getParam( TARGET_ELEMENT, elem);
+		ExpressionTargetGenerator gen = ExpressionCast.makeExpressionTargetFactory(conn, target);
+		if( gen == null ){
+			throw new ReportException("No Expression Generator found for target "+target);
+		}
+		result.setGenerator(gen);
+		NodeList list =elem.getChildNodes();
+		for(int i=0;i<list.getLength();i++){
+			Node c = list.item(i);
+			if( c.getNodeType() == Node.ELEMENT_NODE && c.getNamespaceURI() == elem.getNamespaceURI()){
+				Element e = (Element)c;
+				try {
+					if( ! e.getLocalName().equals(TARGET_ELEMENT)){ 
+						RecordSelector sel = getRecordSelectElement(result.getGenerator().getFinder(), e);
+						if( sel != null ){
+							result.addRecordSelector(sel);
+						}
+					}
+				} catch (FilterParseException e1) {
+					result.addRecordSelector(new SelectClause()); // default to no select on exception
+					result.setError(true);
+					addError("Bad Filter",e1.getMessage(),e1);
+				} catch (Exception e1) {
+					result.addRecordSelector(new SelectClause()); // default to no select on exception
+					result.setError(true);
+					addError("Parse error", e1.getMessage(),e1);
+				} 
+	
+			}
+		}	    
+	
+		return result;
+	}
+
 }

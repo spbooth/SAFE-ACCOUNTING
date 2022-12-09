@@ -17,28 +17,11 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
 import java.lang.reflect.Constructor;
-import java.text.NumberFormat;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
 
 import uk.ac.ed.epcc.safe.accounting.AccountingService;
@@ -46,7 +29,6 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.charts.MapperEntryInput;
 import uk.ac.ed.epcc.safe.accounting.charts.PlotEntryInput;
-import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.DomFormatter;
@@ -69,41 +51,10 @@ import uk.ac.ed.epcc.webapp.content.ContentBuilder;
 import uk.ac.ed.epcc.webapp.forms.Field;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
-import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.BoundedDateInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.BoundedInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.CanSubmitVisistor;
-import uk.ac.ed.epcc.webapp.forms.inputs.DoubleInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.EnumInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.ErrorInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.InfoInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.Input;
-import uk.ac.ed.epcc.webapp.forms.inputs.IntegerInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.LengthInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.LongInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.OptionalListInputWrapper;
-import uk.ac.ed.epcc.webapp.forms.inputs.ParseInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.RealInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.RegularPeriodInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.RelativeDateInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
-import uk.ac.ed.epcc.webapp.forms.result.FormResult;
-import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FilterPolicy;
-import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
+import uk.ac.ed.epcc.webapp.forms.inputs.*;
+import uk.ac.ed.epcc.webapp.jdbc.filter.*;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.model.data.NamedFilterWrapper;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DurationInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -1402,7 +1353,7 @@ public class ParameterExtension extends ReportExtension {
 	private Node doDistinct(Element e) {
 		DocumentFragment result = getDocument().createDocumentFragment();
 		try {
-			return doDistinct(findPeriodInScope(e), makeRecordSetInScope(e), result, e);
+			return doDistinct(findPeriodInScope(e), addFilterElementSet(makeSelector(), ElementSet.ancestors(e).select(FILTER_LOC, FILTER_ELEMENT)), result, e);
 		} catch (Exception e1) {
 			addError("Bad distinct", "Error evaluating distinct clause", e,e1);
 			return result;

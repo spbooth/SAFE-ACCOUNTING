@@ -97,6 +97,8 @@ public class FormatExtensionTest extends ExtensionTestCase {
 		//System.out.println(out.toString());
 		expectedOutput = normalise(expectedOutput);
 		String outs = normalise(out.toString());
+		System.out.println(expectedOutput);
+		System.out.println(outs);
 		// Check it was correctly formatted.
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, outs),

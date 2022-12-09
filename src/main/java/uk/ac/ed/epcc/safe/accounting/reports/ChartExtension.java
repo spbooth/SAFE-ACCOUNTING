@@ -37,8 +37,10 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.charts.*;
 import uk.ac.ed.epcc.webapp.content.Table;
+import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.exceptions.InvalidArgument;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
+import uk.ac.ed.epcc.webapp.limits.LimitException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.time.Period;
 import uk.ac.ed.epcc.webapp.time.SplitPeriod;
@@ -629,6 +631,97 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 		Document doc = getDocument();
 		DocumentFragment result = doc.createDocumentFragment();
 		return result;
+	}
+	@Override
+	public boolean wantReplace(Element e) {
+		return CHART_LOC.endsWith(e.getNamespaceURI());
+	}
+	@Override
+	public Node replace(Element source) {
+		String name = source.getLocalName();
+		boolean table_output = ! source.getAttribute("table").isEmpty();
+		boolean graphic_output = source.getAttribute("nographic").isEmpty();
+		boolean quiet = ! source.getAttribute("quiet").isEmpty();
+		String caption = null;
+		try {
+			caption = getParam("Caption", source);
+		}catch(Exception e) {
+			addError("chart error chart:"+name, "Error getting caption", e);
+		}
+		DocumentFragment result = getDocument().createDocumentFragment();
+		if( deferrCharts() && ! table_output) {
+			// handle a deferred chart
+			throw new ConsistencyError("Not implemented yet");
+		}else {
+			try {
+				Period period = makePeriod(ElementSet.ancestors_self(source).select(PERIOD_NS, PERIOD_ELEMENT).pollLast());
+				RecordSet set = addFilterElementSet(makeSelector(), ElementSet.ancestors_self(source).select(FILTER_LOC, FILTER_ELEMENT));
+				
+				
+				
+				
+				PlotEntry plot_entry = getPlotEntry(set, source);
+				MapperEntry mapper_entry = getMapperEntry(set, source);
+				Chart chart=null;
+				String extra=null;
+				switch(name) {
+				case "TimeChart": 
+					chart = makeTimeChart(period, source); 
+					extra = "AddChart";
+					break;
+				case "PieTimeChart":
+					chart = makePieTimeChart(period, source);
+					break;
+				case "BarTimeChart":
+					chart = makeBarTimeChart(period, source); 
+					extra = "AddSeries";
+					break;
+				}
+				if( chart == null) {
+					addError("Unrecognised chart type", name);
+					return result;
+				}
+
+				Plot ds = makeDataSet(set, plot_entry, mapper_entry, chart, source);
+				for(Element add_data : ElementSet.select(source, CHART_LOC, "AddData")) {
+					RecordSet set2 = addFilterElementSet(set, ElementSet.select(add_data, FILTER_LOC, FILTER_ELEMENT));
+					PlotEntry plot2 = getPlotEntry(set2, add_data);
+					Plot ds2 = makeDataSet(ds,set2, plot2, mapper_entry, chart, add_data);
+				}
+				result.appendChild(addPlot(ds, set, plot_entry, mapper_entry, chart, source));
+				if( extra != null) {
+					for(Element add_chart: ElementSet.select(source, CHART_LOC, extra)) {
+						RecordSet set2 = addFilterElementSet(set, ElementSet.select(add_chart, FILTER_LOC, FILTER_ELEMENT));
+						PlotEntry plot_entry2 = getPlotEntry(set2, add_chart);
+						MapperEntry mapper_entry2 = getMapperEntry(set2, add_chart);
+						Plot dsd = makeDataSet(set2, plot_entry2, mapper_entry2, chart, add_chart);
+						for(Element add_data : ElementSet.select(add_chart, CHART_LOC, "AddData")) {
+							RecordSet set3 = addFilterElementSet(set2, ElementSet.select(add_data, FILTER_LOC, FILTER_ELEMENT));
+							PlotEntry plot3 = getPlotEntry(set3, add_data);
+							Plot ds3 = makeDataSet(dsd,set3, plot3, mapper_entry2, chart, add_data);
+						}
+						result.appendChild(addPlot(dsd, set2, plot_entry2, mapper_entry2, chart, add_chart));
+					}
+				}
+				if( hasData(chart)) {
+					if( graphic_output) {
+						result.appendChild(addChart(chart, caption));
+					}
+					if( table_output) {
+						result.appendChild(addChartTable(chart, caption));
+					}
+				}else {
+					if( ! quiet) {
+						result.appendChild(addNoData(chart));
+					}
+				}
+			}catch(LimitException le) {
+				throw le;
+			}catch(Exception e) {
+				addError("Bad chart element chart:"+name, e.getMessage(), source, e);
+			}
+			return result;
+		}
 	}
 
 	
