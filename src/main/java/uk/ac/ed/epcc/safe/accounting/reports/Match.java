@@ -28,7 +28,7 @@ public class Match implements Predicate<Element> {
 			if( result == null) {
 				result = new Match(ns,n);
 			}else {
-				result.or(new Match(ns, n));
+				result = result.or(new Match(ns, n));
 			}
 		}
 		return result;

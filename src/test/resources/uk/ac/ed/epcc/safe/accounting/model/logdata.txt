@@ -14,43 +14,10 @@ Adding extension uk.ac.ed.epcc.safe.accounting.reports.AtomExtension as AtomExte
 Adding extension uk.ac.ed.epcc.safe.accounting.reports.PeriodExtension as PeriodExtension
 Adding extension uk.ac.ed.epcc.safe.accounting.reports.TableExtension as TableExtension
 Adding extension uk.ac.ed.epcc.safe.accounting.reports.FormatExtension as FormatExtension
-Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:parameters.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/parameters.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/parameters.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/parameters.xsl
-stream found
-URI resolve href=identity.xsl base=http://safe.epcc.ed.ac.uk/stylesheet/parameters.xsl
-is stylesheet identity.xsl
-Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:identity.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/identity.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/identity.xsl
-stream found
-URI resolve href=restrict.xsl base=http://safe.epcc.ed.ac.uk/stylesheet/parameters.xsl
-is stylesheet restrict.xsl
-Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:restrict.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/restrict.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/restrict.xsl
-stream found
-parameters.xsl source XML is:<?xml version="1.0" encoding="UTF-8"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
-<rep:Title>Template report</rep:Title>
-<par:ParameterDef name="Message" type="String"/>
-<rep:Section>
-<rep:Title>A Section title</rep:Title>
-<rep:Text>This is the initial report template.</rep:Text>
-<rep:Text><par:Parameter name="Message"/></rep:Text>
-</rep:Section>
-</rep:Report>
 lookup attribute [name] in par:Parameter, found Message
 lookup attribute [format] in par:Parameter, found 
  format is  uk.ac.ed.epcc.safe.accounting.formatters.value.DomValueFormatter value is java.lang.String Hello world
-Transform list ReportBuilder.EHTML.transform_list is macro.xsl,atom.xsl,report.xsl,template-to-ehtml.xsl
+Transform list ReportBuilder.EHTML.transform_list is macro.xsl,AtomExtension,FormatExtension+ChartExtension+TableExtension+PeriodExtension,cleanup.xsl,template-to-ehtml.xsl
 Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:macro.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/macro.xsl
@@ -76,15 +43,15 @@ macro.xsl source XML is:<?xml version="1.0" encoding="UTF-8"?><rep:Report xmlns:
 <rep:Text>Hello world</rep:Text>
 </rep:Section>
 </rep:Report>
-Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:atom.xsl
+Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:cleanup.xsl
 dirs=stylesheets
-input stream resource name is stylesheets/atom.xsl
+input stream resource name is stylesheets/cleanup.xsl
 dirs=stylesheets
-input stream resource name is stylesheets/atom.xsl
+input stream resource name is stylesheets/cleanup.xsl
 dirs=stylesheets
-input stream resource name is stylesheets/atom.xsl
+input stream resource name is stylesheets/cleanup.xsl
 stream found
-URI resolve href=identity.xsl base=http://safe.epcc.ed.ac.uk/stylesheet/atom.xsl
+URI resolve href=identity.xsl base=http://safe.epcc.ed.ac.uk/stylesheet/cleanup.xsl
 is stylesheet identity.xsl
 Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:identity.xsl
 dirs=stylesheets
@@ -92,32 +59,7 @@ input stream resource name is stylesheets/identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 stream found
-atom.xsl source XML is:<?xml version="1.0" encoding="UTF-8"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
-<rep:Title>Template report</rep:Title>
-
-<rep:Section>
-<rep:Title>A Section title</rep:Title>
-<rep:Text>This is the initial report template.</rep:Text>
-<rep:Text>Hello world</rep:Text>
-</rep:Section>
-</rep:Report>
-Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:report.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/report.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/report.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/report.xsl
-stream found
-URI resolve href=identity.xsl base=http://safe.epcc.ed.ac.uk/stylesheet/report.xsl
-is stylesheet identity.xsl
-Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:identity.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/identity.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/identity.xsl
-stream found
-URI resolve href=filter.xsl base=http://safe.epcc.ed.ac.uk/stylesheet/report.xsl
+URI resolve href=filter.xsl base=http://safe.epcc.ed.ac.uk/stylesheet/cleanup.xsl
 is stylesheet filter.xsl
 Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:filter.xsl
 dirs=stylesheets
@@ -127,47 +69,7 @@ input stream resource name is stylesheets/filter.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/filter.xsl
 stream found
-URI resolve href=period.xsl base=http://safe.epcc.ed.ac.uk/stylesheet/report.xsl
-is stylesheet period.xsl
-Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:period.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/period.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/period.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/period.xsl
-stream found
-URI resolve href=tables.xsl base=http://safe.epcc.ed.ac.uk/stylesheet/report.xsl
-is stylesheet tables.xsl
-Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:tables.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/tables.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/tables.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/tables.xsl
-stream found
-URI resolve href=chart.xsl base=http://safe.epcc.ed.ac.uk/stylesheet/report.xsl
-is stylesheet chart.xsl
-Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:chart.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/chart.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/chart.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/chart.xsl
-stream found
-URI resolve href=format.xsl base=http://safe.epcc.ed.ac.uk/stylesheet/report.xsl
-is stylesheet format.xsl
-Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:format.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/format.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/format.xsl
-dirs=stylesheets
-input stream resource name is stylesheets/format.xsl
-stream found
-report.xsl source XML is:<?xml version="1.0" encoding="UTF-8"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
+cleanup.xsl source XML is:<?xml version="1.0" encoding="UTF-8"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
 <rep:Title>Template report</rep:Title>
 
 <rep:Section>

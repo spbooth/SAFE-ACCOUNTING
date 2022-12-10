@@ -636,6 +636,54 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 	public boolean wantReplace(Element e) {
 		return CHART_LOC.endsWith(e.getNamespaceURI());
 	}
+	private class DeferredTransform implements IdentityDomTransform{
+		public DeferredTransform(RecordSet filcontext) {
+			super();
+			this.filcontext = filcontext;
+		}
+
+		private final RecordSet filcontext;
+		@Override
+		public void setDocument(Document doc) {
+			
+		}
+
+		@Override
+		public Document getDocument() {
+			return ChartExtension.this.getDocument();
+		}
+
+		@Override
+		public boolean wantReplace(Element e) {
+			if( ParameterExtension.PARAMETER_LOC.equals(e.getNamespaceURI()) && ParameterExtension.PARAMETER_REF_ELEMENT.equals(e.getLocalName())) {
+				return true;
+			}
+			if( FILTER_LOC.equals(e.getNamespaceURI()) && FILTER_ELEMENT.equals(e.getLocalName())) {
+				return true;
+			}
+			
+			return false;
+		}
+
+		@Override
+		public Node replace(Element e) {
+			String name = e.getLocalName();
+			try {
+				switch(name) {
+				case ParameterExtension.PARAMETER_REF_ELEMENT: return inlineParameterRef(e);
+				case FILTER_ELEMENT: 
+					RecordSet set = makeSelector();
+					set.setUsageProducer(filcontext.getUsageProducer()); // wont set the name
+					set = addFilterElement(set, e);
+					return formatRecordSet(set);
+				}
+			}catch(Exception ex) {
+				addError("Expansion error in "+name, ex.getMessage(), e, ex);
+			}
+			return null;
+		}
+		
+	}
 	@Override
 	public Node replace(Element source) {
 		String name = source.getLocalName();
@@ -648,15 +696,31 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 		}catch(Exception e) {
 			addError("chart error chart:"+name, "Error getting caption", e);
 		}
-		DocumentFragment result = getDocument().createDocumentFragment();
+		Document doc = getDocument();
+		DocumentFragment result = doc.createDocumentFragment();
+		Element period_element = ElementSet.ancestors_self(source).select(new Match(PERIOD_NS, PERIOD_ELEMENT)).pollLast();
+		
+		RecordSet set = addFilterElementSet(makeSelector(), ElementSet.ancestors_self(source).select(new Match(FILTER_LOC, FILTER_ELEMENT)));
+		
 		if( deferrCharts() && ! table_output) {
 			// handle a deferred chart
-			throw new ConsistencyError("Not implemented yet");
+			try {
+				Node spec = doc.importNode(source, false);
+				
+				spec.appendChild(doc.importNode(period_element, true));
+				spec.appendChild(formatRecordSet(set));
+				ElementSet content = ElementSet.select(source, new Match(CHART_LOC,"*"));
+				DeferredTransform transform = new DeferredTransform(set);
+				spec.appendChild(transform.transformElementSet(content));
+				return emitDeferredChart(spec, caption);
+			}catch(Exception e) {
+				addError("Error generating deferred chart chart:"+name, e.getMessage(), source, e);
+			}
+			
+			return null;
 		}else {
 			try {
-				Period period = makePeriod(ElementSet.ancestors_self(source).select(new Match(PERIOD_NS, PERIOD_ELEMENT)).pollLast());
-				RecordSet set = addFilterElementSet(makeSelector(), ElementSet.ancestors_self(source).select(new Match(FILTER_LOC, FILTER_ELEMENT)));
-				
+				Period period = makePeriod(period_element);
 				
 				
 				

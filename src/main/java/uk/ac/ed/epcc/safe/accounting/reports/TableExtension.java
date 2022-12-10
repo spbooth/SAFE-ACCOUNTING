@@ -1676,6 +1676,7 @@ public class TableExtension extends ReportExtension {
 	public Node replace(Element e) {
 		String name = e.getLocalName();
 		try {
+			// visiting a top level table so no parent
 			return visitTable(null,e);
 			
 		}catch(LimitException le) {
@@ -1689,7 +1690,7 @@ public class TableExtension extends ReportExtension {
 	private DocumentFragment visitSubTables(CompoundTable comp, Element parent) throws BadTableException, Exception {
 		// Visit all of the sub-tables specifying a parent
 		for(Element e : ElementSet.select(parent,Match.match(TABLE_LOC, TABLE_ELEMENT,OBJECT_TABLE_ELEMENT,SUMMARY_TABLE_ELEMENT,SUMMARY_OBJECT_TABLE_ELEMENT,COMPOUND_TABLE_ELEMENT))) {
-			return visitTable(comp, e);
+			visitTable(comp, e);
 		}
 		return null;
 	}

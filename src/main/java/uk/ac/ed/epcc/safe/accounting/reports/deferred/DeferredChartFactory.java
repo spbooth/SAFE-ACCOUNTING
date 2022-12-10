@@ -26,6 +26,9 @@ public class DeferredChartFactory extends DataObjectDataProducer<DeferredChartFa
 		super(c, DEFAULT_TABLE);
 	}
 
+	public DeferredChartFactory getFactory(AppContext conn) {
+		return conn.makeObject(DeferredChartFactory.class, DEFAULT_TABLE);
+	}
 	public static class ByteArrayTextProvider extends ByteArrayOutputStream implements TextProvider{
 
 		@Override
@@ -45,6 +48,9 @@ public class DeferredChartFactory extends DataObjectDataProducer<DeferredChartFa
 			super(r);
 		}
 
+		public MimeStreamData getRawData() throws DataFault {
+			return super.getData();
+		}
 		@Override
 		public MimeStreamData getData() throws DataFault {
 			if( getMimeType().equals(REPORT_MIME)) {

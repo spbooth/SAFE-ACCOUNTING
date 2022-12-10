@@ -44,6 +44,7 @@ public class SVGChartExtension extends ChartExtension {
 	@Override
 	public DocumentFragment addChart( Chart chart,String caption) {
 		try {
+		Document output_doc = getDocument();
 		//Note the createSVG generates the figure element
 		// itself so it can annotate with graphic sizes.
 		// Get a DOMImplementation
@@ -51,23 +52,25 @@ public class SVGChartExtension extends ChartExtension {
 		// Create an instance of org.w3c.dom.Document
 		String svgNS = "http://www.w3.org/2000/svg";
 		Document SVGdoc = domImpl.createDocument(svgNS, "svg", null);
-		DocumentFragment frag=SVGdoc.createDocumentFragment();
+		//DocumentFragment frag=getDocument().createDocumentFragment();
 		// Create an instance of the SVG Generator
 		SVGGraphics2D svgGenerator = new SVGGraphics2D(SVGdoc);
 		Dimension d = chart.chart.getChartData().getSize();
 		svgGenerator.setSVGCanvasSize(d);
 		  		//JComponent jcomp = (JComponent) chart; 
 		chart.chart.getChartData().writeGraphics(svgGenerator);
-		Element figure=SVGdoc.createElement("figure");
-		frag.appendChild(figure);
+		Element figure=output_doc.createElement("figure");
+		
 		figure.setAttribute("height", Integer.toString(d.height));
 		figure.setAttribute("width", Integer.toString(d.width));
-		figure.appendChild(svgGenerator.getRoot());
+		figure.appendChild(output_doc.importNode(svgGenerator.getRoot(),true));
 		if( caption != null && caption.trim().length() > 0){
-			Element c=SVGdoc.createElement("caption");
-			c.appendChild(SVGdoc.createTextNode(caption));
+			Element c=output_doc.createElement("caption");
+			c.appendChild(output_doc.createTextNode(caption));
 			figure.appendChild(c);
 		}
+		DocumentFragment frag = output_doc.createDocumentFragment();
+		frag.appendChild(figure);
 		return frag;
 		}catch(Exception e) {
 			addError("Bad Plot","Error addingsvg graphic",e);

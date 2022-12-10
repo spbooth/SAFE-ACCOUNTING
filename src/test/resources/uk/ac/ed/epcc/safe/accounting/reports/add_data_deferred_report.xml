@@ -41,45 +41,17 @@
 </TextFileOverlay>
 <TextFileOverlay id='3'>
 <Group>stylesheets</Group>
-<Name>restrict.xsl</Name>
+<Name>macro.xsl</Name>
 </TextFileOverlay>
 <TextFileOverlay id='4'>
 <Group>stylesheets</Group>
-<Name>parameters.xsl</Name>
+<Name>cleanup.xsl</Name>
 </TextFileOverlay>
 <TextFileOverlay id='5'>
 <Group>stylesheets</Group>
-<Name>macro.xsl</Name>
-</TextFileOverlay>
-<TextFileOverlay id='6'>
-<Group>stylesheets</Group>
-<Name>atom.xsl</Name>
-</TextFileOverlay>
-<TextFileOverlay id='7'>
-<Group>stylesheets</Group>
-<Name>report.xsl</Name>
-</TextFileOverlay>
-<TextFileOverlay id='8'>
-<Group>stylesheets</Group>
 <Name>filter.xsl</Name>
 </TextFileOverlay>
-<TextFileOverlay id='9'>
-<Group>stylesheets</Group>
-<Name>period.xsl</Name>
-</TextFileOverlay>
-<TextFileOverlay id='10'>
-<Group>stylesheets</Group>
-<Name>tables.xsl</Name>
-</TextFileOverlay>
-<TextFileOverlay id='11'>
-<Group>stylesheets</Group>
-<Name>chart.xsl</Name>
-</TextFileOverlay>
-<TextFileOverlay id='12'>
-<Group>stylesheets</Group>
-<Name>format.xsl</Name>
-</TextFileOverlay>
-<TextFileOverlay id='13'>
+<TextFileOverlay id='6'>
 <Group>stylesheets</Group>
 <Name>template-to-ehtml.xsl</Name>
 </TextFileOverlay>

@@ -1,5 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -7,9 +8,12 @@ import org.junit.Test;
 
 import uk.ac.ed.epcc.safe.accounting.model.Report;
 import uk.ac.ed.epcc.safe.accounting.model.ReportTemplateTransitionProvider;
+import uk.ac.ed.epcc.safe.accounting.reports.deferred.DeferredChartFactory;
+import uk.ac.ed.epcc.safe.accounting.reports.deferred.DeferredChartFactory.DeferredChart;
 import uk.ac.ed.epcc.webapp.charts.jfreechart.JFreeSetup;
 import uk.ac.ed.epcc.webapp.junit4.ConfigFixtures;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
+import uk.ac.ed.epcc.webapp.model.data.stream.MimeStreamData;
 import uk.ac.ed.epcc.webapp.servlet.AbstractTransitionServletTest;
 
 public class ReportTransitionTest extends AbstractTransitionServletTest {
@@ -55,7 +59,14 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		runTransition();
 		checkForward("/scripts/transition.jsp");
 		checkFormContent("/normalize.xsl", "add_data_deferred_preview.xml");
-		checkDiff("/cleanup.xsl", "add_data_deferred_report.xml");
+		checkDiff(null, "add_data_deferred_report.xml");
+		DeferredChartFactory fac = new DeferredChartFactory(ctx);
+		DeferredChart chart = fac.find(1);
+		MimeStreamData spec = chart.getRawData();
+		spec.write(System.out);
+		ByteArrayOutputStream s = new ByteArrayOutputStream();
+		spec.write(s);
+		checkContent(null, "deferred_spec.xml",s.toString());
 	}
 	
 }

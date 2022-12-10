@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><cha:TimeChart xmlns:cha="http://safe.epcc.ed.ac.uk/chart"><per:Period xmlns:per="http://safe.epcc.ed.ac.uk/period">
+	<per:StartTime>29-09-2008</per:StartTime>
+	<per:EndTime>29-10-2008</per:EndTime>
+</per:Period><Filter xmlns="http://safe.epcc.ed.ac.uk/filter"><TimeBounds><Property>time:CompletedTimestamp</Property></TimeBounds><And/></Filter><cha:NumberOfTimeBlocks>5</cha:NumberOfTimeBlocks><cha:Plot>Wall</cha:Plot><cha:AddData>
+	<Filter xmlns="http://safe.epcc.ed.ac.uk/filter"><TimeBounds><Property>time:CompletedTimestamp</Property></TimeBounds><And><EQ><Property>sge:Project</Property><Value>ecdf_baseline</Value></EQ></And></Filter>
+	<cha:Plot>Wall</cha:Plot>
+	</cha:AddData><cha:GroupBy>Project</cha:GroupBy></cha:TimeChart>

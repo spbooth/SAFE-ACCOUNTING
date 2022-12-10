@@ -233,6 +233,7 @@ public class TableExtensionTest extends ExtensionTestCase {
 		// Look for errors
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
 		System.out.println(out.toString());
+		System.out.println(expectedOutput);
 		for(String s : expectedOutput.replace("><",">\n<").split("\r?\n")){
 			assertTrue("Output did not contain \n"+s.trim()+"\n",
 					outstring.contains(s.trim()));

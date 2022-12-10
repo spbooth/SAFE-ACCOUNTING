@@ -7,7 +7,7 @@
  
 	<!-- Import the identity transformation. -->
 	<xsl:import href="identity.xsl" />
-	<xsl:import href="restrict.xsl" />
+	<!--  <xsl:import href="restrict.xsl" /> -->
 <!-- Do includes in the initial transform -->
 	<xsl:template match="par:Include">
 	<xsl:copy-of select="document(@file)"></xsl:copy-of>
