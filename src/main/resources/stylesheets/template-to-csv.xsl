@@ -18,7 +18,7 @@
 	<xsl:output method="text" indent="no" />
 	
 	<!-- Remove the newlines for the stripped out ParamererDef etc. -->
-	<xsl:strip-space elements="rep:Report rep:Title rep:Heading rep:table rep:tr rep:Text text p para Title title heading Heading"/>
+	<xsl:strip-space elements="*"/>
 	
 	<!-- Makes sure the elements which can remain do perserve their spaces -->
 	<xsl:preserve-space elements="rep:td rep:th th td"/>

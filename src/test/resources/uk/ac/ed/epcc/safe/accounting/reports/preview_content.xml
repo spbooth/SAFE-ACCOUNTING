@@ -12,7 +12,7 @@
 <p>The reporting period is 26-09-2008 to 26-10-2008</p>
 <div class="graph">
 <figure>
-<img alt="figure" src="test/Data/ServeData/1/image.png"/>
+<img src="test/Data/ServeData/1/image.png" alt="figure"/>
 </figure>
 </div>
 </div>

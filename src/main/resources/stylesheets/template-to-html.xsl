@@ -9,10 +9,22 @@
 	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
 	xmlns:tab="http://safe.epcc.ed.ac.uk/table"
 	xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
-	xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+	xmlns:ato="http://safe.epcc.ed.ac.uk/atom"
+	exclude-result-prefixes="rep acc par per fil tab cha ato"
+	>
 	<!--  Let style-sheet set the line breaks -->
 	<xsl:strip-space elements="Table table Tr tr rep:table"/>
-	<xsl:output method="html" />
+	<xsl:output method="html"/>
+	
+	<xsl:param name="WebRoot"/>
+<xsl:param name="CssPath"/>
+<xsl:template name="css">
+<xsl:element name="link">
+<xsl:attribute name="href"><xsl:value-of select="$CssPath"/></xsl:attribute>
+<xsl:attribute name="rel">stylesheet</xsl:attribute>
+<xsl:attribute name="type">text/css</xsl:attribute>
+</xsl:element>
+</xsl:template>
 	<!-- generate HTML skeleton on root element -->	
 	<xsl:template match="/">
 		<html>
@@ -28,15 +40,7 @@
 		</html>
 	</xsl:template>
 
-<xsl:param name="WebRoot"/>
-<xsl:param name="CssPath"/>
-<xsl:template name="css">
-<xsl:element name="link">
-<xsl:attribute name="href"><xsl:value-of select="$CssPath"/></xsl:attribute>
-<xsl:attribute name="rel">stylesheet</xsl:attribute>
-<xsl:attribute name="type">text/css</xsl:attribute>
-</xsl:element>
-</xsl:template>
+
 
 <xsl:template match="rep:Report">
 <div class="report">

@@ -9,7 +9,9 @@
 	xmlns:fil="http://safe.epcc.ed.ac.uk/filter"
 	xmlns:tab="http://safe.epcc.ed.ac.uk/table"
 	xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
-	xmlns:ato="http://safe.epcc.ed.ac.uk/atom">
+	xmlns:ato="http://safe.epcc.ed.ac.uk/atom"
+	exclude-result-prefixes="rep acc par per fil tab cha ato"
+	>
 	<!-- This is intended for html embedded in 
 	* an email. Email clients tend to work best with
 	* inline styling rather than external style-sheets

@@ -194,8 +194,9 @@ public void testCSVReport() throws Exception {
 			
 		}
 		stdOutString=stdOutString.replace(ctx.getInitParameter("java.io.tmpdir","/tmp"), "/tmp").replaceAll("<!--.*-->\\s*\n?", "");
-		System.err.print(stdOutString);
-		
+		System.out.println("###");
+		System.out.print(stdOutString);
+		System.out.println("###");
 		// Check it was correctly formatted.
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, stdOutString),

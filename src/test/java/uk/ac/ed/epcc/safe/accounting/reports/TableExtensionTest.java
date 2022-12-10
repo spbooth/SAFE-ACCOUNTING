@@ -232,9 +232,14 @@ public class TableExtensionTest extends ExtensionTestCase {
 //	    tmp.close();
 		// Look for errors
 		ReportBuilderTest.checkErrors(reportBuilder.getErrors());
-		System.out.println(out.toString());
+		System.out.println("#####Output");
+		System.out.println(outstring);
+		System.out.println("#####Expected");
 		System.out.println(expectedOutput);
-		for(String s : expectedOutput.replace("><",">\n<").split("\r?\n")){
+		System.out.println("#####Raw");
+		System.out.println(out.toString());
+		System.out.println("#####");
+		for(String s : expectedOutput.split("\r?\n")){
 			assertTrue("Output did not contain \n"+s.trim()+"\n",
 					outstring.contains(s.trim()));
 			assertTrue("Output has unexpected leading/trailing spaces \n"+s+"\n",
@@ -246,6 +251,13 @@ public class TableExtensionTest extends ExtensionTestCase {
 				TestDataHelper.diff(expectedOutput, out.toString()+"\n---------\n"), 
 				outstring.contains(expectedOutput));
 		
+	}
+
+
+	@Override
+	public String normalise(String output) throws Exception {
+		// TODO Auto-generated method stub
+		return super.normalise(output).replaceAll("><", ">\n<");
 	}
 
 

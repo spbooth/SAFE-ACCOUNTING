@@ -12,7 +12,9 @@
 	xmlns:tab="http://safe.epcc.ed.ac.uk/table"
 	xmlns:cha="http://safe.epcc.ed.ac.uk/chart"
 	xmlns:ato="http://safe.epcc.ed.ac.uk/atom"
-	xmlns:svg="http://www.w3.org/2000/svg">
+	xmlns:svg="http://www.w3.org/2000/svg"
+	exclude-result-prefixes="rep acc par per fil tab cha ato"
+	>
 
     <!-- Generate a FOP docment to be converted to PDF.
     *  Note that style information needs to be implemented directly here

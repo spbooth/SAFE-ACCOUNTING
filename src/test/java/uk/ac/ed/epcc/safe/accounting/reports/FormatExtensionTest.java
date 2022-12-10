@@ -21,8 +21,8 @@ import uk.ac.ed.epcc.webapp.model.data.stream.ByteArrayStreamData;
 public class FormatExtensionTest extends ExtensionTestCase {
 
 	@Override
-	public String normalise(String output) {
-		String s1 = output.replaceAll("</?fragment>\\s*\r?\n?", "");
+	public String normalise(String output) throws Exception {
+		String s1 = output.replaceAll("</?fragment>\\s*\r?\n?\\s*", "");
 		String s2 = s1.replaceAll("<!--.*-->\\s*\r?\n", "");
 		return super.normalise(s2);
 	}
@@ -97,8 +97,12 @@ public class FormatExtensionTest extends ExtensionTestCase {
 		//System.out.println(out.toString());
 		expectedOutput = normalise(expectedOutput);
 		String outs = normalise(out.toString());
+		System.out.println("##Expected");
 		System.out.println(expectedOutput);
+		System.out.println("##Got");
 		System.out.println(outs);
+		System.out.println("##Raw");
+		System.out.println(out.toString());
 		// Check it was correctly formatted.
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, outs),

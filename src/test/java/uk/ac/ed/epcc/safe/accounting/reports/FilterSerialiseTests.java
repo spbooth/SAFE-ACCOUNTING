@@ -86,7 +86,7 @@ public class FilterSerialiseTests extends WebappTestBase {
 		
 		t.transform(new DOMSource(doc),new StreamResult(out));
 		assertEquals(EXPECTED,
-				out.toString());
+				out.toString().replace(" standalone=\"no\"", ""));
 		NodeList list = doc.getElementsByTagNameNS(FilterExtension.FILTER_LOC, FilterExtension.FILTER_ELEMENT);
 		for( int i=0 ; i<list.getLength();i++) {
 			RecordSet parsed = fil.makeFilter(list.item(i));
@@ -97,7 +97,7 @@ public class FilterSerialiseTests extends WebappTestBase {
 			ByteArrayOutputStream out2 = new ByteArrayOutputStream();
 			t.transform(new DOMSource(serial), new StreamResult(out2));
 			assertEquals(EXPECTED,
-					out2.toString());
+					out2.toString().replace(" standalone=\"no\"", ""));
 			RecordSet second = fil.makeFilter(serial);
 
 			assertEquals("parsed does not match original",set,parsed);

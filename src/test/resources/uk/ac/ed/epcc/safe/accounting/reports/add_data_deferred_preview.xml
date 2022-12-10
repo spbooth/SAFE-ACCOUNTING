@@ -10,7 +10,7 @@
 <h2>Time Chart Plot</h2>
 <div class="graph">
 <figure>
-<img alt="dynamically generated graph" src="test/Data/DeferredCharts/1/image.png"/>
+<img src="test/Data/DeferredCharts/1/image.png" alt="dynamically generated graph"/>
 </figure>
 </div>
 </div>

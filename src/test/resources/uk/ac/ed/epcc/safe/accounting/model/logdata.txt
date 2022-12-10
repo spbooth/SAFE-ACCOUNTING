@@ -34,7 +34,7 @@ input stream resource name is stylesheets/identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 stream found
-macro.xsl source XML is:<?xml version="1.0" encoding="UTF-8"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
+macro.xsl source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
 <rep:Title>Template report</rep:Title>
 
 <rep:Section>
@@ -69,7 +69,7 @@ input stream resource name is stylesheets/filter.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/filter.xsl
 stream found
-cleanup.xsl source XML is:<?xml version="1.0" encoding="UTF-8"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
+cleanup.xsl source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
 <rep:Title>Template report</rep:Title>
 
 <rep:Section>
@@ -78,7 +78,7 @@ cleanup.xsl source XML is:<?xml version="1.0" encoding="UTF-8"?><rep:Report xmln
 <rep:Text>Hello world</rep:Text>
 </rep:Section>
 </rep:Report>
-template-to-ehtml.xsl source XML is:<?xml version="1.0" encoding="UTF-8"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
+template-to-ehtml.xsl source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
 <rep:Title>Template report</rep:Title>
 
 <rep:Section>

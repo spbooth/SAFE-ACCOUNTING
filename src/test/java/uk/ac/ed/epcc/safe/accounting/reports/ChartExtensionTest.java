@@ -33,8 +33,8 @@ public class ChartExtensionTest extends ExtensionTestCase {
 
 	
 	@Override
-	public String normalise(String output) {
-		return super.normalise(output.replaceAll("</?fragment>", ""));
+	public String normalise(String output) throws Exception {
+		return super.normalise(output.replaceAll("</?fragment>", "").replaceAll("><", ">\n<"));
 	}
 	@Test
 	@DataBaseFixtures({"Eddie.xml"})
@@ -300,10 +300,26 @@ public class ChartExtensionTest extends ExtensionTestCase {
 
 		// Check it was correctly formatted.
 		String output = out.toString().replace(ctx.getInitParameter("java.io.tmpdir","/tmp"), "/tmp");
-		System.out.println(output);
+		
+		String normalise_output = normalise(output);
+		String normalise_expected = normalise(expectedOutput);
+		String differ = TestDataHelper.diff(normalise_expected, normalise_output);
+		
+		boolean contains = normalise_output.contains(normalise_expected);
+		if( ! contains) {
+			System.out.println("Expected:");
+			System.out.println(normalise_expected);
+			System.out.println("Actual:");
+			System.out.println(normalise_output);
+			System.out.println("Raw:");
+			System.out.println(output);
+		}
+		for(String line : normalise_expected.split("\n")) {
+			assertTrue("Output did not contain:"+line,normalise_output.contains(line));
+		}
 		assertTrue("Report wasn't correctly formatted:\n"+
 				TestDataHelper.diff(expectedOutput, output),
-				normalise(output).contains(normalise(expectedOutput)));
+				contains);
 
 	}
 	

@@ -12,13 +12,23 @@
 	xmlns:svg="http://www.w3.org/2000/svg"
 	xmlns:ato="http://safe.epcc.ed.ac.uk/atom"
 	xmlns="http://www.w3.org/1999/xhtml"
+	exclude-result-prefixes="rep acc par per fil tab cha ato"
 	>
-	<xsl:output method="xhtml" version="1.0" 
+	<xsl:output method="xml" version="1.0" 
 	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
 	doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
+
 <!--  Let stylesheet set the line breaks -->
 	<xsl:strip-space elements="rep:table rep:tr Table table Tr tr"/>
-	
+	<xsl:param name="WebRoot"/>
+<xsl:param name="CssPath"/>
+<xsl:template name="css">
+<xsl:element name="link">
+<xsl:attribute name="href"><xsl:value-of select="$CssPath"/></xsl:attribute>
+<xsl:attribute name="rel">stylesheet</xsl:attribute>
+<xsl:attribute name="type">text/css</xsl:attribute>
+</xsl:element>
+</xsl:template>
 	<!-- generate HTML skeleton on root element -->	
 	<xsl:template match="/">
 		<html>
@@ -34,15 +44,7 @@
 		</html>
 	</xsl:template>
 
-<xsl:param name="WebRoot"/>
-<xsl:param name="CssPath"/>
-<xsl:template name="css">
-<xsl:element name="link">
-<xsl:attribute name="href"><xsl:value-of select="$CssPath"/></xsl:attribute>
-<xsl:attribute name="rel">stylesheet</xsl:attribute>
-<xsl:attribute name="type">text/css</xsl:attribute>
-</xsl:element>
-</xsl:template>
+
 
 <xsl:template match="rep:Report">
 <div class="report">

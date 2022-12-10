@@ -33,7 +33,7 @@ public class RestrictExtensionTest extends ExtensionTestCase {
 
 	
 	@Override
-	public String normalise(String output) {
+	public String normalise(String output) throws Exception {
 		String s1 = output.replaceAll("</?fragment>\\s*\r?\n?", "");
 		String s2 = s1.replaceAll("<!--.*-->\\s*\r?\n", "");
 		return super.normalise(s2);
