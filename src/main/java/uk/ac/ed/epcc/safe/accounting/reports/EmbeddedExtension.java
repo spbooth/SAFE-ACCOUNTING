@@ -18,6 +18,9 @@ import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import uk.ac.ed.epcc.webapp.AppContext;
 /** Extracts and stores fragments of the generated XML.
  * 
@@ -28,7 +31,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
  * 
  */
 public class EmbeddedExtension extends ReportExtension {
-
+    public static final String EMBEDDED_LOC="http://safe.epcc.ed.ac.uk/embedded";
 	Map<String,Object> fragments = new HashMap<>();
 	public EmbeddedExtension(AppContext conn, ReportType type)
 			throws ParserConfigurationException {
@@ -42,6 +45,20 @@ public class EmbeddedExtension extends ReportExtension {
 	
 	public Object getFragment(String key){
 		return fragments.get(key);
+	}
+
+	@Override
+	public boolean wantReplace(Element e) {
+		return EMBEDDED_LOC.equals(e.getNamespaceURI());
+	}
+
+	@Override
+	public Node replace(Element e) {
+		String name = e.getLocalName();
+		switch(name) {
+		case "Define": addFragment(e.getAttribute("name"), e); return null;
+		}
+		return null;
 	}
 
 }
