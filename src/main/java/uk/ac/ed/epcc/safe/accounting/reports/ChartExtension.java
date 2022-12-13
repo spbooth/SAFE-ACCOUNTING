@@ -728,10 +728,12 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 				MapperEntry mapper_entry = getMapperEntry(set, source);
 				Chart chart=null;
 				String extra=null;
+				boolean new_mapper =false;
 				switch(name) {
 				case "TimeChart": 
 					chart = makeTimeChart(period, source); 
 					extra = "AddChart";
+					new_mapper=true;
 					break;
 				case "PieTimeChart":
 					chart = makePieTimeChart(period, source);
@@ -757,7 +759,12 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 					for(Element add_chart: ElementSet.select(source, new Match(CHART_LOC, extra))) {
 						RecordSet set2 = addFilterElementSet(set, ElementSet.select(add_chart,new Match( FILTER_LOC, FILTER_ELEMENT)));
 						PlotEntry plot_entry2 = getPlotEntry(set2, add_chart);
-						MapperEntry mapper_entry2 = getMapperEntry(set2, add_chart);
+						MapperEntry mapper_entry2;
+						if( new_mapper) {
+						   mapper_entry2 = getMapperEntry(set2, add_chart);
+						}else {
+							mapper_entry2= mapper_entry;
+						}
 						Plot dsd = makeDataSet(set2, plot_entry2, mapper_entry2, chart, add_chart);
 						for(Element add_data : ElementSet.select(add_chart, new Match(CHART_LOC, "AddData"))) {
 							RecordSet set3 = addFilterElementSet(set2, ElementSet.select(add_data, new Match(FILTER_LOC, FILTER_ELEMENT)));

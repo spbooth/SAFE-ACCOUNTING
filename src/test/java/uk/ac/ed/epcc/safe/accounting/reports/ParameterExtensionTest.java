@@ -10,9 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
@@ -44,6 +42,7 @@ import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
 import uk.ac.ed.epcc.webapp.time.CalendarFieldSplitPeriod;
+import uk.ac.ed.epcc.webapp.time.RegularSplitPeriod;
 
 public class ParameterExtensionTest extends WebappTestBase {
 	
@@ -91,6 +90,35 @@ public class ParameterExtensionTest extends WebappTestBase {
 		Map<String,Object> params = new HashMap<>();
 		ReportBuilderTest.setupParams(ctx, params);
 		
+
+		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
+		reportBuilder.setupExtensions(params);
+		
+		
+		// render the form
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ReportType	XML = new ReportType("XML","xml", "text/xml","XML",null,null); 
+		reportBuilder.renderXML(XML,params, XML.getResult(ctx, out));
+		checkContent(null, "expected_distinct.xml", out.toString());
+	}
+	
+	@Test
+	@DataBaseFixtures({"Eddie.xml"})
+	public void testDistinctWithPeriodParameter() throws Exception{
+		
+		String templateName = "testDistinctWithParam";
+		
+		
+		// Get the params values from the Form
+		Map<String,Object> params = new HashMap<>();
+		ReportBuilderTest.setupParams(ctx, params);
+		Calendar c = Calendar.getInstance();
+		c.clear();
+		c.set(2008, Calendar.SEPTEMBER, 29);
+		Date start = c.getTime();
+		c.add(Calendar.MONTH, 1);
+		Date end = c.getTime();
+		params.put("Period",new RegularSplitPeriod(start, end, 4));
 
 		ReportBuilder reportBuilder = new ReportBuilder(ctx,templateName,"report.xsd");	
 		reportBuilder.setupExtensions(params);

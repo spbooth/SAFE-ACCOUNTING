@@ -1,5 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.reports;
 
+import javax.xml.parsers.DocumentBuilder;
+
 import org.w3c.dom.*;
 /** A {@link DomTransform} that implements transforms derived from the Identity transform.
  * 
@@ -14,9 +16,11 @@ public interface IdentityDomTransform extends DomTransform {
 	public abstract void setDocument(Document doc);
 	public abstract Document getDocument();
 	@Override
-	default public void transform(Document source, Document destination) {
+	default public Document transform(DocumentBuilder builder,Document source) {
+		Document destination = builder.newDocument();
 		setDocument(destination);
 		destination.appendChild(transformElement(source.getDocumentElement()));
+		return destination;
 	}
 	default public Node transformNode(Node source) {
 		switch(source.getNodeType()) {

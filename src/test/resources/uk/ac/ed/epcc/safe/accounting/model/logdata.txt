@@ -14,10 +14,37 @@ Adding extension uk.ac.ed.epcc.safe.accounting.reports.AtomExtension as AtomExte
 Adding extension uk.ac.ed.epcc.safe.accounting.reports.PeriodExtension as PeriodExtension
 Adding extension uk.ac.ed.epcc.safe.accounting.reports.TableExtension as TableExtension
 Adding extension uk.ac.ed.epcc.safe.accounting.reports.FormatExtension as FormatExtension
+RestrictExtension source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
+<rep:Title>Template report</rep:Title>
+<par:ParameterDef name="Message" type="String"/>
+<rep:Section>
+<rep:Title>A Section title</rep:Title>
+<rep:Text>This is the initial report template.</rep:Text>
+<rep:Text><par:Parameter name="Message"/></rep:Text>
+</rep:Section>
+</rep:Report>
+ParameterExtension source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
+<rep:Title>Template report</rep:Title>
+<par:ParameterDef name="Message" type="String"/>
+<rep:Section>
+<rep:Title>A Section title</rep:Title>
+<rep:Text>This is the initial report template.</rep:Text>
+<rep:Text><par:Parameter name="Message"/></rep:Text>
+</rep:Section>
+</rep:Report>
 lookup attribute [name] in par:Parameter, found Message
 lookup attribute [format] in par:Parameter, found 
  format is  uk.ac.ed.epcc.safe.accounting.formatters.value.DomValueFormatter value is java.lang.String Hello world
 Transform list ReportBuilder.EHTML.transform_list is macro.xsl,AtomExtension,FormatExtension+ChartExtension+TableExtension+PeriodExtension,cleanup.xsl,template-to-ehtml.xsl
+macro.xsl source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
+<rep:Title>Template report</rep:Title>
+
+<rep:Section>
+<rep:Title>A Section title</rep:Title>
+<rep:Text>This is the initial report template.</rep:Text>
+<rep:Text>Hello world</rep:Text>
+</rep:Section>
+</rep:Report>
 Query is SELECT * FROM `TextFileOverlay` WHERE  ( `Group`= ? ) AND ( `Name`= ? )  nparam:2 1:Group:stylesheets 2:Name:macro.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/macro.xsl
@@ -34,7 +61,25 @@ input stream resource name is stylesheets/identity.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/identity.xsl
 stream found
-macro.xsl source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
+AtomExtension source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
+<rep:Title>Template report</rep:Title>
+
+<rep:Section>
+<rep:Title>A Section title</rep:Title>
+<rep:Text>This is the initial report template.</rep:Text>
+<rep:Text>Hello world</rep:Text>
+</rep:Section>
+</rep:Report>
+FormatExtension+ChartExtension+TableExtension+PeriodExtension source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
+<rep:Title>Template report</rep:Title>
+
+<rep:Section>
+<rep:Title>A Section title</rep:Title>
+<rep:Text>This is the initial report template.</rep:Text>
+<rep:Text>Hello world</rep:Text>
+</rep:Section>
+</rep:Report>
+cleanup.xsl source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
 <rep:Title>Template report</rep:Title>
 
 <rep:Section>
@@ -69,15 +114,6 @@ input stream resource name is stylesheets/filter.xsl
 dirs=stylesheets
 input stream resource name is stylesheets/filter.xsl
 stream found
-cleanup.xsl source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
-<rep:Title>Template report</rep:Title>
-
-<rep:Section>
-<rep:Title>A Section title</rep:Title>
-<rep:Text>This is the initial report template.</rep:Text>
-<rep:Text>Hello world</rep:Text>
-</rep:Section>
-</rep:Report>
 template-to-ehtml.xsl source XML is:<?xml version="1.0" encoding="UTF-8" standalone="no"?><rep:Report xmlns:rep="http://safe.epcc.ed.ac.uk/report" xmlns:ato="http://safe.epcc.ed.ac.uk/atom" xmlns:cha="http://safe.epcc.ed.ac.uk/chart" xmlns:fil="http://safe.epcc.ed.ac.uk/filter" xmlns:par="http://safe.epcc.ed.ac.uk/parameter" xmlns:per="http://safe.epcc.ed.ac.uk/period" xmlns:res="http://safe.epcc.ed.ac.uk/restrict" xmlns:tab="http://safe.epcc.ed.ac.uk/table" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://safe.epcc.ed.ac.uk/report ../schema/report.xsd">
 <rep:Title>Template report</rep:Title>
 

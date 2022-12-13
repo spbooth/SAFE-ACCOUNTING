@@ -404,6 +404,9 @@ public abstract class SelectBuilder {
 					if(ParameterExtension.PARAMETER_LOC.equals(c.getNamespaceURI()) && c.getLocalName().equals(ParameterExtension.PARAMETER_ELEM)){
 						throw new UnexpandedContentException();
 					}
+					if( FILTER_LOC.equals(c.getNamespaceURI()) || PeriodExtension.PERIOD_NS.equals(c.getNamespaceURI())) {
+						break; // allow (but ignore) nested period or filter elements
+					}
 				default: throw new IllegalContentException();
 			}
 		}

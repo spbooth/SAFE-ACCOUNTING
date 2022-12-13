@@ -19,8 +19,10 @@ package uk.ac.ed.epcc.safe.accounting.reports;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.fop.render.AbstractRenderer;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
 
@@ -1272,6 +1274,29 @@ public class ParameterExtension extends ReportExtension {
 		cb.addTable(c, c.getService(ValueParserService.class).getDocumentationTable());
 		return cb;
 	}
+	private boolean transform_distinct=false;
+	private boolean seen_distinct=false;
+	
+	@Override
+	public Document  transform(DocumentBuilder builder,Document source) {
+		// Because the distinct element consumes Period elements that
+		// may be the result of a parameter expansion this is done in two Steps
+		transform_distinct=false;
+		seen_distinct=false;
+		
+		Document phase1 = builder.newDocument();
+		
+		setDocument(phase1);
+		phase1.appendChild(transformElement(source.getDocumentElement()));
+		if( ! seen_distinct) {
+			return phase1;
+		}
+		transform_distinct=true;
+		Document phase2 = builder.newDocument();
+		setDocument(phase2);
+		phase2.appendChild(transformElement(phase1.getDocumentElement()));
+		return phase2;
+	}
 	@Override
 	public boolean wantReplace(Element e) {
 		return PARAMETER_LOC.equals(e.getNamespaceURI());
@@ -1285,7 +1310,13 @@ public class ParameterExtension extends ReportExtension {
 			case "FormatParameter": return formatParameter(e.getAttribute("name"), e.getChildNodes());
 			case "Repeat" : return repeat(e);
 			case FOR_ELEMENT : return For(e);
-			case "Distinct": return doDistinct(e);
+			case "Distinct": seen_distinct=true;
+				if( transform_distinct ) {
+						return doDistinct(e);
+				}else {
+					Node copy = getDocument().importNode(e, true);
+					return copy;
+				}
 			case "IfSet":  
 				String a_name = e.getAttribute("name");
 				if( variable_names.contains(a_name)) {

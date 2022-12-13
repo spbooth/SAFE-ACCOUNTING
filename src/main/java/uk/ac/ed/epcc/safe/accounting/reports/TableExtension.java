@@ -95,7 +95,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
 
 
 public class TableExtension extends ReportExtension {
-	private static final String OBJECT_SET_ELEMENT = "ObjectSet";
+	public static final String OBJECT_SET_ELEMENT = "ObjectSet";
 	private static final String COMPOUND_TABLE_ELEMENT = "CompoundTable";
 	private static final String SUMMARY_OBJECT_TABLE_ELEMENT = "SummaryObjectTable";
 	private static final String SUMMARY_TABLE_ELEMENT = "SummaryTable";

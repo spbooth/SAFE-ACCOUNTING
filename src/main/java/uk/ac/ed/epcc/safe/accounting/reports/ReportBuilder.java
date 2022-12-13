@@ -449,15 +449,20 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 	}
 	private void logSource(String text, Source s){
 		if( log_source) {
-			try{
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				Transformer identity = getXSLTransform(null, null);
-				identity.transform(s, new
-						StreamResult(out));
-				getLogger().debug(text+" source XML is:"+out.toString());
-			}catch(Exception t){
-				getLogger().error("Error in logSource",t);
-			}
+			getLogger().debug(() -> {
+				try{
+
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					Transformer identity = getXSLTransform(null, null);
+					identity.transform(s, new
+							StreamResult(out));
+					return text+" source XML is:"+out.toString();
+
+				}catch(Exception t){
+					getLogger().error("Error in logSource",t);
+					return "Error generating log";
+				}
+			});
 		}
 	}
 	
@@ -810,6 +815,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 			name = transform_names[i];
 			name = name.trim();
 			if( name.length() > 0){
+				logSource(name, xmlSource);
 				if( name.endsWith(".xsl")) {
 					if( timer != null){
 						timer.startTimer("xml-transform "+name);
@@ -817,7 +823,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 					checkLimits();
 					Transformer transformer = getXSLTransform(name,
 							params);
-					logSource(name, xmlSource);
+					
 					// Perform the transformation, sending the output to the response.
 					DOMResult result = new DOMResult(docBuilder.newDocument());
 					transformer.transform(new DOMSource(xmlSource), result);
@@ -833,8 +839,7 @@ public class ReportBuilder extends AbstractContexed implements ContextCached , T
 						if( timer != null){
 							timer.startTimer("dom-transform "+name);
 						}
-						Document new_doc = docBuilder.newDocument();
-						t.transform(xmlSource, new_doc);
+						Document new_doc = t.transform(docBuilder,xmlSource);
 						xmlSource=new_doc;
 						if( timer != null){
 							timer.stopTimer("dom-transform "+name);
