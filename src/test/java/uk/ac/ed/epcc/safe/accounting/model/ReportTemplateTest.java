@@ -4,6 +4,7 @@ package uk.ac.ed.epcc.safe.accounting.model;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.xml.transform.TransformerConfigurationException;
@@ -72,7 +73,7 @@ public class ReportTemplateTest extends WebappTestBase{
 	
 	@Test
 	@DataBaseFixtures({"ReportTemplateData.xml"})
-	public void testIndexTable() throws DataFault, TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+	public void testIndexTable() throws DataFault, TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException, IOException {
 		ReportTemplateFactory reportTemplateFactory = ctx.makeObject(ReportTemplateFactory.class,"ReportTemplate");
 		Table<String,ReportTemplate> t= reportTemplateFactory.getIndexTable();
 		HtmlBuilder builder = new HtmlBuilder();
