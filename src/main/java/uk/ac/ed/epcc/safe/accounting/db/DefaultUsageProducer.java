@@ -182,7 +182,7 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 			return finder.find(FilterConverter.convert(filter));
 		}catch(CannotUseSQLException e){
 			Set<PT> result = new HashSet<>();
-			for(T o : new FilterSet(filter)){
+			for(T o : getResult(filter)){
 				ExpressionTargetContainer proxy = map.getContainer(o);
 				result.add(proxy.evaluateExpression(tag));
 				proxy.release();
