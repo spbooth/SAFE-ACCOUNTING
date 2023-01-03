@@ -67,7 +67,8 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		ByteArrayOutputStream s = new ByteArrayOutputStream();
 		spec.write(s);
 		checkContent(null, "deferred_spec.xml",s.toString());
-		checkDiff(null, "add_data_deferred_report.xml");
+		// line terminators require transform to remove data contents
+		checkDiff("/cleanup.xsl", "add_data_deferred_report.xml");
 	}
 	
 }
