@@ -59,7 +59,7 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		runTransition();
 		checkForward("/scripts/transition.jsp");
 		checkFormContent("/normalize.xsl", "add_data_deferred_preview.xml");
-		checkDiff(null, "add_data_deferred_report.xml");
+	
 		DeferredChartFactory fac = new DeferredChartFactory(ctx);
 		DeferredChart chart = fac.find(1);
 		MimeStreamData spec = chart.getRawData();
@@ -67,6 +67,7 @@ public class ReportTransitionTest extends AbstractTransitionServletTest {
 		ByteArrayOutputStream s = new ByteArrayOutputStream();
 		spec.write(s);
 		checkContent(null, "deferred_spec.xml",s.toString());
+		checkDiff(null, "add_data_deferred_report.xml");
 	}
 	
 }
