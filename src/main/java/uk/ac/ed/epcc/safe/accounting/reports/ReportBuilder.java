@@ -72,7 +72,7 @@ import uk.ac.ed.epcc.webapp.timer.TimerService;
 public class ReportBuilder extends AbstractContexed implements ContextCached , TemplateValidator {
 
 	private static final String PARAMETER_TEXT_ELEMENT = "Text";
-	private static final String AUTHENTICATED_USER_PARAMETER_NAME = "AuthenticatedUser";
+	public static final String AUTHENTICATED_USER_PARAMETER_NAME = "AuthenticatedUser";
 	private static final String CURRENT_TIME_PARAMETER_NAME = "CurrentTime";
 	private static final String RESTRICT_EXTENSION_TAG = "RestrictExtension";
 	private static final String PARAMETER_EXTENSION_TAG = "ParameterExtension";
