@@ -9,7 +9,6 @@ import java.util.Calendar;
 
 import javax.servlet.ServletException;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 
