@@ -634,7 +634,7 @@ public DocumentFragment addChartTable(Chart chart,String caption) throws Excepti
 	}
 	@Override
 	public boolean wantReplace(Element e) {
-		return CHART_LOC.endsWith(e.getNamespaceURI());
+		return CHART_LOC.equals(e.getNamespaceURI());
 	}
 	private class DeferredTransform implements IdentityDomTransform{
 		public DeferredTransform(RecordSet filcontext) {

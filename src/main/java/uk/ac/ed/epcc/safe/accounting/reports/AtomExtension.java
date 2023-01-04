@@ -523,7 +523,6 @@ public class AtomExtension extends ReportExtension {
 
 	@Override
 	public boolean wantReplace(Element e) {
-		// TODO Auto-generated method stub
 		return ATOM_LOC.equals(e.getNamespaceURI());
 	}
 
