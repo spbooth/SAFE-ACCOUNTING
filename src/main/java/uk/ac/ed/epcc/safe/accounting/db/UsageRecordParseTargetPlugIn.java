@@ -50,6 +50,7 @@ import uk.ac.ed.epcc.webapp.forms.result.MessageResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
+import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.table.AddClassificationReferenceTransition;
 import uk.ac.ed.epcc.webapp.jdbc.table.AdminOperationKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
@@ -298,6 +299,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		ExpressionTargetFactory<T> etf = getExpressionTargetFactory();
 		if (etf.hasProperty(StandardProperties.TEXT_PROP)) {
 			AccessorMap<T> amap = etf.getAccessorMap();
+			DatabaseService db = getContext().getService(DatabaseService.class);
 			try(CloseableIterator<T> it = etf.getIterator(sel)){
 				while(it.hasNext()) {
 
@@ -328,6 +330,9 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 					} catch (AccountingParseException e) {
 						fail++;
 						getLogger().error("Error in re-parse", e);
+					}
+					if( db != null) {
+						db.commitTransaction();
 					}
 				}
 			}
