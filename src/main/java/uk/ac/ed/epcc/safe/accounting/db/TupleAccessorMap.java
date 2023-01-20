@@ -12,7 +12,7 @@ public class TupleAccessorMap extends AccessorMap {
 	private final PropertyTupleFactory fac;
 	protected MultiFinder finder;
 	public TupleAccessorMap(PropertyTupleFactory fac,String config_tag,MultiFinder finder) {
-		super(fac.getContext(), fac.getTarget(), config_tag);
+		super(fac.getContext(), fac.getTag(), config_tag);
 		this.fac=fac;
 		this.finder=finder;
 	}

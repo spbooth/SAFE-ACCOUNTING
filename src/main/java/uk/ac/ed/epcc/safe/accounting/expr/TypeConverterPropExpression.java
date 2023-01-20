@@ -33,14 +33,16 @@ public class TypeConverterPropExpression<T, D> implements PropExpression<T> {
 
 	private final TypeConverter<T, D> converter;
 	private final PropExpression<D> inner;
-	public TypeConverterPropExpression(TypeConverter<T, D> converter, PropExpression<D> expr){
+	private final Class<T> target;
+	public TypeConverterPropExpression(Class<T> target,TypeConverter<T, D> converter, PropExpression<D> expr){
+		this.target=target;
 		this.converter=converter;
 		this.inner=expr.copy();
 		assert(this.converter !=null);
 		assert(this.inner != null);
 	}
 	public Class<T> getTarget() {
-		return converter.getTarget();
+		return target;
 	}
 	public TypeConverter<T, D> getConverter(){
 		return converter;

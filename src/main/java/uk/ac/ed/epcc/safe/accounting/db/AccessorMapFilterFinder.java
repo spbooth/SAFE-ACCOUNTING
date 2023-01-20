@@ -8,7 +8,7 @@ import uk.ac.ed.epcc.webapp.model.data.Repository;
 public class AccessorMapFilterFinder<T,R> extends FilterFinder<T, R> {
 	private final AccessorMap<T> map;
 	public AccessorMapFilterFinder(AccessorMap<T> map) {
-		super(map.getContext(),map.getTarget(),true);
+		super(map.getContext(),map.getFilterTag(),true);
 		this.map=map;
 	}
 	@Override

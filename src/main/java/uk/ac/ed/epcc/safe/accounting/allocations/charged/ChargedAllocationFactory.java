@@ -233,10 +233,6 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		return (T) new ChargedAllocationRecord(this,res);
 	}
 
-	@Override
-	public Class<T> getTarget() {
-		return (Class<T>) ChargedAllocationRecord.class;
-	}
 
 	
 	public static class ChargedAllocationRecord extends AllocationFactory.AllocationRecord{

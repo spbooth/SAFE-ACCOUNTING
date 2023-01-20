@@ -104,8 +104,8 @@ public class ReportTemplateLog extends DataObjectPropertyContainer implements Au
             super.customAccessors(mapi, finder, derived);
             finder.addFinder(reportlog_reg);
             finder.addFinder(StandardProperties.time);
-            mapi.put(StandardProperties.STARTED_PROP, res.getDateExpression(getTarget(), TIMESTAMP));
-            mapi.put(StandardProperties.ENDED_PROP, res.getDateExpression(getTarget(), FINISH));
+            mapi.put(StandardProperties.STARTED_PROP, res.getDateExpression( TIMESTAMP));
+            mapi.put(StandardProperties.ENDED_PROP, res.getDateExpression( FINISH));
             PropExpression<Duration> expr = new DurationPropExpression(StandardProperties.STARTED_PROP, StandardProperties.ENDED_PROP);
 			try {
 				derived.put(runtime, expr);

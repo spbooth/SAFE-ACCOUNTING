@@ -241,7 +241,7 @@ Tagged{
 					getLogger().error("Bad mandatory filter clause "+clause);
 					// default to generate nothing on error as a bad filter can
 					// result in a very expensive query
-					and.addFilter(new FalseFilter<>(getTarget()));
+					and.addFilter(new FalseFilter<>());
 				}else {
 					try {
 						String exp1=clause.substring(0, pos);
@@ -254,7 +254,7 @@ Tagged{
 						getLogger().error("Bad mandatory filter clause "+clause,t);
 						// default to generate nothing on error as a bad filter can
 						// result in a very expensive query
-						and.addFilter(new FalseFilter<>(getTarget()));
+						and.addFilter(new FalseFilter<>());
 					}
 				}
 			}
@@ -343,10 +343,7 @@ Tagged{
 		return record.fac == this;
 	}
 	
-	@Override
-	public Class<T> getTarget() {
-		return (Class) PropertyTuple.class;
-	}
+	
 
 	
 	@Override

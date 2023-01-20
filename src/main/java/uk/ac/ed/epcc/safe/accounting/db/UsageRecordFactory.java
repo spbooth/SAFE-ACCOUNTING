@@ -130,10 +130,7 @@ public abstract class UsageRecordFactory<T extends UsageRecordFactory.Use> exten
 	protected T makeBDO(Record res) throws DataFault {
 		return (T) new Use(this,res);
 	}
-	@Override
-	public Class<T> getTarget(){
-		return (Class) Use.class;
-	}
+	
 
 
 	@Override

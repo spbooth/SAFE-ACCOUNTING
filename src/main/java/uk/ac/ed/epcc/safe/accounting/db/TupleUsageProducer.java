@@ -38,13 +38,7 @@ UR extends TupleUsageProducer.TupleUsageRecord<A>
 		return (UR) new TupleUsageRecord<A>(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.db.PropertyTupleFactory#getTarget()
-	 */
-	@Override
-	public Class<UR> getTarget() {
-		return (Class) TupleUsageRecord.class;
-	}
+	
 
 	public TupleUsageProducer(AppContext c, String config_tag) {
 		super(c, config_tag);

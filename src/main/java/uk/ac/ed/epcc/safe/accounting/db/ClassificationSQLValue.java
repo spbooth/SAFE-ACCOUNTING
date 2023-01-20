@@ -47,14 +47,15 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 
 public class ClassificationSQLValue<H extends DataObject, T extends DataObject> implements NestedSQLValue<String,IndexedReference<T>>, FilterProvider<H,String>{
-	private final Class<H> target;
+	private final String filter_tag;
+	
 	// has to be at least an SQLAccessor to support any filtering.
 	// 
 	private final  SQLValue<IndexedReference<T>> a;
 	private final AppContext ctx;
 	private final IndexedProducer<T> producer;
-	public ClassificationSQLValue(AppContext c,Class<H> target,IndexedProducer<T> prod,SQLValue<IndexedReference<T>> acc) {
-		this.target=target;
+	public ClassificationSQLValue(AppContext c,String filter_tag,IndexedProducer<T> prod,SQLValue<IndexedReference<T>> acc) {
+		this.filter_tag=filter_tag;
 		this.a=acc;
 		this.producer=prod;
 		ctx=c;
@@ -74,7 +75,7 @@ public class ClassificationSQLValue<H extends DataObject, T extends DataObject> 
 			T peer = ((NameFinder<T>)producer).findFromString(val);
 			IndexedReference ref = producer.makeReference(peer);
 			if( peer == null ){
-				return new FalseFilter<>(target);
+				return new FalseFilter<>();
 			}
 			return ((FilterProvider)a).getFilter(match, ref);
 		}
@@ -108,9 +109,9 @@ public class ClassificationSQLValue<H extends DataObject, T extends DataObject> 
 		return NamePropExpression.refToName(ctx, a.makeObject(rs, pos));
 	}
 	
-	
-	public Class<H> getFilterType() {
-		return target;
+	@Override
+	public String getFilterTag() {
+		return filter_tag;
 	}
 	@Override
 	public SQLValue<IndexedReference<T>> getNested() {

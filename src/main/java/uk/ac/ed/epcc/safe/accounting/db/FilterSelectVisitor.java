@@ -62,7 +62,7 @@ public class FilterSelectVisitor<T> implements SelectorVisitor<BaseFilter<T>>{
 		target = dataObjectPropertyFactory.getAccessorMap();
 	}
 	public BaseFilter<T> visitAndRecordSelector(AndRecordSelector a) throws Exception {
-		AndFilter<T> result = new AndFilter<>(target.getTarget());
+		AndFilter<T> result = new AndFilter<>(target.getFilterTag());
 		for( RecordSelector s : a){
 			assert(s!=null);
 			result.addFilter(s.visit(this));
@@ -71,7 +71,7 @@ public class FilterSelectVisitor<T> implements SelectorVisitor<BaseFilter<T>>{
 	}
 
 	public SQLFilter<T> visitOrRecordSelector(OrRecordSelector o) throws Exception {
-		SQLOrFilter<T> result = new SQLOrFilter<>(target.getTarget());
+		SQLOrFilter<T> result = new SQLOrFilter<>(target.getFilterTag());
 		for( RecordSelector s : o){
 			assert(s!=null);
 			//try{
@@ -115,7 +115,7 @@ public class FilterSelectVisitor<T> implements SelectorVisitor<BaseFilter<T>>{
 
 	public BaseFilter<T> visitReductionSelector(ReductionSelector r)
 			throws Exception {
-		AndFilter<T> fil = new AndFilter<>(target.getTarget());
+		AndFilter<T> fil = new AndFilter<>(target.getFilterTag());
 		for(ReductionTarget t : r){
 			if( t.getReduction() == Reduction.INDEX ){
 				// Index must not be null unless explicitly permitted

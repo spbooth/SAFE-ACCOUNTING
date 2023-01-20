@@ -33,10 +33,7 @@ public class DummyPropertyFactory extends DefaultDataObjectPropertyFactory<Dummy
 		return new DummyPropertyContainer(this, res);
 	}
 
-	@Override
-	public Class<DummyPropertyContainer> getTarget() {
-		return DummyPropertyContainer.class;
-	}
+
 	@Override
 	protected TableSpecification getDefaultTableSpecification(AppContext c, String table) {
 		TableSpecification spec = new TableSpecification();
@@ -58,6 +55,6 @@ public class DummyPropertyFactory extends DefaultDataObjectPropertyFactory<Dummy
 	}
 	
 	public SQLFilter<DummyPropertyContainer> getReferenceFilter(IndexedReference<DummyPropertyContainer> ref){
-		return new SelfReferenceFilter<>(getTarget(), res, ref);
+		return new SelfReferenceFilter<>( res, ref);
 	}
 }

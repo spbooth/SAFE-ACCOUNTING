@@ -155,7 +155,7 @@ public class RestrictExtension extends ReportExtension {
 			try {
 				BaseFilter fil = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
 				if( fil == null ){
-					fil = new GenericBinaryFilter(fac.getTarget(),false);
+					fil = new GenericBinaryFilter(false);
 				}
 				if( empty(name) ){
 					return fac.exists(fil);

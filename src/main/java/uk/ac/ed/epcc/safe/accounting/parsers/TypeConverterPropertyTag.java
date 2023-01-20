@@ -42,14 +42,14 @@ public class TypeConverterPropertyTag<T> extends PropertyTag<T> implements
 	private final Class<T> clazz;
 	public TypeConverterPropertyTag(PropertyRegistry registry, String name,
 			Class<T> clazz,TypeConverter<T, String> converter, String description) {
-		super(registry, name, converter.getTarget(), description);
+		super(registry, name, clazz, description);
 		this.clazz=clazz;
 		this.converter=converter;
 	}
 
 	public TypeConverterPropertyTag(PropertyRegistry registry, String name,
 			Class<T> clazz,TypeConverter<T, String> converter) {
-		super(registry, name, converter.getTarget());
+		super(registry, name, clazz);
 		this.clazz=clazz;
 		this.converter=converter;
 	}

@@ -82,24 +82,7 @@ extends HistoryFactory<T,H> {
 		super(conn,table);
 	}
 	
-	
-	
-	
-	
-	
 
-	
-
-	
-	
-	
-	
-	
-	
-	@Override
-	public Class<H> getTarget() {
-		return (Class) HistoryUse.class;
-	}
 	@Override
 	protected H makeBDO(Record res) throws DataFault {
 		

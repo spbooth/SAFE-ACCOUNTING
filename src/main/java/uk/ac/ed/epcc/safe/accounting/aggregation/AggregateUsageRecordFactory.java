@@ -527,7 +527,7 @@ ConfigParamProvider{
 	private AggregateRecord makeTarget(PropertyContainer source, Date start,Date end)
 			throws DataException, CannotFilterException, InvalidPropertyException, NoSQLFilterException {
 		assert(start.before(end));
-		SQLAndFilter<AggregateRecord> fil = new SQLAndFilter<>(getTarget());
+		SQLAndFilter<AggregateRecord> fil = new SQLAndFilter<>(getTag());
 		AccessorMap map = getAccessorMap();
 		fil.addFilter(FilterConverter.convert(map.getFilter(AGGREGATE_STARTED_PROP, null, start)));
 		fil.addFilter(FilterConverter.convert(map.getFilter(AGGREGATE_ENDED_PROP, null, end)));
@@ -725,12 +725,6 @@ ConfigParamProvider{
 		}
 		return sum_set;
 	}
-
-	@Override
-	public Class<AggregateRecord> getTarget() {
-		return AggregateRecord.class;
-	}
-
 	@Override
 	protected AggregateRecord makeBDO(Record res) throws DataFault {
 		return new AggregateRecord(this,res);

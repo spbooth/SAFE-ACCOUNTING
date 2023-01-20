@@ -82,9 +82,6 @@ public class DeferredChartFactory extends DataObjectDataProducer<DeferredChartFa
 		return new DeferredChart(res);
 	}
 
-	@Override
-	public Class<DeferredChart> getTarget() {
-		return DeferredChart.class;
-	}
+	
 
 }

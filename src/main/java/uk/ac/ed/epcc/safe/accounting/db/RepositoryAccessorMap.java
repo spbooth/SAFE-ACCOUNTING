@@ -124,13 +124,13 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 	
 	/**
 	 * create an empty AccessorMap
-	 * @param target type of enclosing factory 
+	 * @param filter_tag type of enclosing factory 
 	 * @param res 
 	 * @param config_tag 
 	 * 
 	 */
 	public RepositoryAccessorMap(DataObjectFactory<X> fac,Repository res) {
-		super(fac.getContext(),fac.getTarget(),fac.getConfigTag());
+		super(fac.getContext(),fac.getTag(),fac.getConfigTag());
 		this.fac=fac;
 		this.res=res;
 	}
@@ -229,9 +229,9 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 				//log.debug("tag is "+tag.getFullName());
 				Class t = tag.getTarget();
 				if (String.class.isAssignableFrom(t)) {
-					put(tag, res.getStringExpression(target,field_name));
+					put(tag, res.getStringExpression(field_name));
 				} else if (Date.class.isAssignableFrom(t)) {
-					put(tag, res.getDateExpression(target,field_name));
+					put(tag, res.getDateExpression(field_name));
 					selector_map.put(field_name, new Selector(){
 						@Override
 						public Input getInput() {
@@ -239,7 +239,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 						}});
 				} else if (Number.class.isAssignableFrom(t)) {
 					//Duration is supported at native millisecond resolution.
-					put(tag, res.getNumberExpression(target,t,field_name));
+					put(tag, res.getNumberExpression(t,field_name));
 					if (Duration.class.isAssignableFrom(t)) {
 						// we could support different resolutions using a DurationFieldValue
 						//put(tag, new DurationFieldValue(res.getNumberExpression(target,Number.class,field_name),1L));
@@ -251,7 +251,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 							}});
 					} 
 				} else if (Boolean.class.isAssignableFrom(t)) {
-					put(tag, res.getBooleanExpression(target,field_name));
+					put(tag, res.getBooleanExpression(field_name));
 					selector_map.put(field_name, new Selector(){
 						@Override
 						public Input getInput() {
@@ -272,14 +272,14 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 						IndexedFieldValue referenceExpression=null;
 						if( res.hasTypeProducer(field_name)){
 							// known to be a reference field. add the name match tag
-							referenceExpression = res.getReferenceExpression(target, field_name);
+							referenceExpression = res.getReferenceExpression(field_name);
 						}else{
 
 							//log.debug("Reference tag "+ref_tag.getFactoryClass().getCanonicalName()+" "+ref_tag.getTable());
 							IndexedTypeProducer prod = new IndexedTypeProducer(field_name, getContext(),ref_tag.getFactoryClass(),ref_tag.getTable());
 
 							res.addTypeProducer(prod);
-							referenceExpression= new IndexedFieldValue(target,res,prod);
+							referenceExpression= new IndexedFieldValue(res,prod);
 							
 							// Now look for the table tag that might also match 
 							ReferenceTag table_tag = (ReferenceTag) finder.find(IndexedReference.class, ReferencePropertyRegistry.REFERENCE_REGISTRY_NAME+FixedPropertyFinder.PROPERTY_FINDER_SEPERATOR+field_name);
@@ -374,7 +374,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 					// If the tag is not known then we can't make a handler factory so ignore.
 					IndexedTag tag=(IndexedTag) reference_registry.find(IndexedReference.class, ref);
 					if( tag != null ){
-						IndexedFieldValue referenceExpression = res.getReferenceExpression(target,field_name);
+						IndexedFieldValue referenceExpression = res.getReferenceExpression(field_name);
 						if( referenceExpression != null ){
 							put(tag, referenceExpression);
 							selector_map.put(referenceExpression.getFieldName(), referenceExpression);

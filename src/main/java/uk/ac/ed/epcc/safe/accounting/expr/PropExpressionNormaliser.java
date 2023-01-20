@@ -115,7 +115,7 @@ public class PropExpressionNormaliser implements PropExpressionVisitor<PropExpre
 			return new IntPropExpression(new DeRefExpression((ReferenceExpression) deRefExpression.getTargetObject().accept(this), npe.getExpression()));
 		}else if( nested instanceof TypeConverterPropExpression){
 			TypeConverterPropExpression npe = (TypeConverterPropExpression)nested;
-			return new TypeConverterPropExpression(npe.getConverter(),new DeRefExpression((ReferenceExpression) deRefExpression.getTargetObject().accept(this), npe.getInnerExpression()));
+			return new TypeConverterPropExpression(npe.getTarget(),npe.getConverter(),new DeRefExpression((ReferenceExpression) deRefExpression.getTargetObject().accept(this), npe.getInnerExpression()));
 		}
 		return deRefExpression;
 	}

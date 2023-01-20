@@ -37,10 +37,6 @@ public class AccountingClassificationFactory<T extends AccountingClassification>
 		return (T) new AccountingClassification(this, res);
 	}
 
-	@Override
-	public Class<T> getTarget() {
-		return (Class<T>) AccountingClassification.class;
-	}
 
 	public AccountingClassificationFactory(AppContext c, String table) {
 		super();

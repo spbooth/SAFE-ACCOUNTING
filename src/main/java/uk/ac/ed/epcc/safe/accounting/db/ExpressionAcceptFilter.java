@@ -33,7 +33,7 @@ public class ExpressionAcceptFilter<T,I> extends AbstractAcceptFilter<T>{
 	private final MatchCondition m;
 	private final I data;
 	private final PropExpression<I> expr;
-	public ExpressionAcceptFilter(Class<T> target,AccessorMap<T> map,PropExpression<I> expr,MatchCondition m, I data){
+	public ExpressionAcceptFilter(String target,AccessorMap<T> map,PropExpression<I> expr,MatchCondition m, I data){
 		super(target);
 		this.map=map;
 		this.expr=expr;
@@ -41,7 +41,7 @@ public class ExpressionAcceptFilter<T,I> extends AbstractAcceptFilter<T>{
 		this.data=data;
 		assert(data!=null);
 	}
-	public boolean accept(T t) {
+	public boolean test(T t) {
 		try {
 			ExpressionTarget o = map.getContainer(t);
 			if( o == null) {

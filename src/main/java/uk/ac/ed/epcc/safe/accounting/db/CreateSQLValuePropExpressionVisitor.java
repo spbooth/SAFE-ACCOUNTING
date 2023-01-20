@@ -94,10 +94,10 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		PropExpressionVisitor<SQLValue> {
 	
 	private static final Feature PARTIAL_JOIN_FEATURE = new Feature("sqlvalue.partial_join",true,"Perform SQL joins to evaluate remote references");
-    private final Class target;
+    private final String target;
 	private final AppContext conn;
 	private final SQLContext sql;
-    public CreateSQLValuePropExpressionVisitor(Class target,AppContext c){
+    public CreateSQLValuePropExpressionVisitor(String target,AppContext c){
     	this.target=target;
     	conn=c;
     	DatabaseService db_service = conn.getService(DatabaseService.class);
@@ -144,7 +144,7 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	}
 	@SuppressWarnings("unchecked")
 	public final SQLValue visitConstPropExpression(ConstPropExpression<?> constExpression) throws Exception {
-		return  new ConstExpression(target,constExpression.getTarget(),constExpression.val);
+		return  new ConstExpression(constExpression.getTarget(),constExpression.val);
 	}
 	
 	
@@ -326,9 +326,9 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 			SQLValue<D> inner = process(innerExpression);
 			TypeConverter<T, D> converter = sel.getConverter();
 			if( inner instanceof SQLAccessor && converter instanceof TypeProducer) {
-				return new TypeFilterProducerSQLValue(target, (TypeProducer)converter,(SQLAccessor) inner);
+				return new TypeFilterProducerSQLValue(target,sel.getTarget(), (TypeProducer)converter,(SQLAccessor) inner);
 			}
-			return new TypeConverterSQLValue(target,converter, inner);
+			return new TypeConverterSQLValue(target,sel.getTarget(),converter, inner);
 		}
 
 
@@ -353,7 +353,7 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	@Override
 	public <I extends Indexed> SQLValue visitConstReferenceExpression(ConstReferenceExpression<I> expr)
 			throws Exception {
-		return new ConstIndexedSQLValue(conn, target, expr.val);
+		return new ConstIndexedSQLValue(conn,  expr.val);
 	}
 
 	public SQLValue visitLocatePropExpression(

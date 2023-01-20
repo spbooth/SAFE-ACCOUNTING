@@ -77,9 +77,9 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	
 	private final AppContext conn;
 	private final SQLContext sql;
-	 private final Class target; // target class for filters
-	public CreateSQLExpressionPropExpressionVisitor(Class target,AppContext c){
-		this.target=target;
+	 private final String filter_tag; // target class for filters
+	public CreateSQLExpressionPropExpressionVisitor(String filter_tag,AppContext c){
+		this.filter_tag=filter_tag;
 		this.conn=c;
 		DatabaseService db_service = conn.getService(DatabaseService.class);
 		try {
@@ -161,7 +161,7 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 
 	@SuppressWarnings("unchecked")
 	public final SQLExpression visitConstPropExpression(ConstPropExpression<?> constExpression) throws Exception {
-		return  new ConstExpression(target,constExpression.getTarget(),constExpression.val);
+		return  new ConstExpression(constExpression.getTarget(),constExpression.val);
 	}
 	
 	
@@ -317,6 +317,6 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 		for(PropExpression<T> e: expr ){
 			arr[i++]= e.accept(this);
 		}
-		return new ArrayFuncExpression(target,expr.getFunc(),expr.getTarget(),arr);
+		return new ArrayFuncExpression(filter_tag,expr.getFunc(),expr.getTarget(),arr);
 	}
 }

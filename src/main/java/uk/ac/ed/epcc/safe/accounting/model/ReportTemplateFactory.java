@@ -141,11 +141,11 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 					return null;
 				}
 				SessionService sess = getContext().getService(SessionService.class);
-				SQLOrFilter<R> fil = new SQLOrFilter<>(getTarget());
+				SQLOrFilter<R> fil = new SQLOrFilter<>(getTag());
 				for(String g : group.split("\\s*,\\s*")){
 					String required_role = getContext().getInitParameter(REPORT_GROUP_REQUIRED_ROLE_PREFIX+g);
 					if( required_role == null || required_role.isEmpty() || sess.hasRole(required_role)) {
-						fil.addFilter(new SQLValueFilter<>(getTarget(), res, ReportTemplate.REPORT_GROUP, g));
+						fil.addFilter(new SQLValueFilter<>(res, ReportTemplate.REPORT_GROUP, g));
 					}
 				}
 				return getResult(fil);
@@ -302,7 +302,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 			return null;
 		}
 		try {
-			return  find(new SQLValueFilter<>(getTarget(),res,ReportTemplate.TEMPLATE_NAME ,fileName.trim()),true);
+			return  find(new SQLValueFilter<>(res,ReportTemplate.TEMPLATE_NAME ,fileName.trim()),true);
 			
 		} catch (DataNotFoundException e) {
 			return null;

@@ -55,13 +55,13 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 		RemoteSQLValue<H,R, T> implements FilterProvider<H,T>{
 	
 	protected final PropExpression<T> expr;
-	protected final Class<H> h_type;
+	protected final String h_type;
 	protected final ExpressionTargetFactory<R> etf;
 	public DerefSQLValue(IndexedSQLValue<H,R> a, PropExpression<T> expr,
 			AppContext conn) throws Exception {
 		super(conn, a);
 		this.expr = expr;
-		this.h_type=a.getFilterType();
+		this.h_type=a.getFilterTag();
 		DataObjectFactory<R> factory = a.getFactory();
 		etf=ExpressionCast.getExpressionTargetFactory(factory);
 		// run-time check that this really is an ExpressionTarget
@@ -103,6 +103,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 		}
 	}
 
+	@Override
 	public T getRemoteValueFromNull() {
 		
 		if( expr.getTarget() == IndexedReference.class){
@@ -121,6 +122,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 		return null;
 	}
 	@SuppressWarnings("unchecked")
+	@Override
 	public SQLFilter<H> getFilter(MatchCondition match, T val) throws CannotFilterException, NoSQLFilterException {
 		
 		SQLValue<IndexedReference> v = getReferenceValue();
@@ -155,6 +157,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 		throw new NoSQLFilterException("Multiple de-reference");
 	}
 	@SuppressWarnings("unchecked")
+	@Override
 	public SQLFilter<H> getOrderFilter(boolean descending) throws CannotFilterException, NoSQLFilterException {
 		
 		SQLValue<IndexedReference> v = getReferenceValue();
@@ -188,6 +191,7 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 		throw new NoSQLFilterException("Multiple de-reference");
 	}
 	@SuppressWarnings("unchecked")
+	@Override
 	public SQLFilter<H> getNullFilter(boolean is_null) throws CannotFilterException, NoSQLFilterException {
 		SQLValue<IndexedReference> v = getReferenceValue();
 		if( v instanceof IndexedSQLValue){
@@ -217,9 +221,8 @@ public class DerefSQLValue<H extends DataObject,R extends DataObject, T> extends
 		}
 		throw new NoSQLFilterException("Multiple de-reference");
 	}
-
-
-	public Class<H> getFilterType() {
+	@Override
+	public String getFilterTag() {
 		return h_type;
 	}
 

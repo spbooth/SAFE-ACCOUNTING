@@ -70,7 +70,7 @@ public class PropertyHistoryComposite<P extends DataObject,F extends DataObjectF
 		Repository res = getRepository();
 		peer = new PropertyRegistry(historyFactory.getTag()+"history", "history properties for "+historyFactory.getTag());
 		PEER = new ReferenceTag<>(peer, "peer", (Class<F>) fac.getClass(), fac.getTag());
-		IndexedFieldValue referenceExpression = res.getReferenceExpression(historyFactory.getTarget(),historyFactory.getPeerName(),fac);
+		IndexedFieldValue referenceExpression = res.getReferenceExpression(historyFactory.getPeerName(),fac);
 		mapi2.put(PEER,  referenceExpression);
 		
 		ExpressionTargetFactory<P> etf = ExpressionCast.getExpressionTargetFactory(fac);

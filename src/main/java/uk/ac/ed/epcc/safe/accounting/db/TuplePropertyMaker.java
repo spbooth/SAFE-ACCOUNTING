@@ -27,7 +27,7 @@ import uk.ac.ed.epcc.webapp.model.data.SetMapper;
 public class TuplePropertyMaker<T extends PropertyTupleFactory.PropertyTuple,PT> extends SetMaker<T, PT> {
 	private final PropertyTupleFactory fac;
 	public TuplePropertyMaker(AccessorMap<T> map,PropertyTupleFactory fac,PropExpression<PT> expr, boolean distinct) throws InvalidSQLPropertyException {
-		super(map.getContext(),map.getTarget());			
+		super(map.getContext(),map.getFilterTag());			
 		SQLValue<PT> sqlAccessor = map.getSQLValue(expr);
 		if( sqlAccessor == null ){
 			throw new InvalidSQLPropertyException(expr);

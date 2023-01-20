@@ -248,11 +248,6 @@ public class TemplateOverlay<X extends TemplateOverlay.ReportFile> extends XMLOv
 	protected X makeBDO(Record res) throws DataFault {
 		return (X) new ReportFile(res, getBaseURL());
 	}
-
-	@Override
-	public Class<X> getTarget() {
-		return (Class<X>) ReportFile.class;
-	}
 	
 	
 }

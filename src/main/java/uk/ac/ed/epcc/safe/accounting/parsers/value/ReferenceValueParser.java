@@ -70,7 +70,7 @@ public class ReferenceValueParser<I extends Indexed> implements ValueParser<Inde
 			if( producer.isMyReference(ref)){
 				return ref;
 			}
-			throw new ValueParseException("Reference parsed to wrong type "+valueString+" expecting "+producer.getTarget().getName()+" got "+ref.toString());
+			throw new ValueParseException("Reference parsed to wrong type "+valueString+" got "+ref.toString());
 		}
 		// Try a simple integer parse first as we can determine if not
 		// an int without doing a database lookup.

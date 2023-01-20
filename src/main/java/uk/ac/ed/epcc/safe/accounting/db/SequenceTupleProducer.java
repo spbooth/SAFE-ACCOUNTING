@@ -135,11 +135,4 @@ extends TupleUsageProducer<A,AF,UR> {
 		return (UR) new PeriodTuple<A>(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.ac.ed.epcc.safe.accounting.db.TupleUsageProducer#getTarget()
-	 */
-	@Override
-	public Class<UR> getTarget() {
-		return (Class) PeriodTuple.class;
-	}
 }

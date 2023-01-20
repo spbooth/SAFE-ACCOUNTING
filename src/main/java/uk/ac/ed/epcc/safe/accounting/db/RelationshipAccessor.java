@@ -71,6 +71,7 @@ public class RelationshipAccessor<T extends DataObject> implements Accessor<Bool
 	public String toString(){
 		return "hasRole("+fac.getTag()+","+role+")";
 	}
+	@Override
 	public SQLFilter<T> getFilter(MatchCondition match,
 			Boolean val) throws CannotFilterException {
 		AppContext context = fac.getContext();
@@ -92,16 +93,18 @@ public class RelationshipAccessor<T extends DataObject> implements Accessor<Bool
 			throw new CannotFilterException("Cannot negate relationship");
 		}
 	}
+	@Override
 	public SQLFilter<T> getNullFilter(boolean is_null) throws CannotFilterException{
 		throw new CannotFilterException("Cannot check relationship for null");
 	}
-	
+	@Override
 	public SQLFilter<T> getOrderFilter(boolean descending)
 			throws CannotFilterException {
 		throw new CannotFilterException("Order filter not supported");
 	}
-	public Class<T> getFilterType() {
-		return fac.getTarget();
+	@Override
+	public String getFilterTag() {
+		return fac.getTag();
 	}
 	
 

@@ -180,10 +180,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	
 	private Map<AllocationKey<T>, Transition<T>> transitions; 
 	private Set<AllocationListener<T>> listeners;
-	@Override
-	public Class<T> getTarget() {
-		return (Class<T>) AllocationRecord.class;
-	}
+	
 
 	@Override
 	protected T makeBDO(Record res) throws DataFault {
@@ -574,7 +571,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			IndexedProducer prod = tag.getFactory(getContext());
 			if( prod instanceof DataObjectFactory){
 				DataObjectFactory<X> dof = (DataObjectFactory) prod;
-				AndFilter<X> fil = new AndFilter<>(dof.getTarget(),dof.getFinalSelectFilter());
+				AndFilter<X> fil = new AndFilter<>(dof.getTag(),dof.getFinalSelectFilter());
 				if( narrow != null) {
 					fil.addFilter(narrow);
 				}
@@ -961,7 +958,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		try {
 			return sess.getRelationshipRoleFilter(this, AllocationManager.VIEW_ALLOCATION_RELATIONSHIP);
 		} catch (UnknownRelationshipException e) {
-			return new GenericBinaryFilter<>(getTarget(), sess.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE));
+			return new GenericBinaryFilter<>( sess.hasRole(AllocationManager.ALLOCATION_ADMIN_ROLE));
 		}
 	}
 

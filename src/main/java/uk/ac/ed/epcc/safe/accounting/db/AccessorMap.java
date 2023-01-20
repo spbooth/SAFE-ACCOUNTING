@@ -16,73 +16,22 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
 import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
-import uk.ac.ed.epcc.safe.accounting.expr.AbstractExpressionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.CasePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.EvaluatePropExpressionVisitor;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
-import uk.ac.ed.epcc.safe.accounting.expr.ImplementationPropExpressionVisitor;
-import uk.ac.ed.epcc.safe.accounting.expr.Parser;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor;
-import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
-import uk.ac.ed.epcc.safe.accounting.expr.ResolveCheckVisitor;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
-import uk.ac.ed.epcc.safe.accounting.properties.MethodPropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.SetPropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.safe.accounting.expr.*;
+import uk.ac.ed.epcc.safe.accounting.properties.*;
 import uk.ac.ed.epcc.safe.accounting.reference.IndexedTag;
 import uk.ac.ed.epcc.safe.accounting.selector.OverlapType;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
-import uk.ac.ed.epcc.webapp.AbstractContexed;
-import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Feature;
-import uk.ac.ed.epcc.webapp.Indexed;
-import uk.ac.ed.epcc.webapp.Targetted;
+import uk.ac.ed.epcc.webapp.*;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
 import uk.ac.ed.epcc.webapp.forms.Form;
-import uk.ac.ed.epcc.webapp.jdbc.expr.Accessor;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CaseExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.FilterProvider;
-import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpressionFilter;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpressionMatchFilter;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpressionNullFilter;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpressionOrderFilter;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.WrappedSQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
-import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.SQLFilter;
+import uk.ac.ed.epcc.webapp.jdbc.expr.*;
+import uk.ac.ed.epcc.webapp.jdbc.filter.*;
 import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
-import uk.ac.ed.epcc.webapp.model.data.FieldValue;
-import uk.ac.ed.epcc.webapp.model.data.FieldValueFilter;
-import uk.ac.ed.epcc.webapp.model.data.Repository;
+import uk.ac.ed.epcc.webapp.model.data.*;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.time.Period;
 
@@ -117,11 +66,11 @@ import uk.ac.ed.epcc.webapp.time.Period;
  */
 
 
-public abstract class AccessorMap<X> extends AbstractContexed implements ExpressionFilterTarget<X>, Targetted<X>, PropertyImplementationProvider{
+public abstract class AccessorMap<X> extends AbstractContexed implements ExpressionFilterTarget<X>,  PropertyImplementationProvider{
 	public static final Feature EVALUATE_CACHE_FEATURE = new Feature("evaluate.cache",true,"cache expression evaluations in ExpressionTargets");
 	public static final Feature FORCE_SQLVALUE_FEATURE = new Feature("accounting.force_sqlvalue",false,"Use SQLValues in preference to SQLExpressions");
 	public static final Feature PREFER_NESTED_EXPR_FEATURE = new Feature("accouning.prefer_nested_sqlexpressions",true,"Prefer the use of SQLExpressions as inner parts of SQLValues");
-	protected final Class<X> target;
+	protected final String filter_tag;
 	
 	protected final String config_tag;
 	protected static final String CONFIG_PREFIX = "accounting.";
@@ -326,7 +275,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	}
 	public class SQLExpressionVisitor extends CreateSQLExpressionPropExpressionVisitor{
 		public SQLExpressionVisitor(AppContext c) {
-			super(target,c);
+			super(filter_tag,c);
 		}
 		private Set<PropertyTag> missing = new HashSet<>();
 		public SQLExpression visitPropertyTag(PropertyTag<?> tag)
@@ -390,7 +339,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		}
 		private final SQLExpressionVisitor exp;
 		public SQLValueVisitor(AppContext c,SQLExpressionVisitor exp) {
-			super(target,c);
+			super(filter_tag,c);
 			this.exp=exp;
 		}
 		private Set<PropertyTag> missing = new HashSet<>();
@@ -527,20 +476,20 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	}
 	/**
 	 * create an empty AccessorMap
-	 * @param target type of enclosing factory 
+	 * @param filter_tag type of enclosing factory 
 	 * @param res 
 	 * @param config_tag 
 	 * 
 	 */
-	public AccessorMap(AppContext conn,Class<X> target,String config_tag) {
+	public AccessorMap(AppContext conn,String filter_tag,String config_tag) {
 		super(conn);
-		this.target=target;
+		this.filter_tag=filter_tag;
 		this.config_tag=config_tag;
 		derived = new PropExpressionMap();
 		
 		// might be better to do this as an expression
 		// the following only works because we are adding a SQLAccessor
-		put(StandardProperties.TABLE_PROP, new ConstExpression<String,X>(target,String.class, config_tag));
+		put(StandardProperties.TABLE_PROP, new ConstExpression<String,X>(String.class, config_tag));
 		
 		try {
 			// This is only a fall-back expression. Aggregate records may store the
@@ -1018,7 +967,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 					// default to simple SQLExpressionFilter
 				}
 			}
-			return SQLExpressionFilter.getFilter(target,exp, match,data);
+			return SQLExpressionFilter.getFilter(filter_tag,exp, match,data);
 			
 		}catch(Exception e){
 			//keep looking
@@ -1034,7 +983,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		    	// FieldValues normally implement FilterProvider
 		    	// but for an exact match this should work
 		    	// probably needed for TypeProducerFieldValue
-		    	return new FieldValueFilter<I, X>(target, (FieldValue<I, X>) val, data);
+		    	return new FieldValueFilter<I, X>((FieldValue<I, X>) val, data);
 		    }
 		}catch(InvalidSQLPropertyException e){
 			//keep looking
@@ -1073,7 +1022,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
     	}
     	
     	if( resolves(expr,false)){
-    		return new ExpressionAcceptFilter<>(target,this,expr, match, data);
+    		return new ExpressionAcceptFilter<>(filter_tag,this,expr, match, data);
     	}
     	// we might still have a derived property but cannot make a SQLfilter
 		
@@ -1092,14 +1041,14 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			ConstPropExpression<R> left_const = (ConstPropExpression<R>)left;
 			ConstPropExpression<R> right_const = (ConstPropExpression<R>)right;
 			if( match == null ){
-				return new GenericBinaryFilter<>(target, left_const.val.equals(right_const.val));
+				return new GenericBinaryFilter<>( left_const.val.equals(right_const.val));
 			}
-			return new GenericBinaryFilter<>(target,match.compare(left_const.val,right_const.val));
+			return new GenericBinaryFilter<>(match.compare(left_const.val,right_const.val));
 		}
 		try {
 			SQLExpression<R> exp1 = getSQLExpression(left);
 			SQLExpression<R> exp2 = getSQLExpression(right);
-			return SQLExpressionMatchFilter.getFilter(target, exp1,match, exp2);
+			return SQLExpressionMatchFilter.getFilter(filter_tag, exp1,match, exp2);
 			
 		} catch (InvalidSQLPropertyException e) {
 			
@@ -1113,7 +1062,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 				IndexedSQLValue ival1 = (IndexedSQLValue) val1;
 				IndexedSQLValue ival2 = (IndexedSQLValue) val2;
 				if( ival1.getFactory().equals(ival2.getFactory())){
-					return SQLExpressionMatchFilter.getFilter(target, ival1.getIDExpression(),match, ival2.getIDExpression());
+					return SQLExpressionMatchFilter.getFilter(filter_tag, ival1.getIDExpression(),match, ival2.getIDExpression());
 				}else{
 					throw new CannotFilterException("Incompatible reference expressions");
 				}
@@ -1121,7 +1070,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		} catch (Exception e) {
 		
 		}
-		return new ExpressionAcceptMatchFilter<>(target,this,left, match,right);
+		return new ExpressionAcceptMatchFilter<>(filter_tag,this,left, match,right);
 	}
     @SuppressWarnings("unchecked")
 	public final <I> BaseFilter<X> getNullFilter(PropExpression<I> expr,
@@ -1140,7 +1089,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
     				// Go with default SQLExpressionNullFilter
     			}
     		}
-    		return SQLExpressionNullFilter.getFilter(target,exp, is_null);
+    		return SQLExpressionNullFilter.getFilter(filter_tag,exp, is_null);
     		
     	}catch(InvalidSQLPropertyException e){
     		// keep looking
@@ -1170,7 +1119,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
     	// could still have a derived property using accessors but cannot make these into
     	// an SQLFilter
     	if(resolves(expr,false)){
-    		return new ExpressionAcceptNullFilter<>(target,this,expr, is_null);
+    		return new ExpressionAcceptNullFilter<>(filter_tag,this,expr, is_null);
     	}
 
 
@@ -1196,7 +1145,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			PropExpression<Date> start_prop,
 			PropExpression<Date> end_prop, OverlapType type,long cutoff)
 			throws CannotFilterException {
-		AndFilter<X> res = new AndFilter<>(getTarget());
+		AndFilter<X> res = new AndFilter<>(getFilterTag());
 		assert(end_prop != null);
 		boolean use_simple = start_prop == null || start_prop.equals(end_prop);
 		
@@ -1258,7 +1207,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 			if(sqlExpression == null ){
 				return null;
 			}
-			return SQLExpressionOrderFilter.getFilter(target,descending,sqlExpression);
+			return SQLExpressionOrderFilter.getFilter(filter_tag,descending,sqlExpression);
 		} catch (InvalidSQLPropertyException e) {
 			throw new CannotFilterException(e);
 		}
@@ -1295,8 +1244,9 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		Class<T> clazz = (Class<T>) expr.getTarget();
 		return new CaseExpression<>(clazz, def_sql, list);
 	}
-	public final Class<X> getTarget() {
-		return target;
+	@Override
+	public final String getFilterTag() {
+		return filter_tag;
 	}
 	
 	public final void release(){

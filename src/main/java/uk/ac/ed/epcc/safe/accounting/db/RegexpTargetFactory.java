@@ -56,10 +56,7 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClass
 		return spec;
 	}
 
-	@Override
-	public Class<T> getTarget() {
-		return (Class<T>) RegexpTarget.class;
-	}
+	
 
 	@Override
 	protected T makeBDO(Record res) throws DataFault {

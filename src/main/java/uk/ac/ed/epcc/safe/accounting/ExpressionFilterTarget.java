@@ -34,7 +34,7 @@ import uk.ac.ed.epcc.webapp.time.Period;
  *
  * @param <T> type of factory target
  */
-public interface ExpressionFilterTarget<T> extends Targetted<T>{
+public interface ExpressionFilterTarget<T> {
 
 	/** A lightweight test if the {@link PropExpression} resolves.
 	 * 
@@ -105,4 +105,11 @@ public interface ExpressionFilterTarget<T> extends Targetted<T>{
 	 * @throws CannotFilterException
 	 */
 	public BaseFilter<T> getRelationshipFilter(String relationship) throws CannotFilterException;
+
+	/** Get the tag to create filters with (for type checking could return null)
+	 * 
+	 * @return String
+	 */
+	public String getFilterTag();
+
 }

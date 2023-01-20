@@ -448,7 +448,7 @@ public class ParameterExtension extends ReportExtension {
 			type=conn.getInitParameter("typealias."+type, type);
 			DataObjectFactory fac = conn.makeObjectWithDefault(DataObjectFactory.class,null,type);
 			if( fac != null ){
-				AndFilter fil = new AndFilter(fac.getTarget());
+				AndFilter fil = new AndFilter(fac.getTag());
 				if(role.startsWith("#")){
 					// Starting a role with a hash supresses the default select-filter
 					role=role.substring(1);
@@ -466,7 +466,7 @@ public class ParameterExtension extends ReportExtension {
 				}
 				BaseFilter fil2 = conn.getService(SessionService.class).getRelationshipRoleFilter(fac, role);
 				if( fil2 == null ){
-					fil2 = new GenericBinaryFilter(fac.getTarget(),false);
+					fil2 = new GenericBinaryFilter(false);
 				}
 				fil.addFilter(fil2);
 				BaseFilter efil = getFilter(param, fac);
@@ -546,7 +546,7 @@ public class ParameterExtension extends ReportExtension {
 		}
 	}
 	private BaseFilter getFilter(Element e,DataObjectFactory prod) throws Exception {
-		AndFilter result = new AndFilter(prod.getTarget());
+		AndFilter result = new AndFilter(prod.getTag());
 		ExpressionTargetFactory ptf = ExpressionCast.getExpressionTargetFactory(prod);
 		if( ptf != null){
 			// If factory implements the correct interface further narrow the selection using
@@ -575,7 +575,7 @@ public class ParameterExtension extends ReportExtension {
 			}
 		}
 		NodeList policyNodes = e.getElementsByTagNameNS(PARAMETER_LOC, "FilterPolicy");
-		AndFilter and = new AndFilter<>(prod.getTarget());
+		AndFilter and = new AndFilter<>(prod.getTag());
 		for( int i=0 ; i < policyNodes.getLength() ; i++) {
 			BaseFilter f = getFilterFromPolicy(prod,(Element) policyNodes.item(i));
 			if( f != null ) {
