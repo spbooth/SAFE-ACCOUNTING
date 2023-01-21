@@ -47,15 +47,14 @@ import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 
 
 public class ClassificationSQLValue<H extends DataObject, T extends DataObject> implements NestedSQLValue<String,IndexedReference<T>>, FilterProvider<H,String>{
-	private final String filter_tag;
 	
 	// has to be at least an SQLAccessor to support any filtering.
 	// 
 	private final  SQLValue<IndexedReference<T>> a;
 	private final AppContext ctx;
 	private final IndexedProducer<T> producer;
-	public ClassificationSQLValue(AppContext c,String filter_tag,IndexedProducer<T> prod,SQLValue<IndexedReference<T>> acc) {
-		this.filter_tag=filter_tag;
+	public ClassificationSQLValue(AppContext c,IndexedProducer<T> prod,SQLValue<IndexedReference<T>> acc) {
+		
 		this.a=acc;
 		this.producer=prod;
 		ctx=c;
@@ -111,7 +110,7 @@ public class ClassificationSQLValue<H extends DataObject, T extends DataObject> 
 	
 	@Override
 	public String getFilterTag() {
-		return filter_tag;
+		return a.getFilterTag();
 	}
 	@Override
 	public SQLValue<IndexedReference<T>> getNested() {

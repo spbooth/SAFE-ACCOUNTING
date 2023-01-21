@@ -94,11 +94,11 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		PropExpressionVisitor<SQLValue> {
 	
 	private static final Feature PARTIAL_JOIN_FEATURE = new Feature("sqlvalue.partial_join",true,"Perform SQL joins to evaluate remote references");
-    private final String target;
+    
 	private final AppContext conn;
 	private final SQLContext sql;
     public CreateSQLValuePropExpressionVisitor(String target,AppContext c){
-    	this.target=target;
+    
     	conn=c;
     	DatabaseService db_service = conn.getService(DatabaseService.class);
     	try {
@@ -206,7 +206,7 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 			NamePropExpression namePropExpression) throws Exception {
 		ReferenceExpression<? extends DataObject> targetRef = namePropExpression.getTargetRef();
 		SQLValue a = targetRef.accept(this);
-		return new ClassificationSQLValue(conn,target,targetRef.getFactory(conn), a);
+		return new ClassificationSQLValue(conn,targetRef.getFactory(conn), a);
 	}
 	public <T extends DataObject> SQLValue visitDoubleDeRefExpression(
 			DoubleDeRefExpression<T, ?> dre) throws Exception {
@@ -326,9 +326,9 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 			SQLValue<D> inner = process(innerExpression);
 			TypeConverter<T, D> converter = sel.getConverter();
 			if( inner instanceof SQLAccessor && converter instanceof TypeProducer) {
-				return new TypeFilterProducerSQLValue(target,sel.getTarget(), (TypeProducer)converter,(SQLAccessor) inner);
+				return new TypeFilterProducerSQLValue(sel.getTarget(), (TypeProducer)converter,(SQLAccessor) inner);
 			}
-			return new TypeConverterSQLValue(target,sel.getTarget(),converter, inner);
+			return new TypeConverterSQLValue(sel.getTarget(),converter, inner);
 		}
 
 
@@ -373,6 +373,6 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 		for(PropExpression<T> e: expr ){
 			arr[i++]= process(e);
 		}
-		return new ArrayFuncValue(target,expr.getFunc(),expr.getTarget(),arr);
+		return new ArrayFuncValue(expr.getFunc(),expr.getTarget(),arr);
 	}
 }

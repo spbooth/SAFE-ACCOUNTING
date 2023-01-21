@@ -275,7 +275,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 	}
 	public class SQLExpressionVisitor extends CreateSQLExpressionPropExpressionVisitor{
 		public SQLExpressionVisitor(AppContext c) {
-			super(filter_tag,c);
+			super(c);
 		}
 		private Set<PropertyTag> missing = new HashSet<>();
 		public SQLExpression visitPropertyTag(PropertyTag<?> tag)
@@ -967,7 +967,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 					// default to simple SQLExpressionFilter
 				}
 			}
-			return SQLExpressionFilter.getFilter(filter_tag,exp, match,data);
+			return SQLExpressionFilter.getFilter(exp, match,data);
 			
 		}catch(Exception e){
 			//keep looking

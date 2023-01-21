@@ -77,9 +77,8 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	
 	private final AppContext conn;
 	private final SQLContext sql;
-	 private final String filter_tag; // target class for filters
-	public CreateSQLExpressionPropExpressionVisitor(String filter_tag,AppContext c){
-		this.filter_tag=filter_tag;
+	
+	public CreateSQLExpressionPropExpressionVisitor(AppContext c){
 		this.conn=c;
 		DatabaseService db_service = conn.getService(DatabaseService.class);
 		try {
@@ -317,6 +316,6 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 		for(PropExpression<T> e: expr ){
 			arr[i++]= e.accept(this);
 		}
-		return new ArrayFuncExpression(filter_tag,expr.getFunc(),expr.getTarget(),arr);
+		return new ArrayFuncExpression(expr.getFunc(),expr.getTarget(),arr);
 	}
 }
