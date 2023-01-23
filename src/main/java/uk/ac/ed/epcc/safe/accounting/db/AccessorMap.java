@@ -1022,7 +1022,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
     	}
     	
     	if( resolves(expr,false)){
-    		return new ExpressionAcceptFilter<>(filter_tag,this,expr, match, data);
+    		return new ExpressionAcceptFilter<>(this,expr, match, data);
     	}
     	// we might still have a derived property but cannot make a SQLfilter
 		
@@ -1070,7 +1070,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
 		} catch (Exception e) {
 		
 		}
-		return new ExpressionAcceptMatchFilter<>(filter_tag,this,left, match,right);
+		return new ExpressionAcceptMatchFilter<>(this,left, match,right);
 	}
     @SuppressWarnings("unchecked")
 	public final <I> BaseFilter<X> getNullFilter(PropExpression<I> expr,
@@ -1119,7 +1119,7 @@ public abstract class AccessorMap<X> extends AbstractContexed implements Express
     	// could still have a derived property using accessors but cannot make these into
     	// an SQLFilter
     	if(resolves(expr,false)){
-    		return new ExpressionAcceptNullFilter<>(filter_tag,this,expr, is_null);
+    		return new ExpressionAcceptNullFilter<>(this,expr, is_null);
     	}
 
 

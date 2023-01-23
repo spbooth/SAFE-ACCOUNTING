@@ -16,7 +16,6 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.webapp.jdbc.filter.AbstractAcceptFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AcceptFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 
@@ -28,13 +27,12 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
  * @param <T> type filter is for
  * @param <I> data type
  */
-public class ExpressionAcceptFilter<T,I> extends AbstractAcceptFilter<T>{
+public class ExpressionAcceptFilter<T,I> implements AcceptFilter<T>{
     private final AccessorMap<T> map;
 	private final MatchCondition m;
 	private final I data;
 	private final PropExpression<I> expr;
-	public ExpressionAcceptFilter(String target,AccessorMap<T> map,PropExpression<I> expr,MatchCondition m, I data){
-		super(target);
+	public ExpressionAcceptFilter(AccessorMap<T> map,PropExpression<I> expr,MatchCondition m, I data){
 		this.map=map;
 		this.expr=expr;
 		this.m=m;

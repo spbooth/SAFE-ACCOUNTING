@@ -16,18 +16,17 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.webapp.jdbc.filter.AbstractAcceptFilter;
+import uk.ac.ed.epcc.webapp.jdbc.filter.AcceptFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 
 
 
-public class ExpressionAcceptMatchFilter<T,I> extends AbstractAcceptFilter<T>{
+public class ExpressionAcceptMatchFilter<T,I> implements AcceptFilter<T>{
 	private final AccessorMap<T> map;
 	private final MatchCondition m;
 	private final PropExpression<I> expr1;
 	private final PropExpression<I> expr2;
-	public ExpressionAcceptMatchFilter(String target,AccessorMap<T> map,PropExpression<I> expr1,MatchCondition m, PropExpression<I> expr2){
-		super(target);
+	public ExpressionAcceptMatchFilter(AccessorMap<T> map,PropExpression<I> expr1,MatchCondition m, PropExpression<I> expr2){
 		this.map=map;
 		this.expr1=expr1;
 		this.m=m;
