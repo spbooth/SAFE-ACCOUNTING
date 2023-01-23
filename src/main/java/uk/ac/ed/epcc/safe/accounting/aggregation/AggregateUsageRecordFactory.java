@@ -527,10 +527,10 @@ ConfigParamProvider{
 	private AggregateRecord makeTarget(PropertyContainer source, Date start,Date end)
 			throws DataException, CannotFilterException, InvalidPropertyException, NoSQLFilterException {
 		assert(start.before(end));
-		SQLAndFilter<AggregateRecord> fil = new SQLAndFilter<>(getTag());
 		AccessorMap map = getAccessorMap();
-		fil.addFilter(FilterConverter.convert(map.getFilter(AGGREGATE_STARTED_PROP, null, start)));
-		fil.addFilter(FilterConverter.convert(map.getFilter(AGGREGATE_ENDED_PROP, null, end)));
+		SQLAndFilter<AggregateRecord> fil = getSQLAndFilter(
+				FilterConverter.convert(map.getFilter(AGGREGATE_STARTED_PROP, null, start)),
+				FilterConverter.convert(map.getFilter(AGGREGATE_ENDED_PROP, null, end)));
 		for(PropertyTag t : getKeyProperties()){
 			if( source.supports(t) && hasProperty(t)){
 				Object val = source.getProperty(t, null);

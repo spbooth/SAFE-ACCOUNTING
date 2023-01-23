@@ -225,7 +225,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 		String default_relationship = getContext().getInitParameter(fac.getConfigTag()+".default_filter_relationship");
 		if( default_relationship != null && ! default_relationship.isEmpty()){
 			try {
-				return new AndFilter<>(fac.getTag(),getAccessorMap().getRelationshipFilter(default_relationship), fil);
+				return fac.getAndFilter(getAccessorMap().getRelationshipFilter(default_relationship), fil);
 			} catch (CannotFilterException e) {
 				getLogger().error("Error adding default relationship", e);
 			}

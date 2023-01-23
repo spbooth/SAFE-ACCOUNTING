@@ -141,7 +141,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 					return null;
 				}
 				SessionService sess = getContext().getService(SessionService.class);
-				SQLOrFilter<R> fil = new SQLOrFilter<>(getTag());
+				SQLOrFilter<R> fil = getSQLOrFilter();
 				for(String g : group.split("\\s*,\\s*")){
 					String required_role = getContext().getInitParameter(REPORT_GROUP_REQUIRED_ROLE_PREFIX+g);
 					if( required_role == null || required_role.isEmpty() || sess.hasRole(required_role)) {

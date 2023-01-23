@@ -571,7 +571,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			IndexedProducer prod = tag.getFactory(getContext());
 			if( prod instanceof DataObjectFactory){
 				DataObjectFactory<X> dof = (DataObjectFactory) prod;
-				AndFilter<X> fil = new AndFilter<>(dof.getTag(),dof.getFinalSelectFilter());
+				AndFilter<X> fil = dof.getAndFilter(dof.getFinalSelectFilter());
 				if( narrow != null) {
 					fil.addFilter(narrow);
 				}

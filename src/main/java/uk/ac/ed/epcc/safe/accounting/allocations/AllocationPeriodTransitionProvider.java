@@ -329,7 +329,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 			SessionService sess = getContext().getService(SessionService.class);
 			
 			AccessorMap map = etf.getAccessorMap();
-			AndFilter fil = new AndFilter(fac.getTag());
+			AndFilter fil = fac.getAndFilter();
 			fil.addFilter(map.getFilter(getSelector(target)));
 			fil.addFilter(manager.getViewFilter(sess));
 
