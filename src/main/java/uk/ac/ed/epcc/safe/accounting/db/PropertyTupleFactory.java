@@ -9,14 +9,8 @@ import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.Parser;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
-import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.safe.accounting.properties.*;
+import uk.ac.ed.epcc.safe.accounting.reference.ConfigPropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
@@ -88,6 +82,8 @@ Tagged{
 		member_tags = new LinkedList<>();
 		ReferencePropertyRegistry refs = ReferencePropertyRegistry.getInstance(c);
 		finder.addFinder(refs);
+		// This allows us to define custom tags that can be populated as derived properties later
+		finder.addFinder(new ConfigPropertyRegistry(c, config_tag));
 		map = new TupleAccessorMap(this, config_tag,finder);
 		for(AF fac : getMemberFactories()){
 			ReferenceTag<A, AF> tag = (ReferenceTag<A, AF>) refs.find(IndexedReference.class,fac.getTag());

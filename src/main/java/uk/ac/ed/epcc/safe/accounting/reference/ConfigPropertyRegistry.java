@@ -29,11 +29,9 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 /** PropertyRegistry that builds its entries from configuration parameters.
  * 
- * A description for the registry can be set using the property 
- * <b>registry.<i>registry-name</i>.description</b>
  * <p>
  * Properties are created by setting:
- * <b>property.<i>registry-name</i>.<i>prop-name</i>=<i>type</i>
+ * <b>property.<i>registry-name</i>.<i>prop-name</i>=<i>type</i></b>
  * <p>
  * A description can be set using:
  * <b>description.<i>registry-name</i>.<i>prop-name</i>
