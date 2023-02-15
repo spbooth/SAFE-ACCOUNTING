@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 
+import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.*;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
@@ -17,6 +18,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 import uk.ac.ed.epcc.webapp.time.TimePeriod;
 /** A {@link TupleUsageProducer} that represents a time-sequence join
  * 
@@ -155,11 +157,15 @@ extends TupleUsageProducer<A,AF,UR> {
 				AndRecordSelector sel = new AndRecordSelector();
 				sel.add(o);
 				TimePeriod period = o.getPeriod();
+				
+				
 				for(ReferenceTag t : getMemberTags()) {
+					AF fac = (AF) t.getFactory(getContext());
+				
 					sel.add(new PeriodOverlapRecordSelector(period, 
 							new DeRefExpression<>(t, StandardProperties.STARTED_PROP),
 							new DeRefExpression<>(t, StandardProperties.ENDED_PROP),
-							OverlapType.ANY, 0L));
+							OverlapType.ANY, fac.getAccessorMap().calculateCutoff(StandardProperties.STARTED_PROP, StandardProperties.ENDED_PROP)));
 				}
 				return sel;
 			}

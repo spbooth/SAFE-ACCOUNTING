@@ -87,6 +87,18 @@ public interface ExpressionFilterTarget<T> {
 			PropExpression<Date> end_prop, 
 			OverlapType type,long cutoff)
 			throws CannotFilterException;
+	/** Optionally calculate a cutoff by searching for the longest seperation between
+	 * the two properties.
+	 * 
+	 *  If not supported return zero
+	 * 
+	 * @param start 
+	 * @param end
+	 * @return zero or cutoff value
+	 */
+	public default long calculateCutoff(PropExpression<Date> start, PropExpression<Date> end) {
+		return 0L;
+	}
 	/** get an ordering {@link SQLFilter} based on the expression.
 	 * 
 	 * This will contain an {@link OrderFilter} but will also contain any required filters.

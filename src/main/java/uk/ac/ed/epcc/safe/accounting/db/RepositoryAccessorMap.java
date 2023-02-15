@@ -453,54 +453,59 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 			// a negative cutoff will supress auto-generation and
 			// allow records with a zero start time.
 			if( cutoff == 0L) {
-				Long calc_cutoff=null;
-				SessionService sess=null;		
-				TimerService timer = getContext().getService(TimerService.class);
-				String cutoff_name = "auto_cutoff."+getCutoffTag()+"_"+start.toString()+"_"+end.toString();
-				if(getContext().getBooleanParameter("reporting.cache_cutoff."+fac.getConfigTag(), CACHE_CUTOFFS.isEnabled(getContext()))) {
-					sess = getContext().getService(SessionService.class);
-					if(sess !=null) {
-						calc_cutoff=(Long) sess.getAttribute(cutoff_name);
-					}
-				}
-				if( calc_cutoff == null){
-					calc_cutoff = (Long) getContext().getAttribute(cutoff_name);
-				}
-				if(calc_cutoff==null) {
-					try(TimeClosable tim = new TimeClosable(timer, cutoff_name)) {
-						// Check this uses SQL
-						SQLValue<Date> start_value = getSQLValue(start);
-						SQLValue<Date> end_value = getSQLValue(end);
-						if( start_value != null && end_value != null) {
-							if( start_value instanceof ConstExpression || end_value instanceof ConstExpression) {
-								// Constant date bounds are not good candidates for using cutoff
-								// probably relate to the current time anyway
-								// just suppress use of cutoff in this case.
-								calc_cutoff=0L;
-							}else {
-								calc_cutoff = getCutoff(null,start, end);
-							}
-							//if( log !=null) log.debug(getDBTag()+": calculated cutoff for "+start+","+end+" as "+cutoff);
-						}else {
-							calc_cutoff=0L;
-						}
-					}catch(InvalidSQLPropertyException isp) {
-						calc_cutoff=0L;
-					} catch (Exception e) {
-						getLogger().error("Error making cutoff",e);
-						calc_cutoff=0L;
-					}
-				}
-				if(sess !=null ) {
-					sess.setAttribute(cutoff_name, calc_cutoff);
-				}else {
-					getContext().setAttribute(cutoff_name, calc_cutoff);
-				}
-
-				cutoff=calc_cutoff;
+			
+				cutoff=calculateCutoff(start, end);
 			}
 		}
 		return super.getPeriodFilter(period, start, end,type,cutoff);
+	}
+
+	@Override
+	public long calculateCutoff(PropExpression<Date> start, PropExpression<Date> end) {
+		Long calc_cutoff=null;
+		SessionService sess=null;		
+		TimerService timer = getContext().getService(TimerService.class);
+		String cutoff_name = "auto_cutoff."+getCutoffTag()+"_"+start.toString()+"_"+end.toString();
+		if(getContext().getBooleanParameter("reporting.cache_cutoff."+fac.getConfigTag(), CACHE_CUTOFFS.isEnabled(getContext()))) {
+			sess = getContext().getService(SessionService.class);
+			if(sess !=null) {
+				calc_cutoff=(Long) sess.getAttribute(cutoff_name);
+			}
+		}
+		if( calc_cutoff == null){
+			calc_cutoff = (Long) getContext().getAttribute(cutoff_name);
+		}
+		if(calc_cutoff==null) {
+			try(TimeClosable tim = new TimeClosable(timer, cutoff_name)) {
+				// Check this uses SQL
+				SQLValue<Date> start_value = getSQLValue(start);
+				SQLValue<Date> end_value = getSQLValue(end);
+				if( start_value != null && end_value != null) {
+					if( start_value instanceof ConstExpression || end_value instanceof ConstExpression) {
+						// Constant date bounds are not good candidates for using cutoff
+						// probably relate to the current time anyway
+						// just suppress use of cutoff in this case.
+						calc_cutoff=0L;
+					}else {
+						calc_cutoff = getCutoff(null,start, end);
+					}
+					//if( log !=null) log.debug(getDBTag()+": calculated cutoff for "+start+","+end+" as "+cutoff);
+				}else {
+					calc_cutoff=0L;
+				}
+			}catch(InvalidSQLPropertyException isp) {
+				calc_cutoff=0L;
+			} catch (Exception e) {
+				getLogger().error("Error making cutoff",e);
+				calc_cutoff=0L;
+			}
+		}
+		if(sess !=null ) {
+			sess.setAttribute(cutoff_name, calc_cutoff);
+		}else {
+			getContext().setAttribute(cutoff_name, calc_cutoff);
+		}
+		return calc_cutoff;
 	}
 
 	/** calculate the maximum difference between the two date expressions for the entire table
