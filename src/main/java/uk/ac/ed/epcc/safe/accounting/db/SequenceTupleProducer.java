@@ -5,19 +5,14 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
+import uk.ac.ed.epcc.safe.accounting.expr.*;
 import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
 import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFunc;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
+import uk.ac.ed.epcc.webapp.jdbc.expr.*;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -46,13 +41,25 @@ extends TupleUsageProducer<A,AF,UR> {
 		customiseAccessors(finder,map, expr);
 		LinkedList<PropExpression> starts = new LinkedList<>();
 		LinkedList<PropExpression> ends = new LinkedList<>();
+		LinkedList<PropExpression> start_stamps = new LinkedList<>();
+		LinkedList<PropExpression> end_stamps = new LinkedList<>();
 		for(ReferenceTag<A, AF> tag : getMemberTags()){
 			starts.add(new DeRefExpression<>(tag, StandardProperties.STARTED_PROP));
 			ends.add(new DeRefExpression<>(tag, StandardProperties.ENDED_PROP));
+			try {
+				start_stamps.add(new DeRefExpression<>(tag,new MilliSecondDatePropExpression(StandardProperties.STARTED_PROP)));
+				end_stamps.add(new DeRefExpression<>(tag,new MilliSecondDatePropExpression(StandardProperties.ENDED_PROP)));
+			}catch(PropertyCastException e) {
+				getLogger().error("Error making timestamps",e);
+			}
 		}
 		try {
 			expr.put(StandardProperties.STARTED_PROP, ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.GREATEST, starts));
 			expr.put(StandardProperties.ENDED_PROP, ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.LEAST, ends));
+			expr.put(StandardProperties.RUNTIME_PROP, new BinaryPropExpression(
+					ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.LEAST, end_stamps),
+					Operator.SUB,
+					ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.GREATEST, start_stamps)));
 			map.addDerived(c, expr);
 		} catch (PropertyCastException e) {
 			getLogger().error("Error setting time expressions", e);
