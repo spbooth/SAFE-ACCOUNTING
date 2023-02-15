@@ -37,6 +37,7 @@ extends TupleUsageProducer<A,AF,UR> {
 	public SequenceTupleProducer(AppContext c, String config_tag) {
 		super(c, config_tag);
 		finder.addFinder(StandardProperties.time);
+		finder.addFinder(StandardProperties.base);
 		PropExpressionMap expr = new PropExpressionMap();
 		customiseAccessors(finder,map, expr);
 		LinkedList<PropExpression> starts = new LinkedList<>();
