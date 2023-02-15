@@ -262,7 +262,10 @@ Tagged{
 		return map.getFilter(selector);
 	}
 	protected final BaseFilter<T> getRawFilter(RecordSelector selector) throws CannotFilterException {
-		return map.getRawFilter(selector);
+		return map.getRawFilter(mutateSelector(selector));
+	}
+	protected RecordSelector mutateSelector(RecordSelector selector) {
+		return selector;
 	}
 	@Override
 	public CloseableIterator<T> getIterator(RecordSelector sel, int skip, int count) throws Exception {

@@ -10,7 +10,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
-import uk.ac.ed.epcc.safe.accounting.selector.RelationClause;
+import uk.ac.ed.epcc.safe.accounting.selector.*;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.*;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
@@ -141,5 +141,41 @@ extends TupleUsageProducer<A,AF,UR> {
 	public UR makeTuple() {
 		return (UR) new PeriodTuple<A>(this);
 	}
+
+	public class SequenceMutator extends CopySelectorVisitor{
+
+		@Override
+		public RecordSelector visitPeriodOverlapRecordSelector(PeriodOverlapRecordSelector o) throws Exception {
+			PropExpression<Date> start = o.getStart();
+			PropExpression<Date> end = o.getEnd();
+			if( (start == null || start == StandardProperties.STARTED_PROP) && end == StandardProperties.ENDED_PROP) {
+				//  This is a standard date range
+				// narrow the selection filter with the same range on each member
+				AndRecordSelector sel = new AndRecordSelector();
+				sel.add(o);
+				TimePeriod period = o.getPeriod();
+				for(ReferenceTag t : getMemberTags()) {
+					sel.add(new PeriodOverlapRecordSelector(period, 
+							new DeRefExpression<>(t, StandardProperties.STARTED_PROP),
+							new DeRefExpression<>(t, StandardProperties.ENDED_PROP),
+							OverlapType.ANY, 0L));
+				}
+				return sel;
+			}
+			return super.visitPeriodOverlapRecordSelector(o);
+		}
+		
+	}
+	@Override
+	protected RecordSelector mutateSelector(RecordSelector selector) {
+		try {
+			return selector.visit(new SequenceMutator());
+		} catch (Exception e) {
+			getLogger().error("Error mutating selector", e);
+			return selector;
+		}
+	}
+
+	
 
 }
