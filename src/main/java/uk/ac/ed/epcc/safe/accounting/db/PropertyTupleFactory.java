@@ -94,8 +94,13 @@ Tagged{
 		}
 		// Allow derived properties to be set for references (and time) properties.
 		PropExpressionMap derived = new PropExpressionMap();
+		customAccessors(map, finder, derived);
 		derived.addFromProperties(finder, c, config_tag);
 		map.addDerived(c, derived);
+	}
+	protected  void customAccessors(AccessorMap<T> mapi2,
+			MultiFinder finder, PropExpressionMap derived) {
+		
 	}
 	/**
 	 * @param c

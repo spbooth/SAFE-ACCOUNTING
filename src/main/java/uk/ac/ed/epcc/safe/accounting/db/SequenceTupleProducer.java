@@ -38,10 +38,15 @@ extends TupleUsageProducer<A,AF,UR> {
 
 	public SequenceTupleProducer(AppContext c, String config_tag) {
 		super(c, config_tag);
+		
+		
+	}
+
+	@Override
+	protected void customAccessors(AccessorMap<UR> mapi2, MultiFinder finder, PropExpressionMap derived) {
 		finder.addFinder(StandardProperties.time);
 		finder.addFinder(StandardProperties.base);
-		PropExpressionMap expr = new PropExpressionMap();
-		customiseAccessors(finder,map, expr);
+	
 		LinkedList<PropExpression> starts = new LinkedList<>();
 		LinkedList<PropExpression> ends = new LinkedList<>();
 		LinkedList<PropExpression> start_stamps = new LinkedList<>();
@@ -57,22 +62,18 @@ extends TupleUsageProducer<A,AF,UR> {
 			}
 		}
 		try {
-			expr.put(StandardProperties.STARTED_PROP, ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.GREATEST, starts));
-			expr.put(StandardProperties.ENDED_PROP, ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.LEAST, ends));
-			expr.put(StandardProperties.RUNTIME_PROP, new BinaryPropExpression(
+			derived.put(StandardProperties.STARTED_PROP, ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.GREATEST, starts));
+			derived.put(StandardProperties.ENDED_PROP, ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.LEAST, ends));
+			derived.put(StandardProperties.RUNTIME_PROP, new BinaryPropExpression(
 					ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.LEAST, end_stamps),
 					Operator.SUB,
 					ArrayFuncPropExpression.makeArrayFunc(ArrayFunc.GREATEST, start_stamps)));
-			map.addDerived(c, expr);
 		} catch (PropertyCastException e) {
 			getLogger().error("Error setting time expressions", e);
 		}
-		
 	}
 
-	protected void customiseAccessors(MultiFinder finder,TupleAccessorMap map,PropExpressionMap expr){
-		
-	}
+	
 	/** collections of properties that must match in <em>all</em> members of the tuple. 
 	 * 
 	 * @return

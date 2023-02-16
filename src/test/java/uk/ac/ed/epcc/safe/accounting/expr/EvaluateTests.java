@@ -282,11 +282,17 @@ public class EvaluateTests extends WebappTestBase {
 		c.set(1965,Calendar.DECEMBER,25);
 		Date later = c.getTime();
 		obj.setProperty(DATE_B, later);
-		Date res = obj.evaluateExpression(new ArrayFuncPropExpression<Date>(Date.class, ArrayFunc.LEAST,new PropExpression[] { DATE_A,DATE_B}));
+		ArrayFuncPropExpression<Date> least_expr = new ArrayFuncPropExpression<Date>(Date.class, ArrayFunc.LEAST,new PropExpression[] { DATE_A,DATE_B});
+		Date res = obj.evaluateExpression(least_expr);
 		assertEquals(least, res);
+		Number least_millis = obj.evaluateExpression(new MilliSecondDatePropExpression(least_expr));
+		assertEquals(least.getTime(), least_millis.longValue());
 		
-		res = obj.evaluateExpression(new ArrayFuncPropExpression<Date>(Date.class, ArrayFunc.GREATEST,new PropExpression[] { DATE_A,DATE_B}));
+		ArrayFuncPropExpression<Date> greatest_expr = new ArrayFuncPropExpression<Date>(Date.class, ArrayFunc.GREATEST,new PropExpression[] { DATE_A,DATE_B});
+		res = obj.evaluateExpression(greatest_expr);
 		assertEquals(later, res);
+		Number greatest_millis = obj.evaluateExpression(new MilliSecondDatePropExpression(greatest_expr));
+		assertEquals(later.getTime(), greatest_millis.longValue());
 	}
 	
 	@Test
