@@ -250,7 +250,7 @@ Tagged{
 						Parser p = new Parser(getContext(), getFinder());
 						PropExpression pe1 = p.parse(exp1);
 						PropExpression pe2 = p.parse(exp2);
-						and.addFilter(getRawFilter(new RelationClause<>(pe1, pe2)));
+						and.addFilter(getMutatedFilter(new RelationClause<>(pe1, pe2)));
 					}catch(Exception t) {
 						getLogger().error("Bad mandatory filter clause "+clause,t);
 						// default to generate nothing on error as a bad filter can
@@ -266,7 +266,7 @@ Tagged{
 	protected final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
 		return map.getFilter(selector);
 	}
-	protected final BaseFilter<T> getRawFilter(RecordSelector selector) throws CannotFilterException {
+	protected final BaseFilter<T> getMutatedFilter(RecordSelector selector) throws CannotFilterException {
 		return map.getRawFilter(mutateSelector(selector));
 	}
 	protected RecordSelector mutateSelector(RecordSelector selector) {
@@ -359,7 +359,7 @@ Tagged{
 		return (Collection<ReferenceTag<A,AF>>) member_tags.clone();
 	}
 	@Override
-	public AccessorMap<T> getAccessorMap() {
+	public TupleAccessorMap getAccessorMap() {
 		// TODO Auto-generated method stub
 		return map;
 	}

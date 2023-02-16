@@ -97,13 +97,13 @@ extends TupleUsageProducer<A,AF,UR> {
 				if( tag_a != tag_b ){
 					
 					try {
-						m.addFilter(getRawFilter(
+						m.addFilter(getAccessorMap().getRawFilter(
 						  new RelationClause<>(
 							new DeRefExpression<>(tag_a, StandardProperties.STARTED_PROP),
 							MatchCondition.LT, 
 							new DeRefExpression<>(tag_b, StandardProperties.ENDED_PROP))));
 						for(PropExpression common : getCommonProperties()){
-							m.addFilter(getRawFilter(
+							m.addFilter(getAccessorMap().getRawFilter(
 								new RelationClause<>(
 										new DeRefExpression<>(tag_a, common), 
 										new DeRefExpression<>(tag_b,common)
