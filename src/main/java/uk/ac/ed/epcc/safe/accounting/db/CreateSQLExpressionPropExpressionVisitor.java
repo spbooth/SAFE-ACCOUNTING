@@ -49,21 +49,7 @@ import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.SQLContext;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataError;
-import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFuncExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CastDoubleSQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CastLongSQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.DateDerefSQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.DateSQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.DerefSQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.RoundSQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.StringConvertSQLExpression;
+import uk.ac.ed.epcc.webapp.jdbc.expr.*;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLExpression;
@@ -312,9 +298,20 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 	public <T extends Comparable> SQLExpression visitArrayFuncPropExpression(ArrayFuncPropExpression<T> expr)
 			throws Exception {
 		SQLExpression<T> arr[] = new SQLExpression[expr.length()];
-		int i=0;
+		DateSQLExpression date_arr[] = new DateSQLExpression[expr.length()];
+		int i=0, j=0;
 		for(PropExpression<T> e: expr ){
-			arr[i++]= e.accept(this);
+			SQLExpression exp = e.accept(this);
+			arr[i++]= exp;
+			if( exp instanceof DateSQLExpression) {
+				date_arr[j++] = (DateSQLExpression)exp;
+			}
+		}
+		if( i == j) {
+			// all elements are DateSQLExpressions so make the function call
+			// one as well. This can remove multiple conversions between date and time
+			// not toally necessary but makes the queries much easier to read if nothing else
+			return new DateArrayFuncExpression<>(expr.getFunc(), date_arr);
 		}
 		return new ArrayFuncExpression(expr.getFunc(),expr.getTarget(),arr);
 	}
