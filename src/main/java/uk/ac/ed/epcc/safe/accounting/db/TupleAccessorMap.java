@@ -37,8 +37,15 @@ public class TupleAccessorMap extends AccessorMap {
 	
 	@Override
 	public BaseFilter getFilter(RecordSelector selector) throws CannotFilterException {
-		return fac.addMandatoryFilter(fac.getMutatedFilter(selector));
+		return fac.addMandatoryFilter(getRawFilter(fac.mutateSelector(selector)));
 	}
+	/** Give access to the oroiginal getFilter implementation so that
+	 * the customisation methods in the factory can
+	 * 
+	 * @param selector
+	 * @return
+	 * @throws CannotFilterException
+	 */
 	public BaseFilter getRawFilter(RecordSelector selector) throws CannotFilterException {
 		return super.getFilter(selector);
 	}

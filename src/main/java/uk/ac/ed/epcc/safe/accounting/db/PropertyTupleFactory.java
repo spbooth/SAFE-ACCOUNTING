@@ -250,7 +250,7 @@ Tagged{
 						Parser p = new Parser(getContext(), getFinder());
 						PropExpression pe1 = p.parse(exp1);
 						PropExpression pe2 = p.parse(exp2);
-						and.addFilter(getMutatedFilter(new RelationClause<>(pe1, pe2)));
+						and.addFilter(getAccessorMap().getRawFilter(new RelationClause<>(pe1, pe2)));
 					}catch(Exception t) {
 						getLogger().error("Bad mandatory filter clause "+clause,t);
 						// default to generate nothing on error as a bad filter can
@@ -264,11 +264,11 @@ Tagged{
 		return and;
 	}
 	protected final BaseFilter<T> getFilter(RecordSelector selector) throws CannotFilterException {
+		// map will call back to this class
+		// to mutate the selector and add mandatory filter
 		return map.getFilter(selector);
 	}
-	protected final BaseFilter<T> getMutatedFilter(RecordSelector selector) throws CannotFilterException {
-		return map.getRawFilter(mutateSelector(selector));
-	}
+	
 	protected RecordSelector mutateSelector(RecordSelector selector) {
 		return selector;
 	}
