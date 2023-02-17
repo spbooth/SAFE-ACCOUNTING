@@ -126,7 +126,7 @@ public class OverlapHandler<T> {
     public Number getOverlapSum(NumberReductionTarget target,PropExpression<Date> start_prop, PropExpression<Date> end_prop,RecordSelector o_sel, Date start, Date end,long cutoff) throws Exception{
     		     	
     	if( ! prod.compatible(target.getExpression()) || ! prod.compatible(o_sel)){
-    		return target.getDefault();
+    		return 0.0; // dont use target default as overlap
     	}
     	AndRecordSelector sel=new AndRecordSelector(o_sel);
     	final Period period = new Period(start, end);
@@ -263,7 +263,7 @@ public class OverlapHandler<T> {
 			throw new ConsistencyError("Illegal overlap type requested "+overlap_type);
 		}
 	}
-	public static NumberReductionTarget makeOverlapReductionTarget(OverlapType overlap_type, Reduction red,
+	public static NumberReductionTarget xmakeOverlapReductionTarget(OverlapType overlap_type, Reduction red,
 			PropExpression<? extends Number> type, PropertyTag<Date> start_prop,
 			PropertyTag<Date> end_prop, Date start, Date end)
 			throws IllegalReductionException, PropertyCastException {
@@ -750,7 +750,7 @@ public class OverlapHandler<T> {
     	Number tmp=target.map(rec.evaluateExpression(target.getExpression()));
     	
     	if( tmp == null ){
-    		return target.getDefault();
+    		return 0.0; // don't use target default as overlap
     	}
     	if(start_prop == null ||  target.getReduction().equals(Reduction.DISTINCT)) {
     		// Don't weight distinct, ideally this should be a custom
@@ -760,13 +760,13 @@ public class OverlapHandler<T> {
     			// Just to be same make sure we do overlap the period
     			return tmp;
     		}else {
-    			return target.getDefault();
+    			return 0.0; // don't use target default as overlap
     		}
     	}
     	double fac = getOverlappWeight(rec,start_prop,end_prop,p,target.getReduction());
     	assert(fac >= 0.0 && fac <=1.0);
     	if( fac == 0.0 ){
-    		return target.getDefault();
+    		return 0.0; // don't use target default as overlap
     	}
     	
     	double res = fac * tmp.doubleValue();
