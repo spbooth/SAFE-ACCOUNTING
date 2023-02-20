@@ -203,9 +203,9 @@ public class OverlapHandler<T> {
 	 * @throws Exception
 	 * @throws InvalidPropertyException
 	 */
-    private Number addToOverlapSumByIterating(NumberReductionTarget target,
+    public Number addToOverlapSumByIterating(NumberReductionTarget target,
     		PropExpression<Date> start_prop, PropExpression<Date> end_prop,
-    		TimePeriod period, Number result, AndRecordSelector sel2)
+    		TimePeriod period, Number result, RecordSelector sel2)
     				throws Exception, InvalidExpressionException {
     	try(CloseableIterator<ExpressionTargetContainer> it = prod.getExpressionIterator(sel2)){
     		while(it.hasNext()){

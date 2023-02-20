@@ -161,8 +161,8 @@ extends TupleUsageProducer<A,AF,UR> {
 				
 				
 				for(ReferenceTag t : getMemberTags()) {
-					AF fac = (AF) t.getFactory(getContext());
-				
+					ExpressionTargetFactory fac = ExpressionCast.getExpressionTargetFactory(t.getFactory(getContext()));
+					
 					sel.add(new PeriodOverlapRecordSelector(period, 
 							new DeRefExpression<>(t, StandardProperties.STARTED_PROP),
 							new DeRefExpression<>(t, StandardProperties.ENDED_PROP),
