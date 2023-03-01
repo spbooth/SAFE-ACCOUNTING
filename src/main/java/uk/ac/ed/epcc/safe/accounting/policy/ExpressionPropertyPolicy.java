@@ -19,7 +19,6 @@ package uk.ac.ed.epcc.safe.accounting.policy;
 import java.util.HashMap;
 import java.util.Map;
 
-import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.SummaryProvider;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionInput;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
@@ -45,8 +44,8 @@ import uk.ac.ed.epcc.webapp.jdbc.table.TableTransitionKey;
 import uk.ac.ed.epcc.webapp.jdbc.table.ViewTableResult;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
-/** This policy allows new properties to be defined as derived property expressions by
- * providing a mechanism for {@link ConfigPropertyRegistry} objects to
+/** This policy allows new properties to be defined as derived property expressions. 
+ * It also provides a mechanism for {@link ConfigPropertyRegistry} objects to
  * be included in scope so that entirely new properties can be defined.
  * This is intended to be a replacement for the {@link DerivedPropertyPolicy} so
  * the property definitions are compatible with this and the syntax supported by {@link PropExpressionMap}but it requires additional configuration parameters.
@@ -62,10 +61,6 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  * <b>
  * properties.<em>table-name</em>.<em>name</em>=<em>prop-expression</em>
  * </b>
- * The actual derived properties are not added as part of the policy directly.
- * This policy only sees the {@link PropertyFinder}s from earlier policies
- *  
- * {@link AccessorMap} should add properties defined in the configuration after the PropertyFinder is fully configured
  * 
  * @author spb
  *
@@ -76,7 +71,8 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 	public ExpressionPropertyPolicy(AppContext conn) {
 		super(conn);
 	}
- 	
+
+	private PropExpressionMap defs=new PropExpressionMap();	
 	private String table;
 	private MultiFinder finder; // finder to use for expression parse
 	private MultiFinder props; // defined props
@@ -95,11 +91,18 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 		}
 		this.finder.addFinder(props);
 		
-		
+		defs.addFromProperties(this.finder, c, table);
 		
 		return props;
 	}
-	
+	/** Add a property definition
+	 * 
+	 */
+	@Override
+	public PropExpressionMap getDerivedProperties(PropExpressionMap previous){
+		previous.getAllFrom(defs);
+	    return previous;
+	}
 	/** Transition to define a new property
 	 * 
 	 * @author spb
@@ -152,7 +155,6 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 			public FormResult action(Form f)
 					throws uk.ac.ed.epcc.webapp.forms.exceptions.ActionException {
 				try {
-					PropExpressionMap defs = new PropExpressionMap();
 					//PropertyTagInput input = (PropertyTagInput) f.getInput("Prop");
 					defs.addConfigProperty(getContext(), finder, table, ((PropertyTag)f.getItem("Prop")), (String)f.get("Expr"));
 				} catch (Exception e) {
