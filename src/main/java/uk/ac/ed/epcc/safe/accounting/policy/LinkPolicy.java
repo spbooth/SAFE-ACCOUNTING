@@ -470,7 +470,7 @@ public class LinkPolicy<R extends Use> extends BaseUsageRecordPolicy implements 
 		int total = hits + misses;
 		double rate = ((double)hits)/((double)total);
 		NumberFormat pc = NumberFormat.getPercentInstance();
-		return "LinkPolicy hit-rate hits="+hits+" misses="+misses+" "+pc.format(rate);
+		return "LinkPolicy hit-rate hits="+hits+" misses="+misses+" "+pc.format(rate)+"\n";
 	}
 	@Override
 	public void startParse(PropertyContainer staticProps) throws Exception {
