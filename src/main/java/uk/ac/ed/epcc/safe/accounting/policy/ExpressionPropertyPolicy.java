@@ -90,7 +90,9 @@ public class ExpressionPropertyPolicy extends BasePolicy implements TableTransit
 			props.addFinder(new ConfigPropertyRegistry(c, name));
 		}
 		this.finder.addFinder(props);
-		
+		// This will look at all definitions for the table
+		// not all of which may apply to this policy. It might have been better
+		// to qualify by both table and target registry
 		defs.addFromProperties(this.finder, c, table);
 		
 		return props;

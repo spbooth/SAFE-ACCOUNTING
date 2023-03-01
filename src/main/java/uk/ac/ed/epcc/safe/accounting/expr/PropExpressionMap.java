@@ -247,9 +247,11 @@ private void resolve(PropertyRegistry reg, AppContext ctx, String prefix,
 	}
 }
 
-/** Add aliases to existing properties.
+/** Add aliases to existing properties
  * 
- * Note i
+ * Note this uses the <b>property</b> prefix rather than the <b>alias</b> prefix.
+ * But it will only apply definitions where the defined property is in scope and ignore other settings.
+ * This is because the same definition syntax is used for table specific definitions.
  * 
  * @param prev
  * @param ctx
@@ -265,10 +267,11 @@ public void addFromProperties(PropertyFinder prev, AppContext ctx, String table 
 			String def = derived_properties.get(key);
 			if( def !=  null && def.trim().length() > 0){
 				try{
+					// Its not an error to not find a property here.
+					// We are only looking for definitions for the provided finder
+					// but the config parameters might reference other properties as well
 					PropertyTag tag = prev.find( name);
-					if( tag == null ){
-						getLogger(ctx).error("Tag "+name+" not found setting derived properties for "+table);
-					}else{
+					if( tag != null ){
 						PropExpression e = parser.parse(def);
 						put(tag,e);
 					}
