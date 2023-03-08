@@ -33,6 +33,7 @@ import uk.ac.ed.epcc.safe.accounting.update.PropertyContainerParser;
 import uk.ac.ed.epcc.safe.accounting.update.SkipRecord;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -48,7 +49,7 @@ import uk.ac.ed.epcc.webapp.timer.TimeClosable;
 
 
 public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
-	
+	public static final Feature LOG_ERRORS = new Feature("accounting_update.log_errors",true,"Log any errors from accounting upload");
 	public static final PropertyRegistry parse_ctx = new PropertyRegistry("context", "Properties for the parse mode, used to pass context to policies");
 	public static final PropertyTag<Boolean> REPLACE_PROP = new PropertyTag<>(parse_ctx,"Replace",Boolean.class,"Replace existing records");
 	public static final PropertyTag<Boolean> VERIFY_PROP = new PropertyTag<>(parse_ctx,"Verify",Boolean.class,"Verify existing records");
@@ -195,7 +196,9 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     	if( error_text.length() > 0 ){
     		sb.append(error_text);
     		log.warn("Error in accounting parse\n"+error_text.toString());
-    		errors.report(5, log);
+    		if( LOG_ERRORS.isEnabled(conn)) {
+    			errors.report(5, log);
+    		}
     	}
     	errors.clear();
     	skip_list.clear();

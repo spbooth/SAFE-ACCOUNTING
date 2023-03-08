@@ -12,6 +12,9 @@ import java.util.Collections;
 
 import org.junit.Before;
 
+import uk.ac.ed.epcc.safe.accounting.db.AccountingUpdater;
+import uk.ac.ed.epcc.safe.accounting.upload.AccountingUploadParser;
+import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 
 /**
@@ -64,6 +67,8 @@ public class XMLRecordTest extends AbstractRecordTestCase {
 				
 				// Set bad records - No bad record tests yet
 				this.badRecords = Collections.emptyList();
+				Feature.setTempFeature(ctx, 
+				AccountingUpdater.LOG_ERRORS,false);
 	}
 
 	/*
