@@ -48,6 +48,13 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
 
 public class ErrorSet
 {
+	/** Detailed information about the error. 
+	 * Details are considered the same if the text is the same and
+	 * the throwable is the same class from the same line.
+	 * 
+	 * @author Stephen Booth
+	 *
+	 */
   public static class Detail
   {
     public final String text;
@@ -77,6 +84,23 @@ public class ErrorSet
     {
       return this.t;
     }
+
+	@Override
+	public int hashCode() {
+		return text.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Detail other = (Detail) obj;
+		return text.equals(other.text) && sameTypeAndLine(getThrowable(), other.getThrowable());
+	}
   }
 
   public static class Entry implements Comparable<Entry>
@@ -321,17 +345,31 @@ public class ErrorSet
 	 report(c.getService(LoggerService.class).getLogger(getClass()));
   }
   public void report(Logger l){
-	  for(String k : reg.keySet())
-	    {
-	      Entry e = reg.get(k);
-	      for(Detail lines : e.fails)
-	      {
-	        l.error(lines.getText(),lines.getThrowable());
-	      }
-	    }
+	  report(-1,l);
 	 
   }
-  
+  /** Log all errors for {@link Entry}s with less than
+   * max_reports 
+   * 
+   * @param max_reports
+   * @param l
+   */
+  public void report(int max_reports,Logger l){
+	  int count=0;
+	  for(Map.Entry<String, Entry> me : reg.entrySet())
+	  {
+		  Entry e = me.getValue();
+		  if( max_reports < 0 || e.fails.size() < max_reports) {
+			  for(Detail lines : e.fails)
+			  {
+				  l.error(me.getKey()+" "+lines.getText(),lines.getThrowable());
+			  }
+		  }else {
+			  l.error("Multiple errors "+e.fails.size()+" "+me.getKey());
+		  }
+	  }
+
+  }
   public void clear(){
 	  for(Iterator<Map.Entry<String,Entry>> it = reg.entrySet().iterator(); it.hasNext();){
 		  Map.Entry<String, Entry> e = it.next();
@@ -346,4 +384,21 @@ public class ErrorSet
 public void setMaxEntry(int max_entry) {
 	this.max_entry = max_entry;
 }
+
+	static boolean sameTypeAndLine(Throwable t1, Throwable t2) {
+		if( t1 == null ) {
+			return t2 == null;
+		}
+		if( t2 == null) {
+			return false;
+		}
+	
+		if (t1.getClass() == t2.getClass()) {
+			StackTraceElement[] trace1 = t1.getStackTrace();
+			StackTraceElement[] trace2 = t2.getStackTrace();
+			return trace1[0].equals(trace2[0]);
+		} else {
+			return false;
+		}
+	}
 }

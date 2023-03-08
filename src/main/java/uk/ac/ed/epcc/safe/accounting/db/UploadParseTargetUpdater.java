@@ -148,6 +148,7 @@ public class UploadParseTargetUpdater<R> {
     	if( error_text.length() > 0 ){
     		sb.append(error_text);
     		getLogger().error("Error in parse\n"+error_text.toString());
+    		errors.report(5, getLogger());
     	}
     	return sb.toString();
 	}
