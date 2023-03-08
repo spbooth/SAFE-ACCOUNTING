@@ -99,7 +99,7 @@ public class ErrorSet
 		if (getClass() != obj.getClass())
 			return false;
 		Detail other = (Detail) obj;
-		return text.equals(other.text) && sameTypeAndLine(getThrowable(), other.getThrowable());
+		return text.equals(other.text) && sameTypeMessageAndLine(getThrowable(), other.getThrowable());
 	}
   }
 
@@ -385,7 +385,7 @@ public void setMaxEntry(int max_entry) {
 	this.max_entry = max_entry;
 }
 
-	static boolean sameTypeAndLine(Throwable t1, Throwable t2) {
+	static boolean sameTypeMessageAndLine(Throwable t1, Throwable t2) {
 		if( t1 == null ) {
 			return t2 == null;
 		}
@@ -394,6 +394,9 @@ public void setMaxEntry(int max_entry) {
 		}
 	
 		if (t1.getClass() == t2.getClass()) {
+			if( ! t1.getMessage().equals(t2.getMessage())) {
+				return false;
+			}
 			StackTraceElement[] trace1 = t1.getStackTrace();
 			StackTraceElement[] trace2 = t2.getStackTrace();
 			return trace1[0].equals(trace2[0]);
