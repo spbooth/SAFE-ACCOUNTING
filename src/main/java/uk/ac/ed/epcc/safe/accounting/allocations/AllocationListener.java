@@ -72,7 +72,7 @@ public interface AllocationListener<T extends AllocationFactory.AllocationRecord
 	 * @param after AllocationRecord next in sequence (removed)
 	 */
 	public void merge(T before, T after);
-	/** A
+	/** Accumulate charges from a {@link PropertyContainer} representing a usage record into the allocation.
 	 * 
 	 * @param rec AllocationRecord
 	 * @param props PropertyContainer usage record being changed

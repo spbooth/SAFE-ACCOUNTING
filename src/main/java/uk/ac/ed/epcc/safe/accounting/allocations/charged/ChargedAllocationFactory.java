@@ -365,21 +365,35 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	throws Exception {
     	PropertyUpdater<T> updater = new PropertyUpdater<>(this);
     	// Perform in-database update so updates are atomic (avoid read/modify/write cycle)
+    	boolean changed = false;
     	AndRecordSelector fil = getMatchFilter(rec);
     	for(PropertyTag<? extends Number> t : getAccumulations()){
     		Number val = (Number) rec.getProperty(t);
-    		PropExpression<? extends Number> val_expr = new ConstPropExpression<>(Number.class,val);
-    		Operator op = add ? Operator.ADD : Operator.SUB;
-    		PropExpression expr = new BinaryPropExpression(t, op, val_expr);
-    		updater.update(t,expr,fil);
+    		if( ! isZero(val)) { // supress null updates
+    			changed=true;
+    			PropExpression<? extends Number> val_expr = new ConstPropExpression<>(Number.class,val);
+    			Operator op = add ? Operator.ADD : Operator.SUB;
+    			PropExpression expr = new BinaryPropExpression(t, op, val_expr);
+    			updater.update(t,expr,fil);
+    		}
     	}
-    	for(Iterator<T> it = getMatches(rec); it.hasNext();){
-    		T agg = it.next();
-    		notifyAggregate(agg, rec, add);
+    	if( changed ) {
+    		for(Iterator<T> it = getMatches(rec); it.hasNext();){
+    			T agg = it.next();
+    			notifyAggregate(agg, rec, add);
+    		}
     	}
     }
 
-
+    private boolean isZero(Number n) {
+    	if( n instanceof Long) {
+    		return n.longValue() == 0L;
+    	}else if( n instanceof Integer) {
+    		return n.intValue() == 0;
+    	}else {
+    		return n.doubleValue() == 0.0;
+    	}
+    }
     
 	public void startListenerParse() {
 		
