@@ -196,10 +196,11 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     	if( error_text.length() > 0 ){
     		sb.append(error_text);
     		log.warn("Error in accounting parse\n"+error_text.toString());
-    		if( LOG_ERRORS.isEnabled(conn)) {
-    			errors.report(5, log);
-    		}
+    		
     	}
+    	if( LOG_ERRORS.isEnabled(conn)) {
+			errors.report(5, log);
+		}
     	errors.clear();
     	skip_list.clear();
     	verify_list.clear();
@@ -368,7 +369,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 		}catch(AccountingParseException pe){
 			Throwable cause = pe.getCause();
 			if( cause != null) {
-				errors.add(pe.getMessage(), cause.getMessage(), cause);
+				errors.add(pe.getMessage(), fmt, cause);
 			}else {
 			   errors.add(pe.getMessage(), fmt);
 			}

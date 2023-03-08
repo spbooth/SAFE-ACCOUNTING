@@ -355,18 +355,20 @@ public class ErrorSet
    * @param l
    */
   public void report(int max_reports,Logger l){
-	  int count=0;
 	  for(Map.Entry<String, Entry> me : reg.entrySet())
 	  {
 		  Entry e = me.getValue();
-		  if( max_reports < 0 || e.fails.size() < max_reports) {
-			  for(Detail lines : e.fails)
-			  {
-				  l.error(me.getKey()+" "+lines.getText(),lines.getThrowable());
+
+		  int count=0;
+		  for(Detail lines : e.fails)
+		  {
+			  if( count++ < max_reports) {
+				  l.error(me.getKey()+": "+lines.getText(),lines.getThrowable());
+			  }else {
+				  break;
 			  }
-		  }else {
-			  l.error("Multiple errors "+e.fails.size()+" "+me.getKey());
 		  }
+
 	  }
 
   }
