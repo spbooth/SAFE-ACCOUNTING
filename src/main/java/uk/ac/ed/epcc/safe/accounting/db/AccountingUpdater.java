@@ -195,6 +195,7 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
     	if( error_text.length() > 0 ){
     		sb.append(error_text);
     		log.warn("Error in accounting parse\n"+error_text.toString());
+    		errors.report(5, log);
     	}
     	errors.clear();
     	skip_list.clear();
@@ -362,7 +363,12 @@ public class AccountingUpdater<T extends UsageRecordFactory.Use,R> {
 			skip_list.add(s.getMessage(),fmt);
 			skip++;
 		}catch(AccountingParseException pe){
-			errors.add(pe.getMessage(), fmt);
+			Throwable cause = pe.getCause();
+			if( cause != null) {
+				errors.add(pe.getMessage(), cause.getMessage(), cause);
+			}else {
+			   errors.add(pe.getMessage(), fmt);
+			}
 		}catch(Exception e){
 			errors.add("Unexpected parse error",fmt);
 			log.error("Unexpected Error parsing line "+fmt,e);
