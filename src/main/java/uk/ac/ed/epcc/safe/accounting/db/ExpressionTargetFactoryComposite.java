@@ -197,7 +197,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	@Override
 	public CloseableIterator<T> getIterator(RecordSelector sel, int skip, int count) throws Exception {
 		DataObjectFactory<T> fac = getFactory();
-		BaseFilter<T> filter = map.getFilter(sel);
+		BaseFilter<T> filter = getAccessorMap().getFilter(sel);
 		try{
 			return fac.getResult(FilterConverter.convert(filter),skip,count).iterator();
 		}catch(NoSQLFilterException e){
@@ -208,12 +208,12 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	@Override
 	public CloseableIterator<T> getIterator(RecordSelector sel) throws Exception {
 		DataObjectFactory<T> fac = getFactory();
-		return fac.getResult(map.getFilter(sel)).iterator();
+		return fac.getResult(getAccessorMap().getFilter(sel)).iterator();
 	}
 
 	@Override
 	public long getRecordCount(RecordSelector selector) throws Exception {
-		return getFactory().getCount(map.getFilter(selector));
+		return getFactory().getCount(getAccessorMap().getFilter(selector));
 	}
 	/** extension method to augment
 	 * 
@@ -246,7 +246,7 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 			DataObjectFactory<T> fac = getFactory();
 			AccessorMap m = getAccessorMap();
 			for(T o : fac.getResult(filter)){
-				result.add(map.getContainer(o).evaluateExpression(tag));
+				result.add(getAccessorMap().getContainer(o).evaluateExpression(tag));
 			}
 			return result;
 		}
@@ -307,6 +307,6 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	}
 	@Override
 	public final boolean exists(RecordSelector selector) throws Exception {
-		return getFactory().exists(map.getFilter(selector));
+		return getFactory().exists(getAccessorMap().getFilter(selector));
 	}
 }
