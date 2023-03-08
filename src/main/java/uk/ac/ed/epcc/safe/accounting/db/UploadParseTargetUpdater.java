@@ -119,7 +119,12 @@ public class UploadParseTargetUpdater<R> {
     			skip_list.add(s.getMessage(),fmt);
     			skip++;
     		}catch(AccountingParseException pe){
-    			errors.add(pe.getMessage(), fmt);
+    			Throwable cause = pe.getCause();
+    			if( cause != null) {
+    				errors.add(pe.getMessage(), cause.getMessage(), cause);
+    			}else {
+    			   errors.add(pe.getMessage(), fmt);
+    			}
     		}catch(Exception e){
     			errors.add("Unexpected parse error",fmt);
     			getLogger().error("Unexpected Error parsing line "+fmt,e);
