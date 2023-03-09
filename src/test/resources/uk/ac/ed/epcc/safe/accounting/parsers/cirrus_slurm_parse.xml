@@ -402,23 +402,6 @@
 <AllocTREScpu>36</AllocTREScpu>
 </CirrusSlurm>
 <CirrusSlurm id='19'>
-<AllocCPUS>7020</AllocCPUS>
-<AllocNodes>195</AllocNodes>
-<Account>sc038</Account>
-<Elapsed>0</Elapsed>
-<End>1593990518</End>
-<Group>sc038</Group>
-<JobID>18853</JobID>
-<SubJob>false</SubJob>
-<JobName>YewParNSHivert</JobName>
-<Partition>standard</Partition>
-<QOS>standard</QOS>
-<Start>1593990518</Start>
-<Submit>1593989871</Submit>
-<Timelimit>1200000</Timelimit>
-<User>ruairidh</User>
-</CirrusSlurm>
-<CirrusSlurm id='20'>
 <AllocCPUS>36</AllocCPUS>
 <AllocNodes>1</AllocNodes>
 <Account>sc038</Account>
@@ -439,7 +422,7 @@
 <AllocTRESbilling>36</AllocTRESbilling>
 <AllocTREScpu>36</AllocTREScpu>
 </CirrusSlurm>
-<CirrusSlurm id='21'>
+<CirrusSlurm id='20'>
 <AllocCPUS>36</AllocCPUS>
 <AllocNodes>1</AllocNodes>
 <Account>d171</Account>
@@ -460,7 +443,7 @@
 <AllocTRESbilling>36</AllocTRESbilling>
 <AllocTREScpu>36</AllocTREScpu>
 </CirrusSlurm>
-<CirrusSlurm id='22'>
+<CirrusSlurm id='21'>
 <AllocCPUS>36</AllocCPUS>
 <AllocNodes>1</AllocNodes>
 <Account>d171</Account>
@@ -481,7 +464,7 @@
 <AllocTRESbilling>36</AllocTRESbilling>
 <AllocTREScpu>36</AllocTREScpu>
 </CirrusSlurm>
-<CirrusSlurm id='23'>
+<CirrusSlurm id='22'>
 <AllocCPUS>36</AllocCPUS>
 <AllocNodes>1</AllocNodes>
 <Account>d171</Account>
@@ -502,7 +485,7 @@
 <AllocTRESbilling>36</AllocTRESbilling>
 <AllocTREScpu>36</AllocTREScpu>
 </CirrusSlurm>
-<CirrusSlurm id='24'>
+<CirrusSlurm id='23'>
 <AllocCPUS>36</AllocCPUS>
 <AllocNodes>1</AllocNodes>
 <Account>d171</Account>
@@ -523,7 +506,7 @@
 <AllocTRESbilling>36</AllocTRESbilling>
 <AllocTREScpu>36</AllocTREScpu>
 </CirrusSlurm>
-<CirrusSlurm id='25'>
+<CirrusSlurm id='24'>
 <AllocCPUS>36</AllocCPUS>
 <AllocNodes>1</AllocNodes>
 <Account>d171</Account>
@@ -544,7 +527,7 @@
 <AllocTRESbilling>36</AllocTRESbilling>
 <AllocTREScpu>36</AllocTREScpu>
 </CirrusSlurm>
-<CirrusSlurm id='26'>
+<CirrusSlurm id='25'>
 <AllocCPUS>36</AllocCPUS>
 <AllocNodes>1</AllocNodes>
 <Account>d171</Account>
@@ -565,7 +548,7 @@
 <AllocTRESbilling>36</AllocTRESbilling>
 <AllocTREScpu>36</AllocTREScpu>
 </CirrusSlurm>
-<CirrusSlurm id='27'>
+<CirrusSlurm id='26'>
 <AllocCPUS>36</AllocCPUS>
 <AllocNodes>1</AllocNodes>
 <Account>d171</Account>
@@ -586,7 +569,7 @@
 <AllocTRESbilling>36</AllocTRESbilling>
 <AllocTREScpu>36</AllocTREScpu>
 </CirrusSlurm>
-<CirrusSlurm id='28'>
+<CirrusSlurm id='27'>
 <AllocCPUS>36</AllocCPUS>
 <AllocNodes>1</AllocNodes>
 <Account>d171</Account>
@@ -607,7 +590,7 @@
 <AllocTRESbilling>36</AllocTRESbilling>
 <AllocTREScpu>36</AllocTREScpu>
 </CirrusSlurm>
-<CirrusSlurm id='29'>
+<CirrusSlurm id='28'>
 <AllocCPUS>36</AllocCPUS>
 <AllocNodes>1</AllocNodes>
 <Account>d171</Account>

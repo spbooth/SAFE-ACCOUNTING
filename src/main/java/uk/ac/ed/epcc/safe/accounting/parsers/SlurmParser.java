@@ -73,6 +73,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	private static final String TRIVIAL_PARSE_SUFFIX = ".trivial_parse";
 	private static final String PARSE_FORMAT_SUFFIX = ".parse.format";
 	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
+	private static final String SKIP_CANCELLED_NORUN_SUFFIX = ".skip_cancelled_norun";
 	private static final String SKIP_FAILED_SUFFIX = ".skip_failed";
 	private static final String SKIP_NODE_FAILED_SUFFIX = ".skip_node_failed";
 	private static final String SKIP_SUB_JOBS_SUFFIX = ".skip_sub_jobs";
@@ -442,6 +443,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	
 	
 	private boolean skip_cancelled=false;
+	private boolean skip_cancelled_norun=true;
 	private boolean skip_failed=false;
 	private boolean skip_node_failed=false;
 	private boolean skip_sub_jobs=true; // usually want sub jobs to a different table
@@ -503,8 +505,18 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		if( state == null || state.startsWith("RUNNING") || state.startsWith("PENDING") || state.startsWith("REQUEUED")){
 			return false;
 		}
-		if( skip_cancelled && state.startsWith("CANCELLED")){
-			return false;
+		
+		if( state.startsWith("CANCELLED")){
+			if( skip_cancelled ) {
+				return false;
+			}
+			if( skip_cancelled_norun) {
+				// always skip cancelled with no or zero duration
+				Duration d  = map.getProperty(ELAPSED_PROP);
+				if( d==null || d.getMilliseconds() == 0L) {
+					return false;
+				}
+			}
 		}
 		if(state.startsWith("FAILED")) {
 			if( skip_failed ){
@@ -606,6 +618,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		finder.addFinder(StandardProperties.base);
 		this.table=table;
 		skip_cancelled = conn.getBooleanParameter(table+SKIP_CANCELLED_SUFFIX, false);
+		skip_cancelled_norun = conn.getBooleanParameter(table+SKIP_CANCELLED_NORUN_SUFFIX, true);
 		skip_failed = conn.getBooleanParameter(table+SKIP_FAILED_SUFFIX, false);
 		skip_node_failed = conn.getBooleanParameter(table+SKIP_NODE_FAILED_SUFFIX, false);
 		skip_sub_jobs = conn.getBooleanParameter(table+SKIP_SUB_JOBS_SUFFIX, true);
