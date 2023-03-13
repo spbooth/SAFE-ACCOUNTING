@@ -1122,7 +1122,14 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			l.aggregate(rec, props, add);
 		}
 	}
-	
+	/** return true unless {@link #notifyAggregate(AllocationRecord, PropertyContainer, boolean)} 
+	 * is a null-operation
+	 * 
+	 * @return
+	 */
+	public final boolean wantNotifyAggregate() {
+		return ! listeners.isEmpty();
+	}
 	
 	public boolean canMerge(T first, T last){
 		if( first.equals(last)) {

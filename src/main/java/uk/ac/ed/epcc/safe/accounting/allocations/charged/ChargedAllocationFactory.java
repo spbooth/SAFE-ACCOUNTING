@@ -377,7 +377,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
     			updater.update(t,expr,fil);
     		}
     	}
-    	if( changed ) {
+    	if( changed && wantNotifyAggregate()) {
     		for(Iterator<T> it = getMatches(rec); it.hasNext();){
     			T agg = it.next();
     			notifyAggregate(agg, rec, add);
