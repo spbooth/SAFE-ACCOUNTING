@@ -108,7 +108,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		TableContentProvider,TableTransitionContributor{
 	
 
-	private final UsageProducer<Use> parent;
+	private UsageProducer<Use> parent;
 	private final String parent_producer;
 	  
 	public ChargedAllocationFactory(AppContext c, String table) {
@@ -121,34 +121,26 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		log.debug("table is " + table);
 		parent_producer = c.getInitParameter("parent." + table);
 		log.debug("Parent tag is " + parent_producer);
-		if( parent_factory == null ){
-			AccountingService acct_service = c.getService(AccountingService.class);
-
-			if( parent_producer != null){
-				parent = acct_service.getUsageProducer(parent_producer);
-			}else{
-				parent=acct_service.getUsageProducer();
-			}
-		}else{
-			parent=parent_factory;
-		}
-		assert(parent != null);
+		parent = parent_factory;
 	}
 	
 	
 
 	@Override
 	public void customAccessors(AccessorMap<T> map, MultiFinder finder,PropExpressionMap derived) {
-		if(parent != null){
-			finder.addFinder(parent.getFinder());
-			// add derived properties from parent 
-			// that resolve
-			
-				PropExpressionMap props = parent.getDerivedProperties();
-				
-				map.addDerived(getContext(), props);
-				map.clearUnresolvableDefinitions();
-		}
+		// This seems overkill for a high level superclass.
+		
+		
+//		if(getParent() != null){
+//			finder.addFinder(getParent().getFinder());
+//			// add derived properties from parent 
+//			// that resolve
+//			
+//				PropExpressionMap props = getParent().getDerivedProperties();
+//				
+//				map.addDerived(getContext(), props);
+//				map.clearUnresolvableDefinitions();
+//		}
 	}
 
 
@@ -167,12 +159,12 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	 */
 	protected Set<PropertyTag<? extends Number>> makeAccumulations(){
 		LinkedHashSet<PropertyTag<? extends Number>> result = new LinkedHashSet<>();
-		if( parent == null ){
+		if( getParent() == null ){
 			return result;
 		}
 		AccessorMap<T> map = getAccessorMap();
 		for(PropertyTag<? extends Number> t : map.getProperties(Number.class)){
-			if(parent.hasProperty(t) && map.getField(t)!=null){
+			if(getParent().hasProperty(t) && map.getField(t)!=null){
 				result.add(t);
 			}
 		}
@@ -219,7 +211,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	protected Set<PropertyTag<? extends Number>> makeAllocationProperties() {
 		// only want properties not in the parent table
 		Set<PropertyTag<? extends Number>> result = super.makeAllocationProperties();
-		PropertyFinder parent_finder = parent.getFinder();
+		PropertyFinder parent_finder = getParent().getFinder();
 		for(Iterator it = result.iterator(); it.hasNext();){
 			PropertyTag tag = (PropertyTag) it.next();
 			if( parent_finder.hasProperty(tag)){
@@ -301,7 +293,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 			sel.add(new SelectClause<IndexedReference>(t, record));
 		}
 		// only expect one value but easiest to loop
-		for( Map<ReductionTarget,Object> data : parent.getIndexedReductionMap(list, sel).values()){
+		for( Map<ReductionTarget,Object> data : getParent().getIndexedReductionMap(list, sel).values()){
 			for( ReductionTarget r : data.keySet() ){
 				record.setProperty((PropertyTag)r.getExpression(), data.get(r));
 			}
@@ -323,7 +315,7 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 			sel.add(new SelectClause<IndexedReference>(t, record));
 		}
 		sel.add(new PeriodOverlapRecordSelector(record, StandardProperties.ENDED_PROP));
-		return parent.getReduction(new NumberSumReductionTarget(expr), sel);
+		return getParent().getReduction(new NumberSumReductionTarget(expr), sel);
 	}
 	/** regenerate all records
 	 * 
@@ -518,10 +510,10 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 	 */
 	@Override
 	public void addSummaryContent(ContentBuilder hb) {
-		if( parent == null) {
+		if( getParent() == null) {
 			hb.addHeading(3, "No Parent Producer");
 		}else {
-			hb.addHeading(3,"Parent Producer: "+parent.getTag());
+			hb.addHeading(3,"Parent Producer: "+getParent().getTag());
 		}
 		addTable(hb,"Index Properties",getIndexProperties());
 		addTable(hb, "Allocation properties", getAllocationProperties());
@@ -538,6 +530,17 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		tableTransitions.put(new AdminOperationKey("Regenerate"), new RegenerateAllTransition());
 		
 		return tableTransitions;
+	}
+	private UsageProducer<Use> getParent() {
+		if( parent == null) {
+			AccountingService acct_service = getContext().getService(AccountingService.class);
+			if( parent_producer != null) {
+				parent = acct_service.getUsageProducer(parent_producer);
+			}else {
+				parent = acct_service.getUsageProducer();
+			}
+		}
+		return parent;
 	}
 	
 }
