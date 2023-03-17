@@ -471,13 +471,18 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		def_props.setProperty(StandardProperties.STARTED_PROP, p.getStart());
 		def_props.setProperty(StandardProperties.ENDED_PROP, p.getEnd());
 		AccessorMap map = getAccessorMap();
-		for(ReferenceTag<?,?> tag : getIndexProperties()){
-			String field = map.getField(tag);
-			IndexedReference ref = defaults.getProperty(tag, null);
-			if( field != null && ref != null){
-				defs.put(field,ref.getID());
+		for(PropertyTag tag : defaults.propertySet()) {
+			if( tag.getTarget() == IndexedReference.class) {
+				IndexedReference r = (IndexedReference) defaults.getProperty(tag);
+				if( r != null && ! r.isNull()) {
+					String field = map.getField(tag);
+					if( field != null) {
+						defs.put(field, r.getID());
+					}
+				}
 			}
 		}
+		
 		CreateAllocation create = new CreateAllocation(defs,def_props);
 		create.buildForm(f, getContext());
 	}
