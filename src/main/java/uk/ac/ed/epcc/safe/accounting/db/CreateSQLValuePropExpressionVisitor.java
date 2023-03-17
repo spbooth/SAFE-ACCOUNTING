@@ -18,29 +18,7 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConvertMillisecondToDatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DoubleCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
-import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor;
-import uk.ac.ed.epcc.safe.accounting.expr.SelectPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.StringPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.TypeConverterPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.*;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
@@ -239,6 +217,14 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 			throw new InvalidSQLPropertyException(x);
 		}
 		if(  a instanceof IndexedSQLValue ){
+			if( a instanceof ConstIndexedSQLValue) {
+				ConstIndexedSQLValue c = (ConstIndexedSQLValue) a;
+				IndexedReference<T> ref = c.getReference();
+				T obj = ref.getIndexed(conn);
+				ExpressionTarget target = ExpressionCast.getExpressionTarget(conn, obj);
+				Object value = target.evaluateExpression(dre.getExpression());
+				return new ConstExpression(dre.getTarget(), value);
+			}
 			IndexedSQLValue<?,T> dra = (IndexedSQLValue)a;
 			if( expression instanceof ReferenceExpression) {
 				DataObjectFactory remote = ((IndexedSQLValue) a).getFactory();

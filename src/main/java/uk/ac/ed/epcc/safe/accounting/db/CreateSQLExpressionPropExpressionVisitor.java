@@ -50,9 +50,11 @@ import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.SQLContext;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataError;
 import uk.ac.ed.epcc.webapp.jdbc.expr.*;
+import uk.ac.ed.epcc.webapp.model.data.ConstIndexedSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.expr.DurationSQLExpression;
+import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
 /** get an {@link SQLExpression} from a {@link PropExpression}
  * 
  * @author spb
@@ -205,6 +207,20 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 		SQLValue a =  getSQLValue(dre.getTargetObject());
 		
 		if( a != null && a instanceof IndexedSQLValue ){
+			if( a instanceof ConstIndexedSQLValue) {
+				try {
+					// may be able to evaluate a constant expression
+					ConstIndexedSQLValue x = (ConstIndexedSQLValue) a;
+					IndexedReference<T> ref = x.getReference();
+					T i = ref.getIndexed(conn);
+					ExpressionTarget target = ExpressionCast.getExpressionTarget(conn, i);
+					Object value = target.evaluateExpression(dre.getExpression());
+
+					return new ConstExpression(dre.getExpression().getTarget(), value);
+				}catch(Exception  e) {
+					throw new InvalidSQLPropertyException(dre);
+				}
+			}
 			IndexedSQLValue ifv = (IndexedSQLValue)a;
 			ExpressionTargetFactory etf = ExpressionCast.getExpressionTargetFactory(ifv.getFactory());
 			if( etf == null) {
