@@ -18,30 +18,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConvertMillisecondToDatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DoubleCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
-import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
-import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor;
-import uk.ac.ed.epcc.safe.accounting.expr.SelectPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.StringPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.TypeConverterPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.*;
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidSQLPropertyException;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.webapp.AppContext;
@@ -106,6 +83,36 @@ public abstract class CreateSQLExpressionPropExpressionVisitor implements
 			return new RoundSQLExpression(inner_sql_expr);
 		}
 		throw new InvalidSQLPropertyException("IntPropExpression not representable as SQLExpression");
+		
+	}
+	public SQLExpression visitFloorPropExpression(
+			FloorPropExpression<?> intExpression) throws Exception {
+		// use round if nested expression is a number
+		Class<?> target = intExpression.exp.getTarget();
+		if( Number.class.isAssignableFrom(target)){
+			SQLExpression inner_sql_expr = intExpression.exp.accept(this);
+			if( target == Integer.class || inner_sql_expr.getTarget() == Integer.class){
+				return inner_sql_expr;
+			}
+			
+			return FuncExpression.apply(conn, SQLFunc.FLOOR, Integer.class, inner_sql_expr);
+		}
+		throw new InvalidSQLPropertyException("FloorPropExpression not representable as SQLExpression");
+		
+	}
+	public SQLExpression visitCeilPropExpression(
+			CeilPropExpression<?> intExpression) throws Exception {
+		// use round if nested expression is a number
+		Class<?> target = intExpression.exp.getTarget();
+		if( Number.class.isAssignableFrom(target)){
+			SQLExpression inner_sql_expr = intExpression.exp.accept(this);
+			if( target == Integer.class || inner_sql_expr.getTarget() == Integer.class){
+				return inner_sql_expr;
+			}
+			
+			return FuncExpression.apply(conn, SQLFunc.CEILING, Integer.class, inner_sql_expr);
+		}
+		throw new InvalidSQLPropertyException("FloorPropExpression not representable as SQLExpression");
 		
 	}
 	public SQLExpression visitLongCastPropExpression(

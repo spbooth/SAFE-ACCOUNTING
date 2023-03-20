@@ -19,21 +19,7 @@ package uk.ac.ed.epcc.safe.accounting.expr.parse;
 import java.util.Date;
 import java.util.LinkedList;
 
-import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConvertMillisecondToDatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DoubleCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ParseException;
-import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
-import uk.ac.ed.epcc.safe.accounting.expr.StringPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.*;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFunc;
@@ -87,6 +73,28 @@ public enum Keywords {
 				throws ParseException {
 			checkSingleArg(inner);
 			return new IntPropExpression(inner.getFirst());
+		}
+	
+	},
+	FLOOR {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			checkSingleArg(inner);
+			return new FloorPropExpression(inner.getFirst());
+		}
+	
+	},
+	CEILING {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public PropExpression getExpression(LinkedList<PropExpression> inner)
+				throws ParseException {
+			checkSingleArg(inner);
+			return new CeilPropExpression(inner.getFirst());
 		}
 	
 	},

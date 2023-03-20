@@ -529,8 +529,13 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		// we are generating a max but 
 		// Might occur legitimately if we are using a constant date as one time-bound
 		sel.add(new RelationClause<>(start,MatchCondition.LT,end));
-		long l = getReductionHandler().getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), sel).longValue()+1L;
-		calc_cutoff = new Long(l);
+		Number reduction = getReductionHandler().getReduction(NumberReductionTarget.getInstance(Reduction.MAX, duration), sel);
+		// This might be null if no records
+		if( reduction == null ) {
+			return Long.valueOf(1L);
+		}
+		long l = reduction.longValue()+1L;
+		calc_cutoff = Long.valueOf(l);
 		return calc_cutoff;
 	}
 	private ReductionHandler<X, ExpressionTargetFactory<X>> getReductionHandler(){

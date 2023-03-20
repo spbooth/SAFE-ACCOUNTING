@@ -228,4 +228,16 @@ public class PropExpressionNormaliser implements PropExpressionVisitor<PropExpre
 		return method;
 	}
 
+
+	@Override
+	public PropExpression visitFloorPropExpression(FloorPropExpression<?> intExpression) throws Exception {
+		return intExpression;
+	}
+
+
+	@Override
+	public PropExpression visitCeilPropExpression(CeilPropExpression<?> intExpression) throws Exception {
+		return intExpression;
+	}
+
 }

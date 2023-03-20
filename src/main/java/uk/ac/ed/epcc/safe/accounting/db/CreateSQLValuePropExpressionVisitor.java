@@ -28,27 +28,7 @@ import uk.ac.ed.epcc.webapp.Indexed;
 import uk.ac.ed.epcc.webapp.jdbc.DatabaseService;
 import uk.ac.ed.epcc.webapp.jdbc.SQLContext;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataError;
-import uk.ac.ed.epcc.webapp.jdbc.expr.ArrayFuncValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.BinaryExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.BinarySQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CompareSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.CompositeIndexedSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.DateSQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.DateSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.DoubleConvertSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.DurationSecondConvertSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.IndexedSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.IntConvertSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.LabellerSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.LocateSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.LongConvertSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.MillisecondSQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLAccessor;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLExpression;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLSelectValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.SQLValue;
-import uk.ac.ed.epcc.webapp.jdbc.expr.StringConvertSQLValue;
+import uk.ac.ed.epcc.webapp.jdbc.expr.*;
 import uk.ac.ed.epcc.webapp.model.data.ConstIndexedSQLValue;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
@@ -100,6 +80,16 @@ public abstract class CreateSQLValuePropExpressionVisitor implements
 	public SQLValue visitIntPropExpression(
 			IntPropExpression<?> intExpression) throws Exception {
 		return new IntConvertSQLValue(process(intExpression.exp));
+	}
+	@SuppressWarnings("unchecked")
+	public SQLValue visitFloorPropExpression(
+			FloorPropExpression<?> intExpression) throws Exception {
+		return new FloorSQLValue(process(intExpression.exp));
+	}
+	@SuppressWarnings("unchecked")
+	public SQLValue visitCeilPropExpression(
+			CeilPropExpression<?> intExpression) throws Exception {
+		return new CeilSQLValue(process(intExpression.exp));
 	}
 	@SuppressWarnings("unchecked")
 	public SQLValue visitLongCastPropExpression(

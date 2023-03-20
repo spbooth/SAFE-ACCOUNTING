@@ -39,7 +39,14 @@ public class RequiredPropertyVisitor implements PropExpressionVisitor<Object>{
 	public Object visitIntPropExpression(IntPropExpression<?> intExpression) throws Exception {
 		return intExpression.getExpression().accept(this);
 	}
-
+	@Override
+	public Object visitFloorPropExpression(FloorPropExpression<?> intExpression) throws Exception {
+		return intExpression.getExpression().accept(this);
+	}
+	@Override
+	public Object visitCeilPropExpression(CeilPropExpression<?> intExpression) throws Exception {
+		return intExpression.getExpression().accept(this);
+	}
 	@Override
 	public Object visitLongCastPropExpression(LongCastPropExpression<?> intExpression) throws Exception {
 		return intExpression.getExpression().accept(this);

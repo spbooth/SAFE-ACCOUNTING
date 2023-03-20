@@ -71,6 +71,14 @@ public abstract class ResolveCheckVisitor implements PropExpressionVisitor<Boole
 			throws Exception {
 		return intExpression.exp.accept(this);
 	}
+	public Boolean visitFloorPropExpression(FloorPropExpression<?> intExpression)
+			throws Exception {
+		return intExpression.exp.accept(this);
+	}
+	public Boolean visitCeilPropExpression(CeilPropExpression<?> intExpression)
+			throws Exception {
+		return intExpression.exp.accept(this);
+	}
 	public Boolean visitLongCastPropExpression(LongCastPropExpression<?> intExpression)
 			throws Exception {
 		return intExpression.exp.accept(this);

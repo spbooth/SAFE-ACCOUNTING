@@ -20,29 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import uk.ac.ed.epcc.safe.accounting.expr.ArrayFuncPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.BinaryPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.CasePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ComparePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConstPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConstReferenceExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.ConvertMillisecondToDatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DeRefExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DoubleCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DoubleDeRefExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.IntPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.LabelPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.LocatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.LongCastPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.MilliSecondDatePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.NamePropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionVisitor;
-import uk.ac.ed.epcc.safe.accounting.expr.SelectPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.StringPropExpression;
-import uk.ac.ed.epcc.safe.accounting.expr.TypeConverterPropExpression;
+import uk.ac.ed.epcc.safe.accounting.expr.*;
 import uk.ac.ed.epcc.safe.accounting.properties.MethodPropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
@@ -162,6 +140,14 @@ public class ValueParserPolicy implements
 	}
 	public ValueParser visitIntPropExpression(
 			IntPropExpression<?> intExpression) throws Exception {
+		return getValueParser(intExpression.getTarget());
+	}
+	public ValueParser visitFloorPropExpression(
+			FloorPropExpression<?> intExpression) throws Exception {
+		return getValueParser(intExpression.getTarget());
+	}
+	public ValueParser visitCeilPropExpression(
+			CeilPropExpression<?> intExpression) throws Exception {
 		return getValueParser(intExpression.getTarget());
 	}
 	public ValueParser visitLongCastPropExpression(

@@ -32,6 +32,8 @@ import uk.ac.ed.epcc.webapp.model.data.DataObject;
 public interface  PropExpressionVisitor<R> extends BasePropExpressionVisitor<R>{
   public R visitStringPropExpression(StringPropExpression<?> stringExpression) throws Exception;
   public R visitIntPropExpression(IntPropExpression<?> intExpression) throws Exception;
+  public R visitFloorPropExpression(FloorPropExpression<?> intExpression) throws Exception;
+  public R visitCeilPropExpression(CeilPropExpression<?> intExpression) throws Exception;
   public R visitLongCastPropExpression(LongCastPropExpression<?> intExpression) throws Exception;
   public R visitDoubleCastPropExpression(DoubleCastPropExpression<?> doubleExpression) throws Exception;
   public R visitConstPropExpression(ConstPropExpression<?> constExpression) throws Exception;

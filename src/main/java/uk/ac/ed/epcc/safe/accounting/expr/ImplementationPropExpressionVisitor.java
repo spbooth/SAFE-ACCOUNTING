@@ -36,6 +36,14 @@ public abstract class ImplementationPropExpressionVisitor implements
 			throws Exception {
 		return "Int("+intExpression.getExpression().accept(this)+")";
 	}
+	public String visitFloorPropExpression(FloorPropExpression<?> intExpression)
+			throws Exception {
+		return "Floor("+intExpression.getExpression().accept(this)+")";
+	}
+	public String visitCeilPropExpression(CeilPropExpression<?> intExpression)
+			throws Exception {
+		return "Ceil("+intExpression.getExpression().accept(this)+")";
+	}
 	public String visitLongCastPropExpression(LongCastPropExpression<?> intExpression)
 			throws Exception {
 		return "Long("+intExpression.getExpression().accept(this)+")";

@@ -184,6 +184,38 @@ public abstract class EvaluatePropExpressionVisitor extends AbstractContexed imp
 	    }
 		return null;
 	}
+	public Integer visitFloorPropExpression(
+			FloorPropExpression<?> stringExpression) throws Exception {
+		Object temp = stringExpression.exp.accept(this);
+		if( temp != null ){
+			if( temp instanceof Integer || temp instanceof Long) {
+				return Integer.valueOf(((Number)temp).intValue());
+			}
+	    	if( temp instanceof Number ){
+	    		return (int) Math.floor(((Number)temp).doubleValue());
+	    	}
+	    	if( temp instanceof String){
+	    		return (int) Math.floor(Double.parseDouble((String)temp));
+	    	}
+	    }
+		return null;
+	}
+	public Integer visitCeilPropExpression(
+			CeilPropExpression<?> stringExpression) throws Exception {
+		Object temp = stringExpression.exp.accept(this);
+		if( temp != null ){
+			if( temp instanceof Integer || temp instanceof Long) {
+				return Integer.valueOf(((Number)temp).intValue());
+			}
+	    	if( temp instanceof Number ){
+	    		return (int) Math.ceil(((Number)temp).doubleValue());
+	    	}
+	    	if( temp instanceof String){
+	    		return (int) Math.ceil(Double.parseDouble((String)temp));
+	    	}
+	    }
+		return null;
+	}
 	public Long visitLongCastPropExpression(
 			LongCastPropExpression<?> stringExpression) throws Exception {
 		Object temp = stringExpression.exp.accept(this);
