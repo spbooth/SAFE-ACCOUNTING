@@ -27,7 +27,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
  */
 
 
-public class FloorPropExpression<T> implements PropExpression<Integer> {
+public class FloorPropExpression<T> implements PropExpression<Number> {
     public final PropExpression<T> exp;
     public FloorPropExpression(PropExpression<T> e){
     	this.exp=e.copy();
@@ -35,8 +35,8 @@ public class FloorPropExpression<T> implements PropExpression<Integer> {
     public PropExpression<T> getExpression(){
    		return exp;
    	}
-	public Class<Integer> getTarget() {
-		return Integer.class;
+	public Class<Number> getTarget() {
+		return Number.class;
 	}
 
 	@Override

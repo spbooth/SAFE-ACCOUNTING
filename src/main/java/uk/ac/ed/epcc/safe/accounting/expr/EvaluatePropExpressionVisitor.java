@@ -16,6 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.expr;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
@@ -188,7 +189,7 @@ public abstract class EvaluatePropExpressionVisitor extends AbstractContexed imp
 			FloorPropExpression<?> stringExpression) throws Exception {
 		Object temp = stringExpression.exp.accept(this);
 		if( temp != null ){
-			if( temp instanceof Integer || temp instanceof Long) {
+			if( temp instanceof Integer || temp instanceof Long || temp instanceof BigInteger) {
 				return Integer.valueOf(((Number)temp).intValue());
 			}
 	    	if( temp instanceof Number ){
@@ -204,7 +205,7 @@ public abstract class EvaluatePropExpressionVisitor extends AbstractContexed imp
 			CeilPropExpression<?> stringExpression) throws Exception {
 		Object temp = stringExpression.exp.accept(this);
 		if( temp != null ){
-			if( temp instanceof Integer || temp instanceof Long) {
+			if( temp instanceof Integer || temp instanceof Long || temp instanceof BigInteger) {
 				return Integer.valueOf(((Number)temp).intValue());
 			}
 	    	if( temp instanceof Number ){

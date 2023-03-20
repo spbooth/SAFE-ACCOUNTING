@@ -27,7 +27,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
  */
 
 
-public class CeilPropExpression<T> implements PropExpression<Integer> {
+public class CeilPropExpression<T> implements PropExpression<Number> {
     public final PropExpression<T> exp;
     public CeilPropExpression(PropExpression<T> e){
     	this.exp=e.copy();
@@ -35,13 +35,13 @@ public class CeilPropExpression<T> implements PropExpression<Integer> {
     public PropExpression<T> getExpression(){
    		return exp;
    	}
-	public Class<Integer> getTarget() {
-		return Integer.class;
+	public Class<Number> getTarget() {
+		return Number.class;
 	}
 
 	@Override
 	public String toString(){
-		return "Floor("+exp.toString()+")";
+		return "Ceil("+exp.toString()+")";
 	}
 	public <R> R accept(BasePropExpressionVisitor<R> vis) throws Exception {
 		if( vis instanceof PropExpressionVisitor){

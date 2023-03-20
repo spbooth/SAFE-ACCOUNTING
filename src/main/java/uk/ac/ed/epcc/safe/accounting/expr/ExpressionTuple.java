@@ -43,7 +43,7 @@ public final class ExpressionTuple implements Comparable<ExpressionTuple>{
 			Object val = values.get(e);
 			if( val != null ){
 				if( ! e.getTarget().isAssignableFrom(val.getClass())){
-					throw new ClassCastException("Invalid value for ExpressionTuple");
+					throw new ClassCastException("Invalid value for ExpressionTuple "+val.getClass().getCanonicalName()+" not assignable to "+e.getTarget().getCanonicalName());
 				}
 				data.put(e, val);
 				tmp += val.hashCode();
