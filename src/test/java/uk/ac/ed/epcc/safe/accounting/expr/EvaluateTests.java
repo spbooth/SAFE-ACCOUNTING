@@ -46,8 +46,8 @@ public class EvaluateTests extends WebappTestBase {
 		obj.setProperty(INT_A, 7);
 		obj.setProperty(INT_B, 5);
 		Number res = obj.evaluateExpression(new BinaryPropExpression(INT_A, Operator.ADD, INT_B));
-		assertEquals(12, res);
-		assertTrue( res instanceof Integer);
+		assertEquals(12, res.intValue());
+		
 	}
 	@Test
 	public void subInteger() throws InvalidPropertyException, PropertyCastException {
@@ -55,8 +55,8 @@ public class EvaluateTests extends WebappTestBase {
 		obj.setProperty(INT_A, 7);
 		obj.setProperty(INT_B, 5);
 		Number res = obj.evaluateExpression(new BinaryPropExpression(INT_A, Operator.SUB, INT_B));
-		assertEquals(2, res);
-		assertTrue( res instanceof Integer);
+		assertEquals(2, res.intValue());
+		
 	}
 	@Test
 	public void mulInteger() throws InvalidPropertyException, PropertyCastException {
@@ -64,8 +64,8 @@ public class EvaluateTests extends WebappTestBase {
 		obj.setProperty(INT_A, 7);
 		obj.setProperty(INT_B, 5);
 		Number res = obj.evaluateExpression(new BinaryPropExpression(INT_A, Operator.MUL, INT_B));
-		assertEquals(35, res);
-		assertTrue( res instanceof Integer);
+		assertEquals(35, res.intValue());
+		
 	}
 	@Test
 	public void divInteger() throws InvalidPropertyException, PropertyCastException {
@@ -73,8 +73,8 @@ public class EvaluateTests extends WebappTestBase {
 		obj.setProperty(INT_A, 10);
 		obj.setProperty(INT_B, 5);
 		Number res = obj.evaluateExpression(new BinaryPropExpression(INT_A, Operator.DIV, INT_B));
-		assertEquals(2, res);
-		assertTrue( res instanceof Integer);
+		assertEquals(2, res.intValue());
+		
 	}
 	@Test
 	public void divInteger2() throws InvalidPropertyException, PropertyCastException {
@@ -164,8 +164,8 @@ public class EvaluateTests extends WebappTestBase {
 		Number res = obj.evaluateExpression(new BinaryPropExpression(INT_A, Operator.MUL, 
 				new DeRefExpression<>(REMOTE, new BinaryPropExpression(RemoteTargetFactory.INT_A, Operator.ADD, RemoteTargetFactory.INT_B))
 				));
-		assertEquals(24, res);
-		assertTrue( res instanceof Integer);
+		assertEquals(24, res.intValue());
+		
 		
 		String name = obj.evaluateExpression(new NamePropExpression(REMOTE));
 		assertEquals(rec.getIdentifier(),name);
