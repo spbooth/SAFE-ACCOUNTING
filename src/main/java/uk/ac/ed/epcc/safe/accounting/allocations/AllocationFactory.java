@@ -410,7 +410,10 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			if( defaults == null) {
 				return null;
 			}
-			return new HashMap(defaults);
+			HashMap fix = new HashMap(defaults);
+			fix.remove(getStartField());
+			fix.remove(getEndField());
+			return fix;
 		}
 	}
 	public class AllocationDelete extends AbstractDirectTransition<T> {
