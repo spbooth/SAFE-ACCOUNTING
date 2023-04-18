@@ -183,7 +183,13 @@ public class ChargedAllocationFactory<T extends ChargedAllocationFactory.Charged
 		}
 		return constraints;
 	}
-	
+	/** Create the set of constraints returned by {@link #getConstraints()}
+	 * This maps accumulation properties to an allocation property that is an allocation limit
+	 * on the accumulated property. The allocation should be greater than the accumulation and this is taken into
+	 * account when performing splits
+	 * 
+	 * @return
+	 */
 	protected Map<PropertyTag<? extends Number>,PropertyTag<? extends Number>> makeConstraints(){
 		// default to an empty map the subclasses will have to provide the constraints.
 		return new HashMap<>();

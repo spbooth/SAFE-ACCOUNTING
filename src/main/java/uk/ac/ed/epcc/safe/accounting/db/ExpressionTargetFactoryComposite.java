@@ -259,6 +259,10 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 	public <P> boolean hasProperty(PropertyTag<P> tag) {
 		return getAccessorMap().hasProperty(tag);
 	}
+	
+	public <P> boolean writable(PropertyTag<P> tag) {
+		return getAccessorMap().writable(tag);
+	}
 	/* (non-Javadoc)
 	 * @see uk.ac.ed.epcc.webapp.model.data.Composite#addSelectors(java.util.Map)
 	 */

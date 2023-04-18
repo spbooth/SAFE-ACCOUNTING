@@ -418,7 +418,10 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 		}
 		return false;
 	}
-
+	public <X> boolean writable(PropertyTag<X> p) {
+		// composite producers are read only
+		return false;
+	}
 
 	public boolean hasProducers(){
 		return ! factories.isEmpty();

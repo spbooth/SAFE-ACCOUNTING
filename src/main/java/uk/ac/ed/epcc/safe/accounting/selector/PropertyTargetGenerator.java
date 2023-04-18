@@ -40,6 +40,15 @@ public interface PropertyTargetGenerator<UR> extends PropertyTargetFactory, Comp
 	 * @return boolean
 	 */
 	public <P> boolean hasProperty(PropertyTag<P> tag);
+	
+	
+	/** Check if the specified property is writable
+	 
+	 * @param <P>
+	 * @param tag
+	 * @return boolean
+	 */
+	public <P> boolean writable(PropertyTag<P> tag);
 	/** Is the RecordSelector compatible with this class. 
 	 * This method will return false if it the selector is fundamentally incompatible
 	 * with the properties supported by the class and no records can match the selector.

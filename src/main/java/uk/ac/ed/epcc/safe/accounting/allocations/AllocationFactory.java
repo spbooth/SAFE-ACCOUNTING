@@ -404,6 +404,14 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			notifyCreated(dat);
 			
 		}
+
+		@Override
+		public HashMap getInitialFixtures() {
+			if( defaults == null) {
+				return null;
+			}
+			return new HashMap(defaults);
+		}
 	}
 	public class AllocationDelete extends AbstractDirectTransition<T> {
 
@@ -752,10 +760,13 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	protected  Set<ReferenceTag> makeIndexProperties(){
 		HashSet<ReferenceTag> result = new HashSet<>();
 		for( PropertyTag<?> t : ReferencePropertyRegistry.getInstance(getContext()).getProperties()){
-			if( hasProperty(t) && t instanceof ReferenceTag){
+			if( writable(t) && t instanceof ReferenceTag){
+				// By default we take all reference tags (from the ReferencePropertyRegistry) as part of the index.
+				// We can supress this using properties but
+				// also possible to override this method and remove particular tags.
 				
 				ReferenceTag r = (ReferenceTag) t;
-				if( ! r.getTable().equals(getTag())) {
+				if(( ! r.getTable().equals(getTag())) && getContext().getBooleanParameter(getConfigTag()+"."+r.getTable()+".is_index", true)) {
 					// Self reference tags are never part of the index
 					result.add(r);
 				}

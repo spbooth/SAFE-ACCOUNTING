@@ -51,7 +51,10 @@ public class NullUsageProducer<UR> extends AbstractContexed implements UsageProd
 	public <P> boolean hasProperty(PropertyTag<P> tag) {
 		return false;
 	}
-
+	@Override
+	public <P> boolean writable(PropertyTag<P> tag) {
+		return false;
+	}
 	@Override
 	public boolean compatible(RecordSelector sel) {
 		return false;

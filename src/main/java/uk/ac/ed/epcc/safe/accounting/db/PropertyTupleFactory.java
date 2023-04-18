@@ -327,7 +327,10 @@ Tagged{
 	public <P> boolean hasProperty(PropertyTag<P> tag) {
 		return map.hasProperty(tag);
 	}
-
+	@Override
+	public <P> boolean writable(PropertyTag<P> tag) {
+		return map.writable(tag);
+	}
 	@Override
 	public <I> boolean compatible(PropExpression<I> expr) {
 

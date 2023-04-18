@@ -126,7 +126,10 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	public final <P> boolean hasProperty(PropertyTag<P> tag) {
 		return etf.hasProperty(tag);
 	}
-
+	@Override
+	public final <P> boolean writable(PropertyTag<P> tag) {
+		return etf.writable(tag);
+	}
 	@Override
 	public final  <I> boolean compatible(PropExpression<I> expr) {
 		return etf.compatible(expr);

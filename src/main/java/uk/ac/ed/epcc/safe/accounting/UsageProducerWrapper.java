@@ -85,7 +85,10 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> , PropertyImp
 		return etf.hasProperty(tag);
 	}
 
-
+	@Override
+	public <P> boolean writable(PropertyTag<P> tag) {
+		return etf.writable(tag);
+	}
 	
 
 	private ReductionHandler<UR, ExpressionTargetFactory<UR>> getReductionHandler(){
