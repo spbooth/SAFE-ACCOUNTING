@@ -25,6 +25,7 @@ public class DirectParser extends AbstractKeyPairParser {
 	private MakerMap maker = new MakerMap();
 	private PropertyFinder finder;
     private String table;
+    private ValueParserPolicy pol;
 	@Override
 	protected ContainerEntryMaker getEntryMaker(String attr) {
 		ContainerEntryMaker result = maker.get(attr);
@@ -40,12 +41,13 @@ public class DirectParser extends AbstractKeyPairParser {
 			result = new PropertyEntryMaker<>(tag, ((ValueParserProvider)tag).getValueParser(getContext()));
 		}else {
 			try {
-				ValueParserPolicy pol = new ValueParserPolicy(getContext());
+				
 				String format = getContext().getInitParameter(table+"."+attr+".parse_format");
 				if( format != null) {
 					pol.setFormat(format);
 				}
 				result = new PropertyEntryMaker(tag, (ValueParser)tag.accept(pol));
+				pol.setFormat(null);
 			}catch(Exception e) {
 				getLogger().error("Error making ValueParser", e);
 			}
@@ -60,6 +62,7 @@ public class DirectParser extends AbstractKeyPairParser {
 	public PropertyFinder initFinder(PropertyFinder prev, String table) {
 		finder = super.initFinder(prev, table);
 		this.table=table;
+		 pol = new ValueParserPolicy(getContext());
 		return finder;
 	}
 
