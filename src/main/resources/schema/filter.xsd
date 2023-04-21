@@ -116,7 +116,7 @@
 	and an implicit time filter from the reporting period.
 	</xsd:documentation></xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="Producer" type="xsd:string" maxOccurs="1"
+			<xsd:element name="Producer" type="xsd:anyType" maxOccurs="1"
 				minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>
