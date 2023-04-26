@@ -1018,6 +1018,10 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 				}
 				try{
 				if (format != null) {
+					if( param instanceof IndexedReference && ! format.getTarget().isAssignableFrom(param.getClass())) {
+						// promote refernce to Indexed automatically when applying formatters
+						param = ((IndexedReference)param).getIndexed(getContext());
+					}
 					if( format.getTarget().isAssignableFrom(param.getClass())){
 						Logger log = getContext().getService(LoggerService.class).getLogger(getClass());
 						log.debug(" format is "+parameterFormat+" "+format.getClass().getName()+" value is "+param.getClass().getCanonicalName()+" "+param);
