@@ -35,8 +35,8 @@ public class PropertyClassificationFactory<T extends Classification> extends
 		ClassificationFactory<T> implements AccessorContributer<T> {
 	
 	public static final PropertyRegistry classification = new PropertyRegistry("classification", "Standard properties for a Classification table");
-	public static final PropertyTag<String> NAME_PROP = new PropertyTag<>(classification,Classification.NAME,String.class);
-	public static final PropertyTag<String> DESCRIPTION_PROP = new PropertyTag<>(classification,Classification.DESCRIPTION,String.class);
+	public static final PropertyTag<String> NAME_PROP = new PropertyTag<>(classification,ClassificationFactory.NAME,String.class);
+	public static final PropertyTag<String> DESCRIPTION_PROP = new PropertyTag<>(classification,ClassificationFactory.DESCRIPTION,String.class);
 	static{
 		classification.lock();
 	}
