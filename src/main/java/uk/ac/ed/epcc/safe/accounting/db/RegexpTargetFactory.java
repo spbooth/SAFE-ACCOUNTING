@@ -7,12 +7,14 @@ import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.RegexpInput;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.model.data.ConfigTag;
+import uk.ac.ed.epcc.webapp.model.data.FieldHandler;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 
-public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClassificationFactory<T> {
-	
+public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClassificationFactory<T> implements FieldHandler{
+	@ConfigTag("RegexpTargetFactory")
 	public static final String REGEX_FIELD = "Regex";
 		
 	public RegexpTargetFactory(AppContext conn, String table){
@@ -35,13 +37,6 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClass
 			
 		});
 		return selectors;
-	}
-
-	@Override
-	protected Map<String, String> getTranslations() {
-		Map<String, String> translations = super.getTranslations();
-		translations.put(REGEX_FIELD,"Matching regular expression");
-		return translations;
 	}
 
 	@Override
