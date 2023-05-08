@@ -52,7 +52,7 @@ public class AggregationTableCreator extends AbstractContexed implements FormCre
 	public AggregationTableCreator(AppContext c){
 		super(c);
 	}
-	public void buildCreationForm(String type_name,Form f) throws Exception {
+	public void buildCreationForm(Form f) throws Exception {
 		f.addInput(TABLE, "Name of table to create", new NewTableInput(conn));
 		ClassInput<AggregateUsageRecordFactory> handler_input = new ClassInput<>(conn, AggregateUsageRecordFactory.class);
 		handler_input.setValue(conn.getInitParameter("aggregate_handler.default", "DailyUsageRecordFactory"));

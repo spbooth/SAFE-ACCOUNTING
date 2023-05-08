@@ -52,7 +52,8 @@ public class AccountingTableCreator extends AbstractContexed implements FormCrea
 	public AccountingTableCreator(AppContext c){
 		super(c);
 	}
-	public void buildCreationForm(String type_name,Form f) throws Exception {
+	@Override
+	public void buildCreationForm(Form f) throws Exception {
 		f.addInput(TABLE, "Name of table to create", new NewTableInput(conn));
 		ClassInput<UsageRecordFactory> handler_input = new ClassInput<>(conn, UsageRecordFactory.class);
 		handler_input.setValue(conn.getInitParameter("accounting_handler.default", "ConfigUsageRecordFactory"));

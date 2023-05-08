@@ -253,10 +253,10 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	public class AllocationEdit extends UpdateTransition<T> implements GatedTransition<T>{
 		
 		protected AllocationEdit() {
-			super(ALLOCATION, AllocationFactory.this);
+			super( AllocationFactory.this);
 		}
-
-		public FormResult getResult(String typeName, T dat, Form f) {
+		@Override
+		public FormResult getResult(T dat, Form f) {
 			return new ChainedTransitionResult<>(AllocationFactory.this, dat, null);
 		}
 
@@ -385,7 +385,8 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			addCreationValidator(f);
 			f.addValidator(new ListenerCreateValidator(default_props));
 		}
-		public FormResult getResult(String type_name, T dat, Form f) {
+		@Override
+		public FormResult getResult(T dat, Form f) {
 			return new ChainedTransitionResult<>(AllocationFactory.this, dat, null);
 		}
 
