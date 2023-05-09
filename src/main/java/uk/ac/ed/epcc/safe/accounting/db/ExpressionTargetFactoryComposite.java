@@ -1,10 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.transitions.PropertyInfoGenerator;
@@ -185,7 +182,17 @@ public class ExpressionTargetFactoryComposite<T extends DataObject> extends Comp
 
 	@Override
 	public boolean compatible(RecordSelector sel) {
-		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(getLogger(),getAccessorMap(),false);
+		return compatible(sel, null, null);
+	}
+	/** Compatability check including date bounds
+	 * 
+	 * @param sel
+	 * @param start_bound
+	 * @param end_bound
+	 * @return
+	 */
+	public boolean compatible(RecordSelector sel,Date start_bound,Date end_bound) {
+		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(getLogger(),getAccessorMap(),false,start_bound,end_bound);
 		try {
 			return sel.visit(vis);
 		} catch (Exception e) {

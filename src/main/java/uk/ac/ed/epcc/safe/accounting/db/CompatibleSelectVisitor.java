@@ -15,6 +15,8 @@
  * Copyright (c) - The University of Edinburgh 2010
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.db;
+import java.util.Date;
+
 import uk.ac.ed.epcc.safe.accounting.ExpressionFilterTarget;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTarget;
@@ -35,6 +37,7 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
 import uk.ac.ed.epcc.webapp.logging.Logger;
+import uk.ac.ed.epcc.webapp.time.Period;
 
 /** A SelectVisitor that checks if a given RecordSelector is compatible with
  * a UsageProducer
@@ -49,13 +52,20 @@ public class CompatibleSelectVisitor implements SelectorVisitor<Boolean>{
 	private final ExpressionFilterTarget<?> eft;
 	private boolean require_sql;
 	private Logger log;
-	public CompatibleSelectVisitor(Logger log,ExpressionFilterTarget<?> up,boolean require_sql){
+	private Date start_bound;
+	private Date end_bound;
+	public CompatibleSelectVisitor(Logger log,ExpressionFilterTarget<?> up,boolean require_sql,Date start_bound,Date end_bound){
 		this.log=log;
 		this.eft=up;
 		this.require_sql=require_sql;
+		this.start_bound=start_bound;
+		this.end_bound=end_bound;
+	}
+	public CompatibleSelectVisitor(Logger log,ExpressionFilterTarget<?> up,boolean require_sql){
+		this(log,up,require_sql,null,null);
 	}
 	public CompatibleSelectVisitor(ExpressionFilterTarget<?> up,boolean require_sql){
-		this(null,up,require_sql);
+		this(null,up,require_sql,null,null);
 	}
 	public Boolean visitAndRecordSelector(AndRecordSelector a) throws Exception {
 		for(RecordSelector s: a){
@@ -167,8 +177,17 @@ public class CompatibleSelectVisitor implements SelectorVisitor<Boolean>{
 		if( o == null ){
 			return false;
 		}
+		Period p = o.getPeriod();
+		Date start = p.getStart();
+		Date end = p.getEnd();
+		if( start_bound != null && p != null && end != null && start_bound.after(end) ) {
+			return false;
+		}
+		if( end_bound != null && p != null && start != null && end_bound.before(start) ) {
+			return false;
+		}
 		try{
-			BaseFilter<?> fil = eft.getPeriodFilter(o.getPeriod(), o.getStart(), o.getEnd(),o.getType(),o.getCutoff());
+			BaseFilter<?> fil = eft.getPeriodFilter(p, o.getStart(), o.getEnd(),o.getType(),o.getCutoff());
 			if( require_sql){
 				try{
 					FilterConverter.convert(fil);

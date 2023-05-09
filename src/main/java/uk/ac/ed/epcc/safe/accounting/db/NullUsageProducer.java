@@ -1,9 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
 import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
@@ -121,6 +118,11 @@ public class NullUsageProducer<UR> extends AbstractContexed implements UsageProd
 
 	@Override
 	public boolean setCompositeHint(boolean composite) {
+		return false;
+	}
+
+	@Override
+	public boolean compatible(RecordSelector sel, Date start_bound, Date end_bound) {
 		return false;
 	}
 

@@ -13,6 +13,7 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.selector;
 
+import java.util.Date;
 import java.util.Set;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
@@ -57,8 +58,25 @@ public interface PropertyTargetGenerator<UR> extends PropertyTargetFactory, Comp
 	 * @param sel
 	 * @return boolean
 	 */
-	public boolean compatible(RecordSelector sel);
+	default public boolean compatible(RecordSelector sel) {
+		return compatible(sel, null, null);
+	}
 	
+	/**Is the RecordSelector compatible with this class. 
+	 * This method will return false if it the selector is fundamentally incompatible
+	 * with the properties supported by the class and no records can match the selector.
+	 * It does NOT check if any matching records exist. It is expected to be a significantly
+	 * more lightweight operation than calling {@link #exists(RecordSelector)}
+	 * 
+	 * If the date bounds are not-null they indicate a guaranteed min/max value for all date 
+	 * properties generated and can be used to short-cut the evaluation
+	 * 
+	 * @param sel
+	 * @param start_bound
+	 * @param end_bound
+	 * @return
+	 */
+	public boolean compatible(RecordSelector sel,Date start_bound,Date end_bound);
 	/** Get an Iterator over selected records. 
 	
      * @param sel RecordSelector to select data

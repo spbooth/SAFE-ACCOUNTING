@@ -16,14 +16,7 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 import uk.ac.ed.epcc.safe.accounting.db.DefaultAccountingService;
 import uk.ac.ed.epcc.safe.accounting.db.NarrowTag;
@@ -502,9 +495,9 @@ public abstract class UsageManager<UR> extends AbstractContexed implements
 		return map;
 	}
 
-	public final boolean compatible(RecordSelector sel) {
+	public final boolean compatible(RecordSelector sel,Date start_bound,Date end_bound) {
 		for (UsageProducer<UR> prod : factories.values()) {
-			if( prod.compatible(sel)){
+			if( prod.compatible(sel,start_bound,end_bound)){
 				return true;
 			}
 		}

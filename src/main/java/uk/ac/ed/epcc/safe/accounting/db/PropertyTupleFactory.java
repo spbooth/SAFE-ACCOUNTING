@@ -1,9 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
@@ -213,8 +210,8 @@ Tagged{
 	}
 
 	@Override
-	public boolean compatible(RecordSelector sel) {
-		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(getLogger(),getAccessorMap(),false);
+	public boolean compatible(RecordSelector sel,Date start_bound,Date end_bound) {
+		CompatibleSelectVisitor vis = new CompatibleSelectVisitor(getLogger(),getAccessorMap(),false,start_bound,end_bound);
 		try {
 			return sel.visit(vis);
 		} catch (Exception e) {

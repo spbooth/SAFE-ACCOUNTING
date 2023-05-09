@@ -17,6 +17,8 @@
 package uk.ac.ed.epcc.safe.accounting;
 
 
+import java.util.Date;
+
 import uk.ac.ed.epcc.safe.accounting.db.GeneratorReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.db.ReductionHandler;
 import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyFactory;
@@ -61,6 +63,29 @@ DerivedPropertyFactory{
 		if(compatible(sel)) {
 				return this;
 		}
+		return null;
+	}
+	
+	/** Get an optional starting date for data from this producer
+	 * If this returns a non null value then all date properties for records from this producer
+	 * will be after this date.
+	 * 
+	 * 
+	 * 
+	 * @return Date or null
+	 */
+	default public Date getStartBound() {
+		return null;
+	}
+	/** Get an optional end date for data from this producer
+	 * If this returns a non null value then all date properties for records from this producer
+	 * will be before this date.
+	 * 
+	 * 
+	 * 
+	 * @return Date or null
+	 */
+	default public Date getEndBound() {
 		return null;
 	}
 	

@@ -13,32 +13,18 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import uk.ac.ed.epcc.safe.accounting.PropertyImplementationProvider;
-import uk.ac.ed.epcc.safe.accounting.ReductionMapResult;
-import uk.ac.ed.epcc.safe.accounting.ReductionTarget;
-import uk.ac.ed.epcc.safe.accounting.UsageProducer;
-import uk.ac.ed.epcc.safe.accounting.UsageProducerWrapper;
+import uk.ac.ed.epcc.safe.accounting.*;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTargetContainer;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionTuple;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
-import uk.ac.ed.epcc.safe.accounting.properties.PropExpression;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.safe.accounting.properties.*;
 import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.CannotUseSQLException;
-import uk.ac.ed.epcc.webapp.jdbc.filter.FilterConverter;
-import uk.ac.ed.epcc.webapp.jdbc.filter.MatchCondition;
-import uk.ac.ed.epcc.webapp.jdbc.filter.NoSQLFilterException;
+import uk.ac.ed.epcc.webapp.jdbc.filter.*;
 import uk.ac.ed.epcc.webapp.model.TimePurgeFactory;
 import uk.ac.ed.epcc.webapp.model.data.CloseableIterator;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
@@ -137,9 +123,12 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 
 	@Override
 	public final boolean compatible(RecordSelector sel) {
-		return etf.compatible(sel);
+		return compatible(sel,getStartBound(),getEndBound());
 	}
-
+	@Override
+	public final boolean compatible(RecordSelector sel,Date start_bound,Date end_bound) {
+		return etf.compatible(sel,start_bound,end_bound);
+	}
 	/** Get a filter from a {@link RecordSelector}
 	 * 
 	 * @param selector
@@ -224,6 +213,18 @@ public abstract  class DefaultUsageProducer<T extends DataObjectPropertyContaine
 	
 		return etf.getAccessorMap().getImplemenationInfo(tag);
 	}
+
+	@Override
+	public Date getStartBound() {
+		return getContext().getDateParameter(getConfigTag()+".start_bound", null);
+	}
+
+	@Override
+	public Date getEndBound() {
+		return getContext().getDateParameter(getConfigTag()+".end_bound", null);
+	}
+
+	
 
 	
 

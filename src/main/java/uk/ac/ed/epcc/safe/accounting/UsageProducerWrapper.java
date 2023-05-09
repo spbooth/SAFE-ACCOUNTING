@@ -1,5 +1,6 @@
 package uk.ac.ed.epcc.safe.accounting;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,9 +50,12 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> , PropertyImp
 
 	@Override
 	public boolean compatible(RecordSelector sel) {
-		return etf.compatible(sel);
+		return compatible(sel,getStartBound(),getEndBound());
 	}
-
+	@Override
+	public boolean compatible(RecordSelector sel,Date start_bound,Date end_bound) {
+		return etf.compatible(sel,start_bound,end_bound);
+	}
 	@Override
 	public CloseableIterator<UR> getIterator(RecordSelector sel, int skip, int count) throws Exception {
 		return etf.getIterator(sel, skip, count);
@@ -144,5 +148,13 @@ public class UsageProducerWrapper<UR> implements UsageProducer<UR> , PropertyImp
 	public String getImplemenationInfo(PropertyTag<?> tag) {
 		return etf.getAccessorMap().getImplemenationInfo(tag);
 	}
+	@Override
+	public Date getStartBound() {
+		return getContext().getDateParameter(tag+".start_bound", null);
+	}
 
+	@Override
+	public Date getEndBound() {
+		return getContext().getDateParameter(tag+".end_bound", null);
+	}
 }
