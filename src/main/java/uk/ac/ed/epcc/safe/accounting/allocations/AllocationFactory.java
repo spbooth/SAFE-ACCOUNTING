@@ -87,11 +87,8 @@ import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.model.data.ConfigParamProvider;
-import uk.ac.ed.epcc.webapp.model.data.DataObject;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
-import uk.ac.ed.epcc.webapp.model.data.DataObjectFormFactory;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
+import uk.ac.ed.epcc.webapp.model.data.*;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.forms.CreateTransition;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
@@ -910,14 +907,15 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		
 		return tab;
 	}
-
+	
+	private DataObjectLabeller<T> labeller=null; 
 	protected final <X> String getLabel(PropertyTag<X> t){
+		if( labeller == null) {
+			labeller = new DataObjectLabeller<>(this);
+		}
 		String field = getAccessorMap().getField(t);
 		if( field != null ){
-			String label = getTranslations().get(field);
-			if( label != null ){
-				return label;
-			}
+			return labeller.getLabel(field);
 		}
 		return t.getName();
 	}
@@ -927,6 +925,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	protected  <X,C,R> void addValueToTable(T target,Table<C,R> tab,C col, R row,
 			PropertyTag<X> t) {
 		try{
+				
 		        Logger log = getContext().getService(LoggerService.class).getLogger(getClass());
 				X val = target.getProperty(t, null);
 				if( val != null ){
