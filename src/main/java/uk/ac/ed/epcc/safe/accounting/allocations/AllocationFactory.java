@@ -16,83 +16,39 @@
  *******************************************************************************/
 package uk.ac.ed.epcc.safe.accounting.allocations;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
-import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
-import uk.ac.ed.epcc.safe.accounting.db.ConfigUploadParseTargetPlugin;
-import uk.ac.ed.epcc.safe.accounting.db.ProxyOwnerContainer;
-import uk.ac.ed.epcc.safe.accounting.db.UsageRecordFactory;
+import uk.ac.ed.epcc.safe.accounting.db.*;
 import uk.ac.ed.epcc.safe.accounting.expr.ExpressionCast;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.ShortTextPeriodFormatter;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidExpressionException;
-import uk.ac.ed.epcc.safe.accounting.properties.InvalidPropertyException;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTarget;
-import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
+import uk.ac.ed.epcc.safe.accounting.properties.*;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferencePropertyRegistry;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
-import uk.ac.ed.epcc.safe.accounting.selector.AndRecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.PeriodOverlapRecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
-import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
+import uk.ac.ed.epcc.safe.accounting.selector.*;
 import uk.ac.ed.epcc.safe.accounting.update.ReadOnlyParser;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
 import uk.ac.ed.epcc.webapp.NumberOp;
-import uk.ac.ed.epcc.webapp.content.ContentBuilder;
-import uk.ac.ed.epcc.webapp.content.FormatProvider;
-import uk.ac.ed.epcc.webapp.content.Labeller;
-import uk.ac.ed.epcc.webapp.content.Link;
-import uk.ac.ed.epcc.webapp.content.Table;
+import uk.ac.ed.epcc.webapp.content.*;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.FormValidator;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
 import uk.ac.ed.epcc.webapp.forms.html.RedirectResult;
-import uk.ac.ed.epcc.webapp.forms.inputs.BoundedDateInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.DateInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.Input;
-import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampMultiInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
-import uk.ac.ed.epcc.webapp.forms.result.BackResult;
-import uk.ac.ed.epcc.webapp.forms.result.ChainedTransitionResult;
-import uk.ac.ed.epcc.webapp.forms.result.FormResult;
-import uk.ac.ed.epcc.webapp.forms.result.MessageResult;
-import uk.ac.ed.epcc.webapp.forms.result.ViewTransitionResult;
-import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
-import uk.ac.ed.epcc.webapp.forms.transition.ConfirmTransition;
-import uk.ac.ed.epcc.webapp.forms.transition.TargetLessTransition;
-import uk.ac.ed.epcc.webapp.forms.transition.Transition;
-import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryVisitor;
+import uk.ac.ed.epcc.webapp.forms.inputs.*;
+import uk.ac.ed.epcc.webapp.forms.result.*;
+import uk.ac.ed.epcc.webapp.forms.transition.*;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.BaseFilter;
 import uk.ac.ed.epcc.webapp.jdbc.filter.GenericBinaryFilter;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.*;
+import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
-import uk.ac.ed.epcc.webapp.model.data.forms.CreateTransition;
-import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
-import uk.ac.ed.epcc.webapp.model.data.forms.UpdateTransition;
+import uk.ac.ed.epcc.webapp.model.data.forms.*;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.DataObjectItemInput;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedProducer;
 import uk.ac.ed.epcc.webapp.model.data.reference.IndexedReference;
@@ -131,7 +87,7 @@ import uk.ac.ed.epcc.webapp.time.ViewPeriod;
 
 
 public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> extends UsageRecordFactory<T> implements
-		AllocationManager<AllocationKey<T>,T>,ConfigParamProvider {
+		AllocationManager<AllocationKey<T>,T>,ConfigParamProvider, FormLabelProvider {
 	// parse using upload method but default to ReadOnlyParser
 	// so we have time fields created
 	public final ConfigUploadParseTargetPlugin<T, R> parse_plugin = new ConfigUploadParseTargetPlugin<>(this,ReadOnlyParser.class);
@@ -1014,8 +970,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 	}
 
 	@Override
-	protected Map<String, String> getTranslations() {
-		Map<String,String> result = new HashMap<>();
+	public Map<String, String> addTranslations(Map<String,String> result) {
 		result.put(getStartField(), getTypeName()+" Start");
 		result.put(getEndField(), getTypeName()+" End");
 		return result;
