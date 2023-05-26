@@ -257,15 +257,10 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 					// Force preview even if no parameters
 					next.setPreview(next_transition.equals(PREVIEW));
 				}
-				return new ChainedTransitionResult<Report, ReportTemplateKey>(
+				return new RedirectChainedTransitionResult<>(
 						ReportTemplateTransitionProvider.this, 
 						next, 
-						next_transition) {
-					@Override
-					public boolean useURL() {
-						return true;
-					}
-				};
+						next_transition);
 			}
 			/* (non-Javadoc)
 			 * @see uk.ac.ed.epcc.webapp.forms.action.FormAction#getText()
