@@ -91,10 +91,14 @@ public class ConfigPlugInOwner<T extends DataObjectFactory,R> extends AbstractPl
 			return policies;
 		}
 		protected void addPolicies(String prefix, Set<PropertyContainerPolicy> policies) {
+			String policy_list = getContext().getInitParameter(prefix+getTag());
+			addFixedPolicies(policy_list, policies);
+		}
+		protected void addFixedPolicies(String policy_list, Set<PropertyContainerPolicy> policies) {
 			AppContext ctx = getContext();
 			Logger log = ctx.getService(LoggerService.class).getLogger(getClass());
 	    	
-			String policy_list = ctx.getInitParameter(prefix+getTag());
+			
 	    	log.debug("policy list="+policy_list);
 	    	if( policy_list != null){
 
