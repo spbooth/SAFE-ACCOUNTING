@@ -438,7 +438,14 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		
 	}
 	// not static as SimpleDateFormat not thread safe
-	public final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+	public final DateParser SLURM_DATE_PARSER = new DateParser(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")) {
+
+		@Override
+		protected boolean generateNull(String val) {
+			return val.isEmpty() || val.equals("None");
+		}
+		
+	};
 	
 	
 	

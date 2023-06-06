@@ -70,6 +70,9 @@ public class DateParser implements ValueParser<Date> {
 			throw new ValueParseException("valueString cannot be null");
 		
 		valueString = valueString.trim();
+		if( generateNull(valueString)) {
+			return null;
+		}
 		try {
 			return this.format.parse(valueString.trim());
 		} catch (ParseException e) {
@@ -77,6 +80,9 @@ public class DateParser implements ValueParser<Date> {
 		}
 	}
 
+	protected boolean generateNull(String val) {
+		return false;
+	}
 	/**
 	 * Takes a date and returns a string representation of it using the format
 	 * this parser uses to convert strings into dates.
