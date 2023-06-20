@@ -13,33 +13,19 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.parsers;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import uk.ac.ed.epcc.safe.accounting.expr.DurationSecondsPropExpression;
 import uk.ac.ed.epcc.safe.accounting.expr.PropExpressionMap;
 import uk.ac.ed.epcc.safe.accounting.expr.PropertyCastException;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.DateParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.LongParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.SlurmDurationParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.SlurmMemoryParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
-import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
-import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
-import uk.ac.ed.epcc.safe.accounting.update.AutoTable;
-import uk.ac.ed.epcc.safe.accounting.update.BatchParser;
-import uk.ac.ed.epcc.safe.accounting.update.OptionalTable;
+import uk.ac.ed.epcc.safe.accounting.parsers.value.*;
+import uk.ac.ed.epcc.safe.accounting.properties.*;
+import uk.ac.ed.epcc.safe.accounting.update.*;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 
 public class DiracSLURMParser extends AbstractKeyPairParser {
-	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+	
 
 	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
 
@@ -121,10 +107,10 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
 		SLURM_ATTRIBUTES.addParser(ACCOUNT_PROP, StringParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(JOB_NAME_PROP, StringParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(PARTITION_PROP, StringParser.PARSER);
-		SLURM_ATTRIBUTES.addParser(SUBMIT_PROP, new DateParser(new SimpleDateFormat(DATE_FORMAT)));
+		SLURM_ATTRIBUTES.addParser(SUBMIT_PROP, new SlurmDateParser());
 		SLURM_ATTRIBUTES.addParser(RESERVED_PROP, SlurmDurationParser.PARSER);
-		SLURM_ATTRIBUTES.addParser(START_PROP, new DateParser(new SimpleDateFormat(DATE_FORMAT)));
-		SLURM_ATTRIBUTES.addParser(END_PROP, new DateParser(new SimpleDateFormat(DATE_FORMAT)));
+		SLURM_ATTRIBUTES.addParser(START_PROP, new SlurmDateParser());
+		SLURM_ATTRIBUTES.addParser(END_PROP, new SlurmDateParser());
 		SLURM_ATTRIBUTES.addParser(ELAPSED_PROP, SlurmDurationParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(N_NODES_PROP, IntegerParser.PARSER);
 		SLURM_ATTRIBUTES.addParser(N_CPUS_PROP, IntegerParser.PARSER);
