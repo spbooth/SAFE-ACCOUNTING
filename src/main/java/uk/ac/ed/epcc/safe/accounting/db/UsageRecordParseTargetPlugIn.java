@@ -45,8 +45,7 @@ import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.SimplePeriodInput;
-import uk.ac.ed.epcc.webapp.forms.result.FormResult;
-import uk.ac.ed.epcc.webapp.forms.result.MessageResult;
+import uk.ac.ed.epcc.webapp.forms.result.*;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.Transition;
@@ -412,7 +411,7 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 				} catch (Exception e) {
 					target.getContext().getService(LoggerService.class).getLogger(getClass()).error("Error rescaning",
 							e);
-					return new MessageResult("internal_error");
+					return new InternalErrorResult();
 				}
 			}
 
@@ -458,7 +457,7 @@ public  class ReEvaluateAction extends FormAction {
 		} catch (Exception e) {
 			target.getContext().getService(LoggerService.class).getLogger(getClass()).error("Error rescaning",
 					e);
-			return new MessageResult("internal_error");
+			return new InternalErrorResult();
 		}
 	}
 

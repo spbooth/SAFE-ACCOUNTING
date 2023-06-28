@@ -219,10 +219,10 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				DatabaseService db = c.getService(DatabaseService.class);
 				db.closeRetainedClosables();
 				getLogger().warn("Limits exceeded in report generation", l);
-				return new MessageResult("limits_exceeded", l.getMessage());
+				return new WarningMessageResult("limits_exceeded", l.getMessage());
 			} catch (Exception e) {
 				getLogger().error("Error making report", e);
-				return new MessageResult("internal_error");
+				return new InternalErrorResult();
 			}finally {
 				if( report_log != null ) {
 					report_log.recordFinish();

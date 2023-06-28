@@ -52,6 +52,7 @@ import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
 import uk.ac.ed.epcc.webapp.forms.inputs.SetInput;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
+import uk.ac.ed.epcc.webapp.forms.result.InternalErrorResult;
 import uk.ac.ed.epcc.webapp.forms.result.MessageResult;
 import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
 import uk.ac.ed.epcc.webapp.forms.transition.ExtraFormTransition;
@@ -385,7 +386,7 @@ public FormResult action(Form f)
 				regenerate(name);
 			} catch (Exception e) {
 				getLogger().error("Error in Classifier regenerate",e);
-				return new MessageResult("internal_error");
+				return new InternalErrorResult();
 			}
 			return new ViewTableResult(target);
 		}

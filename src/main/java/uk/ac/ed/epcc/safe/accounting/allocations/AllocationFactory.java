@@ -383,7 +383,7 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 			} catch (DataFault e) {
 				getLogger().error("Error deleting Allocation",e);
 			}
-			return new MessageResult("internal_error");
+			return new InternalErrorResult();
 		}
 		
 	}
