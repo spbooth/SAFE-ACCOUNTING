@@ -94,9 +94,7 @@ public class XMLGeneratorApp implements Command {
 	public AppContext getContext() {
 		return conn;
 	}
-	protected final Logger getLogger(){
-		return conn.getService(LoggerService.class).getLogger(getClass());
-	}
+	
 	public String description() {
 		return desc;
 	}

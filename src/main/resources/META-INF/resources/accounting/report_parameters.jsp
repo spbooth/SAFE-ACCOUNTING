@@ -20,6 +20,7 @@
 <%@ page import="uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder.*"%>
 <%@ page import="uk.ac.ed.epcc.safe.accounting.reports.forms.html.*"%>
 <%@page import="uk.ac.ed.epcc.safe.accounting.servlet.ReportServlet"%>
+<%@page import = "uk.ac.ed.epcc.webapp.logging.Logger" %>
 <%@page import="uk.ac.ed.epcc.webapp.servlet.*"%>
 <%@ taglib uri="http://safe.epcc.ed.ac.uk/webapp" prefix="wb" %>
 <wb:ServiceInit/>
@@ -50,7 +51,7 @@
 		
 		form = new HTMLReportParametersForm(builder, params, reportType);
 	} catch (Exception e) {
-		conn.error(e, "Error making parameter form");
+		Logger.getLogger(getClass()).error("Error making parameter form",e);
 		if (session_service.hasRole(ReportBuilder.REPORT_DEVELOPER)) {
 %>
 <jsp:forward page="/messages.jsp">
