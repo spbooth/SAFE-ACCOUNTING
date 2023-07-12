@@ -32,12 +32,9 @@ public class StreamLineSplitter extends AbstractContexed implements CloseableIte
 		}
 		while(true) {
 			String tmp = null;
-			try {
-				tmp = reader.readLine();
-			}catch(EOFException eofe) {
-				// its supposed to return null on end of line but
-				// some streams don't
-			}
+			
+			tmp = reader.readLine();
+			
 			if( tmp == null ) {
 				return null;
 			}
