@@ -249,8 +249,8 @@
 <option value="10">Nov</option>
 <option value="11">Dec</option>
 </select>
-<input id="transition_Period_start_year" type="number" size="4" maxlength="4" name="Period.start.year" value="2008" class="input" step="1" required="required"/>
-</span> for <input id="transition_Period_splits" type="number" size="2" maxlength="3" name="Period.splits" value="1" class="input" min="1" max="500" step="1" required="required"/> blocks of <input id="transition_Period_count" type="number" size="2" maxlength="3" name="Period.count" value="1" class="input" min="1" step="1" required="required"/>
+<input id="transition_Period_start_year" type="number" size="4" name="Period.start.year" value="2008" class="input" step="1" required="required"/>
+</span> for <input id="transition_Period_splits" type="number" size="2" name="Period.splits" value="1" class="input" min="1" max="500" step="1" required="required"/> blocks of <input id="transition_Period_count" type="number" size="2" name="Period.count" value="1" class="input" min="1" step="1" required="required"/>
 <select id="transition_Period_field" name="Period.field" class="input" required="required">
 <option value="13">Seconds</option>
 <option value="12">Minutes</option>

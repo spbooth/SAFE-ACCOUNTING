@@ -22,6 +22,7 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.forms.FieldValidator;
 import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
+import uk.ac.ed.epcc.webapp.forms.inputs.MaxLengthValidator;
 import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
 import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
@@ -66,8 +67,8 @@ public class PropExpressionInput extends TextInput {
 	}
 	
 	public PropExpressionInput(AppContext c, PropertyFinder finder){
-		setMaxResultLength(256);
 		setSingle(true);
+		addValidator(new MaxLengthValidator(256));
 		addValidator(new PropExpressionFieldValidator(new Parser(c, finder)));
 	}
 

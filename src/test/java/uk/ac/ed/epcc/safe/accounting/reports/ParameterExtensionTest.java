@@ -24,19 +24,7 @@ import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
 import uk.ac.ed.epcc.webapp.TestDataHelper;
 import uk.ac.ed.epcc.webapp.WebappTestBase;
 import uk.ac.ed.epcc.webapp.forms.html.HTMLForm;
-import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.BoundedDateInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.CalendarFieldPeriodInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.DoubleInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.Input;
-import uk.ac.ed.epcc.webapp.forms.inputs.IntegerInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.LengthInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.LongInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.ParseInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.RealInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.UnmodifiableInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.*;
 import uk.ac.ed.epcc.webapp.junit4.DataBaseFixtures;
 import uk.ac.ed.epcc.webapp.model.Classification;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
@@ -779,7 +767,7 @@ public class ParameterExtensionTest extends WebappTestBase {
 		assertTrue("Input is not of type LengthInput", input instanceof LengthInput);
 
 		LengthInput lengthInput = (LengthInput)input;
-		assertEquals("Input is not the right length", lengthInput.getMaxResultLength(),256);
+		assertEquals("Input is not the right length", MaxLengthValidator.getMaxLength(input.getValidators()),256);
 		
 		// Set the value and then make sure we still have to original value
 		input.setValue("123456789 123456789 123456789 123456789 123456789 " +

@@ -237,7 +237,7 @@ public class ParameterExtension extends ReportExtension {
 			String length = getAttribute(LENGTH_ATTR,param);
 			if (! empty(length)) {
 				maxLength = Integer.parseInt(length);	
-				lengthInput.setMaxResultLength(maxLength);
+				lengthInput.addValidator(new MaxLengthValidator(maxLength));
 			}else{
 				int width = lengthInput.getBoxWidth();
 				if( width > maxWidth){

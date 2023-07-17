@@ -26,7 +26,7 @@
 <label for="transition_Message" class="required">Message</label>
 </th>
 <td>
-<input id="transition_Message" type="text" size="64" maxlength="64" name="Message" value="Hello world" class="input" required="required"/>
+<input id="transition_Message" type="text" name="Message" value="Hello world" class="input" required="required"/>
 </td>
 </tr>
 </table>
