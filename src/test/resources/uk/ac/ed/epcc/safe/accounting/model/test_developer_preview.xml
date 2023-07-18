@@ -1,50 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><transition_page>
-<Title>View Report</Title>
-<PageHeading>View Report</PageHeading>
-<SummaryContent/>
-<ExtraContent>
-<h4>Report Preview</h4>
-<div class="report_container">
-<div class="report">
+<transition_page><Title>View Report</Title><PageHeading>View Report</PageHeading><SummaryContent/><ExtraContent><h4>Report Preview</h4><div class='report_container'>
+<div class='report'>
 <h1>Template report</h1>
+
+
 <h3>A Section title</h3>
 <p>This is the initial report template.</p>
 <p>Hello world</p>
+
 </div>
 </div>
-<h4>Report Developer Information</h4>
-<div class="para">You have the ReportDeveloper role active. The links below give access to additional information to aid in debugging the reports.</div>
-<div class="para">This report completed without error.</div>
-<a href="test/Data/ServeData/1/logdata.txt" target="_blank">Logs from report generation</a>
-<h4>Report Parameters</h4>
-<div class="para">Enter the parameters and click 'Preview' to view the report, or click on the report type to generate the report.</div>
-</ExtraContent>
-<Form>
-<table class="form">
-<tr class="even">
-<th>
-<label for="transition_Message" class="required">Message</label>
-</th>
-<td>
-<input id="transition_Message" type="text" name="Message" value="Hello world" class="input" required="required"/>
-</td>
-</tr>
-</table>
-<fieldset class="action_buttons">
-<button class="input_button" type="submit" title="Generate Preview" name="Preview" value="Preview">
-<img class="icon" alt="Preview" src="test/accounting/preview-file-48x48.png"/>Preview</button>
-<button class="input_button" type="submit" formtarget="_blank" title="Generate HTML" name="HTML" value="HTML">
-<img class="icon" alt="HTML" src="test/accounting/html-file-48x48.png"/>HTML</button>
-<button class="input_button" type="submit" formtarget="_blank" title="Generate PDF" name="PDF" value="PDF">
-<img class="icon" alt="PDF" src="test/accounting/pdf-file-48x48.png"/>PDF</button>
-<button class="input_button" type="submit" formtarget="_blank" title="Generate CSV" name="CSV" value="CSV">
-<img class="icon" alt="CSV" src="test/accounting/csv-file-48x48.png"/>CSV</button>
-<button class="input_button" type="submit" formtarget="_blank" title="Generate FOP" name="FOP" value="FOP">FOP</button>
-<button class="input_button" type="submit" formtarget="_blank" title="Generate EHTML" name="EHTML" value="EHTML">EHTML</button>
-<button class="input_button" type="submit" formtarget="_blank" title="Generate XML" name="XML" value="XML">XML</button>
-<button class="input_button" type="submit" formtarget="_blank" title="Generate RXML" name="RXML" value="RXML">RXML</button>
-<button class="input_button" type="submit" formtarget="_blank" title="Generate XHTML" name="XHTML" value="XHTML">XHTML</button>
-<button class="input_button" type="submit" formtarget="_blank" title="Generate TXT" name="TXT" value="TXT">TXT</button>
-</fieldset>
-</Form>
-</transition_page>
+<h4>Report Developer Information</h4><div class='para'>You have the ReportDeveloper role active. The links below give access to additional information to aid in debugging the reports.</div><div class='para'>This report completed without error.</div><a href='test/Data/ServeData/1/logdata.txt' target='_blank'>Logs from report generation</a><h4>Report Parameters</h4><div class='para'>Enter the parameters and click &#39;Preview&#39; to view the report, or click on the report type to generate the report.</div></ExtraContent><Form><table class='form'><tr class='even'><th><label for='transition_Message' class='required'>Message</label></th><td><input id='transition_Message' type='text' size='64' name='Message' value='Hello world' class='input' required='required'/></td></tr>
+</table><fieldset class='action_buttons'><button class='input_button' type='submit' title='Generate Preview' name='Preview' value='Preview'><img class='icon' alt='Preview' src='test/accounting/preview-file-48x48.png'/>Preview</button><button class='input_button' type='submit' formtarget='_blank' title='Generate HTML' name='HTML' value='HTML'><img class='icon' alt='HTML' src='test/accounting/html-file-48x48.png'/>HTML</button><button class='input_button' type='submit' formtarget='_blank' title='Generate PDF' name='PDF' value='PDF'><img class='icon' alt='PDF' src='test/accounting/pdf-file-48x48.png'/>PDF</button><button class='input_button' type='submit' formtarget='_blank' title='Generate CSV' name='CSV' value='CSV'><img class='icon' alt='CSV' src='test/accounting/csv-file-48x48.png'/>CSV</button><button class='input_button' type='submit' formtarget='_blank' title='Generate FOP' name='FOP' value='FOP'>FOP</button><button class='input_button' type='submit' formtarget='_blank' title='Generate EHTML' name='EHTML' value='EHTML'>EHTML</button><button class='input_button' type='submit' formtarget='_blank' title='Generate XML' name='XML' value='XML'>XML</button><button class='input_button' type='submit' formtarget='_blank' title='Generate RXML' name='RXML' value='RXML'>RXML</button><button class='input_button' type='submit' formtarget='_blank' title='Generate XHTML' name='XHTML' value='XHTML'>XHTML</button><button class='input_button' type='submit' formtarget='_blank' title='Generate TXT' name='TXT' value='TXT'>TXT</button></fieldset></Form></transition_page>

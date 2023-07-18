@@ -354,7 +354,9 @@ public class ParameterExtension extends ReportExtension {
 			return new DoubleInput();
 
 		} else if (type.equals("String")) {
-			return new TextInput();			
+			TextInput textInput = new TextInput();
+			textInput.setSingle(true);
+			return textInput;			
 
 		} else if (type.equals("Date")) {
 			return new RelativeDateInput(now);
