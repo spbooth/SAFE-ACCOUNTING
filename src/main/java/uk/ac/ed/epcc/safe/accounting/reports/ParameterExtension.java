@@ -77,6 +77,7 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
  *
  */
 import uk.ac.ed.epcc.webapp.time.Period;
+import uk.ac.ed.epcc.webapp.validation.MaxLengthValidator;
 
 /** Extension to expand parameter values into the document text.
  * 
@@ -253,7 +254,7 @@ public class ParameterExtension extends ReportExtension {
 			String min = getAttribute(MIN_ATTR, param);
 			if( ! empty(min)) {
 				try {
-					boundedInput.setMin(input.convert(min));
+					boundedInput.setMin((Comparable) input.convert(min));
 				}catch(Exception t) {
 					addError("bad minimum", min,t);
 				}
@@ -261,7 +262,7 @@ public class ParameterExtension extends ReportExtension {
 			String max = getAttribute(MAX_ATTR, param);
 			if( ! empty(max)) {
 				try {
-					boundedInput.setMax(input.convert(max));
+					boundedInput.setMax((Comparable) input.convert(max));
 				}catch(Exception t) {
 					addError("bad maximum", max,t);
 				}

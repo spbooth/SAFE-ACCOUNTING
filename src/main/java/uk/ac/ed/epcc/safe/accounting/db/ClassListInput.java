@@ -22,7 +22,6 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Iterator;
 import java.util.Map;
 
-import uk.ac.ed.epcc.webapp.forms.FieldValidator;
 import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.MissingFieldException;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
@@ -31,6 +30,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
 import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
 import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
 import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
+import uk.ac.ed.epcc.webapp.validation.FieldValidator;
 
 /** An input to select a class from a pre-defined set.
  * 
