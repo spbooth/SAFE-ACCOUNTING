@@ -344,9 +344,9 @@ public class AllocationFactory<T extends AllocationFactory.AllocationRecord,R> e
 		}
 
 		
-		public Map<String, Object> getDefaults() {
+		public Map<String, Object> getCreationDefaults() {
 			Map<String,Object> result = new HashMap<>();
-			Map<String,Object> more = super.getDefaults();
+			Map<String,Object> more = super.getCreationDefaults();
 			if( more != null ){
 				result.putAll(more);
 			}
