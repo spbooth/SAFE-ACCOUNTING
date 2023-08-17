@@ -18,9 +18,15 @@
 	
 	<xsl:param name="WebRoot"/>
 <xsl:param name="CssPath"/>
+<xsl:param name="CssPath2"/>
 <xsl:template name="css">
 <xsl:element name="link">
 <xsl:attribute name="href"><xsl:value-of select="$CssPath"/></xsl:attribute>
+<xsl:attribute name="rel">stylesheet</xsl:attribute>
+<xsl:attribute name="type">text/css</xsl:attribute>
+</xsl:element>
+<xsl:element name="link">
+<xsl:attribute name="href"><xsl:value-of select="$CssPath2"/></xsl:attribute>
 <xsl:attribute name="rel">stylesheet</xsl:attribute>
 <xsl:attribute name="type">text/css</xsl:attribute>
 </xsl:element>

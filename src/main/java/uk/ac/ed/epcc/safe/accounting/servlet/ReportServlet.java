@@ -96,8 +96,10 @@ public class ReportServlet extends SessionServlet {
 			
 			String web_root = req.getContextPath();
 			String css_path = conn.getInitParameter("css.path","css/webapp.css");
+			String css_path2 = conn.getInitParameter("css.path2","css/inline_report.css");
 			report_params.put("WebRoot",web_root);
 			report_params.put("CssPath", web_root+"/"+css_path);
+			report_params.put("CssPath2", web_root+"/"+css_path2);
 			// Check we have the template name as a argument and remove it from 
 			// there and add it as a parameter.
 			if( args.size() < 1){

@@ -198,12 +198,15 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				ServletService ss = getContext().getService(ServletService.class);
 				report_log=logReport(target);
 				String css_path = getContext().getInitParameter("css.path","css/webapp.css");
+				String css_path2 = getContext().getInitParameter("css.path","css/inline_report.css");
 				if( ss != null){
 					css_path = ss.encodeURL("/"+css_path);
+					css_path2 = ss.encodeURL("/"+css_path2);
 				}
 				if( params != null && ! builder.hasErrors())
 				{
 					params.put("CssPath", css_path);
+					params.put("CssPath2", css_path2);
 					builder.setupExtensions(type, params);
 					params.put(ReportTypeRegistry.REPORT_TYPE_PARAM, type);
 					OutputStream out = new ByteArrayOutputStream();
