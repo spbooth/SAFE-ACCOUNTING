@@ -25,11 +25,13 @@
 <xsl:attribute name="rel">stylesheet</xsl:attribute>
 <xsl:attribute name="type">text/css</xsl:attribute>
 </xsl:element>
+<xsl:if test="$CssPath2">
 <xsl:element name="link">
 <xsl:attribute name="href"><xsl:value-of select="$CssPath2"/></xsl:attribute>
 <xsl:attribute name="rel">stylesheet</xsl:attribute>
 <xsl:attribute name="type">text/css</xsl:attribute>
 </xsl:element>
+</xsl:if>
 </xsl:template>
 	<!-- generate HTML skeleton on root element -->	
 	<xsl:template match="/">
