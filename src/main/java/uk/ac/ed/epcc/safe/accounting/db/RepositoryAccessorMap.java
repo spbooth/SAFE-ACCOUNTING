@@ -219,6 +219,8 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 
 					tag = new PropertyTag<>(orphan_registy, prop_name,
 							Number.class);
+				} else if (info.isBoolean() ) {
+					tag = new PropertyTag<>(orphan_registy,prop_name,Boolean.class);
 				}
 				//						if( tag != null ){
 				//							log.debug("made tag "+tag.getFullName()+" "+tag.getTarget().getCanonicalName());
