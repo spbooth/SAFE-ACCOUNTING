@@ -197,7 +197,22 @@
 			</fo:block>
 		</fo:table-cell>
 	</xsl:template>
-	
+	<xsl:template match="rep:td[@class='val_null']|rep:td[@class='val_zero']|rep:td[@class='val_negative']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#ed1818">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="rep:td[@class='val_positive']">
+		<fo:table-cell border-color="black" border-style="solid"
+			border-width="0.2mm" background-color="#18ed18">
+			<fo:block text-align="right">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
 	<xsl:template match="rep:td[@class='frac_0']">
 		<fo:table-cell border-color="black" border-style="solid"
 			border-width="0.2mm" background-color="#ed1818">
