@@ -7,14 +7,12 @@ import uk.ac.ed.epcc.webapp.forms.inputs.Input;
 import uk.ac.ed.epcc.webapp.forms.inputs.RegexpInput;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
-import uk.ac.ed.epcc.webapp.model.data.ConfigTag;
-import uk.ac.ed.epcc.webapp.model.data.FieldHandler;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 
-public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClassificationFactory<T> implements FieldHandler{
-	@ConfigTag("RegexpTargetFactory")
+public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClassificationFactory<T>{
+	private static final String REGEXP_TARGET_FACTORY_CONFIG_TAG = "RegexpTargetFactory";
 	public static final String REGEX_FIELD = "Regex";
 		
 	public RegexpTargetFactory(AppContext conn, String table){
@@ -43,9 +41,9 @@ public class RegexpTargetFactory<T extends RegexpTarget> extends AccountingClass
 	public TableSpecification getDefaultTableSpecification(AppContext c, String table) {
 		
 		TableSpecification spec = super.getDefaultTableSpecification(c, table);
-
+		spec.setCurrentTag(REGEXP_TARGET_FACTORY_CONFIG_TAG);
 		spec.setField(REGEX_FIELD, new StringFieldType(false, null, 128));
-		
+		spec.clearCurrentTag();
 		
 		
 		return spec;
