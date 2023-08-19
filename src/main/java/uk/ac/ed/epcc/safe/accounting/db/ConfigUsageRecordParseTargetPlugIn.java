@@ -6,8 +6,11 @@ import uk.ac.ed.epcc.safe.accounting.update.PlugInOwner;
 import uk.ac.ed.epcc.webapp.AppContext;
 
 public class ConfigUsageRecordParseTargetPlugIn<T extends UsageRecordFactory.Use, R> extends UsageRecordParseTargetPlugIn<T, R> {
+	public ConfigUsageRecordParseTargetPlugIn(UsageRecordFactory<T> fac,String tag) {
+		super(fac,tag);
+	}
 	public ConfigUsageRecordParseTargetPlugIn(UsageRecordFactory<T> fac) {
-		super(fac);
+		this(fac,"ConfigUsageRecordParseTargetPlugIn");
 	}
 
 	@Override

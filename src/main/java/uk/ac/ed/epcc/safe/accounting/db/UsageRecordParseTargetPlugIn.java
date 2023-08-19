@@ -86,8 +86,8 @@ public abstract class UsageRecordParseTargetPlugIn<T extends UsageRecordFactory.
 		extends PropertyContainerParseTargetComposite<T, R>
 		implements UsageRecordParseTarget<R>, Contexed, TableTransitionContributor {
 
-	public UsageRecordParseTargetPlugIn(UsageRecordFactory<T> fac) {
-		super(fac);
+	public UsageRecordParseTargetPlugIn(UsageRecordFactory<T> fac,String tag) {
+		super(fac,tag);
 	}
 
 	@Override

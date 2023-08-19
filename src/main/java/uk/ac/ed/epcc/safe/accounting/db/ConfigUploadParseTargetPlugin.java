@@ -23,11 +23,11 @@ public class ConfigUploadParseTargetPlugin<T extends DataObject,R> extends Uploa
 	 * @param parser
 	 */
 	public ConfigUploadParseTargetPlugin(DataObjectFactory<T> fac, Class<? extends PropertyContainerParser> parser) {
-		super(fac, parser);
+		super(fac, "ConfigUploadParseTargetPlugin",parser);
 	}
 
-	public ConfigUploadParseTargetPlugin(DataObjectFactory<T> fac) {
-		super(fac);
+	public ConfigUploadParseTargetPlugin(DataObjectFactory<T> fac,String tag) {
+		super(fac,tag);
 	}
 
 	@Override

@@ -38,10 +38,13 @@ public class PropertyHistoryComposite<P extends DataObject,F extends DataObjectF
 	public static final PropertyTag<Date> HISTORY_END = new PropertyTag<>(history,HistoryFactory.END_TIME_FIELD,Date.class,"End of history period");
 	private PropertyRegistry peer;
 	private ReferenceTag<P, F> PEER;
-	public PropertyHistoryComposite(HistoryFactory<P,H> fac) {
-		super(fac);
+	public PropertyHistoryComposite(HistoryFactory<P,H> fac,String tag) {
+		super(fac,tag);
 	}
 
+	public PropertyHistoryComposite(HistoryFactory<P,H> fac) {
+		this(fac,"PropertyHistoryComposite");
+	}
 	@Override
 	protected Class<? super PropertyHistoryComposite> getType() {
 		return PropertyHistoryComposite.class;

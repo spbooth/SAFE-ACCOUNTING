@@ -36,7 +36,7 @@ import uk.ac.ed.epcc.webapp.jdbc.table.DataBaseHandlerService;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableListResult;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
-import uk.ac.ed.epcc.webapp.model.Classification;
+import uk.ac.ed.epcc.webapp.model.ClassificationFactory;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.forms.inputs.NewTableInput;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -80,7 +80,7 @@ public class ClassificationTableCreator extends AbstractContexed implements Form
 			    	conn.makeObject(target, table_name);
 			    }else{
 			    	// best we can do
-			    	TableSpecification spec = Classification.getTableSpecification(conn,table_name);
+			    	TableSpecification spec = ClassificationFactory.getTableSpecification(conn,table_name);
 					DataBaseHandlerService handler = conn.getService(DataBaseHandlerService.class);
 					if( handler != null ){
 						handler.createTable(table_name, spec);

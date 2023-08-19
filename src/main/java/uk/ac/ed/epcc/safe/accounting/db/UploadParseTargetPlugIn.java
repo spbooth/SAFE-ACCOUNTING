@@ -39,13 +39,13 @@ public abstract class UploadParseTargetPlugIn<T extends DataObject,R> extends Pr
 	private static final String GLOBAL_PROPERTIES_PARAMETERS_PREFIX = "global_properties_parameters.";
 
 	private final Class<? extends PropertyContainerParser> default_parser;
-	public UploadParseTargetPlugIn(DataObjectFactory<T> fac) {
-		super(fac);
+	public UploadParseTargetPlugIn(DataObjectFactory<T> fac,String tag) {
+		super(fac,tag);
 		this.default_parser=NullParser.class; // default is no time fields
 	}
 	// Constructor to allow explicit composites to specify a different default parser
-	public UploadParseTargetPlugIn(DataObjectFactory<T> fac,Class<? extends PropertyContainerParser> parser) {
-		super(fac);
+	public UploadParseTargetPlugIn(DataObjectFactory<T> fac,String tag,Class<? extends PropertyContainerParser> parser) {
+		super(fac,tag);
 		this.default_parser=parser;
 	}
 	

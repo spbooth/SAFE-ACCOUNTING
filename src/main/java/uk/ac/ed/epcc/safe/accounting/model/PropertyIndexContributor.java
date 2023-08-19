@@ -29,8 +29,8 @@ public class PropertyIndexContributor<T extends DataObject> extends Composite<T,
 
 	private Map<String,PropExpression> attr = null;
 	private Map<String,PropExpression> index_attr = null;
-	public PropertyIndexContributor(DataObjectFactory<T> fac) {
-		super(fac);
+	public PropertyIndexContributor(DataObjectFactory<T> fac,String tag) {
+		super(fac,tag);
 		
 	}
 

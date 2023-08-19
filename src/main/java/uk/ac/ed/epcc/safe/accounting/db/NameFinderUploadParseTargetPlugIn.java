@@ -20,8 +20,8 @@ import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 public class NameFinderUploadParseTargetPlugIn<T extends DataObject,R> extends UploadParseTargetPlugIn<T, R> {
 
 	private static final String MATCH_SUFFIX = ".match";
-	public NameFinderUploadParseTargetPlugIn(DataObjectFactory<T> fac) {
-		super(fac);
+	public NameFinderUploadParseTargetPlugIn(DataObjectFactory<T> fac,String tag) {
+		super(fac,tag);
 	}
 
 	protected boolean makeOnUpload() {

@@ -55,10 +55,10 @@ import uk.ac.ed.epcc.webapp.model.data.iterator.SkipIterator;
  * @see AccessorMap
  * @param <T>
  */
-public class ExpressionTargetFactoryComposite<T extends DataObject> extends Composite<T,ExpressionTargetFactoryComposite> implements ExpressionTargetFactory<T>, TableContentProvider,TableTransitionContributor {
+public final class ExpressionTargetFactoryComposite<T extends DataObject> extends Composite<T,ExpressionTargetFactoryComposite> implements ExpressionTargetFactory<T>, TableContentProvider,TableTransitionContributor {
 
 	public ExpressionTargetFactoryComposite(DataObjectFactory fac) {
-		super(fac);
+		super(fac,"ExpressionTargetFactoryComposite");
 	}
 	public static final Feature REPORT_BAD_DERIVATIONS = new Feature("expression_target.report_bad_derivations",true,"Report an error if there is a derivation for a property not in the finder");
 	private PropertyFinder reg=null;

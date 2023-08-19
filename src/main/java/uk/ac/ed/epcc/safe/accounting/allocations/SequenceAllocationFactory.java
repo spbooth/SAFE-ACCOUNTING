@@ -278,11 +278,13 @@ public class SequenceAllocationFactory<T extends AllocationFactory.AllocationRec
 	protected TableSpecification getDefaultTableSpecification(AppContext c, String table) {
 
 		TableSpecification spec = super.getDefaultTableSpecification(c, table);
+		spec.setCurrentTag("SequenceAllocation");
 		// If a parser is installed it may set these as well but we want
 		// the table to work without a configured parser as it can also be
 		// directly manipulated by forms
 		spec.setField(StandardProperties.STARTED_TIMESTAMP, new DateFieldType(false, new Date(0L)));
 		spec.setField(StandardProperties.COMPLETED_TIMESTAMP, new DateFieldType(false, new Date(Long.MAX_VALUE)));
+		spec.clearCurrentTag();
 		return spec;
 	}
 	@Override

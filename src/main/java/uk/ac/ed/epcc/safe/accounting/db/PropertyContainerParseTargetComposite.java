@@ -97,8 +97,8 @@ public abstract class PropertyContainerParseTargetComposite<T extends DataObject
 	}
 
 	private PlugInOwner<R> plugin_owner=null;
-	protected PropertyContainerParseTargetComposite(DataObjectFactory<T> fac) {
-		super(fac);
+	protected PropertyContainerParseTargetComposite(DataObjectFactory<T> fac,String tag) {
+		super(fac,tag);
 	}
 	public PropertyContainerParser<R> getParser(){
 		return getPlugInOwner().getParser();

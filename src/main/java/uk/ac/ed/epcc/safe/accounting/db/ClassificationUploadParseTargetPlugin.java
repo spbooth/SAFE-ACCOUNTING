@@ -23,11 +23,13 @@ import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
 public class ClassificationUploadParseTargetPlugin<T extends Classification,R> extends NameFinderUploadParseTargetPlugIn<T, R>
 		implements ClassificationCreateContributor<T> {
 	
-	public ClassificationUploadParseTargetPlugin(ClassificationFactory<T> fac) {
-		super(fac);
+	public ClassificationUploadParseTargetPlugin(ClassificationFactory<T> fac,String tag) {
+		super(fac,tag);
 		
 	}
-
+	public ClassificationUploadParseTargetPlugin(ClassificationFactory<T> fac) {
+		this(fac,"ClassificationUoloadParseTargetPlugin");
+	}
 	
 	
 	@Override

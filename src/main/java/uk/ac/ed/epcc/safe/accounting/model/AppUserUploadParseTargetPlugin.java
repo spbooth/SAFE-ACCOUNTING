@@ -39,10 +39,12 @@ public class AppUserUploadParseTargetPlugin<A extends AppUser,R> extends NameFin
 	
     
 	
-	public AppUserUploadParseTargetPlugin(AppUserFactory<A> fac) {
-		super(fac);
+	public AppUserUploadParseTargetPlugin(AppUserFactory<A> fac,String tag) {
+		super(fac,tag);
 	}
-
+	public AppUserUploadParseTargetPlugin(AppUserFactory<A> fac) {
+		this(fac,"AppUserUploadParseTargetPlugin");
+	}
 	/** Control if new records should be made when seen in an parse 
 	 * 
 	 * @return
