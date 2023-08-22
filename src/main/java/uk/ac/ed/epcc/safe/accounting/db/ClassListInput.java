@@ -22,14 +22,8 @@ package uk.ac.ed.epcc.safe.accounting.db;
 import java.util.Iterator;
 import java.util.Map;
 
-import uk.ac.ed.epcc.webapp.forms.exceptions.FieldException;
-import uk.ac.ed.epcc.webapp.forms.exceptions.MissingFieldException;
-import uk.ac.ed.epcc.webapp.forms.exceptions.ValidateException;
-import uk.ac.ed.epcc.webapp.forms.inputs.AbstractInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
-import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
+import uk.ac.ed.epcc.webapp.forms.exceptions.*;
+import uk.ac.ed.epcc.webapp.forms.inputs.*;
 import uk.ac.ed.epcc.webapp.validation.FieldValidator;
 
 /** An input to select a class from a pre-defined set.
@@ -40,7 +34,7 @@ import uk.ac.ed.epcc.webapp.validation.FieldValidator;
 
 
 
-public class ClassListInput extends AbstractInput<String> implements ListInput<String, Class>{
+public class ClassListInput extends AbstractStringInput implements ListInput<String, Class>{
     private final Map<String,Class> map;
     public ClassListInput(Map<String,Class> m){
     	this.map=m;
@@ -49,7 +43,7 @@ public class ClassListInput extends AbstractInput<String> implements ListInput<S
 			@Override
 			public void validate(String data) throws FieldException {
 				if( ! map.containsKey(data)) {
-					throw new ValidateException("Illegal value");
+					throw new ValidateException("Illegal value "+data);
 				}
 				
 			}
