@@ -26,6 +26,7 @@ import uk.ac.ed.epcc.webapp.logging.Logger;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.validation.FieldValidator;
 import uk.ac.ed.epcc.webapp.validation.MaxLengthValidator;
+import uk.ac.ed.epcc.webapp.validation.SingleLineFieldValidator;
 /** Input for propExpressions
  * 
  * @author spb
@@ -34,7 +35,7 @@ import uk.ac.ed.epcc.webapp.validation.MaxLengthValidator;
 
 
 public class PropExpressionInput extends TextInput {
-	public final class PropExpressionFieldValidator implements FieldValidator<String> {
+	public final class PropExpressionFieldValidator implements SingleLineFieldValidator {
 		/**
 		 * @param parser
 		 */

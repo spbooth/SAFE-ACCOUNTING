@@ -227,6 +227,7 @@ public class ReportServlet extends SessionServlet {
 				if(es.size() > 0){
 					has_errors=true;
 				}
+				es.report(10, getLogger(conn));
 			}
 		}
 		if( has_errors){

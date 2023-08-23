@@ -24,7 +24,7 @@ import java.util.Map;
 
 import uk.ac.ed.epcc.webapp.forms.exceptions.*;
 import uk.ac.ed.epcc.webapp.forms.inputs.*;
-import uk.ac.ed.epcc.webapp.validation.FieldValidator;
+import uk.ac.ed.epcc.webapp.validation.SingleLineFieldValidator;
 
 /** An input to select a class from a pre-defined set.
  * 
@@ -38,7 +38,7 @@ public class ClassListInput extends AbstractStringInput implements ListInput<Str
     private final Map<String,Class> map;
     public ClassListInput(Map<String,Class> m){
     	this.map=m;
-    	addValidator(new FieldValidator<String>() {
+    	addValidator(new SingleLineFieldValidator() {
 			
 			@Override
 			public void validate(String data) throws FieldException {

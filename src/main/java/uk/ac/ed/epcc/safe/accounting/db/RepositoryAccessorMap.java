@@ -47,9 +47,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.exceptions.ConsistencyError;
-import uk.ac.ed.epcc.webapp.forms.inputs.BooleanInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.Input;
-import uk.ac.ed.epcc.webapp.forms.inputs.TimeStampInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.*;
 import uk.ac.ed.epcc.webapp.jdbc.expr.CannotFilterException;
 import uk.ac.ed.epcc.webapp.jdbc.expr.ConstExpression;
 import uk.ac.ed.epcc.webapp.jdbc.expr.Reduction;
@@ -182,7 +180,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 					tag = finder.find(String.class,prop_name);
 				}else if( info.isDate()){
 					tag = finder.find(Date.class,prop_name);
-				}else if ( info.isReference()){
+				}else if ( info.isReference() && info.isNumeric()){
 					tag = finder.find(IndexedReference.class,prop_name);
 				}else if( info.isNumeric()){
 					// This could be a date, number or reference 
@@ -192,14 +190,11 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 				}
 			}
 			//log.debug("Finder returned "+(tag==null?" null ":tag.getFullName()));
-			if( tag == null && orphan_registy != null && ! info.isReference()){ // then try to make the tag
+			// Don't add table references to orphan
+			if( tag == null && orphan_registy != null && ! (info.isReference() && info.isNumeric())){ // then try to make the tag
 				boolean force_date = getContext().getBooleanParameter(prefix+field_name+".forceDate", false);
 				if( force_date ){
-					selector_map.put(field_name, new Selector(){
-						@Override
-						public Input getInput() {
-							return new TimeStampInput(res.getResolution());
-						}});
+					selector_map.put(field_name, new TimeStampSelector(res.getResolution()));
 				}
 
 				int idx = prop_name.lastIndexOf(FixedPropertyFinder.PROPERTY_FINDER_SEPERATOR);
@@ -234,11 +229,7 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 					put(tag, res.getStringExpression(field_name));
 				} else if (Date.class.isAssignableFrom(t)) {
 					put(tag, res.getDateExpression(field_name));
-					selector_map.put(field_name, new Selector(){
-						@Override
-						public Input getInput() {
-							return new TimeStampInput(res.getResolution());
-						}});
+					selector_map.put(field_name, new TimeStampSelector(res.getResolution()));
 				} else if (Number.class.isAssignableFrom(t)) {
 					//Duration is supported at native millisecond resolution.
 					put(tag, res.getNumberExpression(t,field_name));

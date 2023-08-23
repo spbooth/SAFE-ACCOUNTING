@@ -64,6 +64,7 @@ import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.session.SessionService;
 import uk.ac.ed.epcc.webapp.timer.TimerService;
 import uk.ac.ed.epcc.webapp.validation.FieldValidator;
+import uk.ac.ed.epcc.webapp.validation.SingleLineFieldValidator;
 
 
 
@@ -218,7 +219,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 
 		@Override
 		public void customiseCreationForm(Form f) throws Exception {
-			f.getField(ReportTemplate.TEMPLATE_NAME).addValidator(new FieldValidator<String>() {
+			f.getField(ReportTemplate.TEMPLATE_NAME).addValidator(new SingleLineFieldValidator() {
 
 				@Override
 				public void validate(String data) throws FieldException {
