@@ -276,12 +276,12 @@ public final class ExpressionTargetFactoryComposite<T extends DataObject> extend
 	@Override
 	public Map addSelectors(Map selectors) {
 		// Add AccessorMap selectors if not already defined.
-//		Map<String,Object> add = getAccessorMap().getSelectors();
-//		for(Entry e : add.entrySet()) {
-//			if( ! selectors.containsKey(e.getKey())) {
-//				selectors.put(e.getKey(), e.getValue());
-//			}
-//		}
+		Map<String,Object> add = getAccessorMap().getSelectors();
+		for(Entry e : add.entrySet()) {
+			if( ! selectors.containsKey(e.getKey())) {
+				selectors.put(e.getKey(), e.getValue());
+			}
+		}
 		return selectors;
 	}
 	@Override
