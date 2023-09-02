@@ -22,7 +22,6 @@ import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.fop.render.AbstractRenderer;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
 
@@ -85,7 +84,7 @@ import uk.ac.ed.epcc.webapp.validation.MaxLengthValidator;
  *
  */
 public class ParameterExtension extends ReportExtension {
-	/**
+	/** The default relationship that if defined restricts the options selectable in a report.
 	 * 
 	 */
     public static final String REPORT_SELECT_RELATIONHIP = "ReportSelect";
