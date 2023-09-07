@@ -303,7 +303,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 				if( builder.buildReportParametersForm(f, parameters,defaults)) {
 					setMap(parameters, target.getContextParameters(),defaults, f, false);
 					if( builder.hasReportParameters()){
-						f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png"),target,defaults,PREVIEW,false));
+						f.addAction("Preview", new NextAction(new Icon(conn,"Preview","/accounting/preview-file-48x48.png","Preview icon"),target,defaults,PREVIEW,false));
 					}
 					boolean new_window=DOWNLOAD_FROM_NEW_TAB.isEnabled(conn);
 					ReportTypeRegistry reg = ReportTypeRegistry.getInstance(conn);
@@ -312,7 +312,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 						if( t.allowSelect(sess)) {
 							String image = t.getImage();
 							if( image != null ) {
-								f.addAction(t.name(), new NextAction(new Icon(conn,t.name(),image), target, defaults, new ReportTypeKey(t), new_window));
+								f.addAction(t.name(), new NextAction(new Icon(conn,t.name(),image,t.name()+" icon"), target, defaults, new ReportTypeKey(t), new_window));
 							}else {
 								f.addAction(t.name(), new NextAction(t.name(), target, defaults, new ReportTypeKey(t), new_window));
 							}
