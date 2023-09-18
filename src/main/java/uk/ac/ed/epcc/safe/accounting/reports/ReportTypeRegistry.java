@@ -40,12 +40,9 @@ public class ReportTypeRegistry extends AbstractContexed {
 			return report_type_reg.get(getValue());
 		}
 
-		public void setItem(ReportType item) {
-			try {
-				setValue(item.toString());
-			} catch (TypeException e) {
-				throw new TypeError(e);
-			}
+		@Override
+		public String getValueByItem(ReportType item) {
+			return item.toString();
 		}
 
 		public ReportType getItembyValue(String value) {
@@ -85,10 +82,6 @@ public class ReportTypeRegistry extends AbstractContexed {
 			return item.description;
 		}
 
-		@Override
-		public <R> R accept(InputVisitor<R> vis) throws Exception {
-			return vis.visitListInput(this);
-		}
 
 		@Override
 		public boolean isValid(ReportType item) {

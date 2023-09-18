@@ -71,17 +71,11 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 		return getItembyValue(getValue());
 	}
 	
-	public void setItem(PlotEntry item) {
-		if( item == null ){
-			setNull();
-		}else{
-			try {
-				setValue(getTagByItem(item));
-			} catch (TypeException e) {
-				throw new TypeError(e);
-			}
-		}
+	@Override
+	public String getValueByItem(PlotEntry item) {
+		return getTagByItem(item);
 	}
+	
 	
 	public String parseValue(String v) throws ParseException {
 		if( v != null && items.containsKey(v)){

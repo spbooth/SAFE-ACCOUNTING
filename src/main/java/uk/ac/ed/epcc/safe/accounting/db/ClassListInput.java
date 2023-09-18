@@ -49,17 +49,19 @@ public class ClassListInput extends AbstractStringInput implements ListInput<Str
 			}
 		});
     }
+    @Override
 	public Class getItembyValue(String value) {
 		return map.get(value);
 	}
-
+	@Override
 	public Iterator<Class> getItems() {
 		return map.values().iterator();
 	}
+	@Override
 	public int getCount(){
 		return map.size();
 	}
-
+	@Override
 	public String getTagByItem(Class item) {
 		if( item == null ){
 			return null;
@@ -72,14 +74,16 @@ public class ClassListInput extends AbstractStringInput implements ListInput<Str
 		return null;
 	}
 
+	@Override
 	public String getTagByValue(String value) {
 		return value;
 	}
-
+	@Override
 	public String getText(Class item) {
 		return getTagByItem(item);
 	}
 
+	@Override
 	public String convert(Object v)  {
           if( v == null ){
         	  return null;
@@ -88,30 +92,22 @@ public class ClassListInput extends AbstractStringInput implements ListInput<Str
 	}
 
 	
-
+	@Override
 	public String getPrettyString(String value) {
 		return value;
 	}
-
+	@Override
 	public String getString(String value) {
 		return value;
 	}
 
 	
 
-	
-	
-	public Class getItem() {
-		return getItembyValue(getValue());
+	@Override
+	public final String getValueByItem(Class item) {
+		return getTagByItem(item);
 	}
 
-	public void setItem(Class item) {
-		try {
-			setValue(getTagByItem(item));
-		} catch (TypeException e) {
-			throw new TypeError(e);
-		}
-	}
 
 	public <R> R accept(InputVisitor<R> vis) throws Exception {
 		return vis.visitListInput(this);

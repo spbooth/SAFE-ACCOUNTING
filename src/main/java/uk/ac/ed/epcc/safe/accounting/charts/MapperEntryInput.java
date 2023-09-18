@@ -54,23 +54,16 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 			conn.getService(LoggerService.class).getLogger(getClass()).warn("No UsageProducer in MapperEntryInput");
 		}
 	}
-	
+	@Override
 	public MapperEntry getItem() {
 		return getItembyValue(getValue());
 	}
 	
-	public void setItem(MapperEntry item) {
-		if( item == null ){
-			setNull();
-		}else{
-			try {
-				setValue(getTagByItem(item));
-			} catch (TypeException e) {
-				throw new TypeError(e);
-			}
-		}
+	@Override
+	public final String getValueByItem(MapperEntry item) {
+		return getTagByItem(item);
 	}
-	
+	@Override
 	public String parseValue(String v) throws ParseException {
 		if( v != null && items.containsKey(v)){
 			return v;
@@ -81,25 +74,27 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 		}
 		
 	}
-	
+	@Override
 	public MapperEntry getItembyValue(String value) {
 		return items.get(value);
 	}
-	
+	@Override
 	public Iterator<MapperEntry> getItems() {
 		return items.values().iterator();
 	}
+	@Override
 	public int getCount(){
 		return items.size();
 	}
+	@Override
 	public String getTagByItem(MapperEntry item) {
 		return prefix+item.getName();
 	}
-
+	@Override
 	public String getTagByValue(String value) {
 		return value;
 	}
-	
+	@Override
 	public String getText(MapperEntry item) {
 		if(item == null) {
 			return null;

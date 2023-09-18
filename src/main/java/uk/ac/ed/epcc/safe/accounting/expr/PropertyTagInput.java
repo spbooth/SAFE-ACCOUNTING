@@ -65,17 +65,10 @@ public String getText(PropertyTag item){
 public PropertyTag getItem() {
 	return getItembyValue(getValue());
 }
-public void setItem(PropertyTag item) {
-	if( item == null ){
-		setNull();
-	}else{
-		try {
-			setValue(item.getFullName());
-		} catch (TypeException e) {
-			throw new TypeError(e);
-		}
-	}
-	
+
+@Override
+public final String getValueByItem(PropertyTag item) {
+	return item.getFullName();
 }
 @Override
 public <R> R accept(InputVisitor<R> vis) throws Exception {

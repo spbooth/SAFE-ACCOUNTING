@@ -144,7 +144,7 @@ public class ParameterExtension extends ReportExtension {
 			// Get the default value if there is one.
 			String value = getAttribute(VALUE_ATTR,param);
 			boolean optional = ! empty(getAttribute(OPTIONAL_ATTR, param));
-			CanSubmitVisistor can_submit_vis = new CanSubmitVisistor();
+			CanSubmitVisitor can_submit_vis = new CanSubmitVisitor();
 			Input<?> input = getInput(name, value,param);
 			if( input == null ){
 				addError("no input","No input for "+name);
