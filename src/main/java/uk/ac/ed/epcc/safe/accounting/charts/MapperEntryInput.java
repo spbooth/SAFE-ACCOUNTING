@@ -20,12 +20,7 @@ import java.util.Map;
 import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.config.FilteredProperties;
-import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
-import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
-import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.ParseAbstractInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
+import uk.ac.ed.epcc.webapp.forms.inputs.SimpleListInput;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Form Input for selecting a MapperEntry
  *  
@@ -35,7 +30,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  * @author spb
  *
  */
-public class MapperEntryInput extends ParseAbstractInput<String> implements ListInput<String, MapperEntry> {
+public class MapperEntryInput extends SimpleListInput<MapperEntry> {
 	
 	private final Map<String,MapperEntry> items;
 	private final String prefix;
@@ -60,21 +55,6 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 	}
 	
 	@Override
-	public final String getValueByItem(MapperEntry item) {
-		return getTagByItem(item);
-	}
-	@Override
-	public String parseValue(String v) throws ParseException {
-		if( v != null && items.containsKey(v)){
-			return v;
-		}else if ( v == null || v.trim().length() == 0){
-			return null;
-		}else{
-			throw new ParseException("Invalid MapperEntry ");
-		}
-		
-	}
-	@Override
 	public MapperEntry getItembyValue(String value) {
 		return items.get(value);
 	}
@@ -90,10 +70,7 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 	public String getTagByItem(MapperEntry item) {
 		return prefix+item.getName();
 	}
-	@Override
-	public String getTagByValue(String value) {
-		return value;
-	}
+	
 	@Override
 	public String getText(MapperEntry item) {
 		if(item == null) {
@@ -105,11 +82,7 @@ public class MapperEntryInput extends ParseAbstractInput<String> implements List
 		}
 		return item.getName();
 	}
-	@Override
-	public <R> R accept(InputVisitor<R> vis) throws Exception {
-		return vis.visitListInput(this);
-	}
-
+	
 	@Override
 	public boolean isValid(MapperEntry item) {
 		return items.containsValue(item);

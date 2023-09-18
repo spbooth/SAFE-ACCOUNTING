@@ -21,12 +21,7 @@ import uk.ac.ed.epcc.safe.accounting.UsageProducer;
 import uk.ac.ed.epcc.safe.accounting.formatters.value.PlotEntryFormatter;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.config.FilteredProperties;
-import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
-import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
-import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.ParseAbstractInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
+import uk.ac.ed.epcc.webapp.forms.inputs.SimpleListInput;
 import uk.ac.ed.epcc.webapp.logging.LoggerService;
 /** Form Input for selecting a PlotEntry defined in the config properties.
  * 
@@ -39,7 +34,7 @@ import uk.ac.ed.epcc.webapp.logging.LoggerService;
  * @author spb
  *
  */
-public class PlotEntryInput extends ParseAbstractInput<String> implements ListInput<String, PlotEntry> {
+public class PlotEntryInput extends SimpleListInput<PlotEntry> {
 	
 	private final Map<String,PlotEntry> items;
 	private final String prefix;
@@ -71,30 +66,8 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 		return getItembyValue(getValue());
 	}
 	
-	@Override
-	public String getValueByItem(PlotEntry item) {
-		return getTagByItem(item);
-	}
 	
 	
-	public String parseValue(String v) throws ParseException {
-		if( v != null && items.containsKey(v)){
-			return v;
-		}else if( v == null || v.trim().length() == 0){
-			return null;
-		}else{
-			if( v != null){
-				// check for descriptions
-				for(PlotEntry e : items.values()){
-					if(v.equals(e.getDescription()) ){
-						return e.getName();
-					}
-				}
-			}
-			throw new ParseException("Invalid PlotEntry ");
-		}
-
-	}
 	
 	public PlotEntry getItembyValue(String value) {
 		return items.get(value);
@@ -110,9 +83,7 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 		return prefix+item.getName();
 	}
 	
-	public String getTagByValue(String value) {
-		return value;
-	}
+	
 	
 	public String getText(PlotEntry item) {
 		if( item == null ) {
@@ -123,11 +94,6 @@ public class PlotEntryInput extends ParseAbstractInput<String> implements ListIn
 			text=item.getName();
 		}
 		return text;
-	}
-
-	@Override
-	public <R> R accept(InputVisitor<R> vis) throws Exception {
-		return vis.visitListInput(this);
 	}
 
 	@Override

@@ -34,7 +34,7 @@ import uk.ac.ed.epcc.webapp.validation.SingleLineFieldValidator;
 
 
 
-public class ClassListInput extends AbstractStringInput implements ListInput<String, Class>{
+public class ClassListInput extends SimpleListInput<Class>{
     private final Map<String,Class> map;
     public ClassListInput(Map<String,Class> m){
     	this.map=m;
@@ -72,45 +72,6 @@ public class ClassListInput extends AbstractStringInput implements ListInput<Str
 		   }
 		}
 		return null;
-	}
-
-	@Override
-	public String getTagByValue(String value) {
-		return value;
-	}
-	@Override
-	public String getText(Class item) {
-		return getTagByItem(item);
-	}
-
-	@Override
-	public String convert(Object v)  {
-          if( v == null ){
-        	  return null;
-          }
-		return v.toString();
-	}
-
-	
-	@Override
-	public String getPrettyString(String value) {
-		return value;
-	}
-	@Override
-	public String getString(String value) {
-		return value;
-	}
-
-	
-
-	@Override
-	public final String getValueByItem(Class item) {
-		return getTagByItem(item);
-	}
-
-
-	public <R> R accept(InputVisitor<R> vis) throws Exception {
-		return vis.visitListInput(this);
 	}
 
 	@Override
