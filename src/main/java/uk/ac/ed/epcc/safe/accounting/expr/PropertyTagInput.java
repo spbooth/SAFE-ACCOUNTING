@@ -20,9 +20,7 @@ import java.util.Iterator;
 
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
 import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
-import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
-import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.*;
 /** input for selecting a {@link PropertyTag} from a {@link PropertyFinder}
  * 
  * @author spb
@@ -30,17 +28,19 @@ import uk.ac.ed.epcc.webapp.forms.inputs.TextInput;
  */
 
 
-public class PropertyTagInput extends TextInput implements
-		ListInput<String, PropertyTag> {
+public class PropertyTagInput extends CodeListInput<PropertyTag> {
    private PropertyFinder finder;
    public PropertyTagInput(PropertyFinder finder){
 	   this.finder=finder;
    }
-public PropertyTag getItembyValue(String value) {
+public PropertyTag getItemByTag(String value) {
 	if( value == null ){
 		return null;
 	}
 	return finder.find(value);
+}
+public String getTagByItem(PropertyTag item) {
+	return item.getFullName();
 }
 public Iterator<PropertyTag> getItems() {
 	return finder.getProperties().iterator();
@@ -48,30 +48,16 @@ public Iterator<PropertyTag> getItems() {
 public int getCount(){
 	return finder.getProperties().size();
 }
-public String getTagByItem(PropertyTag item) {
-	return item.getFullName();
-}
-public String getTagByValue(String value) {
-	return value;
-}
+
+
 public String getText(PropertyTag item){
 	if( item != null ){
 		return item.getFullName()+": "+item.getDescription();
 	}
 	return null;
 }
-public PropertyTag getItem() {
-	return getItembyValue(getValue());
-}
 
-@Override
-public final String getValueByItem(PropertyTag item) {
-	return item.getFullName();
-}
-@Override
-public <R> R accept(InputVisitor<R> vis) throws Exception {
-	return vis.visitListInput(this);
-}
+
 @Override
 public boolean isValid(PropertyTag item) {
 	return finder.hasProperty(item);

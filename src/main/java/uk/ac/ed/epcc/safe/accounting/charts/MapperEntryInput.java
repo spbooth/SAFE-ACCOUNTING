@@ -55,7 +55,7 @@ public class MapperEntryInput extends SimpleListInput<MapperEntry> {
 	}
 	
 	@Override
-	public MapperEntry getItembyValue(String value) {
+	public MapperEntry getItemByTag(String value) {
 		return items.get(value);
 	}
 	@Override

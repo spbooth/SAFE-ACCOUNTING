@@ -4,20 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import uk.ac.ed.epcc.webapp.forms.exceptions.ParseException;
-import uk.ac.ed.epcc.webapp.forms.inputs.BinaryInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.FileInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.Input;
-import uk.ac.ed.epcc.webapp.forms.inputs.InputVisitor;
-import uk.ac.ed.epcc.webapp.forms.inputs.LengthInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.ListInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.LockedInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.MultiInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.ParseInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.ParseMultiInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.PasswordInput;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
-import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
-import uk.ac.ed.epcc.webapp.forms.inputs.UnmodifiableInput;
+import uk.ac.ed.epcc.webapp.forms.inputs.*;
 
 /** An {@link InputVisitor} that adds/sets the form contents to a map.
  *
@@ -48,19 +35,13 @@ public class SetParamsVisitor implements InputVisitor<Object> {
     }
     @Override
     public <V, I extends Input> Object visitParseMultiInput(ParseMultiInput<V, I> multiInput) throws Exception {
-        if(set_map){
-            params.putAll(multiInput.getMap());
-        }else{
-            if (multiInput.parse(params)) {
-                missing = true;
-            }
-        }
-        return null;
+    	// use single value parse
+        return visitBaseInput(multiInput);
     }
     @Override
     public <V, I extends Input> Object visitMultiInput(MultiInput<V, I> multiInput) throws Exception {
         if( multiInput instanceof ParseInput){
-            // input will accept a single param
+            // input will accept a single param (this should really be accepting ParseMultiUnput
             return visitBaseInput(multiInput);
         }
         for(Iterator<I> it = multiInput.getInputs(); it.hasNext();){

@@ -69,7 +69,7 @@ public class PlotEntryInput extends SimpleListInput<PlotEntry> {
 	
 	
 	
-	public PlotEntry getItembyValue(String value) {
+	public PlotEntry getItemByTag(String value) {
 		return items.get(value);
 	}
 	

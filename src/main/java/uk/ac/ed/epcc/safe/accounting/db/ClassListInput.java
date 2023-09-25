@@ -50,7 +50,7 @@ public class ClassListInput extends SimpleListInput<Class>{
 		});
     }
     @Override
-	public Class getItembyValue(String value) {
+	public Class getItemByTag(String value) {
 		return map.get(value);
 	}
 	@Override

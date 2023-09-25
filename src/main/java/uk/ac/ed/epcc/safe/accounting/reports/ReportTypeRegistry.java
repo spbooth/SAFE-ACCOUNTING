@@ -87,6 +87,16 @@ public class ReportTypeRegistry extends AbstractContexed {
 		public boolean isValid(ReportType item) {
 			return report_type_reg.containsValue(item);
 		}
+
+		@Override
+		public ReportType getItemByTag(String tag) {
+			return getItembyValue(tag);
+		}
+
+		@Override
+		public String getValueByTag(String tag) {
+			return tag;
+		}
 		
 	}
 	protected ReportType getReportType(Map<String, Object> params) {
