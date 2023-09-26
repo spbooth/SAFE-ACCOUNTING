@@ -58,7 +58,14 @@ public class SetParamsVisitor implements InputVisitor<Object> {
                 params.put(listInput.getKey(), listInput.getTagByValue(value));
             }
         }else{
-            visitBaseInput(listInput);
+        	Object val = params.get(listInput.getKey());
+        	if( val == null ) {
+        		missing=true;
+        	}else if( val instanceof String) {
+        		listInput.setValue(listInput.getValueByTag((String) val));
+        	}else {
+        		listInput.setValue(listInput.convert(val));
+        	}
         }
         return null;
     }

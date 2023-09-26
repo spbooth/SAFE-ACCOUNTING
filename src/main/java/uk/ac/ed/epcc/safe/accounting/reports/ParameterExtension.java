@@ -285,20 +285,12 @@ public class ParameterExtension extends ReportExtension {
 		}
 		
 			if( value != null && value.trim().length() > 0){
-				if( input instanceof ParseInput){
-					((ParseInput)input).parse(value);
-				}else{
-					//also try the convert method
-					// if the input is a multi-input but not a parse input
-					// this might be easier.
-					try {
-						input.setValue(input.convert(value));
-					} catch (TypeException e) {
-						throw new ParseException("Error converting value", e);
-					}
+				try {
+					input.accept(new ParseStringVisitor(value));
+				}catch(Exception e) {
+					throw new ParseException("Error parsing value ", e);
 				}
-			}
-			if( input instanceof MultiInput){
+			}else if( input instanceof MultiInput){
 				MultiInput multi = (MultiInput) input;
 				// look for nested values
 				NodeList list = param.getChildNodes();
