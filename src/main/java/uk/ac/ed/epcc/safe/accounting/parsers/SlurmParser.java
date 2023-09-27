@@ -70,6 +70,7 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
  *
  */
 public class SlurmParser extends BatchParser implements  Contexed,ConfigParamProvider {
+	private static final String SKIP_REQUEUED_SUFFIX = ".skip_requeued";
 	private static final String TRIVIAL_PARSE_SUFFIX = ".trivial_parse";
 	private static final String PARSE_FORMAT_SUFFIX = ".parse.format";
 	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
@@ -446,6 +447,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 	private boolean skip_cancelled_norun=true;
 	private boolean skip_failed=false;
 	private boolean skip_node_failed=false;
+	private boolean skip_requeued=false;
 	private boolean skip_sub_jobs=true; // usually want sub jobs to a different table
 	private boolean skip_top_jobs=false;
 	private boolean trivial_parse=false; // Just accept all records without parsing the text, this is for a parser invoked from a SubJobPolicy
@@ -502,7 +504,10 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		    String state = map.getProperty(STATE_PROP);
 		
 		// Illegal states
-		if( state == null || state.startsWith("RUNNING") || state.startsWith("PENDING") || state.startsWith("REQUEUED")){
+		if( state == null || state.startsWith("RUNNING") || state.startsWith("PENDING") ){
+			return false;
+		}
+		if( state.startsWith("REQUEUED") && skip_requeued) {
 			return false;
 		}
 		
@@ -621,6 +626,7 @@ public class SlurmParser extends BatchParser implements  Contexed,ConfigParamPro
 		skip_cancelled_norun = conn.getBooleanParameter(table+SKIP_CANCELLED_NORUN_SUFFIX, true);
 		skip_failed = conn.getBooleanParameter(table+SKIP_FAILED_SUFFIX, false);
 		skip_node_failed = conn.getBooleanParameter(table+SKIP_NODE_FAILED_SUFFIX, false);
+		skip_requeued = conn.getBooleanParameter(table+SKIP_REQUEUED_SUFFIX, false);
 		skip_sub_jobs = conn.getBooleanParameter(table+SKIP_SUB_JOBS_SUFFIX, true);
 		skip_top_jobs = conn.getBooleanParameter(table+SKIP_TOP_JOBS_SUFFIX, false);
 		trivial_parse = conn.getBooleanParameter(table+TRIVIAL_PARSE_SUFFIX, false);

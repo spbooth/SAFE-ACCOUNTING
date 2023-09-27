@@ -27,6 +27,9 @@ import uk.ac.ed.epcc.webapp.model.data.Duration;
 public class DiracSLURMParser extends AbstractKeyPairParser {
 	
 
+	private static final String SKIP_NODE_FAIL_SUFFIX = ".skip_node_fail";
+
+
 	private static final String SKIP_CANCELLED_SUFFIX = ".skip_cancelled";
 
 	
@@ -98,7 +101,8 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
     public static final PropertyTag<Integer> ALOCTRES_NODE_PROP = new PropertyTag<>(slurm_reg,"AllocTRESnode",Integer.class,"node field from AllocTRES");
     @OptionalTable
     public static final PropertyTag<Integer> ALOCTRES_GPU_PROP = new PropertyTag<>(slurm_reg,"AllocTRESgpu",Integer.class,"gres/gpu field from AllocTRES");
-              
+
+    
     private static final MakerMap SLURM_ATTRIBUTES = new MakerMap();
 	static {
 		SLURM_ATTRIBUTES.addParser(JOB_ID_PROP, StringParser.PARSER);
@@ -130,6 +134,7 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
         SLURM_ATTRIBUTES.put("AllocTRES", new NestedContainerEntryMaker(AllocTRES));
 	}
 	private boolean skip_cancelled=false;
+	private boolean skip_node_fail=true;
     public DiracSLURMParser(AppContext conn) {
 		super(conn);
 	}
@@ -146,6 +151,7 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
 		finder.addFinder(BatchParser.batch);
 		finder.addFinder(slurm_reg);
 		skip_cancelled = conn.getBooleanParameter(table+SKIP_CANCELLED_SUFFIX, false);
+		skip_node_fail = conn.getBooleanParameter(table+SKIP_NODE_FAIL_SUFFIX, true);
 		return finder;
 	}
 
@@ -188,7 +194,9 @@ public class DiracSLURMParser extends AbstractKeyPairParser {
 		if( skip_cancelled && state.startsWith("CANCELLED")){
 			return false;
 		}
-
+		if( skip_node_fail && state.startsWith("NODE_FAIL")){
+			return false;
+		}
 		return true;
 	}
 
