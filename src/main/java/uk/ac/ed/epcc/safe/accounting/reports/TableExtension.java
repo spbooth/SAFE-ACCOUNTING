@@ -1483,10 +1483,7 @@ public class TableExtension extends ReportExtension {
 				}
 			}else if(instruction.equals("MergeDuplicates")) {
 				String col = normalise(getText(inst));
-				Table.Col c = target.getCol(col);
-				if( c != null ) {
-					c.setDedup(true);
-				}
+				target.setDeDup(col, true);
 			}else if(instruction.equals("Transform")){
 				String col = getParam("Column",inst);
 				String dest = getParam("Dest", inst);
