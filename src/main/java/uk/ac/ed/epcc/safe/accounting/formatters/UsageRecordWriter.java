@@ -168,9 +168,7 @@ public class UsageRecordWriter implements Contexed {
 		return this.context;
 	}
 
-	protected final Logger getLogger(){
-		return context.getService(LoggerService.class).getLogger(getClass());
-	}
+	
 	/**
 	 * Reads usage records from this writer's input, parses it using the parser
 	 * specified in this writer's <code>AppContext</code> and formats the

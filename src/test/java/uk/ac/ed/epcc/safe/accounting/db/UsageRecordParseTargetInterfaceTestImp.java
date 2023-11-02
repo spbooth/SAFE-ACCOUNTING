@@ -1,24 +1,19 @@
 package uk.ac.ed.epcc.safe.accounting.db;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.ByteArrayInputStream;
 
 import org.junit.Assert;
-import org.junit.Test;
 
 import uk.ac.ed.epcc.junit.TargetProvider;
-import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.update.UploadContext;
-import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.ContextProvider;
 import uk.ac.ed.epcc.webapp.WebappTestBase;
 
 public class UsageRecordParseTargetInterfaceTestImp<R,X extends UsageRecordParseTarget<R>> extends PropertyContainerParseTargetInterfaceTestImp<R, X>
 		implements UsageRecordParseTargetInterfaceTest<R, X> {
 
 	private WebappTestBase base;
-	public UsageRecordParseTargetInterfaceTestImp(WebappTestBase base,TargetProvider<X> provider, TargetProvider<UploadContext> upload_prov, Contexed contexed) {
+	public UsageRecordParseTargetInterfaceTestImp(WebappTestBase base,TargetProvider<X> provider, TargetProvider<UploadContext> upload_prov, ContextProvider contexed) {
 		super(provider, upload_prov, contexed);
 		this.base=base;
 	}

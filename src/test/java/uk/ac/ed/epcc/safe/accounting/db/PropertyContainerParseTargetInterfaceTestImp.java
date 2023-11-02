@@ -12,12 +12,12 @@ import uk.ac.ed.epcc.safe.accounting.expr.DerivedPropertyMap;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
 import uk.ac.ed.epcc.safe.accounting.update.PluginOwnerTestCaseImpl;
 import uk.ac.ed.epcc.safe.accounting.update.UploadContext;
-import uk.ac.ed.epcc.webapp.Contexed;
+import uk.ac.ed.epcc.webapp.ContextProvider;
 
 public class PropertyContainerParseTargetInterfaceTestImp<R,X extends PropertyContainerParseTarget<R>> extends PluginOwnerTestCaseImpl<R, X> implements PropertyContainerParseTargetInterfaceTest<R, X>  {
-	protected final Contexed contexed;
+	protected final ContextProvider contexed;
     private final TargetProvider<UploadContext> upload;
-	public PropertyContainerParseTargetInterfaceTestImp(TargetProvider<X> provider, TargetProvider<UploadContext> upload, Contexed contexed) {
+	public PropertyContainerParseTargetInterfaceTestImp(TargetProvider<X> provider, TargetProvider<UploadContext> upload, ContextProvider contexed) {
 		super(provider);
 		this.upload=upload;
 		this.contexed=contexed;

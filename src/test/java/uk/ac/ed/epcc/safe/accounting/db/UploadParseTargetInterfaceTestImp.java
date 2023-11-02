@@ -7,15 +7,13 @@ import org.junit.Assert;
 import uk.ac.ed.epcc.junit.TargetProvider;
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
 import uk.ac.ed.epcc.safe.accounting.update.UploadContext;
-import uk.ac.ed.epcc.webapp.AppContext;
-import uk.ac.ed.epcc.webapp.Contexed;
-import uk.ac.ed.epcc.webapp.WebappTestBase;
+import uk.ac.ed.epcc.webapp.*;
 
 public class UploadParseTargetInterfaceTestImp<R,X extends UploadParseTarget<R>> extends PropertyContainerParseTargetInterfaceTestImp<R, X>
 		implements UploadParseTargetInterfaceTest<R, X> {
 
 	private WebappTestBase base;
-	public UploadParseTargetInterfaceTestImp(WebappTestBase base,TargetProvider<X> provider, TargetProvider<UploadContext> upload_prov, Contexed contexed) {
+	public UploadParseTargetInterfaceTestImp(WebappTestBase base,TargetProvider<X> provider, TargetProvider<UploadContext> upload_prov, ContextProvider contexed) {
 		super(provider, upload_prov, contexed);
 		this.base=base;
 	}

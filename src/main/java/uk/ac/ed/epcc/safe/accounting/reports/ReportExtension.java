@@ -147,7 +147,7 @@ public abstract class ReportExtension extends SelectBuilder implements Contexed,
 	 * 
 	 * @return
 	 */
-	protected final Logger getLogger(){
+	public final Logger getLogger(){
 		return log;
 	}
 	/** Utility method to start a named timer
