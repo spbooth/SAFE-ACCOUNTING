@@ -208,6 +208,6 @@ public void testCSVReport() throws Exception {
 	 * @return
 	 */
 	public final String normalise(String output) {
-		return output.replaceAll("\r?\n", "\n").replaceAll(", ", ",");
+		return output.replaceAll("\r?\n\\s*", "\n").replaceAll(", ", ",");
 	}
 }

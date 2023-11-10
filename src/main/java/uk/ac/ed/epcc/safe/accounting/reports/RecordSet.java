@@ -238,4 +238,8 @@ protected void clearCaches() {
 public PropertyFinder getFinder() {
 	return getGenerator().getFinder();
 }
+@Override
+public RecordSet copy() {
+	return new RecordSet(this);
+}
 }

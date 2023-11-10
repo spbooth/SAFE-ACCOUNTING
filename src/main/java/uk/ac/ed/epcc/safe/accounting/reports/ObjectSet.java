@@ -129,5 +129,7 @@ public class ObjectSet<F extends ExpressionTargetGenerator> {
 	public void setError(boolean has_error) {
 		this.has_error = has_error;
 	}
-
+    public ObjectSet copy() {
+    	return new ObjectSet(this);
+    }
 }
