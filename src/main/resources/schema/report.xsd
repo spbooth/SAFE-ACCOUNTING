@@ -188,6 +188,7 @@
 	<xsd:element ref="Comment" />
 	<xsd:element ref="mac:MacroDef" />
 	<xsd:element ref="ato:Define" />
+	<xsd:element ref="ato:IfRecords" />
 	<xsd:element ref="Heading" />
 	<xsd:group ref="cha:Chart" />
 	<xsd:group ref="tab:AnyTable" />
