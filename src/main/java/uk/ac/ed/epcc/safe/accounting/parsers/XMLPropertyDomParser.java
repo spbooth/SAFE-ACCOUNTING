@@ -18,54 +18,24 @@ package uk.ac.ed.epcc.safe.accounting.parsers;
 
 import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.*;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.TypeInfo;
+import org.w3c.dom.*;
 
 import uk.ac.ed.epcc.safe.accounting.ErrorSet;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.DomParserAdapter;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.DomValueParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.DoubleParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.FloatParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.IntegerParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.LongParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.NumberParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.StringParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.ValueParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.XMLDateTimeParser;
-import uk.ac.ed.epcc.safe.accounting.parsers.value.XMLDurationParser;
-import uk.ac.ed.epcc.safe.accounting.properties.MultiFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyContainer;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyFinder;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyMap;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyRegistry;
-import uk.ac.ed.epcc.safe.accounting.properties.PropertyTag;
+import uk.ac.ed.epcc.safe.accounting.parsers.value.*;
+import uk.ac.ed.epcc.safe.accounting.properties.*;
 import uk.ac.ed.epcc.safe.accounting.reports.ReportBuilder;
 import uk.ac.ed.epcc.safe.accounting.update.AbstractPropertyContainerUpdater;
 import uk.ac.ed.epcc.safe.accounting.update.AccountingParseException;
@@ -75,7 +45,6 @@ import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.Contexed;
 import uk.ac.ed.epcc.webapp.Feature;
 import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay;
 import uk.ac.ed.epcc.webapp.model.TextFileOverlay.TextFile;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
@@ -173,7 +142,7 @@ public class XMLPropertyDomParser extends AbstractPropertyContainerUpdater imple
 		this.target_class=target;
 		this.namespaces=ns;
 		this.default_schema_name=default_schema_name;
-		log = context.getService(LoggerService.class).getLogger(getClass());
+		log = Logger.getLogger(context,getClass());
 	}
 
 

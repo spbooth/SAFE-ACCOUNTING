@@ -22,7 +22,7 @@ import org.xml.sax.SAXParseException;
 
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
+
 
 /** A SAX {@link ErrorHandler} that forwards the errors onto the {@link LoggerService} logging.
  * 
@@ -37,7 +37,7 @@ public class XMLErrorHandler implements ErrorHandler{
     Logger log;
     public XMLErrorHandler(AppContext c){
     	conn=c;
-    	log=c.getService(LoggerService.class).getLogger(getClass());
+    	log=Logger.getLogger(c,getClass());
     }
 	public void error(SAXParseException arg0) throws SAXException {
 		log.error("Sax error "+arg0.getSystemId()+":"+arg0.getLineNumber()+":"+arg0.getColumnNumber()+" "+arg0.getMessage(),arg0);

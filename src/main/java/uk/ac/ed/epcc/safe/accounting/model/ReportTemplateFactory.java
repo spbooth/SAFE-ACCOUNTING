@@ -52,7 +52,6 @@ import uk.ac.ed.epcc.webapp.jdbc.table.IntegerFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
 import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
 import uk.ac.ed.epcc.webapp.logging.Logger;
-import uk.ac.ed.epcc.webapp.logging.LoggerService;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.FilterResult;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
@@ -100,7 +99,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 		try {
 			s.new Index("name_index",true,ReportTemplate.TEMPLATE_NAME);
 		} catch (InvalidArgument e) {
-			c.getService(LoggerService.class).getLogger(getClass()).error("Error making index", e);
+			Logger.getLogger(c,getClass()).error("Error making index", e);
 		}
 		return s;
 	}
@@ -176,7 +175,7 @@ public class ReportTemplateFactory<R extends ReportTemplate> extends DataObjectF
 				@Override
 				public void validate(String data) throws FieldException {
 					AppContext conn = getContext();
-					Logger log = conn.getService(LoggerService.class).getLogger(getClass());
+					Logger log = getLogger();
 					try {
 						new ReportBuilder(conn,data,conn.getInitParameter(ReportBuilder.REPORT_SCHEMA_CONFIG, ReportBuilder.DEFAULT_REPORT_SCHEMA));
 					} catch (DataFault e) {

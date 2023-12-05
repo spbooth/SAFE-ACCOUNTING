@@ -10,6 +10,9 @@
     <xsl:value-of select="'long'"/>
   </xsl:attribute>
 </xsl:template>
+<!-- Supress auto added foreign key index, assume out name convention -->
+<xsl:template match="TableSpecification/*[@type='Index'][contains(name(), '_fk')]">
+</xsl:template>  
     <xsl:template match="PasswordChangeRequest/Check">
     <xsl:element name="Check">FakeCheck</xsl:element>
     </xsl:template>
