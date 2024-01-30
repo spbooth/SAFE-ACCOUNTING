@@ -362,7 +362,7 @@ public class ErrorSet
 		  int count=0;
 		  for(Detail lines : e.fails)
 		  {
-			  if( count++ < max_reports) {
+			  if( max_reports < 0 || count++ < max_reports) {
 				  l.error(me.getKey()+": "+lines.getText(),lines.getThrowable());
 			  }else {
 				  break;
