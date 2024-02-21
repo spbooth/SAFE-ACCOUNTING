@@ -90,6 +90,8 @@
 			<xsd:element ref="par:Distinct" />
 			<xsd:element ref="par:IfSet"/>
 			<xsd:element ref="par:IfNotSet"/>
+			<xsd:element ref="par:IfDef"/>
+			<xsd:element ref="par:IfNDef"/>
 			<xsd:element ref="par:Optional"/>
 			<xsd:element ref="par:Include"/>
 			<xsd:element ref="mac:Macro" />
