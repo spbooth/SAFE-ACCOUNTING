@@ -1547,6 +1547,10 @@ public class TableExtension extends ReportExtension {
 			
 				String row = normalise(getText(inst));
 				target.setHighlight(row, true);
+			}else if(instruction.equals("FooterRow")){
+				
+				String row = normalise(getText(inst));
+				target.setFooter(row, true);
 			}else if(instruction.equals("CombineColumn")){
 				String dest=getParam("Dest", inst);
 				Operator op = Operator.valueOf(getParam("Operator", inst));
