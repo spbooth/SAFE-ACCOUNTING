@@ -13,10 +13,7 @@
 //| limitations under the License.                                          |
 package uk.ac.ed.epcc.safe.accounting.allocations;
 
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 import uk.ac.ed.epcc.safe.accounting.ExpressionTargetFactory;
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
@@ -32,10 +29,7 @@ import uk.ac.ed.epcc.safe.accounting.selector.RecordSelector;
 import uk.ac.ed.epcc.safe.accounting.selector.SelectClause;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
-import uk.ac.ed.epcc.webapp.content.ContentBuilder;
-import uk.ac.ed.epcc.webapp.content.ExtendedXMLBuilder;
-import uk.ac.ed.epcc.webapp.content.Labeller;
-import uk.ac.ed.epcc.webapp.content.Table;
+import uk.ac.ed.epcc.webapp.content.*;
 import uk.ac.ed.epcc.webapp.forms.Form;
 import uk.ac.ed.epcc.webapp.forms.action.FormAction;
 import uk.ac.ed.epcc.webapp.forms.exceptions.ActionException;
@@ -47,12 +41,7 @@ import uk.ac.ed.epcc.webapp.forms.inputs.TypeError;
 import uk.ac.ed.epcc.webapp.forms.inputs.TypeException;
 import uk.ac.ed.epcc.webapp.forms.result.FormResult;
 import uk.ac.ed.epcc.webapp.forms.result.ViewTransitionResult;
-import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTargetlessTransition;
-import uk.ac.ed.epcc.webapp.forms.transition.AbstractDirectTransition;
-import uk.ac.ed.epcc.webapp.forms.transition.AbstractFormTransition;
-import uk.ac.ed.epcc.webapp.forms.transition.IndexTransitionFactory;
-import uk.ac.ed.epcc.webapp.forms.transition.PathTransitionProvider;
-import uk.ac.ed.epcc.webapp.forms.transition.TransitionFactoryCreator;
+import uk.ac.ed.epcc.webapp.forms.transition.*;
 import uk.ac.ed.epcc.webapp.jdbc.filter.AndFilter;
 import uk.ac.ed.epcc.webapp.model.data.DataObject;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
@@ -289,7 +278,7 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 		getSummaryContent(c, cb, target);
 		try{
 			Table tab = new Table();
-
+			tab.setId("allocations");
 			for(Iterator<T> it = getIndexIterator(target);it.hasNext();){
 				T record = it.next();
 				manager.addIndexTable(tab, record,target);
@@ -309,7 +298,11 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 				text.close();
 				text.clean(" End-dates indicate an "+manager.getTypeName().toLowerCase()+" that is past");
 				text.appendParent();
-				cb.addTable(c, tab);
+				// configure for datatables in case we want to enable in sub-class
+				if( cb instanceof HtmlBuilder) {
+					((HtmlBuilder)cb).setTableSections(true);
+				}
+				cb.addTable(c, tab,"auto dynamic");
 			}
 		}catch(Exception e){
 			getLogger().error("Error making index table",e);
@@ -406,6 +399,8 @@ public class AllocationPeriodTransitionProvider<T extends DataObject&Allocation,
 	public PeriodKey getIndexTransition() {
 		return INDEX_KEY;
 	}
+
+	
 
 	
 
