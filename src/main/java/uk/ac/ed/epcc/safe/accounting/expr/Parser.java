@@ -62,7 +62,7 @@ public class Parser extends AbstractContexed{
 		} catch (Exception e) {
 			throw new ParseException("bad expression <"+s+">",e);
 		}
-		throw new ParseException("Bad expression parse failed");
+		throw new ParseException("Bad expression parse failed for ["+s+"]");
 		
 		
 		

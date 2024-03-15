@@ -265,7 +265,9 @@ public class AtomExtension extends ReportExtension {
 		if( producer == null) {
 			return 0L;
 		}
-		return producer.getRecordCount(set.getPeriodSelector(period));
+		long res = producer.getRecordCount(set.getPeriodSelector(period));
+		log.debug("count returns "+res);
+		return res;
 		
 	}
 	public AtomResult combine(Operator op,Period period,RecordSet set, Node element) throws IllegalReductionException, Exception{
@@ -280,9 +282,12 @@ public class AtomExtension extends ReportExtension {
 		LinkedList<Element> arg = getUnboundedArgs(element);
 		try {
 			Number res = (Number)expandNumberGroup(period, set, arg.pop()).value;
+			log.debug("First object "+res);
 			for(Element e : arg){
 				Number b = (Number)expandNumberGroup(period, set, e).value;
+				Number prev = res;
 				res = op.operate(res, b);
+				log.debug("combine: "+prev+op.text()+b+"->"+res);
 			}
 			return new AtomResult<>(null,res);
 		}catch(NoSuchElementException nse) {
