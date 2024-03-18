@@ -699,7 +699,7 @@ implements TitleTransitionFactory<ReportTemplateKey, Report>, DefaultingTransiti
 			try {
 				return logFac.logReport(
 						getContext().getService(SessionService.class).getCurrentPerson(), 
-						getReportTemplate(target),
+						getReportTemplate(target),target.getName(),target.getExtension(),
 						getID(target));
 			} catch (Exception e) {
 				getLogger().error("Error logging report use", e);

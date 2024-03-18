@@ -40,7 +40,9 @@ public class ReportTemplateLog extends DataObjectPropertyContainer implements Au
 
     public static class ReportLogFactory extends DefaultDataObjectPropertyFactory<ReportTemplateLog> {
 
-    	 private static final String TIMESTAMP = "Timestamp";    
+    	 private static final String EXT = "ext";
+		private static final String NAME = "Name";
+		private static final String TIMESTAMP = "Timestamp";    
          private static final String FINISH = "FinishTime";
          private static final String PERSON_ID = "PersonID";
          private static final String REPORT_TEMPLATE_ID = "ReportTemplateID";
@@ -86,6 +88,8 @@ public class ReportTemplateLog extends DataObjectPropertyContainer implements Au
             spec.setField(FINISH, new DateFieldType(true, null)); // can cope without this
             spec.setOptionalField(PERSON_ID, new ReferenceFieldType(userFac.getTag()));
             spec.setField(REPORT_TEMPLATE_ID, new ReferenceFieldType(templateFac.getTag()));
+            spec.setOptionalField(NAME, new StringFieldType(true,null,64));
+            spec.setOptionalField(EXT, new StringFieldType(true,null,5));
             spec.setField(PARAMETERS, new StringFieldType(true, null, 1000));
            
             return spec;
@@ -114,11 +118,13 @@ public class ReportTemplateLog extends DataObjectPropertyContainer implements Au
 			}
         }
 
-        public ReportTemplateLog logReport(AppUser user, ReportTemplate template, List<String> parameters) throws DataFault {
+        public ReportTemplateLog logReport(AppUser user, ReportTemplate template,String name,String ext, List<String> parameters) throws DataFault {
             ReportTemplateLog log = makeBDO();
             CurrentTimeService time = getContext().getService(CurrentTimeService.class);
             log.record.setProperty(TIMESTAMP, time.getCurrentTime());
             log.record.setProperty(REPORT_TEMPLATE_ID, template);
+            log.record.setOptionalProperty(NAME, name);
+            log.record.setOptionalProperty(EXT, ext);
             if (user != null) {
                 log.record.setOptionalProperty(PERSON_ID, user.getID());
             }

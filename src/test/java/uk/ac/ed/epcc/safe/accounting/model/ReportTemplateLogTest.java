@@ -24,6 +24,8 @@ import uk.ac.ed.epcc.webapp.session.SessionService;
 public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<ReportLogFactory, ReportTemplateLog>
 {
 
+	private static final String TEMPLATE_NAME = "BarTimeChart.xml";
+
 	public void setPerson() throws DataFault, ParseException {
 		SessionService sess = getContext().getService(SessionService.class);
 		AppUserFactory fac = sess.getLoginFactory();
@@ -39,7 +41,7 @@ public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<Rep
 		assertNotNull(person);
 		ReportTemplate expectedTarget = getTarget();
 		List<String> expectedParameters = getParameters();
-		fac.logReport(person, expectedTarget, expectedParameters);
+		fac.logReport(person, expectedTarget,TEMPLATE_NAME,"html", expectedParameters);
 		List<ReportTemplateLog> r = fac.all().toCollection(); 
 		TestCase.assertEquals(1, r.size());
 		ReportTemplateLog target = r.get(0);
@@ -59,7 +61,7 @@ public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<Rep
 		ReportLogFactory fac = getFactory();
 		ReportTemplate expectedTarget = getTarget();
 		List<String> expectedParameters = getParameters();
-		fac.logReport(null, expectedTarget, expectedParameters);
+		fac.logReport(null, expectedTarget, TEMPLATE_NAME,"html",expectedParameters);
 		List<ReportTemplateLog> r = fac.all().toCollection(); 
 		TestCase.assertEquals(1, r.size());
 		ReportTemplateLog target = r.get(0);
@@ -79,7 +81,7 @@ public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<Rep
 		ReportTemplate expectedTarget = getTarget();
 		AppUser person = getContext().getService(SessionService.class).getCurrentPerson();
 		assertNotNull(person);
-		fac.logReport(person, expectedTarget, null);
+		fac.logReport(person, expectedTarget, TEMPLATE_NAME,"html",null);
 		List<ReportTemplateLog> r = fac.all().toCollection(); 
 		TestCase.assertEquals(1, r.size());
 		ReportTemplateLog target = r.get(0);
@@ -98,7 +100,7 @@ public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<Rep
 		assertNotNull(person);
 		ReportTemplate expectedTarget = getTarget();
 		List<String> expectedParameters = Collections.emptyList();
-		fac.logReport(person, expectedTarget, expectedParameters);
+		fac.logReport(person, expectedTarget, TEMPLATE_NAME,"html",expectedParameters);
 		List<ReportTemplateLog> r = fac.all().toCollection(); 
 		TestCase.assertEquals(1, r.size());
 		ReportTemplateLog target = r.get(0);
@@ -117,7 +119,7 @@ public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<Rep
 		assertNotNull(person);
 		ReportTemplate expectedTarget = getTarget();
 		List<String> expectedParameters = getParameters();
-		fac.logReport(person, expectedTarget, expectedParameters);
+		fac.logReport(person, expectedTarget, TEMPLATE_NAME,"html",expectedParameters);
 		List<ReportTemplateLog> r = fac.all().toCollection(); 
 		TestCase.assertEquals(1, r.size());
 		ReportTemplateLog target = r.get(0);
@@ -135,7 +137,7 @@ public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<Rep
 		AppUser person = getContext().getService(SessionService.class).getCurrentPerson();
 		assertNotNull(person);
 		ReportTemplate expectedTarget = getTarget();
-		fac.logReport(person, expectedTarget, null);
+		fac.logReport(person, expectedTarget,TEMPLATE_NAME,"html", null);
 		List<ReportTemplateLog> r = fac.all().toCollection(); 
 		TestCase.assertEquals(1, r.size());
 		ReportTemplateLog target = r.get(0);
@@ -154,7 +156,7 @@ public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<Rep
 		assertNotNull(person);
 		ReportTemplate expectedTarget = getTarget();
 		List<String> expectedParameters = new LinkedList<>();
-		fac.logReport(person, expectedTarget, expectedParameters);
+		fac.logReport(person, expectedTarget,TEMPLATE_NAME,"html", expectedParameters);
 		List<ReportTemplateLog> r = fac.all().toCollection(); 
 		TestCase.assertEquals(1, r.size());
 		ReportTemplateLog target = r.get(0);
@@ -167,7 +169,7 @@ public class ReportTemplateLogTest extends DataObjectPropertyFactoryTestCase<Rep
 	
 	private ReportTemplate getTarget() throws DataException {
 		ReportTemplateFactory reportTemplateFactory = new ReportTemplateFactory(ctx);
-		ReportTemplate template = reportTemplateFactory.findByFileName("BarTimeChart.xml");
+		ReportTemplate template = reportTemplateFactory.findByFileName(TEMPLATE_NAME);
 		return template;
 	}
 
