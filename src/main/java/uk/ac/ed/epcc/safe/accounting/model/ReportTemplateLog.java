@@ -1,9 +1,7 @@
 package uk.ac.ed.epcc.safe.accounting.model;
 
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import uk.ac.ed.epcc.safe.accounting.db.AccessorMap;
 import uk.ac.ed.epcc.safe.accounting.db.DataObjectPropertyContainer;
@@ -19,15 +17,21 @@ import uk.ac.ed.epcc.safe.accounting.properties.StandardProperties;
 import uk.ac.ed.epcc.safe.accounting.reference.ReferenceTag;
 import uk.ac.ed.epcc.webapp.AppContext;
 import uk.ac.ed.epcc.webapp.CurrentTimeService;
+import uk.ac.ed.epcc.webapp.forms.Form;
+import uk.ac.ed.epcc.webapp.forms.exceptions.TransitionException;
+import uk.ac.ed.epcc.webapp.forms.result.FormResult;
+import uk.ac.ed.epcc.webapp.forms.result.MessageResult;
+import uk.ac.ed.epcc.webapp.forms.transition.DirectTransition;
+import uk.ac.ed.epcc.webapp.forms.transition.Transition;
 import uk.ac.ed.epcc.webapp.jdbc.exception.DataException;
-import uk.ac.ed.epcc.webapp.jdbc.table.DateFieldType;
-import uk.ac.ed.epcc.webapp.jdbc.table.ReferenceFieldType;
-import uk.ac.ed.epcc.webapp.jdbc.table.StringFieldType;
-import uk.ac.ed.epcc.webapp.jdbc.table.TableSpecification;
+import uk.ac.ed.epcc.webapp.jdbc.table.*;
 import uk.ac.ed.epcc.webapp.model.data.DataObjectFactory;
 import uk.ac.ed.epcc.webapp.model.data.Duration;
 import uk.ac.ed.epcc.webapp.model.data.Repository.Record;
+import uk.ac.ed.epcc.webapp.model.data.TableStructureContributer;
 import uk.ac.ed.epcc.webapp.model.data.Exceptions.DataFault;
+import uk.ac.ed.epcc.webapp.model.data.filter.NullFieldFilter;
+import uk.ac.ed.epcc.webapp.model.data.forms.Selector;
 import uk.ac.ed.epcc.webapp.session.AppUser;
 import uk.ac.ed.epcc.webapp.session.AppUserFactory;
 import uk.ac.ed.epcc.webapp.session.SessionService;
@@ -38,7 +42,7 @@ public class ReportTemplateLog extends DataObjectPropertyContainer implements Au
         super(fac, r);
     }
 
-    public static class ReportLogFactory extends DefaultDataObjectPropertyFactory<ReportTemplateLog> {
+    public static class ReportLogFactory extends DefaultDataObjectPropertyFactory<ReportTemplateLog>  implements TableTransitionContributor{
 
     	 private static final String EXT = "ext";
 		private static final String NAME = "Name";
@@ -51,6 +55,7 @@ public class ReportTemplateLog extends DataObjectPropertyContainer implements Au
         public static final ReferenceTag<AppUser, AppUserFactory> person_tag = 
         		new ReferenceTag<>(reportlog_reg, "Person",  AppUserFactory.class, "Person");
         public static final PropertyTag<Duration> runtime = new PropertyTag<Duration>(reportlog_reg,"Runtime",Duration.class,"time report took to run");
+        public static final PropertyTag<String> name = new PropertyTag<>(reportlog_reg, NAME, String.class,"Template file base-name");
         static {
         	reportlog_reg.lock();
         }
@@ -143,6 +148,54 @@ public class ReportTemplateLog extends DataObjectPropertyContainer implements Au
             log.commit();
             return log;
         }
+        public void setTemplateFileName(ReportTemplateLog log,String name) throws DataFault {
+        	if( name != null ) {
+        		if( name.contains(".")) {
+        			String parts[] = name.split("\\.");
+        			if( parts.length == 2) {
+        				log.record.setOptionalProperty(NAME, parts[0]);
+        				log.record.setOptionalProperty(EXT, parts[1]);
+        			}
+        		}else {
+        			log.record.setOptionalProperty(NAME, name);
+        		}
+        	}
+        	log.commit();
+        }
+
+        public class FixupNames implements DirectTransition<ReportLogFactory>{
+
+			@Override
+			public FormResult doTransition(ReportLogFactory target, AppContext c) throws TransitionException {
+				int count=0;
+				if( res.hasField(NAME)) {
+					try {
+						for(ReportTemplateLog log : target.getResult(new NullFieldFilter<ReportTemplateLog>(res, NAME, true))) {
+							List<String> param = log.getParametersList();
+							if( param != null && ! param.isEmpty()) {
+								String template = param.get(param.size()-1);
+								setTemplateFileName(log, template);
+								count++;
+							}
+						}
+					} catch (DataFault e) {
+						getLogger().error("Error finding entries to update", e);
+					}
+				}
+				return new MessageResult("template_log_updated", count);
+			}
+        	
+        }
+		@Override
+		public Map<TableTransitionKey, Transition> getTableTransitions() {
+			 Map<TableTransitionKey, Transition> result = new LinkedHashMap<>();
+			 if( res.hasField(NAME)) {
+				 result.put(new AdminOperationKey("UpdateName", "Set missing template names from parameters"), new FixupNames());
+			 }
+			return result;
+		}
+
+		
 
     }
 
