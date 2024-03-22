@@ -24,16 +24,15 @@
 <rep:Title>Report usage statistics</rep:Title>
 <fil:Filter>
 <fil:Producer>ReportTemplateLog</fil:Producer>
-<fil:LT><fil:Property>time:CompletedTimestamp</fil:Property><fil:Value><par:Parameter name="Period" format="PeriodEnd"></par:Parameter></fil:Value></fil:LT>
-<fil:GT><fil:Property>time:CompletedTimestamp</fil:Property><fil:Value><par:Parameter name="Period" format="PeriodStart"></par:Parameter></fil:Value></fil:GT>
 
 </fil:Filter>
 <tab:SummaryTable>
 <tab:Index><tab:Name>Report</tab:Name><tab:Property>table:ReportTemplate</tab:Property></tab:Index>
-<tab:Index><tab:Name>Parameters</tab:Name><tab:Property>ReportTemplateLog:Parameters</tab:Property></tab:Index>
-<tab:Index><tab:Name>User</tab:Name><tab:Property>table:Person</tab:Property></tab:Index>
-<tab:Index><tab:Name>When</tab:Name><tab:Property>time:CompletedTimestamp</tab:Property></tab:Index>
-<tab:SortBy><tab:Columns>Report,When</tab:Columns></tab:SortBy>
+<tab:Index><tab:Name>Name</tab:Name><tab:Property>Name</tab:Property></tab:Index>
+<tab:SumColumn><tab:Name>Count</tab:Name><tab:Property>JobCount</tab:Property></tab:SumColumn>
+<tab:CountDistinctColumn><tab:Name>#Users</tab:Name><tab:Property>table:person</tab:Property></tab:CountDistinctColumn>
+<tab:MaxColumn><tab:Name>Last</tab:Name><tab:Property>time:CompletedTimestamp</tab:Property></tab:MaxColumn>
+<tab:SortBy><tab:Columns>Count,Last</tab:Columns></tab:SortBy>
 </tab:SummaryTable>
 </rep:Section>
 </rep:Report>

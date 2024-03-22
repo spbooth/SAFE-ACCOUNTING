@@ -166,7 +166,7 @@ public void testCSVReport() throws Exception {
     }
 	protected void testReport(ArrayList<String> args, File outputFile) throws Exception
 	{
-		testReport(args, TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\n?", ""));
+		testReport(args, TestDataHelper.readFileAsString(outputFile).replaceAll("<!--.*-->\\s*\r?\n?", ""));
 	}
 	
 	protected void testReport(ArrayList<String> args, String expectedOutput) throws Exception

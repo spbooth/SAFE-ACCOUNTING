@@ -875,9 +875,14 @@ public class TableExtension extends ReportExtension {
 					for(String col : col_names){
 						ReductionTarget o = cols.get(col);
 						Object value = row.get(o);
+						Object merge = table.get(col, row);
 						// Its OK for value to be null here and we want to pass this on to the table
 						// to ensure columns are created in the correct order
-						table.put(col, key, value);
+						// Combine previous values as we might have a NameExpression meaning there
+						// are multiple tuples generating a table row.
+					
+						table.put(col, key, o.combine(merge, value));
+						
 					}
 					// now expression name columns
 					// merge in case different index values have the same string rep
