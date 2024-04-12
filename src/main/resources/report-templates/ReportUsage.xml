@@ -13,10 +13,10 @@
 <rep:Title>Report usage statistics</rep:Title>
 <res:RequireRole>RootMember</res:RequireRole>
 <par:ParameterDef label="Report period" name="Period" type="MonthCalendarPeriod" >
-	<par:Value name="start" value="Now+0m"/>
-	<par:Value name="splits" value="1"/>
+	<par:Value name="start" value="Now+6y"/>
+	<par:Value name="splits" value="6"/>
 	<par:Value name="count" value="1"/>
-	<par:Value name="field" value="Months" />
+	<par:Value name="field" value="Years" />
 	</par:ParameterDef>	
 	<par:Parameter name="Period"/>
 <par:Parameter name="Period"/>
@@ -31,6 +31,8 @@
 <tab:Index><tab:Name>Name</tab:Name><tab:Property>Name</tab:Property></tab:Index>
 <tab:SumColumn><tab:Name>Count</tab:Name><tab:Property>JobCount</tab:Property></tab:SumColumn>
 <tab:CountDistinctColumn><tab:Name>#Users</tab:Name><tab:Property>table:person</tab:Property></tab:CountDistinctColumn>
+<tab:AverageColumn><tab:Name>Average runtime</tab:Name><tab:Property>Runtime</tab:Property></tab:AverageColumn>
+<tab:MaxColumn><tab:Name>Max runtime</tab:Name><tab:Property>Runtime</tab:Property></tab:MaxColumn>
 <tab:MaxColumn><tab:Name>Last</tab:Name><tab:Property>time:CompletedTimestamp</tab:Property></tab:MaxColumn>
 <tab:SortBy><tab:Columns>Count,Last</tab:Columns></tab:SortBy>
 </tab:SummaryTable>
