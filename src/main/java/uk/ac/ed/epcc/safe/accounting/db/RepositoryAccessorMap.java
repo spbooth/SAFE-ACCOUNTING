@@ -380,8 +380,11 @@ public class RepositoryAccessorMap<X extends DataObject> extends AccessorMap<X>{
 		// Self reference
 		// Needed when filtering on a specific recordID
 		// Also a way of getting the id from a proxy wrapper
+		// This will overwrite any "tree-reference" fields (ie non primary key fields
+		// that reference the same table. This is ok as we usually want an explicit
+		// tag for these.
 		ReferenceTag tag=(ReferenceTag) reference_registry.find(IndexedReference.class, res.getTag());
-		if( tag != null && ! selector_map.containsValue(tag)){
+		if( tag != null ){
 			put(tag, new SelfSQLValue<>(fac));
 		}
 				
